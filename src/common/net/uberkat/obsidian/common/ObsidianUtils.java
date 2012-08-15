@@ -27,16 +27,6 @@ import net.minecraft.src.*;
 public class ObsidianUtils
 {
 	/**
-	 * Registers a name for the specified object.
-	 * @param obj - block/item to name
-	 * @param name - name for the block/item
-	 */
-	public static void addName(Object obj, String name)
-	{
-		LanguageRegistry.instance().addNameForObject(obj, "en_US", name);
-	}
-	
-	/**
 	 * Checks for a new version of Obsidian Ingots.
 	 */
 	public static void checkForUpdates(EntityPlayer entityplayer)

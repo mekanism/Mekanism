@@ -34,36 +34,27 @@ import cpw.mods.fml.common.registry.TickRegistry;
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
-	/**
-	 * Obsidian Ingots logger instance
-	 */
+	/** Obsidian Ingots logger instance */
 	public static Logger logger = Logger.getLogger("Minecraft");
 	
-	/**
-	 * Obsidian Ingots proxy instance
-	 */
+	/** Obsidian Ingots proxy instance */
 	@SidedProxy(clientSide = "net.uberkat.obsidian.client.ClientProxy", serverSide = "net.uberkat.obsidian.server.ServerProxy")
 	public static CommonProxy proxy;
 	
-    /**
-     * Obsidian Ingots mod instance
-     */
+    /** Obsidian Ingots mod instance */
     public static ObsidianIngots instance;
     
-    /**
-     * Obsidian Ingots hooks instance
-     */
+    /** Obsidian Ingots hooks instance */
     public static ObsidianHooks hooks;
     
 	//Initial Declarations
-
 	public static Version versionNumber = new Version(4, 0, 0);
 	public static String latestVersionNumber;
 	public static String recentNews;
 	public static String hostIP = "71.56.58.57";
 	public static int hostPort = 3073;
-    //Enums
-    //Tools
+	
+    //Enums: Tools
     public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 50);
     public static EnumToolMaterial toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2", 3, 3000, 25F, 10, 100);
     public static EnumToolMaterial toolLAZULI = EnumHelper.addToolMaterial("LAZULI", 2, 200, 5.0F, 0, 22);
@@ -74,12 +65,14 @@ public class ObsidianIngots
     public static EnumToolMaterial toolREDSTONE2 = EnumHelper.addToolMaterial("REDSTONE2", 2, 400, 12F, 6, 60);
     public static EnumToolMaterial toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE", 2, 300, 14, 5, 80);
     public static EnumToolMaterial toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2", 2, 450, 18, 5, 100);
-    //Armor
+    
+    //Enums: Armor
     public static EnumArmorMaterial armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", 50, new int[]{5, 12, 8, 5}, 50);
     public static EnumArmorMaterial armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", 13, new int[]{2, 5, 4, 2}, 50);
     public static EnumArmorMaterial armorPLATINUM = EnumHelper.addArmorMaterial("PLATINUM", 30, new int[]{4, 10, 7, 4}, 50);
     public static EnumArmorMaterial armorREDSTONE = EnumHelper.addArmorMaterial("REDSTONE", 16, new int[]{2, 7, 5, 3}, 50);
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
+    
 	//Block IDs
 	public static int platinumOreID = 200;
 	public static int platinumBlockID = 201;
@@ -494,113 +487,113 @@ public class ObsidianIngots
 	public void addNames()
 	{
 		//Base
-		ObsidianUtils.addName(WoodPaxel, "Wood Paxel");
-		ObsidianUtils.addName(StonePaxel, "Stone Paxel");
-		ObsidianUtils.addName(IronPaxel, "Iron Paxel");
-		ObsidianUtils.addName(DiamondPaxel, "Diamond Paxel");
-		ObsidianUtils.addName(GoldPaxel, "Gold Paxel");
-		ObsidianUtils.addName(WoodKnife, "Wood Knife");
-		ObsidianUtils.addName(StoneKnife, "Stone Knife");
-		ObsidianUtils.addName(IronKnife, "Iron Knife");
-		ObsidianUtils.addName(DiamondKnife, "Diamond Knife");
-		ObsidianUtils.addName(GoldKnife, "Gold Knife");
-		ObsidianUtils.addName(IronDust, "Iron Dust");
-		ObsidianUtils.addName(GoldDust, "Gold Dust");
+		LanguageRegistry.addName(WoodPaxel, "Wood Paxel");
+		LanguageRegistry.addName(StonePaxel, "Stone Paxel");
+		LanguageRegistry.addName(IronPaxel, "Iron Paxel");
+		LanguageRegistry.addName(DiamondPaxel, "Diamond Paxel");
+		LanguageRegistry.addName(GoldPaxel, "Gold Paxel");
+		LanguageRegistry.addName(WoodKnife, "Wood Knife");
+		LanguageRegistry.addName(StoneKnife, "Stone Knife");
+		LanguageRegistry.addName(IronKnife, "Iron Knife");
+		LanguageRegistry.addName(DiamondKnife, "Diamond Knife");
+		LanguageRegistry.addName(GoldKnife, "Gold Knife");
+		LanguageRegistry.addName(IronDust, "Iron Dust");
+		LanguageRegistry.addName(GoldDust, "Gold Dust");
 		
 		//Obsidian
-		ObsidianUtils.addName(RefinedObsidian, "Refined Obsidian");
-		ObsidianUtils.addName(ObsidianDust, "Obsidian Dust");
-		ObsidianUtils.addName(ObsidianHelmet, "Obsidian Helmet");
-		ObsidianUtils.addName(ObsidianBody, "Obsidian Chestplate");
-		ObsidianUtils.addName(ObsidianLegs, "Obsidian Leggings");
-		ObsidianUtils.addName(ObsidianBoots, "Obsidian Boots");
-		ObsidianUtils.addName(ObsidianIngot, "Obsidian Ingot");
-		ObsidianUtils.addName(ObsidianPaxel, "Obsidian Paxel");
-		ObsidianUtils.addName(ObsidianPickaxe, "Obsidian Pickaxe");
-		ObsidianUtils.addName(ObsidianAxe, "Obsidian Axe");
-		ObsidianUtils.addName(ObsidianSpade, "Obsidian Shovel");
-		ObsidianUtils.addName(ObsidianHoe, "Obsidian Hoe");
-		ObsidianUtils.addName(ObsidianSword, "Obsidian Sword");
-		ObsidianUtils.addName(ObsidianKnife, "Obsidian Knife");
+		LanguageRegistry.addName(RefinedObsidian, "Refined Obsidian");
+		LanguageRegistry.addName(ObsidianDust, "Obsidian Dust");
+		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
+		LanguageRegistry.addName(ObsidianBody, "Obsidian Chestplate");
+		LanguageRegistry.addName(ObsidianLegs, "Obsidian Leggings");
+		LanguageRegistry.addName(ObsidianBoots, "Obsidian Boots");
+		LanguageRegistry.addName(ObsidianIngot, "Obsidian Ingot");
+		LanguageRegistry.addName(ObsidianPaxel, "Obsidian Paxel");
+		LanguageRegistry.addName(ObsidianPickaxe, "Obsidian Pickaxe");
+		LanguageRegistry.addName(ObsidianAxe, "Obsidian Axe");
+		LanguageRegistry.addName(ObsidianSpade, "Obsidian Shovel");
+		LanguageRegistry.addName(ObsidianHoe, "Obsidian Hoe");
+		LanguageRegistry.addName(ObsidianSword, "Obsidian Sword");
+		LanguageRegistry.addName(ObsidianKnife, "Obsidian Knife");
 		
 		//Lazuli
-		ObsidianUtils.addName(LazuliHelmet, "Lapis Lazuli Helmet");
-		ObsidianUtils.addName(LazuliBody, "Lapis Lazuli Chestplate");
-		ObsidianUtils.addName(LazuliLegs, "Lapis Lazuli Leggings");
-		ObsidianUtils.addName(LazuliBoots, "Lapis Lazuli Boots");
-		ObsidianUtils.addName(LazuliPaxel, "Lapis Lazuli Paxel");
-		ObsidianUtils.addName(LazuliPickaxe, "Lapis Lazuli Pickaxe");
-		ObsidianUtils.addName(LazuliAxe, "Lapis Lazuli Axe");
-		ObsidianUtils.addName(LazuliSpade, "Lapis Lazuli Shovel");
-		ObsidianUtils.addName(LazuliHoe, "Lapis Lazuli Hoe");
-		ObsidianUtils.addName(LazuliSword, "Lapis Lazuli Sword");
-		ObsidianUtils.addName(LazuliKnife, "Lazuli Knife");
+		LanguageRegistry.addName(LazuliHelmet, "Lapis Lazuli Helmet");
+		LanguageRegistry.addName(LazuliBody, "Lapis Lazuli Chestplate");
+		LanguageRegistry.addName(LazuliLegs, "Lapis Lazuli Leggings");
+		LanguageRegistry.addName(LazuliBoots, "Lapis Lazuli Boots");
+		LanguageRegistry.addName(LazuliPaxel, "Lapis Lazuli Paxel");
+		LanguageRegistry.addName(LazuliPickaxe, "Lapis Lazuli Pickaxe");
+		LanguageRegistry.addName(LazuliAxe, "Lapis Lazuli Axe");
+		LanguageRegistry.addName(LazuliSpade, "Lapis Lazuli Shovel");
+		LanguageRegistry.addName(LazuliHoe, "Lapis Lazuli Hoe");
+		LanguageRegistry.addName(LazuliSword, "Lapis Lazuli Sword");
+		LanguageRegistry.addName(LazuliKnife, "Lazuli Knife");
 		
 		//Platinum
-		ObsidianUtils.addName(PlatinumOre, "Platinum Ore");
-		ObsidianUtils.addName(PlatinumBlock, "Platinum Block");
-		ObsidianUtils.addName(PlatinumDust, "Platinum Dust");
-		ObsidianUtils.addName(PlatinumHelmet, "Platinum Helmet");
-		ObsidianUtils.addName(PlatinumBody, "Platinum Chestplate");
-		ObsidianUtils.addName(PlatinumLegs, "Platinum Leggings");
-		ObsidianUtils.addName(PlatinumBoots, "Platinum Boots");
-		ObsidianUtils.addName(PlatinumIngot, "Platinum Ingot");
-		ObsidianUtils.addName(PlatinumPaxel, "Platinum Paxel");
-		ObsidianUtils.addName(PlatinumPickaxe, "Platinum Pickaxe");
-		ObsidianUtils.addName(PlatinumAxe, "Platinum Axe");
-		ObsidianUtils.addName(PlatinumSpade, "Platinum Shovel");
-		ObsidianUtils.addName(PlatinumHoe, "Platinum Hoe");
-		ObsidianUtils.addName(PlatinumSword, "Platinum Sword");
-		ObsidianUtils.addName(PlatinumKnife, "Platinum Knife");
+		LanguageRegistry.addName(PlatinumOre, "Platinum Ore");
+		LanguageRegistry.addName(PlatinumBlock, "Platinum Block");
+		LanguageRegistry.addName(PlatinumDust, "Platinum Dust");
+		LanguageRegistry.addName(PlatinumHelmet, "Platinum Helmet");
+		LanguageRegistry.addName(PlatinumBody, "Platinum Chestplate");
+		LanguageRegistry.addName(PlatinumLegs, "Platinum Leggings");
+		LanguageRegistry.addName(PlatinumBoots, "Platinum Boots");
+		LanguageRegistry.addName(PlatinumIngot, "Platinum Ingot");
+		LanguageRegistry.addName(PlatinumPaxel, "Platinum Paxel");
+		LanguageRegistry.addName(PlatinumPickaxe, "Platinum Pickaxe");
+		LanguageRegistry.addName(PlatinumAxe, "Platinum Axe");
+		LanguageRegistry.addName(PlatinumSpade, "Platinum Shovel");
+		LanguageRegistry.addName(PlatinumHoe, "Platinum Hoe");
+		LanguageRegistry.addName(PlatinumSword, "Platinum Sword");
+		LanguageRegistry.addName(PlatinumKnife, "Platinum Knife");
 		
 		//Redstone
-		ObsidianUtils.addName(RedstoneBlock, "Redstone Block");
-		ObsidianUtils.addName(RedstoneBlock, "Redstone Block");
-		ObsidianUtils.addName(RedstoneHelmet, "Redstone Helmet");
-		ObsidianUtils.addName(RedstoneBody, "Redstone Chestplate");
-		ObsidianUtils.addName(RedstoneLegs, "Redstone Leggings");
-		ObsidianUtils.addName(RedstoneBoots, "Redstone Boots");
-		ObsidianUtils.addName(RedstoneIngot, "Redstone Ingot");
-		ObsidianUtils.addName(RedstonePaxel, "Redstone Paxel");
-		ObsidianUtils.addName(RedstonePickaxe, "Redstone Pickaxe");
-		ObsidianUtils.addName(RedstoneAxe, "Redstone Axe");
-		ObsidianUtils.addName(RedstoneSpade, "Redstone Shovel");
-		ObsidianUtils.addName(RedstoneHoe, "Redstone Hoe");
-		ObsidianUtils.addName(RedstoneSword, "Redstone Sword");
-		ObsidianUtils.addName(RedstoneBlock, "Redstone Block");
-		ObsidianUtils.addName(RedstoneKnife, "Redstone Knife");	
+		LanguageRegistry.addName(RedstoneBlock, "Redstone Block");
+		LanguageRegistry.addName(RedstoneBlock, "Redstone Block");
+		LanguageRegistry.addName(RedstoneHelmet, "Redstone Helmet");
+		LanguageRegistry.addName(RedstoneBody, "Redstone Chestplate");
+		LanguageRegistry.addName(RedstoneLegs, "Redstone Leggings");
+		LanguageRegistry.addName(RedstoneBoots, "Redstone Boots");
+		LanguageRegistry.addName(RedstoneIngot, "Redstone Ingot");
+		LanguageRegistry.addName(RedstonePaxel, "Redstone Paxel");
+		LanguageRegistry.addName(RedstonePickaxe, "Redstone Pickaxe");
+		LanguageRegistry.addName(RedstoneAxe, "Redstone Axe");
+		LanguageRegistry.addName(RedstoneSpade, "Redstone Shovel");
+		LanguageRegistry.addName(RedstoneHoe, "Redstone Hoe");
+		LanguageRegistry.addName(RedstoneSword, "Redstone Sword");
+		LanguageRegistry.addName(RedstoneBlock, "Redstone Block");
+		LanguageRegistry.addName(RedstoneKnife, "Redstone Knife");	
 		
 		//Glowstone
-		ObsidianUtils.addName(RefinedGlowstone, "Refined Glowstone Block");
-		ObsidianUtils.addName(GlowstoneIngot, "Glowstone Ingot");
-		ObsidianUtils.addName(GlowstonePaxel, "Glowstone Paxel");
-		ObsidianUtils.addName(GlowstonePickaxe, "Glowstone Pickaxe");
-		ObsidianUtils.addName(GlowstoneAxe, "Glowstone Axe");
-		ObsidianUtils.addName(GlowstoneSpade, "Glowstone Shovel");
-		ObsidianUtils.addName(GlowstoneHoe, "Glowstone Hoe");
-		ObsidianUtils.addName(GlowstoneSword, "Glowstone Sword");
-		ObsidianUtils.addName(GlowstoneHelmet, "Glowstone Helmet");
-		ObsidianUtils.addName(GlowstoneBody, "Glowstone Chestplate");
-		ObsidianUtils.addName(GlowstoneLegs, "Glowstone Leggings");
-		ObsidianUtils.addName(GlowstoneBoots, "Glowstone Boots");
-		ObsidianUtils.addName(GlowstoneKnife, "Glowstone Knife");
+		LanguageRegistry.addName(RefinedGlowstone, "Refined Glowstone Block");
+		LanguageRegistry.addName(GlowstoneIngot, "Glowstone Ingot");
+		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
+		LanguageRegistry.addName(GlowstonePickaxe, "Glowstone Pickaxe");
+		LanguageRegistry.addName(GlowstoneAxe, "Glowstone Axe");
+		LanguageRegistry.addName(GlowstoneSpade, "Glowstone Shovel");
+		LanguageRegistry.addName(GlowstoneHoe, "Glowstone Hoe");
+		LanguageRegistry.addName(GlowstoneSword, "Glowstone Sword");
+		LanguageRegistry.addName(GlowstoneHelmet, "Glowstone Helmet");
+		LanguageRegistry.addName(GlowstoneBody, "Glowstone Chestplate");
+		LanguageRegistry.addName(GlowstoneLegs, "Glowstone Leggings");
+		LanguageRegistry.addName(GlowstoneBoots, "Glowstone Boots");
+		LanguageRegistry.addName(GlowstoneKnife, "Glowstone Knife");
 		
 		//Extras
-		ObsidianUtils.addName(ObsidianArrow, "Obsidian Arrow");
-		ObsidianUtils.addName(ObsidianBow, "Obsidian Bow");
-		ObsidianUtils.addName(ObsidianTNT, "Obsidian TNT");
+		LanguageRegistry.addName(ObsidianArrow, "Obsidian Arrow");
+		LanguageRegistry.addName(ObsidianBow, "Obsidian Bow");
+		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
 		if(extrasEnabled)
 		{
-			ObsidianUtils.addName(LightningRod, "Lightning Rod");
-			ObsidianUtils.addName(Stopwatch, "Steve's Stopwatch");
-			ObsidianUtils.addName(LifeBlock, "Block of Life");
-			ObsidianUtils.addName(WeatherOrb, "Weather Orb");
+			LanguageRegistry.addName(LightningRod, "Lightning Rod");
+			LanguageRegistry.addName(Stopwatch, "Steve's Stopwatch");
+			LanguageRegistry.addName(LifeBlock, "Block of Life");
+			LanguageRegistry.addName(WeatherOrb, "Weather Orb");
 		}
-		ObsidianUtils.addName(EnrichmentChamber, "Enrichment Chamber");
-		ObsidianUtils.addName(PlatinumCompressor, "Platinum Compressor");
-		ObsidianUtils.addName(Combiner, "Combiner");
-		ObsidianUtils.addName(Crusher, "Crusher");
-		ObsidianUtils.addName(CoalBlock, "Coal Block");
+		LanguageRegistry.addName(EnrichmentChamber, "Enrichment Chamber");
+		LanguageRegistry.addName(PlatinumCompressor, "Platinum Compressor");
+		LanguageRegistry.addName(Combiner, "Combiner");
+		LanguageRegistry.addName(Crusher, "Crusher");
+		LanguageRegistry.addName(CoalBlock, "Coal Block");
 	}
 	/**
 	 * Adds all item textures from the sprite sheet.
@@ -860,7 +853,7 @@ public class ObsidianIngots
 		NetworkRegistry.instance().registerGuiHandler(this, new CommonGuiHandler());
 		//Set the mod's instance
 		instance = this;
-		System.out.println("[Obsidian Ingots] Version " + versionNumber + " initializing...");
+		System.out.println("[ObsidianIngots] Version " + versionNumber + " initializing...");
 		proxy.registerRenderInformation();
 		proxy.setProperties();
 		proxy.loadUtilities();

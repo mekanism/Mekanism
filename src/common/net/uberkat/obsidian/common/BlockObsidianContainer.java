@@ -6,7 +6,7 @@ import cpw.mods.fml.common.registry.BlockProxy;
 
 import net.minecraft.src.*;
 
-public class BlockObsidianContainer extends BlockContainer implements BlockProxy
+public class BlockObsidianContainer extends BlockContainer
 {
 	public BlockObsidianContainer(int i, Material material)
 	{

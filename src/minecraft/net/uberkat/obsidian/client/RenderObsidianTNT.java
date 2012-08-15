@@ -18,7 +18,6 @@ public class RenderObsidianTNT extends Render
 
     public void renderObsidianTNT(EntityObsidianTNT entityobsidiantnt, double d, double d1, double d2, float f, float f1)
     {
-    	this.setRenderManager(RenderManager.instance);
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
 

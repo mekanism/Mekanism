@@ -7,7 +7,7 @@ import cpw.mods.fml.common.registry.BlockProxy;
 
 import net.minecraft.src.*;
 
-public class BlockLife extends Block implements BlockProxy
+public class BlockLife extends Block
 {
 	private Random lifeRand;
 	

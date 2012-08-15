@@ -10,7 +10,6 @@ public class RenderObsidianArrow extends Render
 {
     public void renderArrow(EntityObsidianArrow par1EntityArrow, double par2, double par4, double par6, float par8, float par9)
     {
-    	this.setRenderManager(RenderManager.instance);
         this.loadTexture("/obsidian/ObsidianArrows.png");
         GL11.glPushMatrix();
         GL11.glTranslatef((float)par2, (float)par4, (float)par6);

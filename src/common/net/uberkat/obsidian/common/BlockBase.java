@@ -6,7 +6,7 @@ import cpw.mods.fml.common.registry.BlockProxy;
 
 import net.minecraft.src.*;
 
-public class BlockBase extends Block implements BlockProxy
+public class BlockBase extends Block
 {
 	public BlockBase(int i, int j)
 	{

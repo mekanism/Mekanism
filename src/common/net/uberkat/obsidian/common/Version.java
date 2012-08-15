@@ -1,11 +1,25 @@
 package net.uberkat.obsidian.common;
 
-public class Version {
-	
+/**
+ * Version class. Simple version handling for Obsidian Ingots.
+ * @author AidanBrady
+ *
+ */
+public class Version
+{
+	/** Major number for version */
 	public int major;
+	/** Minor number for version */
 	public int minor;
+	/** Build number for version */
 	public int build;
 	
+	/**
+	 * Creates a version number with 3 digits.
+	 * @param majorNum - major version
+	 * @param minorNum - minor version
+	 * @param buildNum - build version
+	 */
 	public Version(int majorNum, int minorNum, int buildNum)
 	{
 		major = majorNum;
@@ -13,6 +27,9 @@ public class Version {
 		build = buildNum;
 	}
 	
+	/** 
+	 * Resets the version number to "0.0.0." 
+	 */
 	public void reset()
 	{
 		major = 0;

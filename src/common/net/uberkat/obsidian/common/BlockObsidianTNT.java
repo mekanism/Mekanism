@@ -6,7 +6,7 @@ import java.util.Random;
 import cpw.mods.fml.common.registry.BlockProxy;
 import net.minecraft.src.*;
 
-public class BlockObsidianTNT extends Block implements BlockProxy
+public class BlockObsidianTNT extends Block
 {
     public BlockObsidianTNT(int par1)
     {

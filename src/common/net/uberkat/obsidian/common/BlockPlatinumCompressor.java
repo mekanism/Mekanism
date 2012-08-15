@@ -6,7 +6,7 @@ import java.util.Random;
 import cpw.mods.fml.common.registry.BlockProxy;
 import net.minecraft.src.*;
 
-public class BlockPlatinumCompressor extends BlockContainer implements BlockProxy
+public class BlockPlatinumCompressor extends BlockContainer
 {
     private Random compressorRand = new Random();
 

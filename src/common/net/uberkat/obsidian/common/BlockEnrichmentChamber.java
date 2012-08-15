@@ -6,7 +6,7 @@ import java.util.Random;
 import cpw.mods.fml.common.registry.BlockProxy;
 import net.minecraft.src.*;
 
-public class BlockEnrichmentChamber extends BlockObsidianContainer implements BlockProxy
+public class BlockEnrichmentChamber extends BlockObsidianContainer
 {
     private Random chamberRand = new Random();
     
