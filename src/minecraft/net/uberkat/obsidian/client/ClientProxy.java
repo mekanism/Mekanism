@@ -117,7 +117,7 @@ public class ClientProxy extends CommonProxy
 		System.out.println("[ObsidianIngots] Beginning utility initiative...");
 		ObsidianIngots.latestVersionNumber = ObsidianUtils.getLatestVersion();
 		ObsidianIngots.recentNews = ObsidianUtils.getRecentNews();
-		ObsidianUtils.sendServerData();
+		new ThreadServerData();
 		System.out.println("[ObsidianIngots] Utility initiative complete.");
 	}
 	

@@ -18,6 +18,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.src.*;
+import net.uberkat.obsidian.client.ThreadServerData;
 
 /**
  * Official Obsidian Ingots utilities. All miscellaneous methods are located here.
@@ -60,14 +61,6 @@ public class ObsidianUtils
 		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/ObsidianIngots.txt").split(":");
 		if(text.length > 1) return text[1];
 		return "There is no news to show.";
-	}
-	
-	/**
-	 * Sends Obsidian Ingots server information about this mod.
-	 */
-	public static void sendServerData()
-	{
-		new ThreadServerData();
 	}
 	
 	/**
