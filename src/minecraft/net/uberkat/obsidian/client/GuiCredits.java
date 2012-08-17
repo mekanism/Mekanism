@@ -47,7 +47,10 @@ public class GuiCredits extends GuiScreen {
 			{
 				updateProgress = "Downloading latest version...";
 				guibutton.enabled = false;
-				new ThreadUpdate("http://dl.dropbox.com/u/90411166/Obsidian%20Ingots.zip");
+				new ThreadUpdate("http://dl.dropbox.com/u/90411166/ObsidianIngots.jar");
+			}
+			else {
+				updateProgress = "You already have the latest version.";
 			}
 		}
 		if(guibutton.id == 1)
