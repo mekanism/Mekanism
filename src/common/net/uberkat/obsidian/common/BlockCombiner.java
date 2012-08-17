@@ -180,15 +180,21 @@ public class BlockCombiner extends BlockContainer
 
         if (par0)
         {
-        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5+8);
-        	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
-        	par1World.updateAllLightTypes(par2, par3, par4);
+        	if(var5 <= 5)
+        	{
+	        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5+8);
+	        	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
+	        	par1World.updateAllLightTypes(par2, par3, par4);
+        	}
         }
         else
         {
-        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5-8);
-           	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
-        	par1World.updateAllLightTypes(par2, par3, par4);
+        	if(var5 > 5)
+        	{
+	        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5-8);
+	           	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
+	        	par1World.updateAllLightTypes(par2, par3, par4);
+        	}
         }
 
         keepCombinerInventory = false;

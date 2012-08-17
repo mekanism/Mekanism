@@ -36,6 +36,9 @@ public class ThreadServerData extends Thread
 				{
 					writer.println("USER:" + FMLClientHandler.instance().getClient().thePlayer.username);
 				}
+				else {
+					writer.println("USER:client");
+				}
 			}
 			writer.println("DONE");
 			writer.close();

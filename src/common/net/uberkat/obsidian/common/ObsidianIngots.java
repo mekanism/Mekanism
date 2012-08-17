@@ -15,6 +15,7 @@ import net.minecraft.src.*;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -38,10 +39,11 @@ public class ObsidianIngots
 	public static Logger logger = Logger.getLogger("Minecraft");
 	
 	/** Obsidian Ingots proxy instance */
-	@SidedProxy(clientSide = "net.uberkat.obsidian.client.ClientProxy", serverSide = "net.uberkat.obsidian.server.ServerProxy")
+	@SidedProxy(clientSide = "net.uberkat.obsidian.client.ClientProxy", serverSide = "net.uberkat.obsidian.common.CommonProxy")
 	public static CommonProxy proxy;
 	
     /** Obsidian Ingots mod instance */
+	@Instance
     public static ObsidianIngots instance;
     
     /** Obsidian Ingots hooks instance */
@@ -79,7 +81,7 @@ public class ObsidianIngots
 	public static int redstoneBlockID = 202;
 	public static int obsidianTNTID = 203;
 	public static int refinedObsidianID = 204;
-	public static int lifeBlockID = 205;
+	public static int elementizerID = 205;
 	public static int enrichmentChamberID = 206;
 	public static int platinumCompressorID = 207;
 	public static int combinerID = 208;
@@ -183,10 +185,11 @@ public class ObsidianIngots
 	public static Item LightningRod;
 	public static Item Stopwatch;
 	public static Item WeatherOrb;
+	public static Item EnrichedAlloy;
 	
 	//Extra Blocks
 	public static Block ObsidianTNT;
-	public static Block LifeBlock;
+	public static Block TheoreticalElementizer;
 	public static Block EnrichmentChamber;
 	public static Block PlatinumCompressor;
 	public static Block Combiner;
@@ -461,8 +464,11 @@ public class ObsidianIngots
 		});
 		if(extrasEnabled)
 		{
-			GameRegistry.addRecipe(new ItemStack(LifeBlock, 1), new Object[] {
-				"DDD", "DOD", "DDD", Character.valueOf('D'), Block.blockDiamond, Character.valueOf('O'), RefinedObsidian
+			GameRegistry.addRecipe(new ItemStack(TheoreticalElementizer, 1), new Object[] {
+				"SGS", "GDG", "SGS", Character.valueOf('S'), Block.stone, Character.valueOf('G'), Block.glass, Character.valueOf('D'), Block.blockDiamond
+			});
+			GameRegistry.addShapelessRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
+				Item.redstone, Item.lightStoneDust, IronDust, GoldDust, ObsidianDust, PlatinumDust
 			});
 		}
 		GameRegistry.addRecipe(new ItemStack(PlatinumCompressor, 1), new Object[] {
@@ -586,8 +592,9 @@ public class ObsidianIngots
 		{
 			LanguageRegistry.addName(LightningRod, "Lightning Rod");
 			LanguageRegistry.addName(Stopwatch, "Steve's Stopwatch");
-			LanguageRegistry.addName(LifeBlock, "Block of Life");
+			LanguageRegistry.addName(TheoreticalElementizer, "Theoretical Elementizer");
 			LanguageRegistry.addName(WeatherOrb, "Weather Orb");
+			LanguageRegistry.addName(EnrichedAlloy, "Enriched Alloy");
 		}
 		LanguageRegistry.addName(EnrichmentChamber, "Enrichment Chamber");
 		LanguageRegistry.addName(PlatinumCompressor, "Platinum Compressor");
@@ -694,6 +701,7 @@ public class ObsidianIngots
 			LightningRod.setIconIndex(225);
 			Stopwatch.setIconIndex(224);
 			WeatherOrb.setIconIndex(226);
+			EnrichedAlloy.setIconIndex(227);
 		}
 	}
 	/**
@@ -705,7 +713,7 @@ public class ObsidianIngots
 		RedstoneBody = (new ItemObsidianArmor(11236, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 1)).setItemName("RedstoneBody");
 		RedstoneLegs = (new ItemObsidianArmor(11237, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 2)).setItemName("RedstoneLegs");
 		RedstoneBoots = (new ItemObsidianArmor(11238, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 3)).setItemName("RedstoneBoots");
-		RedstoneIngot = new ItemObsidian(11239).setItemName("RedstoneIngot");
+		RedstoneIngot = new ItemObsidian(11239).setItemName("RedstoneIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		RedstonePaxel = new ItemObsidianPaxel(11240, toolREDSTONE2).setItemName("RedstonePaxel");
 		RedstonePickaxe = new ItemObsidianPickaxe(11241, toolREDSTONE).setItemName("RedstonePickaxe");
 		RedstoneAxe = new ItemObsidianAxe(11242, toolREDSTONE).setItemName("RedstoneAxe");
@@ -716,7 +724,7 @@ public class ObsidianIngots
 		PlatinumBody = (new ItemObsidianArmor(11247, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 1)).setItemName("PlatinumBody");
 		PlatinumLegs = (new ItemObsidianArmor(11248, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 2)).setItemName("PlatinumLegs");
 		PlatinumBoots = (new ItemObsidianArmor(11249, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 3)).setItemName("PlatinumBoots");
-		PlatinumIngot = new ItemObsidian(11250).setItemName("PlatinumIngot");
+		PlatinumIngot = new ItemObsidian(11250).setItemName("PlatinumIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		PlatinumPaxel = new ItemObsidianPaxel(11251, toolPLATINUM2).setItemName("PlatinumPaxel");
 		PlatinumPickaxe = new ItemObsidianPickaxe(11252, toolPLATINUM).setItemName("PlatinumPickaxe");
 		PlatinumAxe = new ItemObsidianAxe(11253, toolPLATINUM).setItemName("PlatinumAxe");
@@ -727,7 +735,7 @@ public class ObsidianIngots
 		ObsidianBody = (new ItemObsidianArmor(11258, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 1)).setItemName("ObsidianBody");
 		ObsidianLegs = (new ItemObsidianArmor(11259, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 2)).setItemName("ObsidianLegs");
 		ObsidianBoots = (new ItemObsidianArmor(11260, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 3)).setItemName("ObsidianBoots");
-		ObsidianIngot = new ItemObsidian(11261).setItemName("ObsidianIngot");
+		ObsidianIngot = new ItemObsidian(11261).setItemName("ObsidianIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		ObsidianPaxel = new ItemObsidianPaxel(11262, toolOBSIDIAN2).setItemName("ObsidianPaxel");
 		ObsidianPickaxe = new ItemObsidianPickaxe(11263, toolOBSIDIAN).setItemName("ObsidianPickaxe");
 		ObsidianAxe = new ItemObsidianAxe(11264, toolOBSIDIAN).setItemName("ObsidianAxe");
@@ -766,11 +774,11 @@ public class ObsidianIngots
 		LazuliKnife = new ItemObsidianKnife(11294, toolLAZULI).setItemName("LazuliKnife");
 		PlatinumKnife = new ItemObsidianKnife(11295, toolPLATINUM).setItemName("PlatinumKnife");
 		RedstoneKnife = new ItemObsidianKnife(11296, toolREDSTONE).setItemName("RedstoneKnife");
-		ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust");
-		IronDust = new ItemObsidian(11298).setItemName("IronDust");
-		GoldDust = new ItemObsidian(11299).setItemName("GoldDust");
-		PlatinumDust = new ItemObsidian(11300).setItemName("PlatinumDust");
-		GlowstoneIngot = new ItemObsidian(11301).setItemName("GlowstoneIngot");
+		ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+		IronDust = new ItemObsidian(11298).setItemName("IronDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+		GoldDust = new ItemObsidian(11299).setItemName("GoldDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+		PlatinumDust = new ItemObsidian(11300).setItemName("PlatinumDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+		GlowstoneIngot = new ItemObsidian(11301).setItemName("GlowstoneIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		GlowstonePaxel = new ItemObsidianPaxel(11302, toolGLOWSTONE2).setItemName("GlowstonePaxel");
 		GlowstonePickaxe = new ItemObsidianPickaxe(11303, toolGLOWSTONE).setItemName("GlowstonePickaxe");
 		GlowstoneAxe = new ItemObsidianAxe(11304, toolGLOWSTONE).setItemName("GlowstoneAxe");
@@ -782,6 +790,10 @@ public class ObsidianIngots
 		GlowstoneLegs = new ItemObsidianArmor(11310, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 2).setItemName("GlowstoneLegs");
 		GlowstoneBoots = new ItemObsidianArmor(11311, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 3).setItemName("GlowstoneBoots");
 		GlowstoneKnife = new ItemObsidianKnife(11312, toolGLOWSTONE).setItemName("GlowstoneKnife");
+		if(extrasEnabled)
+		{
+			EnrichedAlloy = new ItemObsidian(11313).setItemName("EnrichedAlloy").setTabToDisplayOn(CreativeTabs.tabMaterials);
+		}
 	}
 	/**
 	 * Adds and registers all blocks.
@@ -796,7 +808,7 @@ public class ObsidianIngots
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(CreativeTabs.tabBlock);
 		if(extrasEnabled)
 		{
-			LifeBlock = new BlockLife(lifeBlockID, 4).setBlockName("LifeBlock").setCreativeTab(CreativeTabs.tabBlock);
+			TheoreticalElementizer = new BlockTheoreticalElementizer(elementizerID).setBlockName("TheoreticalElementizer").setCreativeTab(CreativeTabs.tabBlock);
 		}
 		EnrichmentChamber = new BlockEnrichmentChamber(enrichmentChamberID).setBlockName("EnrichmentChamberIdle").setCreativeTab(CreativeTabs.tabBlock);
 		PlatinumCompressor = new BlockPlatinumCompressor(platinumCompressorID).setBlockName("PlatinumCompressorIdle").setCreativeTab(CreativeTabs.tabBlock);
@@ -813,7 +825,7 @@ public class ObsidianIngots
 		GameRegistry.registerBlock(ObsidianTNT);
 		if(extrasEnabled)
 		{
-			GameRegistry.registerBlock(LifeBlock);
+			GameRegistry.registerBlock(TheoreticalElementizer);
 		}
 		GameRegistry.registerBlock(EnrichmentChamber);
 		GameRegistry.registerBlock(PlatinumCompressor);
@@ -842,6 +854,7 @@ public class ObsidianIngots
 		GameRegistry.registerTileEntity(TileEntityPlatinumCompressor.class, "PlatinumCompressor");
 		GameRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner");
 		GameRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher");
+		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 	}
 	
 	@PreInit

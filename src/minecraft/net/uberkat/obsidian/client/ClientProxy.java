@@ -21,6 +21,7 @@ import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.uberkat.obsidian.common.CommonProxy;
+import net.uberkat.obsidian.common.ContainerTheoreticalElementizer;
 import net.uberkat.obsidian.common.EntityKnife;
 import net.uberkat.obsidian.common.EntityObsidianArrow;
 import net.uberkat.obsidian.common.EntityObsidianTNT;
@@ -30,6 +31,7 @@ import net.uberkat.obsidian.common.TileEntityCombiner;
 import net.uberkat.obsidian.common.TileEntityCrusher;
 import net.uberkat.obsidian.common.TileEntityEnrichmentChamber;
 import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
+import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
 
 /**
  * Client proxy for Obsidian Ingots mod.
@@ -47,6 +49,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/obsidian/terrain.png");
 		MinecraftForgeClient.preloadTexture("/obsidian/Compressor.png");
 		MinecraftForgeClient.preloadTexture("/obsidian/Combiner.png");
+		MinecraftForgeClient.preloadTexture("/obsidian/Elementizer.png");
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
@@ -69,7 +72,7 @@ public class ClientProxy extends CommonProxy
 			  	ObsidianIngots.redstoneBlockID = Integer.parseInt(properties.getProperty("redstoneBlockID"));
 			  	ObsidianIngots.obsidianTNTID = Integer.parseInt(properties.getProperty("obsidianTNTID"));
 			  	ObsidianIngots.refinedObsidianID = Integer.parseInt(properties.getProperty("refinedObsidianID"));
-			  	ObsidianIngots.lifeBlockID = Integer.parseInt(properties.getProperty("lifeBlockID"));
+			  	ObsidianIngots.elementizerID = Integer.parseInt(properties.getProperty("elementizerID"));
 			  	ObsidianIngots.enrichmentChamberID = Integer.parseInt(properties.getProperty("enrichmentChamberID"));
 			  	ObsidianIngots.platinumCompressorID = Integer.parseInt(properties.getProperty("platinumCompressorID"));
 			  	ObsidianIngots.combinerID = Integer.parseInt(properties.getProperty("combinerID"));
@@ -89,7 +92,7 @@ public class ClientProxy extends CommonProxy
 				properties.setProperty("redstoneBlockID", Integer.toString(202));
 				properties.setProperty("obsidianTNTID", Integer.toString(203));
 				properties.setProperty("refinedObsidianID", Integer.toString(204));
-				properties.setProperty("lifeBlockID", Integer.toString(205));
+				properties.setProperty("elementizerID", Integer.toString(205));
 				properties.setProperty("enrichmentChamberID", Integer.toString(206));
 				properties.setProperty("platinumCompressorID", Integer.toString(207));
 				properties.setProperty("combinerID", Integer.toString(208));
@@ -141,6 +144,9 @@ public class ClientProxy extends CommonProxy
 			case 24:
 				TileEntityCrusher tileentity3 = (TileEntityCrusher)world.getBlockTileEntity(x, y, z);
 				return new GuiCrusher(player.inventory, tileentity3);
+			case 25:
+				TileEntityTheoreticalElementizer tileentity4 = (TileEntityTheoreticalElementizer)world.getBlockTileEntity(x, y, z);
+				return new GuiTheoreticalElementizer(player.inventory, tileentity4);
 		}
 		return null;
 	}

@@ -3,16 +3,21 @@ package net.uberkat.obsidian.common;
 import java.util.ArrayList;
 import java.util.Random;
 
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.registry.BlockProxy;
 import net.minecraft.src.*;
 
-public class BlockEnrichmentChamber extends BlockContainer
+public class BlockTheoreticalElementizer extends BlockContainer
 {
-    private Random chamberRand = new Random();
+    private Random elementizerRand = new Random();
     
-    private static boolean keepChamberInventory = false;
+    private static boolean keepElementizerInventory = false;
+    
+    public int currentFrontTextureIndex = 0;
+    public int currentSideTextureIndex = 32;
 
-    public BlockEnrichmentChamber(int par1)
+    public BlockTheoreticalElementizer(int par1)
     {
         super(par1, Material.iron);
     }
@@ -20,7 +25,7 @@ public class BlockEnrichmentChamber extends BlockContainer
     public int getLightValue(IBlockAccess world, int x, int y, int z) 
     {
 	    int metadata = world.getBlockMetadata(x, y, z);
-	    if(metadata > 5) return 14;
+	    if(metadata > 5) return 15;
 	    else return 0;
     }
     
@@ -88,7 +93,7 @@ public class BlockEnrichmentChamber extends BlockContainer
 
     public int idDropped(int par1, Random par2Random, int par3)
     {
-        return ObsidianIngots.enrichmentChamberID;
+        return ObsidianIngots.elementizerID;
     }
 
     public void onBlockAdded(World par1World, int par2, int par3, int par4)
@@ -97,15 +102,49 @@ public class BlockEnrichmentChamber extends BlockContainer
         super.onBlockAdded(par1World, par2, par3, par4);
     }
     
+    @SideOnly(Side.CLIENT)
+    
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
         int metadata = world.getBlockMetadata(x, y, z);
         int sideMeta = (metadata > 5 ? metadata - 8 : metadata);
-        return side != sideMeta ? 2 : (metadata > 5 ? 8 : 9);
+        if(side == 0 || side == 1)
+        {
+        	return metadata > 5 ? 52 : 50;
+        }
+        else {
+        	return side != sideMeta ? (metadata > 5 ? currentSideTextureIndex : 51) : (metadata > 5 ? currentFrontTextureIndex : 48);
+        }
     }
+    
+    public void updateTexture(World world, int x, int y, int z)
+    {
+    	if(currentFrontTextureIndex < 15 && currentFrontTextureIndex > -1)
+    	{
+    		currentFrontTextureIndex++;
+    	}
+    	if(currentFrontTextureIndex == 15)
+    	{
+    		currentFrontTextureIndex = 0;
+    	}
+    	
+    	if(currentSideTextureIndex < 47 && currentSideTextureIndex > 31)
+    	{
+    		currentSideTextureIndex++;
+    	}
+    	if(currentSideTextureIndex == 47)
+    	{
+    		currentSideTextureIndex = 32;
+    	}
+    	
+    	world.markBlockAsNeedsUpdate(x, y, z);
+    }
+    
+    @SideOnly(Side.CLIENT)
 
     public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random par5Random)
     {
+    	updateTexture(par1World, par2, par3, par4);
     	int var6 = par1World.getBlockMetadata(par2, par3, par4);
         if (var6 > 5)
         {
@@ -141,7 +180,17 @@ public class BlockEnrichmentChamber extends BlockContainer
     
     public int getBlockTextureFromSideAndMetadata(int side, int meta)
     {
-    	return side != 3 ? 2 : (meta > 5 ? 8 : 9);
+    	if(side == 0 || side == 1)
+    	{
+    		return meta > 5 ? 52 : 50;
+    	}
+    	else if(side == 3)
+    	{
+    		return meta > 5 ? currentFrontTextureIndex : 48;
+    	}
+    	else {
+    		return meta > 5 ? currentSideTextureIndex : 51;
+    	}
     }
 
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int i1, float f1, float f2, float f3)
@@ -152,22 +201,22 @@ public class BlockEnrichmentChamber extends BlockContainer
         }
         else
         {
-            TileEntityEnrichmentChamber var6 = (TileEntityEnrichmentChamber)par1World.getBlockTileEntity(par2, par3, par4);
+            TileEntityTheoreticalElementizer var6 = (TileEntityTheoreticalElementizer)par1World.getBlockTileEntity(par2, par3, par4);
 
             if (var6 != null)
             {
-                par5EntityPlayer.openGui(ObsidianIngots.instance, 21, par1World, par2, par3, par4);
+                par5EntityPlayer.openGui(ObsidianIngots.instance, 25, par1World, par2, par3, par4);
             }
 
             return true;
         }
     }
 
-    public static void updateChamberBlockState(boolean par0, World par1World, int par2, int par3, int par4)
+    public static void updateElementizerBlockState(boolean par0, World par1World, int par2, int par3, int par4)
     {
         int var5 = par1World.getBlockMetadata(par2, par3, par4);
         TileEntity var6 = par1World.getBlockTileEntity(par2, par3, par4);
-        keepChamberInventory = true;
+        keepElementizerInventory = true;
 
         if (par0)
         {
@@ -188,7 +237,8 @@ public class BlockEnrichmentChamber extends BlockContainer
         	}
         }
         
-        keepChamberInventory = false;
+        keepElementizerInventory = false;
+        
         if (var6 != null)
         {
             var6.validate();
@@ -196,16 +246,11 @@ public class BlockEnrichmentChamber extends BlockContainer
         }
     }
 
-    public TileEntity getBlockEntity()
+    public void breakBlock(World par1World, int par2, int par3, int par4, int i1, int i2)
     {
-        return new TileEntityEnrichmentChamber();
-    }
-
-    public void onBlockRemoval(World par1World, int par2, int par3, int par4, int i1, int i2)
-    {
-    	if(!keepChamberInventory)
+    	if(!keepElementizerInventory)
     	{
-	        TileEntityEnrichmentChamber var5 = (TileEntityEnrichmentChamber)par1World.getBlockTileEntity(par2, par3, par4);
+	        TileEntityTheoreticalElementizer var5 = (TileEntityTheoreticalElementizer)par1World.getBlockTileEntity(par2, par3, par4);
 	
 	        if (var5 != null)
 	        {
@@ -215,13 +260,13 @@ public class BlockEnrichmentChamber extends BlockContainer
 	
 	                if (var7 != null)
 	                {
-	                    float var8 = this.chamberRand.nextFloat() * 0.8F + 0.1F;
-	                    float var9 = this.chamberRand.nextFloat() * 0.8F + 0.1F;
-	                    float var10 = this.chamberRand.nextFloat() * 0.8F + 0.1F;
+	                    float var8 = this.elementizerRand.nextFloat() * 0.8F + 0.1F;
+	                    float var9 = this.elementizerRand.nextFloat() * 0.8F + 0.1F;
+	                    float var10 = this.elementizerRand.nextFloat() * 0.8F + 0.1F;
 	
 	                    while (var7.stackSize > 0)
 	                    {
-	                        int var11 = this.chamberRand.nextInt(21) + 10;
+	                        int var11 = this.elementizerRand.nextInt(21) + 10;
 	
 	                        if (var11 > var7.stackSize)
 	                        {
@@ -237,9 +282,9 @@ public class BlockEnrichmentChamber extends BlockContainer
 	                        }
 	
 	                        float var13 = 0.05F;
-	                        var12.motionX = (double)((float)this.chamberRand.nextGaussian() * var13);
-	                        var12.motionY = (double)((float)this.chamberRand.nextGaussian() * var13 + 0.2F);
-	                        var12.motionZ = (double)((float)this.chamberRand.nextGaussian() * var13);
+	                        var12.motionX = (double)((float)this.elementizerRand.nextGaussian() * var13);
+	                        var12.motionY = (double)((float)this.elementizerRand.nextGaussian() * var13 + 0.2F);
+	                        var12.motionZ = (double)((float)this.elementizerRand.nextGaussian() * var13);
 	                        par1World.spawnEntityInWorld(var12);
 	                    }
 	                }
@@ -253,14 +298,14 @@ public class BlockEnrichmentChamber extends BlockContainer
     {
     	itemList.add(new ItemStack(this));
     }
+    
+    public String getTextureFile()
+    {
+    	return "/obsidian/Elementizer.png";
+    }
 
 	public TileEntity createNewTileEntity(World var1) 
 	{
-		return new TileEntityEnrichmentChamber();
-	}
-	
-	public String getTextureFile()
-	{
-		return "/obsidian/terrain.png";
+		return new TileEntityTheoreticalElementizer();
 	}
 }

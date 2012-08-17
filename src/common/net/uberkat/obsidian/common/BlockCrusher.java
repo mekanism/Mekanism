@@ -6,7 +6,7 @@ import java.util.Random;
 import cpw.mods.fml.common.registry.BlockProxy;
 import net.minecraft.src.*;
 
-public class BlockCrusher extends BlockObsidianContainer
+public class BlockCrusher extends BlockContainer
 {
     private Random crusherRand = new Random();
 
@@ -168,15 +168,21 @@ public class BlockCrusher extends BlockObsidianContainer
 
         if (par0)
         {
-        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5+8);
-        	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
-        	par1World.updateAllLightTypes(par2, par3, par4);
+        	if(var5 <= 5)
+        	{
+	        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5+8);
+	        	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
+	        	par1World.updateAllLightTypes(par2, par3, par4);
+        	}
         }
         else
         {
-        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5-8);
-           	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
-        	par1World.updateAllLightTypes(par2, par3, par4);
+        	if(var5 > 5)
+        	{
+	        	par1World.setBlockMetadataWithNotify(par2, par3, par4, var5-8);
+	           	par1World.markBlockAsNeedsUpdate(par2, par3, par4);
+	        	par1World.updateAllLightTypes(par2, par3, par4);
+        	}
         }
 
         keepCrusherInventory = false;
@@ -245,5 +251,15 @@ public class BlockCrusher extends BlockObsidianContainer
     public void addCreativeItems(ArrayList itemList)
     {
     	itemList.add(new ItemStack(this));
+    }
+    
+    public String getTextureFile()
+    {
+    	return "/obsidian/terrain.png";
+    }
+    
+    public TileEntity createNewTileEntity(World var1) 
+    {
+    	return new TileEntityCrusher();
     }
 }

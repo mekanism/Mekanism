@@ -2,6 +2,7 @@ package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
+import net.uberkat.obsidian.common.BlockCombiner;
 import net.uberkat.obsidian.common.ContainerCombiner;
 import net.uberkat.obsidian.common.TileEntityCombiner;
 
@@ -22,6 +23,11 @@ public class GuiCombiner extends GuiContainer
     {
         fontRenderer.drawString("Combiner", 49, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+    }
+    
+    public void onGuiClosed()
+    {
+    	BlockCombiner.updateCombinerBlockState(combinerInventory.combinerBurnTime > 0, combinerInventory.worldObj, combinerInventory.xCoord, combinerInventory.yCoord, combinerInventory.zCoord);
     }
 
     /**

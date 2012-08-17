@@ -70,6 +70,9 @@ public abstract class CommonProxy
 			case 24:
 				TileEntityCrusher tileentity3 = (TileEntityCrusher)world.getBlockTileEntity(x, y, z);
 				return new ContainerCrusher(player.inventory, tileentity3);
+			case 25:
+				TileEntityTheoreticalElementizer tileentity4 = (TileEntityTheoreticalElementizer)world.getBlockTileEntity(x, y, z);
+				return new ContainerTheoreticalElementizer(player.inventory, tileentity4);
 		}
 		return null;
 	}

@@ -2,6 +2,7 @@ package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
+import net.uberkat.obsidian.common.BlockPlatinumCompressor;
 import net.uberkat.obsidian.common.ContainerPlatinumCompressor;
 import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
 
@@ -22,6 +23,11 @@ public class GuiPlatinumCompressor extends GuiContainer
     {
         fontRenderer.drawString("Platinum Compressor", 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+    }
+    
+    public void onGuiClosed()
+    {
+    	BlockPlatinumCompressor.updateCompressorBlockState(compressorInventory.compressorBurnTime > 0, compressorInventory.worldObj, compressorInventory.xCoord, compressorInventory.yCoord, compressorInventory.zCoord);
     }
 
     /**
