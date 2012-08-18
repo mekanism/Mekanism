@@ -42,14 +42,14 @@ public class ContainerCombiner extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.combiner.combinerCookTime)
+            if (this.lastCookTime != this.combiner.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.combiner.combinerCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.combiner.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.combiner.combinerBurnTime)
+            if (this.lastBurnTime != this.combiner.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.combiner.combinerBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.combiner.machineBurnTime);
             }
 
             if (this.lastItemBurnTime != this.combiner.currentItemBurnTime)
@@ -58,8 +58,8 @@ public class ContainerCombiner extends Container
             }
         }
 
-        this.lastCookTime = this.combiner.combinerCookTime;
-        this.lastBurnTime = this.combiner.combinerBurnTime;
+        this.lastCookTime = this.combiner.machineCookTime;
+        this.lastBurnTime = this.combiner.machineBurnTime;
         this.lastItemBurnTime = this.combiner.currentItemBurnTime;
     }
 
@@ -67,12 +67,12 @@ public class ContainerCombiner extends Container
     {
         if (par1 == 0)
         {
-            this.combiner.combinerCookTime = par2;
+            this.combiner.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.combiner.combinerBurnTime = par2;
+            this.combiner.machineBurnTime = par2;
         }
 
         if (par1 == 2)

@@ -8,12 +8,12 @@ import net.uberkat.obsidian.common.TileEntityEnrichmentChamber;
 
 public class GuiEnrichmentChamber extends GuiContainer
 {
-    private TileEntityEnrichmentChamber chamberInventory;
+    private TileEntityEnrichmentChamber machineInventory;
 
     public GuiEnrichmentChamber(InventoryPlayer par1InventoryPlayer, TileEntityEnrichmentChamber par2TileEntityEnrichmentChamber)
     {
         super(new ContainerEnrichmentChamber(par1InventoryPlayer, par2TileEntityEnrichmentChamber));
-        chamberInventory = par2TileEntityEnrichmentChamber;
+        machineInventory = par2TileEntityEnrichmentChamber;
     }
 
     /**
@@ -23,11 +23,6 @@ public class GuiEnrichmentChamber extends GuiContainer
     {
         fontRenderer.drawString("Enrichment Chamber", 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-    }
-    
-    public void onGuiClosed()
-    {
-    	BlockEnrichmentChamber.updateChamberBlockState(chamberInventory.chamberBurnTime > 0, chamberInventory.worldObj, chamberInventory.xCoord, chamberInventory.yCoord, chamberInventory.zCoord);
     }
 
     /**
@@ -43,13 +38,13 @@ public class GuiEnrichmentChamber extends GuiContainer
         drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
         int var7;
 
-        if (this.chamberInventory.isBurning())
+        if (this.machineInventory.isBurning())
         {
-            var7 = this.chamberInventory.getBurnTimeRemainingScaled(12);
+            var7 = this.machineInventory.getBurnTimeRemainingScaled(12);
             this.drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
         }
 
-        var7 = this.chamberInventory.getCookProgressScaled(24);
+        var7 = this.machineInventory.getCookProgressScaled(24);
         this.drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
     }
 }

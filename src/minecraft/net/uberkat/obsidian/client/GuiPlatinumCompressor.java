@@ -8,12 +8,12 @@ import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
 
 public class GuiPlatinumCompressor extends GuiContainer
 {
-    private TileEntityPlatinumCompressor compressorInventory;
+    private TileEntityPlatinumCompressor machineInventory;
 
     public GuiPlatinumCompressor(InventoryPlayer par1InventoryPlayer, TileEntityPlatinumCompressor par2TileEntityPlatinumCompressor)
     {
         super(new ContainerPlatinumCompressor(par1InventoryPlayer, par2TileEntityPlatinumCompressor));
-        compressorInventory = par2TileEntityPlatinumCompressor;
+        machineInventory = par2TileEntityPlatinumCompressor;
     }
 
     /**
@@ -23,11 +23,6 @@ public class GuiPlatinumCompressor extends GuiContainer
     {
         fontRenderer.drawString("Platinum Compressor", 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-    }
-    
-    public void onGuiClosed()
-    {
-    	BlockPlatinumCompressor.updateCompressorBlockState(compressorInventory.compressorBurnTime > 0, compressorInventory.worldObj, compressorInventory.xCoord, compressorInventory.yCoord, compressorInventory.zCoord);
     }
 
     /**
@@ -43,13 +38,13 @@ public class GuiPlatinumCompressor extends GuiContainer
         drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
         int var7;
 
-        if (this.compressorInventory.isBurning())
+        if (this.machineInventory.isBurning())
         {
-            var7 = this.compressorInventory.getBurnTimeRemainingScaled(12);
+            var7 = this.machineInventory.getBurnTimeRemainingScaled(12);
             this.drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
         }
 
-        var7 = this.compressorInventory.getCookProgressScaled(24);
+        var7 = this.machineInventory.getCookProgressScaled(24);
         this.drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
     }
 }

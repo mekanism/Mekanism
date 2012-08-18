@@ -8,12 +8,12 @@ import net.uberkat.obsidian.common.TileEntityCombiner;
 
 public class GuiCombiner extends GuiContainer
 {
-    private TileEntityCombiner combinerInventory;
+    private TileEntityCombiner machineInventory;
 
     public GuiCombiner(InventoryPlayer par1InventoryPlayer, TileEntityCombiner par2TileEntityCombiner)
     {
         super(new ContainerCombiner(par1InventoryPlayer, par2TileEntityCombiner));
-        combinerInventory = par2TileEntityCombiner;
+        machineInventory = par2TileEntityCombiner;
     }
 
     /**
@@ -23,11 +23,6 @@ public class GuiCombiner extends GuiContainer
     {
         fontRenderer.drawString("Combiner", 49, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-    }
-    
-    public void onGuiClosed()
-    {
-    	BlockCombiner.updateCombinerBlockState(combinerInventory.combinerBurnTime > 0, combinerInventory.worldObj, combinerInventory.xCoord, combinerInventory.yCoord, combinerInventory.zCoord);
     }
 
     /**
@@ -43,13 +38,13 @@ public class GuiCombiner extends GuiContainer
         drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
         int var7;
 
-        if (this.combinerInventory.isBurning())
+        if (this.machineInventory.isBurning())
         {
-            var7 = this.combinerInventory.getBurnTimeRemainingScaled(12);
+            var7 = this.machineInventory.getBurnTimeRemainingScaled(12);
             this.drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
         }
 
-        var7 = this.combinerInventory.getCookProgressScaled(24);
+        var7 = this.machineInventory.getCookProgressScaled(24);
         this.drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
     }
 }

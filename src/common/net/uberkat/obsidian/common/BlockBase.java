@@ -46,7 +46,10 @@ public class BlockBase extends Block
     {
     	if(blockID == ObsidianIngots.refinedObsidianID)
     	{
-    		entityplayer.openGui(ObsidianIngots.instance, 19, world, x, y, z);
+    		if(entityplayer.isSneaking())
+    		{
+    			entityplayer.openGui(ObsidianIngots.instance, 19, world, x, y, z);
+    		}
     	}
         return false;
     }

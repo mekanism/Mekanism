@@ -34,21 +34,21 @@ public class PacketHandler implements IPacketHandler
 			    if(packetData == 1)
 			    {
 			        System.out.println("[ObsidianIngots] Received '1' packet from " + entityplayer.username + ".");
-			        ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 1);
+			        ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 6);
 			        entityplayer.inventory.getCurrentItem().damageItem(4999, entityplayer);
 			    }
 			        
 			    if(packetData == 2)
 			    {
 			    	System.out.println("[ObsidianIngots] Received '2' packet from " + entityplayer.username + ".");
-			    	ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 2);
+			    	ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 12);
 			    	entityplayer.inventory.getCurrentItem().damageItem(4999, entityplayer);
 			    }
 			    	
 			    if(packetData == 3)
 			    {
 			    	System.out.println("[ObsidianIngots] Received '3' packet from " + entityplayer.username + ".");
-			    	ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 3);
+			    	ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 18);
 			    	entityplayer.inventory.getCurrentItem().damageItem(4999, entityplayer);
 			    }
 			    if(packetData == 5)

@@ -42,14 +42,14 @@ public class ContainerEnrichmentChamber extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.chamber.chamberCookTime)
+            if (this.lastCookTime != this.chamber.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.chamber.chamberCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.chamber.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.chamber.chamberBurnTime)
+            if (this.lastBurnTime != this.chamber.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.chamber.chamberBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.chamber.machineBurnTime);
             }
 
             if (this.lastItemBurnTime != this.chamber.currentItemBurnTime)
@@ -58,8 +58,8 @@ public class ContainerEnrichmentChamber extends Container
             }
         }
 
-        this.lastCookTime = this.chamber.chamberCookTime;
-        this.lastBurnTime = this.chamber.chamberBurnTime;
+        this.lastCookTime = this.chamber.machineCookTime;
+        this.lastBurnTime = this.chamber.machineBurnTime;
         this.lastItemBurnTime = this.chamber.currentItemBurnTime;
     }
 
@@ -67,12 +67,12 @@ public class ContainerEnrichmentChamber extends Container
     {
         if (par1 == 0)
         {
-            this.chamber.chamberCookTime = par2;
+            this.chamber.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.chamber.chamberBurnTime = par2;
+            this.chamber.machineBurnTime = par2;
         }
 
         if (par1 == 2)

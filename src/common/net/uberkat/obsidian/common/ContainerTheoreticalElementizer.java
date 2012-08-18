@@ -42,14 +42,14 @@ public class ContainerTheoreticalElementizer extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.elementizer.elementizerCookTime)
+            if (this.lastCookTime != this.elementizer.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.elementizer.elementizerCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.elementizer.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.elementizer.elementizerBurnTime)
+            if (this.lastBurnTime != this.elementizer.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.elementizer.elementizerBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.elementizer.machineBurnTime);
             }
 
             if (this.lastItemBurnTime != this.elementizer.currentItemBurnTime)
@@ -58,8 +58,8 @@ public class ContainerTheoreticalElementizer extends Container
             }
         }
 
-        this.lastCookTime = this.elementizer.elementizerCookTime;
-        this.lastBurnTime = this.elementizer.elementizerBurnTime;
+        this.lastCookTime = this.elementizer.machineCookTime;
+        this.lastBurnTime = this.elementizer.machineBurnTime;
         this.lastItemBurnTime = this.elementizer.currentItemBurnTime;
     }
 
@@ -67,12 +67,12 @@ public class ContainerTheoreticalElementizer extends Container
     {
         if (par1 == 0)
         {
-            this.elementizer.elementizerCookTime = par2;
+            this.elementizer.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.elementizer.elementizerBurnTime = par2;
+            this.elementizer.machineBurnTime = par2;
         }
 
         if (par1 == 2)

@@ -58,63 +58,31 @@ public class GuiStopwatch extends GuiScreen {
 	{
 		if(guibutton.id == 1)
 		{
-			if(mc.isSingleplayer())
-			{
-				ObsidianUtils.setHourForward(player.worldObj, 0);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(0);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(0);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
-			if(mc.isSingleplayer())
-			{
-				ObsidianUtils.setHourForward(player.worldObj, 6);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(1);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(1);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
-			if(mc.isSingleplayer())
-			{
-				ObsidianUtils.setHourForward(player.worldObj, 12);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(2);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(2);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)
 		{
-			if(mc.isSingleplayer())
-			{
-				ObsidianUtils.setHourForward(player.worldObj, 18);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(3);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(3);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 5)
 		{

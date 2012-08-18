@@ -11,10 +11,10 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
     /**
      * The ItemStacks that hold the items currently being used in the furnace
      */
-    private ItemStack[] compressorItemStacks = new ItemStack[3];
+    private ItemStack[] machineItemStacks = new ItemStack[3];
 
     /** The number of ticks that the furnace will keep burning */
-    public int compressorBurnTime = 0;
+    public int machineBurnTime = 0;
 
     /**
      * The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for
@@ -22,14 +22,14 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
     public int currentItemBurnTime = 0;
 
     /** The number of ticks that the current item has been cooking for */
-    public int compressorCookTime = 0;
+    public int machineCookTime = 0;
 
     /**
      * Returns the number of slots in the inventory.
      */
     public int getSizeInventory()
     {
-        return this.compressorItemStacks.length;
+        return this.machineItemStacks.length;
     }
 
     /**
@@ -37,7 +37,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public ItemStack getStackInSlot(int par1)
     {
-        return this.compressorItemStacks[par1];
+        return this.machineItemStacks[par1];
     }
 
     /**
@@ -46,23 +46,23 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public ItemStack decrStackSize(int par1, int par2)
     {
-        if (this.compressorItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
             ItemStack var3;
 
-            if (this.compressorItemStacks[par1].stackSize <= par2)
+            if (this.machineItemStacks[par1].stackSize <= par2)
             {
-                var3 = this.compressorItemStacks[par1];
-                this.compressorItemStacks[par1] = null;
+                var3 = this.machineItemStacks[par1];
+                this.machineItemStacks[par1] = null;
                 return var3;
             }
             else
             {
-                var3 = this.compressorItemStacks[par1].splitStack(par2);
+                var3 = this.machineItemStacks[par1].splitStack(par2);
 
-                if (this.compressorItemStacks[par1].stackSize == 0)
+                if (this.machineItemStacks[par1].stackSize == 0)
                 {
-                    this.compressorItemStacks[par1] = null;
+                    this.machineItemStacks[par1] = null;
                 }
 
                 return var3;
@@ -80,10 +80,10 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if (this.compressorItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
-            ItemStack var2 = this.compressorItemStacks[par1];
-            this.compressorItemStacks[par1] = null;
+            ItemStack var2 = this.machineItemStacks[par1];
+            this.machineItemStacks[par1] = null;
             return var2;
         }
         else
@@ -97,7 +97,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-        this.compressorItemStacks[par1] = par2ItemStack;
+        this.machineItemStacks[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
         {
@@ -120,22 +120,22 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
     {
         super.readFromNBT(par1NBTTagCompound);
         NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
-        this.compressorItemStacks = new ItemStack[this.getSizeInventory()];
+        this.machineItemStacks = new ItemStack[this.getSizeInventory()];
 
         for (int var3 = 0; var3 < var2.tagCount(); ++var3)
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
             byte var5 = var4.getByte("Slot");
 
-            if (var5 >= 0 && var5 < this.compressorItemStacks.length)
+            if (var5 >= 0 && var5 < this.machineItemStacks.length)
             {
-                this.compressorItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+                this.machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
             }
         }
 
-        this.compressorBurnTime = par1NBTTagCompound.getShort("BurnTime");
-        this.compressorCookTime = par1NBTTagCompound.getShort("CookTime");
-        this.currentItemBurnTime = getItemBurnTime(this.compressorItemStacks[1]);
+        this.machineBurnTime = par1NBTTagCompound.getShort("BurnTime");
+        this.machineCookTime = par1NBTTagCompound.getShort("CookTime");
+        this.currentItemBurnTime = getItemBurnTime(this.machineItemStacks[1]);
     }
 
     /**
@@ -144,17 +144,17 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("BurnTime", (short)this.compressorBurnTime);
-        par1NBTTagCompound.setShort("CookTime", (short)this.compressorCookTime);
+        par1NBTTagCompound.setShort("BurnTime", (short)this.machineBurnTime);
+        par1NBTTagCompound.setShort("CookTime", (short)this.machineCookTime);
         NBTTagList var2 = new NBTTagList();
 
-        for (int var3 = 0; var3 < this.compressorItemStacks.length; ++var3)
+        for (int var3 = 0; var3 < this.machineItemStacks.length; ++var3)
         {
-            if (this.compressorItemStacks[var3] != null)
+            if (this.machineItemStacks[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
                 var4.setByte("Slot", (byte)var3);
-                this.compressorItemStacks[var3].writeToNBT(var4);
+                this.machineItemStacks[var3].writeToNBT(var4);
                 var2.appendTag(var4);
             }
         }
@@ -177,7 +177,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public int getCookProgressScaled(int par1)
     {
-        return this.compressorCookTime * par1 / 200;
+        return this.machineCookTime * par1 / 200;
     }
 
     /**
@@ -191,7 +191,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
             this.currentItemBurnTime = 200;
         }
 
-        return this.compressorBurnTime * par1 / this.currentItemBurnTime;
+        return this.machineBurnTime * par1 / this.currentItemBurnTime;
     }
 
     /**
@@ -199,7 +199,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public boolean isBurning()
     {
-        return this.compressorBurnTime > 0;
+        return this.machineBurnTime > 0;
     }
 
     /**
@@ -208,31 +208,31 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     public void updateEntity()
     {
-        boolean var1 = this.compressorBurnTime > 0;
+        boolean var1 = this.machineBurnTime > 0;
         boolean var2 = false;
 
-        if (this.compressorBurnTime > 0)
+        if (this.machineBurnTime > 0)
         {
-            --this.compressorBurnTime;
+            --this.machineBurnTime;
         }
 
         if (!this.worldObj.isRemote)
         {
-            if (this.compressorBurnTime == 0 && this.canSmelt())
+            if (this.machineBurnTime == 0 && this.canSmelt())
             {
-                this.currentItemBurnTime = this.compressorBurnTime = getItemBurnTime(this.compressorItemStacks[1]);
+                this.currentItemBurnTime = this.machineBurnTime = getItemBurnTime(this.machineItemStacks[1]);
 
-                if (this.compressorBurnTime > 0)
+                if (this.machineBurnTime > 0)
                 {
                     var2 = true;
 
-                    if (this.compressorItemStacks[1] != null)
+                    if (this.machineItemStacks[1] != null)
                     {
-                        --this.compressorItemStacks[1].stackSize;
+                        --this.machineItemStacks[1].stackSize;
 
-                        if (this.compressorItemStacks[1].stackSize == 0)
+                        if (this.machineItemStacks[1].stackSize == 0)
                         {
-                            this.compressorItemStacks[1] = null;
+                            this.machineItemStacks[1] = null;
                         }
                     }
                 }
@@ -240,24 +240,24 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
 
             if (this.isBurning() && this.canSmelt())
             {
-                ++this.compressorCookTime;
+                ++this.machineCookTime;
 
-                if (this.compressorCookTime == 200)
+                if (this.machineCookTime == 200)
                 {
-                    this.compressorCookTime = 0;
+                    this.machineCookTime = 0;
                     this.smeltItem();
                     var2 = true;
                 }
             }
             else
             {
-                this.compressorCookTime = 0;
+                this.machineCookTime = 0;
             }
 
-            if (var1 != this.compressorBurnTime > 0)
+            if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockPlatinumCompressor.updateCompressorBlockState(this.compressorBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockPlatinumCompressor.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 
@@ -265,6 +265,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
         {
             this.onInventoryChanged();
         }
+        worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
     }
 
     /**
@@ -272,17 +273,17 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
      */
     private boolean canSmelt()
     {
-        if (this.compressorItemStacks[0] == null)
+        if (this.machineItemStacks[0] == null)
         {
             return false;
         }
         else
         {
-            ItemStack var1 = PlatinumCompressorRecipes.smelting().getSmeltingResult(this.compressorItemStacks[0]);
+            ItemStack var1 = PlatinumCompressorRecipes.smelting().getSmeltingResult(this.machineItemStacks[0]);
             if (var1 == null) return false;
-            if (this.compressorItemStacks[2] == null) return true;
-            if (!this.compressorItemStacks[2].isItemEqual(var1)) return false;
-            int result = compressorItemStacks[2].stackSize + var1.stackSize;
+            if (this.machineItemStacks[2] == null) return true;
+            if (!this.machineItemStacks[2].isItemEqual(var1)) return false;
+            int result = machineItemStacks[2].stackSize + var1.stackSize;
             return (result <= getInventoryStackLimit() && result <= var1.getMaxStackSize());
         }
     }
@@ -294,13 +295,13 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
     {
         if (this.canSmelt())
         {
-            ItemStack var1 = PlatinumCompressorRecipes.smelting().getSmeltingResult(this.compressorItemStacks[0]);
+            ItemStack var1 = PlatinumCompressorRecipes.smelting().getSmeltingResult(this.machineItemStacks[0]);
 
-            if (this.compressorItemStacks[2] == null)
+            if (this.machineItemStacks[2] == null)
             {
-                this.compressorItemStacks[2] = var1.copy();
+                this.machineItemStacks[2] = var1.copy();
             }
-            else if (this.compressorItemStacks[2].isItemEqual(var1))
+            else if (this.machineItemStacks[2].isItemEqual(var1))
             {
                 //==========================================================
                 //Adding extra importance here, so this really small bug 
@@ -311,15 +312,15 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
                 //
                 //
                 //
-                this.compressorItemStacks[2].stackSize += var1.stackSize;
+                this.machineItemStacks[2].stackSize += var1.stackSize;
                 //==========================================================
             }
 
-            --this.compressorItemStacks[0].stackSize;
+            --this.machineItemStacks[0].stackSize;
 
-            if (this.compressorItemStacks[0].stackSize <= 0)
+            if (this.machineItemStacks[0].stackSize <= 0)
             {
-                this.compressorItemStacks[0] = null;
+                this.machineItemStacks[0] = null;
             }
         }
     }

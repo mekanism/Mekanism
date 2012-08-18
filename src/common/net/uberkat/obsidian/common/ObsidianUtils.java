@@ -132,11 +132,11 @@ public class ObsidianUtils
 	
 	/**
 	 * Checks if the game is running on multiplayer.
-	 * @return - if world is multiplayer
+	 * @return if world is multiplayer
 	 */
 	public static boolean isMultiplayer()
 	{
-		if(!FMLServerHandler.instance().getServer().isSinglePlayer())
+		if(!FMLClientHandler.instance().getClient().isSingleplayer())
 		{
 			return true;
 		}
@@ -147,7 +147,7 @@ public class ObsidianUtils
 	
 	/**
 	 * Checks if the mod is running on the latest version.
-	 * @return - if mod is latest version
+	 * @return if mod is latest version
 	 */
 	public static boolean isClientLatestVersion()
 	{
@@ -162,7 +162,7 @@ public class ObsidianUtils
 	
 	/**
 	 * Checks if Minecraft is running in offline mode.
-	 * @return - if mod is running in offline mode.
+	 * @return if mod is running in offline mode.
 	 */
 	public static boolean isOffline()
 	{

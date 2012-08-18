@@ -42,14 +42,14 @@ public class ContainerPlatinumCompressor extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.compressor.compressorCookTime)
+            if (this.lastCookTime != this.compressor.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.compressor.compressorCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.compressor.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.compressor.compressorBurnTime)
+            if (this.lastBurnTime != this.compressor.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.compressor.compressorBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.compressor.machineBurnTime);
             }
 
             if (this.lastItemBurnTime != this.compressor.currentItemBurnTime)
@@ -58,8 +58,8 @@ public class ContainerPlatinumCompressor extends Container
             }
         }
 
-        this.lastCookTime = this.compressor.compressorCookTime;
-        this.lastBurnTime = this.compressor.compressorBurnTime;
+        this.lastCookTime = this.compressor.machineCookTime;
+        this.lastBurnTime = this.compressor.machineBurnTime;
         this.lastItemBurnTime = this.compressor.currentItemBurnTime;
     }
 
@@ -67,12 +67,12 @@ public class ContainerPlatinumCompressor extends Container
     {
         if (par1 == 0)
         {
-            this.compressor.compressorCookTime = par2;
+            this.compressor.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.compressor.compressorBurnTime = par2;
+            this.compressor.machineBurnTime = par2;
         }
 
         if (par1 == 2)

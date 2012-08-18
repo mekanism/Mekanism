@@ -8,12 +8,12 @@ import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
 
 public class GuiTheoreticalElementizer extends GuiContainer
 {
-    private TileEntityTheoreticalElementizer elementizerInventory;
+    private TileEntityTheoreticalElementizer machineInventory;
 
     public GuiTheoreticalElementizer(InventoryPlayer par1InventoryPlayer, TileEntityTheoreticalElementizer par2TileEntityTheoreticalElementizer)
     {
         super(new ContainerTheoreticalElementizer(par1InventoryPlayer, par2TileEntityTheoreticalElementizer));
-        elementizerInventory = par2TileEntityTheoreticalElementizer;
+        machineInventory = par2TileEntityTheoreticalElementizer;
     }
 
     /**
@@ -23,11 +23,6 @@ public class GuiTheoreticalElementizer extends GuiContainer
     {
         fontRenderer.drawString("Theoretical Elementizer", 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-    }
-    
-    public void onGuiClosed()
-    {
-    	BlockTheoreticalElementizer.updateElementizerBlockState(elementizerInventory.elementizerBurnTime > 0, elementizerInventory.worldObj, elementizerInventory.xCoord, elementizerInventory.yCoord, elementizerInventory.zCoord);
     }
 
     /**
@@ -43,13 +38,13 @@ public class GuiTheoreticalElementizer extends GuiContainer
         drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
         int var7;
 
-        if (this.elementizerInventory.isBurning())
+        if (this.machineInventory.isBurning())
         {
-            var7 = this.elementizerInventory.getBurnTimeRemainingScaled(12);
+            var7 = this.machineInventory.getBurnTimeRemainingScaled(12);
             this.drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
         }
 
-        var7 = this.elementizerInventory.getCookProgressScaled(24);
+        var7 = this.machineInventory.getCookProgressScaled(24);
         this.drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
     }
 }

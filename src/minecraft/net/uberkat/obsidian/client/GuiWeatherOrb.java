@@ -20,8 +20,8 @@ public class GuiWeatherOrb extends GuiScreen {
 	{
 		controlList.clear();
         controlList.add(new GuiButton(1, width / 2 - 80, height / 2 - 65, 50, 20, "Clear"));
-        controlList.add(new GuiButton(2, width / 2 - 80, height / 2 - 35, 50, 20, "Storm/Rain"));
-        controlList.add(new GuiButton(3, width / 2 + 5, height / 2 - 65, 50, 20, "Storm"));
+        controlList.add(new GuiButton(2, width / 2 - 80, height / 2 - 35, 50, 20, "Storm"));
+        controlList.add(new GuiButton(3, width / 2 + 5, height / 2 - 65, 50, 20, "Haze"));
         controlList.add(new GuiButton(4, width / 2 + 5, height / 2 - 35, 50, 20, "Rain"));
         controlList.add(new GuiButton(5, width / 2 - 94, height / 2 + 30, 80, 20, "Credits"));
         controlList.add(new GuiButton(6, width / 2 - 10, height / 2 + 30, 80, 20, "Close"));
@@ -58,68 +58,31 @@ public class GuiWeatherOrb extends GuiScreen {
 	{
 		if(guibutton.id == 1)
 		{
-			if(mc.isSingleplayer())
-			{
-		        player.worldObj.getWorldInfo().setRaining(false);
-		        player.worldObj.getWorldInfo().setThundering(false);
-		        player.worldObj.setRainStrength(0.0F);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(5);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(5);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
-			if(mc.isSingleplayer())
-			{
-		        player.worldObj.getWorldInfo().setRaining(true);
-		        player.worldObj.getWorldInfo().setThundering(true);
-		        player.worldObj.setRainStrength(1.0F);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(6);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(6);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
-			if(mc.isSingleplayer())
-			{
-				player.worldObj.getWorldInfo().setThundering(true);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(7);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(7);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)
 		{
-			if(mc.isSingleplayer())
-			{
-				player.worldObj.getWorldInfo().setRaining(true);
-				player.worldObj.setRainStrength(1.0F);
-				player.inventory.getCurrentItem().damageItem(4999, player);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
-			else {
-				ObsidianUtils.sendPacketDataInt(8);
-				ObsidianUtils.doExplosion(player);
-				mc.displayGuiScreen(null);
-			}
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.sendPacketDataInt(8);
+			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 5)
 		{

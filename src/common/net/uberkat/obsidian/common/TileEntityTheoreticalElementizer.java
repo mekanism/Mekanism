@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.common.ForgeDirection;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
@@ -15,10 +14,10 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
     /**
      * The ItemStacks that hold the items currently being used in the furnace
      */
-    private ItemStack[] elementizerItemStacks = new ItemStack[3];
+    private ItemStack[] machineItemStacks = new ItemStack[3];
 
     /** The number of ticks that the furnace will keep burning */
-    public int elementizerBurnTime = 0;
+    public int machineBurnTime = 0;
 
     /**
      * The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for
@@ -26,14 +25,14 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
     public int currentItemBurnTime = 0;
 
     /** The number of ticks that the current item has been cooking for */
-    public int elementizerCookTime = 0;
+    public int machineCookTime = 0;
 
     /**
      * Returns the number of slots in the inventory.
      */
     public int getSizeInventory()
     {
-        return this.elementizerItemStacks.length;
+        return this.machineItemStacks.length;
     }
 
     /**
@@ -41,7 +40,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public ItemStack getStackInSlot(int par1)
     {
-        return this.elementizerItemStacks[par1];
+        return this.machineItemStacks[par1];
     }
 
     /**
@@ -50,23 +49,23 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public ItemStack decrStackSize(int par1, int par2)
     {
-        if (this.elementizerItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
             ItemStack var3;
 
-            if (this.elementizerItemStacks[par1].stackSize <= par2)
+            if (this.machineItemStacks[par1].stackSize <= par2)
             {
-                var3 = this.elementizerItemStacks[par1];
-                this.elementizerItemStacks[par1] = null;
+                var3 = this.machineItemStacks[par1];
+                this.machineItemStacks[par1] = null;
                 return var3;
             }
             else
             {
-                var3 = this.elementizerItemStacks[par1].splitStack(par2);
+                var3 = this.machineItemStacks[par1].splitStack(par2);
 
-                if (this.elementizerItemStacks[par1].stackSize == 0)
+                if (this.machineItemStacks[par1].stackSize == 0)
                 {
-                    this.elementizerItemStacks[par1] = null;
+                    this.machineItemStacks[par1] = null;
                 }
 
                 return var3;
@@ -84,10 +83,10 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if (this.elementizerItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
-            ItemStack var2 = this.elementizerItemStacks[par1];
-            this.elementizerItemStacks[par1] = null;
+            ItemStack var2 = this.machineItemStacks[par1];
+            this.machineItemStacks[par1] = null;
             return var2;
         }
         else
@@ -101,7 +100,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-        this.elementizerItemStacks[par1] = par2ItemStack;
+        this.machineItemStacks[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
         {
@@ -124,22 +123,22 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
     {
         super.readFromNBT(par1NBTTagCompound);
         NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
-        this.elementizerItemStacks = new ItemStack[this.getSizeInventory()];
+        this.machineItemStacks = new ItemStack[this.getSizeInventory()];
 
         for (int var3 = 0; var3 < var2.tagCount(); ++var3)
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
             byte var5 = var4.getByte("Slot");
 
-            if (var5 >= 0 && var5 < this.elementizerItemStacks.length)
+            if (var5 >= 0 && var5 < this.machineItemStacks.length)
             {
-                this.elementizerItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+                this.machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
             }
         }
 
-        this.elementizerBurnTime = par1NBTTagCompound.getShort("BurnTime");
-        this.elementizerCookTime = par1NBTTagCompound.getShort("CookTime");
-        this.currentItemBurnTime = getItemBurnTime(this.elementizerItemStacks[1]);
+        this.machineBurnTime = par1NBTTagCompound.getShort("BurnTime");
+        this.machineCookTime = par1NBTTagCompound.getShort("CookTime");
+        this.currentItemBurnTime = getItemBurnTime(this.machineItemStacks[1]);
     }
 
     /**
@@ -148,17 +147,17 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("BurnTime", (short)this.elementizerBurnTime);
-        par1NBTTagCompound.setShort("CookTime", (short)this.elementizerCookTime);
+        par1NBTTagCompound.setShort("BurnTime", (short)this.machineBurnTime);
+        par1NBTTagCompound.setShort("CookTime", (short)this.machineCookTime);
         NBTTagList var2 = new NBTTagList();
 
-        for (int var3 = 0; var3 < this.elementizerItemStacks.length; ++var3)
+        for (int var3 = 0; var3 < this.machineItemStacks.length; ++var3)
         {
-            if (this.elementizerItemStacks[var3] != null)
+            if (this.machineItemStacks[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
                 var4.setByte("Slot", (byte)var3);
-                this.elementizerItemStacks[var3].writeToNBT(var4);
+                this.machineItemStacks[var3].writeToNBT(var4);
                 var2.appendTag(var4);
             }
         }
@@ -183,7 +182,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public int getCookProgressScaled(int par1)
     {
-        return this.elementizerCookTime * par1 / 1000;
+        return this.machineCookTime * par1 / 1000;
     }
     
     @SideOnly(Side.CLIENT)
@@ -199,7 +198,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
             this.currentItemBurnTime = 1000;
         }
 
-        return this.elementizerBurnTime * par1 / this.currentItemBurnTime;
+        return this.machineBurnTime * par1 / this.currentItemBurnTime;
     }
 
     /**
@@ -207,7 +206,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public boolean isBurning()
     {
-        return this.elementizerBurnTime > 0;
+        return this.machineBurnTime > 0;
     }
 
     /**
@@ -216,31 +215,31 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public void updateEntity()
     {
-        boolean var1 = this.elementizerBurnTime > 0;
+        boolean var1 = this.machineBurnTime > 0;
         boolean var2 = false;
 
-        if (this.elementizerBurnTime > 0)
+        if (this.machineBurnTime > 0)
         {
-            --this.elementizerBurnTime;
+            --this.machineBurnTime;
         }
 
         if (!this.worldObj.isRemote)
         {
-            if (this.elementizerBurnTime == 0 && this.canSmelt())
+            if (this.machineBurnTime == 0 && this.canSmelt())
             {
-                this.currentItemBurnTime = this.elementizerBurnTime = getItemBurnTime(this.elementizerItemStacks[1]);
+                this.currentItemBurnTime = this.machineBurnTime = getItemBurnTime(this.machineItemStacks[1]);
 
-                if (this.elementizerBurnTime > 0)
+                if (this.machineBurnTime > 0)
                 {
                     var2 = true;
 
-                    if (this.elementizerItemStacks[1] != null)
+                    if (this.machineItemStacks[1] != null)
                     {
-                        --this.elementizerItemStacks[1].stackSize;
+                        --this.machineItemStacks[1].stackSize;
 
-                        if (this.elementizerItemStacks[1].stackSize == 0)
+                        if (this.machineItemStacks[1].stackSize == 0)
                         {
-                            this.elementizerItemStacks[1] = null;
+                            this.machineItemStacks[1] = null;
                         }
                     }
                 }
@@ -248,24 +247,24 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
 
             if (this.isBurning() && this.canSmelt())
             {
-                ++this.elementizerCookTime;
+                ++this.machineCookTime;
 
-                if (this.elementizerCookTime == 1000)
+                if (this.machineCookTime == 1000)
                 {
-                    this.elementizerCookTime = 0;
+                    this.machineCookTime = 0;
                     this.smeltItem();
                     var2 = true;
                 }
             }
             else
             {
-                this.elementizerCookTime = 0;
+                this.machineCookTime = 0;
             }
 
-            if (var1 != this.elementizerBurnTime > 0)
+            if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockTheoreticalElementizer.updateElementizerBlockState(this.elementizerBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockTheoreticalElementizer.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 
@@ -273,6 +272,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
         {
             this.onInventoryChanged();
         }
+        worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
     }
 
     /**
@@ -280,14 +280,14 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     private boolean canSmelt()
     {
-        if (this.elementizerItemStacks[0] == null)
+        if (this.machineItemStacks[0] == null)
         {
             return false;
         }
         else
         {
-            if (elementizerItemStacks[0].getItem().shiftedIndex != ObsidianIngots.EnrichedAlloy.shiftedIndex) return false;
-            if (this.elementizerItemStacks[2] == null) return true;
+            if (machineItemStacks[0].getItem().shiftedIndex != ObsidianIngots.EnrichedAlloy.shiftedIndex) return false;
+            if (this.machineItemStacks[2] == null) return true;
         }
         return false;
     }
@@ -301,16 +301,16 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
         {
             ItemStack itemstack = new ItemStack(getRandomMagicItem(), 1);
 
-            if (this.elementizerItemStacks[2] == null)
+            if (this.machineItemStacks[2] == null)
             {
-                this.elementizerItemStacks[2] = itemstack.copy();
+                this.machineItemStacks[2] = itemstack.copy();
             }
 
-            --this.elementizerItemStacks[0].stackSize;
+            --this.machineItemStacks[0].stackSize;
 
-            if (this.elementizerItemStacks[0].stackSize <= 0)
+            if (this.machineItemStacks[0].stackSize <= 0)
             {
-                this.elementizerItemStacks[0] = null;
+                this.machineItemStacks[0] = null;
             }
         }
     }

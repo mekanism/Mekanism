@@ -11,10 +11,10 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
     /**
      * The ItemStacks that hold the items currently being used in the furnace
      */
-    private ItemStack[] chamberItemStacks = new ItemStack[3];
+    private ItemStack[] machineItemStacks = new ItemStack[3];
 
     /** The number of ticks that the furnace will keep burning */
-    public int chamberBurnTime = 0;
+    public int machineBurnTime = 0;
 
     /**
      * The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for
@@ -22,14 +22,14 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
     public int currentItemBurnTime = 0;
 
     /** The number of ticks that the current item has been cooking for */
-    public int chamberCookTime = 0;
+    public int machineCookTime = 0;
 
     /**
      * Returns the number of slots in the inventory.
      */
     public int getSizeInventory()
     {
-        return this.chamberItemStacks.length;
+        return this.machineItemStacks.length;
     }
 
     /**
@@ -37,7 +37,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public ItemStack getStackInSlot(int par1)
     {
-        return this.chamberItemStacks[par1];
+        return this.machineItemStacks[par1];
     }
 
     /**
@@ -46,23 +46,23 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public ItemStack decrStackSize(int par1, int par2)
     {
-        if (this.chamberItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
             ItemStack var3;
 
-            if (this.chamberItemStacks[par1].stackSize <= par2)
+            if (this.machineItemStacks[par1].stackSize <= par2)
             {
-                var3 = this.chamberItemStacks[par1];
-                this.chamberItemStacks[par1] = null;
+                var3 = this.machineItemStacks[par1];
+                this.machineItemStacks[par1] = null;
                 return var3;
             }
             else
             {
-                var3 = this.chamberItemStacks[par1].splitStack(par2);
+                var3 = this.machineItemStacks[par1].splitStack(par2);
 
-                if (this.chamberItemStacks[par1].stackSize == 0)
+                if (this.machineItemStacks[par1].stackSize == 0)
                 {
-                    this.chamberItemStacks[par1] = null;
+                    this.machineItemStacks[par1] = null;
                 }
 
                 return var3;
@@ -80,10 +80,10 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if (this.chamberItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
-            ItemStack var2 = this.chamberItemStacks[par1];
-            this.chamberItemStacks[par1] = null;
+            ItemStack var2 = this.machineItemStacks[par1];
+            this.machineItemStacks[par1] = null;
             return var2;
         }
         else
@@ -97,7 +97,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-        this.chamberItemStacks[par1] = par2ItemStack;
+        this.machineItemStacks[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
         {
@@ -120,22 +120,22 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
     {
         super.readFromNBT(par1NBTTagCompound);
         NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
-        this.chamberItemStacks = new ItemStack[this.getSizeInventory()];
+        this.machineItemStacks = new ItemStack[this.getSizeInventory()];
 
         for (int var3 = 0; var3 < var2.tagCount(); ++var3)
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
             byte var5 = var4.getByte("Slot");
 
-            if (var5 >= 0 && var5 < this.chamberItemStacks.length)
+            if (var5 >= 0 && var5 < this.machineItemStacks.length)
             {
-                this.chamberItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+                this.machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
             }
         }
 
-        this.chamberBurnTime = par1NBTTagCompound.getShort("BurnTime");
-        this.chamberCookTime = par1NBTTagCompound.getShort("CookTime");
-        this.currentItemBurnTime = getItemBurnTime(this.chamberItemStacks[1]);
+        this.machineBurnTime = par1NBTTagCompound.getShort("BurnTime");
+        this.machineCookTime = par1NBTTagCompound.getShort("CookTime");
+        this.currentItemBurnTime = getItemBurnTime(this.machineItemStacks[1]);
     }
 
     /**
@@ -144,17 +144,17 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("BurnTime", (short)this.chamberBurnTime);
-        par1NBTTagCompound.setShort("CookTime", (short)this.chamberCookTime);
+        par1NBTTagCompound.setShort("BurnTime", (short)this.machineBurnTime);
+        par1NBTTagCompound.setShort("CookTime", (short)this.machineCookTime);
         NBTTagList var2 = new NBTTagList();
 
-        for (int var3 = 0; var3 < this.chamberItemStacks.length; ++var3)
+        for (int var3 = 0; var3 < this.machineItemStacks.length; ++var3)
         {
-            if (this.chamberItemStacks[var3] != null)
+            if (this.machineItemStacks[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
                 var4.setByte("Slot", (byte)var3);
-                this.chamberItemStacks[var3].writeToNBT(var4);
+                this.machineItemStacks[var3].writeToNBT(var4);
                 var2.appendTag(var4);
             }
         }
@@ -177,7 +177,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public int getCookProgressScaled(int par1)
     {
-        return this.chamberCookTime * par1 / 200;
+        return this.machineCookTime * par1 / 200;
     }
 
     /**
@@ -191,7 +191,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
             this.currentItemBurnTime = 200;
         }
 
-        return this.chamberBurnTime * par1 / this.currentItemBurnTime;
+        return this.machineBurnTime * par1 / this.currentItemBurnTime;
     }
 
     /**
@@ -199,7 +199,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public boolean isBurning()
     {
-        return this.chamberBurnTime > 0;
+        return this.machineBurnTime > 0;
     }
 
     /**
@@ -208,31 +208,31 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public void updateEntity()
     {
-        boolean var1 = this.chamberBurnTime > 0;
+        boolean var1 = this.machineBurnTime > 0;
         boolean var2 = false;
 
-        if (this.chamberBurnTime > 0)
+        if (this.machineBurnTime > 0)
         {
-            --this.chamberBurnTime;
+            --this.machineBurnTime;
         }
 
         if (!this.worldObj.isRemote)
         {
-            if (this.chamberBurnTime == 0 && this.canSmelt())
+            if (this.machineBurnTime == 0 && this.canSmelt())
             {
-                this.currentItemBurnTime = this.chamberBurnTime = getItemBurnTime(this.chamberItemStacks[1]);
+                this.currentItemBurnTime = this.machineBurnTime = getItemBurnTime(this.machineItemStacks[1]);
 
-                if (this.chamberBurnTime > 0)
+                if (this.machineBurnTime > 0)
                 {
                     var2 = true;
 
-                    if (this.chamberItemStacks[1] != null)
+                    if (this.machineItemStacks[1] != null)
                     {
-                        --this.chamberItemStacks[1].stackSize;
+                        --this.machineItemStacks[1].stackSize;
 
-                        if (this.chamberItemStacks[1].stackSize == 0)
+                        if (this.machineItemStacks[1].stackSize == 0)
                         {
-                            this.chamberItemStacks[1] = null;
+                            this.machineItemStacks[1] = null;
                         }
                     }
                 }
@@ -240,24 +240,24 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
 
             if (this.isBurning() && this.canSmelt())
             {
-                ++this.chamberCookTime;
+                ++this.machineCookTime;
 
-                if (this.chamberCookTime == 200)
+                if (this.machineCookTime == 200)
                 {
-                    this.chamberCookTime = 0;
+                    this.machineCookTime = 0;
                     this.smeltItem();
                     var2 = true;
                 }
             }
             else
             {
-                this.chamberCookTime = 0;
+                this.machineCookTime = 0;
             }
 
-            if (var1 != this.chamberBurnTime > 0)
+            if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockEnrichmentChamber.updateChamberBlockState(this.chamberBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockEnrichmentChamber.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 
@@ -265,6 +265,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
         {
             this.onInventoryChanged();
         }
+        worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
     }
 
     /**
@@ -272,17 +273,17 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     private boolean canSmelt()
     {
-        if (this.chamberItemStacks[0] == null)
+        if (this.machineItemStacks[0] == null)
         {
             return false;
         }
         else
         {
-            ItemStack var1 = EnrichmentChamberRecipes.smelting().getSmeltingResult(this.chamberItemStacks[0]);
+            ItemStack var1 = EnrichmentChamberRecipes.smelting().getSmeltingResult(this.machineItemStacks[0]);
             if (var1 == null) return false;
-            if (this.chamberItemStacks[2] == null) return true;
-            if (!this.chamberItemStacks[2].isItemEqual(var1)) return false;
-            int result = chamberItemStacks[2].stackSize + var1.stackSize;
+            if (this.machineItemStacks[2] == null) return true;
+            if (!this.machineItemStacks[2].isItemEqual(var1)) return false;
+            int result = machineItemStacks[2].stackSize + var1.stackSize;
             return (result <= getInventoryStackLimit() && result <= var1.getMaxStackSize());
         }
     }
@@ -294,13 +295,13 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
     {
         if (this.canSmelt())
         {
-            ItemStack var1 = EnrichmentChamberRecipes.smelting().getSmeltingResult(this.chamberItemStacks[0]);
+            ItemStack var1 = EnrichmentChamberRecipes.smelting().getSmeltingResult(this.machineItemStacks[0]);
 
-            if (this.chamberItemStacks[2] == null)
+            if (this.machineItemStacks[2] == null)
             {
-                this.chamberItemStacks[2] = var1.copy();
+                this.machineItemStacks[2] = var1.copy();
             }
-            else if (this.chamberItemStacks[2].isItemEqual(var1))
+            else if (this.machineItemStacks[2].isItemEqual(var1))
             {
                 //==========================================================
                 //Adding extra importance here, so this really small bug 
@@ -311,15 +312,15 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
                 //
                 //
                 //
-                this.chamberItemStacks[2].stackSize += var1.stackSize;
+                this.machineItemStacks[2].stackSize += var1.stackSize;
                 //==========================================================
             }
 
-            --this.chamberItemStacks[0].stackSize;
+            --this.machineItemStacks[0].stackSize;
 
-            if (this.chamberItemStacks[0].stackSize <= 0)
+            if (this.machineItemStacks[0].stackSize <= 0)
             {
-                this.chamberItemStacks[0] = null;
+                this.machineItemStacks[0] = null;
             }
         }
     }

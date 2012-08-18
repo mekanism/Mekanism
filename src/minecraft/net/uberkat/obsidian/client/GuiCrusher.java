@@ -9,12 +9,12 @@ import net.uberkat.obsidian.common.TileEntityCrusher;
 
 public class GuiCrusher extends GuiContainer
 {
-    private TileEntityCrusher crusherInventory;
+    private TileEntityCrusher machineInventory;
 
     public GuiCrusher(InventoryPlayer par1InventoryPlayer, TileEntityCrusher par2TileEntityCrusher)
     {
         super(new ContainerCrusher(par1InventoryPlayer, par2TileEntityCrusher));
-        crusherInventory = par2TileEntityCrusher;
+        machineInventory = par2TileEntityCrusher;
     }
 
     /**
@@ -24,11 +24,6 @@ public class GuiCrusher extends GuiContainer
     {
         fontRenderer.drawString("Crusher", 50, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-    }
-    
-    public void onGuiClosed()
-    {
-    	BlockCrusher.updateCrusherBlockState(crusherInventory.crusherBurnTime > 0, crusherInventory.worldObj, crusherInventory.xCoord, crusherInventory.yCoord, crusherInventory.zCoord);
     }
 
     /**
@@ -44,13 +39,13 @@ public class GuiCrusher extends GuiContainer
         drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
         int var7;
 
-        if (this.crusherInventory.isBurning())
+        if (this.machineInventory.isBurning())
         {
-            var7 = this.crusherInventory.getBurnTimeRemainingScaled(12);
+            var7 = this.machineInventory.getBurnTimeRemainingScaled(12);
             this.drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
         }
 
-        var7 = this.crusherInventory.getCookProgressScaled(24);
+        var7 = this.machineInventory.getCookProgressScaled(24);
         this.drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
     }
 }

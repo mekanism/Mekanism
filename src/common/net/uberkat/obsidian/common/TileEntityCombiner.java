@@ -1,7 +1,5 @@
 package net.uberkat.obsidian.common;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraft.src.*;
@@ -11,10 +9,10 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
     /**
      * The ItemStacks that hold the items currently being used in the furnace
      */
-    private ItemStack[] combinerItemStacks = new ItemStack[3];
+    private ItemStack[] machineItemStacks = new ItemStack[3];
 
     /** The number of ticks that the furnace will keep burning */
-    public int combinerBurnTime = 0;
+    public int machineBurnTime = 0;
 
     /**
      * The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for
@@ -22,14 +20,14 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
     public int currentItemBurnTime = 0;
 
     /** The number of ticks that the current item has been cooking for */
-    public int combinerCookTime = 0;
+    public int machineCookTime = 0;
 
     /**
      * Returns the number of slots in the inventory.
      */
     public int getSizeInventory()
     {
-        return this.combinerItemStacks.length;
+        return this.machineItemStacks.length;
     }
 
     /**
@@ -37,7 +35,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public ItemStack getStackInSlot(int par1)
     {
-        return this.combinerItemStacks[par1];
+        return this.machineItemStacks[par1];
     }
 
     /**
@@ -46,23 +44,23 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public ItemStack decrStackSize(int par1, int par2)
     {
-        if (this.combinerItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
             ItemStack var3;
 
-            if (this.combinerItemStacks[par1].stackSize <= par2)
+            if (this.machineItemStacks[par1].stackSize <= par2)
             {
-                var3 = this.combinerItemStacks[par1];
-                this.combinerItemStacks[par1] = null;
+                var3 = this.machineItemStacks[par1];
+                this.machineItemStacks[par1] = null;
                 return var3;
             }
             else
             {
-                var3 = this.combinerItemStacks[par1].splitStack(par2);
+                var3 = this.machineItemStacks[par1].splitStack(par2);
 
-                if (this.combinerItemStacks[par1].stackSize == 0)
+                if (this.machineItemStacks[par1].stackSize == 0)
                 {
-                    this.combinerItemStacks[par1] = null;
+                    this.machineItemStacks[par1] = null;
                 }
 
                 return var3;
@@ -80,10 +78,10 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if (this.combinerItemStacks[par1] != null)
+        if (this.machineItemStacks[par1] != null)
         {
-            ItemStack var2 = this.combinerItemStacks[par1];
-            this.combinerItemStacks[par1] = null;
+            ItemStack var2 = this.machineItemStacks[par1];
+            this.machineItemStacks[par1] = null;
             return var2;
         }
         else
@@ -97,7 +95,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-        this.combinerItemStacks[par1] = par2ItemStack;
+        this.machineItemStacks[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
         {
@@ -120,22 +118,22 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
     {
         super.readFromNBT(par1NBTTagCompound);
         NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
-        this.combinerItemStacks = new ItemStack[this.getSizeInventory()];
+        this.machineItemStacks = new ItemStack[this.getSizeInventory()];
 
         for (int var3 = 0; var3 < var2.tagCount(); ++var3)
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
             byte var5 = var4.getByte("Slot");
 
-            if (var5 >= 0 && var5 < this.combinerItemStacks.length)
+            if (var5 >= 0 && var5 < this.machineItemStacks.length)
             {
-                this.combinerItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+                this.machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
             }
         }
 
-        this.combinerBurnTime = par1NBTTagCompound.getShort("BurnTime");
-        this.combinerCookTime = par1NBTTagCompound.getShort("CookTime");
-        this.currentItemBurnTime = getItemBurnTime(this.combinerItemStacks[1]);
+        this.machineBurnTime = par1NBTTagCompound.getShort("BurnTime");
+        this.machineCookTime = par1NBTTagCompound.getShort("CookTime");
+        this.currentItemBurnTime = getItemBurnTime(this.machineItemStacks[1]);
     }
 
     /**
@@ -144,17 +142,17 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("BurnTime", (short)this.combinerBurnTime);
-        par1NBTTagCompound.setShort("CookTime", (short)this.combinerCookTime);
+        par1NBTTagCompound.setShort("BurnTime", (short)this.machineBurnTime);
+        par1NBTTagCompound.setShort("CookTime", (short)this.machineCookTime);
         NBTTagList var2 = new NBTTagList();
 
-        for (int var3 = 0; var3 < this.combinerItemStacks.length; ++var3)
+        for (int var3 = 0; var3 < this.machineItemStacks.length; ++var3)
         {
-            if (this.combinerItemStacks[var3] != null)
+            if (this.machineItemStacks[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
                 var4.setByte("Slot", (byte)var3);
-                this.combinerItemStacks[var3].writeToNBT(var4);
+                this.machineItemStacks[var3].writeToNBT(var4);
                 var2.appendTag(var4);
             }
         }
@@ -177,7 +175,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public int getCookProgressScaled(int par1)
     {
-        return this.combinerCookTime * par1 / 200;
+        return this.machineCookTime * par1 / 200;
     }
 
     /**
@@ -191,7 +189,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
             this.currentItemBurnTime = 200;
         }
 
-        return this.combinerBurnTime * par1 / this.currentItemBurnTime;
+        return this.machineBurnTime * par1 / this.currentItemBurnTime;
     }
 
     /**
@@ -199,7 +197,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public boolean isBurning()
     {
-        return this.combinerBurnTime > 0;
+        return this.machineBurnTime > 0;
     }
 
     /**
@@ -208,31 +206,31 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public void updateEntity()
     {
-        boolean var1 = this.combinerBurnTime > 0;
+        boolean var1 = this.machineBurnTime > 0;
         boolean var2 = false;
 
-        if (this.combinerBurnTime > 0)
+        if (this.machineBurnTime > 0)
         {
-            --this.combinerBurnTime;
+            --this.machineBurnTime;
         }
 
         if (!this.worldObj.isRemote)
         {
-            if (this.combinerBurnTime == 0 && this.canSmelt())
+            if (this.machineBurnTime == 0 && this.canSmelt())
             {
-                this.currentItemBurnTime = this.combinerBurnTime = getItemBurnTime(this.combinerItemStacks[1]);
+                this.currentItemBurnTime = this.machineBurnTime = getItemBurnTime(this.machineItemStacks[1]);
 
-                if (this.combinerBurnTime > 0)
+                if (this.machineBurnTime > 0)
                 {
                     var2 = true;
 
-                    if (this.combinerItemStacks[1] != null)
+                    if (this.machineItemStacks[1] != null)
                     {
-                        --this.combinerItemStacks[1].stackSize;
+                        --this.machineItemStacks[1].stackSize;
 
-                        if (this.combinerItemStacks[1].stackSize == 0)
+                        if (this.machineItemStacks[1].stackSize == 0)
                         {
-                            this.combinerItemStacks[1] = null;
+                            this.machineItemStacks[1] = null;
                         }
                     }
                 }
@@ -240,24 +238,24 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
 
             if (this.isBurning() && this.canSmelt())
             {
-                ++this.combinerCookTime;
+                ++this.machineCookTime;
 
-                if (this.combinerCookTime == 200)
+                if (this.machineCookTime == 200)
                 {
-                    this.combinerCookTime = 0;
+                    this.machineCookTime = 0;
                     this.smeltItem();
                     var2 = true;
                 }
             }
             else
             {
-                this.combinerCookTime = 0;
+                this.machineCookTime = 0;
             }
 
-            if (var1 != this.combinerBurnTime > 0)
+            if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockCombiner.updateCombinerBlockState(this.combinerBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockCombiner.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 
@@ -265,6 +263,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
         {
             this.onInventoryChanged();
         }
+        worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
     }
 
     /**
@@ -272,17 +271,17 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     private boolean canSmelt()
     {
-        if (this.combinerItemStacks[0] == null)
+        if (this.machineItemStacks[0] == null)
         {
             return false;
         }
         else
         {
-            ItemStack var1 = CombinerRecipes.smelting().getSmeltingResult(this.combinerItemStacks[0]);
+            ItemStack var1 = CombinerRecipes.smelting().getSmeltingResult(this.machineItemStacks[0]);
             if (var1 == null) return false;
-            if (this.combinerItemStacks[2] == null) return true;
-            if (!this.combinerItemStacks[2].isItemEqual(var1)) return false;
-            int result = combinerItemStacks[2].stackSize + var1.stackSize;
+            if (this.machineItemStacks[2] == null) return true;
+            if (!this.machineItemStacks[2].isItemEqual(var1)) return false;
+            int result = machineItemStacks[2].stackSize + var1.stackSize;
             return (result <= getInventoryStackLimit() && result <= var1.getMaxStackSize());
         }
     }
@@ -294,13 +293,13 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
     {
         if (this.canSmelt())
         {
-            ItemStack var1 = CombinerRecipes.smelting().getSmeltingResult(this.combinerItemStacks[0]);
+            ItemStack var1 = CombinerRecipes.smelting().getSmeltingResult(this.machineItemStacks[0]);
 
-            if (this.combinerItemStacks[2] == null)
+            if (this.machineItemStacks[2] == null)
             {
-                this.combinerItemStacks[2] = var1.copy();
+                this.machineItemStacks[2] = var1.copy();
             }
-            else if (this.combinerItemStacks[2].isItemEqual(var1))
+            else if (this.machineItemStacks[2].isItemEqual(var1))
             {
                 //==========================================================
                 //Adding extra importance here, so this really small bug 
@@ -311,15 +310,15 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
                 //
                 //
                 //
-                this.combinerItemStacks[2].stackSize += var1.stackSize;
+                this.machineItemStacks[2].stackSize += var1.stackSize;
                 //==========================================================
             }
 
-            --this.combinerItemStacks[0].stackSize;
+            --this.machineItemStacks[0].stackSize;
 
-            if (this.combinerItemStacks[0].stackSize <= 0)
+            if (this.machineItemStacks[0].stackSize <= 0)
             {
-                this.combinerItemStacks[0] = null;
+                this.machineItemStacks[0] = null;
             }
         }
     }

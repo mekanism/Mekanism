@@ -42,14 +42,14 @@ public class ContainerCrusher extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.crusher.crusherCookTime)
+            if (this.lastCookTime != this.crusher.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.crusher.crusherCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.crusher.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.crusher.crusherBurnTime)
+            if (this.lastBurnTime != this.crusher.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.crusher.crusherBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.crusher.machineBurnTime);
             }
 
             if (this.lastItemBurnTime != this.crusher.currentItemBurnTime)
@@ -58,8 +58,8 @@ public class ContainerCrusher extends Container
             }
         }
 
-        this.lastCookTime = this.crusher.crusherCookTime;
-        this.lastBurnTime = this.crusher.crusherBurnTime;
+        this.lastCookTime = this.crusher.machineCookTime;
+        this.lastBurnTime = this.crusher.machineBurnTime;
         this.lastItemBurnTime = this.crusher.currentItemBurnTime;
     }
 
@@ -67,12 +67,12 @@ public class ContainerCrusher extends Container
     {
         if (par1 == 0)
         {
-            this.crusher.crusherCookTime = par2;
+            this.crusher.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.crusher.crusherBurnTime = par2;
+            this.crusher.machineBurnTime = par2;
         }
 
         if (par1 == 2)
