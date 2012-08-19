@@ -1,5 +1,5 @@
 package net.uberkat.obsidian.common;
-
+//PENIS
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -31,7 +31,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.1")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.2")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -247,7 +247,7 @@ public class ObsidianIngots
 			" ^", "I ", Character.valueOf('^'), Item.ingotGold, Character.valueOf('I'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(Item.coal, 9), new Object[] {
-			"*", Character.valueOf('*'), Item.coal
+			"*", Character.valueOf('*'), CoalBlock
 		});
 		GameRegistry.addRecipe(new ItemStack(CoalBlock, 1), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), Item.coal
