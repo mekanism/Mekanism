@@ -197,8 +197,8 @@ public class ObsidianIngots
 	public static Block CoalBlock;
 	
 	//Boolean Values
-	public static boolean extrasEnabled;
-	public static boolean oreGenerationEnabled;
+	public static boolean extrasEnabled = true;
+	public static boolean oreGenerationEnabled = true;
 	
 	//Extra data
 	public static float ObsidianTNTBlastRadius = 12.0F;
@@ -588,7 +588,7 @@ public class ObsidianIngots
 		LanguageRegistry.addName(ObsidianArrow, "Obsidian Arrow");
 		LanguageRegistry.addName(ObsidianBow, "Obsidian Bow");
 		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
-		if(extrasEnabled)
+		if(extrasEnabled == true)
 		{
 			LanguageRegistry.addName(LightningRod, "Lightning Rod");
 			LanguageRegistry.addName(Stopwatch, "Steve's Stopwatch");
@@ -696,7 +696,7 @@ public class ObsidianIngots
 		//Extras
 		ObsidianArrow.setIconIndex(193);
 		ObsidianBow.setIconIndex(177);
-		if(extrasEnabled)
+		if(extrasEnabled == true)
 		{
 			LightningRod.setIconIndex(225);
 			Stopwatch.setIconIndex(224);
@@ -754,11 +754,12 @@ public class ObsidianIngots
 		LazuliBoots = (new ItemObsidianArmor(11277, armorLAZULI, RenderingRegistry.addNewArmourRendererPrefix("lazuli"), 3)).setItemName("LazuliBoots");
 		ObsidianArrow = new ItemObsidian(11278).setItemName("ObsidianArrow").setTabToDisplayOn(CreativeTabs.tabCombat);
 		ObsidianBow = new ItemObsidianBow(11279).setItemName("ObsidianBow");
-		if(extrasEnabled)
+		if(extrasEnabled == true)
 		{
 			LightningRod = new ItemLightningRod(11280).setItemName("LightningRod");
 			Stopwatch = new ItemStopwatch(11281).setItemName("Stopwatch");
 			WeatherOrb = new ItemWeatherOrb(11282).setItemName("WeatherOrb");
+			EnrichedAlloy = new ItemObsidian(11313).setItemName("EnrichedAlloy").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		}
 		WoodPaxel = new ItemObsidianPaxel(11283, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
 		StonePaxel = new ItemObsidianPaxel(11284, EnumToolMaterial.STONE).setItemName("StonePaxel");
@@ -790,10 +791,7 @@ public class ObsidianIngots
 		GlowstoneLegs = new ItemObsidianArmor(11310, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 2).setItemName("GlowstoneLegs");
 		GlowstoneBoots = new ItemObsidianArmor(11311, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 3).setItemName("GlowstoneBoots");
 		GlowstoneKnife = new ItemObsidianKnife(11312, toolGLOWSTONE).setItemName("GlowstoneKnife");
-		if(extrasEnabled)
-		{
-			EnrichedAlloy = new ItemObsidian(11313).setItemName("EnrichedAlloy").setTabToDisplayOn(CreativeTabs.tabMaterials);
-		}
+
 	}
 	/**
 	 * Adds and registers all blocks.
@@ -806,7 +804,7 @@ public class ObsidianIngots
 		PlatinumBlock = new BlockBase(platinumBlockID, 2).setBlockName("PlatinumBlock").setCreativeTab(CreativeTabs.tabBlock);
 		RefinedObsidian = new BlockBase(refinedObsidianID, 0).setBlockName("RefinedObsidian").setCreativeTab(CreativeTabs.tabBlock);
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(CreativeTabs.tabBlock);
-		if(extrasEnabled)
+		if(extrasEnabled == true)
 		{
 			TheoreticalElementizer = new BlockTheoreticalElementizer(elementizerID).setBlockName("TheoreticalElementizer").setCreativeTab(CreativeTabs.tabBlock);
 		}
@@ -823,7 +821,7 @@ public class ObsidianIngots
 		GameRegistry.registerBlock(PlatinumBlock);
 		GameRegistry.registerBlock(RefinedObsidian);
 		GameRegistry.registerBlock(ObsidianTNT);
-		if(extrasEnabled)
+		if(extrasEnabled == true)
 		{
 			GameRegistry.registerBlock(TheoreticalElementizer);
 		}
