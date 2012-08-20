@@ -11,7 +11,7 @@ public class OreHandler implements IWorldGenerator
 {
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) 
 	{
-		if(ObsidianIngots.oreGenerationEnabled)
+		if(ObsidianIngots.oreGenerationEnabled == true)
 		{
 			for (int i=0;i<1;i++)
 			{
