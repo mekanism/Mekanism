@@ -198,7 +198,7 @@ public class ObsidianIngots
 	
 	//Boolean Values
 	public static boolean extrasEnabled = true;
-	public static boolean oreGenerationEnabled;
+	public static boolean oreGenerationEnabled = true;
 	
 	//Extra data
 	public static float ObsidianTNTBlastRadius = 12.0F;
