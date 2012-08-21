@@ -32,9 +32,9 @@ public class ObsidianUtils
 	 */
 	public static void checkForUpdates(EntityPlayer entityplayer)
 	{
-		if(!(getLatestVersion().toString().equals("Error retrieving data.")) && !(getLatestVersion().toString().equals(ObsidianIngots.versionNumber.toString())))
+		if(!(getLatestVersion().toString().equals("Error retrieving data.")) && !(getLatestVersion().toString().equals(ObsidianIngotsCore.versionNumber.toString())))
 		{
-			entityplayer.addChatMessage("Your version of ¤1Obsidian Ingots ¤7(¤8" + ObsidianIngots.versionNumber.toString() + "¤7) is outdated. Please update to version ¤8" + getLatestVersion().toString());
+			entityplayer.addChatMessage("Your version of ¤1Obsidian Ingots ¤7(¤8" + ObsidianIngotsCore.versionNumber.toString() + "¤7) is outdated. Please update to version ¤8" + getLatestVersion().toString());
 		}
 		else if(getLatestVersion().toString().equals("Error retrieving data."))
 		{
@@ -151,7 +151,7 @@ public class ObsidianUtils
 	 */
 	public static boolean isClientLatestVersion()
 	{
-		if(ObsidianIngots.versionNumber.toString().equals(ObsidianIngots.latestVersionNumber))
+		if(ObsidianIngotsCore.versionNumber.toString().equals(ObsidianIngotsCore.latestVersionNumber))
 		{
 			return true;
 		}

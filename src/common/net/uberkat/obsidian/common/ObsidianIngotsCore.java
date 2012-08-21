@@ -33,7 +33,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  */
 @Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.3")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
-public class ObsidianIngots
+public class ObsidianIngotsCore
 {
 	/** Obsidian Ingots logger instance */
 	public static Logger logger = Logger.getLogger("Minecraft");
@@ -44,7 +44,7 @@ public class ObsidianIngots
 	
     /** Obsidian Ingots mod instance */
 	@Instance
-    public static ObsidianIngots instance;
+    public static ObsidianIngotsCore instance;
     
     /** Obsidian Ingots hooks instance */
     public static ObsidianHooks hooks;

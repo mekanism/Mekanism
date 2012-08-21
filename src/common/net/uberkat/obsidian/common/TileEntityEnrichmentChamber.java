@@ -110,7 +110,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
      */
     public String getInvName()
     {
-        return "container.chamber";
+        return "Enrichment Chamber";
     }
 
     /**

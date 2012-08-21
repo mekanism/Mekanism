@@ -113,7 +113,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
      */
     public String getInvName()
     {
-        return "container.elementizer";
+        return "Theoretical Elementizer";
     }
 
     /**
@@ -286,7 +286,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
         }
         else
         {
-            if (machineItemStacks[0].getItem().shiftedIndex != ObsidianIngots.EnrichedAlloy.shiftedIndex) return false;
+            if (machineItemStacks[0].getItem().shiftedIndex != ObsidianIngotsCore.EnrichedAlloy.shiftedIndex) return false;
             if (this.machineItemStacks[2] == null) return true;
         }
         return false;
@@ -353,10 +353,10 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
     {
     	Random rand = new Random();
     	int random = rand.nextInt(3);
-    	if(random == 0) return ObsidianIngots.LightningRod;
-    	if(random == 1) return ObsidianIngots.Stopwatch;
-    	if(random == 2) return ObsidianIngots.WeatherOrb;
-    	return ObsidianIngots.EnrichedAlloy;
+    	if(random == 0) return ObsidianIngotsCore.LightningRod;
+    	if(random == 1) return ObsidianIngotsCore.Stopwatch;
+    	if(random == 2) return ObsidianIngotsCore.WeatherOrb;
+    	return ObsidianIngotsCore.EnrichedAlloy;
     }
 
     public void openChest() {}

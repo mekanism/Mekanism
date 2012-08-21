@@ -20,7 +20,7 @@ public class ItemObsidianBow extends ItemObsidian
     {
         boolean flag = par3EntityPlayer.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, par1ItemStack) > 0;
 
-        if (flag || par3EntityPlayer.inventory.hasItem(ObsidianIngots.ObsidianArrow.shiftedIndex))
+        if (flag || par3EntityPlayer.inventory.hasItem(ObsidianIngotsCore.ObsidianArrow.shiftedIndex))
         {
             int i = getMaxItemUseDuration(par1ItemStack) - par4;
             float f = (float)i / 20F;
@@ -71,7 +71,7 @@ public class ItemObsidianBow extends ItemObsidian
             }
             else
             {
-            	par3EntityPlayer.inventory.consumeInventoryItem(ObsidianIngots.ObsidianArrow.shiftedIndex);
+            	par3EntityPlayer.inventory.consumeInventoryItem(ObsidianIngotsCore.ObsidianArrow.shiftedIndex);
             }
 
             if (!par2World.isRemote)
@@ -107,7 +107,7 @@ public class ItemObsidianBow extends ItemObsidian
      */
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
-        if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(ObsidianIngots.ObsidianArrow.shiftedIndex))
+        if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(ObsidianIngotsCore.ObsidianArrow.shiftedIndex))
         {
             par3EntityPlayer.setItemInUse(par1ItemStack, getMaxItemUseDuration(par1ItemStack));
         }

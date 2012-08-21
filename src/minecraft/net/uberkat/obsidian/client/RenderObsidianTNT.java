@@ -2,7 +2,7 @@ package net.uberkat.obsidian.client;
 
 import net.minecraft.src.*;
 import net.uberkat.obsidian.common.EntityObsidianTNT;
-import net.uberkat.obsidian.common.ObsidianIngots;
+import net.uberkat.obsidian.common.ObsidianIngotsCore;
 
 import org.lwjgl.opengl.GL11;
 
@@ -43,7 +43,7 @@ public class RenderObsidianTNT extends Render
 
         float f3 = (1.0F - (((float)entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
         loadTexture("/obsidian/terrain.png");
-        blockRenderer.renderBlockAsItem(ObsidianIngots.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
+        blockRenderer.renderBlockAsItem(ObsidianIngotsCore.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
 
         if ((entityobsidiantnt.fuse / 5) % 2 == 0)
         {
@@ -52,7 +52,7 @@ public class RenderObsidianTNT extends Render
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, f3);
-            blockRenderer.renderBlockAsItem(ObsidianIngots.ObsidianTNT, 0, 1.0F);
+            blockRenderer.renderBlockAsItem(ObsidianIngotsCore.ObsidianTNT, 0, 1.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_LIGHTING);

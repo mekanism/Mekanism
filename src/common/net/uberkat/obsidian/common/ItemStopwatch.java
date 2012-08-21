@@ -21,7 +21,7 @@ public class ItemStopwatch extends ItemObsidian {
 	{
 		if(itemstack.getItemDamage() == 0)
 		{
-			entityplayer.openGui(ObsidianIngots.instance, 18, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
+			entityplayer.openGui(ObsidianIngotsCore.instance, 18, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
 		}
 		return itemstack;
 	}

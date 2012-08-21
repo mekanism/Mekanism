@@ -225,7 +225,7 @@ public class BlockTheoreticalElementizer extends BlockContainer
             {
             	if(!entityplayer.isSneaking())
             	{
-            		entityplayer.openGui(ObsidianIngots.instance, 25, world, x, y, z);
+            		entityplayer.openGui(ObsidianIngotsCore.instance, 25, world, x, y, z);
             	}
             	else {
             		return false;

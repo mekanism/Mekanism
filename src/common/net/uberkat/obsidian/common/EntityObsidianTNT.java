@@ -25,7 +25,7 @@ public class EntityObsidianTNT extends Entity
         motionX = (double)(-((float)Math.sin((double)var8)) * 0.02F);
         motionY = 0.20000000298023224D;
         motionZ = (double)(-((float)Math.cos((double)var8)) * 0.02F);
-        fuse = ObsidianIngots.ObsidianTNTDelay;
+        fuse = ObsidianIngotsCore.ObsidianTNTDelay;
         prevPosX = par2;
         prevPosY = par4;
         prevPosZ = par6;
@@ -97,7 +97,7 @@ public class EntityObsidianTNT extends Entity
 
     private void explode()
     {
-        worldObj.createExplosion((Entity)null, posX, posY, posZ, ObsidianIngots.ObsidianTNTBlastRadius);
+        worldObj.createExplosion((Entity)null, posX, posY, posZ, ObsidianIngotsCore.ObsidianTNTBlastRadius);
         hasExploded = true;
     }
 

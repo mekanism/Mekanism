@@ -14,7 +14,7 @@ public class ContainerTheoreticalElementizer extends Container
         this.elementizer = par2TileEntityTheoreticalElementizer;
         this.addSlotToContainer(new Slot(par2TileEntityTheoreticalElementizer, 0, 56, 17));
         this.addSlotToContainer(new Slot(par2TileEntityTheoreticalElementizer, 1, 56, 53));
-        this.addSlotToContainer(new SlotObsidian(par1InventoryPlayer.player, par2TileEntityTheoreticalElementizer, 2, 116, 35));
+        this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntityTheoreticalElementizer, 2, 116, 35));
         int var3;
 
         for (var3 = 0; var3 < 3; ++var3)
@@ -110,7 +110,7 @@ public class ContainerTheoreticalElementizer extends Container
             }
             else if (par1 != 1 && par1 != 0)
             {
-                if (var4.getItem().shiftedIndex == ObsidianIngots.EnrichedAlloy.shiftedIndex)
+                if (var4.getItem().shiftedIndex == ObsidianIngotsCore.EnrichedAlloy.shiftedIndex)
                 {
                     if (!this.mergeItemStack(var4, 0, 1, false))
                     {

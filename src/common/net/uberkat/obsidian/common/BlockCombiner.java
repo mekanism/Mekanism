@@ -182,7 +182,7 @@ public class BlockCombiner extends BlockContainer
             {
             	if(!entityplayer.isSneaking())
             	{
-            		entityplayer.openGui(ObsidianIngots.instance, 23, world, x, y, z);
+            		entityplayer.openGui(ObsidianIngotsCore.instance, 23, world, x, y, z);
             	}
             	else {
             		return false;

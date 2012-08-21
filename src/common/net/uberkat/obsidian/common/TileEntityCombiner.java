@@ -108,7 +108,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
      */
     public String getInvName()
     {
-        return "container.combiner";
+        return "Combiner";
     }
 
     /**

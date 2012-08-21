@@ -12,20 +12,20 @@ public class BlockBase extends Block
 	{
 		super(i, j, Material.iron);
 		
-		if(blockID == ObsidianIngots.platinumOreID)
+		if(blockID == ObsidianIngotsCore.platinumOreID)
 		{
 			setHardness(3F);
 			setResistance(5F);
 		}
-		if(blockID == ObsidianIngots.refinedGlowstoneID || blockID == ObsidianIngots.refinedObsidianID || blockID == ObsidianIngots.coalBlockID || blockID == ObsidianIngots.redstoneBlockID || blockID == ObsidianIngots.platinumBlockID)
+		if(blockID == ObsidianIngotsCore.refinedGlowstoneID || blockID == ObsidianIngotsCore.refinedObsidianID || blockID == ObsidianIngotsCore.coalBlockID || blockID == ObsidianIngotsCore.redstoneBlockID || blockID == ObsidianIngotsCore.platinumBlockID)
 		{
 			setHardness(5F);
 			setResistance(10F);
-			if(blockID == ObsidianIngots.refinedObsidianID)
+			if(blockID == ObsidianIngotsCore.refinedObsidianID)
 			{
 				setLightValue(0.5F);
 			}
-			if(blockID == ObsidianIngots.refinedGlowstoneID)
+			if(blockID == ObsidianIngotsCore.refinedGlowstoneID)
 			{
 				setLightValue(0.875F);
 			}
@@ -44,11 +44,11 @@ public class BlockBase extends Block
 	
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-    	if(blockID == ObsidianIngots.refinedObsidianID)
+    	if(blockID == ObsidianIngotsCore.refinedObsidianID)
     	{
     		if(entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(ObsidianIngots.instance, 19, world, x, y, z);
+    			entityplayer.openGui(ObsidianIngotsCore.instance, 19, world, x, y, z);
     		}
     	}
         return false;
@@ -56,7 +56,7 @@ public class BlockBase extends Block
 	
     public void addCreativeItems(ArrayList itemList)
     {
-    	if(blockID != ObsidianIngots.platinumOreID)
+    	if(blockID != ObsidianIngotsCore.platinumOreID)
     	{
     		itemList.add(new ItemStack(this));
     	}

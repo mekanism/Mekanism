@@ -23,12 +23,12 @@ public class PlatinumCompressorRecipes
 
     private PlatinumCompressorRecipes()
     {
-        addSmelting(Item.redstone.shiftedIndex, new ItemStack(ObsidianIngots.RedstoneIngot, 1));
-        addSmelting(ObsidianIngots.ObsidianDust.shiftedIndex, new ItemStack(ObsidianIngots.ObsidianIngot, 1));
-        addSmelting(ObsidianIngots.PlatinumDust.shiftedIndex, new ItemStack(ObsidianIngots.PlatinumIngot, 1));
-        addSmelting(ObsidianIngots.IronDust.shiftedIndex, new ItemStack(Item.ingotIron, 1));
-        addSmelting(ObsidianIngots.GoldDust.shiftedIndex, new ItemStack(Item.ingotGold, 1));
-        addSmelting(Item.lightStoneDust.shiftedIndex, new ItemStack(ObsidianIngots.GlowstoneIngot, 1));
+        addSmelting(Item.redstone.shiftedIndex, new ItemStack(ObsidianIngotsCore.RedstoneIngot, 1));
+        addSmelting(ObsidianIngotsCore.ObsidianDust.shiftedIndex, new ItemStack(ObsidianIngotsCore.ObsidianIngot, 1));
+        addSmelting(ObsidianIngotsCore.PlatinumDust.shiftedIndex, new ItemStack(ObsidianIngotsCore.PlatinumIngot, 1));
+        addSmelting(ObsidianIngotsCore.IronDust.shiftedIndex, new ItemStack(Item.ingotIron, 1));
+        addSmelting(ObsidianIngotsCore.GoldDust.shiftedIndex, new ItemStack(Item.ingotGold, 1));
+        addSmelting(Item.lightStoneDust.shiftedIndex, new ItemStack(ObsidianIngotsCore.GlowstoneIngot, 1));
     }
 
     /**

@@ -182,7 +182,7 @@ public class BlockPlatinumCompressor extends BlockContainer
             {
             	if(!entityplayer.isSneaking())
             	{
-            		entityplayer.openGui(ObsidianIngots.instance, 22, world, x, y, z);
+            		entityplayer.openGui(ObsidianIngotsCore.instance, 22, world, x, y, z);
             	}
             	else {
             		return false;

@@ -25,7 +25,7 @@ import net.uberkat.obsidian.common.ContainerTheoreticalElementizer;
 import net.uberkat.obsidian.common.EntityKnife;
 import net.uberkat.obsidian.common.EntityObsidianArrow;
 import net.uberkat.obsidian.common.EntityObsidianTNT;
-import net.uberkat.obsidian.common.ObsidianIngots;
+import net.uberkat.obsidian.common.ObsidianIngotsCore;
 import net.uberkat.obsidian.common.ObsidianUtils;
 import net.uberkat.obsidian.common.TileEntityCombiner;
 import net.uberkat.obsidian.common.TileEntityCrusher;
@@ -61,8 +61,8 @@ public class ClientProxy extends CommonProxy
 	public void loadUtilities()
 	{
 		System.out.println("[ObsidianIngots] Beginning utility initiative...");
-		ObsidianIngots.latestVersionNumber = ObsidianUtils.getLatestVersion();
-		ObsidianIngots.recentNews = ObsidianUtils.getRecentNews();
+		ObsidianIngotsCore.latestVersionNumber = ObsidianUtils.getLatestVersion();
+		ObsidianIngotsCore.recentNews = ObsidianUtils.getRecentNews();
 		new ThreadServerData();
 		System.out.println("[ObsidianIngots] Utility initiative complete.");
 	}

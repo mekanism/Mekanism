@@ -24,10 +24,10 @@ public class CombinerRecipes
     private CombinerRecipes()
     {
         addSmelting(Item.redstone.shiftedIndex, new ItemStack(Block.oreRedstone, 1));
-        addSmelting(ObsidianIngots.ObsidianDust.shiftedIndex, new ItemStack(Block.obsidian, 1));
-        addSmelting(ObsidianIngots.IronDust.shiftedIndex, new ItemStack(Block.oreIron, 1));
-        addSmelting(ObsidianIngots.GoldDust.shiftedIndex, new ItemStack(Block.oreGold, 1));
-        addSmelting(ObsidianIngots.PlatinumDust.shiftedIndex, new ItemStack(ObsidianIngots.PlatinumOre, 1));
+        addSmelting(ObsidianIngotsCore.ObsidianDust.shiftedIndex, new ItemStack(Block.obsidian, 1));
+        addSmelting(ObsidianIngotsCore.IronDust.shiftedIndex, new ItemStack(Block.oreIron, 1));
+        addSmelting(ObsidianIngotsCore.GoldDust.shiftedIndex, new ItemStack(Block.oreGold, 1));
+        addSmelting(ObsidianIngotsCore.PlatinumDust.shiftedIndex, new ItemStack(ObsidianIngotsCore.PlatinumOre, 1));
         addSmelting(Item.diamond.shiftedIndex, new ItemStack(Block.oreDiamond, 1));
         addSmelting(new ItemStack(Item.dyePowder, 1, 4).getItem().shiftedIndex, new ItemStack(Block.oreLapis, 1));
     }

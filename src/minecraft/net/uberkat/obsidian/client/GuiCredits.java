@@ -6,7 +6,7 @@ import java.net.URL;
 import org.lwjgl.Sys;
 
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.ObsidianIngots;
+import net.uberkat.obsidian.common.ObsidianIngotsCore;
 import net.uberkat.obsidian.common.ObsidianUtils;
 
 public class GuiCredits extends GuiScreen {
@@ -68,11 +68,11 @@ public class GuiCredits extends GuiScreen {
 	{
 		drawDefaultBackground();
         drawCenteredString(fontRenderer, "Obsidian Ingots by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
-        drawString(fontRenderer, (new StringBuilder()).append("Your version: ").append(ObsidianUtils.isClientLatestVersion() ? ObsidianIngots.versionNumber.toString() : (ObsidianIngots.versionNumber.toString() + " -- OUTDATED")).toString(), width / 2 - 140, (height / 4 - 60) + 20 + 36, 0xa0a0a0);
-  		drawString(fontRenderer, (new StringBuilder()).append("Newest version: ").append(ObsidianIngots.latestVersionNumber).toString(), width / 2 - 140, (height / 4 - 60) + 20 + 45, 0xa0a0a0);
+        drawString(fontRenderer, (new StringBuilder()).append("Your version: ").append(ObsidianUtils.isClientLatestVersion() ? ObsidianIngotsCore.versionNumber.toString() : (ObsidianIngotsCore.versionNumber.toString() + " -- OUTDATED")).toString(), width / 2 - 140, (height / 4 - 60) + 20 + 36, 0xa0a0a0);
+  		drawString(fontRenderer, (new StringBuilder()).append("Newest version: ").append(ObsidianIngotsCore.latestVersionNumber).toString(), width / 2 - 140, (height / 4 - 60) + 20 + 45, 0xa0a0a0);
   		writeText("*Developed on Mac OS X 10.8 Mountain Lion", 63);
   		writeText("*Code, textures, and ideas by aidancbrady", 72);
-  		writeText("Recent news: " + ObsidianIngots.recentNews, 81);
+  		writeText("Recent news: " + ObsidianIngotsCore.recentNews, 81);
   		writeText(updateProgress, 99);
   		super.drawScreen(i, j, f);
 	}
