@@ -255,7 +255,7 @@ public class TileEntityCrusher extends TileEntity implements IInventory, ISidedI
             if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockCrusher.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockCrusher.updateBlock(machineBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 

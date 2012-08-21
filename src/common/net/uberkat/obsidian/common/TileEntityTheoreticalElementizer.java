@@ -264,7 +264,7 @@ public class TileEntityTheoreticalElementizer extends TileEntity implements IInv
             if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockTheoreticalElementizer.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockTheoreticalElementizer.updateBlock(machineBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 

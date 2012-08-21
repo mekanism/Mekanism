@@ -13,6 +13,8 @@ public class BlockPlatinumCompressor extends BlockContainer
     private Random compressorRand = new Random();
     
     private static int currentTextureIndex;
+    
+    public static boolean isActive = false;
 
     public BlockPlatinumCompressor(int par1)
     {
@@ -80,7 +82,7 @@ public class BlockPlatinumCompressor extends BlockContainer
 
     public int idDropped(int par1, Random random, int par3)
     {
-        return ObsidianIngots.platinumCompressorID;
+        return blockID;
     }
 
     public void onBlockAdded(World world, int par2, int par3, int par4)
@@ -91,17 +93,13 @@ public class BlockPlatinumCompressor extends BlockContainer
     
     public int getLightValue(IBlockAccess world, int x, int y, int z) 
     {
-    	TileEntityPlatinumCompressor tileEntity = (TileEntityPlatinumCompressor)world.getBlockTileEntity(x, y, z);
-    	if(tileEntity == null) return 0;
-    	else if(tileEntity.machineBurnTime > 0) return 14;
+    	if(isActive) return 14;
 	    else return 0;
     }
 
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
-    	TileEntityPlatinumCompressor tileEntity = (TileEntityPlatinumCompressor)world.getBlockTileEntity(x, y, z);
-    	boolean isActive = tileEntity.machineBurnTime > 0;
         int metadata = world.getBlockMetadata(x, y, z);
         
         if(side == metadata)
@@ -116,8 +114,6 @@ public class BlockPlatinumCompressor extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int par2, int par3, int par4, Random par5Random)
     {
-    	TileEntityPlatinumCompressor tileEntity = (TileEntityPlatinumCompressor)world.getBlockTileEntity(par2, par3, par4);
-    	
     	if(currentTextureIndex < 15 && currentTextureIndex > -1)
     	{
     		currentTextureIndex++;
@@ -130,7 +126,7 @@ public class BlockPlatinumCompressor extends BlockContainer
     	}
     	
     	int metadata = world.getBlockMetadata(par2, par3, par4);
-        if (tileEntity.machineBurnTime > 0)
+        if (isActive)
         {
             float var7 = (float)par2 + 0.5F;
             float var8 = (float)par3 + 0.0F + par5Random.nextFloat() * 6.0F / 16.0F;
@@ -197,8 +193,10 @@ public class BlockPlatinumCompressor extends BlockContainer
         }
     }
 
-    public static void updateBlock(World world, int x, int y, int z)
+    public static void updateBlock(boolean active, World world, int x, int y, int z)
     {
+    	isActive = active;
+    	
         TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
         
        	world.markBlockAsNeedsUpdate(x, y, z);

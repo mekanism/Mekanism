@@ -257,7 +257,7 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
             if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockPlatinumCompressor.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockPlatinumCompressor.updateBlock(machineBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 

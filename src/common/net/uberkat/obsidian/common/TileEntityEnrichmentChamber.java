@@ -257,7 +257,7 @@ public class TileEntityEnrichmentChamber extends TileEntity implements IInventor
             if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockEnrichmentChamber.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockEnrichmentChamber.updateBlock(machineBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 

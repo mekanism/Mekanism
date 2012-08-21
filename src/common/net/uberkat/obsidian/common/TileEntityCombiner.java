@@ -255,7 +255,7 @@ public class TileEntityCombiner extends TileEntity implements IInventory, ISided
             if (var1 != this.machineBurnTime > 0)
             {
                 var2 = true;
-                BlockCombiner.updateBlock(this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+                BlockCombiner.updateBlock(machineBurnTime > 0, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
             }
         }
 
