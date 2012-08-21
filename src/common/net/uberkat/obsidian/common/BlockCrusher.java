@@ -57,24 +57,16 @@ public class BlockCrusher extends BlockContainer
     {
         int var6 = MathHelper.floor_double((double)(par5EntityLiving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-        if (var6 == 0)
+        switch(var6)
         {
-            world.setBlockMetadataWithNotify(par2, par3, par4, 2);
-        }
-
-        if (var6 == 1)
-        {
-            world.setBlockMetadataWithNotify(par2, par3, par4, 5);
-        }
-
-        if (var6 == 2)
-        {
-            world.setBlockMetadataWithNotify(par2, par3, par4, 3);
-        }
-
-        if (var6 == 3)
-        {
-            world.setBlockMetadataWithNotify(par2, par3, par4, 4);
+        	case 0:
+        		world.setBlockMetadataWithNotify(par2, par3, par4, 2);
+        	case 1:
+        		world.setBlockMetadataWithNotify(par2, par3, par4, 5);
+        	case 2:
+        		world.setBlockMetadataWithNotify(par2, par3, par4, 3);
+        	case 3:
+        		world.setBlockMetadataWithNotify(par2, par3, par4, 4);
         }
     }
 
@@ -121,25 +113,20 @@ public class BlockCrusher extends BlockContainer
             float var10 = 0.52F;
             float var11 = par5Random.nextFloat() * 0.6F - 0.3F;
 
-            if (metadata == 4)
+            switch(metadata)
             {
-                world.spawnParticle("smoke", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
-            }
-            else if (metadata == 5)
-            {
-                world.spawnParticle("smoke", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
-            }
-            else if (metadata == 2)
-            {
-                world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
-            }
-            else if (metadata == 3)
-            {
-                world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
+            	case 4:
+                    world.spawnParticle("smoke", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle("reddust", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+            	case 5:
+                    world.spawnParticle("smoke", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle("reddust", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+            	case 2:
+                    world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
+            	case 3:
+                    world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
+                    world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
             }
         }
     }
