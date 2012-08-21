@@ -31,7 +31,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.2")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.3")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -50,7 +50,7 @@ public class ObsidianIngots
     public static ObsidianHooks hooks;
     
 	//Initial Declarations
-	public static Version versionNumber = new Version(4, 0, 2);
+	public static Version versionNumber = new Version(4, 0, 3);
 	public static String latestVersionNumber;
 	public static String recentNews;
 	public static String hostIP = "71.56.58.57";
@@ -198,11 +198,7 @@ public class ObsidianIngots
 	
 	//Boolean Values
 	public static boolean extrasEnabled = true;
-<<<<<<< HEAD
 	public static boolean oreGenerationEnabled = true;
-=======
-	public static boolean oreGenerationEnabled = true; 
->>>>>>> v4.0.3 Release
 	
 	//Extra data
 	public static float ObsidianTNTBlastRadius = 12.0F;
