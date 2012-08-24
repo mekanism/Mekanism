@@ -1,11 +1,6 @@
 package net.uberkat.obsidian.common;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.EnumToolMaterial;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
+import net.minecraft.src.*;
 
 public class ItemObsidianHoe extends ItemObsidian
 {
@@ -14,6 +9,7 @@ public class ItemObsidianHoe extends ItemObsidian
         super(par1);
         maxStackSize = 1;
         setMaxDamage(par2EnumToolMaterial.getMaxUses());
+        setTabToDisplayOn(CreativeTabs.tabTools);
     }
 
     /**
