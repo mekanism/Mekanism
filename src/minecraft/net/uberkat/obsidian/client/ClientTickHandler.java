@@ -28,7 +28,7 @@ public class ClientTickHandler implements ITickHandler
 
 	public EnumSet<TickType> ticks() 
 	{
-		return EnumSet.of(TickType.CLIENT, TickType.WORLDLOAD);
+		return EnumSet.of(TickType.CLIENT);
 	}
 
 	public String getLabel()
