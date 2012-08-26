@@ -337,8 +337,8 @@ public class TileEntityCrusher extends TileEntity implements IInventory, ISidedI
         {
             int var1 = par1ItemStack.getItem().shiftedIndex;
             if (var1 == Item.redstone.shiftedIndex) return 600;
-            if (var1 == ObsidianIngotsCore.RedstoneIngot.shiftedIndex)
-            if (par1ItemStack.getItem() instanceof ItemBlock && var1 == ObsidianIngotsCore.RedstoneBlock.blockID) return 5400;
+            if (var1 == ObsidianIngots.RedstoneIngot.shiftedIndex)
+            if (par1ItemStack.getItem() instanceof ItemBlock && var1 == ObsidianIngots.RedstoneBlock.blockID) return 5400;
         }
         return 0;
     }

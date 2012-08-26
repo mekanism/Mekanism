@@ -110,7 +110,7 @@ public class ContainerTheoreticalElementizer extends Container
             }
             else if (par1 != 1 && par1 != 0)
             {
-                if (var4.getItem().shiftedIndex == ObsidianIngotsCore.EnrichedAlloy.shiftedIndex)
+                if (var4.getItem().shiftedIndex == ObsidianIngots.EnrichedAlloy.shiftedIndex)
                 {
                     if (!this.mergeItemStack(var4, 0, 1, false))
                     {

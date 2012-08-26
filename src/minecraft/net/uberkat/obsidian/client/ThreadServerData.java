@@ -8,7 +8,7 @@ import java.net.Socket;
 import cpw.mods.fml.client.FMLClientHandler;
 
 import net.minecraft.src.ModLoader;
-import net.uberkat.obsidian.common.ObsidianIngotsCore;
+import net.uberkat.obsidian.common.ObsidianIngots;
 import net.uberkat.obsidian.common.ObsidianUtils;
 
 public class ThreadServerData extends Thread
@@ -26,8 +26,8 @@ public class ThreadServerData extends Thread
 	{
 		System.out.println("[ObsidianIngots] Initiating server protocol...");
 		try {
-			InetAddress address = InetAddress.getByName(ObsidianIngotsCore.hostIP);
-			Socket socket = new Socket(address, ObsidianIngotsCore.hostPort);
+			InetAddress address = InetAddress.getByName(ObsidianIngots.hostIP);
+			Socket socket = new Socket(address, ObsidianIngots.hostPort);
 			PrintWriter writer = new PrintWriter(socket.getOutputStream());
 			writer.println("USER:" + FMLClientHandler.instance().getClient().session.username);
 			writer.println("DONE");

@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.uberkat.obsidian.common.ObsidianIngotsCore;
+import net.uberkat.obsidian.common.ObsidianIngots;
 import net.uberkat.obsidian.common.ObsidianUtils;
 
 import cpw.mods.fml.common.ITickHandler;
@@ -14,10 +14,10 @@ public class ClientTickHandler implements ITickHandler
 {
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		if(ObsidianIngotsCore.ticksPassed == 0 && ModLoader.getMinecraftInstance().theWorld != null && ModLoader.getMinecraftInstance().thePlayer != null)
+		if(ObsidianIngots.ticksPassed == 0 && ModLoader.getMinecraftInstance().theWorld != null && ModLoader.getMinecraftInstance().thePlayer != null)
 		{
 			ObsidianUtils.checkForUpdates(ModLoader.getMinecraftInstance().thePlayer);
-			ObsidianIngotsCore.ticksPassed++;
+			ObsidianIngots.ticksPassed++;
 		}
 	}
 	

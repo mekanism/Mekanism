@@ -21,8 +21,17 @@ public class GuiTheoreticalElementizer extends GuiContainer
      */
     protected void drawGuiContainerForegroundLayer()
     {
-        fontRenderer.drawString("Theoretical Elementizer", 45, 6, 0x404040);
+    	String displayText = "";
+        fontRenderer.drawString("Theoretical Elementizer", 32, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        if(machineInventory.machineBurnTime > 0)
+        {
+        	displayText = "Status: " + Integer.toString(machineInventory.machineCookTime/10) + "%";
+        }
+        else {
+        	displayText = "Status: ¤4Off";
+        }
+        fontRenderer.drawString(displayText, 80, 60, 0x404040);
     }
 
     /**

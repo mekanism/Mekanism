@@ -32,11 +32,11 @@ public class ObsidianUtils
 	 */
 	public static void checkForUpdates(EntityPlayer entityplayer)
 	{
-		if(!(getLatestVersion().toString().equals("Error retrieving data.")) && !(getLatestVersion().toString().equals(ObsidianIngotsCore.versionNumber.toString())))
+		if(!(ObsidianIngots.latestVersionNumber.equals("Error retrieving data.")) && !(ObsidianIngots.latestVersionNumber.equals(ObsidianIngots.versionNumber.toString())))
 		{
-			entityplayer.addChatMessage("Your version of ¤1Obsidian Ingots ¤7(¤8" + ObsidianIngotsCore.versionNumber.toString() + "¤7) is outdated. Please update to version ¤8" + getLatestVersion().toString());
+			entityplayer.addChatMessage("Your version of ¤1Obsidian Ingots ¤7(¤8" + ObsidianIngots.versionNumber.toString() + "¤7) is outdated. Please update to version ¤8" + ObsidianIngots.latestVersionNumber);
 		}
-		else if(getLatestVersion().toString().equals("Error retrieving data."))
+		else if(ObsidianIngots.latestVersionNumber.equals("Error retrieving data."))
 		{
 			System.out.println("[ObsidianIngots] Minecraft is in offline mode, could not check for updates.");
 		}
@@ -151,7 +151,7 @@ public class ObsidianUtils
 	 */
 	public static boolean isClientLatestVersion()
 	{
-		if(ObsidianIngotsCore.versionNumber.toString().equals(ObsidianIngotsCore.latestVersionNumber))
+		if(ObsidianIngots.versionNumber.toString().equals(ObsidianIngots.latestVersionNumber))
 		{
 			return true;
 		}

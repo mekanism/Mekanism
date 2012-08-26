@@ -6,7 +6,7 @@ import java.net.URL;
 import org.lwjgl.Sys;
 
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.ObsidianIngotsCore;
+import net.uberkat.obsidian.common.ObsidianIngots;
 import net.uberkat.obsidian.common.ObsidianUtils;
 
 public class GuiCredits extends GuiScreen {
@@ -32,7 +32,7 @@ public class GuiCredits extends GuiScreen {
 	
 	public static void onErrorDownloading()
 	{
-		updateProgress = "Error updating.";
+		updateProgress = "¤4Error updating.";
 	}
 	
 	protected void actionPerformed(GuiButton guibutton)
@@ -67,13 +67,13 @@ public class GuiCredits extends GuiScreen {
 	public void drawScreen(int i, int j, float f)
 	{
 		drawDefaultBackground();
-        drawCenteredString(fontRenderer, "Obsidian Ingots by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
-        drawString(fontRenderer, (new StringBuilder()).append("Your version: ").append(ObsidianUtils.isClientLatestVersion() ? ObsidianIngotsCore.versionNumber.toString() : (ObsidianIngotsCore.versionNumber.toString() + " -- OUTDATED")).toString(), width / 2 - 140, (height / 4 - 60) + 20 + 36, 0xa0a0a0);
-  		drawString(fontRenderer, (new StringBuilder()).append("Newest version: ").append(ObsidianIngotsCore.latestVersionNumber).toString(), width / 2 - 140, (height / 4 - 60) + 20 + 45, 0xa0a0a0);
-  		writeText("*Developed on Mac OS X 10.8 Mountain Lion", 63);
-  		writeText("*Code, textures, and ideas by aidancbrady", 72);
-  		writeText("Recent news: " + ObsidianIngotsCore.recentNews, 81);
-  		writeText(updateProgress, 99);
+        drawCenteredString(fontRenderer, "¤1Obsidian Ingots ¤7by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
+        writeText("¤7Your version: " + (ObsidianUtils.isClientLatestVersion() ? ObsidianIngots.versionNumber.toString() : "¤4" + ObsidianIngots.versionNumber.toString()) + "¤7 -- OUTDATED", 36);
+  		writeText("¤7Newest version: " + ObsidianIngots.latestVersionNumber, 45);
+  		writeText("¤7*Developed on Mac OS X 10.8 Mountain Lion", 63);
+  		writeText("¤7*Code, textures, and ideas by aidancbrady", 72);
+  		writeText("¤7Recent news: ¤1" + ObsidianIngots.recentNews, 81);
+  		writeText("¤7" + updateProgress, 99);
   		super.drawScreen(i, j, f);
 	}
 }

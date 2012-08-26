@@ -23,10 +23,10 @@ public class EnrichmentChamberRecipes
 
     private EnrichmentChamberRecipes()
     {
-        addSmelting(Block.obsidian.blockID, new ItemStack(ObsidianIngotsCore.ObsidianDust, 1));
-        addSmelting(Block.oreIron.blockID, new ItemStack(ObsidianIngotsCore.IronDust, 1));
-        addSmelting(Block.oreGold.blockID, new ItemStack(ObsidianIngotsCore.GoldDust, 1));
-        addSmelting(ObsidianIngotsCore.platinumOreID, new ItemStack(ObsidianIngotsCore.PlatinumDust, 1));
+        addSmelting(Block.obsidian.blockID, new ItemStack(ObsidianIngots.ObsidianDust, 1));
+        addSmelting(Block.oreIron.blockID, new ItemStack(ObsidianIngots.IronDust, 1));
+        addSmelting(Block.oreGold.blockID, new ItemStack(ObsidianIngots.GoldDust, 1));
+        addSmelting(ObsidianIngots.platinumOreID, new ItemStack(ObsidianIngots.PlatinumDust, 1));
         addSmelting(Block.oreRedstone.blockID, new ItemStack(Item.redstone));
     }
 

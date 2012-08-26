@@ -26,10 +26,10 @@ public class ItemLightningRod extends ItemObsidian
 			{
 				return itemstack;
 			}
-            Vec3 vec3d = movingobjectposition.hitVec;
-            double x = vec3d.xCoord;
-            double y = vec3d.yCoord;
-            double z = vec3d.zCoord;
+            Vec3 vec3 = movingobjectposition.hitVec;
+            double x = vec3.xCoord;
+            double y = vec3.yCoord;
+            double z = vec3.zCoord;
             int i = MathHelper.floor_double(x);
             int j = MathHelper.floor_double(y);
             int k = MathHelper.floor_double(z);
@@ -40,7 +40,10 @@ public class ItemLightningRod extends ItemObsidian
             EntityLightningBolt entitybolt = new EntityLightningBolt(world, 0D, 0D, 0D);
             entitybolt.setLocationAndAngles(x, y, z, 0, 0.0F);
             world.spawnEntityInWorld(entitybolt);
-			itemstack.setItemDamage(99);
+            if(!entityplayer.capabilities.isCreativeMode)
+            {
+            	itemstack.damageItem(99, entityplayer);
+            }
 		}
 		return itemstack;
 	}

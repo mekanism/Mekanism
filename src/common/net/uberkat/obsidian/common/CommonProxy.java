@@ -36,25 +36,25 @@ public abstract class CommonProxy
 			if(config.exists())
 			{
 				properties.load(new FileInputStream(config));
-				ObsidianIngotsCore.platinumOreID = Integer.parseInt(properties.getProperty("platinumOreID"));
-			  	ObsidianIngotsCore.platinumBlockID = Integer.parseInt(properties.getProperty("platinumBlockID"));
-			  	ObsidianIngotsCore.redstoneBlockID = Integer.parseInt(properties.getProperty("redstoneBlockID"));
-			  	ObsidianIngotsCore.obsidianTNTID = Integer.parseInt(properties.getProperty("obsidianTNTID"));
-			  	ObsidianIngotsCore.refinedObsidianID = Integer.parseInt(properties.getProperty("refinedObsidianID"));
-			  	ObsidianIngotsCore.elementizerID = Integer.parseInt(properties.getProperty("elementizerID"));
-			  	ObsidianIngotsCore.enrichmentChamberID = Integer.parseInt(properties.getProperty("enrichmentChamberID"));
-			  	ObsidianIngotsCore.platinumCompressorID = Integer.parseInt(properties.getProperty("platinumCompressorID"));
-			  	ObsidianIngotsCore.combinerID = Integer.parseInt(properties.getProperty("combinerID"));
-			  	ObsidianIngotsCore.crusherID = Integer.parseInt(properties.getProperty("crusherID"));
-			  	ObsidianIngotsCore.coalBlockID = Integer.parseInt(properties.getProperty("coalBlockID"));
-			  	ObsidianIngotsCore.refinedGlowstoneID = Integer.parseInt(properties.getProperty("refinedGlowstoneID"));
-			  	ObsidianIngotsCore.extrasEnabled = Boolean.parseBoolean(properties.getProperty("extrasEnabled"));
-			  	ObsidianIngotsCore.oreGenerationEnabled = Boolean.parseBoolean(properties.getProperty("oreGenerationEnabled"));
-			  	ObsidianIngotsCore.logger.info("[ObsidianIngots] Data loaded.");
+				ObsidianIngots.platinumOreID = Integer.parseInt(properties.getProperty("platinumOreID"));
+			  	ObsidianIngots.platinumBlockID = Integer.parseInt(properties.getProperty("platinumBlockID"));
+			  	ObsidianIngots.redstoneBlockID = Integer.parseInt(properties.getProperty("redstoneBlockID"));
+			  	ObsidianIngots.obsidianTNTID = Integer.parseInt(properties.getProperty("obsidianTNTID"));
+			  	ObsidianIngots.refinedObsidianID = Integer.parseInt(properties.getProperty("refinedObsidianID"));
+			  	ObsidianIngots.elementizerID = Integer.parseInt(properties.getProperty("elementizerID"));
+			  	ObsidianIngots.enrichmentChamberID = Integer.parseInt(properties.getProperty("enrichmentChamberID"));
+			  	ObsidianIngots.platinumCompressorID = Integer.parseInt(properties.getProperty("platinumCompressorID"));
+			  	ObsidianIngots.combinerID = Integer.parseInt(properties.getProperty("combinerID"));
+			  	ObsidianIngots.crusherID = Integer.parseInt(properties.getProperty("crusherID"));
+			  	ObsidianIngots.coalBlockID = Integer.parseInt(properties.getProperty("coalBlockID"));
+			  	ObsidianIngots.refinedGlowstoneID = Integer.parseInt(properties.getProperty("refinedGlowstoneID"));
+			  	ObsidianIngots.extrasEnabled = Boolean.parseBoolean(properties.getProperty("extrasEnabled"));
+			  	ObsidianIngots.oreGenerationEnabled = Boolean.parseBoolean(properties.getProperty("oreGenerationEnabled"));
+			  	ObsidianIngots.logger.info("[ObsidianIngots] Data loaded.");
 			}
 			else {
 				config.createNewFile();
-				ObsidianIngotsCore.logger.info("[ObsidianIngots] Created 'ObsidianIngots.txt' configuration file.");
+				ObsidianIngots.logger.info("[ObsidianIngots] Created 'ObsidianIngots.txt' configuration file.");
 				FileOutputStream fileoutputstream = new FileOutputStream(config);
 				properties.setProperty("platinumOreID", Integer.toString(200));
 				properties.setProperty("platinumBlockID", Integer.toString(201));

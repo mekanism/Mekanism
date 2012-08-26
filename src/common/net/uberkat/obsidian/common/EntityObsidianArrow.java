@@ -458,7 +458,7 @@ public class EntityObsidianArrow extends Entity
         {
             boolean var2 = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
 
-            if (this.canBePickedUp == 1 && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(ObsidianIngotsCore.ObsidianArrow, 1)))
+            if (this.canBePickedUp == 1 && !par1EntityPlayer.inventory.addItemStackToInventory(new ItemStack(ObsidianIngots.ObsidianArrow, 1)))
             {
                 var2 = false;
             }

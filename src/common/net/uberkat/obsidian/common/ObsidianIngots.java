@@ -16,8 +16,10 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -31,9 +33,9 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.3")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.4")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
-public class ObsidianIngotsCore
+public class ObsidianIngots
 {
 	/** Obsidian Ingots logger instance */
 	public static Logger logger = Logger.getLogger("Minecraft");
@@ -44,13 +46,13 @@ public class ObsidianIngotsCore
 	
     /** Obsidian Ingots mod instance */
 	@Instance
-    public static ObsidianIngotsCore instance;
+    public static ObsidianIngots instance;
     
     /** Obsidian Ingots hooks instance */
     public static ObsidianHooks hooks;
     
 	//Initial Declarations
-	public static Version versionNumber = new Version(4, 0, 3);
+	public static Version versionNumber = new Version(4, 0, 4);
 	public static String latestVersionNumber;
 	public static String recentNews;
 	public static String hostIP = "71.56.58.57";
@@ -467,9 +469,6 @@ public class ObsidianIngotsCore
 			GameRegistry.addRecipe(new ItemStack(TheoreticalElementizer, 1), new Object[] {
 				"SGS", "GDG", "SGS", Character.valueOf('S'), Block.stone, Character.valueOf('G'), Block.glass, Character.valueOf('D'), Block.blockDiamond
 			});
-			GameRegistry.addShapelessRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
-				Item.redstone, Item.lightStoneDust, IronDust, GoldDust, ObsidianDust, PlatinumDust
-			});
 		}
 		GameRegistry.addRecipe(new ItemStack(PlatinumCompressor, 1), new Object[] {
 			"***", "*P*", "***", Character.valueOf('*'), Item.redstone, Character.valueOf('P'), PlatinumBlock
@@ -487,6 +486,7 @@ public class ObsidianIngotsCore
 		//Smelting
 		GameRegistry.addSmelting(platinumOreID, new ItemStack(PlatinumIngot), 1.0F);
 	}
+	
 	/**
 	 * Adds all item and block names.
 	 */
@@ -503,8 +503,6 @@ public class ObsidianIngotsCore
 		LanguageRegistry.addName(IronKnife, "Iron Knife");
 		LanguageRegistry.addName(DiamondKnife, "Diamond Knife");
 		LanguageRegistry.addName(GoldKnife, "Gold Knife");
-		LanguageRegistry.addName(IronDust, "Iron Dust");
-		LanguageRegistry.addName(GoldDust, "Gold Dust");
 		
 		//Obsidian
 		LanguageRegistry.addName(RefinedObsidian, "Refined Obsidian");
@@ -602,6 +600,7 @@ public class ObsidianIngotsCore
 		LanguageRegistry.addName(Crusher, "Crusher");
 		LanguageRegistry.addName(CoalBlock, "Coal Block");
 	}
+	
 	/**
 	 * Adds all item textures from the sprite sheet.
 	 */
@@ -618,8 +617,6 @@ public class ObsidianIngotsCore
 		IronKnife.setIconIndex(216);
 		DiamondKnife.setIconIndex(217);
 		GoldKnife.setIconIndex(218);
-		IronDust.setIconIndex(248);
-		GoldDust.setIconIndex(250);
 		
 		//Glowstone
 		GlowstoneHelmet.setIconIndex(4);
@@ -704,6 +701,7 @@ public class ObsidianIngotsCore
 			EnrichedAlloy.setIconIndex(227);
 		}
 	}
+	
 	/**
 	 * Adds and registers all items.
 	 */
@@ -776,8 +774,6 @@ public class ObsidianIngotsCore
 		PlatinumKnife = new ItemObsidianKnife(11295, toolPLATINUM).setItemName("PlatinumKnife");
 		RedstoneKnife = new ItemObsidianKnife(11296, toolREDSTONE).setItemName("RedstoneKnife");
 		ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
-		IronDust = new ItemObsidian(11298).setItemName("IronDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
-		GoldDust = new ItemObsidian(11299).setItemName("GoldDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		PlatinumDust = new ItemObsidian(11300).setItemName("PlatinumDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		GlowstoneIngot = new ItemObsidian(11301).setItemName("GlowstoneIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		GlowstonePaxel = new ItemObsidianPaxel(11302, toolGLOWSTONE2).setItemName("GlowstonePaxel");
@@ -791,8 +787,8 @@ public class ObsidianIngotsCore
 		GlowstoneLegs = new ItemObsidianArmor(11310, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 2).setItemName("GlowstoneLegs");
 		GlowstoneBoots = new ItemObsidianArmor(11311, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 3).setItemName("GlowstoneBoots");
 		GlowstoneKnife = new ItemObsidianKnife(11312, toolGLOWSTONE).setItemName("GlowstoneKnife");
-
 	}
+	
 	/**
 	 * Adds and registers all blocks.
 	 */
@@ -832,6 +828,31 @@ public class ObsidianIngotsCore
 		GameRegistry.registerBlock(CoalBlock);
 		GameRegistry.registerBlock(RefinedGlowstone);
 	}
+	
+	/**
+	 * Adds the items integrated between separate mods, like Iron and Gold dust.
+	 */
+	public void addIntegratedItems()
+	{
+		if(hooks.IC2Loaded && hooks.IC2GoldDust != null && hooks.IC2IronDust != null)
+		{
+			IronDust = hooks.IC2IronDust.getItem();
+			GoldDust = hooks.IC2GoldDust.getItem();
+		}
+		else {
+			IronDust = new ItemObsidian(11298).setItemName("IronDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+			GoldDust = new ItemObsidian(11299).setItemName("GoldDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+			IronDust.setIconIndex(248);
+			GoldDust.setIconIndex(250);
+			LanguageRegistry.addName(IronDust, "Iron Dust");
+			LanguageRegistry.addName(GoldDust, "Gold Dust");
+		}
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
+			Item.redstone, Item.lightStoneDust, IronDust, GoldDust, ObsidianDust, PlatinumDust
+		});
+	}
+	
 	/**
 	 * Adds and registers all entities and tile entities.
 	 */
@@ -855,8 +876,14 @@ public class ObsidianIngotsCore
 		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 	}
 	
+	@PostInit
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		addIntegratedItems();
+	}
+	
 	@PreInit
-	public void load(FMLPreInitializationEvent event) 
+	public void preInit(FMLPreInitializationEvent event) 
 	{
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());

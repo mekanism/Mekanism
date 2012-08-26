@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.minecraft.src.ModLoader;
-import net.uberkat.obsidian.common.ObsidianIngotsCore;
+import net.uberkat.obsidian.common.ObsidianIngots;
 /**
  * Thread that downloads the latest release of Obsidian Ingots. The older file is deleted and the newly downloaded file takes it's place.
  * @author AidanBrady
@@ -51,7 +51,7 @@ public class ThreadUpdate extends Thread
 			outputStream.close();
 			stream.close();
 			GuiCredits.onFinishedDownloading();
-			System.out.println("[ObsidianIngots] Successfully updated to latest version (" + ObsidianIngotsCore.latestVersionNumber + ").");
+			System.out.println("[ObsidianIngots] Successfully updated to latest version (" + ObsidianIngots.latestVersionNumber + ").");
 			finalize();
 			
 		} catch(Throwable e)

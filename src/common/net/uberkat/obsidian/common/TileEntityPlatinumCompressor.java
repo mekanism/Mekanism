@@ -338,8 +338,8 @@ public class TileEntityPlatinumCompressor extends TileEntity implements IInvento
         else
         {
             int var1 = par1ItemStack.getItem().shiftedIndex;
-            if (var1 == ObsidianIngotsCore.PlatinumIngot.shiftedIndex) return 200;
-            if (par1ItemStack.getItem() instanceof ItemBlock && var1 == ObsidianIngotsCore.PlatinumBlock.blockID) return 1800;
+            if (var1 == ObsidianIngots.PlatinumIngot.shiftedIndex) return 200;
+            if (par1ItemStack.getItem() instanceof ItemBlock && var1 == ObsidianIngots.PlatinumBlock.blockID) return 1800;
         }
         return 0;
     }

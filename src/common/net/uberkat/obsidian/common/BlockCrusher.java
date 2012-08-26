@@ -85,6 +85,11 @@ public class BlockCrusher extends BlockContainer
 
     public void onBlockAdded(World world, int par2, int par3, int par4)
     {
+    	TileEntityCrusher tileEntity = (TileEntityCrusher)world.getBlockTileEntity(par2, par3, par4);
+    	if(tileEntity != null)
+    	{
+    		tileEntity.machineBurnTime = 0;
+    	}
     	setDefaultDirection(world, par2, par3, par4);
         super.onBlockAdded(world, par2, par3, par4);
     }
@@ -169,7 +174,7 @@ public class BlockCrusher extends BlockContainer
             {
             	if(!entityplayer.isSneaking())
             	{
-            		entityplayer.openGui(ObsidianIngotsCore.instance, 24, world, x, y, z);
+            		entityplayer.openGui(ObsidianIngots.instance, 24, world, x, y, z);
             	}
             	else {
             		return false;

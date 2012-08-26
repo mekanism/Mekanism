@@ -91,7 +91,7 @@ public class BlockObsidianTNT extends Block
         {
             if ((par5 & 1) == 0)
             {
-                this.dropBlockAsItem_do(par1World, par2, par3, par4, new ItemStack(ObsidianIngotsCore.ObsidianTNT, 1, 0));
+                this.dropBlockAsItem_do(par1World, par2, par3, par4, new ItemStack(ObsidianIngots.ObsidianTNT, 1, 0));
             }
             else
             {

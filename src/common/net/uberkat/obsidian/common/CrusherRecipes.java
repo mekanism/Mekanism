@@ -23,11 +23,11 @@ public class CrusherRecipes
 
     private CrusherRecipes()
     {
-        addSmelting(ObsidianIngotsCore.RedstoneIngot.shiftedIndex, new ItemStack(Item.redstone, 1));
-        addSmelting(Item.ingotIron.shiftedIndex, new ItemStack(ObsidianIngotsCore.IronDust, 1));
-        addSmelting(Item.ingotGold.shiftedIndex, new ItemStack(ObsidianIngotsCore.GoldDust, 1));
-        addSmelting(ObsidianIngotsCore.PlatinumIngot.shiftedIndex, new ItemStack(ObsidianIngotsCore.PlatinumDust, 1));
-        addSmelting(ObsidianIngotsCore.GlowstoneIngot.shiftedIndex, new ItemStack(Item.lightStoneDust));
+        addSmelting(ObsidianIngots.RedstoneIngot.shiftedIndex, new ItemStack(Item.redstone, 1));
+        addSmelting(Item.ingotIron.shiftedIndex, new ItemStack(ObsidianIngots.IronDust, 1));
+        addSmelting(Item.ingotGold.shiftedIndex, new ItemStack(ObsidianIngots.GoldDust, 1));
+        addSmelting(ObsidianIngots.PlatinumIngot.shiftedIndex, new ItemStack(ObsidianIngots.PlatinumDust, 1));
+        addSmelting(ObsidianIngots.GlowstoneIngot.shiftedIndex, new ItemStack(Item.lightStoneDust));
     }
 
     /**
