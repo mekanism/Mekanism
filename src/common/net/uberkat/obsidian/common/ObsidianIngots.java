@@ -45,7 +45,7 @@ public class ObsidianIngots
 	public static CommonProxy proxy;
 	
     /** Obsidian Ingots mod instance */
-	@Instance
+	@Instance("ObsidianIngots")
     public static ObsidianIngots instance;
     
     /** Obsidian Ingots hooks instance */
