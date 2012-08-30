@@ -54,17 +54,6 @@ public class BlockBase extends Block
     	}
         return false;
     }
-	
-    public void addCreativeItems(ArrayList itemList)
-    {
-    	if(blockID != ObsidianIngots.platinumOreID)
-    	{
-    		itemList.add(new ItemStack(this));
-    	}
-    	else {
-    		//Do nothing
-    	}
-    }
     
 	public String getTextureFile() {
 		return "/obsidian/terrain.png";

@@ -12,7 +12,6 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.server.FMLServerHandler;
@@ -131,21 +130,6 @@ public class ObsidianUtils
 	}
 	
 	/**
-	 * Checks if the game is running on multiplayer.
-	 * @return if world is multiplayer
-	 */
-	public static boolean isMultiplayer()
-	{
-		if(!FMLClientHandler.instance().getClient().isSingleplayer())
-		{
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	/**
 	 * Checks if the mod is running on the latest version.
 	 * @return if mod is latest version
 	 */
@@ -197,4 +181,22 @@ public class ObsidianUtils
 		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
 	}
+	
+	/**
+	 * Checks if a machine is in it's active state.
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return if machine is active
+	 */
+    public static boolean isActive(IBlockAccess world, int x, int y, int z)
+    {
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+    	if(tileEntity != null)
+    	{
+    		return tileEntity.isActive;
+    	}
+    	return false;
+    }
 }

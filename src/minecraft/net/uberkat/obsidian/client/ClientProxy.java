@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Side;
@@ -40,6 +41,12 @@ import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
  */
 public class ClientProxy extends CommonProxy
 {
+	@Override
+	public int getArmorIndex(String string)
+	{
+		return RenderingRegistry.addNewArmourRendererPrefix(string);
+	}
+	
 	public void registerRenderInformation()
 	{
 		System.out.println("[ObsidianIngots] Beginning render initiative...");

@@ -5,6 +5,8 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
@@ -50,6 +52,8 @@ public class ObsidianIngots
     
     /** Obsidian Ingots hooks instance */
     public static ObsidianHooks hooks;
+    
+    public static File configuration;
     
 	//Initial Declarations
 	public static Version versionNumber = new Version(4, 0, 4);
@@ -707,10 +711,10 @@ public class ObsidianIngots
 	 */
 	public void addItems()
 	{
-		RedstoneHelmet = (new ItemObsidianArmor(11235, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 0)).setItemName("RedstoneHelmet");
-		RedstoneBody = (new ItemObsidianArmor(11236, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 1)).setItemName("RedstoneBody");
-		RedstoneLegs = (new ItemObsidianArmor(11237, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 2)).setItemName("RedstoneLegs");
-		RedstoneBoots = (new ItemObsidianArmor(11238, armorREDSTONE, RenderingRegistry.addNewArmourRendererPrefix("redstone"), 3)).setItemName("RedstoneBoots");
+		RedstoneHelmet = (new ItemObsidianArmor(11235, armorREDSTONE, proxy.getArmorIndex("redstone"), 0)).setItemName("RedstoneHelmet");
+		RedstoneBody = (new ItemObsidianArmor(11236, armorREDSTONE, proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
+		RedstoneLegs = (new ItemObsidianArmor(11237, armorREDSTONE, proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
+		RedstoneBoots = (new ItemObsidianArmor(11238, armorREDSTONE, proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
 		RedstoneIngot = new ItemObsidian(11239).setItemName("RedstoneIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		RedstonePaxel = new ItemObsidianPaxel(11240, toolREDSTONE2).setItemName("RedstonePaxel");
 		RedstonePickaxe = new ItemObsidianPickaxe(11241, toolREDSTONE).setItemName("RedstonePickaxe");
@@ -718,10 +722,10 @@ public class ObsidianIngots
 		RedstoneSpade = new ItemObsidianSpade(11243, toolREDSTONE).setItemName("RedstoneSpade");
 		RedstoneHoe = new ItemObsidianHoe(11244, toolREDSTONE).setItemName("RedstoneHoe");
 		RedstoneSword = new ItemObsidianSword(11245, toolREDSTONE).setItemName("RedstoneSword");
-		PlatinumHelmet = (new ItemObsidianArmor(11246, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 0)).setItemName("PlatinumHelmet");
-		PlatinumBody = (new ItemObsidianArmor(11247, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 1)).setItemName("PlatinumBody");
-		PlatinumLegs = (new ItemObsidianArmor(11248, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 2)).setItemName("PlatinumLegs");
-		PlatinumBoots = (new ItemObsidianArmor(11249, EnumArmorMaterial.DIAMOND, RenderingRegistry.addNewArmourRendererPrefix("platinum"), 3)).setItemName("PlatinumBoots");
+		PlatinumHelmet = (new ItemObsidianArmor(11246, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
+		PlatinumBody = (new ItemObsidianArmor(11247, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
+		PlatinumLegs = (new ItemObsidianArmor(11248, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
+		PlatinumBoots = (new ItemObsidianArmor(11249, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
 		PlatinumIngot = new ItemObsidian(11250).setItemName("PlatinumIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		PlatinumPaxel = new ItemObsidianPaxel(11251, toolPLATINUM2).setItemName("PlatinumPaxel");
 		PlatinumPickaxe = new ItemObsidianPickaxe(11252, toolPLATINUM).setItemName("PlatinumPickaxe");
@@ -729,10 +733,10 @@ public class ObsidianIngots
 		PlatinumSpade = new ItemObsidianSpade(11254, toolPLATINUM).setItemName("PlatinumSpade");
 		PlatinumHoe = new ItemObsidianHoe(11255, toolPLATINUM).setItemName("PlatinumHoe");
 		PlatinumSword = new ItemObsidianSword(11256, toolPLATINUM).setItemName("PlatinumSword");
-		ObsidianHelmet = (new ItemObsidianArmor(11257, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 0)).setItemName("ObsidianHelmet");
-		ObsidianBody = (new ItemObsidianArmor(11258, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 1)).setItemName("ObsidianBody");
-		ObsidianLegs = (new ItemObsidianArmor(11259, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 2)).setItemName("ObsidianLegs");
-		ObsidianBoots = (new ItemObsidianArmor(11260, armorOBSIDIAN, RenderingRegistry.addNewArmourRendererPrefix("obsidian"), 3)).setItemName("ObsidianBoots");
+		ObsidianHelmet = (new ItemObsidianArmor(11257, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
+		ObsidianBody = (new ItemObsidianArmor(11258, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
+		ObsidianLegs = (new ItemObsidianArmor(11259, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
+		ObsidianBoots = (new ItemObsidianArmor(11260, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
 		ObsidianIngot = new ItemObsidian(11261).setItemName("ObsidianIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		ObsidianPaxel = new ItemObsidianPaxel(11262, toolOBSIDIAN2).setItemName("ObsidianPaxel");
 		ObsidianPickaxe = new ItemObsidianPickaxe(11263, toolOBSIDIAN).setItemName("ObsidianPickaxe");
@@ -746,10 +750,10 @@ public class ObsidianIngots
 		LazuliSpade = new ItemObsidianSpade(11271, toolLAZULI).setItemName("LazuliSpade");
 		LazuliHoe = new ItemObsidianHoe(11272, toolLAZULI).setItemName("LazuliHoe");
 		LazuliSword = new ItemObsidianSword(11273, toolLAZULI).setItemName("LazuliSword");
-		LazuliHelmet = (new ItemObsidianArmor(11274, armorLAZULI, RenderingRegistry.addNewArmourRendererPrefix("lazuli"), 0)).setItemName("LazuliHelmet");
-		LazuliBody = (new ItemObsidianArmor(11275, armorLAZULI, RenderingRegistry.addNewArmourRendererPrefix("lazuli"), 1)).setItemName("LazuliBody");
-		LazuliLegs = (new ItemObsidianArmor(11276, armorLAZULI, RenderingRegistry.addNewArmourRendererPrefix("lazuli"), 2)).setItemName("LazuliLegs");
-		LazuliBoots = (new ItemObsidianArmor(11277, armorLAZULI, RenderingRegistry.addNewArmourRendererPrefix("lazuli"), 3)).setItemName("LazuliBoots");
+		LazuliHelmet = (new ItemObsidianArmor(11274, armorLAZULI, proxy.getArmorIndex("lazuli"), 0)).setItemName("LazuliHelmet");
+		LazuliBody = (new ItemObsidianArmor(11275, armorLAZULI, proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
+		LazuliLegs = (new ItemObsidianArmor(11276, armorLAZULI, proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
+		LazuliBoots = (new ItemObsidianArmor(11277, armorLAZULI, proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
 		ObsidianArrow = new ItemObsidian(11278).setItemName("ObsidianArrow").setTabToDisplayOn(CreativeTabs.tabCombat);
 		ObsidianBow = new ItemObsidianBow(11279).setItemName("ObsidianBow");
 		if(extrasEnabled == true)
@@ -782,10 +786,10 @@ public class ObsidianIngots
 		GlowstoneSpade = new ItemObsidianSpade(11305, toolGLOWSTONE).setItemName("GlowstoneSpade");
 		GlowstoneHoe = new ItemObsidianHoe(11306, toolGLOWSTONE).setItemName("GlowstoneHoe");
 		GlowstoneSword = new ItemObsidianSword(11307, toolGLOWSTONE).setItemName("GlowstoneSword");
-		GlowstoneHelmet = new ItemObsidianArmor(11308, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 0).setItemName("GlowstoneHelmet");
-		GlowstoneBody = new ItemObsidianArmor(11309, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 1).setItemName("GlowstoneBody");
-		GlowstoneLegs = new ItemObsidianArmor(11310, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 2).setItemName("GlowstoneLegs");
-		GlowstoneBoots = new ItemObsidianArmor(11311, armorGLOWSTONE, RenderingRegistry.addNewArmourRendererPrefix("glowstone"), 3).setItemName("GlowstoneBoots");
+		GlowstoneHelmet = new ItemObsidianArmor(11308, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 0).setItemName("GlowstoneHelmet");
+		GlowstoneBody = new ItemObsidianArmor(11309, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 1).setItemName("GlowstoneBody");
+		GlowstoneLegs = new ItemObsidianArmor(11310, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
+		GlowstoneBoots = new ItemObsidianArmor(11311, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
 		GlowstoneKnife = new ItemObsidianKnife(11312, toolGLOWSTONE).setItemName("GlowstoneKnife");
 	}
 	
@@ -885,6 +889,7 @@ public class ObsidianIngots
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) 
 	{
+		configuration = event.getSuggestedConfigurationFile();
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		//Register the mod's GUI handler

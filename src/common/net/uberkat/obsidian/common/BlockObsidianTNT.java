@@ -137,11 +137,6 @@ public class BlockObsidianTNT extends Block
         return null;
     }
     
-    public void addCreativeItems(ArrayList itemList)
-    {
-    	itemList.add(new ItemStack(this));
-    }
-    
     public String getTextureFile()
     {
     	return "/obsidian/terrain.png";

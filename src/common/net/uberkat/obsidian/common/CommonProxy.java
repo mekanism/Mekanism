@@ -17,12 +17,20 @@ import cpw.mods.fml.common.network.IGuiHandler;
  * @author AidanBrady
  *
  */
-public abstract class CommonProxy
+public class CommonProxy
 {
 	/**
 	 * Register and load client-only render information.
 	 */
-	public abstract void registerRenderInformation();
+	public void registerRenderInformation()
+	{
+		
+	}
+	
+	public int getArmorIndex(String string)
+	{
+		return 0;
+	}
 	
 	/**
 	 * Set and load the mod's common properties.
@@ -32,7 +40,7 @@ public abstract class CommonProxy
 		Properties properties = new Properties();
 		try
 		{
-			File config = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/config/ObsidianIngots.txt").toString());
+			File config = ObsidianIngots.configuration;
 			if(config.exists())
 			{
 				properties.load(new FileInputStream(config));
@@ -84,12 +92,18 @@ public abstract class CommonProxy
 	/**
 	 * Load and initiate utilities for the mod.
 	 */
-	public abstract void loadUtilities();
+	public void loadUtilities()
+	{
+		
+	}
 	
 	/**
 	 * Set up and load the client-only tick handler.
 	 */
-	public abstract void loadTickHandler();
+	public void loadTickHandler()
+	{
+		
+	}
 	
 	/**
 	 * Get the actual interface for a GUI.  Client-only.
@@ -101,7 +115,10 @@ public abstract class CommonProxy
 	 * @param z - gui's z position
 	 * @return the GuiScreen of the interface
 	 */
-	public abstract Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z);
+	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	{
+		return null;
+	}
 	
 	/**
 	 * Get the container for a GUI.  Common.
