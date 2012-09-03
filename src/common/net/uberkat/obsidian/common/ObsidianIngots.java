@@ -35,7 +35,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.4")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.5")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -56,7 +56,7 @@ public class ObsidianIngots
     public static File configuration;
     
 	//Initial Declarations
-	public static Version versionNumber = new Version(4, 0, 4);
+	public static Version versionNumber = new Version(4, 0, 5);
 	public static String latestVersionNumber;
 	public static String recentNews;
 	public static String hostIP = "71.56.58.57";
@@ -67,8 +67,8 @@ public class ObsidianIngots
     public static EnumToolMaterial toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2", 3, 3000, 25F, 10, 100);
     public static EnumToolMaterial toolLAZULI = EnumHelper.addToolMaterial("LAZULI", 2, 200, 5.0F, 0, 22);
     public static EnumToolMaterial toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2", 2, 250, 6.0F, 4, 50);
-    public static EnumToolMaterial toolPLATINUM = EnumHelper.addToolMaterial("PLATINUM", 3, 800, 15F, 5, 30);
-    public static EnumToolMaterial toolPLATINUM2 = EnumHelper.addToolMaterial("PLATINUM2", 3, 1000, 20F, 5, 60);
+    public static EnumToolMaterial toolPLATINUM = EnumHelper.addToolMaterial("PLATINUM", 2, 500, 10F, 4, 30);
+    public static EnumToolMaterial toolPLATINUM2 = EnumHelper.addToolMaterial("PLATINUM2", 3, 700, 12F, 5, 40);
     public static EnumToolMaterial toolREDSTONE = EnumHelper.addToolMaterial("REDSTONE", 2, 250, 10F, 6, 50);
     public static EnumToolMaterial toolREDSTONE2 = EnumHelper.addToolMaterial("REDSTONE2", 2, 400, 12F, 6, 60);
     public static EnumToolMaterial toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE", 2, 300, 14, 5, 80);

@@ -108,28 +108,6 @@ public class ObsidianUtils
 	}
 	
 	/**
-	 * Sends the server the defined packet int.
-	 * @param i - int to send
-	 */
-	public static void sendPacketDataInt(int i)
-	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        try {
-			data.writeInt(i);
-		} catch (IOException e) {
-			System.out.println("[ObsidianIngots] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "ObsidianIngots";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        System.out.println("[ObsidianIngots] Sent '" + i + "' packet to server");
-	}
-	
-	/**
 	 * Checks if the mod is running on the latest version.
 	 * @return if mod is latest version
 	 */
@@ -172,7 +150,7 @@ public class ObsidianUtils
 	}
 	
 	/**
-	 * Creates a fake explosion, with only sounds and effects. No damage is caused, to blocks or the player.
+	 * Creates a fake explosion, with only sounds and effects. No damage is caused to either the blocks or the player.
 	 * @param entityplayer - player to explode
 	 */
 	public static void doExplosion(EntityPlayer entityplayer)

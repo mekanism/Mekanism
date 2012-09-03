@@ -1,5 +1,7 @@
 package net.uberkat.obsidian.common;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraft.src.*;
@@ -13,29 +15,10 @@ public class TileEntityPlatinumCompressor extends TileEntityMachine
 		super(200, "Platinum Compressor");
 	}
 	
-    public void updateEntity()
+    public void onUpdate()
     {
-    	BlockPlatinumCompressor.updateTexture(worldObj, xCoord, yCoord, zCoord);
-    	
         boolean var1 = machineBurnTime > 0;
         boolean var2 = false;
-        
-        if(machineBurnTime > 0)
-        {
-        	isActive = true;
-        }
-        if(machineBurnTime == 0 && !canSmelt())
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[1] == null)
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[0] == null)
-        {
-        	isActive = false;
-        }
 
         if (machineBurnTime > 0)
         {
@@ -68,7 +51,7 @@ public class TileEntityPlatinumCompressor extends TileEntityMachine
             {
                 ++machineCookTime;
 
-                if (machineCookTime == 200)
+                if (machineCookTime == maxBurnTime)
                 {
                     machineCookTime = 0;
                     smeltItem();
@@ -83,7 +66,7 @@ public class TileEntityPlatinumCompressor extends TileEntityMachine
             if (var1 != machineBurnTime > 0)
             {
                 var2 = true;
-                BlockPlatinumCompressor.updateBlock(machineBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                setActive(isBurning());
             }
         }
 
@@ -91,7 +74,6 @@ public class TileEntityPlatinumCompressor extends TileEntityMachine
         {
             onInventoryChanged();
         }
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
     }
 
     public boolean canSmelt()
@@ -99,10 +81,6 @@ public class TileEntityPlatinumCompressor extends TileEntityMachine
         if (machineItemStacks[0] == null)
         {
             return false;
-        }
-        else if(machineItemStacks[1] == null && currentItemBurnTime == 0)
-        {
-        	return false;
         }
         else
         {

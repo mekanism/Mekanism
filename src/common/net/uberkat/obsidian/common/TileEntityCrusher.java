@@ -11,27 +11,10 @@ public class TileEntityCrusher extends TileEntityMachine
 		super(200, "Crusher");
 	}
     
-    public void updateEntity()
+    public void onUpdate()
     {
         boolean var1 = machineBurnTime > 0;
         boolean var2 = false;
-        
-        if(machineBurnTime > 0)
-        {
-        	isActive = true;
-        }
-        if(machineBurnTime == 0 && !canSmelt())
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[1] == null)
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[0] == null)
-        {
-        	isActive = false;
-        }
 
         if (machineBurnTime > 0)
         {
@@ -64,7 +47,7 @@ public class TileEntityCrusher extends TileEntityMachine
             {
                 ++machineCookTime;
 
-                if (machineCookTime == 200)
+                if (machineCookTime == maxBurnTime)
                 {
                     machineCookTime = 0;
                     smeltItem();
@@ -79,7 +62,7 @@ public class TileEntityCrusher extends TileEntityMachine
             if (var1 != machineBurnTime > 0)
             {
                 var2 = true;
-                BlockCrusher.updateBlock(machineBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                setActive(isBurning());
             }
         }
 
@@ -87,7 +70,6 @@ public class TileEntityCrusher extends TileEntityMachine
         {
             onInventoryChanged();
         }
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
     }
 
     public boolean canSmelt()

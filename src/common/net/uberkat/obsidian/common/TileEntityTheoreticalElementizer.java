@@ -16,22 +16,11 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
 		super(1000, "Theoretical Elementizer");
 	}
 	
-    public void updateEntity()
+    public void onUpdate()
     {
-    	BlockTheoreticalElementizer.updateTexture(worldObj, xCoord, yCoord, zCoord);
-    	
         boolean var1 = machineBurnTime > 0;
         boolean var2 = false;
 
-        if(machineBurnTime > 0)
-        {
-        	isActive = true;
-        }
-        else if(machineBurnTime == 0 && !canSmelt())
-        {
-        	isActive = false;
-        }
-        
         if (machineBurnTime > 0)
         {
             --machineBurnTime;
@@ -78,7 +67,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
             if (var1 != machineBurnTime > 0)
             {
                 var2 = true;
-                BlockTheoreticalElementizer.updateBlock(machineBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                setActive(isBurning());
             }
         }
 
@@ -86,7 +75,6 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
         {
             onInventoryChanged();
         }
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
     }
     
     public boolean canSmelt()
@@ -162,7 +150,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
         machineCookTime = par1NBTTagCompound.getShort("CookTime");
         currentItemBurnTime = getItemBurnTime(machineItemStacks[1]);
     }
-    
+
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.writeToNBT(par1NBTTagCompound);

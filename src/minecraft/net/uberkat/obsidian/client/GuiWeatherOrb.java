@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.src.*;
 import net.uberkat.obsidian.common.ObsidianUtils;
+import net.uberkat.obsidian.common.PacketHandler;
 
 public class GuiWeatherOrb extends GuiScreen {
 	
@@ -60,28 +61,28 @@ public class GuiWeatherOrb extends GuiScreen {
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(5);
+			PacketHandler.sendPacketDataInt(5);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(6);
+			PacketHandler.sendPacketDataInt(6);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(7);
+			PacketHandler.sendPacketDataInt(7);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(8);
+			PacketHandler.sendPacketDataInt(8);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 5)

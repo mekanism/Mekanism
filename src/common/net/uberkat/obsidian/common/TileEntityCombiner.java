@@ -11,29 +11,10 @@ public class TileEntityCombiner extends TileEntityMachine
 		super(200, "Combiner");
 	}
 
-    public void updateEntity()
+    public void onUpdate()
     {
-    	BlockCombiner.updateTexture(worldObj, xCoord, yCoord, zCoord);
-    	
         boolean var1 = machineBurnTime > 0;
         boolean var2 = false;
-        
-        if(machineBurnTime > 0)
-        {
-        	isActive = true;
-        }
-        if(machineBurnTime == 0 && !canSmelt())
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[1] == null)
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[0] == null)
-        {
-        	isActive = false;
-        }
 
         if (machineBurnTime > 0)
         {
@@ -66,7 +47,7 @@ public class TileEntityCombiner extends TileEntityMachine
             {
                 ++machineCookTime;
 
-                if (machineCookTime == 200)
+                if (machineCookTime == maxBurnTime)
                 {
                     machineCookTime = 0;
                     smeltItem();
@@ -81,7 +62,7 @@ public class TileEntityCombiner extends TileEntityMachine
             if (var1 != machineBurnTime > 0)
             {
                 var2 = true;
-                BlockCombiner.updateBlock(machineBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                setActive(isBurning());
             }
         }
 
@@ -89,7 +70,6 @@ public class TileEntityCombiner extends TileEntityMachine
         {
             onInventoryChanged();
         }
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
     }
 
     public boolean canSmelt()

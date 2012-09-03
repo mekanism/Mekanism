@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.src.*;
 import net.uberkat.obsidian.common.ObsidianUtils;
+import net.uberkat.obsidian.common.PacketHandler;
 
 public class GuiStopwatch extends GuiScreen {
 	
@@ -60,28 +61,28 @@ public class GuiStopwatch extends GuiScreen {
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(0);
+			PacketHandler.sendPacketDataInt(0);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(1);
+			PacketHandler.sendPacketDataInt(1);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(2);
+			PacketHandler.sendPacketDataInt(2);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			ObsidianUtils.sendPacketDataInt(3);
+			PacketHandler.sendPacketDataInt(3);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 5)

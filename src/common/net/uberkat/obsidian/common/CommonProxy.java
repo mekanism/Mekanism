@@ -27,6 +27,20 @@ public class CommonProxy
 		
 	}
 	
+	/**
+	 * Gets the world the client is using from ClientProxy.
+	 * @return client world
+	 */
+	public World getClientWorld()
+	{
+		return null;
+	}
+	
+	/**
+	 * Gets the armor index number from ClientProxy.
+	 * @param armor indicator
+	 * @return armor index number
+	 */
 	public int getArmorIndex(String string)
 	{
 		return 0;

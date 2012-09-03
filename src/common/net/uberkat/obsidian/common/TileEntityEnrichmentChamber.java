@@ -13,27 +13,10 @@ public class TileEntityEnrichmentChamber extends TileEntityMachine
 		super(200, "Enrichment Chamber");
 	}
 	
-    public void updateEntity()
+    public void onUpdate()
     {
         boolean var1 = machineBurnTime > 0;
         boolean var2 = false;
-        
-        if(machineBurnTime > 0)
-        {
-        	isActive = true;
-        }
-        if(machineBurnTime == 0 && !canSmelt())
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[1] == null)
-        {
-        	isActive = false;
-        }
-        if(machineBurnTime == 0 && machineItemStacks[0] == null)
-        {
-        	isActive = false;
-        }
 
         if (machineBurnTime > 0)
         {
@@ -66,7 +49,7 @@ public class TileEntityEnrichmentChamber extends TileEntityMachine
             {
                 ++machineCookTime;
 
-                if (machineCookTime == 200)
+                if (machineCookTime == maxBurnTime)
                 {
                     machineCookTime = 0;
                     smeltItem();
@@ -81,7 +64,7 @@ public class TileEntityEnrichmentChamber extends TileEntityMachine
             if (var1 != machineBurnTime > 0)
             {
                 var2 = true;
-                BlockEnrichmentChamber.updateBlock(machineBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                setActive(isBurning());
             }
         }
 
@@ -89,7 +72,6 @@ public class TileEntityEnrichmentChamber extends TileEntityMachine
         {
             onInventoryChanged();
         }
-        worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
     }
 
     public boolean canSmelt()

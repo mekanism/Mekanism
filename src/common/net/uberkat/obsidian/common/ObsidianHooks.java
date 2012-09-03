@@ -13,16 +13,16 @@ public class ObsidianHooks
 	
 	public void hook()
 	{
-		if(getIC2Item("uraniumOre") != null) IC2Loaded = true;
+		if(getIC2Item("uraniumOre", true) != null) IC2Loaded = true;
 		
 		if(IC2Loaded)
 		{
-			IC2IronDust = getIC2Item("goldDust");
-			IC2GoldDust = getIC2Item("ironDust");
+			IC2IronDust = getIC2Item("goldDust", false);
+			IC2GoldDust = getIC2Item("ironDust", false);
 		}
 	}
 	
-	public ItemStack getIC2Item(String name)
+	public ItemStack getIC2Item(String name, boolean test)
 	{
 		try {
 			if(Ic2Items == null) Ic2Items = Class.forName("ic2.common.Ic2Items");
@@ -37,7 +37,13 @@ public class ObsidianHooks
 				return null;
 			}
 		} catch(Exception e) {
-			System.out.println("[UniversalIC2] Unable to retrieve IC2 item " + name + ".");
+			if(!test)
+			{
+				System.out.println("[ObsidianIngots] Unable to retrieve IC2 item " + name + ".");
+			}
+			else {
+				System.out.println("[ObsidianIngots] Unable to hook into IC2.");
+			}
 			return null;
 		}
 	}

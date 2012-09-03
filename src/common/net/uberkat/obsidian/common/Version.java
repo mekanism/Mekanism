@@ -1,7 +1,7 @@
 package net.uberkat.obsidian.common;
 
 /**
- * Version class. Simple version handling for Obsidian Ingots.
+ * Version v1.0.2. Simple version handling for Obsidian Ingots.
  * @author AidanBrady
  *
  */

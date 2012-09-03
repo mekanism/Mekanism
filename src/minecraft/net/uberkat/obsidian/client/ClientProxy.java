@@ -64,6 +64,11 @@ public class ClientProxy extends CommonProxy
 		System.out.println("[ObsidianIngots] Render initiative complete.");
 	}
 	
+	public World getClientWorld()
+	{
+		return FMLClientHandler.instance().getClient().theWorld;
+	}
+	
 	public void loadUtilities()
 	{
 		System.out.println("[ObsidianIngots] Beginning utility initiative...");

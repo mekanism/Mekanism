@@ -1,10 +1,15 @@
 package net.uberkat.obsidian.common;
 
+import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.server.FMLServerHandler;
+
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory
+public class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine
 {
      /** The ItemStacks that hold the items currently being used in the furnace */
     protected ItemStack[] machineItemStacks = new ItemStack[3];
@@ -27,10 +32,22 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
     /** Whether the machine is in it's active state or not */
     public boolean isActive;
     
+    /** The machine's previous active state */
+    public boolean prevActive;
+    
+    /** How many ticks have passed since the last texture tick. */
+    public int textureTick = 0;
+    
+    /**
+     * Instance of TileEntityMachine. Extend this for a head start on machine making.
+     * @param time - time it takes to smelt an item
+     * @param name - full display name of the item
+     */
     public TileEntityMachine(int time, String name)
     {
     	maxBurnTime = time;
     	fullName = name;
+    	isActive = false;
     }
 	
 	public int getStartInventorySide(ForgeDirection side) 
@@ -54,7 +71,38 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	{
 		return machineItemStacks[var1];
 	}
-
+	
+	public void updateEntity()
+	{
+		onUpdate();
+		updateTextureTick();
+	}
+	
+	/**
+	 * Update call for machines, called every tick. Use this instead of updateEntity().
+	 */
+	public void onUpdate() {}
+	
+	/**
+	 * Texture update call for machines. Use this to switch to a different texture. Called every 3 ticks.
+	 */
+	public void updateTexture() 
+	{
+		BlockMachine.updateTexture(worldObj, xCoord, yCoord, zCoord);
+	}
+	
+	/**
+	 * Constant check to see when to run updateTexture(). Called every tick, but functions every 3.
+	 */
+	public void updateTextureTick()
+	{
+		if(textureTick % 3 == 0)
+		{
+			updateTexture();
+		}
+		textureTick++;
+	}
+	
     public ItemStack decrStackSize(int par1, int par2)
     {
         if (machineItemStacks[par1] != null)
@@ -144,23 +192,37 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
         return machineCookTime * par1 / maxBurnTime;
     }
     
-    public void smeltItem()
+    /**
+     * Use this method to change a machine's active/inactive state. It will send a packet to the client with the update.
+     * @param active
+     */
+    public void setActive(boolean active)
     {
+    	isActive = active;
     	
+    	if(prevActive != active)
+    	{
+    		PacketHandler.sendMachinePacket(this);
+    	}
+    	
+    	prevActive = active;
     }
-    
-    protected boolean canSmelt()
-    {
-    	return false;
-    }
 
-	public void openChest()
+	public void openChest() {}
+
+	public void closeChest() {}
+	
+	public void handlePacketData(NetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
 	{
-
-	}
-
-	public void closeChest()
-	{
-
+		try {
+			isActive = dataStream.readByte() != 0;
+			machineBurnTime = dataStream.readInt();
+			machineCookTime = dataStream.readInt();
+			currentItemBurnTime = dataStream.readInt();
+		} catch (Exception e)
+		{
+			System.out.println("[ObsidianIngots] Error while handling tile entity packet.");
+			e.printStackTrace();
+		}
 	}
 }

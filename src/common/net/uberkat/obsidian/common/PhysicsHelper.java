@@ -2,12 +2,14 @@ package net.uberkat.obsidian.common;
 
 import net.minecraft.src.*;
 
-public abstract class PhysicsHelper
+public class PhysicsHelper
 {
-    public PhysicsHelper()
-    {
-    }
-
+	/**
+	 * Knock back an entity with the specified force.
+	 * @param entityliving
+	 * @param entityliving1
+	 * @param f
+	 */
     public static void knockBack(EntityLiving entityliving, EntityLiving entityliving1, float f)
     {
         entityliving.motionX = 0.0D;
