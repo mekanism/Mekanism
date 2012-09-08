@@ -17,7 +17,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.src.*;
-import net.uberkat.obsidian.client.ThreadServerData;
+import net.uberkat.obsidian.client.ThreadSendData;
 
 /**
  * Official Obsidian Ingots utilities. All miscellaneous methods are located here.
@@ -48,7 +48,8 @@ public class ObsidianUtils
 	public static String getLatestVersion()
 	{
 		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/ObsidianIngots.txt").split(":");
-		return text[0];
+		if(!text[0].contains("UTF-8") && !text[0].contains("HTML")) return text[0];
+		return "Error retrieving data.";
 	}
 	
 	/**
@@ -58,7 +59,7 @@ public class ObsidianUtils
 	public static String getRecentNews()
 	{
 		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/ObsidianIngots.txt").split(":");
-		if(text.length > 1) return text[1];
+		if(text.length > 1 && !text[1].contains("UTF-8") && !text[1].contains("HTML")) return text[1];
 		return "There is no news to show.";
 	}
 	
@@ -159,22 +160,4 @@ public class ObsidianUtils
 		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
 	}
-	
-	/**
-	 * Checks if a machine is in it's active state.
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return if machine is active
-	 */
-    public static boolean isActive(IBlockAccess world, int x, int y, int z)
-    {
-    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
-    	if(tileEntity != null)
-    	{
-    		return tileEntity.isActive;
-    	}
-    	return false;
-    }
 }

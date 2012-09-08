@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
+import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
@@ -22,10 +23,7 @@ public class CommonProxy
 	/**
 	 * Register and load client-only render information.
 	 */
-	public void registerRenderInformation()
-	{
-		
-	}
+	public void registerRenderInformation() {}
 	
 	/**
 	 * Gets the world the client is using from ClientProxy.
@@ -47,77 +45,32 @@ public class CommonProxy
 	}
 	
 	/**
-	 * Set and load the mod's common properties.
+	 * Set and load the mod's common configuration properties.
 	 */
-	public void setProperties()
+	public void loadConfiguration()
 	{
-		Properties properties = new Properties();
-		try
-		{
-			File config = ObsidianIngots.configuration;
-			if(config.exists())
-			{
-				properties.load(new FileInputStream(config));
-				ObsidianIngots.platinumOreID = Integer.parseInt(properties.getProperty("platinumOreID"));
-			  	ObsidianIngots.platinumBlockID = Integer.parseInt(properties.getProperty("platinumBlockID"));
-			  	ObsidianIngots.redstoneBlockID = Integer.parseInt(properties.getProperty("redstoneBlockID"));
-			  	ObsidianIngots.obsidianTNTID = Integer.parseInt(properties.getProperty("obsidianTNTID"));
-			  	ObsidianIngots.refinedObsidianID = Integer.parseInt(properties.getProperty("refinedObsidianID"));
-			  	ObsidianIngots.elementizerID = Integer.parseInt(properties.getProperty("elementizerID"));
-			  	ObsidianIngots.enrichmentChamberID = Integer.parseInt(properties.getProperty("enrichmentChamberID"));
-			  	ObsidianIngots.platinumCompressorID = Integer.parseInt(properties.getProperty("platinumCompressorID"));
-			  	ObsidianIngots.combinerID = Integer.parseInt(properties.getProperty("combinerID"));
-			  	ObsidianIngots.crusherID = Integer.parseInt(properties.getProperty("crusherID"));
-			  	ObsidianIngots.coalBlockID = Integer.parseInt(properties.getProperty("coalBlockID"));
-			  	ObsidianIngots.refinedGlowstoneID = Integer.parseInt(properties.getProperty("refinedGlowstoneID"));
-			  	ObsidianIngots.extrasEnabled = Boolean.parseBoolean(properties.getProperty("extrasEnabled"));
-			  	ObsidianIngots.oreGenerationEnabled = Boolean.parseBoolean(properties.getProperty("oreGenerationEnabled"));
-			  	ObsidianIngots.logger.info("[ObsidianIngots] Data loaded.");
-			}
-			else {
-				config.createNewFile();
-				ObsidianIngots.logger.info("[ObsidianIngots] Created 'ObsidianIngots.txt' configuration file.");
-				FileOutputStream fileoutputstream = new FileOutputStream(config);
-				properties.setProperty("platinumOreID", Integer.toString(200));
-				properties.setProperty("platinumBlockID", Integer.toString(201));
-				properties.setProperty("redstoneBlockID", Integer.toString(202));
-				properties.setProperty("obsidianTNTID", Integer.toString(203));
-				properties.setProperty("refinedObsidianID", Integer.toString(204));
-				properties.setProperty("elementizerID", Integer.toString(205));
-				properties.setProperty("enrichmentChamberID", Integer.toString(206));
-				properties.setProperty("platinumCompressorID", Integer.toString(207));
-				properties.setProperty("combinerID", Integer.toString(208));
-				properties.setProperty("crusherID", Integer.toString(209));
-				properties.setProperty("coalBlockID", Integer.toString(210));
-				properties.setProperty("refinedGlowstoneID", Integer.toString(211));
-				properties.setProperty("extrasEnabled", Boolean.toString(true));
-				properties.setProperty("oreGenerationEnabled", Boolean.toString(true));
-				properties.store(fileoutputstream, "Official Obsidian Ingots Configuration.");
-				fileoutputstream.close();
-			}
-			
-		} catch (IOException ioexception)
-	  	{
-			System.err.println("[ObsidianIngots] An error occured while reading from configuration file.");
-		  	ioexception.printStackTrace();
-	  	}
+		ObsidianIngots.configuration.load();
+		ObsidianIngots.multiBlockID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("MultiBlock", 200).getInt();
+	  	ObsidianIngots.obsidianTNTID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("ObsidianTNT", 201).getInt();
+	  	ObsidianIngots.elementizerID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("TheoreticalElementizer", 202).getInt();
+	  	ObsidianIngots.enrichmentChamberID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("EnrichmentChamber", 203).getInt();
+	  	ObsidianIngots.platinumCompressorID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("PlatinumCompressor", 204).getInt();
+	  	ObsidianIngots.combinerID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("Combiner", 205).getInt();
+	  	ObsidianIngots.crusherID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("Crusher", 206).getInt();
+	  	ObsidianIngots.extrasEnabled = ObsidianIngots.configuration.getOrCreateBooleanProperty("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+	  	ObsidianIngots.oreGenerationEnabled = ObsidianIngots.configuration.getOrCreateBooleanProperty("OreGenerationEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+	  	ObsidianIngots.configuration.save();
 	}
 	
 	/**
-	 * Load and initiate utilities for the mod.
+	 * Load and initiate utilities for the mod's proxy.
 	 */
-	public void loadUtilities()
-	{
-		
-	}
+	public void loadUtilities() {}
 	
 	/**
 	 * Set up and load the client-only tick handler.
 	 */
-	public void loadTickHandler()
-	{
-		
-	}
+	public void loadTickHandler() {}
 	
 	/**
 	 * Get the actual interface for a GUI.  Client-only.

@@ -10,20 +10,16 @@ public class BlockMachine extends BlockContainer
 {
 	public Random machineRand = new Random();
 	
-    public static int currentFrontTextureIndex = 0;
-    public static int currentBackTextureIndex = 16;
-    public static int currentSideTextureIndex = 32;
-    
-    public String textureFile;
+    public int textureIndex = 32;
 	
-	public BlockMachine(int id, String texture)
+	public BlockMachine(int id)
 	{
 		super(id, Material.iron);
-		textureFile = "/obsidian/" + texture;
 	}
 	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
         int change = 3;
         
@@ -35,14 +31,14 @@ public class BlockMachine extends BlockContainer
         	case 3: change = 4; break;
         }
         
-        world.setBlockMetadataWithNotify(x, y, z, change);
+        tileEntity.setFacing(change);
     }
 	
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-    	int metadata = world.getBlockMetadata(x, y, z);
-        if (ObsidianUtils.isActive(world, x, y, z))
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+        if (isActive(world, x, y, z))
         {
             float var7 = (float)x + 0.5F;
             float var8 = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -50,22 +46,22 @@ public class BlockMachine extends BlockContainer
             float var10 = 0.52F;
             float var11 = random.nextFloat() * 0.6F - 0.3F;
 
-            if (metadata == 4)
+            if (tileEntity.facing == 4)
             {
                 world.spawnParticle("smoke", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
             }
-            else if (metadata == 5)
+            else if (tileEntity.facing == 5)
             {
                 world.spawnParticle("smoke", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
             }
-            else if (metadata == 2)
+            else if (tileEntity.facing == 2)
             {
                 world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
             }
-            else if (metadata == 3)
+            else if (tileEntity.facing == 3)
             {
                 world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
@@ -73,36 +69,22 @@ public class BlockMachine extends BlockContainer
         }
     }
     
-    public static void updateTexture(World world, int x, int y, int z)
+	/**
+	 * Checks if a machine is in it's active state.
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return if machine is active
+	 */
+    public boolean isActive(IBlockAccess world, int x, int y, int z)
     {
-    	if(currentFrontTextureIndex < 15 && currentFrontTextureIndex > -1)
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+    	if(tileEntity != null)
     	{
-    		currentFrontTextureIndex++;
+    		return tileEntity.isActive;
     	}
-    	if(currentFrontTextureIndex == 15)
-    	{
-    		currentFrontTextureIndex = 0;
-    	}
-    	
-    	if(currentBackTextureIndex < 31 && currentBackTextureIndex > 15)
-    	{
-    		currentBackTextureIndex++;
-    	}
-    	if(currentBackTextureIndex == 31)
-    	{
-    		currentBackTextureIndex = 16;
-    	}
-    	
-    	if(currentSideTextureIndex < 47 && currentSideTextureIndex > 31)
-    	{
-    		currentSideTextureIndex++;
-    	}
-    	if(currentSideTextureIndex == 47)
-    	{
-    		currentSideTextureIndex = 32;
-    	}
-    	
-    	world.markBlockAsNeedsUpdate(x, y, z);
+    	return false;
     }
     
     public void breakBlock(World world, int par2, int par3, int par4, int i1, int i2)
@@ -154,7 +136,7 @@ public class BlockMachine extends BlockContainer
     
     public String getTextureFile()
     {
-    	return textureFile;
+    	return "/obsidian/terrain.png";
     }
 	
 	public TileEntity createNewTileEntity(World world)

@@ -3,11 +3,15 @@ package net.uberkat.obsidian.common;
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.server.FMLServerHandler;
 
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.uberkat.obsidian.client.AudioManager;
+import net.uberkat.obsidian.client.AudioSource;
 
 public class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine
 {
@@ -35,8 +39,17 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
     /** The machine's previous active state */
     public boolean prevActive;
     
+    /** The direction this machine is facing */
+    public int facing;
+    
     /** How many ticks have passed since the last texture tick. */
     public int textureTick = 0;
+
+    /** The amount of update ticks have passed since the game started */
+    public byte updateTicks = 0;
+    
+    /** An integer that constantly cycles from 0 to 15. Used for animated textures. */
+    public int textureIndex = 0;
     
     /**
      * Instance of TileEntityMachine. Extend this for a head start on machine making.
@@ -75,7 +88,16 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	public void updateEntity()
 	{
 		onUpdate();
-		updateTextureTick();
+		if(FMLCommonHandler.instance().getSidedDelegate().getSide().isClient())
+		{
+			updateTextureTick();
+		}
+		updateTick();
+		
+		if(machineCookTime == 0 || machineCookTime == maxBurnTime && currentItemBurnTime != 0)
+		{
+			currentItemBurnTime = 0;
+		}
 	}
 	
 	/**
@@ -84,21 +106,27 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	public void onUpdate() {}
 	
 	/**
-	 * Texture update call for machines. Use this to switch to a different texture. Called every 3 ticks.
+	 * Synchronizes the client with the server on startup by sending two packets.
+	 * Not exactly sure why it needs 5 packets, but it wouldn't work with only 4!
 	 */
-	public void updateTexture() 
+	public void updateTick()
 	{
-		BlockMachine.updateTexture(worldObj, xCoord, yCoord, zCoord);
+		if(updateTicks < 5)
+		{
+			PacketHandler.sendMachinePacket(this);
+			updateTicks++;
+		}
 	}
 	
 	/**
-	 * Constant check to see when to run updateTexture(). Called every tick, but functions every 3.
+	 * Check to see when to run updateTexture(). Called every tick, but functions every 3.
 	 */
+	@SideOnly(Side.CLIENT)
 	public void updateTextureTick()
 	{
-		if(textureTick % 3 == 0)
+		if(textureTick % 5 == 0)
 		{
-			updateTexture();
+			updateTexture(worldObj, xCoord, yCoord, zCoord);
 		}
 		textureTick++;
 	}
@@ -207,6 +235,71 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
     	
     	prevActive = active;
     }
+    
+    public void setFacing(int direction)
+    {
+    	facing = direction;
+    	
+    	PacketHandler.sendMachinePacket(this);
+    }
+    
+    public void updateTexture(World world, int x, int y, int z)
+    {
+    	if(textureIndex < 15) textureIndex++;
+    	if(textureIndex == 15) textureIndex = 0;
+    	
+    	world.markBlockAsNeedsUpdate(x, y, z);
+    }
+    
+    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        super.readFromNBT(par1NBTTagCompound);
+        NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
+        machineItemStacks = new ItemStack[getSizeInventory()];
+
+        for (int var3 = 0; var3 < var2.tagCount(); ++var3)
+        {
+            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
+            byte var5 = var4.getByte("Slot");
+
+            if (var5 >= 0 && var5 < machineItemStacks.length)
+            {
+                machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+            }
+        }
+
+        machineBurnTime = par1NBTTagCompound.getInteger("machineBurnTime");
+        machineCookTime = par1NBTTagCompound.getInteger("machineCookTime");
+        currentItemBurnTime = par1NBTTagCompound.getInteger("currentItemBurnTime");
+        isActive = par1NBTTagCompound.getBoolean("isActive");
+        facing = par1NBTTagCompound.getInteger("facing");
+    }
+
+    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        super.writeToNBT(par1NBTTagCompound);
+        par1NBTTagCompound.setInteger("machineBurnTime", machineBurnTime);
+        par1NBTTagCompound.setInteger("machineCookTime", machineCookTime);
+        par1NBTTagCompound.setInteger("currentItemBurnTime", currentItemBurnTime);
+        par1NBTTagCompound.setBoolean("isActive", isActive);
+        par1NBTTagCompound.setInteger("facing", facing);
+        NBTTagList var2 = new NBTTagList();
+
+        for (int var3 = 0; var3 < machineItemStacks.length; ++var3)
+        {
+            if (machineItemStacks[var3] != null)
+            {
+                NBTTagCompound var4 = new NBTTagCompound();
+                var4.setByte("Slot", (byte)var3);
+                machineItemStacks[var3].writeToNBT(var4);
+                var2.appendTag(var4);
+            }
+        }
+
+        par1NBTTagCompound.setTag("Items", var2);
+    }
+    
+    public void getBurnTime() {}
 
 	public void openChest() {}
 
@@ -215,10 +308,12 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	public void handlePacketData(NetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
 	{
 		try {
+			facing = dataStream.readInt();
 			isActive = dataStream.readByte() != 0;
 			machineBurnTime = dataStream.readInt();
 			machineCookTime = dataStream.readInt();
 			currentItemBurnTime = dataStream.readInt();
+			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[ObsidianIngots] Error while handling tile entity packet.");

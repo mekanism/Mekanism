@@ -12,17 +12,17 @@ public class BlockEnrichmentChamber extends BlockMachine
 {
     public BlockEnrichmentChamber(int par1)
     {
-        super(par1, "terrain.png");
+        super(par1);
     }
     
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
-        int metadata = world.getBlockMetadata(x, y, z);
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
         
-        if(side == metadata)
+        if(side == tileEntity.facing)
         {
-        	return ObsidianUtils.isActive(world, x, y, z) ? 8 : 9;
+        	return isActive(world, x, y, z) ? 8 : 9;
         }
         else {
         	return 2;

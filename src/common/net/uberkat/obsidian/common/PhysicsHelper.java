@@ -2,6 +2,11 @@ package net.uberkat.obsidian.common;
 
 import net.minecraft.src.*;
 
+/**
+ * Simple physics handler that allows weapons, specifically knives, to knock back entities on contact.
+ * @author AidanBrady
+ *
+ */
 public class PhysicsHelper
 {
 	/**

@@ -12,20 +12,20 @@ public class BlockPlatinumCompressor extends BlockMachine
 {
     public BlockPlatinumCompressor(int par1)
     {
-        super(par1, "Compressor.png");
+        super(par1);
     }
 
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
-        int metadata = world.getBlockMetadata(x, y, z);
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
         
-        if(side == metadata)
+        if(side == tileEntity.facing)
         {
-        	return ObsidianUtils.isActive(world, x, y, z) ? currentFrontTextureIndex : 17;
+        	return isActive(world, x, y, z) ? tileEntity.textureIndex + 32 : 14;
         }
         else {
-        	return 16;
+        	return 2;
         }
     }
     
@@ -33,10 +33,10 @@ public class BlockPlatinumCompressor extends BlockMachine
     {
     	if(side == 3)
     	{
-    		return 17;
+    		return 14;
     	}
     	else {
-    		return 16;
+    		return 2;
     	}
     }
 

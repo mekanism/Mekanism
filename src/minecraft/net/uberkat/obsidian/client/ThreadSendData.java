@@ -11,12 +11,12 @@ import net.minecraft.src.ModLoader;
 import net.uberkat.obsidian.common.ObsidianIngots;
 import net.uberkat.obsidian.common.ObsidianUtils;
 
-public class ThreadServerData extends Thread
+/**
+ * Sends information about this mod to the Obsidian Ingots server.
+ */
+public class ThreadSendData extends Thread
 {
-	/**
-	 * Sends information about this mod to the Obsidian Ingots server.
-	 */
-	public ThreadServerData()
+	public ThreadSendData()
 	{
 		setDaemon(true);
 		start();

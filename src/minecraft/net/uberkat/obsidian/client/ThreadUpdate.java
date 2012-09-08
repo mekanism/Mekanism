@@ -66,10 +66,14 @@ public class ThreadUpdate extends Thread
 		}
 	}
 	
+	/**
+	 * Prepares to update to the latest version of Obsidian Ingots by deleting the files "ObsidianIngots.cfg" and "ObsidianIngots.jar." 
+	 */
 	public void prepareForDownload()
 	{
 		File download = new File(new StringBuilder().append(ModLoader.getMinecraftInstance().getMinecraftDir()).append("/mods/ObsidianIngots.jar").toString());
-		File config = new File(new StringBuilder().append(ModLoader.getMinecraftInstance().getMinecraftDir()).append("/config/mod_ObsidianIngots.txt").toString());
+		File config = new File(new StringBuilder().append(ModLoader.getMinecraftInstance().getMinecraftDir()).append("/config/ObsidianIngots.cfg").toString());
+		
 		if(download.exists())
 		{
 			download.delete();

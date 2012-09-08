@@ -3,6 +3,7 @@ package net.uberkat.obsidian.common;
 import java.util.Random;
 
 import net.minecraft.src.IChunkProvider;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 import net.minecraft.src.WorldGenMinable;
 import cpw.mods.fml.common.IWorldGenerator;
@@ -34,7 +35,7 @@ public class OreHandler implements IWorldGenerator
 				int randPosX = chunkX + random.nextInt(16);
 				int randPosY = random.nextInt(60);
 				int randPosZ = chunkZ + random.nextInt(16);
-				(new WorldGenMinable(ObsidianIngots.PlatinumOre.blockID, 16)).generate(world, random, randPosX, randPosY, randPosZ);
+				(new WorldGenMinable(new ItemStack(ObsidianIngots.MultiBlock, 1, 0).itemID, 16)).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 		}
 	}

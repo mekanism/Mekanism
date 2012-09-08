@@ -2,6 +2,11 @@ package net.uberkat.obsidian.common;
 
 import net.minecraft.src.*;
 
+/**
+ * Hooks for Obsidian Ingots. Use to grab items or blocks out of different mods.
+ * @author AidanBrady
+ *
+ */
 public class ObsidianHooks 
 {
 	private Class Ic2Items;
@@ -22,6 +27,12 @@ public class ObsidianHooks
 		}
 	}
 	
+	/**
+	 * Gets an object out of the class Ic2Items.
+	 * @param name - name of the item
+	 * @param test - whether or not this is a test
+	 * @return the object
+	 */
 	public ItemStack getIC2Item(String name, boolean test)
 	{
 		try {

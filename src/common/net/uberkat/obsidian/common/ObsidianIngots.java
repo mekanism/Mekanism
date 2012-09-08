@@ -31,11 +31,11 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 
 /**
- * Obsidian Ingots mod -- adds in Tools, Armor, Weapons, Machines, and Magic. Universal files.
+ * Obsidian Ingots mod -- adds in Tools, Armor, Weapons, Machines, and Magic. Universal source.
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.5")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.6")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -53,10 +53,11 @@ public class ObsidianIngots
     /** Obsidian Ingots hooks instance */
     public static ObsidianHooks hooks;
     
-    public static File configuration;
+    /** Obsidian Ingots configuration instance */
+    public static Configuration configuration;
     
 	//Initial Declarations
-	public static Version versionNumber = new Version(4, 0, 5);
+	public static Version versionNumber = new Version(4, 0, 6);
 	public static String latestVersionNumber;
 	public static String recentNews;
 	public static String hostIP = "71.56.58.57";
@@ -82,18 +83,13 @@ public class ObsidianIngots
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
     
 	//Block IDs
-	public static int platinumOreID = 200;
-	public static int platinumBlockID = 201;
-	public static int redstoneBlockID = 202;
-	public static int obsidianTNTID = 203;
-	public static int refinedObsidianID = 204;
-	public static int elementizerID = 205;
-	public static int enrichmentChamberID = 206;
-	public static int platinumCompressorID = 207;
-	public static int combinerID = 208;
-	public static int crusherID = 209;
-	public static int coalBlockID = 210;
-	public static int refinedGlowstoneID = 211;
+    public static int multiBlockID = 200;
+	public static int obsidianTNTID = 201;
+	public static int elementizerID = 202;
+	public static int enrichmentChamberID = 203;
+	public static int platinumCompressorID = 204;
+	public static int combinerID = 205;
+	public static int crusherID = 206;
 	
 	//Base Items
 	public static Item WoodPaxel;
@@ -110,7 +106,6 @@ public class ObsidianIngots
 	public static Item GoldDust;
 	
 	//Glowstone Items
-	public static Block RefinedGlowstone;
 	public static Item GlowstoneIngot;
 	public static Item GlowstonePaxel;
 	public static Item GlowstonePickaxe;
@@ -125,7 +120,6 @@ public class ObsidianIngots
 	public static Item GlowstoneKnife;
 	
 	//Redstone Items
-	public static Block RedstoneBlock;
 	public static Item RedstoneIngot;
 	public static Item RedstonePaxel;
 	public static Item RedstonePickaxe;
@@ -140,8 +134,6 @@ public class ObsidianIngots
 	public static Item RedstoneKnife;
 	
 	//Platinum Items
-	public static Block PlatinumOre;
-	public static Block PlatinumBlock;
 	public static Item PlatinumDust;
 	public static Item PlatinumIngot;
 	public static Item PlatinumPaxel;
@@ -157,7 +149,6 @@ public class ObsidianIngots
 	public static Item PlatinumKnife;
 	
 	//Obsidian Items
-	public static Block RefinedObsidian;
 	public static Item ObsidianDust;
 	public static Item ObsidianHelmet;
 	public static Item ObsidianBody;
@@ -194,13 +185,13 @@ public class ObsidianIngots
 	public static Item EnrichedAlloy;
 	
 	//Extra Blocks
+	public static Block MultiBlock;
 	public static Block ObsidianTNT;
 	public static Block TheoreticalElementizer;
 	public static Block EnrichmentChamber;
 	public static Block PlatinumCompressor;
 	public static Block Combiner;
 	public static Block Crusher;
-	public static Block CoalBlock;
 	
 	//Boolean Values
 	public static boolean extrasEnabled = true;
@@ -210,9 +201,7 @@ public class ObsidianIngots
 	public static float ObsidianTNTBlastRadius = 12.0F;
 	public static int ObsidianTNTDelay = 100;
 	
-	/**
-	 * Total ticks passed since thePlayer joined theWorld
-	 */
+	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;
 	
 	/**
@@ -253,18 +242,18 @@ public class ObsidianIngots
 			" ^", "I ", Character.valueOf('^'), Item.ingotGold, Character.valueOf('I'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(Item.coal, 9), new Object[] {
-			"*", Character.valueOf('*'), CoalBlock
+			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 4)
 		});
-		GameRegistry.addRecipe(new ItemStack(CoalBlock, 1), new Object[] {
+		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 4), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), Item.coal
 		});
 		
 		//Obsidian
-		GameRegistry.addRecipe(new ItemStack(RefinedObsidian, 0), new Object[] {
+		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 3), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), ObsidianIngot
 		});
 		GameRegistry.addRecipe(new ItemStack(ObsidianIngot, 9), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(RefinedObsidian, 0)		
+			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 3)	
 		});
 		GameRegistry.addRecipe(new ItemStack(ObsidianHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), ObsidianIngot
@@ -278,22 +267,22 @@ public class ObsidianIngots
 		GameRegistry.addRecipe(new ItemStack(ObsidianBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), ObsidianIngot
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianPaxel, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(ObsidianPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), ObsidianAxe, Character.valueOf('Y'), ObsidianPickaxe, Character.valueOf('Z'), ObsidianSpade, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianPickaxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(ObsidianPickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), ObsidianIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianAxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(ObsidianAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), ObsidianIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianSpade, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(ObsidianSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), ObsidianIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianHoe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(ObsidianHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), ObsidianIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianSword, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(ObsidianSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), ObsidianIngot, Character.valueOf('T'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(ObsidianKnife, 1), new Object[] {
@@ -301,28 +290,28 @@ public class ObsidianIngots
 		});
 		
 		//Glowstone
-		GameRegistry.addRecipe(new ItemStack(RefinedGlowstone, 1), new Object[] {
+		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 5), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), GlowstoneIngot
 		});
 		GameRegistry.addRecipe(new ItemStack(GlowstoneIngot, 9), new Object[] {
-			"*", Character.valueOf('*'), RefinedGlowstone
+			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 5)
 		});
-		GameRegistry.addRecipe(new ItemStack(GlowstonePaxel, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(GlowstonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), GlowstoneAxe, Character.valueOf('Y'), GlowstonePickaxe, Character.valueOf('Z'), GlowstoneSpade, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(GlowstonePickaxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(GlowstonePickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), GlowstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneAxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(GlowstoneAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), GlowstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneSpade, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(GlowstoneSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), GlowstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneHoe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(GlowstoneHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), GlowstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneSword, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(GlowstoneSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), GlowstoneIngot, Character.valueOf('T'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(GlowstoneHelmet, 1), new Object[] {
@@ -354,22 +343,22 @@ public class ObsidianIngots
 		GameRegistry.addRecipe(new ItemStack(LazuliBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
 		});
-		GameRegistry.addRecipe(new ItemStack(LazuliPaxel, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(LazuliPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), LazuliAxe, Character.valueOf('Y'), LazuliPickaxe, Character.valueOf('Z'), LazuliSpade, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(LazuliPickaxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(LazuliPickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(LazuliAxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(LazuliAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(LazuliSpade, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(LazuliSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(LazuliHoe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(LazuliHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(LazuliSword, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(LazuliSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(LazuliKnife, 1), new Object[] {
@@ -377,25 +366,25 @@ public class ObsidianIngots
 		});
 		
 		//Platinum
-		GameRegistry.addRecipe(new ItemStack(PlatinumBlock, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 1), new Object[] {
 			"XXX", "XXX", "XXX", Character.valueOf('X'), PlatinumIngot
 		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumPaxel, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(PlatinumPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), PlatinumAxe, Character.valueOf('Y'), PlatinumPickaxe, Character.valueOf('Z'), PlatinumSpade, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumPickaxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(PlatinumPickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), PlatinumIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumAxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(PlatinumAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), PlatinumIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumSpade, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(PlatinumSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), PlatinumIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumHoe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(PlatinumHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), PlatinumIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumSword, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(PlatinumSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), PlatinumIngot, Character.valueOf('T'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(PlatinumHelmet, 1), new Object[] {
@@ -411,35 +400,35 @@ public class ObsidianIngots
 			"* *", "* *", Character.valueOf('*'), PlatinumIngot
 		});
 		GameRegistry.addRecipe(new ItemStack(PlatinumIngot, 9), new Object[] {
-			"*", Character.valueOf('*'), PlatinumBlock
+			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 1)
 		});
 		GameRegistry.addRecipe(new ItemStack(PlatinumKnife, 1), new Object[] {
 			" ^", "I ", Character.valueOf('^'), PlatinumIngot, Character.valueOf('I'), Item.stick
 		});
 		
 		//Redstone
-		GameRegistry.addRecipe(new ItemStack(RedstoneBlock, 1), new Object[] {
+		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 2), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), RedstoneIngot
 		});
 		GameRegistry.addRecipe(new ItemStack(RedstoneIngot, 9), new Object[] {
-			"*", Character.valueOf('*'), RedstoneBlock
+			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 2)
 		});
-		GameRegistry.addRecipe(new ItemStack(RedstonePaxel, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(RedstonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), RedstoneAxe, Character.valueOf('Y'), RedstonePickaxe, Character.valueOf('Z'), RedstoneSpade, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(RedstonePickaxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(RedstonePickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), RedstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneAxe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(RedstoneAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), RedstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneSpade, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(RedstoneSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), RedstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneHoe, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(RedstoneHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), RedstoneIngot, Character.valueOf('T'), Item.stick
 		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneSword, 1), new Object[]{
+		GameRegistry.addRecipe(new ItemStack(RedstoneSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), RedstoneIngot, Character.valueOf('T'), Item.stick
 		});
 		GameRegistry.addRecipe(new ItemStack(RedstoneHelmet, 1), new Object[] {
@@ -475,20 +464,20 @@ public class ObsidianIngots
 			});
 		}
 		GameRegistry.addRecipe(new ItemStack(PlatinumCompressor, 1), new Object[] {
-			"***", "*P*", "***", Character.valueOf('*'), Item.redstone, Character.valueOf('P'), PlatinumBlock
+			"***", "*P*", "***", Character.valueOf('*'), Item.redstone, Character.valueOf('P'), new ItemStack(MultiBlock, 1, 1)
 		});
 		GameRegistry.addRecipe(new ItemStack(EnrichmentChamber, 1), new Object[] {
 			"***", "*R*", "***", Character.valueOf('*'), PlatinumIngot, Character.valueOf('R'), Item.redstone
 		});
 		GameRegistry.addRecipe(new ItemStack(Combiner, 1), new Object[] {
-			"***", "*P*", "***", Character.valueOf('*'), Block.cobblestone, Character.valueOf('P'), PlatinumBlock
+			"***", "*P*", "***", Character.valueOf('*'), Block.cobblestone, Character.valueOf('P'), new ItemStack(MultiBlock, 1, 1)
 		});
 		GameRegistry.addRecipe(new ItemStack(Crusher, 1), new Object[] {
 			"***", "*L*", "***", Character.valueOf('*'), PlatinumIngot, Character.valueOf('L'), Item.bucketLava
 		});
 	
 		//Smelting
-		GameRegistry.addSmelting(platinumOreID, new ItemStack(PlatinumIngot), 1.0F);
+		GameRegistry.addSmelting(new ItemStack(MultiBlock, 1, 0).itemID, new ItemStack(PlatinumIngot), 1.0F);
 	}
 	
 	/**
@@ -509,7 +498,6 @@ public class ObsidianIngots
 		LanguageRegistry.addName(GoldKnife, "Gold Knife");
 		
 		//Obsidian
-		LanguageRegistry.addName(RefinedObsidian, "Refined Obsidian");
 		LanguageRegistry.addName(ObsidianDust, "Obsidian Dust");
 		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
 		LanguageRegistry.addName(ObsidianBody, "Obsidian Chestplate");
@@ -538,8 +526,6 @@ public class ObsidianIngots
 		LanguageRegistry.addName(LazuliKnife, "Lazuli Knife");
 		
 		//Platinum
-		LanguageRegistry.addName(PlatinumOre, "Platinum Ore");
-		LanguageRegistry.addName(PlatinumBlock, "Platinum Block");
 		LanguageRegistry.addName(PlatinumDust, "Platinum Dust");
 		LanguageRegistry.addName(PlatinumHelmet, "Platinum Helmet");
 		LanguageRegistry.addName(PlatinumBody, "Platinum Chestplate");
@@ -555,8 +541,6 @@ public class ObsidianIngots
 		LanguageRegistry.addName(PlatinumKnife, "Platinum Knife");
 		
 		//Redstone
-		LanguageRegistry.addName(RedstoneBlock, "Redstone Block");
-		LanguageRegistry.addName(RedstoneBlock, "Redstone Block");
 		LanguageRegistry.addName(RedstoneHelmet, "Redstone Helmet");
 		LanguageRegistry.addName(RedstoneBody, "Redstone Chestplate");
 		LanguageRegistry.addName(RedstoneLegs, "Redstone Leggings");
@@ -568,11 +552,9 @@ public class ObsidianIngots
 		LanguageRegistry.addName(RedstoneSpade, "Redstone Shovel");
 		LanguageRegistry.addName(RedstoneHoe, "Redstone Hoe");
 		LanguageRegistry.addName(RedstoneSword, "Redstone Sword");
-		LanguageRegistry.addName(RedstoneBlock, "Redstone Block");
 		LanguageRegistry.addName(RedstoneKnife, "Redstone Knife");	
 		
 		//Glowstone
-		LanguageRegistry.addName(RefinedGlowstone, "Refined Glowstone Block");
 		LanguageRegistry.addName(GlowstoneIngot, "Glowstone Ingot");
 		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
 		LanguageRegistry.addName(GlowstonePickaxe, "Glowstone Pickaxe");
@@ -602,7 +584,14 @@ public class ObsidianIngots
 		LanguageRegistry.addName(PlatinumCompressor, "Platinum Compressor");
 		LanguageRegistry.addName(Combiner, "Combiner");
 		LanguageRegistry.addName(Crusher, "Crusher");
-		LanguageRegistry.addName(CoalBlock, "Coal Block");
+		
+		//Localization for MultiBlock
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.PlatinumOre.name", "Platinum Ore");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.PlatinumBlock.name", "Platinum Block");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RedstoneBlock.name", "Redstone Block");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedObsidian.name", "Refined Obsidian");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.CoalBlock.name", "Coal Block");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedGlowstone.name", "Refined Glowstone Block");
 	}
 	
 	/**
@@ -799,10 +788,7 @@ public class ObsidianIngots
 	public void addBlocks()
 	{
 		//Declarations
-		RedstoneBlock = new BlockBase(redstoneBlockID, 1).setBlockName("RedstoneBlock").setCreativeTab(CreativeTabs.tabBlock);
-		PlatinumOre = new BlockBase(platinumOreID, 3).setBlockName("PlatinumOre").setCreativeTab(CreativeTabs.tabBlock);
-		PlatinumBlock = new BlockBase(platinumBlockID, 2).setBlockName("PlatinumBlock").setCreativeTab(CreativeTabs.tabBlock);
-		RefinedObsidian = new BlockBase(refinedObsidianID, 0).setBlockName("RefinedObsidian").setCreativeTab(CreativeTabs.tabBlock);
+		MultiBlock = new BlockMulti(multiBlockID).setBlockName("MultiBlock");
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(CreativeTabs.tabBlock);
 		if(extrasEnabled == true)
 		{
@@ -812,14 +798,8 @@ public class ObsidianIngots
 		PlatinumCompressor = new BlockPlatinumCompressor(platinumCompressorID).setBlockName("PlatinumCompressorIdle").setCreativeTab(CreativeTabs.tabBlock);
 		Combiner = new BlockCombiner(combinerID).setBlockName("CombinerIdle").setCreativeTab(CreativeTabs.tabBlock);
 		Crusher = new BlockCrusher(crusherID).setBlockName("CrusherIdle").setCreativeTab(CreativeTabs.tabBlock);
-		CoalBlock = new BlockBase(coalBlockID, 10).setBlockName("CoalBlock").setCreativeTab(CreativeTabs.tabBlock);
-		RefinedGlowstone = new BlockBase(refinedGlowstoneID, 11).setBlockName("RefinedGlowstone").setCreativeTab(CreativeTabs.tabBlock);
 		
 		//Registrations
-		GameRegistry.registerBlock(RedstoneBlock);
-		GameRegistry.registerBlock(PlatinumOre);
-		GameRegistry.registerBlock(PlatinumBlock);
-		GameRegistry.registerBlock(RefinedObsidian);
 		GameRegistry.registerBlock(ObsidianTNT);
 		if(extrasEnabled == true)
 		{
@@ -829,8 +809,9 @@ public class ObsidianIngots
 		GameRegistry.registerBlock(PlatinumCompressor);
 		GameRegistry.registerBlock(Combiner);
 		GameRegistry.registerBlock(Crusher);
-		GameRegistry.registerBlock(CoalBlock);
-		GameRegistry.registerBlock(RefinedGlowstone);
+		
+		//Add ItemMulti into the itemsList array for BlockMulti
+		Item.itemsList[multiBlockID] = new ItemMulti(multiBlockID - 256, MultiBlock).setItemName("MultiBlock");
 	}
 	
 	/**
@@ -889,7 +870,7 @@ public class ObsidianIngots
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) 
 	{
-		configuration = event.getSuggestedConfigurationFile();
+		configuration = new Configuration(event.getSuggestedConfigurationFile());
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		//Register the mod's GUI handler
@@ -897,8 +878,9 @@ public class ObsidianIngots
 		//Set the mod's instance
 		instance = this;
 		System.out.println("[ObsidianIngots] Version " + versionNumber + " initializing...");
+		new ThreadGetData();
 		proxy.registerRenderInformation();
-		proxy.setProperties();
+		proxy.loadConfiguration();
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
@@ -906,7 +888,7 @@ public class ObsidianIngots
 		hooks = new ObsidianHooks();
 		hooks.hook();
 		System.out.println("[ObsidianIngots] Hooking complete.");
-	
+
 		//Add all items
 		addItems();
 		System.out.println("[ObsidianIngots] Items loaded.");

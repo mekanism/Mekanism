@@ -129,49 +129,6 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
         return 0;
     }
     
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
-    {
-        super.readFromNBT(par1NBTTagCompound);
-        NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
-        machineItemStacks = new ItemStack[getSizeInventory()];
-
-        for (int var3 = 0; var3 < var2.tagCount(); ++var3)
-        {
-            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
-            byte var5 = var4.getByte("Slot");
-
-            if (var5 >= 0 && var5 < machineItemStacks.length)
-            {
-                machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
-            }
-        }
-
-        machineBurnTime = par1NBTTagCompound.getShort("BurnTime");
-        machineCookTime = par1NBTTagCompound.getShort("CookTime");
-        currentItemBurnTime = getItemBurnTime(machineItemStacks[1]);
-    }
-
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
-    {
-        super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("BurnTime", (short)machineBurnTime);
-        par1NBTTagCompound.setShort("CookTime", (short)machineCookTime);
-        NBTTagList var2 = new NBTTagList();
-
-        for (int var3 = 0; var3 < machineItemStacks.length; ++var3)
-        {
-            if (machineItemStacks[var3] != null)
-            {
-                NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var3);
-                machineItemStacks[var3].writeToNBT(var4);
-                var2.appendTag(var4);
-            }
-        }
-
-        par1NBTTagCompound.setTag("Items", var2);
-    }
-    
     public static boolean isItemFuel(ItemStack par0ItemStack)
     {
         return getItemBurnTime(par0ItemStack) > 0;

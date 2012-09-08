@@ -13,29 +13,29 @@ public class BlockTheoreticalElementizer extends BlockMachine
 {
     public BlockTheoreticalElementizer(int par1)
     {
-        super(par1, "Elementizer.png");
+        super(par1);
     }
     
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
-    	int metadata = world.getBlockMetadata(x, y, z);
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
     	
         if(side == 0 || side == 1)
         {
-        	return ObsidianUtils.isActive(world, x, y, z) ? 52 : 50;
+        	return isActive(world, x, y, z) ? 20 : 18;
         }
         else {
-        	if(side == metadata)
+        	if(side == tileEntity.facing)
         	{
-        		return ObsidianUtils.isActive(world, x, y, z) ? currentFrontTextureIndex : 48;
+        		return isActive(world, x, y, z) ? tileEntity.textureIndex + 64 : 16;
         	}
-        	else if(side == ForgeDirection.getOrientation(metadata).getOpposite().ordinal())
+        	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
         	{
-        		return ObsidianUtils.isActive(world, x, y, z) ? currentBackTextureIndex : 49;
+        		return isActive(world, x, y, z) ? tileEntity.textureIndex + 80 : 17;
         	}
         	else {
-        		return ObsidianUtils.isActive(world, x, y, z) ? currentSideTextureIndex : 51;
+        		return isActive(world, x, y, z) ? tileEntity.textureIndex + 96 : 19;
         	}
         }
     }
@@ -44,14 +44,14 @@ public class BlockTheoreticalElementizer extends BlockMachine
     {
     	if(side == 0 || side == 1)
     	{
-    		return 50;
+    		return 18;
     	}
     	else if(side == 3)
     	{
-    		return 48;
+    		return 16;
     	}
     	else {
-    		return 51;
+    		return 19;
     	}
     }
 

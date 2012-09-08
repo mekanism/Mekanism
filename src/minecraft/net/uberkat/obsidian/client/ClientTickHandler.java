@@ -10,6 +10,11 @@ import net.uberkat.obsidian.common.ObsidianUtils;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
+/**
+ * Client-side tick handler for Obsidian Ingots. Used mainly for the update check upon startup.
+ * @author AidanBrady
+ *
+ */
 public class ClientTickHandler implements ITickHandler
 {
 	public void tickStart(EnumSet<TickType> type, Object... tickData)

@@ -128,6 +128,7 @@ public class PacketHandler implements IPacketHandler
         	output.writeInt(sender.xCoord);
         	output.writeInt(sender.yCoord);
         	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
         	output.writeByte(sender.isActive ? 1 : 0);
         	output.writeInt(sender.machineBurnTime);
         	output.writeInt(sender.machineCookTime);
