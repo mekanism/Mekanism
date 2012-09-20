@@ -78,6 +78,19 @@ public class BlockMulti extends Block
     	}
         return false;
     }
+    
+    public int getLightValue(IBlockAccess world, int x, int y, int z) 
+    {
+        int metadata = world.getBlockMetadata(x, y, z);
+        switch(metadata)
+        {
+        	case 3:
+        		return 8;
+        	case 5:
+        		return 15;
+        }
+        return 0;
+    }
 	
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
 	{
@@ -85,23 +98,25 @@ public class BlockMulti extends Block
 		switch(metadata)
 		{
 			case 0:
-				setHardness(3F).setResistance(5F);
+				setResistance(5F);
 				break;
-			case 1:
-				setHardness(5F).setResistance(10F);
+			default:
+				setResistance(10F);
 				break;
-			case 2:
-				setHardness(5F).setResistance(10F);
-				break;
-			case 3:
-				setHardness(10F).setResistance(15F).setLightValue(0.5F);
-				break;
-			case 4:
-				setHardness(5F).setResistance(10F);
-				break;
-			case 5:
-				setHardness(5F).setResistance(10F).setLightValue(0.875F);
-				break;
+		}
+		world.markBlockAsNeedsUpdate(x, y, z);
+		world.updateAllLightTypes(x, y, z);
+	}
+	
+	public float getBlockHardness(World world, int x, int y, int z)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+		switch(metadata)
+		{
+			case 0:
+				return 3F;
+			default:
+				return 5F;
 		}
 	}
 	

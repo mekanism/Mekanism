@@ -41,7 +41,6 @@ import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
  */
 public class ClientProxy extends CommonProxy
 {
-	@Override
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);

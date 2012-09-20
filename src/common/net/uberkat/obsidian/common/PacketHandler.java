@@ -24,7 +24,7 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.server.FMLServerHandler;
 
 /**
- * Obsidian Ingots packet handler.  As always, use packets sparingly!
+ * Obsidian Ingots packet handler. As always, use packets sparingly!
  * @author AidanBrady
  *
  */
@@ -38,32 +38,37 @@ public class PacketHandler implements IPacketHandler
 		if(packet.channel.equals("ObsidianIngots"))
 		{
 			try {
-				int packetData = dataStream.readInt();
+				int packetType = dataStream.readInt();
 				
-			    if(packetData == 0)
+			    if(packetType == EnumPacketType.TIME.id)
 			    {
-			        System.out.println("[ObsidianIngots] Received '0' packet from " + entityplayer.username + ".");
-			        ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 0);
+			        System.out.println("[ObsidianIngots] Received time update packet from " + entityplayer.username + ".");
+			        ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), dataStream.readInt());
 			    }
-			        
-			    if(packetData == 1)
+			    if(packetType == EnumPacketType.WEATHER.id)
 			    {
-			        System.out.println("[ObsidianIngots] Received '1' packet from " + entityplayer.username + ".");
-			        ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 6);
+			    	System.out.println("[ObsidianIngots] Received weather update packet from " + entityplayer.username + ".");
+			    	int weatherType = dataStream.readInt();
+			    	if(weatherType == EnumWeatherType.CLEAR.id)
+			    	{
+			    		entityplayer.worldObj.getWorldInfo().setRaining(false);
+				        entityplayer.worldObj.getWorldInfo().setThundering(false);
+			    	}
+			    	if(weatherType == EnumWeatherType.HAZE.id)
+			    	{
+			    		entityplayer.worldObj.getWorldInfo().setRaining(true);
+				        entityplayer.worldObj.getWorldInfo().setThundering(true);
+			    	}
+			    	if(weatherType == EnumWeatherType.RAIN.id)
+			    	{
+			    		entityplayer.worldObj.getWorldInfo().setRaining(true);
+			    	}
+			    	if(weatherType == EnumWeatherType.STORM.id)
+			    	{
+				    	entityplayer.worldObj.getWorldInfo().setThundering(true);
+			    	}
 			    }
-			        
-			    if(packetData == 2)
-			    {
-			    	System.out.println("[ObsidianIngots] Received '2' packet from " + entityplayer.username + ".");
-			    	ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 12);
-			    }
-			    	
-			    if(packetData == 3)
-			    {
-			    	System.out.println("[ObsidianIngots] Received '3' packet from " + entityplayer.username + ".");
-			    	ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), 18);
-			    }
-			    if(packetData == 4)
+			    if(packetType == EnumPacketType.TILE_ENTITY.id)
 			    {
 			    	try {
 						int x = dataStream.readInt();
@@ -81,28 +86,6 @@ public class PacketHandler implements IPacketHandler
 						System.err.println("[ObsidianIngots] Error while handling tile entity packet.");
 						e.printStackTrace();
 					}
-			    }
-			    if(packetData == 5)
-			    {
-			    	System.out.println("[ObsidianIngots] Recieved '5' packet from " + entityplayer.username + ".");
-			        entityplayer.worldObj.getWorldInfo().setRaining(false);
-			        entityplayer.worldObj.getWorldInfo().setThundering(false);
-			    }
-			    if(packetData == 6)
-			    {
-			    	System.out.println("[ObsidianIngots] Recieved '6' packet from " + entityplayer.username + ".");
-			        entityplayer.worldObj.getWorldInfo().setRaining(true);
-			        entityplayer.worldObj.getWorldInfo().setThundering(true);
-			    }
-			    if(packetData == 7)
-			    {
-			    	System.out.println("[ObsidianIngots] Recieved '7' packet from " + entityplayer.username + ".");
-			    	entityplayer.worldObj.getWorldInfo().setThundering(true);
-			    }
-			    if(packetData == 8)
-			    {
-			    	System.out.println("[ObsidianIngots] Recieved '8' packet from " + entityplayer.username + ".");
-			    	entityplayer.worldObj.getWorldInfo().setRaining(true);
 			    }
 			}
 			catch (Exception e)
@@ -124,7 +107,7 @@ public class PacketHandler implements IPacketHandler
         DataOutputStream output = new DataOutputStream(bytes);
         
         try {
-        	output.writeInt(4);
+        	output.writeInt(2);
         	output.writeInt(sender.xCoord);
         	output.writeInt(sender.yCoord);
         	output.writeInt(sender.zCoord);
@@ -152,13 +135,15 @@ public class PacketHandler implements IPacketHandler
 	
 	/**
 	 * Sends the server the defined packet data int.
+	 * @param type - packet type
 	 * @param i - int to send
 	 */
-	public static void sendPacketDataInt(int i)
+	public static void sendPacketDataInt(EnumPacketType type, int i)
 	{
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(bytes);
         try {
+        	data.writeInt(type.id);
 			data.writeInt(i);
 		} catch (IOException e) {
 			System.out.println("[ObsidianIngots] An error occured while writing packet data.");
@@ -169,6 +154,6 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
-        System.out.println("[ObsidianIngots] Sent '" + i + "' packet to server");
+        System.out.println("[ObsidianIngots] Sent data int packet '" + i + "' to server");
 	}
 }

@@ -151,7 +151,7 @@ public class ObsidianUtils
 	}
 	
 	/**
-	 * Creates a fake explosion, with only sounds and effects. No damage is caused to either the blocks or the player.
+	 * Creates a fake explosion, with only sounds and effects. No damage is caused to either blocks or the player.
 	 * @param entityplayer - player to explode
 	 */
 	public static void doExplosion(EntityPlayer entityplayer)

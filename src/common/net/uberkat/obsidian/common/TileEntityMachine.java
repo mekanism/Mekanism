@@ -13,7 +13,7 @@ import net.minecraftforge.common.ISidedInventory;
 import net.uberkat.obsidian.client.AudioManager;
 import net.uberkat.obsidian.client.AudioSource;
 
-public class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine
+public abstract class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine
 {
      /** The ItemStacks that hold the items currently being used in the furnace */
     protected ItemStack[] machineItemStacks = new ItemStack[3];
@@ -103,7 +103,7 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
 	/**
 	 * Update call for machines, called every tick. Use this instead of updateEntity().
 	 */
-	public void onUpdate() {}
+	public abstract void onUpdate();
 	
 	/**
 	 * Synchronizes the client with the server on startup by sending two packets.
@@ -245,9 +245,7 @@ public class TileEntityMachine extends TileEntity implements IInventory, ISidedI
     
     public void updateTexture(World world, int x, int y, int z)
     {
-    	if(textureIndex < 15) textureIndex++;
-    	if(textureIndex == 15) textureIndex = 0;
-    	
+    	textureIndex = (++textureIndex)%15;
     	world.markBlockAsNeedsUpdate(x, y, z);
     }
     

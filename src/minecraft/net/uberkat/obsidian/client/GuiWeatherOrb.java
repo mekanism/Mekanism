@@ -3,6 +3,8 @@ package net.uberkat.obsidian.client;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.src.*;
+import net.uberkat.obsidian.common.EnumPacketType;
+import net.uberkat.obsidian.common.EnumWeatherType;
 import net.uberkat.obsidian.common.ObsidianUtils;
 import net.uberkat.obsidian.common.PacketHandler;
 
@@ -20,12 +22,12 @@ public class GuiWeatherOrb extends GuiScreen {
 	public void initGui()
 	{
 		controlList.clear();
-        controlList.add(new GuiButton(1, width / 2 - 80, height / 2 - 65, 50, 20, "Clear"));
-        controlList.add(new GuiButton(2, width / 2 - 80, height / 2 - 35, 50, 20, "Storm"));
-        controlList.add(new GuiButton(3, width / 2 + 5, height / 2 - 65, 50, 20, "Haze"));
-        controlList.add(new GuiButton(4, width / 2 + 5, height / 2 - 35, 50, 20, "Rain"));
-        controlList.add(new GuiButton(5, width / 2 - 94, height / 2 + 30, 80, 20, "Credits"));
-        controlList.add(new GuiButton(6, width / 2 - 10, height / 2 + 30, 80, 20, "Close"));
+        controlList.add(new GuiButton(0, width / 2 - 80, height / 2 - 65, 50, 20, "Clear"));
+        controlList.add(new GuiButton(1, width / 2 - 80, height / 2 - 35, 50, 20, "Storm"));
+        controlList.add(new GuiButton(2, width / 2 + 5, height / 2 - 65, 50, 20, "Haze"));
+        controlList.add(new GuiButton(3, width / 2 + 5, height / 2 - 35, 50, 20, "Rain"));
+        controlList.add(new GuiButton(4, width / 2 - 94, height / 2 + 30, 80, 20, "Credits"));
+        controlList.add(new GuiButton(5, width / 2 - 10, height / 2 + 30, 80, 20, "Close"));
 	}
 	
 	public void drawScreen(int i, int j, float f)
@@ -57,39 +59,39 @@ public class GuiWeatherOrb extends GuiScreen {
 	
 	public void actionPerformed(GuiButton guibutton)
 	{
+		if(guibutton.id == 0)
+		{
+			player.inventory.getCurrentItem().damageItem(4999, player);
+			ObsidianUtils.doExplosion(player);
+			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.CLEAR.id);
+			mc.displayGuiScreen(null);
+		}
 		if(guibutton.id == 1)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			PacketHandler.sendPacketDataInt(5);
+			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.STORM.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			PacketHandler.sendPacketDataInt(6);
+			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.HAZE.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
 			ObsidianUtils.doExplosion(player);
-			PacketHandler.sendPacketDataInt(7);
+			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.RAIN.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
-			PacketHandler.sendPacketDataInt(8);
-			mc.displayGuiScreen(null);
-		}
-		if(guibutton.id == 5)
-		{
 			mc.displayGuiScreen(new GuiCredits());
 		}
-		if(guibutton.id == 6)
+		if(guibutton.id == 5)
 		{
 			mc.displayGuiScreen(null);
 		}

@@ -15,6 +15,8 @@ public class BlockMachine extends BlockContainer
 	public BlockMachine(int id)
 	{
 		super(id, Material.iron);
+		setHardness(3.5F);
+		setResistance(8F);
 	}
 	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)

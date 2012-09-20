@@ -3,7 +3,7 @@ package net.uberkat.obsidian.common;
 import net.minecraft.src.*;
 
 /**
- * Item class for handling multiple IDs. 
+ * Item class for handling multiple IDs.
  * 0: Platinum Ore
  * 1: Platinum Block
  * 2: Redstone Block

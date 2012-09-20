@@ -29,7 +29,7 @@ public class CommonProxy
 	 * Gets the world the client is using from ClientProxy.
 	 * @return client world
 	 */
-	public World getClientWorld()
+	public World getClientWorld() 
 	{
 		return null;
 	}
@@ -39,7 +39,7 @@ public class CommonProxy
 	 * @param armor indicator
 	 * @return armor index number
 	 */
-	public int getArmorIndex(String string)
+	public int getArmorIndex(String string) 
 	{
 		return 0;
 	}
@@ -82,7 +82,7 @@ public class CommonProxy
 	 * @param z - gui's z position
 	 * @return the GuiScreen of the interface
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
 		return null;
 	}

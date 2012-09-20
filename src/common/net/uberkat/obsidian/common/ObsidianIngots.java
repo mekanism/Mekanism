@@ -35,7 +35,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.6")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.8")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -56,11 +56,19 @@ public class ObsidianIngots
     /** Obsidian Ingots configuration instance */
     public static Configuration configuration;
     
-	//Initial Declarations
-	public static Version versionNumber = new Version(4, 0, 6);
+	/** Obsidian Ingots version number */
+	public static Version versionNumber = new Version(4, 0, 8);
+	
+	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
+	
+	/** The recent news which is received from the Obsidian Ingots server */
 	public static String recentNews;
+	
+	/** The IP used to connect to the Obsidian Ingots server */
 	public static String hostIP = "71.56.58.57";
+	
+	/** The port used to connect to the Obsidian Ingots server */
 	public static int hostPort = 3073;
 	
     //Enums: Tools
@@ -83,13 +91,13 @@ public class ObsidianIngots
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
     
 	//Block IDs
-    public static int multiBlockID = 200;
-	public static int obsidianTNTID = 201;
-	public static int elementizerID = 202;
-	public static int enrichmentChamberID = 203;
-	public static int platinumCompressorID = 204;
-	public static int combinerID = 205;
-	public static int crusherID = 206;
+    public static int multiBlockID = 3000;
+	public static int obsidianTNTID = 3001;
+	public static int elementizerID = 3002;
+	public static int enrichmentChamberID = 3003;
+	public static int platinumCompressorID = 3004;
+	public static int combinerID = 3005;
+	public static int crusherID = 3006;
 	
 	//Base Items
 	public static Item WoodPaxel;
