@@ -35,7 +35,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.8")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.0.9")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -57,7 +57,7 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 0, 8);
+	public static Version versionNumber = new Version(4, 0, 9);
 	
 	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
@@ -486,6 +486,7 @@ public class ObsidianIngots
 	
 		//Smelting
 		GameRegistry.addSmelting(new ItemStack(MultiBlock, 1, 0).itemID, new ItemStack(PlatinumIngot), 1.0F);
+		GameRegistry.addSmelting(PlatinumDust.shiftedIndex, new ItemStack(PlatinumIngot, 1), 1.0F);
 	}
 	
 	/**
@@ -800,12 +801,12 @@ public class ObsidianIngots
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(CreativeTabs.tabBlock);
 		if(extrasEnabled == true)
 		{
-			TheoreticalElementizer = new BlockTheoreticalElementizer(elementizerID).setBlockName("TheoreticalElementizer").setCreativeTab(CreativeTabs.tabBlock);
+			TheoreticalElementizer = new BlockTheoreticalElementizer(elementizerID).setBlockName("TheoreticalElementizer");
 		}
-		EnrichmentChamber = new BlockEnrichmentChamber(enrichmentChamberID).setBlockName("EnrichmentChamberIdle").setCreativeTab(CreativeTabs.tabBlock);
-		PlatinumCompressor = new BlockPlatinumCompressor(platinumCompressorID).setBlockName("PlatinumCompressorIdle").setCreativeTab(CreativeTabs.tabBlock);
-		Combiner = new BlockCombiner(combinerID).setBlockName("CombinerIdle").setCreativeTab(CreativeTabs.tabBlock);
-		Crusher = new BlockCrusher(crusherID).setBlockName("CrusherIdle").setCreativeTab(CreativeTabs.tabBlock);
+		EnrichmentChamber = new BlockEnrichmentChamber(enrichmentChamberID).setBlockName("EnrichmentChamber");
+		PlatinumCompressor = new BlockPlatinumCompressor(platinumCompressorID).setBlockName("PlatinumCompressor");
+		Combiner = new BlockCombiner(combinerID).setBlockName("Combiner");
+		Crusher = new BlockCrusher(crusherID).setBlockName("Crusher");
 		
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT);
@@ -872,7 +873,10 @@ public class ObsidianIngots
 	@PostInit
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		hooks = new ObsidianHooks();
+		hooks.hook();
 		addIntegratedItems();
+		System.out.println("[ObsidianIngots] Hooking complete.");
 	}
 	
 	@PreInit
@@ -893,9 +897,6 @@ public class ObsidianIngots
 		proxy.loadTickHandler();
 		
 		//Hook with mods Obsidian Ingots has implemented
-		hooks = new ObsidianHooks();
-		hooks.hook();
-		System.out.println("[ObsidianIngots] Hooking complete.");
 
 		//Add all items
 		addItems();

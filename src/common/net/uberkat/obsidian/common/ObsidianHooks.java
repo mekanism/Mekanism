@@ -1,5 +1,6 @@
 package net.uberkat.obsidian.common;
 
+import ic2.api.Ic2Recipes;
 import net.minecraft.src.*;
 
 /**
@@ -22,8 +23,10 @@ public class ObsidianHooks
 		
 		if(IC2Loaded)
 		{
-			IC2IronDust = getIC2Item("goldDust", false);
-			IC2GoldDust = getIC2Item("ironDust", false);
+			IC2IronDust = getIC2Item("ironDust", false);
+			IC2GoldDust = getIC2Item("goldDust", false);
+			
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(ObsidianIngots.MultiBlock, 1, 0), new ItemStack(ObsidianIngots.PlatinumDust, 2));
 		}
 	}
 	

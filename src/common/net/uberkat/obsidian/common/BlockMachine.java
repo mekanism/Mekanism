@@ -17,6 +17,7 @@ public class BlockMachine extends BlockContainer
 		super(id, Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
+		setCreativeTab(CreativeTabs.tabDeco);
 	}
 	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)

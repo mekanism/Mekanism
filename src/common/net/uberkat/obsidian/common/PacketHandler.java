@@ -133,6 +133,35 @@ public class PacketHandler implements IPacketHandler
         }
 	}
 	
+	public static void sendMachinePacketWithRange(TileEntityMachine sender, double distance)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(2);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeByte(sender.isActive ? 1 : 0);
+        	output.writeInt(sender.machineBurnTime);
+        	output.writeInt(sender.machineCookTime);
+        	output.writeInt(sender.currentItemBurnTime);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.worldType, packet);
+	}
+	
 	/**
 	 * Sends the server the defined packet data int.
 	 * @param type - packet type

@@ -51,6 +51,9 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
     /** An integer that constantly cycles from 0 to 15. Used for animated textures. */
     public int textureIndex = 0;
     
+    /** Amount of ticks passed since Tile Entity init. Used for update packets. */
+    public int packetTick = 0;
+    
     /**
      * Instance of TileEntityMachine. Extend this for a head start on machine making.
      * @param time - time it takes to smelt an item
@@ -94,6 +97,8 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 		}
 		updateTick();
 		
+		updatePacketTick();
+		
 		if(machineCookTime == 0 || machineCookTime == maxBurnTime && currentItemBurnTime != 0)
 		{
 			currentItemBurnTime = 0;
@@ -115,6 +120,18 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 		{
 			PacketHandler.sendMachinePacket(this);
 			updateTicks++;
+		}
+	}
+	
+	public void updatePacketTick()
+	{
+		if(packetTick % 100 == 0)
+		{
+			packetTick++;
+			PacketHandler.sendMachinePacketWithRange(this, 50);
+		}
+		else {
+			packetTick++;
 		}
 	}
 	
