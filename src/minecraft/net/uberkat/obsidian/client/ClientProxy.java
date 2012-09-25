@@ -79,25 +79,25 @@ public class ClientProxy extends CommonProxy
 	{
 		switch(ID)
 		{
-			case 18:
+			case 0:
 				return new GuiStopwatch(player);
-			case 19:
+			case 1:
 				return new GuiCredits();
-			case 20:
+			case 2:
 				return new GuiWeatherOrb(player);
-			case 21:
+			case 3:
 				TileEntityEnrichmentChamber tileentity = (TileEntityEnrichmentChamber)world.getBlockTileEntity(x, y, z);
 				return new GuiEnrichmentChamber(player.inventory, tileentity);
-			case 22:
+			case 4:
 				TileEntityPlatinumCompressor tileentity1 = (TileEntityPlatinumCompressor)world.getBlockTileEntity(x, y, z);
 				return new GuiPlatinumCompressor(player.inventory, tileentity1);
-			case 23:
+			case 5:
 				TileEntityCombiner tileentity2 = (TileEntityCombiner)world.getBlockTileEntity(x, y, z);
 				return new GuiCombiner(player.inventory, tileentity2);
-			case 24:
+			case 6:
 				TileEntityCrusher tileentity3 = (TileEntityCrusher)world.getBlockTileEntity(x, y, z);
 				return new GuiCrusher(player.inventory, tileentity3);
-			case 25:
+			case 7:
 				TileEntityTheoreticalElementizer tileentity4 = (TileEntityTheoreticalElementizer)world.getBlockTileEntity(x, y, z);
 				return new GuiTheoreticalElementizer(player.inventory, tileentity4);
 		}

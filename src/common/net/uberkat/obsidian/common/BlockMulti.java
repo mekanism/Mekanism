@@ -9,13 +9,12 @@ import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
 
 /**
- * Block object for handling multiple IDs. 
- * 0: Platinum Ore
- * 1: Platinum Block
- * 2: Redstone Block
- * 3: Refined Obsidian
- * 4: Coal Block
- * 5: Refined Glowstone
+ * Block class for handling multiple metal block IDs.
+ * 0: Platinum Block
+ * 1: Redstone Block
+ * 2: Refined Obsidian
+ * 3: Coal Block
+ * 4: Refined Glowstone
  * @author AidanBrady
  *
  */
@@ -33,16 +32,14 @@ public class BlockMulti extends Block
 		switch(meta)
 		{
 			case 0:
-				return 3;
-			case 1:
 				return 2;
-			case 2:
+			case 1:
 				return 1;
-			case 3:
+			case 2:
 				return 0;
-			case 4:
+			case 3:
 				return 10;
-			case 5:
+			case 4:
 				return 11;
 		}
 		return 0;
@@ -61,7 +58,6 @@ public class BlockMulti extends Block
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
-		list.add(new ItemStack(i, 1, 5));
 	}
 	
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
@@ -94,30 +90,8 @@ public class BlockMulti extends Block
 	
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
-		switch(metadata)
-		{
-			case 0:
-				setResistance(5F);
-				break;
-			default:
-				setResistance(10F);
-				break;
-		}
 		world.markBlockAsNeedsUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
-	}
-	
-	public float getBlockHardness(World world, int x, int y, int z)
-	{
-		int metadata = world.getBlockMetadata(x, y, z);
-		switch(metadata)
-		{
-			case 0:
-				return 3F;
-			default:
-				return 5F;
-		}
 	}
 	
 	public String getTextureFile()

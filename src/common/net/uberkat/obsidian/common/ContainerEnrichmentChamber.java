@@ -4,14 +4,14 @@ import net.minecraft.src.*;
 
 public class ContainerEnrichmentChamber extends Container
 {
-    private TileEntityEnrichmentChamber chamber;
+    private TileEntityEnrichmentChamber machine;
     private int lastCookTime = 0;
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
 
     public ContainerEnrichmentChamber(InventoryPlayer par1InventoryPlayer, TileEntityEnrichmentChamber par2TileEntityEnrichmentChamber)
     {
-        this.chamber = par2TileEntityEnrichmentChamber;
+        this.machine = par2TileEntityEnrichmentChamber;
         this.addSlotToContainer(new Slot(par2TileEntityEnrichmentChamber, 0, 56, 17));
         this.addSlotToContainer(new Slot(par2TileEntityEnrichmentChamber, 1, 56, 53));
         this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntityEnrichmentChamber, 2, 116, 35));
@@ -42,48 +42,48 @@ public class ContainerEnrichmentChamber extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.chamber.machineCookTime)
+            if (this.lastCookTime != this.machine.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.chamber.machineCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.machine.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.chamber.machineBurnTime)
+            if (this.lastBurnTime != this.machine.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.chamber.machineBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.machine.machineBurnTime);
             }
 
-            if (this.lastItemBurnTime != this.chamber.currentItemBurnTime)
+            if (this.lastItemBurnTime != this.machine.currentItemBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 2, this.chamber.currentItemBurnTime);
+                var2.updateCraftingInventoryInfo(this, 2, this.machine.currentItemBurnTime);
             }
         }
 
-        this.lastCookTime = this.chamber.machineCookTime;
-        this.lastBurnTime = this.chamber.machineBurnTime;
-        this.lastItemBurnTime = this.chamber.currentItemBurnTime;
+        this.lastCookTime = this.machine.machineCookTime;
+        this.lastBurnTime = this.machine.machineBurnTime;
+        this.lastItemBurnTime = this.machine.currentItemBurnTime;
     }
 
     public void updateProgressBar(int par1, int par2)
     {
         if (par1 == 0)
         {
-            this.chamber.machineCookTime = par2;
+            this.machine.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.chamber.machineBurnTime = par2;
+            this.machine.machineBurnTime = par2;
         }
 
         if (par1 == 2)
         {
-            this.chamber.currentItemBurnTime = par2;
+            this.machine.currentItemBurnTime = par2;
         }
     }
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
-        return this.chamber.isUseableByPlayer(par1EntityPlayer);
+        return this.machine.isUseableByPlayer(par1EntityPlayer);
     }
 
     /**
@@ -110,7 +110,7 @@ public class ContainerEnrichmentChamber extends Container
             }
             else if (par1 != 1 && par1 != 0)
             {
-                if (EnrichmentChamberRecipes.smelting().getSmeltingResult(var4) != null)
+                if (MachineRecipes.getOutput(var4, false, machine.recipes) != null)
                 {
                     if (!this.mergeItemStack(var4, 0, 1, false))
                     {

@@ -1,11 +1,23 @@
 package net.uberkat.obsidian.common;
 
+import java.util.List;
 import java.util.Random;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
+import net.minecraftforge.common.ForgeDirection;
 
+/**
+ * Block class for handling multiple machine block IDs.
+ * 0: Enrichment Chamber
+ * 1: Platinum Compressor
+ * 2: Combiner
+ * 3: Crusher
+ * 4: Theoretical Elementizer
+ * @author AidanBrady
+ *
+ */
 public class BlockMachine extends BlockContainer
 {
 	public Random machineRand = new Random();
@@ -18,6 +30,7 @@ public class BlockMachine extends BlockContainer
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(CreativeTabs.tabDeco);
+		setRequiresSelfNotify();
 	}
 	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
@@ -34,7 +47,7 @@ public class BlockMachine extends BlockContainer
         	case 3: change = 4; break;
         }
         
-        tileEntity.setFacing(change);
+        tileEntity.setFacing((short)change);
     }
 	
     @SideOnly(Side.CLIENT)
@@ -71,6 +84,153 @@ public class BlockMachine extends BlockContainer
             }
         }
     }
+    
+    public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    {
+    	if(meta == 0)
+    	{
+        	if(side == 3)
+        	{
+        		return 9;
+        	}
+        	else {
+        		return 2;
+        	}
+    	}
+    	else if(meta == 1)
+    	{
+        	if(side == 3)
+        	{
+        		return 14;
+        	}
+        	else {
+        		return 2;
+        	}
+    	}
+    	else if(meta == 2)
+    	{
+        	if(side == 3)
+        	{
+        		return 15;
+        	}
+        	else {
+        		return 2;
+        	}
+    	}
+    	else if(meta == 3)
+    	{
+        	if(side == 3)
+        	{
+        		return 13;
+        	}
+        	else {
+        		return 2;
+        	}
+    	}
+    	else if(meta == 4)
+    	{
+        	if(side == 0 || side == 1)
+        	{
+        		return 18;
+        	}
+        	else if(side == 3)
+        	{
+        		return 16;
+        	}
+        	else {
+        		return 19;
+        	}
+    	}
+    	else {
+    		return 0;
+    	}
+    }
+    
+    @SideOnly(Side.CLIENT)
+    public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    {
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+        
+    	if(metadata == 0)
+    	{
+	        if(side == tileEntity.facing)
+	        {
+	        	return isActive(world, x, y, z) ? 8 : 9;
+	        }
+	        else {
+	        	return 2;
+	        }
+    	}
+    	else if(metadata == 1)
+    	{
+            if(side == tileEntity.facing)
+            {
+            	return isActive(world, x, y, z) ? tileEntity.textureIndex + 32 : 14;
+            }
+            else {
+            	return 2;
+            }
+    	}
+    	else if(metadata == 2)
+    	{
+            if(side == tileEntity.facing)
+            {
+            	return isActive(world, x, y, z) ? tileEntity.textureIndex + 48 : 15;
+            }
+            else {
+            	return 2;
+            }
+    	}
+    	else if(metadata == 3)
+    	{
+            if(side == tileEntity.facing)
+            {
+            	return isActive(world, x, y, z) ? 12 : 13;
+            }
+            else {
+            	return 2;
+            }
+    	}
+    	else if(metadata == 4)
+    	{
+            if(side == 0 || side == 1)
+            {
+            	return isActive(world, x, y, z) ? 20 : 18;
+            }
+            else {
+            	if(side == tileEntity.facing)
+            	{
+            		return isActive(world, x, y, z) ? tileEntity.textureIndex + 64 : 16;
+            	}
+            	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
+            	{
+            		return isActive(world, x, y, z) ? tileEntity.textureIndex + 80 : 17;
+            	}
+            	else {
+            		return isActive(world, x, y, z) ? tileEntity.textureIndex + 96 : 19;
+            	}
+            }
+    	}
+    	else {
+    		return 0;
+    	}
+    }
+    
+    public int damageDropped(int i)
+    {
+    	return i;
+    }
+    
+	@SideOnly(Side.CLIENT)
+	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
+	{
+		list.add(new ItemStack(i, 1, 0));
+		list.add(new ItemStack(i, 1, 1));
+		list.add(new ItemStack(i, 1, 2));
+		list.add(new ItemStack(i, 1, 3));
+		list.add(new ItemStack(i, 1, 4));
+	}
     
 	/**
 	 * Checks if a machine is in it's active state.
@@ -137,13 +297,90 @@ public class BlockMachine extends BlockContainer
     	super.breakBlock(world, par2, par3, par4, i1, i2);
     }
     
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+    {
+        if (world.isRemote)
+        {
+            return true;
+        }
+        else
+        {
+        	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+        	int metadata = world.getBlockMetadata(x, y, z);
+        	
+            if (tileEntity != null)
+            {
+            	if(!entityplayer.isSneaking())
+            	{
+            		int id = 0;
+            		
+            		if(metadata == 0) id = 3;
+            		else if(metadata == 1) id = 4;
+            		else if(metadata == 2) id = 5;
+            		else if(metadata == 3) id = 6;
+            		else if(metadata == 4) id = 7;
+            		
+            		entityplayer.openGui(ObsidianIngots.instance, id, world, x, y, z);
+            	}
+            	else {
+            		return false;
+            	}
+            }
+            return true;
+        }
+    }
+    
     public String getTextureFile()
     {
     	return "/obsidian/terrain.png";
     }
+    
+    public TileEntity createNewTileEntity(World world, int metadata)
+    {
+    	if(metadata == MachineType.ENRICHMENT_CHAMBER.index)
+    	{
+    		return new TileEntityEnrichmentChamber();
+    	}
+    	else if(metadata == MachineType.PLATINUM_COMPRESSOR.index)
+    	{
+    		return new TileEntityPlatinumCompressor();
+    	}
+    	else if(metadata == MachineType.COMBINER.index)
+    	{
+    		return new TileEntityCombiner();
+    	}
+    	else if(metadata == MachineType.CRUSHER.index)
+    	{
+    		return new TileEntityCrusher();
+    	}
+    	else if(metadata == MachineType.THEORETICAL_ELEMENTIZER.index)
+    	{
+    		return new TileEntityTheoreticalElementizer();
+    	}
+    	else {
+    		return null;
+    	}
+    }
 	
+    //This method is not used, metadata manipulation is required to create a Tile Entity.
 	public TileEntity createNewTileEntity(World world)
 	{
 		return null;
+	}
+	
+	public static enum MachineType
+	{
+		ENRICHMENT_CHAMBER(0),
+		PLATINUM_COMPRESSOR(1),
+		COMBINER(2),
+		CRUSHER(3),
+		THEORETICAL_ELEMENTIZER(4);
+		
+		private int index;
+		
+		private MachineType(int i)
+		{
+			index = i;
+		}
 	}
 }

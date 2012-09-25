@@ -2,7 +2,6 @@ package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.BlockCombiner;
 import net.uberkat.obsidian.common.ContainerCombiner;
 import net.uberkat.obsidian.common.TileEntityCombiner;
 

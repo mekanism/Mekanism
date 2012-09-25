@@ -4,14 +4,14 @@ import net.minecraft.src.*;
 
 public class ContainerCrusher extends Container
 {
-    private TileEntityCrusher crusher;
+    private TileEntityCrusher machine;
     private int lastCookTime = 0;
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
 
     public ContainerCrusher(InventoryPlayer par1InventoryPlayer, TileEntityCrusher par2TileEntityCrusher)
     {
-        this.crusher = par2TileEntityCrusher;
+        this.machine = par2TileEntityCrusher;
         this.addSlotToContainer(new Slot(par2TileEntityCrusher, 0, 56, 17));
         this.addSlotToContainer(new Slot(par2TileEntityCrusher, 1, 56, 53));
         this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntityCrusher, 2, 116, 35));
@@ -42,48 +42,48 @@ public class ContainerCrusher extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.crusher.machineCookTime)
+            if (this.lastCookTime != this.machine.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.crusher.machineCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.machine.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.crusher.machineBurnTime)
+            if (this.lastBurnTime != this.machine.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.crusher.machineBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.machine.machineBurnTime);
             }
 
-            if (this.lastItemBurnTime != this.crusher.currentItemBurnTime)
+            if (this.lastItemBurnTime != this.machine.currentItemBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 2, this.crusher.currentItemBurnTime);
+                var2.updateCraftingInventoryInfo(this, 2, this.machine.currentItemBurnTime);
             }
         }
 
-        this.lastCookTime = this.crusher.machineCookTime;
-        this.lastBurnTime = this.crusher.machineBurnTime;
-        this.lastItemBurnTime = this.crusher.currentItemBurnTime;
+        this.lastCookTime = this.machine.machineCookTime;
+        this.lastBurnTime = this.machine.machineBurnTime;
+        this.lastItemBurnTime = this.machine.currentItemBurnTime;
     }
 
     public void updateProgressBar(int par1, int par2)
     {
         if (par1 == 0)
         {
-            this.crusher.machineCookTime = par2;
+            this.machine.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.crusher.machineBurnTime = par2;
+            this.machine.machineBurnTime = par2;
         }
 
         if (par1 == 2)
         {
-            this.crusher.currentItemBurnTime = par2;
+            this.machine.currentItemBurnTime = par2;
         }
     }
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
-        return this.crusher.isUseableByPlayer(par1EntityPlayer);
+        return this.machine.isUseableByPlayer(par1EntityPlayer);
     }
 
     /**
@@ -110,7 +110,7 @@ public class ContainerCrusher extends Container
             }
             else if (par1 != 1 && par1 != 0)
             {
-                if (CrusherRecipes.smelting().getSmeltingResult(var4) != null)
+                if (MachineRecipes.getOutput(var4, false, machine.recipes) != null)
                 {
                     if (!this.mergeItemStack(var4, 0, 1, false))
                     {

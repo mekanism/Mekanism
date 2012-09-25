@@ -1,5 +1,7 @@
 package net.uberkat.obsidian.common;
 
+import ic2.api.IWrenchable;
+
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -10,13 +12,11 @@ import cpw.mods.fml.server.FMLServerHandler;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import net.uberkat.obsidian.client.AudioManager;
-import net.uberkat.obsidian.client.AudioSource;
 
-public abstract class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine
+public abstract class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine, IWrenchable
 {
      /** The ItemStacks that hold the items currently being used in the furnace */
-    protected ItemStack[] machineItemStacks = new ItemStack[3];
+    protected ItemStack[] inventory = new ItemStack[3];
 
     /** The number of ticks that the furnace will keep burning */
     public int machineBurnTime = 0;
@@ -80,12 +80,12 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 
 	public int getSizeInventory() 
 	{
-		return machineItemStacks.length;
+		return inventory.length;
 	}
 
 	public ItemStack getStackInSlot(int var1) 
 	{
-		return machineItemStacks[var1];
+		return inventory[var1];
 	}
 	
 	public void updateEntity()
@@ -150,23 +150,23 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 	
     public ItemStack decrStackSize(int par1, int par2)
     {
-        if (machineItemStacks[par1] != null)
+        if (inventory[par1] != null)
         {
             ItemStack var3;
 
-            if (machineItemStacks[par1].stackSize <= par2)
+            if (inventory[par1].stackSize <= par2)
             {
-                var3 = machineItemStacks[par1];
-                machineItemStacks[par1] = null;
+                var3 = inventory[par1];
+                inventory[par1] = null;
                 return var3;
             }
             else
             {
-                var3 = machineItemStacks[par1].splitStack(par2);
+                var3 = inventory[par1].splitStack(par2);
 
-                if (machineItemStacks[par1].stackSize == 0)
+                if (inventory[par1].stackSize == 0)
                 {
-                    machineItemStacks[par1] = null;
+                    inventory[par1] = null;
                 }
 
                 return var3;
@@ -180,10 +180,10 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 
     public ItemStack getStackInSlotOnClosing(int par1)
     {
-        if (machineItemStacks[par1] != null)
+        if (inventory[par1] != null)
         {
-            ItemStack var2 = machineItemStacks[par1];
-            machineItemStacks[par1] = null;
+            ItemStack var2 = inventory[par1];
+            inventory[par1] = null;
             return var2;
         }
         else
@@ -194,7 +194,7 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-        machineItemStacks[par1] = par2ItemStack;
+        inventory[par1] = par2ItemStack;
 
         if (par2ItemStack != null && par2ItemStack.stackSize > getInventoryStackLimit())
         {
@@ -253,7 +253,7 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
     	prevActive = active;
     }
     
-    public void setFacing(int direction)
+    public void setFacing(short direction)
     {
     	facing = direction;
     	
@@ -270,16 +270,16 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
     {
         super.readFromNBT(par1NBTTagCompound);
         NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
-        machineItemStacks = new ItemStack[getSizeInventory()];
+        inventory = new ItemStack[getSizeInventory()];
 
         for (int var3 = 0; var3 < var2.tagCount(); ++var3)
         {
             NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
             byte var5 = var4.getByte("Slot");
 
-            if (var5 >= 0 && var5 < machineItemStacks.length)
+            if (var5 >= 0 && var5 < inventory.length)
             {
-                machineItemStacks[var5] = ItemStack.loadItemStackFromNBT(var4);
+                inventory[var5] = ItemStack.loadItemStackFromNBT(var4);
             }
         }
 
@@ -300,13 +300,13 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
         par1NBTTagCompound.setInteger("facing", facing);
         NBTTagList var2 = new NBTTagList();
 
-        for (int var3 = 0; var3 < machineItemStacks.length; ++var3)
+        for (int var3 = 0; var3 < inventory.length; ++var3)
         {
-            if (machineItemStacks[var3] != null)
+            if (inventory[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
                 var4.setByte("Slot", (byte)var3);
-                machineItemStacks[var3].writeToNBT(var4);
+                inventory[var3].writeToNBT(var4);
                 var2.appendTag(var4);
             }
         }
@@ -334,5 +334,25 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 			System.out.println("[ObsidianIngots] Error while handling tile entity packet.");
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean wrenchCanRemove(EntityPlayer entityplayer)
+	{
+		return true;
+	}
+	
+	public float getWrenchDropRate()
+	{
+		return 1.0F;
+	}
+	
+	public short getFacing()
+	{
+		return (short)facing;
+	}
+	
+	public boolean wrenchCanSetFacing(EntityPlayer entityplayer, int i)
+	{
+		return facing != i;
 	}
 }

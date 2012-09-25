@@ -1,6 +1,8 @@
 package net.uberkat.obsidian.common;
 
+import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.common.ForgeDirection;
@@ -30,19 +32,19 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
         {
             if (machineBurnTime == 0 && canSmelt())
             {
-                currentItemBurnTime = machineBurnTime = getItemBurnTime(machineItemStacks[1]);
+                currentItemBurnTime = machineBurnTime = getItemBurnTime(inventory[1]);
 
                 if (machineBurnTime > 0)
                 {
                     var2 = true;
 
-                    if (machineItemStacks[1] != null)
+                    if (inventory[1] != null)
                     {
-                        --machineItemStacks[1].stackSize;
+                        --inventory[1].stackSize;
 
-                        if (machineItemStacks[1].stackSize == 0)
+                        if (inventory[1].stackSize == 0)
                         {
-                            machineItemStacks[1] = null;
+                            inventory[1] = null;
                         }
                     }
                 }
@@ -79,18 +81,18 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
     
     public boolean canSmelt()
     {
-        if (machineItemStacks[0] == null)
+        if (inventory[0] == null)
         {
             return false;
         }
-        else if(machineItemStacks[2] != null)
+        else if(inventory[2] != null)
         {
         	return false;
         }
         else
         {
-            if (machineItemStacks[0].getItem().shiftedIndex != ObsidianIngots.EnrichedAlloy.shiftedIndex) return false;
-            if (machineItemStacks[2] == null) return true;
+            if (inventory[0].getItem().shiftedIndex != ObsidianIngots.EnrichedAlloy.shiftedIndex) return false;
+            if (inventory[2] == null) return true;
         }
         return false;
     }
@@ -101,16 +103,16 @@ public class TileEntityTheoreticalElementizer extends TileEntityMachine
         {
             ItemStack itemstack = new ItemStack(getRandomMagicItem(), 1);
 
-            if (machineItemStacks[2] == null)
+            if (inventory[2] == null)
             {
-                machineItemStacks[2] = itemstack.copy();
+                inventory[2] = itemstack.copy();
             }
 
-            --machineItemStacks[0].stackSize;
+            --inventory[0].stackSize;
 
-            if (machineItemStacks[0].stackSize <= 0)
+            if (inventory[0].stackSize <= 0)
             {
-                machineItemStacks[0] = null;
+                inventory[0] = null;
             }
         }
     }

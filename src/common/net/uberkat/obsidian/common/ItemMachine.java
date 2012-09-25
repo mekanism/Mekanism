@@ -1,22 +1,24 @@
 package net.uberkat.obsidian.common;
 
-import net.minecraft.src.*;
+import net.minecraft.src.Block;
+import net.minecraft.src.ItemBlock;
+import net.minecraft.src.ItemStack;
 
 /**
- * Item class for handling multiple metal block IDs.
- * 0: Platinum Block
- * 1: Redstone Block
- * 2: Refined Obsidian
- * 3: Coal Block
- * 4: Refined Glowstone
+ * Item class for handling multiple machine block IDs.
+ * 0: Enrichment Chamber
+ * 1: Platinum Compressor
+ * 2: Combiner
+ * 3: Crusher
+ * 4: Theoretical Elementizer
  * @author AidanBrady
  *
  */
-public class ItemMulti extends ItemBlock
+public class ItemMachine extends ItemBlock
 {
 	public Block metaBlock;
 	
-	public ItemMulti(int id, Block block)
+	public ItemMachine(int id, Block block)
 	{
 		super(id);
 		metaBlock = block;
@@ -39,19 +41,19 @@ public class ItemMulti extends ItemBlock
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
-				name = "PlatinumBlock";
+				name = "EnrichmentChamber";
 				break;
 			case 1:
-				name = "RedstoneBlock";
+				name = "PlatinumCompressor";
 				break;
 			case 2:
-				name = "RefinedObsidian";
+				name = "Combiner";
 				break;
 			case 3:
-				name = "CoalBlock";
+				name = "Crusher";
 				break;
 			case 4:
-				name = "RefinedGlowstone";
+				name = "TheoreticalElementizer";
 				break;
 			default:
 				name = "Unknown";

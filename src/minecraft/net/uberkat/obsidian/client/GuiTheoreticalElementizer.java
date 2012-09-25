@@ -2,7 +2,6 @@ package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.BlockTheoreticalElementizer;
 import net.uberkat.obsidian.common.ContainerTheoreticalElementizer;
 import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
 

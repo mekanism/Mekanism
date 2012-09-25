@@ -1,5 +1,8 @@
 package net.uberkat.obsidian.common;
 
+import java.util.List;
+import java.util.Vector;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import net.minecraftforge.common.ISidedInventory;
@@ -8,6 +11,8 @@ import net.minecraft.src.*;
 
 public class TileEntityEnrichmentChamber extends TileEntityMachine
 {
+	public static List recipes = new Vector();
+	
 	public TileEntityEnrichmentChamber()
 	{
 		super(200, "Enrichment Chamber");
@@ -27,19 +32,19 @@ public class TileEntityEnrichmentChamber extends TileEntityMachine
         {
             if (machineBurnTime == 0 && canSmelt())
             {
-                currentItemBurnTime = machineBurnTime = getItemBurnTime(machineItemStacks[1]);
+                currentItemBurnTime = machineBurnTime = getItemBurnTime(inventory[1]);
 
                 if (machineBurnTime > 0)
                 {
                     var2 = true;
 
-                    if (machineItemStacks[1] != null)
+                    if (inventory[1] != null)
                     {
-                        --machineItemStacks[1].stackSize;
+                        --inventory[1].stackSize;
 
-                        if (machineItemStacks[1].stackSize == 0)
+                        if (inventory[1].stackSize == 0)
                         {
-                            machineItemStacks[1] = null;
+                            inventory[1] = null;
                         }
                     }
                 }
@@ -76,42 +81,64 @@ public class TileEntityEnrichmentChamber extends TileEntityMachine
 
     public boolean canSmelt()
     {
-        if (machineItemStacks[0] == null)
+        if (inventory[0] == null)
+        {
+            return false;
+        }
+
+        ItemStack itemstack = MachineRecipes.getOutput(inventory[0], false, recipes);
+
+        if (itemstack == null)
+        {
+            return false;
+        }
+
+        if (inventory[2] == null)
+        {
+            return true;
+        }
+
+        if (!inventory[2].isItemEqual(itemstack))
         {
             return false;
         }
         else
         {
-            ItemStack var1 = EnrichmentChamberRecipes.smelting().getSmeltingResult(machineItemStacks[0]);
-            if (var1 == null) return false;
-            if (machineItemStacks[2] == null) return true;
-            if (!machineItemStacks[2].isItemEqual(var1)) return false;
-            int result = machineItemStacks[2].stackSize + var1.stackSize;
-            return (result <= getInventoryStackLimit() && result <= var1.getMaxStackSize());
+            return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }
 
     public void smeltItem()
     {
-        if (canSmelt())
+        if (!canSmelt())
         {
-            ItemStack var1 = EnrichmentChamberRecipes.smelting().getSmeltingResult(machineItemStacks[0]);
+            return;
+        }
 
-            if (machineItemStacks[2] == null)
-            {
-                machineItemStacks[2] = var1.copy();
-            }
-            else if (machineItemStacks[2].isItemEqual(var1))
-            {
-                machineItemStacks[2].stackSize += var1.stackSize;
-            }
+        ItemStack itemstack;
 
-            --machineItemStacks[0].stackSize;
+        if (inventory[0].getItem().hasContainerItem())
+        {
+            itemstack = MachineRecipes.getOutput(inventory[0], false, recipes).copy();
+            inventory[0] = new ItemStack(inventory[0].getItem().getContainerItem());
+        }
+        else
+        {
+            itemstack = MachineRecipes.getOutput(inventory[0], true, recipes).copy();
+        }
 
-            if (machineItemStacks[0].stackSize <= 0)
-            {
-                machineItemStacks[0] = null;
-            }
+        if (inventory[0].stackSize <= 0)
+        {
+            inventory[0] = null;
+        }
+
+        if (inventory[2] == null)
+        {
+            inventory[2] = itemstack;
+        }
+        else
+        {
+            inventory[2].stackSize += itemstack.stackSize;
         }
     }
 

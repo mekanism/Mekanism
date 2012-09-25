@@ -4,14 +4,14 @@ import net.minecraft.src.*;
 
 public class ContainerTheoreticalElementizer extends Container
 {
-    private TileEntityTheoreticalElementizer elementizer;
+    private TileEntityTheoreticalElementizer machine;
     private int lastCookTime = 0;
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
 
     public ContainerTheoreticalElementizer(InventoryPlayer par1InventoryPlayer, TileEntityTheoreticalElementizer par2TileEntityTheoreticalElementizer)
     {
-        this.elementizer = par2TileEntityTheoreticalElementizer;
+        this.machine = par2TileEntityTheoreticalElementizer;
         this.addSlotToContainer(new Slot(par2TileEntityTheoreticalElementizer, 0, 56, 17));
         this.addSlotToContainer(new Slot(par2TileEntityTheoreticalElementizer, 1, 56, 53));
         this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntityTheoreticalElementizer, 2, 116, 35));
@@ -42,48 +42,48 @@ public class ContainerTheoreticalElementizer extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.elementizer.machineCookTime)
+            if (this.lastCookTime != this.machine.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.elementizer.machineCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.machine.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.elementizer.machineBurnTime)
+            if (this.lastBurnTime != this.machine.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.elementizer.machineBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.machine.machineBurnTime);
             }
 
-            if (this.lastItemBurnTime != this.elementizer.currentItemBurnTime)
+            if (this.lastItemBurnTime != this.machine.currentItemBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 2, this.elementizer.currentItemBurnTime);
+                var2.updateCraftingInventoryInfo(this, 2, this.machine.currentItemBurnTime);
             }
         }
 
-        this.lastCookTime = this.elementizer.machineCookTime;
-        this.lastBurnTime = this.elementizer.machineBurnTime;
-        this.lastItemBurnTime = this.elementizer.currentItemBurnTime;
+        this.lastCookTime = this.machine.machineCookTime;
+        this.lastBurnTime = this.machine.machineBurnTime;
+        this.lastItemBurnTime = this.machine.currentItemBurnTime;
     }
 
     public void updateProgressBar(int par1, int par2)
     {
         if (par1 == 0)
         {
-            this.elementizer.machineCookTime = par2;
+            this.machine.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.elementizer.machineBurnTime = par2;
+            this.machine.machineBurnTime = par2;
         }
 
         if (par1 == 2)
         {
-            this.elementizer.currentItemBurnTime = par2;
+            this.machine.currentItemBurnTime = par2;
         }
     }
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
-        return this.elementizer.isUseableByPlayer(par1EntityPlayer);
+        return this.machine.isUseableByPlayer(par1EntityPlayer);
     }
 
     /**

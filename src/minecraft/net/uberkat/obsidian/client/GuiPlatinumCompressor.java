@@ -2,7 +2,6 @@ package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.BlockPlatinumCompressor;
 import net.uberkat.obsidian.common.ContainerPlatinumCompressor;
 import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
 

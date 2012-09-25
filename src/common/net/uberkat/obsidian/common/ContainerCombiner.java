@@ -4,14 +4,14 @@ import net.minecraft.src.*;
 
 public class ContainerCombiner extends Container
 {
-    private TileEntityCombiner combiner;
+    private TileEntityCombiner machine;
     private int lastCookTime = 0;
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
 
     public ContainerCombiner(InventoryPlayer par1InventoryPlayer, TileEntityCombiner par2TileEntityCombiner)
     {
-        this.combiner = par2TileEntityCombiner;
+        this.machine = par2TileEntityCombiner;
         this.addSlotToContainer(new Slot(par2TileEntityCombiner, 0, 56, 17));
         this.addSlotToContainer(new Slot(par2TileEntityCombiner, 1, 56, 53));
         this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, par2TileEntityCombiner, 2, 116, 35));
@@ -42,48 +42,48 @@ public class ContainerCombiner extends Container
         {
             ICrafting var2 = (ICrafting)this.crafters.get(var1);
 
-            if (this.lastCookTime != this.combiner.machineCookTime)
+            if (this.lastCookTime != this.machine.machineCookTime)
             {
-                var2.updateCraftingInventoryInfo(this, 0, this.combiner.machineCookTime);
+                var2.updateCraftingInventoryInfo(this, 0, this.machine.machineCookTime);
             }
 
-            if (this.lastBurnTime != this.combiner.machineBurnTime)
+            if (this.lastBurnTime != this.machine.machineBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 1, this.combiner.machineBurnTime);
+                var2.updateCraftingInventoryInfo(this, 1, this.machine.machineBurnTime);
             }
 
-            if (this.lastItemBurnTime != this.combiner.currentItemBurnTime)
+            if (this.lastItemBurnTime != this.machine.currentItemBurnTime)
             {
-                var2.updateCraftingInventoryInfo(this, 2, this.combiner.currentItemBurnTime);
+                var2.updateCraftingInventoryInfo(this, 2, this.machine.currentItemBurnTime);
             }
         }
 
-        this.lastCookTime = this.combiner.machineCookTime;
-        this.lastBurnTime = this.combiner.machineBurnTime;
-        this.lastItemBurnTime = this.combiner.currentItemBurnTime;
+        this.lastCookTime = this.machine.machineCookTime;
+        this.lastBurnTime = this.machine.machineBurnTime;
+        this.lastItemBurnTime = this.machine.currentItemBurnTime;
     }
 
     public void updateProgressBar(int par1, int par2)
     {
         if (par1 == 0)
         {
-            this.combiner.machineCookTime = par2;
+            this.machine.machineCookTime = par2;
         }
 
         if (par1 == 1)
         {
-            this.combiner.machineBurnTime = par2;
+            this.machine.machineBurnTime = par2;
         }
 
         if (par1 == 2)
         {
-            this.combiner.currentItemBurnTime = par2;
+            this.machine.currentItemBurnTime = par2;
         }
     }
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
-        return this.combiner.isUseableByPlayer(par1EntityPlayer);
+        return this.machine.isUseableByPlayer(par1EntityPlayer);
     }
 
     /**
@@ -110,7 +110,7 @@ public class ContainerCombiner extends Container
             }
             else if (par1 != 1 && par1 != 0)
             {
-                if (CombinerRecipes.smelting().getSmeltingResult(var4) != null)
+                if (MachineRecipes.getOutput(var4, false, machine.recipes) != null)
                 {
                     if (!this.mergeItemStack(var4, 0, 1, false))
                     {
