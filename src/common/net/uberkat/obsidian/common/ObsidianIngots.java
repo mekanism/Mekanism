@@ -484,18 +484,15 @@ public class ObsidianIngots
 		GameRegistry.addSmelting(PlatinumDust.shiftedIndex, new ItemStack(PlatinumIngot, 1), 1.0F);
 		
 		//Enrichment Chamber Recipes
-		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(ObsidianDust));
 		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(OreBlock, 1, 0), new ItemStack(PlatinumDust, 2));
 		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 2));
 		
 		//Platinum Compressor Recipes
 		MachineRecipes.addPlatinumCompressorRecipe(new ItemStack(Item.redstone), new ItemStack(RedstoneIngot));
-		MachineRecipes.addPlatinumCompressorRecipe(new ItemStack(ObsidianDust), new ItemStack(ObsidianIngot));
 		MachineRecipes.addPlatinumCompressorRecipe(new ItemStack(Item.lightStoneDust), new ItemStack(GlowstoneIngot));
 		
 		//Combiner Recipes
 		MachineRecipes.addCombinerRecipe(new ItemStack(Item.redstone, 4), new ItemStack(Block.oreRedstone));
-		MachineRecipes.addCombinerRecipe(new ItemStack(ObsidianDust), new ItemStack(Block.obsidian));
 		MachineRecipes.addCombinerRecipe(new ItemStack(Item.redstone), new ItemStack(RedstoneIngot));
 		MachineRecipes.addCombinerRecipe(new ItemStack(PlatinumDust, 2), new ItemStack(OreBlock, 1, 0));
 		MachineRecipes.addCombinerRecipe(new ItemStack(Item.diamond), new ItemStack(Block.oreDiamond));
@@ -525,7 +522,6 @@ public class ObsidianIngots
 		LanguageRegistry.addName(GoldKnife, "Gold Knife");
 		
 		//Obsidian
-		LanguageRegistry.addName(ObsidianDust, "Obsidian Dust");
 		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
 		LanguageRegistry.addName(ObsidianBody, "Obsidian Chestplate");
 		LanguageRegistry.addName(ObsidianLegs, "Obsidian Leggings");
@@ -692,7 +688,6 @@ public class ObsidianIngots
 		PlatinumKnife.setIconIndex(210);
 		
 		//Obsidian
-		ObsidianDust.setIconIndex(241);
 		ObsidianHelmet.setIconIndex(1);
 		ObsidianBody.setIconIndex(17);
 		ObsidianLegs.setIconIndex(33);
@@ -803,7 +798,6 @@ public class ObsidianIngots
 		LazuliKnife = new ItemObsidianKnife(11294, toolLAZULI).setItemName("LazuliKnife");
 		PlatinumKnife = new ItemObsidianKnife(11295, toolPLATINUM).setItemName("PlatinumKnife");
 		RedstoneKnife = new ItemObsidianKnife(11296, toolREDSTONE).setItemName("RedstoneKnife");
-		ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		PlatinumDust = new ItemObsidian(11300).setItemName("PlatinumDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		GlowstoneIngot = new ItemObsidian(11301).setItemName("GlowstoneIngot").setTabToDisplayOn(CreativeTabs.tabMaterials);
 		GlowstonePaxel = new ItemObsidianPaxel(11302, toolGLOWSTONE2).setItemName("GlowstonePaxel");
@@ -857,17 +851,31 @@ public class ObsidianIngots
 			LanguageRegistry.addName(IronDust, "Iron Dust");
 			LanguageRegistry.addName(GoldDust, "Gold Dust");
 		}
-		
+        
+        if(hooks.RailcraftLoaded && hooks.RailcraftObsidianDust != null)
+        {
+        	ObsidianDust = hooks.RailcraftObsidianDust.getItem();
+        }
+        else {
+        	ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust").setTabToDisplayOn(CreativeTabs.tabMaterials);
+        	ObsidianDust.setIconIndex(241);
+        	LanguageRegistry.addName(ObsidianDust, "Obsidian Dust");
+        }
+        
+        MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(ObsidianDust));
+		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(IronDust, 2));
+		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(GoldDust, 2));
+        MachineRecipes.addPlatinumCompressorRecipe(new ItemStack(ObsidianDust), new ItemStack(ObsidianIngot));
+        MachineRecipes.addCombinerRecipe(new ItemStack(ObsidianDust), new ItemStack(Block.obsidian));
+		MachineRecipes.addCombinerRecipe(new ItemStack(IronDust, 2), new ItemStack(Block.oreIron));
+		MachineRecipes.addCombinerRecipe(new ItemStack(GoldDust, 2), new ItemStack(Block.oreGold));
+        MachineRecipes.addCrusherRecipe(new ItemStack(ObsidianIngot), new ItemStack(ObsidianDust));
+        MachineRecipes.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(IronDust));
+        MachineRecipes.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(GoldDust));
+        
 		GameRegistry.addShapelessRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
 			Item.redstone, Item.lightStoneDust, IronDust, GoldDust, ObsidianDust, PlatinumDust
 		});
-		
-		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(IronDust, 2));
-		MachineRecipes.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(GoldDust, 2));
-		MachineRecipes.addCombinerRecipe(new ItemStack(IronDust, 2), new ItemStack(Block.oreIron));
-		MachineRecipes.addCombinerRecipe(new ItemStack(GoldDust, 2), new ItemStack(Block.oreGold));
-        MachineRecipes.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(IronDust));
-        MachineRecipes.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(GoldDust));
 	}
 	
 	/**

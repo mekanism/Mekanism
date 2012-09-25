@@ -1,5 +1,6 @@
 package net.uberkat.obsidian.common;
 
+import railcraft.common.api.core.items.ItemRegistry;
 import ic2.api.Ic2Recipes;
 import net.minecraft.src.*;
 
@@ -13,14 +14,20 @@ public class ObsidianHooks
 	private Class Ic2Items;
 	private Class IC2;
 	
+	private Class Railcraft;
+	
 	public ItemStack IC2IronDust;
 	public ItemStack IC2GoldDust;
 	
+	public ItemStack RailcraftObsidianDust;
+	
 	public boolean IC2Loaded = false;
+	public boolean RailcraftLoaded = false;
 	
 	public void hook()
 	{
 		if(isIC2Installed()) IC2Loaded = true;
+		if(isRailcraftInstalled()) RailcraftLoaded = true;
 		
 		if(IC2Loaded)
 		{
@@ -28,10 +35,19 @@ public class ObsidianHooks
 			IC2GoldDust = getIC2Item("goldDust");
 			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(ObsidianIngots.MultiBlock, 1, 0), new ItemStack(ObsidianIngots.PlatinumDust, 2));
-			Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(ObsidianIngots.ObsidianDust));
+			if(!RailcraftLoaded)
+			{
+				Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(ObsidianIngots.ObsidianDust));
+			}
 			Ic2Recipes.addMatterAmplifier(ObsidianIngots.EnrichedAlloy, 100000);
 			
 			System.out.println("[ObsidianIngots] Hooked into IC2 successfully.");
+		}
+		if(RailcraftLoaded)
+		{
+			RailcraftObsidianDust = getRailcraftItem("dust.obsidian");
+			
+			System.out.println("[ObsidianIngots] Hooked into Railcraft successfully.");
 		}
 	}
 	
@@ -61,6 +77,11 @@ public class ObsidianHooks
 		}
 	}
 	
+	public ItemStack getRailcraftItem(String name)
+	{
+		return ItemRegistry.getItem(name, 1);
+	}
+	
 	public boolean isIC2Installed()
 	{
 		try {
@@ -75,6 +96,23 @@ public class ObsidianHooks
 			return false;
 		} catch(Exception e) {
 			System.out.println("[ObsidianIngots] Unable to hook into IC2.");
+			return false;
+		}
+	}
+	
+	public boolean isRailcraftInstalled()
+	{
+		try {
+			if(Railcraft == null) Railcraft = Class.forName("railcraft.common.core.Railcraft");
+			Object ret = Railcraft.getField("instance").get(null);
+			
+			if(ret != null)
+			{
+				return true;
+			}
+			return false;
+		} catch(Exception e) {
+			System.out.println("[ObsidianIngots] Unable to hook into Railcraft.");
 			return false;
 		}
 	}

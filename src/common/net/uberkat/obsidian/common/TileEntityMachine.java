@@ -353,6 +353,6 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 	
 	public boolean wrenchCanSetFacing(EntityPlayer entityplayer, int i)
 	{
-		return facing != i;
+		return (facing != i) && (i != 0) && (i != 1);
 	}
 }
