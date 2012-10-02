@@ -12,7 +12,7 @@ public class OreHandler implements IWorldGenerator
 {
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) 
 	{
-		switch(world.provider.worldType)
+		switch(world.provider.dimensionId)
 		{
 			case 0:
 				generateSurface(world, random, chunkX*16, chunkZ*16);

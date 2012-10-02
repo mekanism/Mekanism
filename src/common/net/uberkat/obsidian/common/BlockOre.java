@@ -17,6 +17,8 @@ public class BlockOre extends Block
 	public BlockOre(int i)
 	{
 		super(i, Material.rock);
+		setHardness(3F);
+		setResistance(5F);
 		setCreativeTab(CreativeTabs.tabBlock);
 		setRequiresSelfNotify();
 	}

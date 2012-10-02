@@ -50,12 +50,13 @@ public class CommonProxy
 	public void loadConfiguration()
 	{
 		ObsidianIngots.configuration.load();
-		ObsidianIngots.multiBlockID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("MultiBlock", 3000).getInt();
-		ObsidianIngots.machineBlockID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("MachineBlock", 3001).getInt();
-		ObsidianIngots.oreBlockID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("OreBlock", 3002).getInt();
-	  	ObsidianIngots.obsidianTNTID = ObsidianIngots.configuration.getOrCreateBlockIdProperty("ObsidianTNT", 3003).getInt();
-	  	ObsidianIngots.extrasEnabled = ObsidianIngots.configuration.getOrCreateBooleanProperty("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
-	  	ObsidianIngots.oreGenerationEnabled = ObsidianIngots.configuration.getOrCreateBooleanProperty("OreGenerationEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+		ObsidianIngots.multiBlockID = ObsidianIngots.configuration.getBlock("MultiBlock", 3000).getInt();
+		ObsidianIngots.machineBlockID = ObsidianIngots.configuration.getBlock("MachineBlock", 3001).getInt();
+		ObsidianIngots.oreBlockID = ObsidianIngots.configuration.getBlock("OreBlock", 3002).getInt();
+	  	ObsidianIngots.obsidianTNTID = ObsidianIngots.configuration.getBlock("ObsidianTNT", 3003).getInt();
+	  	ObsidianIngots.powerUnitID = ObsidianIngots.configuration.getBlock("PowerUnit", 3004).getInt();
+	  	ObsidianIngots.extrasEnabled = ObsidianIngots.configuration.get("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+	  	ObsidianIngots.oreGenerationEnabled = ObsidianIngots.configuration.get("OreGenerationEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
 	  	ObsidianIngots.configuration.save();
 	}
 	
@@ -99,20 +100,23 @@ public class CommonProxy
 		switch(ID)
 		{
 			case 3:
-				TileEntityEnrichmentChamber tileentity = (TileEntityEnrichmentChamber)world.getBlockTileEntity(x, y, z);
-				return new ContainerEnrichmentChamber(player.inventory, tileentity);
+				TileEntityElectricMachine tileentity = (TileEntityElectricMachine)world.getBlockTileEntity(x, y, z);
+				return new ContainerElectricMachine(player.inventory, tileentity);
 			case 4:
-				TileEntityPlatinumCompressor tileentity1 = (TileEntityPlatinumCompressor)world.getBlockTileEntity(x, y, z);
-				return new ContainerPlatinumCompressor(player.inventory, tileentity1);
+				TileEntityAdvancedElectricMachine tileentity1 = (TileEntityAdvancedElectricMachine)world.getBlockTileEntity(x, y, z);
+				return new ContainerAdvancedElectricMachine(player.inventory, tileentity1);
 			case 5:
-				TileEntityCombiner tileentity2 = (TileEntityCombiner)world.getBlockTileEntity(x, y, z);
-				return new ContainerCombiner(player.inventory, tileentity2);
+				TileEntityAdvancedElectricMachine tileentity2 = (TileEntityAdvancedElectricMachine)world.getBlockTileEntity(x, y, z);
+				return new ContainerAdvancedElectricMachine(player.inventory, tileentity2);
 			case 6:
-				TileEntityCrusher tileentity3 = (TileEntityCrusher)world.getBlockTileEntity(x, y, z);
-				return new ContainerCrusher(player.inventory, tileentity3);
+				TileEntityElectricMachine tileentity3 = (TileEntityElectricMachine)world.getBlockTileEntity(x, y, z);
+				return new ContainerElectricMachine(player.inventory, tileentity3);
 			case 7:
-				TileEntityTheoreticalElementizer tileentity4 = (TileEntityTheoreticalElementizer)world.getBlockTileEntity(x, y, z);
-				return new ContainerTheoreticalElementizer(player.inventory, tileentity4);
+				TileEntityAdvancedElectricMachine tileentity4 = (TileEntityAdvancedElectricMachine)world.getBlockTileEntity(x, y, z);
+				return new ContainerAdvancedElectricMachine(player.inventory, tileentity4);
+			case 8:
+				TileEntityPowerUnit tileentity5 = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
+				return new ContainerPowerUnit(player.inventory, tileentity5);
 		}
 		return null;
 	}

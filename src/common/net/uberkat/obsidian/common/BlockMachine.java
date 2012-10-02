@@ -29,13 +29,13 @@ public class BlockMachine extends BlockContainer
 		super(id, Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
-		setCreativeTab(CreativeTabs.tabDeco);
+		setCreativeTab(CreativeTabs.tabDecorations);
 		setRequiresSelfNotify();
 	}
 	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
-    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
         int change = 3;
         
@@ -53,7 +53,7 @@ public class BlockMachine extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
         if (isActive(world, x, y, z))
         {
             float var7 = (float)x + 0.5F;
@@ -150,7 +150,7 @@ public class BlockMachine extends BlockContainer
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
-    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
         
     	if(metadata == 0)
     	{
@@ -242,7 +242,7 @@ public class BlockMachine extends BlockContainer
 	 */
     public boolean isActive(IBlockAccess world, int x, int y, int z)
     {
-    	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
     	if(tileEntity != null)
     	{
     		return tileEntity.isActive;
@@ -252,7 +252,7 @@ public class BlockMachine extends BlockContainer
     
     public void breakBlock(World world, int par2, int par3, int par4, int i1, int i2)
     {
-        TileEntityMachine var5 = (TileEntityMachine)world.getBlockTileEntity(par2, par3, par4);
+        TileEntityBasicMachine var5 = (TileEntityBasicMachine)world.getBlockTileEntity(par2, par3, par4);
 
         if (var5 != null)
         {
@@ -262,13 +262,13 @@ public class BlockMachine extends BlockContainer
 
                 if (var7 != null)
                 {
-                    float var8 = this.machineRand.nextFloat() * 0.8F + 0.1F;
-                    float var9 = this.machineRand.nextFloat() * 0.8F + 0.1F;
-                    float var10 = this.machineRand.nextFloat() * 0.8F + 0.1F;
+                    float var8 = machineRand.nextFloat() * 0.8F + 0.1F;
+                    float var9 = machineRand.nextFloat() * 0.8F + 0.1F;
+                    float var10 = machineRand.nextFloat() * 0.8F + 0.1F;
 
                     while (var7.stackSize > 0)
                     {
-                        int var11 = this.machineRand.nextInt(21) + 10;
+                        int var11 = machineRand.nextInt(21) + 10;
 
                         if (var11 > var7.stackSize)
                         {
@@ -284,9 +284,9 @@ public class BlockMachine extends BlockContainer
                         }
 
                         float var13 = 0.05F;
-                        var12.motionX = (double)((float)this.machineRand.nextGaussian() * var13);
-                        var12.motionY = (double)((float)this.machineRand.nextGaussian() * var13 + 0.2F);
-                        var12.motionZ = (double)((float)this.machineRand.nextGaussian() * var13);
+                        var12.motionX = (double)((float)machineRand.nextGaussian() * var13);
+                        var12.motionY = (double)((float)machineRand.nextGaussian() * var13 + 0.2F);
+                        var12.motionZ = (double)((float)machineRand.nextGaussian() * var13);
                         world.spawnEntityInWorld(var12);
                     }
                 }
@@ -305,7 +305,7 @@ public class BlockMachine extends BlockContainer
         }
         else
         {
-        	TileEntityMachine tileEntity = (TileEntityMachine)world.getBlockTileEntity(x, y, z);
+        	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
         	
             if (tileEntity != null)

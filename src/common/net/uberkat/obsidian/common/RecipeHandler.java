@@ -8,7 +8,7 @@ import net.minecraft.src.*;
  * @author AidanBrady
  *
  */
-public final class MachineRecipes
+public final class RecipeHandler
 {
 	/**
 	 * Add an Enrichment Chamber recipe.
@@ -48,6 +48,16 @@ public final class MachineRecipes
 	public static void addCrusherRecipe(ItemStack input, ItemStack output)
 	{
 		TileEntityCrusher.recipes.add(new AbstractMap.SimpleEntry(input, output));
+	}
+	
+	/**
+	 * Add a Theoretical Elementizer recipe.
+	 * @param input - input ItemStack
+	 * @param output - output ItemStack
+	 */
+	public static void addTheoreticalElementizerRecipe(ItemStack input, ItemStack output)
+	{
+		TileEntityTheoreticalElementizer.recipes.add(new AbstractMap.SimpleEntry(input, output));
 	}
 	
 	/**

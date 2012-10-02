@@ -22,7 +22,6 @@ import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.uberkat.obsidian.common.CommonProxy;
-import net.uberkat.obsidian.common.ContainerTheoreticalElementizer;
 import net.uberkat.obsidian.common.EntityKnife;
 import net.uberkat.obsidian.common.EntityObsidianArrow;
 import net.uberkat.obsidian.common.EntityObsidianTNT;
@@ -32,6 +31,7 @@ import net.uberkat.obsidian.common.TileEntityCombiner;
 import net.uberkat.obsidian.common.TileEntityCrusher;
 import net.uberkat.obsidian.common.TileEntityEnrichmentChamber;
 import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
+import net.uberkat.obsidian.common.TileEntityPowerUnit;
 import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
 
 /**
@@ -100,6 +100,9 @@ public class ClientProxy extends CommonProxy
 			case 7:
 				TileEntityTheoreticalElementizer tileentity4 = (TileEntityTheoreticalElementizer)world.getBlockTileEntity(x, y, z);
 				return new GuiTheoreticalElementizer(player.inventory, tileentity4);
+			case 8:
+				TileEntityPowerUnit tileentity5 = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
+				return new GuiPowerUnit(player.inventory, tileentity5);
 		}
 		return null;
 	}

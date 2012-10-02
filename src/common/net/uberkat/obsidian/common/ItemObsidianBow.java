@@ -10,7 +10,7 @@ public class ItemObsidianBow extends ItemObsidian
         super(par1);
         maxStackSize = 1;
         setMaxDamage(750);
-        setTabToDisplayOn(CreativeTabs.tabCombat);
+        setCreativeTab(CreativeTabs.tabCombat);
     }
 
     /**

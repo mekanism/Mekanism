@@ -32,7 +32,7 @@ public class GuiCredits extends GuiScreen {
 	
 	public static void onErrorDownloading()
 	{
-		updateProgress = "¤4Error updating.";
+		updateProgress = "Error updating.";
 	}
 	
 	protected void actionPerformed(GuiButton guibutton)
@@ -67,13 +67,13 @@ public class GuiCredits extends GuiScreen {
 	public void drawScreen(int i, int j, float f)
 	{
 		drawDefaultBackground();
-        drawCenteredString(fontRenderer, "¤1Obsidian Ingots ¤7by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
-        writeText("¤7Your version: " + (ObsidianUtils.isClientLatestVersion() ? ObsidianIngots.versionNumber.toString() : "¤4" + ObsidianIngots.versionNumber.toString()) + "¤7 -- OUTDATED", 36);
-  		writeText("¤7Newest version: " + ObsidianIngots.latestVersionNumber, 45);
-  		writeText("¤7*Developed on Mac OS X 10.8 Mountain Lion", 63);
-  		writeText("¤7*Code, textures, and ideas by aidancbrady", 72);
-  		writeText("¤7Recent news: ¤1" + ObsidianIngots.recentNews, 81);
-  		writeText("¤7" + updateProgress, 99);
+        drawCenteredString(fontRenderer, "Obsidian Ingots by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
+        writeText("Your version: " + (ObsidianUtils.isClientLatestVersion() ? ObsidianIngots.versionNumber.toString() : ObsidianIngots.versionNumber.toString()) + " -- OUTDATED", 36);
+  		writeText("Newest version: " + ObsidianIngots.latestVersionNumber, 45);
+  		writeText("*Developed on Mac OS X 10.8 Mountain Lion", 63);
+  		writeText("*Code, textures, and ideas by aidancbrady", 72);
+  		writeText("Recent news: " + ObsidianIngots.recentNews, 81);
+  		writeText(updateProgress, 99);
   		super.drawScreen(i, j, f);
 	}
 }

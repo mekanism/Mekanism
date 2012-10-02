@@ -11,7 +11,7 @@ public class ItemObsidianSpade extends ItemObsidianTool
     public ItemObsidianSpade(int par1, EnumToolMaterial par2EnumToolMaterial)
     {
         super(par1, 1, par2EnumToolMaterial, blocksEffectiveAgainst);
-        setTabToDisplayOn(CreativeTabs.tabTools);
+        setCreativeTab(CreativeTabs.tabTools);
     }
 
     /**

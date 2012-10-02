@@ -23,6 +23,8 @@ public class BlockMulti extends Block
 	public BlockMulti(int i)
 	{
 		super(i, Material.iron);
+		setHardness(5F);
+		setResistance(10F);
 		setCreativeTab(CreativeTabs.tabBlock);
 		setRequiresSelfNotify();
 	}
@@ -68,7 +70,7 @@ public class BlockMulti extends Block
     	{
     		if(entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(ObsidianIngots.instance, 19, world, x, y, z);
+    			entityplayer.openGui(ObsidianIngots.instance, 1, world, x, y, z);
     			return true;
     		}
     	}

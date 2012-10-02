@@ -33,11 +33,38 @@ public class ObsidianUtils
 	{
 		if(!(ObsidianIngots.latestVersionNumber.equals("Error retrieving data.")) && !(ObsidianIngots.latestVersionNumber.equals(ObsidianIngots.versionNumber.toString())))
 		{
-			entityplayer.addChatMessage("Your version of ¤1Obsidian Ingots ¤7(¤8" + ObsidianIngots.versionNumber.toString() + "¤7) is outdated. Please update to version ¤8" + ObsidianIngots.latestVersionNumber);
+			entityplayer.addChatMessage("Your version of Obsidian Ingots (" + ObsidianIngots.versionNumber.toString() + ") is outdated. Please update to version " + ObsidianIngots.latestVersionNumber);
 		}
 		else if(ObsidianIngots.latestVersionNumber.equals("Error retrieving data."))
 		{
 			System.out.println("[ObsidianIngots] Minecraft is in offline mode, could not check for updates.");
+		}
+	}
+	
+	public static String getDisplayedEnergy(int energy)
+	{
+		if(energy < 1000)
+		{
+			return energy + " u";
+		}
+		else if(energy >= 1000 && energy < 10000)
+		{
+			return energy/10 + " kU";
+		}
+		else if(energy >= 10000 && energy < 100000)
+		{
+			return energy/100 + " mU";
+		}
+		else if(energy >= 100000 && energy < 1000000)
+		{
+			return energy/1000 + " gU";
+		}
+		else if(energy >= 1000000)
+		{
+			return energy/100000 + " tU";
+		}
+		else {
+			return null;
 		}
 	}
 	
@@ -104,7 +131,7 @@ public class ObsidianUtils
 		Packet3Chat chatPacket = new Packet3Chat(msg);
 		if(player != null)
 		{
-			((EntityPlayerMP)player).serverForThisPlayer.sendPacketToPlayer(chatPacket);
+			((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(chatPacket);
 		}
 	}
 	

@@ -1,4 +1,4 @@
-package net.uberkat.obsidian.common;
+package net.uberkat.obsidian.api;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.NetworkManager;

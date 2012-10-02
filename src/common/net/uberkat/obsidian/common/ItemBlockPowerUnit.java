@@ -1,24 +1,19 @@
 package net.uberkat.obsidian.common;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.ItemBlock;
-import net.minecraft.src.ItemStack;
+import net.minecraft.src.*;
 
 /**
- * Item class for handling multiple machine block IDs.
- * 0: Enrichment Chamber
- * 1: Platinum Compressor
- * 2: Combiner
- * 3: Crusher
- * 4: Theoretical Elementizer
+ * Item class for handling multiple power unit block IDs.
+ * 0: Power Unit
+ * 1: Advanced Power Unit
  * @author AidanBrady
  *
  */
-public class ItemMachine extends ItemBlock
+public class ItemBlockPowerUnit extends ItemBlock
 {
 	public Block metaBlock;
 	
-	public ItemMachine(int id, Block block)
+	public ItemBlockPowerUnit(int id, Block block)
 	{
 		super(id);
 		metaBlock = block;
@@ -41,19 +36,10 @@ public class ItemMachine extends ItemBlock
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
-				name = "EnrichmentChamber";
+				name = "PowerUnit";
 				break;
 			case 1:
-				name = "PlatinumCompressor";
-				break;
-			case 2:
-				name = "Combiner";
-				break;
-			case 3:
-				name = "Crusher";
-				break;
-			case 4:
-				name = "TheoreticalElementizer";
+				name = "AdvancedPowerUnit";
 				break;
 			default:
 				name = "Unknown";

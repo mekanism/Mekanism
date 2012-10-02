@@ -16,6 +16,7 @@ import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
+import net.uberkat.obsidian.api.INetworkedMachine;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
@@ -77,9 +78,9 @@ public class PacketHandler implements IPacketHandler
 						
 						World world = ((EntityPlayer)player).worldObj;
 						TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-						if(tileEntity instanceof TileEntityMachine)
+						if(tileEntity instanceof INetworkedMachine)
 						{
-							((TileEntityMachine)tileEntity).handlePacketData(manager, packet, ((EntityPlayer)player), dataStream);
+							((INetworkedMachine)tileEntity).handlePacketData(manager, packet, ((EntityPlayer)player), dataStream);
 						}
 					} catch (Exception e)
 					{
@@ -101,21 +102,20 @@ public class PacketHandler implements IPacketHandler
 	 * x, y, and z coordinates, along with it's active state, burn time, cook time, and item burn time.
 	 * @param sender - tile entity who is sending the packet
 	 */
-	public static void sendMachinePacket(TileEntityMachine sender)
+	public static void sendElectricMachinePacket(TileEntityElectricMachine sender)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
         
         try {
-        	output.writeInt(2);
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
         	output.writeInt(sender.xCoord);
         	output.writeInt(sender.yCoord);
         	output.writeInt(sender.zCoord);
         	output.writeInt(sender.facing);
         	output.writeByte(sender.isActive ? 1 : 0);
-        	output.writeInt(sender.machineBurnTime);
-        	output.writeInt(sender.machineCookTime);
-        	output.writeInt(sender.currentItemBurnTime);
+        	output.writeInt(sender.operatingTicks);
+        	output.writeInt(sender.energyStored);
         } catch (IOException e)
         {
         	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
@@ -133,21 +133,20 @@ public class PacketHandler implements IPacketHandler
         }
 	}
 	
-	public static void sendMachinePacketWithRange(TileEntityMachine sender, double distance)
+	public static void sendElectricMachinePacketWithRange(TileEntityElectricMachine sender, double distance)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
         
         try {
-        	output.writeInt(2);
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
         	output.writeInt(sender.xCoord);
         	output.writeInt(sender.yCoord);
         	output.writeInt(sender.zCoord);
         	output.writeInt(sender.facing);
         	output.writeByte(sender.isActive ? 1 : 0);
-        	output.writeInt(sender.machineBurnTime);
-        	output.writeInt(sender.machineCookTime);
-        	output.writeInt(sender.currentItemBurnTime);
+        	output.writeInt(sender.operatingTicks);
+        	output.writeInt(sender.energyStored);
         } catch (IOException e)
         {
         	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
@@ -159,7 +158,123 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         
-		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.worldType, packet);
+		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+	}
+	
+	public static void sendAdvancedElectricMachinePacket(TileEntityAdvancedElectricMachine sender)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeByte(sender.isActive ? 1 : 0);
+        	output.writeInt(sender.operatingTicks);
+        	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.secondaryEnergyStored);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+        {
+        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
+        }
+	}
+	
+	public static void sendAdvancedElectricMachinePacketWithRange(TileEntityAdvancedElectricMachine sender, double distance)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeByte(sender.isActive ? 1 : 0);
+        	output.writeInt(sender.operatingTicks);
+        	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.secondaryEnergyStored);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+	}
+	
+	public static void sendPowerUnitPacket(TileEntityPowerUnit sender)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeInt(sender.energyStored);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+        {
+        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
+        }
+	}
+	
+	public static void sendPowerUnitPacketWithRange(TileEntityPowerUnit sender, double distance)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeInt(sender.energyStored);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
 	}
 	
 	/**

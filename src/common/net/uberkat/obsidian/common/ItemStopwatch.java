@@ -9,7 +9,7 @@ public class ItemStopwatch extends ItemObsidian {
 		super(i);
 		setMaxStackSize(1);
 		setMaxDamage(5000);
-		setTabToDisplayOn(CreativeTabs.tabTools);
+		setCreativeTab(CreativeTabs.tabTools);
 	}
 	
 	public boolean hasEffect(ItemStack itemstack)
@@ -21,7 +21,7 @@ public class ItemStopwatch extends ItemObsidian {
 	{
 		if(itemstack.getItemDamage() == 0)
 		{
-			entityplayer.openGui(ObsidianIngots.instance, 18, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
+			entityplayer.openGui(ObsidianIngots.instance, 0, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
 		}
 		return itemstack;
 	}

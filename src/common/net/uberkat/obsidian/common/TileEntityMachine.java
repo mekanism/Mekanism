@@ -12,13 +12,14 @@ import cpw.mods.fml.server.FMLServerHandler;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.uberkat.obsidian.api.INetworkedMachine;
 
 public abstract class TileEntityMachine extends TileEntity implements IInventory, ISidedInventory, INetworkedMachine, IWrenchable
 {
      /** The ItemStacks that hold the items currently being used in the furnace */
     protected ItemStack[] inventory = new ItemStack[3];
 
-    /** The number of ticks that the furnace will keep burning */
+    /** The number of ticks that this machine will keep running */
     public int machineBurnTime = 0;
 
     /** The number of ticks that a fresh copy of the currently-burning item would keep the furnace burning for */
@@ -46,7 +47,7 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
     public int textureTick = 0;
 
     /** The amount of update ticks have passed since the game started */
-    public byte updateTicks = 0;
+    public boolean hasInitialized;
     
     /** An integer that constantly cycles from 0 to 15. Used for animated textures. */
     public int textureIndex = 0;
@@ -91,13 +92,22 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 	public void updateEntity()
 	{
 		onUpdate();
-		if(FMLCommonHandler.instance().getSidedDelegate().getSide().isClient())
+		
+		if(worldObj.isRemote)
 		{
 			updateTextureTick();
 		}
-		updateTick();
 		
-		updatePacketTick();
+		if(!worldObj.isRemote)
+		{
+			if(!hasInitialized)
+			{
+				//PacketHandler.sendMachinePacket(this);
+				hasInitialized = true;
+			}
+			
+			updatePacketTick();
+		}
 		
 		if(machineCookTime == 0 || machineCookTime == maxBurnTime && currentItemBurnTime != 0)
 		{
@@ -110,25 +120,12 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
 	 */
 	public abstract void onUpdate();
 	
-	/**
-	 * Synchronizes the client with the server on startup by sending two packets.
-	 * Not exactly sure why it needs 5 packets, but it wouldn't work with only 4!
-	 */
-	public void updateTick()
-	{
-		if(updateTicks < 5)
-		{
-			PacketHandler.sendMachinePacket(this);
-			updateTicks++;
-		}
-	}
-	
 	public void updatePacketTick()
 	{
 		if(packetTick % 100 == 0)
 		{
+			//PacketHandler.sendMachinePacketWithRange(this, 50);
 			packetTick++;
-			PacketHandler.sendMachinePacketWithRange(this, 50);
 		}
 		else {
 			packetTick++;
@@ -247,7 +244,7 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendMachinePacket(this);
+    		//PacketHandler.sendMachinePacket(this);
     	}
     	
     	prevActive = active;
@@ -257,7 +254,7 @@ public abstract class TileEntityMachine extends TileEntity implements IInventory
     {
     	facing = direction;
     	
-    	PacketHandler.sendMachinePacket(this);
+    	//PacketHandler.sendMachinePacket(this);
     }
     
     public void updateTexture(World world, int x, int y, int z)

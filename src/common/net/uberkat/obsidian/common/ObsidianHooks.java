@@ -34,12 +34,8 @@ public class ObsidianHooks
 			IC2IronDust = getIC2Item("ironDust");
 			IC2GoldDust = getIC2Item("goldDust");
 			
-			Ic2Recipes.addMaceratorRecipe(new ItemStack(ObsidianIngots.MultiBlock, 1, 0), new ItemStack(ObsidianIngots.PlatinumDust, 2));
-			if(!RailcraftLoaded)
-			{
-				Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(ObsidianIngots.ObsidianDust));
-			}
-			Ic2Recipes.addMatterAmplifier(ObsidianIngots.EnrichedAlloy, 100000);
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(ObsidianIngots.OreBlock, 1, 0), new ItemStack(ObsidianIngots.PlatinumDust, 2));
+			Ic2Recipes.addMatterAmplifier(ObsidianIngots.EnrichedAlloy, 80000);
 			
 			System.out.println("[ObsidianIngots] Hooked into IC2 successfully.");
 		}

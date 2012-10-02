@@ -25,7 +25,7 @@ public class ItemObsidianKnife extends ItemObsidian
         entityDamage = 2;
         blockDamage = 2;
         enchantability = enumtoolmaterial.getEnchantability();
-        setTabToDisplayOn(CreativeTabs.tabCombat);
+        setCreativeTab(CreativeTabs.tabCombat);
     }
 
     /**
