@@ -7,12 +7,12 @@ import net.uberkat.obsidian.common.TileEntityCrusher;
 
 public class GuiCrusher extends GuiContainer
 {
-    private TileEntityCrusher machineInventory;
+    private TileEntityCrusher tileEntity;
 
-    public GuiCrusher(InventoryPlayer par1InventoryPlayer, TileEntityCrusher par2TileEntityCrusher)
+    public GuiCrusher(InventoryPlayer inventory, TileEntityCrusher tentity)
     {
-        super(new ContainerElectricMachine(par1InventoryPlayer, par2TileEntityCrusher));
-        machineInventory = par2TileEntityCrusher;
+        super(new ContainerElectricMachine(inventory, tentity));
+        tileEntity = tentity;
     }
 
     /**
@@ -29,18 +29,18 @@ public class GuiCrusher extends GuiContainer
      */
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int var4 = mc.renderEngine.getTexture("/gui/GuiCrusher.png");
+        int texture = mc.renderEngine.getTexture("/gui/GuiCrusher.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(var4);
-        int var5 = (width - xSize) / 2;
-        int var6 = (height - ySize) / 2;
-        drawTexturedModalRect(var5, var6, 0, 0, xSize, ySize);
-        int var7;
+        mc.renderEngine.bindTexture(texture);
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        int displayInt;
         
-        var7 = machineInventory.getScaledChargeLevel(12);
-        drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
+        displayInt = tileEntity.getScaledChargeLevel(12);
+        drawTexturedModalRect(guiWidth + 56, guiHeight + 36 + 12 - displayInt, 176, 12 - displayInt, 14, displayInt + 2);
 
-        var7 = machineInventory.getScaledProgress(24);
-        drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
+        displayInt = tileEntity.getScaledProgress(24);
+        drawTexturedModalRect(guiWidth + 79, guiHeight + 34, 176, 14, displayInt + 1, 16);
     }
 }

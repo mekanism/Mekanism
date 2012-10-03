@@ -9,12 +9,12 @@ public class ContainerAdvancedElectricMachine extends Container
 {
     private TileEntityAdvancedElectricMachine tileEntity;
 
-    public ContainerAdvancedElectricMachine(InventoryPlayer par1InventoryPlayer, TileEntityAdvancedElectricMachine tentity)
+    public ContainerAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 56, 17));
         addSlotToContainer(new Slot(tentity, 1, 56, 53));
-        addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, tentity, 2, 116, 35));
+        addSlotToContainer(new SlotFurnace(inventory.player, tentity, 2, 116, 35));
         addSlotToContainer(new SlotEnergy(tentity, 3, 31, 35));
         int var3;
 
@@ -22,13 +22,13 @@ public class ContainerAdvancedElectricMachine extends Container
         {
             for (int var4 = 0; var4 < 9; ++var4)
             {
-                addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+                addSlotToContainer(new Slot(inventory, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
             }
         }
 
         for (var3 = 0; var3 < 9; ++var3)
         {
-            addSlotToContainer(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
+            addSlotToContainer(new Slot(inventory, var3, 8 + var3 * 18, 142));
         }
     }
 
@@ -50,7 +50,14 @@ public class ContainerAdvancedElectricMachine extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+            if(slotID == 2)
+            {
+            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+            	{
+            		return null;
+            	}
+            }
+            else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 	            {

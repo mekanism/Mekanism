@@ -14,16 +14,16 @@ public class GuiPowerUnit extends GuiContainer
 	private int guiWidth;
 	private int guiHeight;
 	
-	public GuiPowerUnit(InventoryPlayer inventory, TileEntityPowerUnit unit)
+	public GuiPowerUnit(InventoryPlayer inventory, TileEntityPowerUnit tentity)
 	{
-		super(new ContainerPowerUnit(inventory, unit));
-		tileEntity = unit;
+		super(new ContainerPowerUnit(inventory, tentity));
+		tileEntity = tentity;
 	}
 	
 	protected void drawGuiContainerForegroundLayer()
 	{
-		String capacityInfo = "Stored: " + ObsidianUtils.getDisplayedEnergy(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergy(tileEntity.maxEnergy);
-		String outputInfo = "Output: " + ObsidianUtils.getDisplayedEnergy(tileEntity.output) + "/t";
+		String capacityInfo = "Stored: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.maxEnergy);
+		String outputInfo = "Output: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.output) + "/t";
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 42, 0x404040);
 		fontRenderer.drawString(outputInfo, 45, 52, 0x404040);

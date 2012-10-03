@@ -6,6 +6,7 @@ import java.net.URL;
 import org.lwjgl.Sys;
 
 import net.minecraft.src.*;
+import net.uberkat.obsidian.common.EnumColor;
 import net.uberkat.obsidian.common.ObsidianIngots;
 import net.uberkat.obsidian.common.ObsidianUtils;
 
@@ -32,7 +33,7 @@ public class GuiCredits extends GuiScreen {
 	
 	public static void onErrorDownloading()
 	{
-		updateProgress = "Error updating.";
+		updateProgress = EnumColor.DARK_RED.code + "Error updating.";
 	}
 	
 	protected void actionPerformed(GuiButton guibutton)
@@ -43,11 +44,11 @@ public class GuiCredits extends GuiScreen {
 		}
 		if(guibutton.id == 2)
 		{
-			if(!ObsidianUtils.isClientLatestVersion())
+			if(!ObsidianUtils.isLatestVersion())
 			{
 				updateProgress = "Downloading latest version...";
 				guibutton.enabled = false;
-				new ThreadUpdate("http://dl.dropbox.com/u/90411166/ObsidianIngots.jar");
+				new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/ObsidianIngots.jar");
 			}
 			else {
 				updateProgress = "You already have the latest version.";
@@ -67,13 +68,13 @@ public class GuiCredits extends GuiScreen {
 	public void drawScreen(int i, int j, float f)
 	{
 		drawDefaultBackground();
-        drawCenteredString(fontRenderer, "Obsidian Ingots by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
-        writeText("Your version: " + (ObsidianUtils.isClientLatestVersion() ? ObsidianIngots.versionNumber.toString() : ObsidianIngots.versionNumber.toString()) + " -- OUTDATED", 36);
-  		writeText("Newest version: " + ObsidianIngots.latestVersionNumber, 45);
-  		writeText("*Developed on Mac OS X 10.8 Mountain Lion", 63);
-  		writeText("*Code, textures, and ideas by aidancbrady", 72);
-  		writeText("Recent news: " + ObsidianIngots.recentNews, 81);
-  		writeText(updateProgress, 99);
+        drawCenteredString(fontRenderer, EnumColor.DARK_BLUE.code + "Obsidian Ingots" + EnumColor.GREY.code + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
+        writeText(EnumColor.GREY.code + "Your version: " + (ObsidianUtils.isLatestVersion() ? ObsidianIngots.versionNumber.toString() : EnumColor.DARK_RED.code + ObsidianIngots.versionNumber.toString()) + EnumColor.GREY.code + " -- OUTDATED", 36);
+  		writeText(EnumColor.GREY.code + "Newest version: " + ObsidianIngots.latestVersionNumber, 45);
+  		writeText(EnumColor.GREY.code + "*Developed on Mac OS X 10.8 Mountain Lion", 63);
+  		writeText(EnumColor.GREY.code + "*Code, textures, and ideas by aidancbrady", 72);
+  		writeText(EnumColor.GREY.code + "Recent news: " + EnumColor.DARK_BLUE.code + ObsidianIngots.recentNews, 81);
+  		writeText(EnumColor.GREY.code + updateProgress, 99);
   		super.drawScreen(i, j, f);
 	}
 }

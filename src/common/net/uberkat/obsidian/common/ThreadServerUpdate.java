@@ -1,4 +1,4 @@
-package net.uberkat.obsidian.client;
+package net.uberkat.obsidian.common;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import net.minecraft.src.ICommandSender;
 import net.minecraft.src.ModLoader;
 import net.uberkat.obsidian.common.ObsidianIngots;
 /**
@@ -14,15 +15,17 @@ import net.uberkat.obsidian.common.ObsidianIngots;
  * @author AidanBrady
  *
  */
-public class ThreadUpdate extends Thread
+public class ThreadServerUpdate extends Thread
 {
+	private ICommandSender sender;
 	private int bytesDownloaded;
 	private int lastBytesDownloaded;
 	private byte[] buffer = new byte[10240];
 	private URL url;
 	
-	public ThreadUpdate(String location)
+	public ThreadServerUpdate(String location, ICommandSender player)
 	{
+		sender = player;
 		try {
 			url = new URL(location);
 			setDaemon(true);
@@ -50,13 +53,13 @@ public class ThreadUpdate extends Thread
 			
 			outputStream.close();
 			stream.close();
-			GuiCredits.onFinishedDownloading();
+			sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots] " + EnumColor.GREY.code + "Successfully updated to version " + EnumColor.DARK_GREY.code + ObsidianIngots.latestVersionNumber);
 			System.out.println("[ObsidianIngots] Successfully updated to latest version (" + ObsidianIngots.latestVersionNumber + ").");
 			finalize();
 			
 		} catch(Throwable e)
 		{
-			GuiCredits.onErrorDownloading();
+			sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots] " + EnumColor.GREY.code + "Unable to update to version " + EnumColor.DARK_GREY.code + ObsidianIngots.latestVersionNumber);
 			System.err.println("[ObsidianIngots] Error while finishing update thread: " + e.getMessage());
 			try {
 				finalize();

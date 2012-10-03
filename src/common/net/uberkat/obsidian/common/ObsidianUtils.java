@@ -33,7 +33,7 @@ public class ObsidianUtils
 	{
 		if(!(ObsidianIngots.latestVersionNumber.equals("Error retrieving data.")) && !(ObsidianIngots.latestVersionNumber.equals(ObsidianIngots.versionNumber.toString())))
 		{
-			entityplayer.addChatMessage("Your version of Obsidian Ingots (" + ObsidianIngots.versionNumber.toString() + ") is outdated. Please update to version " + ObsidianIngots.latestVersionNumber);
+			entityplayer.addChatMessage(EnumColor.GREY.code + "Your version of " + EnumColor.DARK_BLUE.code + "Obsidian Ingots " + EnumColor.GREY.code + "(" + EnumColor.DARK_GREY.code + ObsidianIngots.versionNumber.toString() + EnumColor.GREY.code + ") is outdated. Please update to version " + EnumColor.DARK_GREY.code + ObsidianIngots.latestVersionNumber);
 		}
 		else if(ObsidianIngots.latestVersionNumber.equals("Error retrieving data."))
 		{
@@ -41,9 +41,50 @@ public class ObsidianUtils
 		}
 	}
 	
-	public static String getDisplayedEnergy(int energy)
+	/**
+	 * Converts units into a nice String for display without color.
+	 * @param energy
+	 * @return displayed energy
+	 */
+	public static String getDisplayedEnergyNoColor(int energy)
 	{
 		if(energy < 1000)
+		{
+			return energy + " u";
+		}
+		else if(energy >= 1000 && energy < 10000)
+		{
+			return energy/10 + " kU";
+		}
+		else if(energy >= 10000 && energy < 100000)
+		{
+			return energy/100 + " mU";
+		}
+		else if(energy >= 100000 && energy < 1000000)
+		{
+			return energy/1000 + " gU";
+		}
+		else if(energy >= 1000000)
+		{
+			return energy/100000 + " tU";
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Converts units into a nice String for display with color.
+	 * @param energy
+	 * @return displayed energy
+	 */
+	public static String getDisplayedEnergy(int energy)
+	{
+		if(energy == 0)
+		{
+			return EnumColor.DARK_RED.code + energy + " u" + EnumColor.DARK_GREY.code;
+		}
+		else if(energy < 1000)
 		{
 			return energy + " u";
 		}
@@ -139,15 +180,9 @@ public class ObsidianUtils
 	 * Checks if the mod is running on the latest version.
 	 * @return if mod is latest version
 	 */
-	public static boolean isClientLatestVersion()
+	public static boolean isLatestVersion()
 	{
-		if(ObsidianIngots.versionNumber.toString().equals(ObsidianIngots.latestVersionNumber))
-		{
-			return true;
-		}
-		else {
-			return false;
-		}
+		return ObsidianIngots.versionNumber.toString().equals(ObsidianIngots.latestVersionNumber);
 	}
 	
 	/**

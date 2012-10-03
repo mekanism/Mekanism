@@ -22,6 +22,7 @@ import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -37,7 +38,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.0")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.1")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -59,7 +60,7 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 2, 0);
+	public static Version versionNumber = new Version(4, 2, 1);
 	
 	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
@@ -950,6 +951,15 @@ public class ObsidianIngots
 		GameRegistry.registerTileEntity(TileEntityAdvancedPowerUnit.class, "AdvancedPowerUnit");
 	}
 	
+	/**
+	 * Registers the server command handler.
+	 */
+	@SideOnly(Side.SERVER)
+	public void registerServerCommands()
+	{
+		ServerCommandHandler.initialize();
+	}
+	
 	@PostInit
 	public void postInit(FMLPostInitializationEvent event)
 	{
@@ -977,7 +987,10 @@ public class ObsidianIngots
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
-		//Hook with mods Obsidian Ingots has implemented
+		//Attempt to load server commands
+		try {
+			registerServerCommands();
+		} catch(NoSuchMethodError e) {}
 
 		//Add all items
 		addItems();

@@ -66,7 +66,7 @@ public class BlockMulti extends Block
     {
     	int metadata = world.getBlockMetadata(x, y, z);
     	
-    	if(metadata == 3)
+    	if(metadata == 2)
     	{
     		if(entityplayer.isSneaking())
     		{
@@ -82,9 +82,9 @@ public class BlockMulti extends Block
         int metadata = world.getBlockMetadata(x, y, z);
         switch(metadata)
         {
-        	case 3:
+        	case 2:
         		return 8;
-        	case 5:
+        	case 4:
         		return 15;
         }
         return 0;

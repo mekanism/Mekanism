@@ -191,7 +191,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				IElectricItem item = (IElectricItem)inventory[1].getItem();
 				if(item.canProvideEnergy())
 				{
-					int gain = ElectricItem.discharge(inventory[1], energyStored, 3, false, false);
+					int gain = ElectricItem.discharge(inventory[1], maxEnergy - energyStored, 3, false, false);
 					setEnergy(energyStored + gain);
 				}
 			}
@@ -337,7 +337,10 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
     public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
         super.readFromNBT(par1NBTTagCompound);
-        PowerFramework.currentFramework.loadPowerProvider(this, par1NBTTagCompound);
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.loadPowerProvider(this, par1NBTTagCompound);
+        }
         NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
 

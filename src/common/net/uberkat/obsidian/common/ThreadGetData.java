@@ -1,5 +1,10 @@
 package net.uberkat.obsidian.common;
 
+/**
+ * Thread used to retrieve data from the Obsidian Ingots server.
+ * @author AidanBrady
+ *
+ */
 public class ThreadGetData extends Thread
 {
 	public ThreadGetData()

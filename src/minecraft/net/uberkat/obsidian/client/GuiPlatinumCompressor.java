@@ -7,12 +7,12 @@ import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
 
 public class GuiPlatinumCompressor extends GuiContainer
 {
-    private TileEntityPlatinumCompressor machineInventory;
+    private TileEntityPlatinumCompressor tileEntity;
 
-    public GuiPlatinumCompressor(InventoryPlayer par1InventoryPlayer, TileEntityPlatinumCompressor par2TileEntityPlatinumCompressor)
+    public GuiPlatinumCompressor(InventoryPlayer inventory, TileEntityPlatinumCompressor tentity)
     {
-        super(new ContainerAdvancedElectricMachine(par1InventoryPlayer, par2TileEntityPlatinumCompressor));
-        machineInventory = par2TileEntityPlatinumCompressor;
+        super(new ContainerAdvancedElectricMachine(inventory, tentity));
+        tileEntity = tentity;
     }
 
     /**
@@ -29,18 +29,18 @@ public class GuiPlatinumCompressor extends GuiContainer
      */
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int var4 = this.mc.renderEngine.getTexture("/gui/GuiCompressor.png");
+        int texture = mc.renderEngine.getTexture("/gui/GuiCompressor.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(var4);
-        int var5 = (this.width - this.xSize) / 2;
-        int var6 = (this.height - this.ySize) / 2;
-        drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
-        int var7;
+        mc.renderEngine.bindTexture(texture);
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        int displayInt;
         
-        var7 = this.machineInventory.getScaledChargeLevel(12);
-        this.drawTexturedModalRect(var5 + 56, var6 + 36 + 12 - var7, 176, 12 - var7, 14, var7 + 2);
+        displayInt = tileEntity.getScaledChargeLevel(12);
+        drawTexturedModalRect(guiWidth + 56, guiHeight + 36 + 12 - displayInt, 176, 12 - displayInt, 14, displayInt + 2);
 
-        var7 = this.machineInventory.getScaledProgress(24);
-        this.drawTexturedModalRect(var5 + 79, var6 + 34, 176, 14, var7 + 1, 16);
+        displayInt = tileEntity.getScaledProgress(24);
+        drawTexturedModalRect(guiWidth + 79, guiHeight + 34, 176, 14, displayInt + 1, 16);
     }
 }
