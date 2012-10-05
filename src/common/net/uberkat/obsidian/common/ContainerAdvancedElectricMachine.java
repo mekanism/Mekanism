@@ -57,7 +57,7 @@ public class ContainerAdvancedElectricMachine extends Container
             		return null;
             	}
             }
-            else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+            else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 	            {
@@ -73,6 +73,33 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
 	            }
             }
+        	else if(slotStack.itemID == Item.redstone.shiftedIndex)
+        	{
+        		if(slotID != 3)
+        		{
+        			if(!mergeItemStack(slotStack, 3, 4, false))
+        			{
+        				if(!mergeItemStack(slotStack, 0, 1, false))
+        				{
+        					return null;
+        				}
+        			}
+        		}
+        		else if(slotID == 0)
+        		{
+        			if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+        			{
+        				return null;
+        			}
+        		}
+        		else if(slotID == 3)
+        		{
+        			if(!mergeItemStack(slotStack, 3, 4, false))
+        			{
+        				return null;
+        			}
+        		}
+        	}
             else if(tileEntity.getFuelTicks(slotStack) > 0)
             {
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)

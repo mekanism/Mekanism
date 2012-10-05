@@ -128,11 +128,8 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			if(packetTick % 100 == 0)
 			{
 				PacketHandler.sendPowerUnitPacketWithRange(this, 50);
-				packetTick++;
 			}
-			else {
-				packetTick++;
-			}
+			packetTick++;
 		}
 		
 		if(!initialized)

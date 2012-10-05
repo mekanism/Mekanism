@@ -56,7 +56,8 @@ public class ContainerElectricMachine extends Container
             		return null;
             	}
             }
-            else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+        
+        	else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
             {
 	            if(slotID != 1)
 	            {
@@ -73,6 +74,7 @@ public class ContainerElectricMachine extends Container
 	            	}
 	            }
             }
+            
             else if(RecipeHandler.getOutput(slotStack, false, tileEntity.getRecipes()) != null)
     		{
             	if(slotID != 0 && slotID != 1 && slotID != 2)
