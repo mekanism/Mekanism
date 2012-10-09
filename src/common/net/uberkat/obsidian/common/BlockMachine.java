@@ -3,7 +3,6 @@ package net.uberkat.obsidian.common;
 import java.util.List;
 import java.util.Random;
 
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
@@ -22,8 +21,6 @@ import net.minecraftforge.common.ForgeDirection;
 public class BlockMachine extends BlockContainer
 {
 	public Random machineRand = new Random();
-	
-    public int textureIndex = 32;
 	
 	public BlockMachine(int id)
 	{

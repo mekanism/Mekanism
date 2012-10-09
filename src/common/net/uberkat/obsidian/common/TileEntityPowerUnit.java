@@ -121,7 +121,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(25, 25, true)*100);
+			int received = (int)(powerProvider.useEnergy(25, 25, true)*10);
 			setEnergy(energyStored + received);
 		}
 		
