@@ -3,6 +3,7 @@ package net.uberkat.obsidian.common;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
@@ -166,7 +167,8 @@ public class BlockMachine extends BlockContainer
     	{
             if(side == tileEntity.facing)
             {
-            	return isActive(world, x, y, z) ? tileEntity.textureIndex + 32 : 14;
+            	return isActive(world, x, y, z) ? ObsidianIngots.ANIMATED_TEXTURE_INDEX : 14;
+            	
             }
             else {
             	return 2;
@@ -176,7 +178,7 @@ public class BlockMachine extends BlockContainer
     	{
             if(side == tileEntity.facing)
             {
-            	return isActive(world, x, y, z) ? tileEntity.textureIndex + 48 : 15;
+            	return isActive(world, x, y, z) ? ObsidianIngots.ANIMATED_TEXTURE_INDEX+1 : 15;
             }
             else {
             	return 2;
@@ -201,14 +203,14 @@ public class BlockMachine extends BlockContainer
             else {
             	if(side == tileEntity.facing)
             	{
-            		return isActive(world, x, y, z) ? tileEntity.textureIndex + 64 : 16;
+            		return isActive(world, x, y, z) ? ObsidianIngots.ANIMATED_TEXTURE_INDEX+2 : 16;
             	}
             	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
             	{
-            		return isActive(world, x, y, z) ? tileEntity.textureIndex + 80 : 17;
+            		return isActive(world, x, y, z) ? ObsidianIngots.ANIMATED_TEXTURE_INDEX+3 : 17;
             	}
             	else {
-            		return isActive(world, x, y, z) ? tileEntity.textureIndex + 96 : 19;
+            		return isActive(world, x, y, z) ? ObsidianIngots.ANIMATED_TEXTURE_INDEX+4 : 19;
             	}
             }
     	}

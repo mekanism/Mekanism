@@ -75,7 +75,7 @@ public class ContainerAdvancedElectricMachine extends Container
             }
         	else if(slotStack.itemID == Item.redstone.shiftedIndex)
         	{
-        		if(slotID != 3)
+        		if(slotID != 3 && slotID != 0)
         		{
         			if(!mergeItemStack(slotStack, 3, 4, false))
         			{
@@ -94,7 +94,7 @@ public class ContainerAdvancedElectricMachine extends Container
         		}
         		else if(slotID == 3)
         		{
-        			if(!mergeItemStack(slotStack, 3, 4, false))
+        			if(!mergeItemStack(slotStack, 0, 1, false))
         			{
         				return null;
         			}

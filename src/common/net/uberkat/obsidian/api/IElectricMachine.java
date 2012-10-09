@@ -2,6 +2,8 @@ package net.uberkat.obsidian.api;
 
 import java.util.List;
 
+import dan200.computer.api.IPeripheral;
+
 import ic2.api.IWrenchable;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ISidedInventory;
@@ -11,7 +13,7 @@ import net.minecraftforge.common.ISidedInventory;
  * @author AidanBrady
  *
  */
-public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchable, INetworkedMachine
+public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchable, INetworkedMachine, IPeripheral
 {
     /**
      * Update call for machines. Use instead of updateEntity() - it's called every tick.

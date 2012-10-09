@@ -38,7 +38,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.1")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.2")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -213,6 +213,8 @@ public class ObsidianIngots
 	
 	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;
+	
+	public static int ANIMATED_TEXTURE_INDEX = 240;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.

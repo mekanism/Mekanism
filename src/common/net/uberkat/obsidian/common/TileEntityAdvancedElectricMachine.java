@@ -7,6 +7,8 @@ import universalelectricity.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import dan200.computer.api.IComputerAccess;
+
 import ic2.api.ElectricItem;
 import ic2.api.EnergyNet;
 import ic2.api.IElectricItem;
@@ -138,7 +140,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
 		
-		if(canOperate() && inventory[1] != null && secondaryEnergyStored == 0)
+		if(inventory[1] != null && secondaryEnergyStored == 0)
 		{
 			int fuelTicks = getFuelTicks(inventory[1]);
 			if(fuelTicks > 0)
@@ -261,6 +263,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         }
         
         if(energyStored < ENERGY_PER_TICK)
+        {
+        	return false;
+        }
+        
+        if(secondaryEnergyStored < SECONDARY_ENERGY_PER_TICK)
         {
         	return false;
         }
@@ -483,4 +490,45 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	{
 		return operatingTicks*i / TICKS_REQUIRED;
 	}
+	
+	public String getType() 
+	{
+		return "Advanced Electric Machine";
+	}
+
+	public String[] getMethodNames() 
+	{
+		return new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate"};
+	}
+
+	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	{
+		switch(method)
+		{
+			case 0:
+				return new Object[] {energyStored};
+			case 1:
+				return new Object[] {secondaryEnergyStored};
+			case 2:
+				return new Object[] {operatingTicks};
+			case 3:
+				return new Object[] {isActive};
+			case 4:
+				return new Object[] {facing};
+			case 5:
+				return new Object[] {canOperate()};
+			default:
+				System.err.println("[ObsidianIngots] Attempted to call unknown method with computer ID " + computer.getID());
+				return null;
+		}
+	}
+
+	public boolean canAttachToSide(int side) 
+	{
+		return true;
+	}
+
+	public void attach(IComputerAccess computer, String computerSide) {}
+
+	public void detach(IComputerAccess computer) {}
 }

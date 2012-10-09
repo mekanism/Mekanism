@@ -17,12 +17,6 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	/** The direction this block is facing. */
 	public int facing;
 	
-	/** A timer used to update the block's texture. */
-	public int textureTick = 0;
-	
-	/** An integer that cycles between 0-15, used to update the block's texture. */
-	public int textureIndex = 0;
-	
 	/** A timer used to send packets to clients. */
 	public int packetTick = 0;
 	
@@ -57,11 +51,6 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 		
 		onUpdate();
 		
-		if(worldObj.isRemote)
-		{
-			updateTexture();
-		}
-		
 		if(!worldObj.isRemote)
 		{
 			if(packetTick == 5)
@@ -75,17 +64,6 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 			}
 			packetTick++;
 		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void updateTexture()
-	{
-		if(textureTick % 5 == 0)
-		{
-	    	textureIndex = (++textureIndex)%15;
-	    	worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
-		}
-		textureTick++;
 	}
 
 	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)

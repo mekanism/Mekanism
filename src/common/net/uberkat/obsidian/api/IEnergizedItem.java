@@ -50,10 +50,4 @@ public interface IEnergizedItem
 	 * @return leftover energy
 	 */
 	public int discharge(ItemStack itemstack, int amount);
-	
-	/**
-	 * Whether or not this item's energy can be used.
-	 * @return if energy can be used
-	 */
-	public boolean canCharge();
 }

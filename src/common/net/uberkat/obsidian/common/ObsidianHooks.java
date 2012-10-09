@@ -35,7 +35,7 @@ public class ObsidianHooks
 			IC2GoldDust = getIC2Item("goldDust");
 			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(ObsidianIngots.OreBlock, 1, 0), new ItemStack(ObsidianIngots.PlatinumDust, 2));
-			Ic2Recipes.addMatterAmplifier(ObsidianIngots.EnrichedAlloy, 80000);
+			Ic2Recipes.addMatterAmplifier(ObsidianIngots.EnrichedAlloy, 100000);
 			
 			System.out.println("[ObsidianIngots] Hooked into IC2 successfully.");
 		}

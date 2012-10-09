@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.TextureFXManager;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Side;
@@ -49,12 +50,26 @@ public class ClientProxy extends CommonProxy
 	public void registerRenderInformation()
 	{
 		System.out.println("[ObsidianIngots] Beginning render initiative...");
+		
 		//Preload block/item textures
 		MinecraftForgeClient.preloadTexture("/obsidian/items.png");
 		MinecraftForgeClient.preloadTexture("/obsidian/terrain.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/Compressor.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/Combiner.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/Elementizer.png");
+		MinecraftForgeClient.preloadTexture("/obsidian/CompressorFront.png");
+		MinecraftForgeClient.preloadTexture("/obsidian/CombinerFront.png");
+		MinecraftForgeClient.preloadTexture("/obsidian/ElementizerFront.png");
+		MinecraftForgeClient.preloadTexture("/obsidian/ElementizerBack.png");
+		MinecraftForgeClient.preloadTexture("/obsidian/ElementizerSide.png");
+		
+		//Register animated TextureFX for machines
+		try {
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/CompressorFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/CombinerFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+1));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/ElementizerFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+2));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/ElementizerBack.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+3));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/ElementizerSide.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+4));
+		} catch (IOException e) {
+			System.err.println("[ObsidianIngots] Error registering animation with FML: " + e.getMessage());
+		}
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());

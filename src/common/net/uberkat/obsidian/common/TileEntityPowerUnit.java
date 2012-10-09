@@ -26,6 +26,9 @@ import buildcraft.api.core.Orientations;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
+
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.EnergyNet;
@@ -40,7 +43,7 @@ import net.minecraftforge.common.ISidedInventory;
 import net.uberkat.obsidian.api.IEnergizedItem;
 import net.uberkat.obsidian.api.INetworkedMachine;
 
-public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, INetworkedMachine, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IElectricityReceiver
+public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, INetworkedMachine, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IElectricityReceiver, IPeripheral
 {
 	public ItemStack[] inventory = new ItemStack[2];
 	
@@ -88,32 +91,6 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
 			powerProvider.configure(20, 25, 25, 25, maxEnergy/10);
 		}
-	}
-	
-	public Packet getDescriptionPacket()
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(xCoord);
-        	output.writeInt(yCoord);
-        	output.writeInt(zCoord);
-        	output.writeInt(facing);
-        	output.writeInt(energyStored);
-        } catch (IOException e)
-        {
-        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "ObsidianIngots";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        return packet;
 	}
 	
 	public void updateEntity()
@@ -230,7 +207,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			if(connector != null && connector instanceof TileEntityConductor)
 			{
 				double wattsNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor)connector).getConnectionID());
-                double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(wattsNeeded, getVoltage()), ElectricInfo.getAmpsFromWattHours(energyStored*UniversalElectricity.IC2_RATIO, getVoltage()) ), 15), 0);                        
+                double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(wattsNeeded, getVoltage()), ElectricInfo.getAmpsFromWattHours(energyStored*UniversalElectricity.IC2_RATIO, getVoltage())), 15), 0);                        
                 ElectricityManager.instance.produceElectricity(this, (IConductor)connector, transferAmps, getVoltage());
                 setEnergy(energyStored - (int)(ElectricInfo.getWattHours(transferAmps, getVoltage())*UniversalElectricity.Wh_IC2_RATIO));
 			}
@@ -560,4 +537,37 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	{
 		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : var1.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
 	}
+
+	public String getType() 
+	{
+		return getInvName();
+	}
+
+	public String[] getMethodNames() 
+	{
+		return new String[] {"getStored", "getOutput"};
+	}
+
+	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	{
+		switch(method)
+		{
+			case 0:
+				return new Object[] {energyStored};
+			case 1:
+				return new Object[] {output};
+			default:
+				System.err.println("[ObsidianIngots] Attempted to call unknown method with computer ID " + computer.getID());
+				return null;
+		}
+	}
+
+	public boolean canAttachToSide(int side) 
+	{
+		return true;
+	}
+
+	public void attach(IComputerAccess computer, String computerSide) {}
+
+	public void detach(IComputerAccess computer) {}
 }
