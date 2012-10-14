@@ -2,6 +2,8 @@ package net.uberkat.obsidian.common;
 
 import java.util.List;
 
+import obsidian.api.IEnergizedItem;
+
 import universalelectricity.UniversalElectricity;
 import universalelectricity.implement.IItemElectric;
 
@@ -16,7 +18,6 @@ import ic2.api.IWrenchable;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import net.uberkat.obsidian.api.IEnergizedItem;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine
 {

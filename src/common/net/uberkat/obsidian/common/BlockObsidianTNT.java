@@ -16,16 +16,13 @@ public class BlockObsidianTNT extends Block
         setResistance(0.0F);
     }
 
-    /**
-     * Returns the block texture based on the side being looked at.  Args: side
-     */
-    public int getBlockTextureFromSide(int par1)
+    public int getBlockTextureFromSide(int side)
     {
-        if(par1 == 1)
+        if(side == 1)
         {
         	return 5;
         }
-        if(par1 == 0)
+        if(side == 0)
         {
         	return 7;
         }
@@ -34,105 +31,78 @@ public class BlockObsidianTNT extends Block
         }
     }
 
-    /**
-     * Called whenever the block is added into the world. Args: world, x, y, z
-     */
-    public void onBlockAdded(World par1World, int par2, int par3, int par4)
+    public void onBlockAdded(World world, int x, int y, int z)
     {
-        super.onBlockAdded(par1World, par2, par3, par4);
+        super.onBlockAdded(world, x, y, z);
 
-        if (par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))
+        if (world.isBlockIndirectlyGettingPowered(x, y, z))
         {
-            this.onBlockDestroyedByPlayer(par1World, par2, par3, par4, 1);
-            par1World.setBlockWithNotify(par2, par3, par4, 0);
+            onBlockDestroyedByPlayer(world, x, y, z, 1);
+            world.setBlockWithNotify(x, y, z, 0);
         }
     }
 
-    /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
-     */
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
+    public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
     {
-        if (par5 > 0 && Block.blocksList[par5].canProvidePower() && par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))
+        if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && world.isBlockIndirectlyGettingPowered(x, y, z))
         {
-            this.onBlockDestroyedByPlayer(par1World, par2, par3, par4, 1);
-            par1World.setBlockWithNotify(par2, par3, par4, 0);
+            onBlockDestroyedByPlayer(world, x, y, z, 1);
+            world.setBlockWithNotify(x, y, z, 0);
         }
     }
 
-    /**
-     * Returns the quantity of items to drop on block destruction.
-     */
-    public int quantityDropped(Random par1Random)
+    public int quantityDropped(Random random)
     {
         return 0;
     }
 
-    /**
-     * Called upon the block being destroyed by an explosion
-     */
-    public void onBlockDestroyedByExplosion(World par1World, int par2, int par3, int par4)
+    public void onBlockDestroyedByExplosion(World world, int x, int y, int z)
     {
-        if (!par1World.isRemote)
+        if (!world.isRemote)
         {
-            EntityObsidianTNT var5 = new EntityObsidianTNT(par1World, (double)((float)par2 + 0.5F), (double)((float)par3 + 0.5F), (double)((float)par4 + 0.5F));
-            var5.fuse = par1World.rand.nextInt(var5.fuse / 4) + var5.fuse / 8;
-            par1World.spawnEntityInWorld(var5);
+            EntityObsidianTNT entity = new EntityObsidianTNT(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F));
+            entity.fuse = world.rand.nextInt(entity.fuse / 4) + entity.fuse / 8;
+            world.spawnEntityInWorld(entity);
         }
     }
 
-    /**
-     * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
-     */
-    public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5)
+    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
-        if (!par1World.isRemote)
+        if (!world.isRemote)
         {
-            if ((par5 & 1) == 0)
+            if ((meta & 1) == 0)
             {
-                this.dropBlockAsItem_do(par1World, par2, par3, par4, new ItemStack(ObsidianIngots.ObsidianTNT, 1, 0));
+                dropBlockAsItem_do(world, x, y, z, new ItemStack(ObsidianIngots.ObsidianTNT, 1, 0));
             }
             else
             {
-                EntityObsidianTNT var6 = new EntityObsidianTNT(par1World, (double)((float)par2 + 0.5F), (double)((float)par3 + 0.5F), (double)((float)par4 + 0.5F));
-                par1World.spawnEntityInWorld(var6);
-                par1World.playSoundAtEntity(var6, "random.fuse", 1.0F, 1.0F);
+                EntityObsidianTNT entity = new EntityObsidianTNT(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F));
+                world.spawnEntityInWorld(entity);
+                world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
             }
         }
     }
 
-    /**
-     * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
-     */
-    public void onBlockClicked(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer)
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityplayer)
     {
-        super.onBlockClicked(par1World, par2, par3, par4, par5EntityPlayer);
+        super.onBlockClicked(world, x, y, z, entityplayer);
     }
 
-    /**
-     * Called upon block activation (left or right click on the block.). The three integers represent x,y,z of the
-     * block.
-     */
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int i1, float f1, float f2, float f3)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-        if (par5EntityPlayer.getCurrentEquippedItem() != null && par5EntityPlayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.shiftedIndex)
+        if (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.shiftedIndex)
         {
-            this.onBlockDestroyedByPlayer(par1World, par2, par3, par4, 1);
-            par1World.setBlockWithNotify(par2, par3, par4, 0);
+            onBlockDestroyedByPlayer(world, x, y, z, 1);
+            world.setBlockWithNotify(x, y, z, 0);
             return true;
         }
         else
         {
-            return super.onBlockActivated(par1World, par2, par3, par4, par5EntityPlayer, i1, f1, f2, f3);
+            return super.onBlockActivated(world, x, y, z, entityplayer, i1, f1, f2, f3);
         }
     }
 
-    /**
-     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
-     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
-     */
-    protected ItemStack createStackedBlock(int par1)
+    protected ItemStack createStackedBlock(int i)
     {
         return null;
     }

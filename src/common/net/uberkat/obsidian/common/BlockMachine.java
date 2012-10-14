@@ -249,9 +249,9 @@ public class BlockMachine extends BlockContainer
     	return false;
     }
     
-    public void breakBlock(World world, int par2, int par3, int par4, int i1, int i2)
+    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
-        TileEntityBasicMachine var5 = (TileEntityBasicMachine)world.getBlockTileEntity(par2, par3, par4);
+        TileEntityBasicMachine var5 = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
 
         if (var5 != null)
         {
@@ -275,7 +275,7 @@ public class BlockMachine extends BlockContainer
                         }
 
                         var7.stackSize -= var11;
-                        EntityItem var12 = new EntityItem(world, (double)((float)par2 + var8), (double)((float)par3 + var9), (double)((float)par4 + var10), new ItemStack(var7.itemID, var11, var7.getItemDamage()));
+                        EntityItem var12 = new EntityItem(world, (double)((float)x + var8), (double)((float)y + var9), (double)((float)z + var10), new ItemStack(var7.itemID, var11, var7.getItemDamage()));
 
                         if (var7.hasTagCompound())
                         {
@@ -293,10 +293,10 @@ public class BlockMachine extends BlockContainer
             var5.invalidate();
         }
 	        
-    	super.breakBlock(world, par2, par3, par4, i1, i2);
+    	super.breakBlock(world, x, y, z, i1, i2);
     }
     
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
         if (world.isRemote)
         {
@@ -361,7 +361,7 @@ public class BlockMachine extends BlockContainer
     	}
     }
 	
-    //This method is not used, metadata manipulation is required to create a Tile Entity.
+    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
 	public TileEntity createNewTileEntity(World world)
 	{
 		return null;

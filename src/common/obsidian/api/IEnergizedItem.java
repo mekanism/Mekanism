@@ -1,4 +1,4 @@
-package net.uberkat.obsidian.api;
+package obsidian.api;
 
 import net.minecraft.src.*;
 

@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import obsidian.api.IEnergizedItem;
+import obsidian.api.INetworkedMachine;
+
 import universalelectricity.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.electricity.ElectricityManager;
@@ -40,8 +43,6 @@ import ic2.api.IElectricItem;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import net.uberkat.obsidian.api.IEnergizedItem;
-import net.uberkat.obsidian.api.INetworkedMachine;
 
 public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, INetworkedMachine, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IElectricityReceiver, IPeripheral
 {

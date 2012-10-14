@@ -1,9 +1,9 @@
 package net.uberkat.obsidian.common;
 
+import obsidian.api.IEnergizedItem;
 import ic2.api.IElectricItem;
 import universalelectricity.implement.IItemElectric;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.api.IEnergizedItem;
 
 public class ContainerAdvancedElectricMachine extends Container
 {
@@ -16,19 +16,19 @@ public class ContainerAdvancedElectricMachine extends Container
         addSlotToContainer(new Slot(tentity, 1, 56, 53));
         addSlotToContainer(new SlotFurnace(inventory.player, tentity, 2, 116, 35));
         addSlotToContainer(new SlotEnergy(tentity, 3, 31, 35));
-        int var3;
+        int slotX;
 
-        for (var3 = 0; var3 < 3; ++var3)
+        for (slotX = 0; slotX < 3; ++slotX)
         {
-            for (int var4 = 0; var4 < 9; ++var4)
+            for (int slotY = 0; slotY < 9; ++slotY)
             {
-                addSlotToContainer(new Slot(inventory, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (var3 = 0; var3 < 9; ++var3)
+        for (slotX = 0; slotX < 9; ++slotX)
         {
-            addSlotToContainer(new Slot(inventory, var3, 8 + var3 * 18, 142));
+            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
     }
 

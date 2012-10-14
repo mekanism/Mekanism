@@ -1,5 +1,7 @@
 package net.uberkat.obsidian.common;
 
+import obsidian.api.IElectricMachine;
+
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.Side;
@@ -10,7 +12,6 @@ import ic2.api.IWrenchable;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import net.uberkat.obsidian.api.IElectricMachine;
 
 public abstract class TileEntityBasicMachine extends TileEntity implements IElectricMachine
 {

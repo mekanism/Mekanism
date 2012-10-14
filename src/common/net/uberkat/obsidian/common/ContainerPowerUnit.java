@@ -1,8 +1,8 @@
 package net.uberkat.obsidian.common;
 
+import obsidian.api.*;
 import ic2.api.IElectricItem;
 import universalelectricity.implement.IItemElectric;
-import net.uberkat.obsidian.api.*;
 import net.minecraft.src.*;
 
 public class ContainerPowerUnit extends Container
@@ -15,19 +15,19 @@ public class ContainerPowerUnit extends Container
 		addSlotToContainer(new SlotEnergy(unit, 0, 8, 8));
 		addSlotToContainer(new SlotEnergy(unit, 1, 8, 40));
 		
-		int var3;
+		int slotX;
 		
-        for (var3 = 0; var3 < 3; ++var3)
+        for (slotX = 0; slotX < 3; ++slotX)
         {
-            for (int var4 = 0; var4 < 9; ++var4)
+            for (int slotY = 0; slotY < 9; ++slotY)
             {
-                addSlotToContainer(new Slot(inventory, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (var3 = 0; var3 < 9; ++var3)
+        for (slotX = 0; slotX < 9; ++slotX)
         {
-            addSlotToContainer(new Slot(inventory, var3, 8 + var3 * 18, 142));
+            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
 	}
 	

@@ -2,12 +2,13 @@ package net.uberkat.obsidian.common;
 
 import java.util.List;
 
+import obsidian.api.IEnergizedItem;
+
 import universalelectricity.UniversalElectricity;
 import universalelectricity.implement.IItemElectric;
 
 import ic2.api.IElectricItem;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.api.IEnergizedItem;
 
 public class ItemEnergized extends Item implements IEnergizedItem, IItemElectric
 {

@@ -1,9 +1,9 @@
 package net.uberkat.obsidian.common;
 
+import obsidian.api.IEnergizedItem;
 import universalelectricity.implement.IItemElectric;
 import ic2.api.IElectricItem;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.api.IEnergizedItem;
 
 public class SlotEnergy extends Slot
 {
