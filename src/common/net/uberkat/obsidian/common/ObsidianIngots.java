@@ -60,13 +60,16 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 2, 1);
+	public static Version versionNumber = new Version(4, 2, 2);
 	
 	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
 	
 	/** The recent news which is received from the Obsidian Ingots server */
 	public static String recentNews;
+	
+	/** The main MachineryManager instance that is used by all machines */
+	public static MachineryManager manager;
 	
 	/** The IP used to connect to the Obsidian Ingots server */
 	public static String hostIP = "71.56.58.57";
@@ -982,6 +985,8 @@ public class ObsidianIngots
 		NetworkRegistry.instance().registerGuiHandler(this, new CommonGuiHandler());
 		//Set the mod's instance
 		instance = this;
+		//Register the MachineryManager
+		manager = new MachineryManager();
 		System.out.println("[ObsidianIngots] Version " + versionNumber + " initializing...");
 		new ThreadGetData();
 		proxy.registerRenderInformation();
