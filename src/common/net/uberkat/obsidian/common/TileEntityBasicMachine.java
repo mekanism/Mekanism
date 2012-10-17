@@ -43,7 +43,6 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	 */
 	public TileEntityBasicMachine(String name, String path)
 	{
-		ObsidianIngots.manager.register(this);
 		fullName = name;
 		guiTexturePath = path;
 		isActive = false;
@@ -99,7 +98,7 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	
 	public void invalidate()
 	{
-		ObsidianIngots.manager.remove(this);
+		//To be used
 	}
 
 	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
