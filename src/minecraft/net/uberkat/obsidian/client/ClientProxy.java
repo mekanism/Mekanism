@@ -102,16 +102,16 @@ public class ClientProxy extends CommonProxy
 				return new GuiWeatherOrb(player);
 			case 3:
 				TileEntityEnrichmentChamber tileentity = (TileEntityEnrichmentChamber)world.getBlockTileEntity(x, y, z);
-				return new GuiEnrichmentChamber(player.inventory, tileentity);
+				return new GuiElectricMachine(player.inventory, tileentity);
 			case 4:
 				TileEntityPlatinumCompressor tileentity1 = (TileEntityPlatinumCompressor)world.getBlockTileEntity(x, y, z);
-				return new GuiPlatinumCompressor(player.inventory, tileentity1);
+				return new GuiAdvancedElectricMachine(player.inventory, tileentity1);
 			case 5:
 				TileEntityCombiner tileentity2 = (TileEntityCombiner)world.getBlockTileEntity(x, y, z);
-				return new GuiCombiner(player.inventory, tileentity2);
+				return new GuiAdvancedElectricMachine(player.inventory, tileentity2);
 			case 6:
 				TileEntityCrusher tileentity3 = (TileEntityCrusher)world.getBlockTileEntity(x, y, z);
-				return new GuiCrusher(player.inventory, tileentity3);
+				return new GuiElectricMachine(player.inventory, tileentity3);
 			case 7:
 				TileEntityTheoreticalElementizer tileentity4 = (TileEntityTheoreticalElementizer)world.getBlockTileEntity(x, y, z);
 				return new GuiTheoreticalElementizer(player.inventory, tileentity4);

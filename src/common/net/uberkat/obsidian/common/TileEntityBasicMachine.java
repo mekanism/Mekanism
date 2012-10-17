@@ -30,11 +30,22 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	/** Whether or not this machine has initialized and registered with other mods. */
 	public boolean initialized;
 	
+	/** The full name of this machine. */
+	public String fullName;
+	
+	/** The GUI texture path for this machine. */
+	public String guiTexturePath;
+	
 	/**
 	 * The most basic of machines - a simple tile entity with a facing, active state, initialized state, and animated texture.
+	 * @param name - full name of this machine
+	 * @param path - GUI texture path of this machine
 	 */
-	public TileEntityBasicMachine()
+	public TileEntityBasicMachine(String name, String path)
 	{
+		ObsidianIngots.manager.register(this);
+		fullName = name;
+		guiTexturePath = path;
 		isActive = false;
 	}
 	
@@ -65,6 +76,30 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 			}
 			packetTick++;
 		}
+	}
+	
+	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	{
+		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
+	}
+	
+	public void openChest() {}
+
+	public void closeChest() {}
+	
+	public String getInvName() 
+	{
+		return fullName;
+	}
+	
+	public int getInventoryStackLimit() 
+	{
+		return 64;
+	}
+	
+	public void invalidate()
+	{
+		ObsidianIngots.manager.remove(this);
 	}
 
 	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)

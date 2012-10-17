@@ -6,7 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import obsidian.api.INetworkedMachine;
+import obsidian.api.ITileNetwork;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -79,9 +79,9 @@ public class PacketHandler implements IPacketHandler
 						
 						World world = ((EntityPlayer)player).worldObj;
 						TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-						if(tileEntity instanceof INetworkedMachine)
+						if(tileEntity instanceof ITileNetwork)
 						{
-							((INetworkedMachine)tileEntity).handlePacketData(manager, packet, ((EntityPlayer)player), dataStream);
+							((ITileNetwork)tileEntity).handlePacketData(manager, packet, ((EntityPlayer)player), dataStream);
 						}
 					} catch (Exception e)
 					{

@@ -11,7 +11,7 @@ import com.google.common.io.ByteArrayDataInput;
  * @author AidanBrady
  *
  */
-public interface INetworkedMachine 
+public interface ITileNetwork 
 {
 	/**
 	 * Called when a networked machine receives a packet.

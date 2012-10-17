@@ -54,31 +54,31 @@ public class BlockMachine extends BlockContainer
     	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
         if (isActive(world, x, y, z))
         {
-            float var7 = (float)x + 0.5F;
-            float var8 = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-            float var9 = (float)z + 0.5F;
-            float var10 = 0.52F;
-            float var11 = random.nextFloat() * 0.6F - 0.3F;
+            float xRandom = (float)x + 0.5F;
+            float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+            float zRandom = (float)z + 0.5F;
+            float iRandom = 0.52F;
+            float jRandom = random.nextFloat() * 0.6F - 0.3F;
 
             if (tileEntity.facing == 4)
             {
-                world.spawnParticle("smoke", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 - var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
             else if (tileEntity.facing == 5)
             {
-                world.spawnParticle("smoke", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 + var10), (double)var8, (double)(var9 + var11), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
             else if (tileEntity.facing == 2)
             {
-                world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 - var10), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
             }
             else if (tileEntity.facing == 3)
             {
-                world.spawnParticle("smoke", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(var7 + var11), (double)var8, (double)(var9 + var10), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
             }
         }
     }
@@ -251,46 +251,46 @@ public class BlockMachine extends BlockContainer
     
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
-        TileEntityBasicMachine var5 = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+        TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
 
-        if (var5 != null)
+        if (tileEntity != null)
         {
-            for (int var6 = 0; var6 < var5.getSizeInventory(); ++var6)
+            for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
             {
-                ItemStack var7 = var5.getStackInSlot(var6);
+                ItemStack slotStack = tileEntity.getStackInSlot(i);
 
-                if (var7 != null)
+                if (slotStack != null)
                 {
-                    float var8 = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float var9 = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float var10 = machineRand.nextFloat() * 0.8F + 0.1F;
+                    float xRandom = machineRand.nextFloat() * 0.8F + 0.1F;
+                    float yRandom = machineRand.nextFloat() * 0.8F + 0.1F;
+                    float zRandom = machineRand.nextFloat() * 0.8F + 0.1F;
 
-                    while (var7.stackSize > 0)
+                    while (slotStack.stackSize > 0)
                     {
-                        int var11 = machineRand.nextInt(21) + 10;
+                        int j = machineRand.nextInt(21) + 10;
 
-                        if (var11 > var7.stackSize)
+                        if (j > slotStack.stackSize)
                         {
-                            var11 = var7.stackSize;
+                            j = slotStack.stackSize;
                         }
 
-                        var7.stackSize -= var11;
-                        EntityItem var12 = new EntityItem(world, (double)((float)x + var8), (double)((float)y + var9), (double)((float)z + var10), new ItemStack(var7.itemID, var11, var7.getItemDamage()));
+                        slotStack.stackSize -= j;
+                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
 
-                        if (var7.hasTagCompound())
+                        if (slotStack.hasTagCompound())
                         {
-                            var12.item.setTagCompound((NBTTagCompound)var7.getTagCompound().copy());
+                            item.item.setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
-                        float var13 = 0.05F;
-                        var12.motionX = (double)((float)machineRand.nextGaussian() * var13);
-                        var12.motionY = (double)((float)machineRand.nextGaussian() * var13 + 0.2F);
-                        var12.motionZ = (double)((float)machineRand.nextGaussian() * var13);
-                        world.spawnEntityInWorld(var12);
+                        float k = 0.05F;
+                        item.motionX = (double)((float)machineRand.nextGaussian() * k);
+                        item.motionY = (double)((float)machineRand.nextGaussian() * k + 0.2F);
+                        item.motionZ = (double)((float)machineRand.nextGaussian() * k);
+                        world.spawnEntityInWorld(item);
                     }
                 }
             }
-            var5.invalidate();
+            tileEntity.invalidate();
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);

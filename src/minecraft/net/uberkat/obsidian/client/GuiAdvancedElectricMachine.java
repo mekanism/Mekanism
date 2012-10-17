@@ -3,13 +3,13 @@ package net.uberkat.obsidian.client;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
 import net.uberkat.obsidian.common.ContainerAdvancedElectricMachine;
-import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
+import net.uberkat.obsidian.common.TileEntityAdvancedElectricMachine;
 
-public class GuiPlatinumCompressor extends GuiContainer
+public class GuiAdvancedElectricMachine extends GuiContainer
 {
-    private TileEntityPlatinumCompressor tileEntity;
+    public TileEntityAdvancedElectricMachine tileEntity;
 
-    public GuiPlatinumCompressor(InventoryPlayer inventory, TileEntityPlatinumCompressor tentity)
+    public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
     {
         super(new ContainerAdvancedElectricMachine(inventory, tentity));
         tileEntity = tentity;
@@ -20,7 +20,7 @@ public class GuiPlatinumCompressor extends GuiContainer
      */
     protected void drawGuiContainerForegroundLayer()
     {
-        fontRenderer.drawString("Platinum Compressor", 45, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
     }
 
@@ -29,7 +29,7 @@ public class GuiPlatinumCompressor extends GuiContainer
      */
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int texture = mc.renderEngine.getTexture("/gui/GuiCompressor.png");
+        int texture = mc.renderEngine.getTexture(tileEntity.guiTexturePath);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         int guiWidth = (width - xSize) / 2;

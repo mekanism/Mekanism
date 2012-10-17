@@ -61,28 +61,28 @@ public class GuiStopwatch extends GuiScreen {
 		if(guibutton.id == 0)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 0);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 6);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 12);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 18);
 			mc.displayGuiScreen(null);
 		}

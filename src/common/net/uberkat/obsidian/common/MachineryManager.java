@@ -76,6 +76,24 @@ public class MachineryManager
 	}
 	
 	/**
+	 * Destroys all machines registered, as well as removing them from the manager's ArrayList.
+	 * @param explode - whether or not to show fake explosion
+	 */
+	public void destroyAll(boolean explode)
+	{
+		for(TileEntityBasicMachine machine : machines)
+		{
+			if(explode)
+			{
+				ObsidianUtils.doFakeBlockExplosion(machine.worldObj, machine.xCoord, machine.yCoord, machine.zCoord);
+			}
+			machine.worldObj.setBlockAndMetadataWithNotify(machine.xCoord, machine.yCoord, machine.zCoord, 0, 0);
+			machine.worldObj.removeBlockTileEntity(machine.xCoord, machine.yCoord, machine.zCoord);
+			remove(machine);
+		}
+	}
+	
+	/**
 	 * Resets the manager -- removing all machines from the ArrayList
 	 */
 	public void reset()

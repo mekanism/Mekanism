@@ -7,7 +7,6 @@ public class ItemObsidianKnife extends ItemObsidian
 {
     private EnumToolMaterial enumToolMaterial;
     protected int weaponDamage;
-    protected float knockBack;
     protected float strVsBlock;
     protected int entityDamage;
     protected int blockDamage;
@@ -20,7 +19,6 @@ public class ItemObsidianKnife extends ItemObsidian
         maxStackSize = 1;
         setMaxDamage((int)((float)enumtoolmaterial.getMaxUses() * 0.5F));
         weaponDamage = (int)((float)3 + (float)enumtoolmaterial.getDamageVsEntity() * 1.5F);
-        knockBack = 0.2F + (enumtoolmaterial != EnumToolMaterial.GOLD ? 0.0F : 0.2F);
         strVsBlock = 1;
         entityDamage = 2;
         blockDamage = 2;
@@ -95,7 +93,7 @@ public class ItemObsidianKnife extends ItemObsidian
         return weaponDamage;
     }
     
-    public boolean onBlockDestroyed(ItemStack itemstack, int i, int j, int k, int l, EntityLiving entityliving)
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, int i, int j, int k, int l, EntityLiving entityliving)
     {
         itemstack.damageItem(blockDamage, entityliving);
         return true;
@@ -103,11 +101,6 @@ public class ItemObsidianKnife extends ItemObsidian
     
     public boolean hitEntity(ItemStack itemstack, EntityLiving entityliving, EntityLiving entityliving1)
     {
-        if (knockBack != 0.0F)
-        {
-            PhysicsHelper.knockBack(entityliving, entityliving1, knockBack);
-        }
-
         itemstack.damageItem(entityDamage, entityliving1);
         return true;
     }

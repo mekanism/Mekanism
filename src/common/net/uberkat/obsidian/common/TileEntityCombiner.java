@@ -13,7 +13,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 	
 	public TileEntityCombiner()
 	{
-		super("Combiner", 5, 1, 200, 1000, 200);
+		super("Combiner", "/gui/GuiCombiner.png", 5, 1, 200, 1000, 200);
 	}
 	
 	public List getRecipes()

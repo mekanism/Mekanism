@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import obsidian.api.IEnergizedItem;
-import obsidian.api.INetworkedMachine;
+import obsidian.api.ITileNetwork;
 
 import universalelectricity.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
@@ -44,7 +44,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, INetworkedMachine, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IElectricityReceiver, IPeripheral
+public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, ITileNetwork, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IElectricityReceiver, IPeripheral
 {
 	public ItemStack[] inventory = new ItemStack[2];
 	
@@ -90,7 +90,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(20, 25, 25, 25, maxEnergy/10);
+			powerProvider.configure(5, 25, 25, 25, maxEnergy/10);
 		}
 	}
 	
@@ -309,54 +309,56 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public void closeChest() {}
 	
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    public void readFromNBT(NBTTagCompound nbtTags)
     {
-        super.readFromNBT(par1NBTTagCompound);
+        super.readFromNBT(nbtTags);
+        
         if(PowerFramework.currentFramework != null)
         {
-        	PowerFramework.currentFramework.loadPowerProvider(this, par1NBTTagCompound);
+        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
         }
-        NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
+        
+        NBTTagList tagList = nbtTags.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
 
-        for (int var3 = 0; var3 < var2.tagCount(); ++var3)
+        for (int slots = 0; slots < tagList.tagCount(); ++slots)
         {
-            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
-            byte var5 = var4.getByte("Slot");
+            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
+            byte slotID = tagCompound.getByte("Slot");
 
-            if (var5 >= 0 && var5 < inventory.length)
+            if (slotID >= 0 && slotID < inventory.length)
             {
-                inventory[var5] = ItemStack.loadItemStackFromNBT(var4);
+                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
             }
         }
 
-        energyStored = par1NBTTagCompound.getInteger("energyStored");
-        facing = par1NBTTagCompound.getInteger("facing");
+        energyStored = nbtTags.getInteger("energyStored");
+        facing = nbtTags.getInteger("facing");
     }
 
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    public void writeToNBT(NBTTagCompound nbtTags)
     {
-        super.writeToNBT(par1NBTTagCompound);
+        super.writeToNBT(nbtTags);
         if(PowerFramework.currentFramework != null)
         {
-        	PowerFramework.currentFramework.savePowerProvider(this, par1NBTTagCompound);
+        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
         }
-        par1NBTTagCompound.setInteger("energyStored", energyStored);
-        par1NBTTagCompound.setInteger("facing", facing);
-        NBTTagList var2 = new NBTTagList();
+        nbtTags.setInteger("energyStored", energyStored);
+        nbtTags.setInteger("facing", facing);
+        NBTTagList tagList = new NBTTagList();
 
-        for (int var3 = 0; var3 < inventory.length; ++var3)
+        for (int slots = 0; slots < inventory.length; ++slots)
         {
-            if (inventory[var3] != null)
+            if (inventory[slots] != null)
             {
-                NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var3);
-                inventory[var3].writeToNBT(var4);
-                var2.appendTag(var4);
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte)slots);
+                inventory[slots].writeToNBT(tagCompound);
+                tagList.appendTag(tagCompound);
             }
         }
 
-        par1NBTTagCompound.setTag("Items", var2);
+        nbtTags.setTag("Items", tagList);
     }
 
 	public void handlePacketData(NetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
@@ -507,6 +509,11 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 		return 120;
 	}
 	
+	/**
+	 * Whether or not the declared Tile Entity is an instance of a BuildCraft power receptor.
+	 * @param tileEntity
+	 * @return
+	 */
 	public boolean isPowerReceptor(TileEntity tileEntity)
 	{
 		if(tileEntity instanceof IPowerReceptor) 

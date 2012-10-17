@@ -24,9 +24,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	/** The inventory slot itemstacks used by this machine. */
 	public ItemStack[] inventory = new ItemStack[3];
 	
-	/** The full name of this machine. */
-	public String fullName;
-	
 	/** How much energy this machine uses per tick. */
 	public int ENERGY_PER_TICK;
 	
@@ -46,14 +43,15 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), 
 	 * and the output slot (2). It will not run if it does not have enough energy.
 	 * 
-	 * @param name - full name of the machine.
+	 * @param name - full name of this machine
+	 * @param path - GUI texture path of this machine
 	 * @param perTick - energy used per tick.
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String name, int perTick, int ticksRequired, int maxEnergy)
+	public TileEntityElectricMachine(String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
-		fullName = name;
+		super(name, path);
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = ticksRequired;
 		MAX_ENERGY = maxEnergy;
@@ -234,8 +232,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         }
     }
     
-    public abstract List getRecipes();
-    
     public void sendPacket()
     {
     	PacketHandler.sendElectricMachinePacket(this);
@@ -261,50 +257,50 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 	}
 	
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    public void readFromNBT(NBTTagCompound nbtTags)
     {
-        super.readFromNBT(par1NBTTagCompound);
-        NBTTagList var2 = par1NBTTagCompound.getTagList("Items");
+        super.readFromNBT(nbtTags);
+        NBTTagList tagList = nbtTags.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
 
-        for (int var3 = 0; var3 < var2.tagCount(); ++var3)
+        for (int slots = 0; slots < tagList.tagCount(); ++slots)
         {
-            NBTTagCompound var4 = (NBTTagCompound)var2.tagAt(var3);
-            byte var5 = var4.getByte("Slot");
+            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
+            byte slotID = tagCompound.getByte("Slot");
 
-            if (var5 >= 0 && var5 < inventory.length)
+            if (slotID >= 0 && slotID < inventory.length)
             {
-                inventory[var5] = ItemStack.loadItemStackFromNBT(var4);
+                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
             }
         }
 
-        operatingTicks = par1NBTTagCompound.getInteger("operatingTicks");
-        energyStored = par1NBTTagCompound.getInteger("energyStored");
-        isActive = par1NBTTagCompound.getBoolean("isActive");
-        facing = par1NBTTagCompound.getInteger("facing");
+        operatingTicks = nbtTags.getInteger("operatingTicks");
+        energyStored = nbtTags.getInteger("energyStored");
+        isActive = nbtTags.getBoolean("isActive");
+        facing = nbtTags.getInteger("facing");
     }
 
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    public void writeToNBT(NBTTagCompound nbtTags)
     {
-        super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("operatingTicks", operatingTicks);
-        par1NBTTagCompound.setInteger("energyStored", energyStored);
-        par1NBTTagCompound.setBoolean("isActive", isActive);
-        par1NBTTagCompound.setInteger("facing", facing);
-        NBTTagList var2 = new NBTTagList();
+        super.writeToNBT(nbtTags);
+        nbtTags.setInteger("operatingTicks", operatingTicks);
+        nbtTags.setInteger("energyStored", energyStored);
+        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("facing", facing);
+        NBTTagList tagList = new NBTTagList();
 
-        for (int var3 = 0; var3 < inventory.length; ++var3)
+        for (int slots = 0; slots < inventory.length; ++slots)
         {
-            if (inventory[var3] != null)
+            if (inventory[slots] != null)
             {
-                NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var3);
-                inventory[var3].writeToNBT(var4);
-                var2.appendTag(var4);
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte)slots);
+                inventory[slots].writeToNBT(tagCompound);
+                tagList.appendTag(tagCompound);
             }
         }
 
-        par1NBTTagCompound.setTag("Items", var2);
+        nbtTags.setTag("Items", tagList);
     }
 
 	public int getStartInventorySide(ForgeDirection side) 
@@ -382,25 +378,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
             par2ItemStack.stackSize = getInventoryStackLimit();
         }
     }
-
-	public String getInvName() 
-	{
-		return fullName;
-	}
-
-	public int getInventoryStackLimit() 
-	{
-		return 64;
-	}
-
-	public boolean isUseableByPlayer(EntityPlayer var1)
-	{
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : var1.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
-	}
-
-	public void openChest() {}
-
-	public void closeChest() {}
 	
 	/**
 	 * Sets the energy to a new amount.

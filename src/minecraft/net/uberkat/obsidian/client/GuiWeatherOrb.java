@@ -62,28 +62,28 @@ public class GuiWeatherOrb extends GuiScreen {
 		if(guibutton.id == 0)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.CLEAR.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.STORM.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.HAZE.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			player.inventory.getCurrentItem().damageItem(4999, player);
-			ObsidianUtils.doExplosion(player);
+			ObsidianUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.RAIN.id);
 			mc.displayGuiScreen(null);
 		}

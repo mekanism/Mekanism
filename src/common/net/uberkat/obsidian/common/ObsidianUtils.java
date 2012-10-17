@@ -20,7 +20,7 @@ import net.minecraft.src.*;
 import net.uberkat.obsidian.client.ThreadSendData;
 
 /**
- * Official Obsidian Ingots utilities. All miscellaneous methods are located here.
+ * Utilities used by Obsidian Ingots. All miscellaneous methods are located here.
  * @author AidanBrady
  *
  */
@@ -213,13 +213,26 @@ public class ObsidianUtils
 	}
 	
 	/**
-	 * Creates a fake explosion, with only sounds and effects. No damage is caused to either blocks or the player.
+	 * Creates a fake explosion at the declared player, with only sounds and effects. No damage is caused to either blocks or the player.
 	 * @param entityplayer - player to explode
 	 */
-	public static void doExplosion(EntityPlayer entityplayer)
+	public static void doFakeEntityExplosion(EntityPlayer entityplayer)
 	{
 		World world = entityplayer.worldObj;
 		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
+	}
+	
+	/**
+	 * Creates a fake explosion at the declared coords, with only sounds and effects. No damage is caused to either blocks or the player.
+	 * @param world - world where the explosion will occur
+	 * @param x - x coord
+	 * @param y - y coord
+	 * @param z - z coord
+	 */
+	public static void doFakeBlockExplosion(World world, int x, int y, int z)
+	{
+		world.spawnParticle("hugeexplosion", x, y, z, 0.0D, 0.0D, 0.0D);
+		world.playSound(x, y, z, "random.explode", 1.0F, 1.0F);
 	}
 }

@@ -13,7 +13,7 @@ import net.minecraftforge.common.ISidedInventory;
  * @author AidanBrady
  *
  */
-public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchable, INetworkedMachine, IPeripheral
+public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchable, ITileNetwork, IPeripheral
 {
     /**
      * Update call for machines. Use instead of updateEntity() - it's called every tick.

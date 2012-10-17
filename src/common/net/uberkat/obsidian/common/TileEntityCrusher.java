@@ -13,7 +13,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	
 	public TileEntityCrusher()
 	{
-		super("Crusher", 5, 200, 1000);
+		super("Crusher", "/gui/GuiCrusher.png", 5, 200, 1000);
 	}
 	
 	public List getRecipes()

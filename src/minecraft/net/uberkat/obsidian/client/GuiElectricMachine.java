@@ -2,16 +2,16 @@ package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.ContainerAdvancedElectricMachine;
-import net.uberkat.obsidian.common.TileEntityCombiner;
+import net.uberkat.obsidian.common.ContainerElectricMachine;
+import net.uberkat.obsidian.common.TileEntityElectricMachine;
 
-public class GuiCombiner extends GuiContainer
+public class GuiElectricMachine extends GuiContainer
 {
-    private TileEntityCombiner tileEntity;
+    public TileEntityElectricMachine tileEntity;
 
-    public GuiCombiner(InventoryPlayer inventory, TileEntityCombiner tentity)
+    public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tentity)
     {
-        super(new ContainerAdvancedElectricMachine(inventory, tentity));
+        super(new ContainerElectricMachine(inventory, tentity));
         tileEntity = tentity;
     }
 
@@ -20,7 +20,7 @@ public class GuiCombiner extends GuiContainer
      */
     protected void drawGuiContainerForegroundLayer()
     {
-        fontRenderer.drawString("Combiner", 49, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
     }
 
@@ -29,7 +29,7 @@ public class GuiCombiner extends GuiContainer
      */
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int texture = mc.renderEngine.getTexture("/gui/GuiCombiner.png");
+        int texture = mc.renderEngine.getTexture(tileEntity.guiTexturePath);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         int guiWidth = (width - xSize) / 2;
