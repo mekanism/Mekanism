@@ -38,7 +38,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.2")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.3")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -60,7 +60,7 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 2, 2);
+	public static Version versionNumber = new Version(4, 2, 3);
 	
 	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
@@ -189,7 +189,6 @@ public class ObsidianIngots
 	public static Item LazuliKnife;
 	
 	//Extra Items
-	public static Item ObsidianArrow;
 	public static Item ObsidianBow;
 	public static Item LightningRod;
 	public static Item Stopwatch;
@@ -218,6 +217,7 @@ public class ObsidianIngots
 	public static int ticksPassed = 0;
 	
 	public static int ANIMATED_TEXTURE_INDEX = 240;
+	public static int BOW_TEXTURE_INDEX = 177;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -466,9 +466,6 @@ public class ObsidianIngots
 		GameRegistry.addRecipe(new ItemStack(ObsidianTNT, 1), new Object[] {
 			"***", "XXX", "***", Character.valueOf('*'), Block.obsidian, Character.valueOf('X'), Block.tnt
 		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianArrow, 8), new Object[] {
-			"A", "B", "C", Character.valueOf('A'), ObsidianIngot, Character.valueOf('B'), Item.stick, Character.valueOf('C'), Item.feather
-		});
 		GameRegistry.addRecipe(new ItemStack(ObsidianBow, 1), new Object[] {
 			" AB", "A B", " AB", Character.valueOf('A'), ObsidianIngot, Character.valueOf('B'), Item.silk
 		});
@@ -623,7 +620,6 @@ public class ObsidianIngots
 		LanguageRegistry.addName(GlowstoneKnife, "Glowstone Knife");
 		
 		//Extras
-		LanguageRegistry.addName(ObsidianArrow, "Obsidian Arrow");
 		LanguageRegistry.addName(ObsidianBow, "Obsidian Bow");
 		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
 		
@@ -754,7 +750,6 @@ public class ObsidianIngots
 		LazuliKnife.setIconIndex(208);
 		
 		//Extras
-		ObsidianArrow.setIconIndex(193);
 		ObsidianBow.setIconIndex(177);
 		
 		if(extrasEnabled == true)
@@ -818,7 +813,6 @@ public class ObsidianIngots
 		LazuliBody = (new ItemObsidianArmor(11275, armorLAZULI, proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
 		LazuliLegs = (new ItemObsidianArmor(11276, armorLAZULI, proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
 		LazuliBoots = (new ItemObsidianArmor(11277, armorLAZULI, proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
-		ObsidianArrow = new ItemObsidian(11278).setItemName("ObsidianArrow").setCreativeTab(CreativeTabs.tabCombat);
 		ObsidianBow = new ItemObsidianBow(11279).setItemName("ObsidianBow");
 		if(extrasEnabled == true)
 		{
@@ -937,12 +931,10 @@ public class ObsidianIngots
 	public void addEntities()
 	{
 		//Entity IDs
-		EntityRegistry.registerGlobalEntityID(EntityObsidianArrow.class, "ObsidianArrow", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityObsidianTNT.class, "ObsidianTNT", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityKnife.class, "Knife", EntityRegistry.findGlobalUniqueEntityId());
 		
 		//Registrations
-		EntityRegistry.registerModEntity(EntityObsidianArrow.class, "ObsidianArrow", 50, this, 40, 5, true);
 		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 51, this, 40, 5, true);
 		EntityRegistry.registerModEntity(EntityKnife.class, "Knife", 52, this, 40, 5, true);
 		
@@ -965,6 +957,13 @@ public class ObsidianIngots
 		ServerCommandHandler.initialize();
 	}
 	
+	@PreInit
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		//Set the mod's configuration
+		configuration = new Configuration(event.getSuggestedConfigurationFile());
+	}
+	
 	@PostInit
 	public void postInit(FMLPostInitializationEvent event)
 	{
@@ -974,11 +973,9 @@ public class ObsidianIngots
 		System.out.println("[ObsidianIngots] Hooking complete.");
 	}
 	
-	@PreInit
-	public void preInit(FMLPreInitializationEvent event) 
+	@Init
+	public void init(FMLInitializationEvent event) 
 	{
-		//Set the mod's configuration
-		configuration = new Configuration(event.getSuggestedConfigurationFile());
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		//Register the mod's GUI handler

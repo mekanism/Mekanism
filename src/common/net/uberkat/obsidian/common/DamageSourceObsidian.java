@@ -28,9 +28,4 @@ public class DamageSourceObsidian extends EntityDamageSourceIndirect
     {
         return (new DamageSourceObsidian("weapon", entity, entity1)).setProjectile();
     }
-    
-    public static DamageSource causeObsidianArrowDamage(EntityObsidianArrow arrow, Entity entity)
-    {
-    	return (new EntityDamageSourceIndirect("arrow", arrow, entity)).setProjectile();
-    }
 }

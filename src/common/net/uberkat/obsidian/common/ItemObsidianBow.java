@@ -12,17 +12,42 @@ public class ItemObsidianBow extends ItemObsidian
         setMaxDamage(750);
         setCreativeTab(CreativeTabs.tabCombat);
     }
-
-    /**
-     * called when the player releases the use item button. Args: itemstack, world, entityplayer, itemInUseCount
-     */
-    public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int par4)
+    
+    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
-        boolean flag = par3EntityPlayer.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, par1ItemStack) > 0;
+        EntityPlayer player = (EntityPlayer)entity;
+        ItemStack currentItem = player.inventory.getCurrentItem();
 
-        if (flag || par3EntityPlayer.inventory.hasItem(ObsidianIngots.ObsidianArrow.shiftedIndex))
+        if (player.isUsingItem() && currentItem.itemID == ObsidianIngots.ObsidianBow.shiftedIndex)
         {
-            int i = getMaxItemUseDuration(par1ItemStack) - par4;
+            int useTicks = itemstack.getMaxItemUseDuration() - player.getItemInUseCount();
+
+            if (useTicks >= 14)
+            {
+                iconIndex = ObsidianIngots.BOW_TEXTURE_INDEX+3;
+            }
+            else if (useTicks > 9)
+            {
+                iconIndex = ObsidianIngots.BOW_TEXTURE_INDEX+2;
+            }
+            else if (useTicks > 0)
+            {
+                iconIndex = ObsidianIngots.BOW_TEXTURE_INDEX+1;
+            }
+        }
+        else
+        {
+            iconIndex = ObsidianIngots.BOW_TEXTURE_INDEX;
+        }
+    }
+
+    public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int itemUseCount)
+    {
+        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
+
+        if (flag || player.inventory.hasItem(Item.arrow.shiftedIndex))
+        {
+            int i = getMaxItemUseDuration(itemstack) - itemUseCount;
             float f = (float)i / 20F;
             f = (f * f + f * 2.0F) / 3F;
 
@@ -36,48 +61,56 @@ public class ItemObsidianBow extends ItemObsidian
                 f = 1.0F;
             }
 
-            EntityObsidianArrow entityobsidianarrow = new EntityObsidianArrow(par2World, par3EntityPlayer, f * 2.0F);
+            EntityArrow entityarrow = new EntityArrow(world, player, f * 2.0F);
 
             if (f == 1.0F)
             {
-            	entityobsidianarrow.func_70243_d(true);
+            	entityarrow.func_70243_d(true);
             }
 
-            int j = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, par1ItemStack);
+            int j = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, itemstack);
 
             if (j > 0)
             {
-                entityobsidianarrow.setDamage(entityobsidianarrow.getDamage() + (double)j * 0.5D + 0.5D);
+                entityarrow.setDamage(entityarrow.getDamage() + (double)j * 0.5D + 0.5D);
             }
 
-            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, par1ItemStack);
+            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, itemstack);
 
             if (k > 0)
             {
-                entityobsidianarrow.setKnockbackStrength(k);
+                entityarrow.setKnockbackStrength(k);
             }
 
-            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, par1ItemStack) > 0)
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, itemstack) > 0)
             {
-                entityobsidianarrow.setFire(100);
+                entityarrow.setFire(100);
             }
 
-            par1ItemStack.damageItem(1, par3EntityPlayer);
-            par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+            itemstack.damageItem(1, player);
+            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
             if (flag)
             {
-            	entityobsidianarrow.canBePickedUp = 2;
+            	entityarrow.canBePickedUp = 2;
             }
             else
             {
-            	par3EntityPlayer.inventory.consumeInventoryItem(ObsidianIngots.ObsidianArrow.shiftedIndex);
+            	player.inventory.consumeInventoryItem(Item.arrow.shiftedIndex);
             }
 
-            if (!par2World.isRemote)
+            if (!world.isRemote)
             {
-                par2World.spawnEntityInWorld(entityobsidianarrow);
+                world.spawnEntityInWorld(entityarrow);
+                entityarrow.setFire(60);
             }
+        }
+        
+        ItemStack itemStack = player.inventory.getCurrentItem();
+        
+        if(itemStack.itemID != ObsidianIngots.ObsidianBow.shiftedIndex)
+        {
+        	iconIndex = ObsidianIngots.BOW_TEXTURE_INDEX;
         }
     }
 
@@ -86,28 +119,19 @@ public class ItemObsidianBow extends ItemObsidian
         return par1ItemStack;
     }
 
-    /**
-     * How long it takes to use or consume an item
-     */
     public int getMaxItemUseDuration(ItemStack par1ItemStack)
     {
         return 0x11940;
     }
 
-    /**
-     * returns the action that specifies what animation to play when the items is being used
-     */
     public EnumAction getItemUseAction(ItemStack par1ItemStack)
     {
         return EnumAction.bow;
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     */
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
-        if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(ObsidianIngots.ObsidianArrow.shiftedIndex))
+        if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(Item.arrow.shiftedIndex))
         {
             par3EntityPlayer.setItemInUse(par1ItemStack, getMaxItemUseDuration(par1ItemStack));
         }
@@ -115,9 +139,6 @@ public class ItemObsidianBow extends ItemObsidian
         return par1ItemStack;
     }
 
-    /**
-     * Return the enchantability factor of the item, most of the time is based on material.
-     */
     public int getItemEnchantability()
     {
         return 1;
