@@ -11,6 +11,6 @@ public class ItemObsidianArmor extends ItemArmor
     }
     
 	public String getTextureFile() {
-		return "/obsidian/items.png";
+		return "/textures/items.png";
 	}
 }

@@ -177,7 +177,7 @@ public class ItemEnergized extends Item implements IEnergizedItem, IItemElectric
 	
 	public String getTextureFile()
 	{
-		return "/obsidian/items.png";
+		return "/textures/items.png";
 	}
 	
 	public boolean canCharge()

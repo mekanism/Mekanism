@@ -24,7 +24,6 @@ import net.minecraft.src.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.uberkat.obsidian.common.CommonProxy;
 import net.uberkat.obsidian.common.EntityKnife;
-import net.uberkat.obsidian.common.EntityObsidianArrow;
 import net.uberkat.obsidian.common.EntityObsidianTNT;
 import net.uberkat.obsidian.common.ObsidianIngots;
 import net.uberkat.obsidian.common.ObsidianUtils;
@@ -52,28 +51,27 @@ public class ClientProxy extends CommonProxy
 		System.out.println("[ObsidianIngots] Beginning render initiative...");
 		
 		//Preload block/item textures
-		MinecraftForgeClient.preloadTexture("/obsidian/items.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/terrain.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/CompressorFront.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/CombinerFront.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/ElementizerFront.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/ElementizerBack.png");
-		MinecraftForgeClient.preloadTexture("/obsidian/ElementizerSide.png");
+		MinecraftForgeClient.preloadTexture("/textures/items.png");
+		MinecraftForgeClient.preloadTexture("/textures/terrain.png");
+		MinecraftForgeClient.preloadTexture("/textures/CompressorFront.png");
+		MinecraftForgeClient.preloadTexture("/textures/CombinerFront.png");
+		MinecraftForgeClient.preloadTexture("/textures/ElementizerFront.png");
+		MinecraftForgeClient.preloadTexture("/textures/ElementizerBack.png");
+		MinecraftForgeClient.preloadTexture("/textures/ElementizerSide.png");
 		
 		//Register animated TextureFX for machines
 		try {
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/CompressorFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/CombinerFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+1));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/ElementizerFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+2));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/ElementizerBack.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+3));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/obsidian/ElementizerSide.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+4));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/CompressorFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/CombinerFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+1));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/ElementizerFront.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+2));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/ElementizerBack.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+3));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/ElementizerSide.png", ObsidianIngots.ANIMATED_TEXTURE_INDEX+4));
 		} catch (IOException e) {
 			System.err.println("[ObsidianIngots] Error registering animation with FML: " + e.getMessage());
 		}
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
-		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianArrow.class, new RenderObsidianArrow());
 		RenderingRegistry.registerEntityRenderingHandler(EntityKnife.class, new RenderKnife());
 		System.out.println("[ObsidianIngots] Render initiative complete.");
 	}

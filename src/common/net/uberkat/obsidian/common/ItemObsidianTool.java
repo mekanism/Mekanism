@@ -17,6 +17,6 @@ public class ItemObsidianTool extends ItemTool
     
     public String getTextureFile()
     {
-    	return "/obsidian/items.png";
+    	return "/textures/items.png";
     }
 }

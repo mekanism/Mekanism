@@ -331,7 +331,7 @@ public class BlockMachine extends BlockContainer
     
     public String getTextureFile()
     {
-    	return "/obsidian/terrain.png";
+    	return "/textures/terrain.png";
     }
     
     public TileEntity createNewTileEntity(World world, int metadata)

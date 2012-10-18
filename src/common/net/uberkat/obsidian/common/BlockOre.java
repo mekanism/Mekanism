@@ -46,6 +46,6 @@ public class BlockOre extends Block
 	
 	public String getTextureFile()
 	{
-		return "/obsidian/terrain.png";
+		return "/textures/terrain.png";
 	}
 }

@@ -42,7 +42,7 @@ public class RenderObsidianTNT extends Render
         }
 
         float f3 = (1.0F - (((float)entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
-        loadTexture("/obsidian/terrain.png");
+        loadTexture("/textures/terrain.png");
         blockRenderer.renderBlockAsItem(ObsidianIngots.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
 
         if ((entityobsidiantnt.fuse / 5) % 2 == 0)
