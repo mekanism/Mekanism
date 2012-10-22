@@ -4,6 +4,7 @@ import obsidian.api.IElectricMachine;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -12,9 +13,14 @@ import ic2.api.IWrenchable;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.uberkat.obsidian.client.Sound;
 
 public abstract class TileEntityBasicMachine extends TileEntity implements IElectricMachine
 {
+	public Sound audio;
+	
+	public String soundURL;
+	
 	/** The direction this block is facing. */
 	public int facing;
 	
@@ -37,12 +43,14 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	public String guiTexturePath;
 	
 	/**
-	 * The most basic of machines - a simple tile entity with a facing, active state, initialized state, and animated texture.
+	 * The most basic of machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
+	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
 	 * @param path - GUI texture path of this machine
 	 */
-	public TileEntityBasicMachine(String name, String path)
+	public TileEntityBasicMachine(String soundPath, String name, String path)
 	{
+		soundURL = soundPath;
 		fullName = name;
 		guiTexturePath = path;
 		isActive = false;
@@ -50,7 +58,7 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	
 	public void updateEntity()
 	{
-		if(!initialized)
+		if(!initialized && worldObj != null)
 		{
 			if(ObsidianIngots.hooks.IC2Loaded)
 			{
@@ -58,6 +66,11 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 			}
 			
 			initialized = true;
+		}
+		
+		if(audio == null && worldObj.isRemote)
+		{
+			audio = ObsidianIngots.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
 		}
 		
 		onUpdate();
@@ -74,6 +87,19 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 				sendPacketWithRange();
 			}
 			packetTick++;
+		}
+		
+		if(worldObj.isRemote)
+		{
+			audio.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+			if(!audio.isPlaying && isActive == true)
+			{
+				audio.play();
+			}
+			else if(audio.isPlaying && isActive == false)
+			{
+				audio.stop();
+			}
 		}
 	}
 	
@@ -98,7 +124,10 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	
 	public void invalidate()
 	{
-		//To be used
+		if(worldObj.isRemote)
+		{
+			audio.remove();
+		}
 	}
 
 	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)

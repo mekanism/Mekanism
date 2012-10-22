@@ -15,7 +15,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 	
 	public TileEntityEnrichmentChamber()
 	{
-		super("Enrichment Chamber", "/gui/GuiChamber.png", 5, 200, 1000);
+		super("Chamber.ogg", "Enrichment Chamber", "/gui/GuiChamber.png", 5, 200, 1000);
 	}
 	
 	public List getRecipes()

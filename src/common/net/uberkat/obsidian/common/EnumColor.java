@@ -5,7 +5,7 @@ package net.uberkat.obsidian.common;
  * @author AidanBrady
  *
  */
-public enum EnumColor 
+public enum EnumColor
 {
 	BLACK("\u00a70"),
 	DARK_BLUE("\u00a71"),
@@ -30,5 +30,10 @@ public enum EnumColor
 	private EnumColor(String s)
 	{
 		code = s;
+	}
+	
+	public String toString()
+	{
+		return code;
 	}
 }

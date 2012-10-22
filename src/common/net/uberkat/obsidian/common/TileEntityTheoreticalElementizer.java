@@ -17,7 +17,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 	
 	public TileEntityTheoreticalElementizer()
 	{
-		super("Theoretical Elementizer", "/gui/GuiElementizer.png", 50, 1, 1000, 10000, 1000);
+		super("Elementizer.ogg", "Theoretical Elementizer", "/gui/GuiElementizer.png", 50, 1, 1000, 10000, 1000);
 	}
 	
 	public List getRecipes()

@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import net.minecraftforge.common.*;
 import net.minecraft.src.*;
+import net.uberkat.obsidian.client.SoundHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.Init;
@@ -70,6 +71,9 @@ public class ObsidianIngots
 	
 	/** The main MachineryManager instance that is used by all machines */
 	public static MachineryManager manager;
+
+	/** The main SoundHandler instance that is used by all audio sources */
+	public static SoundHandler audioHandler;
 	
 	/** The IP used to connect to the Obsidian Ingots server */
 	public static String hostIP = "71.56.58.57";
@@ -197,6 +201,9 @@ public class ObsidianIngots
 	public static ItemEnergized EnergyTablet;
 	public static ItemEnergized EnergyOrb;
 	public static ItemEnergized EnergyCube;
+	public static Item SpeedUpgrade;
+	public static Item EnergyUpgrade;
+	public static Item UltimateUpgrade;
 	
 	//Extra Blocks
 	public static Block MultiBlock;
@@ -634,6 +641,9 @@ public class ObsidianIngots
 		LanguageRegistry.addName(EnergyTablet, "Energy Tablet");
 		LanguageRegistry.addName(EnergyOrb, "Energy Orb");
 		LanguageRegistry.addName(EnergyCube, "Energy Cube");
+		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
+		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
+		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.PlatinumBlock.name", "Platinum Block");
@@ -763,6 +773,9 @@ public class ObsidianIngots
 		EnergyTablet.setIconIndex(228);
 		EnergyOrb.setIconIndex(229);
 		EnergyCube.setIconIndex(230);
+		SpeedUpgrade.setIconIndex(232);
+		EnergyUpgrade.setIconIndex(231);
+		UltimateUpgrade.setIconIndex(233);	
 	}
 	
 	/**
@@ -851,6 +864,9 @@ public class ObsidianIngots
 		EnergyTablet = (ItemEnergized) new ItemEnergized(11314, 50000, 100).setItemName("EnergyTablet");
 		EnergyOrb = (ItemEnergized) new ItemEnergized(11315, 15000000, 1000).setItemName("EnergyOrb");
 		EnergyCube = (ItemEnergized) new ItemEnergized(11316, 12000, 100).setItemName("EnergyCube");
+		SpeedUpgrade = new ItemMachineUpgrade(11317).setItemName("SpeedUpgrade");
+		EnergyUpgrade = new ItemMachineUpgrade(11318).setItemName("EnergyUpgrade");
+		UltimateUpgrade = new ItemMachineUpgrade(11319).setItemName("UltimateUpgrade");
 	}
 	
 	/**
@@ -970,6 +986,8 @@ public class ObsidianIngots
 		hooks = new ObsidianHooks();
 		hooks.hook();
 		addIntegratedItems();
+		
+		audioHandler = new SoundHandler();
 		System.out.println("[ObsidianIngots] Hooking complete.");
 	}
 	

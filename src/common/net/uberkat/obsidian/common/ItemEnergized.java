@@ -10,7 +10,7 @@ import universalelectricity.implement.IItemElectric;
 import ic2.api.IElectricItem;
 import net.minecraft.src.*;
 
-public class ItemEnergized extends Item implements IEnergizedItem, IItemElectric
+public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItemElectric
 {
 	public int maxEnergy;
 	
@@ -39,10 +39,10 @@ public class ItemEnergized extends Item implements IEnergizedItem, IItemElectric
 		itemstack = getUnchargedItem();
 	}
 	
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)
+    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
-    	ItemEnergized item = ((ItemEnergized)par1ItemStack.getItem());
-    	item.setEnergy(par1ItemStack, item.getEnergy(par1ItemStack));
+    	ItemEnergized item = ((ItemEnergized)itemstack.getItem());
+    	item.setEnergy(itemstack, item.getEnergy(itemstack));
     }
 	
 	public int getEnergy(ItemStack itemstack)
@@ -173,11 +173,6 @@ public class ItemEnergized extends Item implements IEnergizedItem, IItemElectric
 	public double getTransferRate() 
 	{
 		return transferRate*UniversalElectricity.IC2_RATIO;
-	}
-	
-	public String getTextureFile()
-	{
-		return "/textures/items.png";
 	}
 	
 	public boolean canCharge()

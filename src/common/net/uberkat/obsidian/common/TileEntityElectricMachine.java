@@ -22,7 +22,7 @@ import net.minecraftforge.common.ISidedInventory;
 public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 {
 	/** The inventory slot itemstacks used by this machine. */
-	public ItemStack[] inventory = new ItemStack[3];
+	public ItemStack[] inventory = new ItemStack[4];
 	
 	/** How much energy this machine uses per tick. */
 	public int ENERGY_PER_TICK;
@@ -30,8 +30,14 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
 	
+	/** The current tick requirement for this machine. */
+	public int currentTicksRequired;
+	
 	/** Maximum amount of energy this machine can hold. */
 	public int MAX_ENERGY;
+	
+	/** The current energy capacity for this machine. */
+	public int currentMaxEnergy;
 	
 	/** How many ticks this machine has operated for. */
 	public int operatingTicks = 0;
@@ -41,20 +47,21 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	
 	/**
 	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), 
-	 * and the output slot (2). It will not run if it does not have enough energy.
+	 * output slot (2), and the upgrade slot (3). It will not run if it does not have enough energy.
 	 * 
+	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
 	 * @param path - GUI texture path of this machine
 	 * @param perTick - energy used per tick.
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String name, String path, int perTick, int ticksRequired, int maxEnergy)
+	public TileEntityElectricMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
-		super(name, path);
+		super(soundPath, name, path);
 		ENERGY_PER_TICK = perTick;
-		TICKS_REQUIRED = ticksRequired;
-		MAX_ENERGY = maxEnergy;
+		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
+		MAX_ENERGY = currentMaxEnergy = maxEnergy;
 	}
 	
 	public void onUpdate()
@@ -63,12 +70,12 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		
 		if(inventory[1] != null)
 		{
-			if(energyStored < MAX_ENERGY)
+			if(energyStored < currentMaxEnergy)
 			{
 				if(inventory[1].getItem() instanceof IEnergizedItem)
 				{
 					int received = 0;
-					int energyNeeded = MAX_ENERGY - energyStored;
+					int energyNeeded = currentMaxEnergy - energyStored;
 					IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
 					if(item.getRate() <= energyNeeded)
 					{
@@ -85,7 +92,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				else if(inventory[1].getItem() instanceof IItemElectric)
 				{
 					int received = 0;
-					int energyNeeded = MAX_ENERGY - energyStored;
+					int energyNeeded = currentMaxEnergy - energyStored;
 					IItemElectric item = (IItemElectric)inventory[1].getItem();
 					if((item.getTransferRate()*UniversalElectricity.Wh_IC2_RATIO) <= energyNeeded)
 					{
@@ -106,7 +113,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 					}
 				}
 			}
-			if(inventory[1].itemID == Item.redstone.shiftedIndex && energyStored <= (MAX_ENERGY-1000))
+			if(inventory[1].itemID == Item.redstone.shiftedIndex && energyStored <= (currentMaxEnergy-1000))
 			{
 				setEnergy(energyStored + 1000);
 				--inventory[1].stackSize;
@@ -118,12 +125,52 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			}
 		}
 		
-		if(canOperate() && (operatingTicks+1) < TICKS_REQUIRED)
+		if(inventory[3] != null)
+		{
+			int energyToAdd = 0;
+			int ticksToRemove = 0;
+			
+			if(inventory[3].isItemEqual(new ItemStack(ObsidianIngots.SpeedUpgrade)))
+			{
+				if(currentTicksRequired == TICKS_REQUIRED)
+				{
+					ticksToRemove = 150;
+				}
+			}
+			else if(inventory[3].isItemEqual(new ItemStack(ObsidianIngots.EnergyUpgrade)))
+			{
+				if(currentMaxEnergy == MAX_ENERGY)
+				{
+					energyToAdd = 600;
+				}
+			}
+			else if(inventory[3].isItemEqual(new ItemStack(ObsidianIngots.UltimateUpgrade)))
+			{
+				if(currentTicksRequired == TICKS_REQUIRED)
+				{
+					ticksToRemove = 150;
+				}
+				if(currentMaxEnergy == MAX_ENERGY)
+				{
+					energyToAdd = 600;
+				}
+			}
+			
+			currentMaxEnergy += energyToAdd;
+			currentTicksRequired -= ticksToRemove;
+		}
+		else if(inventory[3] == null)
+		{
+			currentTicksRequired = TICKS_REQUIRED;
+			currentMaxEnergy = MAX_ENERGY;
+		}
+		
+		if(canOperate() && (operatingTicks+1) < currentTicksRequired)
 		{
 			++operatingTicks;
 			energyStored -= ENERGY_PER_TICK;
 		}
-		else if(canOperate() && (operatingTicks+1) == TICKS_REQUIRED)
+		else if(canOperate() && (operatingTicks+1) >= currentTicksRequired)
 		{
 			if(!worldObj.isRemote)
 			{
@@ -138,9 +185,9 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			energyStored = 0;
 		}
 		
-		if(energyStored > MAX_ENERGY)
+		if(energyStored > currentMaxEnergy)
 		{
-			energyStored = MAX_ENERGY;
+			energyStored = currentMaxEnergy;
 		}
 		
 		if(!canOperate())
@@ -249,6 +296,8 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			isActive = dataStream.readByte() != 0;
 			operatingTicks = dataStream.readInt();
 			energyStored = dataStream.readInt();
+			currentMaxEnergy = dataStream.readInt();
+			currentTicksRequired = dataStream.readInt();
 			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
@@ -385,17 +434,17 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	 */
 	public void setEnergy(int energy)
 	{
-		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
+		energyStored = Math.max(Math.min(energy, currentMaxEnergy), 0);
 	}
 
 	public int getScaledChargeLevel(int i)
 	{
-		return energyStored*i / MAX_ENERGY;
+		return energyStored*i / currentMaxEnergy;
 	}
 
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / TICKS_REQUIRED;
+		return operatingTicks*i / currentTicksRequired;
 	}
 	
 	public String getType() 

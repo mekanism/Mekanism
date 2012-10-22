@@ -79,6 +79,11 @@ public class CommandOI extends CommandBase
 	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " Most recent news: " + EnumColor.INDIGO.code + ObsidianIngots.recentNews);
 	        }
 	        
+	        else if(params[0].equalsIgnoreCase("latest"))
+	        {
+	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " The latest version for this mod is " + EnumColor.DARK_GREY.code + ObsidianIngots.latestVersionNumber + EnumColor.GREY.code + ".");
+	        }
+	        
 	        else {
 	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " Unknown command. Type '" + EnumColor.INDIGO.code + "/oi help" + EnumColor.GREY.code + "' for help.");
 	        }

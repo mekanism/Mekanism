@@ -1,6 +1,7 @@
 package net.uberkat.obsidian.common;
 
 import obsidian.api.IEnergizedItem;
+import obsidian.api.IMachineUpgrade;
 import ic2.api.IElectricItem;
 import universalelectricity.implement.IItemElectric;
 import net.minecraft.src.*;
@@ -15,6 +16,7 @@ public class ContainerElectricMachine extends Container
         addSlotToContainer(new Slot(tentity, 0, 56, 17));
         addSlotToContainer(new SlotEnergy(tentity, 1, 56, 53));
         addSlotToContainer(new SlotFurnace(inventory.player, tentity, 2, 116, 35));
+        addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 7, 7));
         int slotX;
 
         for (slotX = 0; slotX < 3; ++slotX)
@@ -51,12 +53,11 @@ public class ContainerElectricMachine extends Container
 
             if(slotID == 2)
             {
-            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
             	{
             		return null;
             	}
             }
-        
         	else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
             {
 	            if(slotID != 1)
@@ -68,16 +69,15 @@ public class ContainerElectricMachine extends Container
 	            }
 	            else if(slotID == 1)
 	            {
-	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), false))
+	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), false))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
-            
             else if(RecipeHandler.getOutput(slotStack, false, tileEntity.getRecipes()) != null)
     		{
-            	if(slotID != 0 && slotID != 1 && slotID != 2)
+            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             	{
                     if (!mergeItemStack(slotStack, 0, 1, false))
 	                {
@@ -85,12 +85,28 @@ public class ContainerElectricMachine extends Container
 	                }
             	}
             	else {
-	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
             	}
     		}
+            else if(slotStack.getItem() instanceof IMachineUpgrade)
+            {
+            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+            	{
+            		if(!mergeItemStack(slotStack, 3, 4, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else {
+            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
+            }
             
             if (slotStack.stackSize == 0)
             {

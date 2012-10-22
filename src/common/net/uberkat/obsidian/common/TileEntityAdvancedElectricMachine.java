@@ -22,7 +22,7 @@ import net.minecraftforge.common.ISidedInventory;
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine
 {
 	/** The inventory slot itemstacks used by this machine. */
-	public ItemStack[] inventory = new ItemStack[4];
+	public ItemStack[] inventory = new ItemStack[5];
 	
 	/** How much energy this machine uses per tick. */
 	public int ENERGY_PER_TICK;
@@ -33,8 +33,14 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
 	
+	/** The current tick requirement for this machine. */
+	public int currentTicksRequired;
+	
 	/** Maximum amount of energy this machine can hold. */
 	public int MAX_ENERGY;
+	
+	/** The current energy capacity for this machine. */
+	public int currentMaxEnergy;
 	
 	/** Maximum amount of secondary energy (fuel) this machine can hold. */
 	public int MAX_SECONDARY_ENERGY;
@@ -50,9 +56,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	
 	/**
 	 * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), 
-	 * and the energy slot (3). The machine will not run if it does not have enough electricity, or if it doesn't have enough
+	 * energy slot (3), and the upgrade slot (4). The machine will not run if it does not have enough electricity, or if it doesn't have enough
 	 * fuel ticks.
 	 * 
+	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
 	 * @param path - GUI texture path of this machine
 	 * @param perTick - how much energy this machine uses per tick.
@@ -61,13 +68,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 * @param maxEnergy - maximum amount of energy this machine can hold.
 	 * @param maxSecondaryEnergy - maximum amount of secondary energy (fuel) this machine can hold.
 	 */
-	public TileEntityAdvancedElectricMachine(String name, String path, int perTick, int secondaryPerTick, int ticksRequired, int maxEnergy, int maxSecondaryEnergy)
+	public TileEntityAdvancedElectricMachine(String soundPath, String name, String path, int perTick, int secondaryPerTick, int ticksRequired, int maxEnergy, int maxSecondaryEnergy)
 	{
-		super(name, path);
+		super(soundPath, name, path);
 		ENERGY_PER_TICK = perTick;
 		SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
-		TICKS_REQUIRED = ticksRequired;
-		MAX_ENERGY = maxEnergy;
+		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
+		MAX_ENERGY = currentMaxEnergy = maxEnergy;
 		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
 	}
     
@@ -162,13 +169,53 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
 		
-		if(canOperate() && (operatingTicks+1) < TICKS_REQUIRED && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+		if(inventory[4] != null)
+		{
+			int energyToAdd = 0;
+			int ticksToRemove = 0;
+			
+			if(inventory[4].isItemEqual(new ItemStack(ObsidianIngots.SpeedUpgrade)))
+			{
+				if(currentTicksRequired == TICKS_REQUIRED)
+				{
+					ticksToRemove = 150;
+				}
+			}
+			else if(inventory[4].isItemEqual(new ItemStack(ObsidianIngots.EnergyUpgrade)))
+			{
+				if(currentMaxEnergy == MAX_ENERGY)
+				{
+					energyToAdd = 600;
+				}
+			}
+			else if(inventory[4].isItemEqual(new ItemStack(ObsidianIngots.UltimateUpgrade)))
+			{
+				if(currentTicksRequired == TICKS_REQUIRED)
+				{
+					ticksToRemove = 150;
+				}
+				if(currentMaxEnergy == MAX_ENERGY)
+				{
+					energyToAdd = 600;
+				}
+			}
+			
+			currentMaxEnergy += energyToAdd;
+			currentTicksRequired -= ticksToRemove;
+		}
+		else if(inventory[4] == null)
+		{
+			currentTicksRequired = TICKS_REQUIRED;
+			currentMaxEnergy = MAX_ENERGY;
+		}
+		
+		if(canOperate() && (operatingTicks+1) < currentTicksRequired && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 		{
 			++operatingTicks;
 			secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
 			energyStored -= ENERGY_PER_TICK;
 		}
-		else if((operatingTicks+1) == TICKS_REQUIRED)
+		else if((operatingTicks+1) >= currentTicksRequired)
 		{
 			if(!worldObj.isRemote)
 			{
@@ -189,9 +236,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			secondaryEnergyStored = 0;
 		}
 		
-		if(energyStored > MAX_ENERGY)
+		if(energyStored > currentMaxEnergy)
 		{
-			energyStored = MAX_ENERGY;
+			energyStored = currentMaxEnergy;
 		}
 		
 		if(secondaryEnergyStored > MAX_SECONDARY_ENERGY)
@@ -311,6 +358,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			operatingTicks = dataStream.readInt();
 			energyStored = dataStream.readInt();
 			secondaryEnergyStored = dataStream.readInt();
+			currentMaxEnergy = dataStream.readInt();
+			currentTicksRequired = dataStream.readInt();
 			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
@@ -449,7 +498,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 */
 	public void setEnergy(int energy)
 	{
-		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
+		energyStored = Math.max(Math.min(energy, currentMaxEnergy), 0);
 	}
 	
 	/**
@@ -468,7 +517,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / TICKS_REQUIRED;
+		return operatingTicks*i / currentTicksRequired;
 	}
 	
 	public String getType() 

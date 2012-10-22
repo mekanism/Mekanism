@@ -99,8 +99,8 @@ public class PacketHandler implements IPacketHandler
 	}
 	
 	/**
-	 * Send a machine update packet from server to client. This will send the data int '4,' as well as the machine's
-	 * x, y, and z coordinates, along with it's active state, burn time, cook time, and item burn time.
+	 * Send an electric machine update packet from server to client. This will send the data int '4,' as well as the machine's
+	 * x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, max energy and ticks required.
 	 * @param sender - tile entity who is sending the packet
 	 */
 	public static void sendElectricMachinePacket(TileEntityElectricMachine sender)
@@ -117,6 +117,8 @@ public class PacketHandler implements IPacketHandler
         	output.writeByte(sender.isActive ? 1 : 0);
         	output.writeInt(sender.operatingTicks);
         	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.currentMaxEnergy);
+        	output.writeInt(sender.currentTicksRequired);
         } catch (IOException e)
         {
         	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
@@ -134,6 +136,12 @@ public class PacketHandler implements IPacketHandler
         }
 	}
 	
+	/**
+	 * Send an electric machine update packet from server to client with a defined range. This will send the data int '4,' as well as the machine's
+	 * x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, max energy and ticks required.
+	 * @param sender - tile entity who is sending the packet
+	 * @param distance - radius to send packet in
+	 */
 	public static void sendElectricMachinePacketWithRange(TileEntityElectricMachine sender, double distance)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -148,6 +156,8 @@ public class PacketHandler implements IPacketHandler
         	output.writeByte(sender.isActive ? 1 : 0);
         	output.writeInt(sender.operatingTicks);
         	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.currentMaxEnergy);
+        	output.writeInt(sender.currentTicksRequired);
         } catch (IOException e)
         {
         	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
@@ -162,6 +172,12 @@ public class PacketHandler implements IPacketHandler
 		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
 	}
 	
+	/**
+	 * Send an advanced electric machine update packet from server to client. This will send the data int '4,' as well as the machine's
+	 * x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, secondary energy stored, max energy 
+	 * and ticks required.
+	 * @param sender - tile entity who is sending the packet
+	 */
 	public static void sendAdvancedElectricMachinePacket(TileEntityAdvancedElectricMachine sender)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -177,6 +193,8 @@ public class PacketHandler implements IPacketHandler
         	output.writeInt(sender.operatingTicks);
         	output.writeInt(sender.energyStored);
         	output.writeInt(sender.secondaryEnergyStored);
+        	output.writeInt(sender.currentMaxEnergy);
+        	output.writeInt(sender.currentTicksRequired);
         } catch (IOException e)
         {
         	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
@@ -194,6 +212,13 @@ public class PacketHandler implements IPacketHandler
         }
 	}
 	
+	/**
+	 * Send an advanced electric machine update packet from server to client with a defined distance. This will send the data int '4,' as 
+	 * well as the machine's x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, secondary energy 
+	 * stored, max energy and ticks required.
+	 * @param sender - tile entity who is sending the packet
+	 * @param distance - radius to send packet in
+	 */
 	public static void sendAdvancedElectricMachinePacketWithRange(TileEntityAdvancedElectricMachine sender, double distance)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -209,6 +234,8 @@ public class PacketHandler implements IPacketHandler
         	output.writeInt(sender.operatingTicks);
         	output.writeInt(sender.energyStored);
         	output.writeInt(sender.secondaryEnergyStored);
+        	output.writeInt(sender.currentMaxEnergy);
+        	output.writeInt(sender.currentTicksRequired);
         } catch (IOException e)
         {
         	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
@@ -223,6 +250,11 @@ public class PacketHandler implements IPacketHandler
 		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
 	}
 	
+	/**
+	 * Send a power unit packet from server to client. This will send the data int '4,' as well as the machine's x, y, and z
+	 * coordinates, along with it's facing and energy stored.
+	 * @param sender - tile entity who is sending the packet
+	 */
 	public static void sendPowerUnitPacket(TileEntityPowerUnit sender)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -252,6 +284,12 @@ public class PacketHandler implements IPacketHandler
         }
 	}
 	
+	/**
+	 * Send a power unit packet from server to client with a defined range. This will send the data int '4,' as well as 
+	 * the machine's x, y, and z coordinates, along with it's facing and energy stored.
+	 * @param sender - tile entity who is sending the packet
+	 * @param distance - radius to send packet in
+	 */
 	public static void sendPowerUnitPacketWithRange(TileEntityPowerUnit sender, double distance)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
