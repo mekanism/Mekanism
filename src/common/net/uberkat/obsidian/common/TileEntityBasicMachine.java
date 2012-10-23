@@ -124,6 +124,7 @@ public abstract class TileEntityBasicMachine extends TileEntity implements IElec
 	
 	public void invalidate()
 	{
+		super.invalidate();
 		if(worldObj.isRemote)
 		{
 			audio.remove();

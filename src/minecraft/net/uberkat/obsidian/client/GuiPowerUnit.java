@@ -32,9 +32,9 @@ public class GuiPowerUnit extends GuiContainer
 	
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int var4 = mc.renderEngine.getTexture("/gui/GuiPowerUnit.png");
+        int texture = mc.renderEngine.getTexture("/gui/GuiPowerUnit.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(var4);
+        mc.renderEngine.bindTexture(texture);
         
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;

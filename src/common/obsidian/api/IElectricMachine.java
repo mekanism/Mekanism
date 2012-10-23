@@ -48,20 +48,6 @@ public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchab
 	public List getRecipes();
 	
 	/**
-	 * Gets the scaled charge level for the GUI.
-	 * @param i - control
-	 * @return scaled charge level
-	 */
-	public int getScaledChargeLevel(int i);
-	
-	/**
-	 * Gets the scaled progress for the GUI.
-	 * @param i - control
-	 * @return scaled progress
-	 */
-	public int getScaledProgress(int i);
-	
-	/**
 	 * Sets this machine's active state, sending a packet to the server if it differs from the previous update.
 	 * @param active
 	 */

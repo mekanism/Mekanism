@@ -437,7 +437,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		energyStored = Math.max(Math.min(energy, currentMaxEnergy), 0);
 	}
 
-	public int getScaledChargeLevel(int i)
+	public int getScaledEnergyLevel(int i)
 	{
 		return energyStored*i / currentMaxEnergy;
 	}

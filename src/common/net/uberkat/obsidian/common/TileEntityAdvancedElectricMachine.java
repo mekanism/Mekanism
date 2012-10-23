@@ -91,12 +91,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		if(inventory[3] != null)
 		{
-			if(energyStored < MAX_ENERGY)
+			if(energyStored < currentMaxEnergy)
 			{
 				if(inventory[3].getItem() instanceof IEnergizedItem)
 				{
 					int received = 0;
-					int energyNeeded = MAX_ENERGY - energyStored;
+					int energyNeeded = currentMaxEnergy - energyStored;
 					IEnergizedItem item = (IEnergizedItem)inventory[3].getItem();
 					if(item.getRate() <= energyNeeded)
 					{
@@ -113,7 +113,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				else if(inventory[3].getItem() instanceof IItemElectric)
 				{
 					int received = 0;
-					int energyNeeded = MAX_ENERGY - energyStored;
+					int energyNeeded = currentMaxEnergy - energyStored;
 					IItemElectric item = (IItemElectric)inventory[3].getItem();
 					if((item.getTransferRate()*UniversalElectricity.Wh_IC2_RATIO) <= energyNeeded)
 					{
@@ -510,7 +510,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		secondaryEnergyStored = Math.max(Math.min(energy, getFuelTicks(inventory[1])), 0);
 	}
 
-	public int getScaledChargeLevel(int i)
+	public int getScaledEnergyLevel(int i)
+	{
+		return energyStored*i / currentMaxEnergy;
+	}
+	
+	public int getScaledSecondaryEnergyLevel(int i)
 	{
 		return secondaryEnergyStored*i / MAX_SECONDARY_ENERGY;
 	}

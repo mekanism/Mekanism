@@ -37,10 +37,13 @@ public class GuiAdvancedElectricMachine extends GuiContainer
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt;
         
-        displayInt = tileEntity.getScaledChargeLevel(12);
-        drawTexturedModalRect(guiWidth + 56, guiHeight + 36 + 12 - displayInt, 176, 12 - displayInt, 14, displayInt + 2);
+        displayInt = tileEntity.getScaledEnergyLevel(52);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 19 + 52 - displayInt, 4, displayInt);
+
+        displayInt = tileEntity.getScaledSecondaryEnergyLevel(12);
+        drawTexturedModalRect(guiWidth + 61, guiHeight + 37 + 12 - displayInt, 176, 7 + 12 - displayInt, 5, displayInt);
 
         displayInt = tileEntity.getScaledProgress(24);
-        drawTexturedModalRect(guiWidth + 79, guiHeight + 34, 176, 14, displayInt + 1, 16);
+        drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
     }
 }

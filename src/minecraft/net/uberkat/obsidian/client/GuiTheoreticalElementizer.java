@@ -20,7 +20,13 @@ public class GuiTheoreticalElementizer extends GuiAdvancedElectricMachine
     	String displayText = "";
         if(tileEntity.isActive)
         {
-        	displayText = "Status: " + Integer.toString(tileEntity.operatingTicks/10) + "%";
+        	if(tileEntity.currentTicksRequired == 1000)
+        	{
+        		displayText = "Status: " + Double.toString(Math.round(tileEntity.operatingTicks/10)).replace(".0", "") + "%";
+        	}
+        	else {
+        		displayText = "Status: " + Integer.toString((int)(tileEntity.operatingTicks/8.5)).replace(".0", "") + "%";
+        	}
         }
         else {
         	displayText = "Status: " + EnumColor.DARK_RED.code + "Off";
