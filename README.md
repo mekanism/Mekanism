@@ -6,7 +6,7 @@ Source code.  More information can be found on the mod's forum post.
 
 Obsidian Ingots is a Minecraft add-on featuring special machinery that can be used to create powerful tools, armor and weapons.  It also includes an energy system that can be implemented by different mods.
 
-Mod Terms and Conditions:
+**Mod Terms and Conditions:**
 
 This is my mod.  All code, textures and ideas are due to my hard work.  You may modify the source code for your own personal use, but you may not release it unless your purpose meets one of the following conditions:
 
@@ -18,7 +18,7 @@ This is my mod.  All code, textures and ideas are due to my hard work.  You may 
 
 Using my source code in your own mod is also strictly prohibited unless I have said otherwise.
 
-API Terms and Conditions:
+**API Terms and Conditions:**
 
 If you end up using my API and bundle it in your own mod, you will have to follow a few guidelines.
 
@@ -30,11 +30,11 @@ If you end up using my API and bundle it in your own mod, you will have to follo
 
 # Developers & Credits #
 
-Head Developer: aidancbrady
+**Head Developer:** aidancbrady
 
-Contributors: viper283, Condo97
+**Contributors:** viper283, Condo97
 
-Credits:
+**Credits:**
 
 Thanks to AbrarSyed, Lunatrius, and AtomicStryker for helping me with the port to 1.3.2.
 
