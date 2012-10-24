@@ -29,8 +29,6 @@ import buildcraft.api.core.Orientations;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import cpw.mods.fml.common.Loader;
-
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 

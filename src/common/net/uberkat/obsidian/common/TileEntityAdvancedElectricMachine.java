@@ -423,37 +423,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	{
 		return new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate"};
 	}
-	
-	public Packet getDescriptionPacket()
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(xCoord);
-        	output.writeInt(yCoord);
-        	output.writeInt(zCoord);
-        	output.writeInt(facing);
-        	output.writeByte(isActive ? 1 : 0);
-        	output.writeInt(operatingTicks);
-        	output.writeInt(energyStored);
-        	output.writeInt(secondaryEnergyStored);
-        	output.writeInt(currentMaxEnergy);
-        	output.writeInt(currentTicksRequired);
-        } catch (IOException e)
-        {
-        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "ObsidianIngots";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        return packet;
-	}
 
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
 	{
