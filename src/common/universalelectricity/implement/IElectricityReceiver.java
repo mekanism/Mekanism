@@ -5,7 +5,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 
 /**
- * The IMachine interface is an interface that must be applied to all tile entities that can input or output electricity.
+ * The IElectricityReceiver interface is an interface that must be applied to all tile entities that can input or output electricity.
  * @author Calclavia
  *
  */
@@ -23,17 +23,13 @@ public interface IElectricityReceiver extends IDisableable, IConnector, IVoltage
     public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side);
 
     /**
-     * How many watts does this electrical unit need per tick?
-     * Recommend for you to return the max electricity storage of this machine (if there is one).
-     *
-     * Set this to 0 if your electric unit can not receive electricity.
+     * How many watts does this electrical unit need this tick?
+     * Recommended for you to return the max electricity storage of this machine (if there is one).
      */
     public double wattRequest();
 
     /**
-     * Can this unit receive electricity from this specific side
-     * @param side. 0-5 byte
-     * @return - True if so.
+     * Can this unit receive electricity from this specific side?
      */
     public boolean canReceiveFromSide(ForgeDirection side);
 }

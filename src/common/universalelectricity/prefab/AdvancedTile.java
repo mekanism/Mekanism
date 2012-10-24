@@ -22,7 +22,7 @@ public abstract class AdvancedTile extends TileEntity
     	
     	if(this.ticks >= Long.MAX_VALUE)
     	{
-    		this.ticks = 0;
+    		this.ticks = 1;
     	}
     	
     	this.ticks ++;

@@ -49,6 +49,8 @@ public interface IConductor extends IConnector
     public void reset();
     
     public World getWorld();
+    
+    public void updateConnection(TileEntity tileEntity, ForgeDirection side);
 
 	public void updateConnectionWithoutSplit(TileEntity connectorFromSide, ForgeDirection orientation);
 

@@ -77,15 +77,16 @@ public abstract class BlockMachine extends BlockContainer
         {
             if (par5EntityPlayer.inventory.getCurrentItem().getItem() instanceof IToolWrench)
             {
+            	par1World.notifyBlocksOfNeighborChange(x, y, z, this.blockID);
+                ((IToolWrench)par5EntityPlayer.inventory.getCurrentItem().getItem()).wrenchUsed(par5EntityPlayer, x, y, z);
+                
             	if(par5EntityPlayer.isSneaking())
                 {
-                    par1World.notifyBlocksOfNeighborChange(x, y, z, this.blockID);
             		return this.onSneakUseWrench(par1World, x, y, z, par5EntityPlayer);
                 }
             	else
             	{
-                    par1World.notifyBlocksOfNeighborChange(x, y, z, this.blockID);
-            		return this.onUseWrench(par1World, x, y, z, par5EntityPlayer);
+                    return this.onUseWrench(par1World, x, y, z, par5EntityPlayer);
             	}	
             }
             else if (par5EntityPlayer.inventory.getCurrentItem().getItem() instanceof IItemElectric)

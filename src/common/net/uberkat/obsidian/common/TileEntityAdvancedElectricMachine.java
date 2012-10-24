@@ -5,6 +5,7 @@ import java.util.List;
 import obsidian.api.IEnergizedItem;
 
 import universalelectricity.UniversalElectricity;
+import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -112,24 +113,20 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				}
 				else if(inventory[3].getItem() instanceof IItemElectric)
 				{
-					int received = 0;
-					int energyNeeded = currentMaxEnergy - energyStored;
-					IItemElectric item = (IItemElectric)inventory[3].getItem();
-					if((item.getTransferRate()*UniversalElectricity.Wh_IC2_RATIO) <= energyNeeded)
-					{
-						received = (int)(item.onUseElectricity(item.getTransferRate(), inventory[3])*UniversalElectricity.Wh_IC2_RATIO);
-					}
-					else if(item.getTransferRate() > energyNeeded)
-					{
-						item.setWattHours((item.getWattHours(inventory[3]) - (energyNeeded*UniversalElectricity.IC2_RATIO)), inventory[3]);
-					}
+					IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
+
+	                if (electricItem.canProduceElectricity())
+	                {
+	                	double receivedElectricity = electricItem.onUse(Math.min(electricItem.getMaxJoules()*0.01, ElectricInfo.getWattHours(200)), inventory[3]);
+						energyStored += ElectricInfo.getWatts(receivedElectricity)*UniversalElectricity.TO_IC2_RATIO;
+	                }
 				}
 				else if(inventory[3].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[3].getItem();
 					if(item.canProvideEnergy())
 					{
-						int gain = ElectricItem.discharge(inventory[3], energyStored, 3, false, false);
+						int gain = ElectricItem.discharge(inventory[3], currentMaxEnergy - energyStored, 3, false, false);
 						setEnergy(energyStored + gain);
 					}
 				}

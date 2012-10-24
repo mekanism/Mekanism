@@ -29,6 +29,7 @@ public class BasicComponents
     public static Block oilMoving;
     public static Block oilStill;
     public static Block blockMachine;
+    public static Block blockMulti;
     
     public static final int ITEM_ID_PREFIX = 13970;
     public static ItemElectric itemBattery;

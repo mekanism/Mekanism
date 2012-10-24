@@ -5,6 +5,7 @@ import net.minecraft.src.Material;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.implement.IConductor;
 
 public abstract class BlockConductor extends BlockContainer
 {
@@ -40,11 +41,15 @@ public abstract class BlockConductor extends BlockContainer
 
         if (tileEntity != null)
         {
-	        for (byte i = 0; i < 6; i++)
-	        {
-	            TileEntityConductor conductorTileEntity = (TileEntityConductor)tileEntity;
-	            conductorTileEntity.updateConnection(Vector3.getConnectorFromSide(world, new Vector3(x, y, z), ForgeDirection.getOrientation(i)), ForgeDirection.getOrientation(i));
-	        }
+        	if(tileEntity instanceof IConductor)
+        	{
+        		IConductor conductorTileEntity = (IConductor)tileEntity;
+        		
+		        for (byte i = 0; i < 6; i++)
+		        {
+		            conductorTileEntity.updateConnection(Vector3.getConnectorFromSide(world, new Vector3(x, y, z), ForgeDirection.getOrientation(i)), ForgeDirection.getOrientation(i));
+		        }
+        	}
         }
     }
 }

@@ -11,9 +11,11 @@ import net.minecraft.src.World;
 
 public abstract class PipeManager {
 
+    @Deprecated
 	private static TreeMap<Integer, IPipedItem> allServerEntities = new TreeMap<Integer, IPipedItem>();
+    @Deprecated
 	private static TreeMap<Integer, IPipedItem> allClientEntities = new TreeMap<Integer, IPipedItem>();
-	
+
 	public static List<IExtractionHandler> extractionHandlers = new ArrayList<IExtractionHandler>();
 
 	public static void registerExtractionHandler(IExtractionHandler handler) {
@@ -35,7 +37,8 @@ public abstract class PipeManager {
 
 		return true;
 	}
-	
+    
+	@Deprecated
 	public static TreeMap<Integer, IPipedItem> getAllEntities(){
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
 			return allClientEntities;

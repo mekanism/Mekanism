@@ -6,9 +6,9 @@ import net.minecraft.src.Block;
 import net.minecraft.src.IChunkProvider;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
+import universalelectricity.UEConfig;
 import universalelectricity.UniversalElectricity;
 
 /**
@@ -82,10 +82,7 @@ public abstract class OreGenBase
     //Checks the config file and see if Universal Electricity should generate this ore
     private static boolean shouldGenerateOre(String oreName)
     {
-        UniversalElectricity.CONFIGURATION.load();
-        boolean shouldGenerate = Boolean.parseBoolean(UniversalElectricity.CONFIGURATION.getOrCreateBooleanProperty("Generate_" + oreName.replace(" ", "_"), Configuration.CATEGORY_GENERAL, true).value);
-        UniversalElectricity.CONFIGURATION.save();
-        return shouldGenerate;
+        return UEConfig.getConfigData(UniversalElectricity.CONFIGURATION, "Generate " + oreName, true);
     }
 	
     public abstract void generate(World world, Random random, int varX, int varZ);

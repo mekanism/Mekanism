@@ -5,6 +5,7 @@ import java.util.List;
 import obsidian.api.IEnergizedItem;
 
 import universalelectricity.UniversalElectricity;
+import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.implement.IItemElectric;
 
 import ic2.api.IElectricItem;
@@ -116,7 +117,7 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 		return energyToUse;
 	}
 
-	public double getWattHours(Object... data)
+	public double getJoules(Object... data)
 	{
 		if(data[0] instanceof ItemStack)
 		{
@@ -126,17 +127,17 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 		return 0;
 	}
 
-	public void setWattHours(double wattHours, Object... data) 
+	public void setJoules(double joules, Object... data) 
 	{
 		if(data[0] instanceof ItemStack)
 		{
 			ItemStack itemstack = (ItemStack)data[0];
 			
-			setEnergy(itemstack, (int)(wattHours*UniversalElectricity.Wh_IC2_RATIO));
+			setEnergy(itemstack, (int)(joules*UniversalElectricity.TO_IC2_RATIO));
 		}
 	}
 
-	public double getMaxWattHours()
+	public double getMaxJoules()
 	{
 		return maxEnergy*UniversalElectricity.IC2_RATIO;
 	}
@@ -146,16 +147,16 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 		return 20;
 	}
 
-	public double onReceiveElectricity(double wattHourReceive, ItemStack itemStack)
+	public double onReceive(double amps, double voltage, ItemStack itemStack)
 	{
-		int rejects = (int)Math.max((getEnergy(itemStack) + wattHourReceive*UniversalElectricity.Wh_IC2_RATIO) - getMaxEnergy(), 0);
-		setEnergy(itemStack, (int)(getEnergy(itemStack) + wattHourReceive*UniversalElectricity.Wh_IC2_RATIO - rejects));
+		int rejects = (int)Math.max((getEnergy(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)*UniversalElectricity.TO_IC2_RATIO) - getMaxEnergy(), 0);
+		setEnergy(itemStack, (int)(getEnergy(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)*UniversalElectricity.TO_IC2_RATIO - rejects));
         return rejects*UniversalElectricity.IC2_RATIO;
 	}
 
-	public double onUseElectricity(double wattHourRequest, ItemStack itemStack)
+	public double onUse(double joulesNeeded, ItemStack itemStack)
 	{
-		int energyRequest = (int)Math.min(getEnergy(itemStack), wattHourRequest*UniversalElectricity.Wh_IC2_RATIO);
+		int energyRequest = (int)Math.min(getEnergy(itemStack), joulesNeeded*UniversalElectricity.TO_IC2_RATIO);
 		setEnergy(itemStack, getEnergy(itemStack) - energyRequest);
         return energyRequest*UniversalElectricity.IC2_RATIO;
 	}
@@ -166,16 +167,6 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 	}
 
 	public boolean canProduceElectricity()
-	{
-		return true;
-	}
-
-	public double getTransferRate() 
-	{
-		return transferRate*UniversalElectricity.IC2_RATIO;
-	}
-	
-	public boolean canCharge()
 	{
 		return true;
 	}

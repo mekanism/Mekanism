@@ -11,7 +11,6 @@ import universalelectricity.electricity.ElectricityManager;
 import universalelectricity.implement.IConductor;
 import universalelectricity.implement.IConnector;
 import universalelectricity.network.IPacketReceiver;
-import universalelectricity.network.PacketManager;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -63,6 +62,7 @@ public abstract class TileEntityConductor extends AdvancedTile implements ICondu
      * @param tileEntity - Must be either a producer, consumer or a conductor
      * @param side - side in which the connection is coming from
      */
+    @Override
     public void updateConnection(TileEntity tileEntity, ForgeDirection side)
     {    	
 		if(tileEntity != null)

@@ -13,10 +13,7 @@ public class Ticker implements ITickHandler
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		if(ElectricityManager.instance != null)
-		{
-			ElectricityManager.instance.tickStart(type, tickData);
-		}
+
 	}
 
 	@Override
@@ -24,7 +21,7 @@ public class Ticker implements ITickHandler
 	{
 		if(ElectricityManager.instance != null)
 		{
-			ElectricityManager.instance.tickEnd(type, tickData);
+			ElectricityManager.instance.onTick(type, tickData);
 		}
 		
 		inGameTicks ++;
@@ -38,7 +35,7 @@ public class Ticker implements ITickHandler
 	@Override
 	public EnumSet<TickType> ticks()
 	{
-		return EnumSet.of(TickType.SERVER, TickType.CLIENT);
+		return EnumSet.of(TickType.WORLD, TickType.WORLDLOAD, TickType.CLIENT, TickType.SERVER);
 	}
 
 	@Override

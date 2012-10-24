@@ -16,7 +16,8 @@ public class ElectricInfo
 		WATT("Watt", "W"), 
 		WATT_HOUR("Watt Hour", "Wh"),
 		RESISTANCE("Ohm", "R"),
-		CONDUCTANCE("Siemens", "S");
+		CONDUCTANCE("Siemen", "S"),
+		JOULES("Joule", "J");
 		
 		public String name;
 		public String symbol;
@@ -67,6 +68,21 @@ public class ElectricInfo
 		{
 			return value/this.process;
 		}
+	}
+	
+	public static double getJoules(double watts, double seconds)
+	{
+		return watts*seconds;
+	}
+	
+	public static double getJoules(double amps, double voltage, double seconds)
+	{
+		return amps*voltage*seconds;
+	}
+	
+	public static double getWattsFromJoules(double joules, double seconds)
+	{
+		return joules/seconds;
 	}
 	
 	public static double getAmps(double watts, double voltage)

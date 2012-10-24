@@ -53,21 +53,25 @@ public interface IPipedItem {
 	/**
 	 * @return the synchroTracker
 	 */
+	@Deprecated
 	public abstract SafeTimeTracker getSynchroTracker();
 
 	/**
 	 * @param synchroTracker the synchroTracker to set
 	 */
+	@Deprecated
 	public abstract void setSynchroTracker(SafeTimeTracker synchroTracker);
 
 	/**
 	 * @return the deterministicRandomization
 	 */
+	@Deprecated
 	public abstract int getDeterministicRandomization();
 
 	/**
 	 * @param deterministicRandomization the deterministicRandomization to set
 	 */
+	@Deprecated
 	public abstract void setDeterministicRandomization(int deterministicRandomization);
 
 	/**
