@@ -1,5 +1,8 @@
 package net.uberkat.obsidian.common;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import obsidian.api.IEnergizedItem;
@@ -7,6 +10,9 @@ import obsidian.api.IEnergizedItem;
 import universalelectricity.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.implement.IItemElectric;
+
+import buildcraft.api.power.IPowerProvider;
+import buildcraft.api.power.PowerFramework;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -22,35 +28,11 @@ import net.minecraftforge.common.ISidedInventory;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine
 {
-	/** The inventory slot itemstacks used by this machine. */
-	public ItemStack[] inventory = new ItemStack[5];
-	
-	/** How much energy this machine uses per tick. */
-	public int ENERGY_PER_TICK;
-	
 	/** How much secondary energy (fuel) this machine uses per tick. */
 	public int SECONDARY_ENERGY_PER_TICK;
 	
-	/** Ticks required to operate -- or smelt an item. */
-	public int TICKS_REQUIRED;
-	
-	/** The current tick requirement for this machine. */
-	public int currentTicksRequired;
-	
-	/** Maximum amount of energy this machine can hold. */
-	public int MAX_ENERGY;
-	
-	/** The current energy capacity for this machine. */
-	public int currentMaxEnergy;
-	
 	/** Maximum amount of secondary energy (fuel) this machine can hold. */
 	public int MAX_SECONDARY_ENERGY;
-	
-	/** How many ticks this machine has operated for. */
-	public int operatingTicks = 0;
-	
-	/** How much energy is stored in this machine. */
-	public int energyStored = 0;
 	
 	/** How much secondary energy (fuel) is stored in this machine. */
 	public int secondaryEnergyStored = 0;
@@ -71,11 +53,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 */
 	public TileEntityAdvancedElectricMachine(String soundPath, String name, String path, int perTick, int secondaryPerTick, int ticksRequired, int maxEnergy, int maxSecondaryEnergy)
 	{
-		super(soundPath, name, path);
-		ENERGY_PER_TICK = perTick;
+		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
+		inventory = new ItemStack[5];
 		SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
-		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
-		MAX_ENERGY = currentMaxEnergy = maxEnergy;
 		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
 	}
     
@@ -113,13 +93,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				}
 				else if(inventory[3].getItem() instanceof IItemElectric)
 				{
-					IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
+					IItemElectric electricItem = (IItemElectric) inventory[3].getItem();
 
-	                if (electricItem.canProduceElectricity())
-	                {
-	                	double receivedElectricity = electricItem.onUse(Math.min(electricItem.getMaxJoules()*0.01, ElectricInfo.getWattHours(200)), inventory[3]);
-						energyStored += ElectricInfo.getWatts(receivedElectricity)*UniversalElectricity.TO_IC2_RATIO;
-	                }
+					if (electricItem.canProduceElectricity())
+					{
+						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules() * 0.005, inventory[3]);
+						setEnergy(energyStored + (int)(joulesReceived*UniversalElectricity.TO_IC2_RATIO));
+					}
 				}
 				else if(inventory[3].getItem() instanceof IElectricItem)
 				{
@@ -368,6 +348,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
+        
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
+        }
+        
         NBTTagList tagList = nbtTags.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
 
@@ -392,6 +378,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
+        }
+        
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setInteger("energyStored", energyStored);
         nbtTags.setInteger("secondaryEnergyStored", secondaryEnergyStored);
@@ -412,91 +404,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
         nbtTags.setTag("Items", tagList);
     }
-
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-        if (side == ForgeDirection.DOWN) return 1;
-        if (side == ForgeDirection.UP) return 0; 
-        return 2;
-	}
-
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
-	}
-
-	public int getSizeInventory() 
-	{
-		return inventory.length;
-	}
-
-	public ItemStack getStackInSlot(int par1) 
-	{
-		return inventory[par1];
-	}
-
-    public ItemStack decrStackSize(int par1, int par2)
-    {
-        if (inventory[par1] != null)
-        {
-            ItemStack var3;
-
-            if (inventory[par1].stackSize <= par2)
-            {
-                var3 = inventory[par1];
-                inventory[par1] = null;
-                return var3;
-            }
-            else
-            {
-                var3 = inventory[par1].splitStack(par2);
-
-                if (inventory[par1].stackSize == 0)
-                {
-                    inventory[par1] = null;
-                }
-
-                return var3;
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public ItemStack getStackInSlotOnClosing(int par1)
-    {
-        if (inventory[par1] != null)
-        {
-            ItemStack var2 = inventory[par1];
-            inventory[par1] = null;
-            return var2;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
-    {
-        inventory[par1] = par2ItemStack;
-
-        if (par2ItemStack != null && par2ItemStack.stackSize > getInventoryStackLimit())
-        {
-            par2ItemStack.stackSize = getInventoryStackLimit();
-        }
-    }
-	
-	/**
-	 * Sets the energy to a new amount.
-	 * @param energy - amount to store
-	 */
-	public void setEnergy(int energy)
-	{
-		energyStored = Math.max(Math.min(energy, currentMaxEnergy), 0);
-	}
 	
 	/**
 	 * Sets the secondary energy to a new amount
@@ -506,30 +413,46 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	{
 		secondaryEnergyStored = Math.max(Math.min(energy, getFuelTicks(inventory[1])), 0);
 	}
-
-	public int getScaledEnergyLevel(int i)
-	{
-		return energyStored*i / currentMaxEnergy;
-	}
 	
 	public int getScaledSecondaryEnergyLevel(int i)
 	{
 		return secondaryEnergyStored*i / MAX_SECONDARY_ENERGY;
 	}
-	
-	public int getScaledProgress(int i)
-	{
-		return operatingTicks*i / currentTicksRequired;
-	}
-	
-	public String getType() 
-	{
-		return "Advanced Electric Machine";
-	}
 
 	public String[] getMethodNames() 
 	{
 		return new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate"};
+	}
+	
+	public Packet getDescriptionPacket()
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(xCoord);
+        	output.writeInt(yCoord);
+        	output.writeInt(zCoord);
+        	output.writeInt(facing);
+        	output.writeByte(isActive ? 1 : 0);
+        	output.writeInt(operatingTicks);
+        	output.writeInt(energyStored);
+        	output.writeInt(secondaryEnergyStored);
+        	output.writeInt(currentMaxEnergy);
+        	output.writeInt(currentTicksRequired);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        return packet;
 	}
 
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
@@ -553,13 +476,4 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				return null;
 		}
 	}
-
-	public boolean canAttachToSide(int side) 
-	{
-		return true;
-	}
-
-	public void attach(IComputerAccess computer, String computerSide) {}
-
-	public void detach(IComputerAccess computer) {}
 }

@@ -29,6 +29,8 @@ import buildcraft.api.core.Orientations;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.common.Loader;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -46,6 +48,7 @@ import net.minecraftforge.common.ISidedInventory;
 
 public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, ITileNetwork, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IPeripheral
 {
+	/** The inventory slot itemstacks used by this power unit. */
 	public ItemStack[] inventory = new ItemStack[2];
 	
 	/** Maximum amount of energy this unit can hold. */
@@ -84,7 +87,10 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	 */
 	public TileEntityPowerUnit(int energy, int i)
 	{
-		ElectricityManager.instance.registerElectricUnit(this);
+		if(ObsidianIngots.hooks.UELoaded)
+		{
+			ElectricityManager.instance.registerElectricUnit(this);
+		}
 		maxEnergy = energy;
 		output = i;
 		if(PowerFramework.currentFramework != null)
@@ -103,11 +109,6 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				PacketHandler.sendPowerUnitPacket(this);
 			}
 			
-			if(packetTick % 100 == 0)
-			{
-				PacketHandler.sendPowerUnitPacketWithRange(this, 50);
-				worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
-			}
 			packetTick++;
 		}
 		
@@ -138,9 +139,9 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			else if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric) inventory[0].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), energyStored*UniversalElectricity.IC2_RATIO);
+				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), (energyStored*UniversalElectricity.IC2_RATIO));
 				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-				setJoules(joules - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
+				setJoules((energyStored*UniversalElectricity.IC2_RATIO) - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
@@ -159,12 +160,12 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			}
 			else if(inventory[1].getItem() instanceof IItemElectric)
 			{
-				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
+				IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
 
 				if (electricItem.canProduceElectricity())
 				{
-					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules()*0.01, inventory[1]);
-					setEnergy(energyStored + (int)(joulesReceived*UniversalElectricity.TO_IC2_RATIO));
+					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules() * 0.005, inventory[1]);
+					setJoules((energyStored*UniversalElectricity.IC2_RATIO) + joulesReceived);
 				}
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
@@ -221,6 +222,11 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				}
 				setEnergy(energyStored - (int)(ElectricInfo.getJoules(transferAmps, getVoltage())*UniversalElectricity.TO_IC2_RATIO));
 			}
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			PacketHandler.sendPowerUnitPacketWithRange(this, 50);
 		}
 	}
 	
@@ -347,10 +353,12 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
         if(PowerFramework.currentFramework != null)
         {
         	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
         }
+        
         nbtTags.setInteger("energyStored", energyStored);
         nbtTags.setInteger("facing", facing);
         NBTTagList tagList = new NBTTagList();
@@ -454,15 +462,19 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
     public int injectEnergy(Direction direction, int i)
     {
-        int j = i;
-
-        if (energyStored + i >= maxEnergy + output)
-        {
-            j = (maxEnergy + output) - energyStored - 1;
-        }
-
-        energyStored += j;
-        return i - j;
+    	int rejects = 0;
+    	int neededEnergy = maxEnergy-energyStored;
+    	if(i <= neededEnergy)
+    	{
+    		energyStored += i;
+    	}
+    	else if(i > neededEnergy)
+    	{
+    		energyStored += neededEnergy;
+    		rejects = i-neededEnergy;
+    	}
+    	
+    	return rejects;
     }
 
 	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
@@ -535,8 +547,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
-		System.out.println("Received " + amps + " " + voltage);
-		setEnergy(energyStored + (int)(ElectricInfo.getWattHours(amps, voltage)*UniversalElectricity.TO_IC2_RATIO));
+		setEnergy(energyStored + (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO));
 	}
 
 	public double wattRequest() 
@@ -549,9 +560,9 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 		return side != ForgeDirection.getOrientation(facing);
 	}
 
-	public boolean isUseableByPlayer(EntityPlayer var1)
+	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : var1.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
+		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
 	}
 
 	public String getType() 
