@@ -62,6 +62,7 @@ public final class ItemRegistry
      */
     public static void registerItem(String tag, ItemStack item)
     {
+        tag = tag.replace("rc.", "");
         registry.put(tag, item);
     }
 

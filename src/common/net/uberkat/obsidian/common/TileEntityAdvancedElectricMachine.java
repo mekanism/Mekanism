@@ -7,7 +7,7 @@ import java.util.List;
 
 import obsidian.api.IEnergizedItem;
 
-import universalelectricity.UniversalElectricity;
+import universalelectricity.core.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.implement.IItemElectric;
 
@@ -93,7 +93,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				}
 				else if(inventory[3].getItem() instanceof IItemElectric)
 				{
-					IItemElectric electricItem = (IItemElectric) inventory[3].getItem();
+					IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
 
 					if (electricItem.canProduceElectricity())
 					{
@@ -327,7 +327,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     	PacketHandler.sendAdvancedElectricMachinePacketWithRange(this, 50);
     }
 
-	public void handlePacketData(NetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
 			facing = dataStream.readInt();
@@ -421,7 +421,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
 	public String[] getMethodNames() 
 	{
-		return new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate"};
+		return new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
@@ -440,9 +440,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				return new Object[] {facing};
 			case 5:
 				return new Object[] {canOperate()};
+			case 6:
+				return new Object[] {currentMaxEnergy};
+			case 7:
+				return new Object[] {(currentMaxEnergy-energyStored)};
 			default:
 				System.err.println("[ObsidianIngots] Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
+				return new Object[] {"Unknown command."};
 		}
 	}
 }

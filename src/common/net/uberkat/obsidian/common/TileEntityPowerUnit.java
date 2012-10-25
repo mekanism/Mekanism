@@ -6,20 +6,18 @@ import java.io.IOException;
 
 import obsidian.api.IEnergizedItem;
 import obsidian.api.ITileNetwork;
+import obsidian.api.IEnergyAcceptor;
 
-import universalelectricity.UniversalElectricity;
+import universalelectricity.core.UniversalElectricity;
+import universalelectricity.core.Vector3;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.electricity.ElectricityManager;
 import universalelectricity.implement.IConductor;
 import universalelectricity.implement.IElectricityReceiver;
 import universalelectricity.implement.IItemElectric;
 import universalelectricity.implement.IJouleStorage;
-import universalelectricity.network.ConnectionHandler;
-import universalelectricity.network.ConnectionHandler.ConnectionType;
-import universalelectricity.network.ISimpleConnectionHandler;
 import universalelectricity.prefab.TileEntityConductor;
 import universalelectricity.prefab.TileEntityDisableable;
-import universalelectricity.prefab.Vector3;
 
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
@@ -44,7 +42,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, ITileNetwork, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IPeripheral
+public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, ITileNetwork, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
 {
 	/** The inventory slot itemstacks used by this power unit. */
 	public ItemStack[] inventory = new ItemStack[2];
@@ -85,10 +83,6 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	 */
 	public TileEntityPowerUnit(int energy, int i)
 	{
-		if(ObsidianIngots.hooks.UELoaded)
-		{
-			ElectricityManager.instance.registerElectricUnit(this);
-		}
 		maxEnergy = energy;
 		output = i;
 		if(PowerFramework.currentFramework != null)
@@ -199,26 +193,45 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				}
 			}
 			
-			if(isPowerReceptor(tileEntity))
+			if(tileEntity != null)
 			{
-				IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-            	int energyNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*10;
-            	float transferEnergy = Math.max(Math.min(Math.min(energyNeeded, energyStored), 54000), 0);
-            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), Orientations.dirs()[ForgeDirection.getOrientation(facing).getOpposite().ordinal()]);
-            	setEnergy(energyStored - (int)transferEnergy);
-			}
-			
-			TileEntity connector = Vector3.getConnectorFromSide(worldObj, Vector3.get(this), ForgeDirection.getOrientation(facing));
-			
-			if(connector != null && connector instanceof TileEntityConductor)
-			{
-				double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor) connector).getConnectionID());
-				double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(energyStored*UniversalElectricity.IC2_RATIO, getVoltage())), 80), 0);
-				if (!worldObj.isRemote)
+				if(isPowerReceptor(tileEntity))
 				{
-					ElectricityManager.instance.produceElectricity(this, (IConductor) connector, transferAmps, getVoltage());
+					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
+	            	int energyNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*10;
+	            	float transferEnergy = Math.max(Math.min(Math.min(energyNeeded, energyStored), 54000), 0);
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), Orientations.dirs()[ForgeDirection.getOrientation(facing).getOpposite().ordinal()]);
+	            	setEnergy(energyStored - (int)transferEnergy);
 				}
-				setEnergy(energyStored - (int)(ElectricInfo.getJoules(transferAmps, getVoltage())*UniversalElectricity.TO_IC2_RATIO));
+				else if(tileEntity instanceof TileEntityConductor)
+				{
+					double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor) tileEntity).getNetwork());
+					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(energyStored*UniversalElectricity.IC2_RATIO, getVoltage())), 80), 0);
+					if (!worldObj.isRemote)
+					{
+						ElectricityManager.instance.produceElectricity(this, (IConductor)tileEntity, transferAmps, getVoltage());
+					}
+					setEnergy(energyStored - (int)(ElectricInfo.getJoules(transferAmps, getVoltage())*UniversalElectricity.TO_IC2_RATIO));
+				}
+				else if(tileEntity instanceof IEnergyAcceptor)
+				{
+					if(((IEnergyAcceptor)tileEntity).canReceive(ForgeDirection.getOrientation(facing).getOpposite()))
+					{
+						int sendingEnergy = 0;
+						if(energyStored >= output)
+						{
+							sendingEnergy = output;
+						}
+						else if(energyStored < output)
+						{
+							sendingEnergy = energyStored;
+						}
+						
+						int rejects = ((IEnergyAcceptor)tileEntity).transferToAcceptor(output);
+						
+						setEnergy(energyStored - (sendingEnergy - rejects));
+					}
+				}
 			}
 		}
 		
@@ -375,7 +388,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
         nbtTags.setTag("Items", tagList);
     }
 
-	public void handlePacketData(NetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
+	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
 	{
 		try {
 			facing = dataStream.readInt();
@@ -448,7 +461,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 		return maxEnergy;
 	}
 
-	public int getOutput() 
+	public int getRate() 
 	{
 		return output;
 	}
@@ -570,7 +583,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public String[] getMethodNames() 
 	{
-		return new String[] {"getStored", "getOutput"};
+		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
@@ -581,6 +594,10 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				return new Object[] {energyStored};
 			case 1:
 				return new Object[] {output};
+			case 2:
+				return new Object[] {maxEnergy};
+			case 3:
+				return new Object[] {(maxEnergy-energyStored)};
 			default:
 				System.err.println("[ObsidianIngots] Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
@@ -595,4 +612,26 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	public void attach(IComputerAccess computer, String computerSide) {}
 
 	public void detach(IComputerAccess computer) {}
+
+	public int transferToAcceptor(int amount) 
+	{
+    	int rejects = 0;
+    	int neededEnergy = maxEnergy-energyStored;
+    	if(amount <= neededEnergy)
+    	{
+    		energyStored += amount;
+    	}
+    	else if(amount > neededEnergy)
+    	{
+    		energyStored += neededEnergy;
+    		rejects = amount-neededEnergy;
+    	}
+    	
+    	return rejects;
+	}
+
+	public boolean canReceive(ForgeDirection side) 
+	{
+		return side != ForgeDirection.getOrientation(facing);
+	}
 }

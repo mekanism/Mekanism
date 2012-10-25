@@ -23,5 +23,5 @@ public interface IEnergyStorage {
 	 * 
 	 * @return Energy output in EU/t
 	 */
-	public int getOutput();
+	public int getRate();
 }

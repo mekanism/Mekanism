@@ -91,7 +91,7 @@ public class ContainerPowerUnit extends Container
                 return null;
             }
 
-            currentSlot.onPickupFromSlot(slotStack);
+            currentSlot.putStack(slotStack);
         }
 
         return stack;

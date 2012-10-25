@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.TextureFXManager;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Side;
@@ -58,6 +59,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerFront.png");
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerBack.png");
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerSide.png");
+		MinecraftForgeClient.preloadTexture("/texture/PlatinumCable.png");
 		
 		//Register animated TextureFX for machines
 		try {
@@ -73,6 +75,7 @@ public class ClientProxy extends CommonProxy
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
 		RenderingRegistry.registerEntityRenderingHandler(EntityKnife.class, new RenderKnife());
+		
 		System.out.println("[ObsidianIngots] Render initiative complete.");
 	}
 	

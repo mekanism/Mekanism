@@ -503,6 +503,15 @@ public class ObsidianIngots
 		GameRegistry.addRecipe(new ItemStack(MachineBlock, 1, 3), new Object[] {
 			"***", "*L*", "***", Character.valueOf('*'), PlatinumIngot, Character.valueOf('L'), Item.bucketLava
 		});
+		GameRegistry.addRecipe(new ItemStack(SpeedUpgrade), new Object[] {
+			"PAP", "ARA", "PAP", Character.valueOf('P'), PlatinumDust, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
+		});
+		GameRegistry.addRecipe(new ItemStack(EnergyUpgrade), new Object[] {
+			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
+		});
+		GameRegistry.addRecipe(new ItemStack(UltimateUpgrade), new Object[] {
+			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
+		});
 		
 		if(extrasEnabled)
 		{

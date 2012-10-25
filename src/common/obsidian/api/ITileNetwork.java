@@ -1,7 +1,7 @@
 package obsidian.api;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.NetworkManager;
+import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -20,5 +20,5 @@ public interface ITileNetwork
 	 * @param player
 	 * @param dataStream
 	 */
-	public void handlePacketData(NetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream);
+	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream);
 }

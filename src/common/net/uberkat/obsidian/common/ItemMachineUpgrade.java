@@ -2,6 +2,7 @@ package net.uberkat.obsidian.common;
 
 import java.util.List;
 
+import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.ItemStack;
 import obsidian.api.IMachineUpgrade;
 
@@ -11,5 +12,6 @@ public class ItemMachineUpgrade extends ItemObsidian implements IMachineUpgrade
 	{
 		super(i);
 		setMaxStackSize(1);
+		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 }

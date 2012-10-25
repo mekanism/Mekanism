@@ -165,7 +165,7 @@ public class ContainerAdvancedElectricMachine extends Container
                 return null;
             }
 
-            currentSlot.onPickupFromSlot(slotStack);
+            currentSlot.putStack(slotStack);
         }
 
         return stack;

@@ -1,7 +1,7 @@
 package net.uberkat.obsidian.common;
 
 import obsidian.api.IElectricMachine;
-import universalelectricity.UniversalElectricity;
+import universalelectricity.core.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.electricity.ElectricityManager;
 import universalelectricity.prefab.TileEntityDisableable;
@@ -92,10 +92,6 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
 	 */
 	public TileEntityBasicMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
-		if(ObsidianIngots.hooks.UELoaded)
-		{
-			ElectricityManager.instance.registerElectricUnit(this);
-		}
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
 		MAX_ENERGY = currentMaxEnergy = maxEnergy;
@@ -445,5 +441,26 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
             par2ItemStack.stackSize = getInventoryStackLimit();
         }
     }
-
+    
+	public int transferToAcceptor(int amount)
+	{
+    	int rejects = 0;
+    	int neededEnergy = currentMaxEnergy-energyStored;
+    	if(amount <= neededEnergy)
+    	{
+    		energyStored += amount;
+    	}
+    	else if(amount > neededEnergy)
+    	{
+    		energyStored += neededEnergy;
+    		rejects = amount-neededEnergy;
+    	}
+    	
+    	return rejects;
+	}
+	
+	public boolean canReceive(ForgeDirection side)
+	{
+		return true;
+	}
 }

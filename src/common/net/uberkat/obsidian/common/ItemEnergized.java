@@ -4,7 +4,7 @@ import java.util.List;
 
 import obsidian.api.IEnergizedItem;
 
-import universalelectricity.UniversalElectricity;
+import universalelectricity.core.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.implement.IItemElectric;
 
@@ -28,7 +28,7 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 	
-	public void addInformation(ItemStack itemstack, List list)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		int energy = getEnergy(itemstack);
 		

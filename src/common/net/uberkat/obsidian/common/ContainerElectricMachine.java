@@ -122,7 +122,7 @@ public class ContainerElectricMachine extends Container
                 return null;
             }
 
-            currentSlot.onPickupFromSlot(slotStack);
+            currentSlot.putStack(slotStack);
         }
 
         return stack;

@@ -13,7 +13,7 @@ import com.google.common.io.ByteStreams;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ModLoader;
-import net.minecraft.src.NetworkManager;
+import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
@@ -32,7 +32,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  */
 public class PacketHandler implements IPacketHandler
 {
-	public void onPacketData(NetworkManager manager, Packet250CustomPayload packet, Player player)
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
 	{
 		ByteArrayDataInput dataStream = ByteStreams.newDataInput(packet.data);
         EntityPlayer entityplayer = (EntityPlayer)player;

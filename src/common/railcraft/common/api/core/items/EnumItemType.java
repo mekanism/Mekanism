@@ -31,7 +31,7 @@ public enum EnumItemType
         }
         switch (this) {
             case FUEL:
-                return TileEntityFurnace.getItemBurnTime(stack) > 0;
+                return TileEntityFurnace.isItemFuel(stack);
             case RAIL:
                 return stack.getItem() instanceof ITrackItem || (stack.getItem() instanceof ItemBlock && BlockRail.isRailBlock(stack.itemID));
             case MINECART:
