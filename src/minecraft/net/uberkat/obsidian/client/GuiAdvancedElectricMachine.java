@@ -18,7 +18,7 @@ public class GuiAdvancedElectricMachine extends GuiContainer
     /**
      * Draw the foreground layer for the GuiContainer (everythin in front of the items)
      */
-    protected void drawGuiContainerForegroundLayer()
+    protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);

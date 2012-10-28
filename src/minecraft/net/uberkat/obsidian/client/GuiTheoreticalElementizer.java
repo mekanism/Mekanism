@@ -14,9 +14,9 @@ public class GuiTheoreticalElementizer extends GuiAdvancedElectricMachine
         super(inventory, tentity);
     }
 
-    protected void drawGuiContainerForegroundLayer()
+    protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
-    	super.drawGuiContainerForegroundLayer();
+    	super.drawGuiContainerForegroundLayer(par1, par2);
     	String displayText = "";
         if(tileEntity.isActive)
         {

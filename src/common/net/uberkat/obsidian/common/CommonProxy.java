@@ -55,6 +55,7 @@ public class CommonProxy
 		ObsidianIngots.oreBlockID = ObsidianIngots.configuration.getBlock("OreBlock", 3002).getInt();
 	  	ObsidianIngots.obsidianTNTID = ObsidianIngots.configuration.getBlock("ObsidianTNT", 3003).getInt();
 	  	ObsidianIngots.powerUnitID = ObsidianIngots.configuration.getBlock("PowerUnit", 3004).getInt();
+	  	ObsidianIngots.generatorID = ObsidianIngots.configuration.getBlock("Generator", 3005).getInt();
 	  	ObsidianIngots.extrasEnabled = ObsidianIngots.configuration.get("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
 	  	ObsidianIngots.oreGenerationEnabled = ObsidianIngots.configuration.get("OreGenerationEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
 	  	ObsidianIngots.configuration.save();
@@ -117,6 +118,9 @@ public class CommonProxy
 			case 8:
 				TileEntityPowerUnit tileentity5 = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
 				return new ContainerPowerUnit(player.inventory, tileentity5);
+			case 9:
+				TileEntityGenerator tileentity6 = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
+				return new ContainerGenerator(player.inventory, tileentity6);
 		}
 		return null;
 	}

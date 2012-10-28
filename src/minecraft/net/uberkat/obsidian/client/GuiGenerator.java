@@ -1,24 +1,25 @@
 package net.uberkat.obsidian.client;
 
 import org.lwjgl.opengl.GL11;
+
 import net.minecraft.src.*;
-import net.uberkat.obsidian.common.ContainerElectricMachine;
-import net.uberkat.obsidian.common.TileEntityElectricMachine;
+import net.uberkat.obsidian.common.ContainerGenerator;
+import net.uberkat.obsidian.common.TileEntityGenerator;
 
-public class GuiElectricMachine extends GuiContainer
+public class GuiGenerator extends GuiContainer
 {
-    public TileEntityElectricMachine tileEntity;
-
-    public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tentity)
+	public TileEntityGenerator tileEntity;
+	
+	public GuiGenerator(InventoryPlayer inventory, TileEntityGenerator tentity)
     {
-        super(new ContainerElectricMachine(inventory, tentity));
+        super(new ContainerGenerator(inventory, tentity));
         tileEntity = tentity;
     }
 
     /**
      * Draw the foreground layer for the GuiContainer (everythin in front of the items)
      */
-    protected void drawGuiContainerForegroundLayer(int par1, int par2)
+	protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
@@ -29,7 +30,7 @@ public class GuiElectricMachine extends GuiContainer
      */
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int texture = mc.renderEngine.getTexture(tileEntity.guiTexturePath);
+        int texture = mc.renderEngine.getTexture("/gui/GuiGenerator.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         int guiWidth = (width - xSize) / 2;
@@ -37,10 +38,10 @@ public class GuiElectricMachine extends GuiContainer
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt;
         
+        displayInt = tileEntity.getScaledFuelLevel(52);
+        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176, 52 + 52 - displayInt, 4, displayInt);
+        
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 7 + 52 - displayInt, 4, displayInt);
-
-        displayInt = tileEntity.getScaledProgress(24);
-        drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
     }
 }

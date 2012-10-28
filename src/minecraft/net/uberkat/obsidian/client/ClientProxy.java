@@ -31,6 +31,7 @@ import net.uberkat.obsidian.common.ObsidianUtils;
 import net.uberkat.obsidian.common.TileEntityCombiner;
 import net.uberkat.obsidian.common.TileEntityCrusher;
 import net.uberkat.obsidian.common.TileEntityEnrichmentChamber;
+import net.uberkat.obsidian.common.TileEntityGenerator;
 import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
 import net.uberkat.obsidian.common.TileEntityPowerUnit;
 import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
@@ -59,7 +60,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerFront.png");
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerBack.png");
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerSide.png");
-		MinecraftForgeClient.preloadTexture("/texture/PlatinumCable.png");
 		
 		//Register animated TextureFX for machines
 		try {
@@ -119,6 +119,9 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				TileEntityPowerUnit tileentity5 = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
 				return new GuiPowerUnit(player.inventory, tileentity5);
+			case 9:
+				TileEntityGenerator tileentity6 = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
+				return new GuiGenerator(player.inventory, tileentity6);
 		}
 		return null;
 	}

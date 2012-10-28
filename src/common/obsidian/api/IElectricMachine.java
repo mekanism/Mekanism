@@ -19,7 +19,7 @@ import net.minecraftforge.common.ISidedInventory;
  * @author AidanBrady
  *
  */
-public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchable, ITileNetwork, IPowerReceptor, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
+public interface IElectricMachine extends IPowerReceptor, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
 {
     /**
      * Update call for machines. Use instead of updateEntity() - it's called every tick.
@@ -36,16 +36,6 @@ public interface IElectricMachine extends IInventory, ISidedInventory, IWrenchab
 	 * Runs this machine's operation -- or smelts the item.
 	 */
 	public void operate();
-	
-	/**
-	 * Sends a tile entity packet to the server.
-	 */
-	public void sendPacket();
-	
-	/**
-	 * Sends a tile entity packet to the server with a defined range.
-	 */
-	public void sendPacketWithRange();
 
 	/**
 	 * Gets the recipe vector from the machine tile entity.

@@ -317,6 +317,74 @@ public class PacketHandler implements IPacketHandler
 	}
 	
 	/**
+	 * Send a generator packet from server to client. This will send the data int '4,' as well as the machine's x, y, and z
+	 * coordinates, along with it's facing, energy stored, and fuel stored.
+	 * @param sender - tile entity who is sending the packet
+	 */
+	public static void sendGeneratorPacket(TileEntityGenerator sender)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.fuelStored);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+        {
+        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
+        }
+	}
+	
+	/**
+	 * Send a generator packet from server to client with a defined range. This will send the data int '4,' as well as 
+	 * the machine's x, y, and z coordinates, along with it's facing, energy stored, and fuel stored.
+	 * @param sender - tile entity who is sending the packet
+	 * @param distance - radius to send packet in
+	 */
+	public static void sendGeneratorPacketWithRange(TileEntityGenerator sender, double distance)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.fuelStored);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+	}
+	
+	/**
 	 * Sends the server the defined packet data int.
 	 * @param type - packet type
 	 * @param i - int to send

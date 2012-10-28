@@ -20,9 +20,9 @@ public class GuiPowerUnit extends GuiContainer
 		tileEntity = tentity;
 	}
 	
-	protected void drawGuiContainerForegroundLayer()
+	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String capacityInfo = "Stored: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.maxEnergy);
+		String capacityInfo = "Stored: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY);
 		String outputInfo = "Output: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.output) + "/t";
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 42, 0x404040);
@@ -39,7 +39,7 @@ public class GuiPowerUnit extends GuiContainer
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int scale = (int)(((double)tileEntity.energyStored / tileEntity.maxEnergy) * 72);
+        int scale = (int)(((double)tileEntity.energyStored / tileEntity.MAX_ENERGY) * 72);
         drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
     }
 }

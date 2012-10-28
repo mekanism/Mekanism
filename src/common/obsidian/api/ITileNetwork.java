@@ -21,4 +21,14 @@ public interface ITileNetwork
 	 * @param dataStream
 	 */
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream);
+	
+	/**
+	 * Sends a tile entity packet to the server.
+	 */
+	public void sendPacket();
+	
+	/**
+	 * Sends a tile entity packet to the server with a defined range.
+	 */
+	public void sendPacketWithRange();
 }

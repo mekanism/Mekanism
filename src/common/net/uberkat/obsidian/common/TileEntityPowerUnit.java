@@ -42,38 +42,20 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public class TileEntityPowerUnit extends TileEntityDisableable implements IInventory, ISidedInventory, ITileNetwork, IWrenchable, IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
+public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
 {
-	/** The inventory slot itemstacks used by this power unit. */
-	public ItemStack[] inventory = new ItemStack[2];
-	
-	/** Maximum amount of energy this unit can hold. */
-	public int maxEnergy;
-	
 	/** Output per tick this machine can transfer. */
 	public int output;
 	
-	/** The amount of energy this unit is storing. */
-	public int energyStored = 0;
-	
-	/** Direction this block is facing. */
-	public int facing;
-	
-	/** A timer used to send packets to clients. */
-	public int packetTick = 0;
-	
 	/** BuildCraft power provider. */
 	public IPowerProvider powerProvider;
-	
-	/** Whether or not this machine has initialized and registered with other mods. */
-	public boolean initialized = false;
 	
 	/**
 	 * A block used to store and transfer electricity.
 	 */
 	public TileEntityPowerUnit()
 	{
-		this(500000, 256);
+		this("Power Unit", 500000, 256);
 	}
 	
 	/**
@@ -81,39 +63,20 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	 * @param energy - maximum energy this block can hold.
 	 * @param i - output per tick this block can handle.
 	 */
-	public TileEntityPowerUnit(int energy, int i)
+	public TileEntityPowerUnit(String name, int maxEnergy, int i)
 	{
-		maxEnergy = energy;
+		super(name, maxEnergy);
+		inventory = new ItemStack[2];
 		output = i;
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(5, 25, 25, 25, maxEnergy/10);
+			powerProvider.configure(0, 2, 2000, 1, MAX_ENERGY/10);
 		}
 	}
 	
-	public void updateEntity()
+	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
-		{
-			if(packetTick == 5)
-			{
-				PacketHandler.sendPowerUnitPacket(this);
-			}
-			
-			packetTick++;
-		}
-		
-		if(!initialized)
-		{
-			if(ObsidianIngots.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).addTileEntity(this);
-			}
-			
-			initialized = true;
-		}
-		
 		if(powerProvider != null)
 		{
 			int received = (int)(powerProvider.useEnergy(25, 25, true)*10);
@@ -142,7 +105,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			}
 		}
 		
-		if(inventory[1] != null && energyStored < maxEnergy)
+		if(inventory[1] != null && energyStored < MAX_ENERGY)
 		{
 			if(inventory[1].getItem() instanceof IEnergizedItem)
 			{
@@ -165,7 +128,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				IElectricItem item = (IElectricItem)inventory[1].getItem();
 				if(item.canProvideEnergy())
 				{
-					int gain = ElectricItem.discharge(inventory[1], maxEnergy - energyStored, 3, false, false);
+					int gain = ElectricItem.discharge(inventory[1], MAX_ENERGY - energyStored, 3, false, false);
 					setEnergy(energyStored + gain);
 				}
 			}
@@ -234,105 +197,16 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 				}
 			}
 		}
-		
-		if(!worldObj.isRemote)
-		{
-			PacketHandler.sendPowerUnitPacketWithRange(this, 50);
-		}
 	}
 	
+	/**
+	 * Set this block's energy to a new amount.
+	 * @param energy - new amount of energy
+	 */
 	public void setEnergy(int energy)
 	{
-		energyStored = Math.max(Math.min(energy, maxEnergy), 0);
+		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 	}
-
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		return 1;
-	}
-
-    public int getSizeInventorySide(ForgeDirection side)
-    {
-        return 1;
-    }
-
-    public int getSizeInventory()
-    {
-        return inventory.length;
-    }
-
-    public ItemStack getStackInSlot(int par1)
-    {
-        return inventory[par1];
-    }
-
-    public ItemStack decrStackSize(int par1, int par2)
-    {
-        if (inventory[par1] != null)
-        {
-            ItemStack var3;
-
-            if (inventory[par1].stackSize <= par2)
-            {
-                var3 = inventory[par1];
-                inventory[par1] = null;
-                return var3;
-            }
-            else
-            {
-                var3 = inventory[par1].splitStack(par2);
-
-                if (inventory[par1].stackSize == 0)
-                {
-                    inventory[par1] = null;
-                }
-
-                return var3;
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public ItemStack getStackInSlotOnClosing(int par1)
-    {
-        if (inventory[par1] != null)
-        {
-            ItemStack var2 = inventory[par1];
-            inventory[par1] = null;
-            return var2;
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
-    {
-        inventory[par1] = par2ItemStack;
-
-        if (par2ItemStack != null && par2ItemStack.stackSize > getInventoryStackLimit())
-        {
-            par2ItemStack.stackSize = getInventoryStackLimit();
-        }
-    }
-
-	public String getInvName()
-	{
-		return output == 1024 ? "Advanced Power Unit" : "Power Unit";
-	}
-
-	public int getInventoryStackLimit() 
-	{
-		return 64;
-	}
-
-	public void openChest() {}
-
-	public void closeChest() {}
 	
     public void readFromNBT(NBTTagCompound nbtTags)
     {
@@ -401,54 +275,9 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 		}
 	}
 
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
-	{
-		return facing != side;
-	}
-
-	public short getFacing()
-	{
-		return (short)facing;
-	}
-
-	public void setFacing(short direction) 
-	{
-		if(initialized)
-		{
-			if(ObsidianIngots.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).removeTileEntity(this);
-			}
-		}
-		
-		initialized = false;
-		facing = direction;
-		PacketHandler.sendPowerUnitPacket(this);
-		if(ObsidianIngots.hooks.IC2Loaded)
-		{
-			EnergyNet.getForWorld(worldObj).addTileEntity(this);
-		}
-		initialized = true;
-	}
-
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) 
-	{
-		return true;
-	}
-
-	public float getWrenchDropRate() 
-	{
-		return 1.0F;
-	}
-
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
-	}
-
-	public boolean isAddedToEnergyNet() 
-	{
-		return initialized;
 	}
 
 	public int getStored() 
@@ -458,7 +287,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public int getCapacity() 
 	{
-		return maxEnergy;
+		return MAX_ENERGY;
 	}
 
 	public int getRate() 
@@ -468,13 +297,13 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public boolean demandsEnergy() 
 	{
-		return energyStored < maxEnergy;
+		return energyStored < MAX_ENERGY;
 	}
 
     public int injectEnergy(Direction direction, int i)
     {
     	int rejects = 0;
-    	int neededEnergy = maxEnergy-energyStored;
+    	int neededEnergy = MAX_ENERGY-energyStored;
     	if(i <= neededEnergy)
     	{
     		energyStored += i;
@@ -510,7 +339,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public double getMaxJoules() 
 	{
-		return maxEnergy*UniversalElectricity.IC2_RATIO;
+		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
 
 	public void setPowerProvider(IPowerProvider provider)
@@ -542,14 +371,14 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	
 	/**
 	 * Whether or not the declared Tile Entity is an instance of a BuildCraft power receptor.
-	 * @param tileEntity
-	 * @return
+	 * @param tileEntity - tile entity to check
+	 * @return if the tile entity is a power receptor
 	 */
 	public boolean isPowerReceptor(TileEntity tileEntity)
 	{
 		if(tileEntity instanceof IPowerReceptor) 
 		{
-			IPowerReceptor receptor = (IPowerReceptor) tileEntity;
+			IPowerReceptor receptor = (IPowerReceptor)tileEntity;
 			IPowerProvider provider = receptor.getPowerProvider();
 			return provider != null && provider.getClass().getSuperclass().equals(PowerProvider.class);
 		}
@@ -563,17 +392,12 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 
 	public double wattRequest() 
 	{
-		return ElectricInfo.getWatts(maxEnergy*UniversalElectricity.IC2_RATIO) - ElectricInfo.getWatts(energyStored*UniversalElectricity.IC2_RATIO);
+		return ElectricInfo.getWatts(MAX_ENERGY*UniversalElectricity.IC2_RATIO) - ElectricInfo.getWatts(energyStored*UniversalElectricity.IC2_RATIO);
 	}
 
 	public boolean canReceiveFromSide(ForgeDirection side) 
 	{
 		return side != ForgeDirection.getOrientation(facing);
-	}
-
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
-	{
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
 	}
 
 	public String getType() 
@@ -595,9 +419,9 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {maxEnergy};
+				return new Object[] {MAX_ENERGY};
 			case 3:
-				return new Object[] {(maxEnergy-energyStored)};
+				return new Object[] {(MAX_ENERGY-energyStored)};
 			default:
 				System.err.println("[ObsidianIngots] Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
@@ -616,7 +440,7 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	public int transferToAcceptor(int amount) 
 	{
     	int rejects = 0;
-    	int neededEnergy = maxEnergy-energyStored;
+    	int neededEnergy = MAX_ENERGY-energyStored;
     	if(amount <= neededEnergy)
     	{
     		energyStored += amount;
@@ -634,4 +458,14 @@ public class TileEntityPowerUnit extends TileEntityDisableable implements IInven
 	{
 		return side != ForgeDirection.getOrientation(facing);
 	}
+	
+    public void sendPacket()
+    {
+    	PacketHandler.sendPowerUnitPacket(this);
+    }
+    
+    public void sendPacketWithRange()
+    {
+    	PacketHandler.sendPowerUnitPacketWithRange(this, 50);
+    }
 }

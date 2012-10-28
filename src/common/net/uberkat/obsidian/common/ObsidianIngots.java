@@ -39,7 +39,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.3")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.4")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -61,7 +61,7 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 2, 3);
+	public static Version versionNumber = new Version(4, 2, 4);
 	
 	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
@@ -106,6 +106,7 @@ public class ObsidianIngots
     public static int oreBlockID = 3002;
 	public static int obsidianTNTID = 3003;
 	public static int powerUnitID = 3004;
+	public static int generatorID = 3005;
 	
 	//Base Items
 	public static Item WoodPaxel;
@@ -211,6 +212,7 @@ public class ObsidianIngots
 	public static Block OreBlock;
 	public static Block ObsidianTNT;
 	public static Block PowerUnit;
+	public static Block Generator;
 	
 	//Boolean Values
 	public static boolean extrasEnabled = true;
@@ -674,6 +676,9 @@ public class ObsidianIngots
 		LanguageRegistry.instance().addStringLocalization("tile.PowerUnit.PowerUnit.name", "Power Unit");
 		LanguageRegistry.instance().addStringLocalization("tile.PowerUnit.AdvancedPowerUnit.name", "Advanced Power Unit");
 		
+		//Localization for Generator
+		LanguageRegistry.instance().addStringLocalization("tile.Generator.HeatGenerator.name", "Heat Generator");
+		
 		if(extrasEnabled == true)
 		{
 			LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.TheoreticalElementizer.name", "Theoretical Elementizer");
@@ -870,9 +875,9 @@ public class ObsidianIngots
 		GlowstoneLegs = new ItemObsidianArmor(11310, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
 		GlowstoneBoots = new ItemObsidianArmor(11311, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
 		GlowstoneKnife = new ItemObsidianKnife(11312, toolGLOWSTONE).setItemName("GlowstoneKnife");
-		EnergyTablet = (ItemEnergized) new ItemEnergized(11314, 50000, 100).setItemName("EnergyTablet");
-		EnergyOrb = (ItemEnergized) new ItemEnergized(11315, 15000000, 1000).setItemName("EnergyOrb");
-		EnergyCube = (ItemEnergized) new ItemEnergized(11316, 12000, 100).setItemName("EnergyCube");
+		EnergyTablet = (ItemEnergized) new ItemEnergized(11314, 50000, 100, 500).setItemName("EnergyTablet");
+		EnergyOrb = (ItemEnergized) new ItemEnergized(11315, 15000000, 1000, 150000).setItemName("EnergyOrb");
+		EnergyCube = (ItemEnergized) new ItemEnergized(11316, 12000, 100, 120).setItemName("EnergyCube");
 		SpeedUpgrade = new ItemMachineUpgrade(11317).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(11318).setItemName("EnergyUpgrade");
 		UltimateUpgrade = new ItemMachineUpgrade(11319).setItemName("UltimateUpgrade");
@@ -888,6 +893,7 @@ public class ObsidianIngots
 		MachineBlock = new BlockMachine(machineBlockID).setBlockName("MachineBlock");
 		OreBlock = new BlockOre(oreBlockID).setBlockName("OreBlock");
 		PowerUnit = new BlockPowerUnit(powerUnitID).setBlockName("PowerUnit");
+		Generator = new BlockGenerator(generatorID).setBlockName("Generator");
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(CreativeTabs.tabRedstone);
 		
 		//Registrations
@@ -898,6 +904,7 @@ public class ObsidianIngots
 		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setItemName("MachineBlock");
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setItemName("OreBlock");
 		Item.itemsList[powerUnitID] = new ItemBlockPowerUnit(powerUnitID - 256, PowerUnit).setItemName("PowerUnit");
+		Item.itemsList[generatorID] = new ItemBlockGenerator(generatorID - 256, Generator).setItemName("Generator");
 	}
 	
 	/**
@@ -971,6 +978,7 @@ public class ObsidianIngots
 		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 		GameRegistry.registerTileEntity(TileEntityPowerUnit.class, "PowerUnit");
 		GameRegistry.registerTileEntity(TileEntityAdvancedPowerUnit.class, "AdvancedPowerUnit");
+		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 	}
 	
 	/**

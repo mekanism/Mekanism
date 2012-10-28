@@ -50,4 +50,10 @@ public interface IEnergizedItem
 	 * @return leftover energy
 	 */
 	public int discharge(ItemStack itemstack, int amount);
+	
+	/**
+	 * Gets the divider that gets that returns the max damage as 100.
+	 * @return divider
+	 */
+	public int getDivider();
 }

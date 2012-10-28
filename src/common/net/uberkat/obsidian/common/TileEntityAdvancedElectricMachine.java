@@ -414,6 +414,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		secondaryEnergyStored = Math.max(Math.min(energy, getFuelTicks(inventory[1])), 0);
 	}
 	
+	/**
+	 * Gets the scaled secondary energy level for the GUI.
+	 * @param i - multiplier
+	 * @return scaled secondary energy
+	 */
 	public int getScaledSecondaryEnergyLevel(int i)
 	{
 		return secondaryEnergyStored*i / MAX_SECONDARY_ENERGY;

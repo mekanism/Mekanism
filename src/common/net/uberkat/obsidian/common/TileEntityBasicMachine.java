@@ -25,11 +25,8 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.uberkat.obsidian.client.Sound;
 
-public abstract class TileEntityBasicMachine extends TileEntityDisableable implements IElectricMachine
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine
 {
-	/** The inventory slot itemstacks used by this machine. */
-	public ItemStack[] inventory;
-	
 	/** The Sound instance for this machine. */
 	public Sound audio;
 	
@@ -42,38 +39,20 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
 	/** How many ticks this machine has operated for. */
 	public int operatingTicks = 0;
 	
-	/** How much energy is stored in this machine. */
-	public int energyStored = 0;
-	
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
 	
 	/** The current tick requirement for this machine. */
 	public int currentTicksRequired;
 	
-	/** Maximum amount of energy this machine can hold. */
-	public int MAX_ENERGY;
-	
 	/** The current energy capacity for this machine. */
 	public int currentMaxEnergy;
-	
-	/** The direction this block is facing. */
-	public int facing;
-	
-	/** A timer used to send packets to clients. */
-	public int packetTick = 0;
 	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
 	
 	/** The previous active state for this block. */
 	public boolean prevActive;
-	
-	/** Whether or not this machine has initialized and registered with other mods. */
-	public boolean initialized;
-	
-	/** The full name of this machine. */
-	public String fullName;
 	
 	/** The GUI texture path for this machine. */
 	public String guiTexturePath;
@@ -92,47 +71,24 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
 	 */
 	public TileEntityBasicMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
+		super(name, maxEnergy);
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
-		MAX_ENERGY = currentMaxEnergy = maxEnergy;
 		soundURL = soundPath;
-		fullName = name;
 		guiTexturePath = path;
 		isActive = false;
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(5, 25, 25, 25, maxEnergy/10);
+			powerProvider.configure(20, 25, 25, 25, maxEnergy/10);
 		}
 	}
 	
-	public void updateEntity()
+	public void onUpdate()
 	{
-		if(!initialized && worldObj != null)
-		{
-			if(ObsidianIngots.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).addTileEntity(this);
-			}
-			
-			initialized = true;
-		}
-		
 		if(audio == null && worldObj.isRemote)
 		{
 			audio = ObsidianIngots.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
-		}
-		
-		onUpdate();
-		
-		if(!worldObj.isRemote)
-		{
-			if(packetTick == 5)
-			{
-				sendPacket();
-			}
-			
-			packetTick++;
 		}
 		
 		if(worldObj.isRemote)
@@ -147,36 +103,12 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
 				audio.stop();
 			}
 		}
-		
-		if(!worldObj.isRemote)
-		{
-			sendPacketWithRange();
-		}
-	}
-	
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
-	{
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
-	}
-	
-	public void openChest() {}
-
-	public void closeChest() {}
-	
-	public String getInvName() 
-	{
-		return fullName;
-	}
-	
-	public int getInventoryStackLimit() 
-	{
-		return 64;
 	}
 	
 	public void invalidate()
 	{
 		super.invalidate();
-		if(worldObj.isRemote)
+		if(worldObj.isRemote && audio != null)
 		{
 			audio.remove();
 		}
@@ -203,46 +135,6 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
     	
     	return rejects;
     }
-
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
-	{
-		return true;
-	}
-
-	public short getFacing() 
-	{
-		return (short)facing;
-	}
-
-	public void setFacing(short direction) 
-	{
-		if(initialized)
-		{
-			if(ObsidianIngots.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).removeTileEntity(this);
-			}
-		}
-		
-		initialized = false;
-		facing = direction;
-		sendPacket();
-		if(ObsidianIngots.hooks.IC2Loaded)
-		{
-			EnergyNet.getForWorld(worldObj).addTileEntity(this);
-		}
-		initialized = true;
-	}
-
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) 
-	{
-		return true;
-	}
-
-	public float getWrenchDropRate() 
-	{
-		return 1.0F;
-	}
 	
 	public void setPowerProvider(IPowerProvider provider)
 	{
@@ -266,15 +158,10 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
 		return true;
 	}
 	
-	public boolean isAddedToEnergyNet()
-	{
-		return initialized;
-	}
-	
 	/**
 	 * Gets the scaled energy level for the GUI.
 	 * @param i - multiplier
-	 * @return
+	 * @return scaled energy
 	 */
 	public int getScaledEnergyLevel(int i)
 	{
@@ -365,82 +252,6 @@ public abstract class TileEntityBasicMachine extends TileEntityDisableable imple
 	public void attach(IComputerAccess computer, String computerSide) {}
 
 	public void detach(IComputerAccess computer) {}
-	
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-        if (side == ForgeDirection.DOWN) return 1;
-        if (side == ForgeDirection.UP) return 0; 
-        return 2;
-	}
-
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
-	}
-
-	public int getSizeInventory() 
-	{
-		return inventory.length;
-	}
-
-	public ItemStack getStackInSlot(int par1) 
-	{
-		return inventory[par1];
-	}
-
-    public ItemStack decrStackSize(int par1, int par2)
-    {
-        if (inventory[par1] != null)
-        {
-            ItemStack var3;
-
-            if (inventory[par1].stackSize <= par2)
-            {
-                var3 = inventory[par1];
-                inventory[par1] = null;
-                return var3;
-            }
-            else
-            {
-                var3 = inventory[par1].splitStack(par2);
-
-                if (inventory[par1].stackSize == 0)
-                {
-                    inventory[par1] = null;
-                }
-
-                return var3;
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public ItemStack getStackInSlotOnClosing(int par1)
-    {
-        if (inventory[par1] != null)
-        {
-            ItemStack var2 = inventory[par1];
-            inventory[par1] = null;
-            return var2;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
-    {
-        inventory[par1] = par2ItemStack;
-
-        if (par2ItemStack != null && par2ItemStack.stackSize > getInventoryStackLimit())
-        {
-            par2ItemStack.stackSize = getInventoryStackLimit();
-        }
-    }
     
 	public int transferToAcceptor(int amount)
 	{

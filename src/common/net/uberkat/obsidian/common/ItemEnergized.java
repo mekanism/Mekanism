@@ -17,13 +17,16 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 	
 	public int transferRate;
 	
-	public ItemEnergized(int id, int energy, int rate)
+	public int divider;
+	
+	public ItemEnergized(int id, int energy, int rate, int divide)
 	{
 		super(id);
+		divider = divide;
 		maxEnergy = energy;
 		transferRate = rate;
 		setMaxStackSize(1);
-		setMaxDamage(maxEnergy);
+		setMaxDamage(maxEnergy/divider);
 		setNoRepair();
 		setCreativeTab(CreativeTabs.tabRedstone);
 	}
@@ -60,7 +63,7 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 			stored = itemstack.stackTagCompound.getInteger("energy");
 		}
 		
-		itemstack.setItemDamage(maxEnergy - stored);
+		itemstack.setItemDamage((maxEnergy - stored)/divider);
 		return stored;
 	}
 	
@@ -73,20 +76,20 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 		
 		int stored = Math.max(Math.min(energy, maxEnergy), 0);
 		itemstack.stackTagCompound.setInteger("energy", stored);
-        itemstack.setItemDamage(maxEnergy - stored);
+        itemstack.setItemDamage((maxEnergy - stored)/divider);
 	}
 	
 	public ItemStack getUnchargedItem()
 	{
 		ItemStack charged = new ItemStack(this);
-		charged.setItemDamage(maxEnergy);
+		charged.setItemDamage(maxEnergy/divider);
 		return charged;
 	}
 	
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
-		discharged.setItemDamage(maxEnergy);
+		discharged.setItemDamage(maxEnergy/divider);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy());
@@ -169,5 +172,10 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 	public boolean canProduceElectricity()
 	{
 		return true;
+	}
+	
+	public int getDivider()
+	{
+		return divider;
 	}
 }

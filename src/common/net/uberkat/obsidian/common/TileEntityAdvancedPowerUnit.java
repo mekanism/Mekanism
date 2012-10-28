@@ -4,6 +4,6 @@ public class TileEntityAdvancedPowerUnit extends TileEntityPowerUnit
 {
 	public TileEntityAdvancedPowerUnit()
 	{
-		super(50000000, 1024);
+		super("Advanced Power Unit", 50000000, 1024);
 	}
 }
