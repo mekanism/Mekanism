@@ -47,7 +47,7 @@ public interface IEnergizedItem
 	 * Removes the defined amount of energy from the item.
 	 * @param itemstack
 	 * @param amount
-	 * @return leftover energy
+	 * @return energy discharged
 	 */
 	public int discharge(ItemStack itemstack, int amount);
 	

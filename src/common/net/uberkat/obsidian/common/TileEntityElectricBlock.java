@@ -67,11 +67,12 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 				sendPacketWithRange();
 			}
 			else {
-				if(packetTick % 100 == 0)
+				if(packetTick % 20 == 0)
 				{
 					sendPacketWithRange();
 				}
 			}
+			packetTick++;
 		}
 	}
 	

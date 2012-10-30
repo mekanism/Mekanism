@@ -47,6 +47,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	
 	public void onUpdate()
 	{
+		super.onUpdate();
 		boolean testActive = operatingTicks > 0;
 		
 		if(inventory[1] != null)
@@ -64,8 +65,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 					}
 					else if(item.getRate() > energyNeeded)
 					{
-						item.setEnergy(inventory[1], (item.getEnergy(inventory[1]) - energyNeeded));
-						received = energyNeeded;
+						received = item.discharge(inventory[1], energyNeeded);
 					}
 					
 					setEnergy(energyStored + received);

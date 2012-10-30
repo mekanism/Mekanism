@@ -39,7 +39,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.2.4")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.3")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -61,7 +61,7 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 2, 4);
+	public static Version versionNumber = new Version(4, 3, 0);
 	
 	/** Obsidian Ingots creative tab */
 	public static CreativeTabOI tabOBSIDIAN = new CreativeTabOI();
@@ -1029,7 +1029,7 @@ public class ObsidianIngots
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
-		LanguageRegistry.instance().addStringLocalization(tabOBSIDIAN.getTabLabel(), "Obsidian Ingots");
+		LanguageRegistry.instance().addStringLocalization(tabOBSIDIAN.getTranslatedTabLabel(), "Obsidian Ingots");
 		
 		//Attempt to load server commands
 		try {
