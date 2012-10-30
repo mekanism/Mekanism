@@ -13,7 +13,7 @@ public class ItemObsidianPaxel extends ItemObsidianTool
     public ItemObsidianPaxel(int i, EnumToolMaterial enumtoolmaterial)
     {
         super(i, 3, enumtoolmaterial, blocksEffectiveAgainst);
-        setCreativeTab(CreativeTabs.tabTools);
+        setCreativeTab(ObsidianIngots.tabOBSIDIAN);
     }
 
     public boolean canHarvestBlock(Block block)

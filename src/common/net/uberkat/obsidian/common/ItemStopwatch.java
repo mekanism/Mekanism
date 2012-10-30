@@ -9,7 +9,7 @@ public class ItemStopwatch extends ItemObsidian {
 		super(i);
 		setMaxStackSize(1);
 		setMaxDamage(5000);
-		setCreativeTab(CreativeTabs.tabTools);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 	}
 	
 	public boolean hasEffect(ItemStack itemstack)

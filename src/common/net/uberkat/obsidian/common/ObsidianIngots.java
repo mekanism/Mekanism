@@ -63,6 +63,9 @@ public class ObsidianIngots
 	/** Obsidian Ingots version number */
 	public static Version versionNumber = new Version(4, 2, 4);
 	
+	/** Obsidian Ingots creative tab */
+	public static CreativeTabOI tabOBSIDIAN = new CreativeTabOI();
+	
 	/** The latest version number which is received from the Obsidian Ingots server */
 	public static String latestVersionNumber;
 	
@@ -801,7 +804,7 @@ public class ObsidianIngots
 		RedstoneBody = (new ItemObsidianArmor(11236, armorREDSTONE, proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
 		RedstoneLegs = (new ItemObsidianArmor(11237, armorREDSTONE, proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
 		RedstoneBoots = (new ItemObsidianArmor(11238, armorREDSTONE, proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
-		RedstoneIngot = new ItemObsidian(11239).setItemName("RedstoneIngot").setCreativeTab(CreativeTabs.tabMaterials);
+		RedstoneIngot = new ItemObsidian(11239).setItemName("RedstoneIngot").setCreativeTab(tabOBSIDIAN);
 		RedstonePaxel = new ItemObsidianPaxel(11240, toolREDSTONE2).setItemName("RedstonePaxel");
 		RedstonePickaxe = new ItemObsidianPickaxe(11241, toolREDSTONE).setItemName("RedstonePickaxe");
 		RedstoneAxe = new ItemObsidianAxe(11242, toolREDSTONE).setItemName("RedstoneAxe");
@@ -812,7 +815,7 @@ public class ObsidianIngots
 		PlatinumBody = (new ItemObsidianArmor(11247, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
 		PlatinumLegs = (new ItemObsidianArmor(11248, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
 		PlatinumBoots = (new ItemObsidianArmor(11249, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
-		PlatinumIngot = new ItemObsidian(11250).setItemName("PlatinumIngot").setCreativeTab(CreativeTabs.tabMaterials);
+		PlatinumIngot = new ItemObsidian(11250).setItemName("PlatinumIngot").setCreativeTab(tabOBSIDIAN);
 		PlatinumPaxel = new ItemObsidianPaxel(11251, toolPLATINUM2).setItemName("PlatinumPaxel");
 		PlatinumPickaxe = new ItemObsidianPickaxe(11252, toolPLATINUM).setItemName("PlatinumPickaxe");
 		PlatinumAxe = new ItemObsidianAxe(11253, toolPLATINUM).setItemName("PlatinumAxe");
@@ -823,7 +826,7 @@ public class ObsidianIngots
 		ObsidianBody = (new ItemObsidianArmor(11258, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
 		ObsidianLegs = (new ItemObsidianArmor(11259, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
 		ObsidianBoots = (new ItemObsidianArmor(11260, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
-		ObsidianIngot = new ItemObsidian(11261).setItemName("ObsidianIngot").setCreativeTab(CreativeTabs.tabMaterials);
+		ObsidianIngot = new ItemObsidian(11261).setItemName("ObsidianIngot").setCreativeTab(tabOBSIDIAN);
 		ObsidianPaxel = new ItemObsidianPaxel(11262, toolOBSIDIAN2).setItemName("ObsidianPaxel");
 		ObsidianPickaxe = new ItemObsidianPickaxe(11263, toolOBSIDIAN).setItemName("ObsidianPickaxe");
 		ObsidianAxe = new ItemObsidianAxe(11264, toolOBSIDIAN).setItemName("ObsidianAxe");
@@ -846,7 +849,7 @@ public class ObsidianIngots
 			LightningRod = new ItemLightningRod(11280).setItemName("LightningRod");
 			Stopwatch = new ItemStopwatch(11281).setItemName("Stopwatch");
 			WeatherOrb = new ItemWeatherOrb(11282).setItemName("WeatherOrb");
-			EnrichedAlloy = new ItemObsidian(11313).setItemName("EnrichedAlloy").setCreativeTab(CreativeTabs.tabMaterials);
+			EnrichedAlloy = new ItemObsidian(11313).setItemName("EnrichedAlloy").setCreativeTab(tabOBSIDIAN);
 		}
 		WoodPaxel = new ItemObsidianPaxel(11283, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
 		StonePaxel = new ItemObsidianPaxel(11284, EnumToolMaterial.STONE).setItemName("StonePaxel");
@@ -862,8 +865,8 @@ public class ObsidianIngots
 		LazuliKnife = new ItemObsidianKnife(11294, toolLAZULI).setItemName("LazuliKnife");
 		PlatinumKnife = new ItemObsidianKnife(11295, toolPLATINUM).setItemName("PlatinumKnife");
 		RedstoneKnife = new ItemObsidianKnife(11296, toolREDSTONE).setItemName("RedstoneKnife");
-		PlatinumDust = new ItemObsidian(11300).setItemName("PlatinumDust").setCreativeTab(CreativeTabs.tabMaterials);
-		GlowstoneIngot = new ItemObsidian(11301).setItemName("GlowstoneIngot").setCreativeTab(CreativeTabs.tabMaterials);
+		PlatinumDust = new ItemObsidian(11300).setItemName("PlatinumDust").setCreativeTab(tabOBSIDIAN);
+		GlowstoneIngot = new ItemObsidian(11301).setItemName("GlowstoneIngot").setCreativeTab(tabOBSIDIAN);
 		GlowstonePaxel = new ItemObsidianPaxel(11302, toolGLOWSTONE2).setItemName("GlowstonePaxel");
 		GlowstonePickaxe = new ItemObsidianPickaxe(11303, toolGLOWSTONE).setItemName("GlowstonePickaxe");
 		GlowstoneAxe = new ItemObsidianAxe(11304, toolGLOWSTONE).setItemName("GlowstoneAxe");
@@ -894,7 +897,7 @@ public class ObsidianIngots
 		OreBlock = new BlockOre(oreBlockID).setBlockName("OreBlock");
 		PowerUnit = new BlockPowerUnit(powerUnitID).setBlockName("PowerUnit");
 		Generator = new BlockGenerator(generatorID).setBlockName("Generator");
-		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(CreativeTabs.tabRedstone);
+		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(tabOBSIDIAN);
 		
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT);
@@ -918,8 +921,8 @@ public class ObsidianIngots
 			GoldDust = hooks.IC2GoldDust.getItem();
 		}
 		else {
-			IronDust = new ItemObsidian(11298).setItemName("IronDust").setCreativeTab(CreativeTabs.tabMaterials);
-			GoldDust = new ItemObsidian(11299).setItemName("GoldDust").setCreativeTab(CreativeTabs.tabMaterials);
+			IronDust = new ItemObsidian(11298).setItemName("IronDust").setCreativeTab(tabOBSIDIAN);
+			GoldDust = new ItemObsidian(11299).setItemName("GoldDust").setCreativeTab(tabOBSIDIAN);
 			IronDust.setIconIndex(248);
 			GoldDust.setIconIndex(250);
 			LanguageRegistry.addName(IronDust, "Iron Dust");
@@ -931,7 +934,7 @@ public class ObsidianIngots
         	ObsidianDust = hooks.RailcraftObsidianDust.getItem();
         }
         else {
-        	ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust").setCreativeTab(CreativeTabs.tabMaterials);
+        	ObsidianDust = new ItemObsidian(11297).setItemName("ObsidianDust").setCreativeTab(tabOBSIDIAN);
         	ObsidianDust.setIconIndex(241);
         	LanguageRegistry.addName(ObsidianDust, "Obsidian Dust");
         }
@@ -1025,6 +1028,8 @@ public class ObsidianIngots
 		proxy.loadConfiguration();
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
+		
+		LanguageRegistry.instance().addStringLocalization(tabOBSIDIAN.getTabLabel(), "Obsidian Ingots");
 		
 		//Attempt to load server commands
 		try {

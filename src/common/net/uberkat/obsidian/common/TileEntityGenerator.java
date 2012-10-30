@@ -76,8 +76,19 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			if(inventory[1].getItem() instanceof IEnergizedItem)
 			{
 				IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
-				int rejects = item.charge(inventory[1], item.getRate());
-				setEnergy(energyStored - (item.getRate() - rejects));
+				int sendingEnergy = 0;
+				
+				if(item.getRate() <= energyStored)
+				{
+					sendingEnergy = item.getRate();
+				}
+				else if(item.getRate() > energyStored)
+				{
+					sendingEnergy = energyStored;
+				}
+				
+				int rejects = item.charge(inventory[1], sendingEnergy);
+				setEnergy(energyStored - (sendingEnergy - rejects));
 			}
 			else if(inventory[1].getItem() instanceof IItemElectric)
 			{
@@ -114,7 +125,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		
 		if(energyStored < MAX_ENERGY)
 		{
-			System.out.println(getEnvironmentBoost());
 			setEnergy(energyStored + getEnvironmentBoost());
 			
 			if(fuelStored > 0)
@@ -170,7 +180,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 							sendingEnergy = energyStored;
 						}
 						
-						int rejects = ((IEnergyAcceptor)tileEntity).transferToAcceptor(output);
+						int rejects = ((IEnergyAcceptor)tileEntity).transferToAcceptor(sendingEnergy);
 						
 						setEnergy(energyStored - (sendingEnergy - rejects));
 					}
@@ -194,27 +204,18 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		int boost = 0;
 		
-		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10)
+		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
 			boost+=1;
-		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10)
+		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
 			boost+=1;
-		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10)
+		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
 			boost+=1;
-		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10)
+		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
 			boost+=1;
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10)
+		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
 			boost+=1;
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10)
+		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
 			boost+=1;
-		
-		if(worldObj.isDaytime() && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord) && !worldObj.isRaining() && !worldObj.isThundering() && !worldObj.provider.hasNoSky)
-		{
-			boost+=2;
-			if(worldObj.getWorldChunkManager().getBiomeGenAt(xCoord, zCoord).biomeName.equals("Desert"))
-				boost+=2;
-			else if(worldObj.getWorldChunkManager().getBiomeGenAt(xCoord, zCoord).biomeName.equals("Plains"))
-				boost+=1;
-		}
 		
 		return boost;
 	}

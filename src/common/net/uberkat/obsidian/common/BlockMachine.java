@@ -27,7 +27,7 @@ public class BlockMachine extends BlockContainer
 		super(id, Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 		setRequiresSelfNotify();
 	}
 	

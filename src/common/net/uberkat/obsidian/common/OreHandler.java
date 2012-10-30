@@ -1,13 +1,8 @@
 package net.uberkat.obsidian.common;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import net.minecraft.src.IChunkProvider;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
-import net.minecraft.src.WorldGenMinable;
+import net.minecraft.src.*;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class OreHandler implements IWorldGenerator

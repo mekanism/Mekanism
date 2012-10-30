@@ -87,9 +87,20 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		{
 			if(inventory[0].getItem() instanceof IEnergizedItem)
 			{
-				IEnergizedItem item = (IEnergizedItem)inventory[0].getItem();
-				int rejects = item.charge(inventory[0], item.getRate());
-				setEnergy(energyStored - (item.getRate() - rejects));
+				IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
+				int sendingEnergy = 0;
+				
+				if(item.getRate() <= energyStored)
+				{
+					sendingEnergy = item.getRate();
+				}
+				else if(item.getRate() > energyStored)
+				{
+					sendingEnergy = energyStored;
+				}
+				
+				int rejects = item.charge(inventory[1], sendingEnergy);
+				setEnergy(energyStored - (sendingEnergy - rejects));
 			}
 			else if(inventory[0].getItem() instanceof IItemElectric)
 			{
@@ -190,7 +201,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 							sendingEnergy = energyStored;
 						}
 						
-						int rejects = ((IEnergyAcceptor)tileEntity).transferToAcceptor(output);
+						int rejects = ((IEnergyAcceptor)tileEntity).transferToAcceptor(sendingEnergy);
 						
 						setEnergy(energyStored - (sendingEnergy - rejects));
 					}

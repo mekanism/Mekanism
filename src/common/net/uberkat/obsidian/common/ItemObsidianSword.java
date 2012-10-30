@@ -23,7 +23,7 @@ public class ItemObsidianSword extends ItemObsidian
         maxStackSize = 1;
         setMaxDamage(par2EnumToolMaterial.getMaxUses());
         weaponDamage = 4 + par2EnumToolMaterial.getDamageVsEntity();
-        setCreativeTab(CreativeTabs.tabCombat);
+        setCreativeTab(ObsidianIngots.tabOBSIDIAN);
     }
 
     /**

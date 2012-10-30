@@ -28,7 +28,7 @@ public class ItemEnergized extends ItemObsidian implements IEnergizedItem, IItem
 		setMaxStackSize(1);
 		setMaxDamage(maxEnergy/divider);
 		setNoRepair();
-		setCreativeTab(CreativeTabs.tabRedstone);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 	}
 	
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)

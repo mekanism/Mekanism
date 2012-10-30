@@ -25,7 +25,7 @@ public class BlockMulti extends Block
 		super(i, Material.iron);
 		setHardness(5F);
 		setResistance(10F);
-		setCreativeTab(CreativeTabs.tabBlock);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 		setRequiresSelfNotify();
 	}
 	

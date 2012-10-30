@@ -4,11 +4,15 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.src.*;
 import net.uberkat.obsidian.common.ContainerGenerator;
+import net.uberkat.obsidian.common.ObsidianUtils;
 import net.uberkat.obsidian.common.TileEntityGenerator;
 
 public class GuiGenerator extends GuiContainer
 {
 	public TileEntityGenerator tileEntity;
+	
+	private int guiWidth;
+	private int guiHeight;
 	
 	public GuiGenerator(InventoryPlayer inventory, TileEntityGenerator tentity)
     {
@@ -23,6 +27,9 @@ public class GuiGenerator extends GuiContainer
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString(ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY), 51, 26, 0x404040);
+        fontRenderer.drawString("Fuel: " + tileEntity.fuelStored, 51, 35, 0x404040);
+        fontRenderer.drawString("Out: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.output), 51, 44, 0x404040);
     }
 
     /**
@@ -33,8 +40,8 @@ public class GuiGenerator extends GuiContainer
         int texture = mc.renderEngine.getTexture("/gui/GuiGenerator.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
+        guiWidth = (width - xSize) / 2;
+        guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt;
         

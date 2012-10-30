@@ -22,11 +22,11 @@ public class GuiPowerUnit extends GuiContainer
 	
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String capacityInfo = "Stored: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY);
-		String outputInfo = "Output: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.output) + "/t";
+		String capacityInfo = ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY);
+		String outputInfo = "Out: " + ObsidianUtils.getDisplayedEnergyNoColor(tileEntity.output) + "/t";
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
-		fontRenderer.drawString(capacityInfo, 45, 42, 0x404040);
-		fontRenderer.drawString(outputInfo, 45, 52, 0x404040);
+		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
+		fontRenderer.drawString(outputInfo, 45, 49, 0x404040);
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 	}
 	

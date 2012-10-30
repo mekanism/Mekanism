@@ -12,6 +12,6 @@ public class ItemMachineUpgrade extends ItemObsidian implements IMachineUpgrade
 	{
 		super(i);
 		setMaxStackSize(1);
-		setCreativeTab(CreativeTabs.tabRedstone);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 	}
 }

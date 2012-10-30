@@ -26,7 +26,7 @@ public class BlockPowerUnit extends BlockContainer
 		super(id, Material.iron);
 		setHardness(2F);
 		setResistance(4F);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 		setRequiresSelfNotify();
 	}
 	

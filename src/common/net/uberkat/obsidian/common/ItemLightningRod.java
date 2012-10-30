@@ -9,7 +9,7 @@ public class ItemLightningRod extends ItemObsidian
 		super(i);
 		setMaxStackSize(1);
 		setMaxDamage(100);
-		setCreativeTab(CreativeTabs.tabTools);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 	}
 	
     public boolean hasEffect(ItemStack par1ItemStack)

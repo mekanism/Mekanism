@@ -8,7 +8,7 @@ public class ItemObsidian extends Item
 	{
 		super(i);
 		itemsList[256 + i] = this;
-		setCreativeTab(CreativeTabs.tabAllSearch);
+		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 	}
 
 	public String getTextureFile() {

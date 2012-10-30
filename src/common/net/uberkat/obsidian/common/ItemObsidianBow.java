@@ -10,7 +10,7 @@ public class ItemObsidianBow extends ItemObsidian
         super(par1);
         maxStackSize = 1;
         setMaxDamage(750);
-        setCreativeTab(CreativeTabs.tabCombat);
+        setCreativeTab(ObsidianIngots.tabOBSIDIAN);
     }
     
     public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
