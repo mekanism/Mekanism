@@ -25,13 +25,13 @@ public class ObsidianHooks
 	
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
-	public boolean UELoaded = false;
+	public boolean BCLoaded = false;
 	
 	public void hook()
 	{
 		if(isIC2Installed()) IC2Loaded = true;
 		if(isRailcraftInstalled()) RailcraftLoaded = true;
-		if(isUEInstalled()) UELoaded = true;
+		if(isUEInstalled()) BCLoaded = true;
 		
 		if(IC2Loaded)
 		{
@@ -48,6 +48,10 @@ public class ObsidianHooks
 			RailcraftObsidianDust = getRailcraftItem("dust.obsidian");
 			
 			System.out.println("[ObsidianIngots] Hooked into Railcraft successfully.");
+		}
+		if(BCLoaded)
+		{
+			System.out.println("[ObsidianIngots] Hooked into BasicComponents successfully.");
 		}
 	}
 	
@@ -120,7 +124,7 @@ public class ObsidianHooks
 	public boolean isUEInstalled()
 	{
 		try {
-			if(BCLoader == null) BCLoader = Class.forName("basiccomponents.BasicComponents");
+			if(BCLoader == null) BCLoader = Class.forName("basiccomponents.BCLoader");
 			Object ret = BCLoader.getField("instance").get(null);
 			
 			if(ret != null)
@@ -129,7 +133,7 @@ public class ObsidianHooks
 			}
 			return false;
 		} catch(Exception e) {
-			System.out.println("[ObsidianIngots] Unable to hook into UniversalElectricity.");
+			System.out.println("[ObsidianIngots] Unable to hook into BasicComponents.");
 			return false;
 		}
 	}

@@ -80,18 +80,21 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(20, 25, 25, 25, maxEnergy/10);
+			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
 		}
 	}
 	
 	public void onUpdate()
 	{
-		if(audio == null && worldObj.isRemote)
+		if(audio == null && worldObj != null && worldObj.isRemote)
 		{
-			audio = ObsidianIngots.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
+			if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+			{
+				audio = ObsidianIngots.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
+			}
 		}
 		
-		if(worldObj.isRemote)
+		if(worldObj != null && worldObj.isRemote && audio != null)
 		{
 			audio.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 			if(!audio.isPlaying && isActive == true)
@@ -215,7 +218,19 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
-		setEnergy(energyStored + (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO));
+		int energyToReceive = (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO);
+		int energyNeeded = currentMaxEnergy - energyStored;
+		int energyToStore = 0;
+		
+		if(energyToReceive <= energyNeeded)
+		{
+			energyToStore = energyToReceive;
+		}
+		else if(energyToReceive > energyNeeded)
+		{
+			energyToStore = energyNeeded;
+		}
+		setEnergy(energyStored + energyToStore);
 	}
 	
 	/**

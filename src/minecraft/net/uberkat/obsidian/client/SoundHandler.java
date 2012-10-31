@@ -39,7 +39,14 @@ public class SoundHandler
 	 */
 	public Sound getSound(String name, String path, World world, int x, int y, int z)
 	{
-		return new Sound(soundSystem, getSoundName(name), path, world, x, y, z);
+		if(soundSystem != null)
+		{
+			return new Sound(soundSystem, getSoundName(name), path, world, x, y, z);
+		}
+		else {
+			soundSystem = FMLClientHandler.instance().getClient().sndManager.sndSystem;
+			return new Sound(soundSystem, getSoundName(name), path, world, x, y, z);
+		}
 	}
 	
 	/**

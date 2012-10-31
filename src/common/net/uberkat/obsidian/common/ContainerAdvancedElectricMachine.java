@@ -32,6 +32,14 @@ public class ContainerAdvancedElectricMachine extends Container
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
+        
+        tileEntity.openChest();
+    }
+    
+    public void onCraftGuiClosed(EntityPlayer entityplayer)
+    {
+		super.onCraftGuiClosed(entityplayer);
+		tileEntity.closeChest();
     }
 
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)

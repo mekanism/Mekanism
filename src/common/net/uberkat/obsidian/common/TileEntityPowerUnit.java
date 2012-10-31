@@ -408,7 +408,19 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
-		setEnergy(energyStored + (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO));
+		int energyToReceive = (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO);
+		int energyNeeded = MAX_ENERGY - energyStored;
+		int energyToStore = 0;
+		
+		if(energyToReceive <= energyNeeded)
+		{
+			energyToStore = energyToReceive;
+		}
+		else if(energyToReceive > energyNeeded)
+		{
+			energyToStore = energyNeeded;
+		}
+		setEnergy(energyStored + energyToStore);
 	}
 
 	public double wattRequest() 
