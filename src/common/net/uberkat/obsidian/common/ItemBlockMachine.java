@@ -11,6 +11,8 @@ import net.minecraft.src.ItemStack;
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
+ * 5: Washer
+ * 6: Teleporter
  * @author AidanBrady
  *
  */
@@ -54,6 +56,12 @@ public class ItemBlockMachine extends ItemBlock
 				break;
 			case 4:
 				name = "TheoreticalElementizer";
+				break;
+			case 5:
+				name = "Washer";
+				break;
+			case 6:
+				name = "Teleporter";
 				break;
 			default:
 				name = "Unknown";

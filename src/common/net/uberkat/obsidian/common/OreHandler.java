@@ -27,12 +27,19 @@ public class OreHandler implements IWorldGenerator
 	{
 		if(ObsidianIngots.oreGenerationEnabled == true)
 		{
-			for (int i=0;i<6;i++)
+			for(int i=0;i<6;i++)
 			{
 				int randPosX = chunkX + random.nextInt(16);
 				int randPosY = random.nextInt(60);
 				int randPosZ = chunkZ + random.nextInt(16);
 				(new WorldGenMinable(new ItemStack(ObsidianIngots.OreBlock, 1, 0).itemID, 8)).generate(world, random, randPosX, randPosY, randPosZ);
+			}
+			for(int i=0;i<2;i++)
+			{
+				int randPosX = chunkX + random.nextInt(16);
+				int randPosY = random.nextInt(60);
+				int randPosZ = chunkZ + random.nextInt(16);
+				(new WorldGenMinable(new ItemStack(ObsidianIngots.OreBlock, 1, 1).itemID, 6)).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 		}
 	}

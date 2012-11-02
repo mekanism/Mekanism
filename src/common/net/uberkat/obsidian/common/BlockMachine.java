@@ -7,6 +7,9 @@ import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
+import net.uberkat.obsidian.hawk.common.TileEntityDamagableMachine;
+import net.uberkat.obsidian.hawk.common.TileEntityTeleporter;
+import net.uberkat.obsidian.hawk.common.TileEntityWasher;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -15,6 +18,8 @@ import net.minecraftforge.common.ForgeDirection;
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
+ * 5: Washer
+ * 6: Teleporter
  * @author AidanBrady
  *
  */
@@ -33,54 +38,62 @@ public class BlockMachine extends BlockContainer
 	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
-    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
-        int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-        int change = 3;
-        
-        switch(side)
-        {
-        	case 0: change = 2; break;
-        	case 1: change = 5; break;
-        	case 2: change = 3; break;
-        	case 3: change = 4; break;
-        }
-        
-        tileEntity.setFacing((short)change);
+    	if(!(world.getBlockMetadata(x, y, z) == 6))
+    	{
+	    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+	        int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+	        int change = 3;
+	        
+	        switch(side)
+	        {
+	        	case 0: change = 2; break;
+	        	case 1: change = 5; break;
+	        	case 2: change = 3; break;
+	        	case 3: change = 4; break;
+	        }
+	        
+	        tileEntity.setFacing((short)change);
+    	}
     }
 	
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
-        if (isActive(world, x, y, z))
-        {
-            float xRandom = (float)x + 0.5F;
-            float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-            float zRandom = (float)z + 0.5F;
-            float iRandom = 0.52F;
-            float jRandom = random.nextFloat() * 0.6F - 0.3F;
-
-            if (tileEntity.facing == 4)
-            {
-                world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-            }
-            else if (tileEntity.facing == 5)
-            {
-                world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-            }
-            else if (tileEntity.facing == 2)
-            {
-                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-            }
-            else if (tileEntity.facing == 3)
-            {
-                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-            }
-        }
+    	int meta = world.getBlockMetadata(x, y, z);
+    	
+    	if(meta != 5 && meta != 6)
+    	{
+	    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+	        if (isActive(world, x, y, z))
+	        {
+	            float xRandom = (float)x + 0.5F;
+	            float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+	            float zRandom = (float)z + 0.5F;
+	            float iRandom = 0.52F;
+	            float jRandom = random.nextFloat() * 0.6F - 0.3F;
+	
+	            if (tileEntity.facing == 4)
+	            {
+	                world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+	                world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+	            }
+	            else if (tileEntity.facing == 5)
+	            {
+	                world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+	                world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+	            }
+	            else if (tileEntity.facing == 2)
+	            {
+	                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+	                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+	            }
+	            else if (tileEntity.facing == 3)
+	            {
+	                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+	                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+	            }
+	        }
+    	}
     }
     
     public int getBlockTextureFromSideAndMetadata(int side, int meta)
@@ -138,6 +151,34 @@ public class BlockMachine extends BlockContainer
         	else {
         		return 19;
         	}
+    	}
+    	else if(meta == 5)
+    	{
+    		if(side == 1)
+    		{
+    			return 29;
+    		}
+    		else if(side == 3)
+    		{
+    			return 30;
+    		}
+    		else {
+    			return 31;
+    		}
+    	}
+    	else if(meta == 6)
+    	{
+    		if(side == 0)
+    		{
+    			return 34;
+    		}
+    		else if(side == 1)
+    		{
+    			return 32;
+    		}
+    		else {
+    			return 33;
+    		}
     	}
     	else {
     		return 0;
@@ -211,6 +252,34 @@ public class BlockMachine extends BlockContainer
             	}
             }
     	}
+    	else if(metadata == 5)
+    	{
+    		if(side == 1)
+    		{
+    			return 29;
+    		}
+    		else if(side == tileEntity.facing)
+    		{
+    			return 30;
+    		}
+    		else {
+    			return 31;
+    		}
+    	}
+    	else if(metadata == 6)
+    	{
+    		if(side == 0)
+    		{
+    			return 34;
+    		}
+    		else if(side == 1)
+    		{
+    			return 32;
+    		}
+    		else {
+    			return 33;
+    		}
+    	}
     	else {
     		return 0;
     	}
@@ -229,6 +298,8 @@ public class BlockMachine extends BlockContainer
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
+		list.add(new ItemStack(i, 1, 6));
 	}
     
 	/**
@@ -298,12 +369,13 @@ public class BlockMachine extends BlockContainer
     
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
-        if (world.isRemote)
-        {
-            return true;
-        }
-        else
-        {
+    	if(world.isRemote)
+    	{
+    		return false;
+    	}
+    	
+    	//If the block isn't a washer
+    	else {
         	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
         	
@@ -318,15 +390,16 @@ public class BlockMachine extends BlockContainer
             		else if(metadata == 2) id = 5;
             		else if(metadata == 3) id = 6;
             		else if(metadata == 4) id = 7;
+            		else if(metadata == 5) id = 10;
+            		else if(metadata == 6) id = 11;
             		
             		entityplayer.openGui(ObsidianIngots.instance, id, world, x, y, z);
+            		return true;
             	}
-            	else {
-            		return false;
-            	}
+            	return false;
             }
             return true;
-        }
+    	}
     }
     
     public String getTextureFile()
@@ -356,6 +429,14 @@ public class BlockMachine extends BlockContainer
     	{
     		return new TileEntityTheoreticalElementizer();
     	}
+    	else if(metadata == MachineType.WASHER.index)
+    	{
+    		return new TileEntityWasher();
+    	}
+    	else if(metadata == MachineType.TELEPORTER.index)
+    	{
+    		return new TileEntityTeleporter();
+    	}
     	else {
     		return null;
     	}
@@ -373,13 +454,20 @@ public class BlockMachine extends BlockContainer
 		PLATINUM_COMPRESSOR(1),
 		COMBINER(2),
 		CRUSHER(3),
-		THEORETICAL_ELEMENTIZER(4);
+		THEORETICAL_ELEMENTIZER(4),
+		WASHER(5),
+		TELEPORTER(6);
 		
 		private int index;
 		
 		private MachineType(int i)
 		{
 			index = i;
+		}
+		
+		public String toString()
+		{
+			return Integer.toString(index);
 		}
 	}
 }

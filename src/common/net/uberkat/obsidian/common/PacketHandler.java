@@ -18,6 +18,7 @@ import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
+import net.uberkat.obsidian.hawk.common.TileEntityWasher;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
@@ -382,6 +383,84 @@ public class PacketHandler implements IPacketHandler
         packet.length = packet.data.length;
         
         PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+	}
+	
+	/**
+	 * Send a damagable machine update packet from server to client. This will send the data int '4,' as well as 
+	 * the machine's x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, max energy,
+	 * HP, and water units.
+	 * @param sender - tile entity who is sending the packet
+	 */
+	public static void sendWasherPacket(TileEntityWasher sender)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeByte(sender.isActive ? 1 : 0);
+        	output.writeInt(sender.operatingTicks);
+        	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.currentMaxEnergy);
+        	output.writeInt(sender.currentTicksRequired);
+        	output.writeFloat(sender.waterUnits);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+        {
+        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
+        }
+	}
+	
+	/**
+	 * Send a damagable machine update packet from server to client with a defined range. This will send the data int '4,' as well as 
+	 * the machine's x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, max energy,
+	 * HP, and water units.
+	 * @param sender - tile entity who is sending the packet
+	 * @param distance - radius to send packet in
+	 */
+	public static void sendWasherPacketWithRange(TileEntityWasher sender, double distance)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
+        	output.writeInt(sender.xCoord);
+        	output.writeInt(sender.yCoord);
+        	output.writeInt(sender.zCoord);
+        	output.writeInt(sender.facing);
+        	output.writeByte(sender.isActive ? 1 : 0);
+        	output.writeInt(sender.operatingTicks);
+        	output.writeInt(sender.energyStored);
+        	output.writeInt(sender.currentMaxEnergy);
+        	output.writeInt(sender.currentTicksRequired);
+        	output.writeFloat(sender.waterUnits);
+        } catch (IOException e)
+        {
+        	System.err.println("[ObsidianIngots] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "ObsidianIngots";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
 	}
 	
 	/**

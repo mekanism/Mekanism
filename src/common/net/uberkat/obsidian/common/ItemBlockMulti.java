@@ -9,6 +9,7 @@ import net.minecraft.src.*;
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone
+ * 5: Endium Chunkloader
  * @author AidanBrady
  *
  */
@@ -33,6 +34,15 @@ public class ItemBlockMulti extends ItemBlock
 		return metaBlock.getBlockTextureFromSideAndMetadata(2, i);
 	}
 	
+	public EnumRarity getRarity(ItemStack item)
+	{
+		if(item.getItemDamage() == 5)
+		{
+			return EnumRarity.rare;
+		}
+		return EnumRarity.common;
+	}
+	
 	public String getItemNameIS(ItemStack itemstack)
 	{
 		String name = "";
@@ -52,6 +62,9 @@ public class ItemBlockMulti extends ItemBlock
 				break;
 			case 4:
 				name = "RefinedGlowstone";
+				break;
+			case 5:
+				name = "EndiumChunkloader";
 				break;
 			default:
 				name = "Unknown";

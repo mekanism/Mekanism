@@ -11,6 +11,6 @@ public class CreativeTabOI extends CreativeTabs
 	
 	public ItemStack getIconItemStack()
 	{
-		return new ItemStack(ObsidianIngots.ObsidianIngot);
+		return new ItemStack(ObsidianIngots.Ingot, 1, 0);
 	}
 }

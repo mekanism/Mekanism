@@ -7,6 +7,8 @@ import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
 import net.minecraft.src.*;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.uberkat.obsidian.hawk.common.TileEntityEndiumChunkloader;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -15,11 +17,14 @@ import net.minecraft.src.*;
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone
+ * 5: Endium Chunkloader
  * @author AidanBrady
  *
  */
 public class BlockMulti extends Block
 {
+	public TileEntityEndiumChunkloader tileChunkloader;
+	
 	public BlockMulti(int i)
 	{
 		super(i, Material.iron);
@@ -60,6 +65,7 @@ public class BlockMulti extends Block
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
 	}
 	
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
@@ -86,14 +92,88 @@ public class BlockMulti extends Block
         		return 8;
         	case 4:
         		return 15;
+        	case 5:
+        		return 15;
         }
         return 0;
     }
+    
+	public boolean hasTileEntity(int metadata)
+	{
+		return metadata == 5;
+	}
+	
+	public TileEntity createTileEntity(World world, int metadata)
+	{
+		if(metadata == 5)
+		{
+			tileChunkloader = new TileEntityEndiumChunkloader();
+			return tileChunkloader;
+		}
+		return null;
+	}
+	
+	public void randomDisplayTick(World world, int x, int y, int z, Random random)
+	{
+		if (world.isBlockIndirectlyGettingPowered(x, y + 1, z) && world.getBlockMetadata(z, y, z) == 5)
+		{
+			Chunk chunkInside = world.getChunkFromBlockCoords(x, z);
+			int xPosMax = chunkInside.xPosition << 4;
+			int zPosMax = chunkInside.zPosition << 4;
+			int xPosMin = xPosMax + 16;
+			int zPosMin = zPosMax + 16;
+			
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 1.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 2.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 3.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 4.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 1.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 2.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 3.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 4.5, 0, 0, 0);
+			
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 1.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 2.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 3.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 4.5, y + 1, zPosMax + 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 1.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 2.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 3.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 4.5, 0, 0, 0);
+			
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 1.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 2.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 3.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 4.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 1.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 2.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 3.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 4.5, 0, 0, 0);
+			
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 1.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 2.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 3.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 4.5, y + 1, zPosMin - 0.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 1.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 2.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 3.5, 0, 0, 0);
+			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 4.5, 0, 0, 0);
+		}
+	}
 	
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
 	{
 		world.markBlockAsNeedsUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
+	}
+	
+	public void onBlockHarvested(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer)
+	{
+		ForgeChunkManager.releaseTicket(tileChunkloader.heldChunk);
 	}
 	
 	public String getTextureFile()

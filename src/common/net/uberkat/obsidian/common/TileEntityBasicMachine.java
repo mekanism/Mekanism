@@ -108,6 +108,32 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		}
 	}
 	
+    public void readFromNBT(NBTTagCompound nbtTags)
+    {
+        super.readFromNBT(nbtTags);
+        
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
+        }
+
+        operatingTicks = nbtTags.getInteger("operatingTicks");
+        isActive = nbtTags.getBoolean("isActive");
+    }
+
+    public void writeToNBT(NBTTagCompound nbtTags)
+    {
+        super.writeToNBT(nbtTags);
+        
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
+        }
+        
+        nbtTags.setInteger("operatingTicks", operatingTicks);
+        nbtTags.setBoolean("isActive", isActive);
+    }
+	
 	public void invalidate()
 	{
 		super.invalidate();

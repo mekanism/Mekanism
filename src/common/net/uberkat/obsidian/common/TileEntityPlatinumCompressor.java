@@ -27,7 +27,7 @@ public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMach
 
 	public int getFuelTicks(ItemStack itemstack)
 	{
-		if (itemstack.itemID == ObsidianIngots.PlatinumIngot.shiftedIndex) return 200;
+		if (itemstack.itemID == new ItemStack(ObsidianIngots.Ingot, 1, 1).itemID) return 200;
 		return 0;
 	}
 }

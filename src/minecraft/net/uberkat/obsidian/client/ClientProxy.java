@@ -35,6 +35,10 @@ import net.uberkat.obsidian.common.TileEntityGenerator;
 import net.uberkat.obsidian.common.TileEntityPlatinumCompressor;
 import net.uberkat.obsidian.common.TileEntityPowerUnit;
 import net.uberkat.obsidian.common.TileEntityTheoreticalElementizer;
+import net.uberkat.obsidian.hawk.client.GuiTeleporter;
+import net.uberkat.obsidian.hawk.client.GuiWasher;
+import net.uberkat.obsidian.hawk.common.TileEntityTeleporter;
+import net.uberkat.obsidian.hawk.common.TileEntityWasher;
 
 /**
  * Client proxy for Obsidian Ingots mod.
@@ -60,6 +64,10 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerFront.png");
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerBack.png");
 		MinecraftForgeClient.preloadTexture("/textures/ElementizerSide.png");
+		
+		//Hawk's Machines
+		MinecraftForgeClient.preloadTexture("/textures/hawk/blocks.png");
+		MinecraftForgeClient.preloadTexture("/textures/hawk/items.png");
 		
 		//Register animated TextureFX for machines
 		try {
@@ -122,6 +130,12 @@ public class ClientProxy extends CommonProxy
 			case 9:
 				TileEntityGenerator tileentity6 = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
 				return new GuiGenerator(player.inventory, tileentity6);
+			case 10:
+				TileEntityWasher tileentity7 = (TileEntityWasher)world.getBlockTileEntity(x, y, z);
+				return new GuiWasher(player.inventory, tileentity7);
+			case 11:
+				TileEntityTeleporter tileentity8 = (TileEntityTeleporter)world.getBlockTileEntity(x, y, z);
+				return new GuiTeleporter(player.inventory, tileentity8);
 		}
 		return null;
 	}

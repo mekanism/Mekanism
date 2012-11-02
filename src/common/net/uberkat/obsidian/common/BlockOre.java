@@ -9,6 +9,7 @@ import net.minecraft.src.*;
 /**
  * Block class for handling multiple ore block IDs. 
  * 0: Platinum Ore
+ * 1: Endium Ore
  * @author AidanBrady
  *
  */
@@ -23,12 +24,19 @@ public class BlockOre extends Block
 		setRequiresSelfNotify();
 	}
 	
+	public boolean canDragonDestroy(World world, int x, int y, int z)
+	{
+		return world.getBlockMetadata(x, y, z) != 1;
+	}
+	
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		switch(meta)
 		{
 			case 0:
 				return 3;
+			case 1:
+				return 28;
 		}
 		return 0;
 	}
@@ -42,6 +50,7 @@ public class BlockOre extends Block
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
 		list.add(new ItemStack(i, 1, 0));
+		list.add(new ItemStack(i, 1, 1));
 	}
 	
 	public String getTextureFile()

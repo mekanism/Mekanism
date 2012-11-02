@@ -347,62 +347,16 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	
     public void readFromNBT(NBTTagCompound nbtTags)
     {
-        super.readFromNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
-        }
-        
-        NBTTagList tagList = nbtTags.getTagList("Items");
-        inventory = new ItemStack[getSizeInventory()];
-
-        for (int slots = 0; slots < tagList.tagCount(); ++slots)
-        {
-            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
-            byte slotID = tagCompound.getByte("Slot");
-
-            if (slotID >= 0 && slotID < inventory.length)
-            {
-                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
-            }
-        }
-
-        operatingTicks = nbtTags.getInteger("operatingTicks");
-        energyStored = nbtTags.getInteger("energyStored");
+    	super.readFromNBT(nbtTags);
+    	
         secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
-        prevActive = isActive = nbtTags.getBoolean("isActive");
-        facing = nbtTags.getInteger("facing");
     }
 
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
         
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
-        }
-        
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setInteger("energyStored", energyStored);
         nbtTags.setInteger("secondaryEnergyStored", secondaryEnergyStored);
-        nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("facing", facing);
-        NBTTagList tagList = new NBTTagList();
-
-        for (int slots = 0; slots < inventory.length; ++slots)
-        {
-            if (inventory[slots] != null)
-            {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte("Slot", (byte)slots);
-                inventory[slots].writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
-            }
-        }
-
-        nbtTags.setTag("Items", tagList);
     }
 	
 	/**

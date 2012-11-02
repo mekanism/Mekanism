@@ -40,6 +40,7 @@ public class ItemLightningRod extends ItemObsidian
             EntityLightningBolt entitybolt = new EntityLightningBolt(world, 0D, 0D, 0D);
             entitybolt.setLocationAndAngles(x, y, z, 0, 0.0F);
             world.spawnEntityInWorld(entitybolt);
+            entityplayer.swingItem();
             if(!entityplayer.capabilities.isCreativeMode)
             {
             	itemstack.damageItem(99, entityplayer);

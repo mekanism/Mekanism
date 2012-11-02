@@ -1,5 +1,6 @@
 package net.uberkat.obsidian.common;
 
+import buildcraft.api.power.PowerFramework;
 import obsidian.api.ITileNetwork;
 import universalelectricity.prefab.TileEntityDisableable;
 import ic2.api.EnergyNet;
@@ -155,6 +156,50 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         {
             par2ItemStack.stackSize = getInventoryStackLimit();
         }
+    }
+    
+    public void readFromNBT(NBTTagCompound nbtTags)
+    {
+        super.readFromNBT(nbtTags);
+        
+        NBTTagList tagList = nbtTags.getTagList("Items");
+        inventory = new ItemStack[getSizeInventory()];
+
+        for (int slots = 0; slots < tagList.tagCount(); ++slots)
+        {
+            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
+            byte slotID = tagCompound.getByte("Slot");
+
+            if (slotID >= 0 && slotID < inventory.length)
+            {
+                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+            }
+        }
+
+        energyStored = nbtTags.getInteger("energyStored");
+        facing = nbtTags.getInteger("facing");
+    }
+
+    public void writeToNBT(NBTTagCompound nbtTags)
+    {
+        super.writeToNBT(nbtTags);
+        
+        nbtTags.setInteger("energyStored", energyStored);
+        nbtTags.setInteger("facing", facing);
+        NBTTagList tagList = new NBTTagList();
+
+        for (int slots = 0; slots < inventory.length; ++slots)
+        {
+            if (inventory[slots] != null)
+            {
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte)slots);
+                inventory[slots].writeToNBT(tagCompound);
+                tagList.appendTag(tagCompound);
+            }
+        }
+
+        nbtTags.setTag("Items", tagList);
     }
     
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
