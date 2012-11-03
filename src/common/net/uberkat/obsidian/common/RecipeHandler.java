@@ -2,7 +2,6 @@ package net.uberkat.obsidian.common;
 
 import java.util.*;
 import net.minecraft.src.*;
-import net.uberkat.obsidian.hawk.common.TileEntityWasher;
 
 /** 
  * Class used to handle machine recipes. This is used for both adding recipes and checking outputs.

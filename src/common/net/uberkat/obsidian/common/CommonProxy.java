@@ -11,12 +11,6 @@ import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 import net.minecraftforge.common.Configuration;
-import net.uberkat.obsidian.hawk.client.GuiTeleporter;
-import net.uberkat.obsidian.hawk.client.GuiWasher;
-import net.uberkat.obsidian.hawk.common.ContainerTeleporter;
-import net.uberkat.obsidian.hawk.common.ContainerWasher;
-import net.uberkat.obsidian.hawk.common.TileEntityTeleporter;
-import net.uberkat.obsidian.hawk.common.TileEntityWasher;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 /**
@@ -127,11 +121,6 @@ public class CommonProxy
 			case 9:
 				TileEntityGenerator tileentity6 = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
 				return new ContainerGenerator(player.inventory, tileentity6);
-			case 10:
-				TileEntityWasher tileentity7 = (TileEntityWasher)world.getBlockTileEntity(x, y, z);
-				return new ContainerWasher(player.inventory, tileentity7);
-			case 11:
-				return new ContainerTeleporter(player.inventory);
 		}
 		return null;
 	}

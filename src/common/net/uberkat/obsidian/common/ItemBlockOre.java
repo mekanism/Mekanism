@@ -5,7 +5,6 @@ import net.minecraft.src.*;
 /**
  * Item class for handling multiple ore block IDs.
  * 0: Platinum Ore
- * 1: Endium Ore
  * @author AidanBrady
  *
  */
@@ -37,9 +36,6 @@ public class ItemBlockOre extends ItemBlock
 		{
 			case 0:
 				name = "PlatinumOre";
-				break;
-			case 1:
-				name = "EndiumOre";
 				break;
 			default:
 				name = "Unknown";

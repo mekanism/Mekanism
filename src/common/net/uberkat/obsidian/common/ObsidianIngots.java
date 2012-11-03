@@ -15,11 +15,10 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import net.minecraftforge.common.*;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraft.src.*;
 import net.uberkat.obsidian.client.SoundHandler;
-import net.uberkat.obsidian.hawk.common.TileEntityEndiumChunkloader;
-import net.uberkat.obsidian.hawk.common.TileEntityTeleporter;
-import net.uberkat.obsidian.hawk.common.TileEntityWasher;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.Init;
@@ -42,7 +41,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "4.3")
+@Mod(modid = "ObsidianIngots", name = "Obsidian Ingots", version = "5.0.0")
 @NetworkMod(channels = { "ObsidianIngots" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class ObsidianIngots
 {
@@ -64,7 +63,7 @@ public class ObsidianIngots
     public static Configuration configuration;
     
 	/** Obsidian Ingots version number */
-	public static Version versionNumber = new Version(4, 3, 0);
+	public static Version versionNumber = new Version(5, 0, 0);
 	
 	/** Obsidian Ingots creative tab */
 	public static CreativeTabOI tabOBSIDIAN = new CreativeTabOI();
@@ -214,6 +213,9 @@ public class ObsidianIngots
 	
 	//MultiID Items
 	public static Item Dust;
+	public static ItemStack IronDust;
+	public static ItemStack GoldDust;
+	public static ItemStack ObsidianDust;
 	public static Item Ingot;
 	
 	//Boolean Values
@@ -659,7 +661,6 @@ public class ObsidianIngots
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedObsidian.name", "Refined Obsidian");
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.CoalBlock.name", "Coal Block");
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedGlowstone.name", "Refined Glowstone Block");
-		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.EndiumChunkloader.name", "Endium Chunkloader");
 		
 		//Localization for MachineBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnrichmentChamber.name", "Enrichment Chamber");
@@ -667,12 +668,9 @@ public class ObsidianIngots
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Combiner.name", "Combiner");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Crusher.name", "Crusher");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.TheoreticalElementizer.name", "Theoretical Elementizer");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Washer.name", "Washer");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Teleporter.name", "Teleporter");
 		
 		//Localization for OreBlock
 		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.PlatinumOre.name", "Platinum Ore");
-		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.EndiumOre.name", "Endium Ore");
 		
 		//Localization for PowerUnit
 		LanguageRegistry.instance().addStringLocalization("tile.PowerUnit.PowerUnit.name", "Power Unit");
@@ -686,18 +684,12 @@ public class ObsidianIngots
 		LanguageRegistry.instance().addStringLocalization("item.goldDust.name", "Gold Dust");
 		LanguageRegistry.instance().addStringLocalization("item.platinumDust.name", "Platinum Dust");
 		LanguageRegistry.instance().addStringLocalization("item.obsidianDust.name", "Obsidian Dust");
-		LanguageRegistry.instance().addStringLocalization("item.diamondDust.name", "Diamond Dust");
-		LanguageRegistry.instance().addStringLocalization("item.glassDust.name", "Glass Dust");
-		LanguageRegistry.instance().addStringLocalization("item.emeraldDust.name", "Emerald Dust");
-		LanguageRegistry.instance().addStringLocalization("item.starDust.name", "Star Dust");
-		LanguageRegistry.instance().addStringLocalization("item.endiumDust.name", "Endium Dust");
 		
 		//Localization for Ingot
 		LanguageRegistry.instance().addStringLocalization("item.obsidianIngot.name", "Obsidian Ingot");
 		LanguageRegistry.instance().addStringLocalization("item.platinumIngot.name", "Platinum Ingot");
 		LanguageRegistry.instance().addStringLocalization("item.redstoneIngot.name", "Redstone Ingot");
 		LanguageRegistry.instance().addStringLocalization("item.glowstoneIngot.name", "Glowstone Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.endiumIngot.name", "Endium Ingot");
 	}
 	
 	/**
@@ -922,20 +914,38 @@ public class ObsidianIngots
 		{
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
 		}
+		
+		if(hooks.IC2Loaded)
+		{
+			IronDust = hooks.IC2IronDust;
+			GoldDust = hooks.IC2GoldDust;
+		}
+		else {
+			IronDust = new ItemStack(Dust, 1, 0);
+			GoldDust = new ItemStack(Dust, 1, 1);
+		}
+		
+		if(hooks.RailcraftLoaded)
+		{
+			ObsidianDust = hooks.RailcraftObsidianDust;
+		}
+		else {
+			ObsidianDust = new ItemStack(Dust, 1, 3);
+		}
         
-        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
-        RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Ingot, 1, 0));
-        RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Block.obsidian));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 0), new ItemStack(Block.oreIron));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 1), new ItemStack(Block.oreGold));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(Dust, 1, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
+        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), ObsidianDust);
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(IronDust.itemID, 2, 0));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(GoldDust.itemID, 2, 1));
+        RecipeHandler.addPlatinumCompressorRecipe(ObsidianDust, new ItemStack(Ingot, 1, 0));
+        RecipeHandler.addCombinerRecipe(ObsidianDust, new ItemStack(Block.obsidian));
+		RecipeHandler.addCombinerRecipe(new ItemStack(IronDust.itemID, 2, 0), new ItemStack(Block.oreIron));
+		RecipeHandler.addCombinerRecipe(new ItemStack(GoldDust.itemID, 2, 1), new ItemStack(Block.oreGold));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(ObsidianDust.itemID, 1, 3));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(IronDust.itemID, 1, 0));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(GoldDust.itemID, 1, 1));
         
 		GameRegistry.addShapelessRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
-			Item.redstone, Item.lightStoneDust, new ItemStack(Dust, 1, 0), new ItemStack(Dust, 1, 1), new ItemStack(Dust, 1, 3), new ItemStack(Dust, 1, 2)
+			Item.redstone, Item.lightStoneDust, IronDust, GoldDust, ObsidianDust, new ItemStack(Dust, 1, 2)
 		});
 	}
 	
@@ -961,9 +971,6 @@ public class ObsidianIngots
 		GameRegistry.registerTileEntity(TileEntityPowerUnit.class, "PowerUnit");
 		GameRegistry.registerTileEntity(TileEntityAdvancedPowerUnit.class, "AdvancedPowerUnit");
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
-		GameRegistry.registerTileEntity(TileEntityWasher.class, "Washer");
-		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "TeleporterSender");
-		GameRegistry.registerTileEntity(TileEntityEndiumChunkloader.class, "EndiumChunkloader");
 	}
 	
 	/**

@@ -9,7 +9,6 @@ import net.minecraft.src.*;
 /**
  * Block class for handling multiple ore block IDs. 
  * 0: Platinum Ore
- * 1: Endium Ore
  * @author AidanBrady
  *
  */
@@ -35,8 +34,6 @@ public class BlockOre extends Block
 		{
 			case 0:
 				return 3;
-			case 1:
-				return 28;
 		}
 		return 0;
 	}
@@ -50,7 +47,6 @@ public class BlockOre extends Block
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
 		list.add(new ItemStack(i, 1, 0));
-		list.add(new ItemStack(i, 1, 1));
 	}
 	
 	public String getTextureFile()

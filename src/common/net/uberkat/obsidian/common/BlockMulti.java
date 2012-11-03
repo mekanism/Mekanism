@@ -8,7 +8,6 @@ import cpw.mods.fml.common.asm.SideOnly;
 
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeChunkManager;
-import net.uberkat.obsidian.hawk.common.TileEntityEndiumChunkloader;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -17,14 +16,11 @@ import net.uberkat.obsidian.hawk.common.TileEntityEndiumChunkloader;
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone
- * 5: Endium Chunkloader
  * @author AidanBrady
  *
  */
 public class BlockMulti extends Block
 {
-	public TileEntityEndiumChunkloader tileChunkloader;
-	
 	public BlockMulti(int i)
 	{
 		super(i, Material.iron);
@@ -65,7 +61,6 @@ public class BlockMulti extends Block
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
-		list.add(new ItemStack(i, 1, 5));
 	}
 	
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
@@ -97,21 +92,6 @@ public class BlockMulti extends Block
         }
         return 0;
     }
-    
-	public boolean hasTileEntity(int metadata)
-	{
-		return metadata == 5;
-	}
-	
-	public TileEntity createTileEntity(World world, int metadata)
-	{
-		if(metadata == 5)
-		{
-			tileChunkloader = new TileEntityEndiumChunkloader();
-			return tileChunkloader;
-		}
-		return null;
-	}
 	
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
@@ -169,11 +149,6 @@ public class BlockMulti extends Block
 	{
 		world.markBlockAsNeedsUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
-	}
-	
-	public void onBlockHarvested(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer)
-	{
-		ForgeChunkManager.releaseTicket(tileChunkloader.heldChunk);
 	}
 	
 	public String getTextureFile()

@@ -9,7 +9,7 @@ import net.minecraft.src.*;
 public class ItemIngot extends ItemObsidian
 {
 	public static String[] en_USNames = {"Obsidian", "Platinum", "Redstone",
-										"Glowstone", "Endium"};
+										"Glowstone"};
 	
 	public ItemIngot(int id)
 	{
@@ -26,14 +26,13 @@ public class ItemIngot extends ItemObsidian
 			case 1: return 162;
 			case 2: return 163;
 			case 3: return 164;
-			case 4: return 174;
 			default: return 0;
 		}
 	}
 
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for (int counter = 0; counter <= 4; ++counter)
+		for (int counter = 0; counter <= 3; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}
@@ -41,6 +40,6 @@ public class ItemIngot extends ItemObsidian
 
 	public String getItemNameIS(ItemStack item)
 	{
-		return en_USNames[item.getItemDamage()].toLowerCase() + "Ingot";
+		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Ingot";
 	}
 }
