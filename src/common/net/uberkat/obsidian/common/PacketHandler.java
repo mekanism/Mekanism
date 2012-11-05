@@ -12,13 +12,11 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ModLoader;
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -45,7 +43,7 @@ public class PacketHandler implements IPacketHandler
 			    if(packetType == EnumPacketType.TIME.id)
 			    {
 			        System.out.println("[ObsidianIngots] Received time update packet from " + entityplayer.username + ".");
-			        ObsidianUtils.setHourForward(ModLoader.getMinecraftServerInstance().worldServerForDimension(0), dataStream.readInt());
+			        ObsidianUtils.setHourForward(FMLServerHandler.instance().getServer().worldServerForDimension(0), dataStream.readInt());
 			    }
 			    if(packetType == EnumPacketType.WEATHER.id)
 			    {

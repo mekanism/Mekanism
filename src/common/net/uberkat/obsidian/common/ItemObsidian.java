@@ -7,7 +7,6 @@ public class ItemObsidian extends Item
 	public ItemObsidian(int i)
 	{
 		super(i);
-		itemsList[256 + i] = this;
 		setCreativeTab(ObsidianIngots.tabOBSIDIAN);
 	}
 

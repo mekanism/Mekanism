@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import cpw.mods.fml.server.FMLServerHandler;
+
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ICommandSender;
 import net.minecraft.src.ModLoader;
 import net.uberkat.obsidian.common.ObsidianIngots;

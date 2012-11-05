@@ -74,7 +74,7 @@ public class BlockMulti extends Block
     		if(entityplayer.isSneaking())
     		{
     			entityplayer.openGui(ObsidianIngots.instance, 1, world, x, y, z);
-    			//FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiControlPanel(entityplayer, world));
+    			//entityplayer.openGui(ObsidianIngots.instance, 10, world, x, y, z);
     			return true;
     		}
     	}

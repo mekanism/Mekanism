@@ -15,9 +15,8 @@ public class GuiControlPanel extends GuiScreen
 {
 	public EntityPlayer usingPlayer;
 	public World worldObj;
-	public String displayText = "Control Panel";
+	public String displayText = "";
 	public int ticker = 0;
-	public boolean useTicker = false;
 	
 	private GuiTextField xField;
 	private GuiTextField yField;
@@ -35,21 +34,18 @@ public class GuiControlPanel extends GuiScreen
 		controlList.clear();
 		controlList.add(new GuiButton(0, width / 2 - 80, height / 4 + 72 + 12, 60, 20, "Access"));
 		
-		xField = new GuiTextField(fontRenderer, 50, 30, 45, 12);
+		xField = new GuiTextField(fontRenderer, width / 2 - 80, 53, 35, 12);
 		xField.setMaxStringLength(4);
 		xField.setText("" + 0);
 		xField.setFocused(true);
-		xField.setVisible(true);
 		
-		yField = new GuiTextField(fontRenderer, 50, 50, 45, 12);
+		yField = new GuiTextField(fontRenderer, width / 2 - 80, 70, 35, 12);
 		yField.setMaxStringLength(4);
 		yField.setText("" + 0);
-		yField.setVisible(true);
 		
-		zField = new GuiTextField(fontRenderer, 50, 80, 45, 12);
+		zField = new GuiTextField(fontRenderer, width / 2 - 80, 87, 35, 12);
 		zField.setMaxStringLength(4);
 		zField.setText("" + 0);
-		zField.setVisible(true);
 	}
 	
 	public void drawScreen(int i, int j, float f)
@@ -58,8 +54,12 @@ public class GuiControlPanel extends GuiScreen
         int k = mc.renderEngine.getTexture("/gui/GuiControlPanel.png");
         mc.renderEngine.bindTexture(k);
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
+        xField.drawTextBox();
+        yField.drawTextBox();
+        zField.drawTextBox();
         super.drawScreen(i, j, f);
-        fontRenderer.drawString(displayText, 50, 96, 0x404040);
+        fontRenderer.drawString("Control Panel", 165, 40, 0x404040);
+        fontRenderer.drawString(displayText, 133, 120, 0x404040);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -70,15 +70,14 @@ public class GuiControlPanel extends GuiScreen
 	{
 		super.keyTyped(c, i);
 		
-		if(Character.isDigit(c) || c == '-')
-		{
-			xField.textboxKeyTyped(c, i);
-			yField.textboxKeyTyped(c, i);
-			zField.textboxKeyTyped(c, i);
-		}
-		else {
-			useTicker = true;
-		}
+		xField.textboxKeyTyped(c, i);
+		yField.textboxKeyTyped(c, i);
+		zField.textboxKeyTyped(c, i);
+	}
+	
+	public boolean doesGuiPauseGame()
+	{
+		return false;
 	}
 	
 	public void updateScreen()
@@ -87,17 +86,12 @@ public class GuiControlPanel extends GuiScreen
 		yField.updateCursorCounter();
 		zField.updateCursorCounter();
 		
-		if(useTicker)
+		if(ticker > 0)
 		{
-			if(ticker < 40)
-			{
-				ticker++;
-			}
-			else {
-				useTicker = false;
-				ticker = 0;
-				displayText = "Control Panel";
-			}
+			ticker--;
+		}
+		else {
+			displayText = "";
 		}
 	}
 	
@@ -118,21 +112,26 @@ public class GuiControlPanel extends GuiScreen
 		
 		if(guibutton.id == 0)
 		{
-			if(worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())) != null)
-			{
-				if(worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())) instanceof IAccessibleGui)
+			try {
+				if(worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())) != null)
 				{
-					IAccessibleGui gui = (IAccessibleGui)worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
-					usingPlayer.openGui(gui.getModInstance(), gui.getGuiID(), worldObj, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
+					if(worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())) instanceof IAccessibleGui)
+					{
+						IAccessibleGui gui = (IAccessibleGui)worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
+						usingPlayer.openGui(gui.getModInstance(), gui.getGuiID(), worldObj, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
+					}
+					else {
+						displayText = EnumColor.DARK_RED + "Tile entity isn't available.";
+						ticker = 40;
+					}
 				}
 				else {
-					displayText = EnumColor.DARK_RED + "Tile entity isn't available.";
-					useTicker = true;
+					displayText = EnumColor.DARK_RED + "Tile entity doesn't exist.";
+					ticker = 40;
 				}
-			}
-			else {
-				displayText = EnumColor.DARK_RED + "Tile entity doesn't exist.";
-				useTicker = true;
+			} catch(NumberFormatException e) {
+				displayText = EnumColor.DARK_RED + "Invalid characters.";
+				ticker = 40;
 			}
 		}
 	}

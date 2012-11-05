@@ -36,56 +36,44 @@ public class CommandOI extends CommandBase
     {
         if(params.length < 1)
         {
-            sender.sendChatToPlayer(EnumColor.GREY.code + "-------- " + EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " --------");
-            sender.sendChatToPlayer(EnumColor.GREY.code + " *Version: " + EnumColor.DARK_GREY.code + ObsidianIngots.versionNumber);
-            sender.sendChatToPlayer(EnumColor.GREY.code + " *Latest Version: " + EnumColor.DARK_GREY.code + ObsidianIngots.latestVersionNumber);
-            sender.sendChatToPlayer(EnumColor.GREY.code + " *Developed on Mac OS X 10.8 Mountain Lion");
-            sender.sendChatToPlayer(EnumColor.GREY.code + " *Code, textures, and ideas by aidancbrady");
-            sender.sendChatToPlayer(EnumColor.GREY.code + " *Recent News: " + EnumColor.INDIGO.code + ObsidianIngots.recentNews);
-            sender.sendChatToPlayer(EnumColor.GREY.code + "-------- " + EnumColor.DARK_BLUE.code + "[============]" + EnumColor.GREY.code + " --------");
+            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[ObsidianIngots]" + EnumColor.GREY + " --------");
+            sender.sendChatToPlayer(EnumColor.GREY + " *Version: " + EnumColor.DARK_GREY + ObsidianIngots.versionNumber);
+            sender.sendChatToPlayer(EnumColor.GREY + " *Latest Version: " + EnumColor.DARK_GREY + ObsidianIngots.latestVersionNumber);
+            sender.sendChatToPlayer(EnumColor.GREY + " *Developed on Mac OS X 10.8 Mountain Lion");
+            sender.sendChatToPlayer(EnumColor.GREY + " *Code, textures, and ideas by aidancbrady");
+            sender.sendChatToPlayer(EnumColor.GREY + " *Recent News: " + EnumColor.INDIGO + ObsidianIngots.recentNews);
+            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[============]" + EnumColor.GREY + " --------");
         }
         else if(params.length == 1)
         {
-	        if(params[0].equalsIgnoreCase("update"))
+	        if(params[0].equalsIgnoreCase("help"))
 	        {
-	        	if(ObsidianUtils.isLatestVersion())
-	        	{
-	        		sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots] " + EnumColor.GREY.code + "Obsidian Ingots is already up-to-date.");
-	        	}
-	        	else {
-	        		sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots] " + EnumColor.GREY.code + "Preparing to update...");
-	        		new ThreadServerUpdate("http://dl.dropbox.com/u/90411166/ObsidianIngots.jar", sender);
-	        	}
-	        }
-	        
-	        else if(params[0].equalsIgnoreCase("help"))
-	        {
-	            sender.sendChatToPlayer(EnumColor.GREY.code + "-------- " + EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " --------");
-	            sender.sendChatToPlayer(EnumColor.INDIGO.code + " /oi" + EnumColor.GREY.code + " -- displays the main page.");
-	            sender.sendChatToPlayer(EnumColor.INDIGO.code + " /oi help" + EnumColor.GREY.code + " -- displays this guide.");
-	            sender.sendChatToPlayer(EnumColor.INDIGO.code + " /oi update" + EnumColor.GREY.code + " -- updates the Obsidian Ingots server.");
-	            sender.sendChatToPlayer(EnumColor.INDIGO.code + " /oi version" + EnumColor.GREY.code + " -- displays the version number.");
-	            sender.sendChatToPlayer(EnumColor.INDIGO.code + " /oi news" + EnumColor.GREY.code + " -- displays most recent recent news.");
-	            sender.sendChatToPlayer(EnumColor.GREY.code + "-------- " + EnumColor.DARK_BLUE.code + "[============]" + EnumColor.GREY.code + " --------");
+	            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[ObsidianIngots]" + EnumColor.GREY + " --------");
+	            sender.sendChatToPlayer(EnumColor.INDIGO + " /oi" + EnumColor.GREY + " -- displays the main page.");
+	            sender.sendChatToPlayer(EnumColor.INDIGO + " /oi help" + EnumColor.GREY + " -- displays this guide.");
+	            sender.sendChatToPlayer(EnumColor.INDIGO + " /oi version" + EnumColor.GREY + " -- displays the version number.");
+	            sender.sendChatToPlayer(EnumColor.INDIGO + " /oi latest" + EnumColor.GREY + " -- displays the latest version number.");
+	            sender.sendChatToPlayer(EnumColor.INDIGO + " /oi news" + EnumColor.GREY + " -- displays most recent recent news.");
+	            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[============]" + EnumColor.GREY + " --------");
 	        }
 	        
 	        else if(params[0].equalsIgnoreCase("version"))
 	        {
-	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " This server is running on version " + EnumColor.DARK_GREY.code + ObsidianIngots.versionNumber.toString() + EnumColor.GREY.code + ".");
+	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[ObsidianIngots]" + EnumColor.GREY + " This server is running on version " + EnumColor.DARK_GREY + ObsidianIngots.versionNumber.toString() + EnumColor.GREY + ".");
 	        }
 	        
 	        else if(params[0].equalsIgnoreCase("news"))
 	        {
-	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " Most recent news: " + EnumColor.INDIGO.code + ObsidianIngots.recentNews);
+	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[ObsidianIngots]" + EnumColor.GREY + " Most recent news: " + EnumColor.INDIGO + ObsidianIngots.recentNews);
 	        }
 	        
 	        else if(params[0].equalsIgnoreCase("latest"))
 	        {
-	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " The latest version for this mod is " + EnumColor.DARK_GREY.code + ObsidianIngots.latestVersionNumber + EnumColor.GREY.code + ".");
+	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[ObsidianIngots]" + EnumColor.GREY + " The latest version for this mod is " + EnumColor.DARK_GREY + ObsidianIngots.latestVersionNumber + EnumColor.GREY + ".");
 	        }
 	        
 	        else {
-	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE.code + "[ObsidianIngots]" + EnumColor.GREY.code + " Unknown command. Type '" + EnumColor.INDIGO.code + "/oi help" + EnumColor.GREY.code + "' for help.");
+	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[ObsidianIngots]" + EnumColor.GREY + " Unknown command. Type '" + EnumColor.INDIGO + "/oi help" + EnumColor.GREY + "' for help.");
 	        }
         }
     }

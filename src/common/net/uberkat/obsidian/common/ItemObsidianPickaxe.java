@@ -13,7 +13,6 @@ public class ItemObsidianPickaxe extends ItemObsidianTool
     public ItemObsidianPickaxe(int par1, EnumToolMaterial par2EnumToolMaterial)
     {
         super(par1, 2, par2EnumToolMaterial, blocksEffectiveAgainst);
-        setCreativeTab(ObsidianIngots.tabOBSIDIAN);
     }
 
     /**

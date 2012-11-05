@@ -13,6 +13,7 @@ public class ItemObsidianTool extends ItemTool
     public ItemObsidianTool(int par1, int par2, EnumToolMaterial par3EnumToolMaterial, Block par4ArrayOfBlock[])
     {
         super(par1, par2, par3EnumToolMaterial, par4ArrayOfBlock);
+        setCreativeTab(ObsidianIngots.tabOBSIDIAN);
     }
     
     public String getTextureFile()

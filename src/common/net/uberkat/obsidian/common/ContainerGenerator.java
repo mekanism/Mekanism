@@ -46,7 +46,7 @@ public class ContainerGenerator extends Container
     /**
      * Called to transfer a stack from one inventory to the other eg. when shift clicking.
      */
-    public ItemStack func_82846_b(EntityPlayer player, int slotID)
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
     {
         ItemStack stack = null;
         Slot currentSlot = (Slot)inventorySlots.get(slotID);
@@ -104,7 +104,7 @@ public class ContainerGenerator extends Container
                 return null;
             }
 
-            currentSlot.func_82870_a(player, slotStack);
+            currentSlot.onPickupFromSlot(player, slotStack);
         }
 
         return stack;

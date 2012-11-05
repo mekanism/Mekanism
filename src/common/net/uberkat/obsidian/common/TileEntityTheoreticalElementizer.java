@@ -4,11 +4,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
-import net.minecraftforge.common.ISidedInventory;
-import net.minecraftforge.common.ForgeDirection;
-
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.*;
 
 public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectricMachine

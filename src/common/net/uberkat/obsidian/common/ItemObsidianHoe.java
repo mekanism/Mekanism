@@ -9,7 +9,6 @@ public class ItemObsidianHoe extends ItemObsidian
         super(par1);
         maxStackSize = 1;
         setMaxDamage(par2EnumToolMaterial.getMaxUses());
-        setCreativeTab(ObsidianIngots.tabOBSIDIAN);
     }
 
     /**

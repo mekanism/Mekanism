@@ -95,6 +95,16 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			registered = true;
 		}
 		
+		if(worldObj.isRemote)
+		{
+			handleSound();
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void handleSound()
+	{
+		System.out.println(xCoord + " " + yCoord + " " + zCoord);
 		if(audio == null && worldObj != null && worldObj.isRemote)
 		{
 			if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)

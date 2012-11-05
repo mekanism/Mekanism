@@ -29,7 +29,7 @@ public class GuiTheoreticalElementizer extends GuiAdvancedElectricMachine
         	}
         }
         else {
-        	displayText = "Status: " + EnumColor.DARK_RED.code + "Off";
+        	displayText = "Status: " + EnumColor.DARK_RED + "Off";
         }
         fontRenderer.drawString(displayText, 80, 60, 0x404040);
     }

@@ -126,6 +126,8 @@ public class ClientProxy extends CommonProxy
 			case 9:
 				TileEntityGenerator tileentity6 = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
 				return new GuiGenerator(player.inventory, tileentity6);
+			case 10:
+				return new GuiControlPanel(player, world);
 		}
 		return null;
 	}
@@ -133,5 +135,10 @@ public class ClientProxy extends CommonProxy
 	public void loadTickHandler()
 	{
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
+	}
+	
+	public void loadSoundHandler()
+	{
+		ObsidianIngots.audioHandler = new SoundHandler();
 	}
 }

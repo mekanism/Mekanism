@@ -72,6 +72,11 @@ public class CommonProxy
 	public void loadTickHandler() {}
 	
 	/**
+	 * Set up and load the sound handler.
+	 */
+	public void loadSoundHandler() {}
+	
+	/**
 	 * Get the actual interface for a GUI.  Client-only.
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI

@@ -79,6 +79,7 @@ public class ObsidianIngots
 	/** The main MachineryManager instance that is used by all machines */
 	public static MachineryManager manager;
 
+	@SideOnly(Side.CLIENT)
 	/** The main SoundHandler instance that is used by all audio sources */
 	public static SoundHandler audioHandler;
 	
@@ -519,6 +520,9 @@ public class ObsidianIngots
 		});
 		GameRegistry.addRecipe(new ItemStack(UltimateUpgrade), new Object[] {
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
+		});
+		GameRegistry.addRecipe(new ItemStack(Generator, 1, 0), new Object[] {
+			"GGG", "ECE", "IRI", Character.valueOf('G'), Item.lightStoneDust, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(MultiBlock, 1, 3), Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
 		});
 		
 		if(extrasEnabled)
@@ -998,8 +1002,9 @@ public class ObsidianIngots
 		hooks.hook();
 		addIntegratedItems();
 		
-		audioHandler = new SoundHandler();
 		System.out.println("[ObsidianIngots] Hooking complete.");
+		
+		proxy.loadSoundHandler();
 	}
 	
 	@Init
@@ -1009,8 +1014,6 @@ public class ObsidianIngots
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		//Register the mod's GUI handler
 		NetworkRegistry.instance().registerGuiHandler(this, new CommonGuiHandler());
-		//Set the mod's instance
-		instance = this;
 		//Register the MachineryManager
 		manager = new MachineryManager();
 		System.out.println("[ObsidianIngots] Version " + versionNumber + " initializing...");
