@@ -1,9 +1,9 @@
 [
 {
-  "modid": "ObsidianIngots",
-  "name": "Obsidian Ingots",
+  "modid": "Mekanism",
+  "name": "Mekanism",
   "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
-  "version": "4.3",
+  "version": "5.0",
   "mcversion": "1.4.2",
   "updateUrl": "",
   "authors": [
