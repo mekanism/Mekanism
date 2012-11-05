@@ -1,7 +1,7 @@
 package net.uberkat.obsidian.common;
 
 import obsidian.api.IEnergizedItem;
-import obsidian.api.IMachineUpgrade;
+import obsidian.api.ItemMachineUpgrade;
 import ic2.api.IElectricItem;
 import universalelectricity.implement.IItemElectric;
 import net.minecraft.src.*;
@@ -99,7 +99,7 @@ public class ContainerElectricMachine extends Container
 	            	}
             	}
     		}
-            else if(slotStack.getItem() instanceof IMachineUpgrade)
+            else if(slotStack.getItem() instanceof ItemMachineUpgrade)
             {
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             	{

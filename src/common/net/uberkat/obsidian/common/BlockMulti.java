@@ -3,11 +3,13 @@ package net.uberkat.obsidian.common;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeChunkManager;
+import net.uberkat.obsidian.client.GuiControlPanel;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -72,6 +74,7 @@ public class BlockMulti extends Block
     		if(entityplayer.isSneaking())
     		{
     			entityplayer.openGui(ObsidianIngots.instance, 1, world, x, y, z);
+    			//FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiControlPanel(entityplayer, world));
     			return true;
     		}
     	}

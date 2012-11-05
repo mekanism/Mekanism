@@ -14,6 +14,8 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import obsidian.api.ItemMachineUpgrade;
+
 import net.minecraftforge.common.*;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
@@ -1018,7 +1020,7 @@ public class ObsidianIngots
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
-		LanguageRegistry.instance().addStringLocalization(tabOBSIDIAN.getTranslatedTabLabel(), "Obsidian Ingots");
+		LanguageRegistry.instance().addStringLocalization("itemGroup.tabObsidian", "Obsidian Ingots");
 		
 		//Attempt to load server commands
 		try {

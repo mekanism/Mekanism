@@ -2,7 +2,6 @@ package net.uberkat.obsidian.common;
 
 import ic2.api.IElectricItem;
 import obsidian.api.IEnergizedItem;
-import obsidian.api.IMachineUpgrade;
 import universalelectricity.implement.IItemElectric;
 import net.minecraft.src.*;
 

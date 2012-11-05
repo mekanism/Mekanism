@@ -93,6 +93,11 @@ public class MachineryManager
 		}
 	}
 	
+	public int size()
+	{
+		return machines.size();
+	}
+	
 	/**
 	 * Resets the manager -- removing all machines from the ArrayList
 	 */
