@@ -36,20 +36,20 @@ public class ContainerAdvancedElectricMachine extends Container
         tileEntity.openChest();
     }
     
+    @Override
     public void onCraftGuiClosed(EntityPlayer entityplayer)
     {
 		super.onCraftGuiClosed(entityplayer);
 		tileEntity.closeChest();
     }
 
+    @Override
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
         return tileEntity.isUseableByPlayer(par1EntityPlayer);
     }
 
-    /**
-     * Called to transfer a stack from one inventory to the other eg. when shift clicking.
-     */
+    @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
     {
         ItemStack stack = null;

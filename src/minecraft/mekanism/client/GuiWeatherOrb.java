@@ -19,6 +19,7 @@ public class GuiWeatherOrb extends GuiScreen {
 		player = entityplayer;
 	}
 	
+	@Override
 	public void initGui()
 	{
 		controlList.clear();
@@ -30,6 +31,7 @@ public class GuiWeatherOrb extends GuiScreen {
         controlList.add(new GuiButton(5, width / 2 - 10, height / 2 + 30, 80, 20, "Close"));
 	}
 	
+	@Override
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -44,6 +46,7 @@ public class GuiWeatherOrb extends GuiScreen {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
 	
+	@Override
     public void keyTyped(char c, int i)
     {
         if (i == 1)
@@ -52,11 +55,13 @@ public class GuiWeatherOrb extends GuiScreen {
         }
     }
 	
+    @Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;
 	}
 	
+	@Override
 	public void actionPerformed(GuiButton guibutton)
 	{
 		if(guibutton.id == 0)
@@ -92,18 +97,6 @@ public class GuiWeatherOrb extends GuiScreen {
 			mc.displayGuiScreen(new GuiCredits());
 		}
 		if(guibutton.id == 5)
-		{
-			mc.displayGuiScreen(null);
-		}
-	}
-	
-	protected void mouseClicked(int i, int j, int k)
-	{
-		super.mouseClicked(i, j, k);
-		int x = i - (width - xSize) / 2;
-		int y = j - (height - ySize) / 2;
-		
-		if(x > 4 && x < 14 && y > 4 && y < 14)
 		{
 			mc.displayGuiScreen(null);
 		}

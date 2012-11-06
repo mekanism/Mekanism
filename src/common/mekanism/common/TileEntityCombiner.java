@@ -14,11 +14,13 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 		super("Combiner.ogg", "Combiner", "/gui/GuiCombiner.png", 5, 1, 200, 1000, 200);
 	}
 	
+	@Override
 	public List getRecipes()
 	{
 		return recipes;
 	}
 	
+	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
 		if(itemstack.getItem() instanceof ItemBlock && itemstack.itemID == Block.cobblestone.blockID)

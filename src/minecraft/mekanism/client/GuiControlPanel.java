@@ -28,6 +28,7 @@ public class GuiControlPanel extends GuiScreen
 		worldObj = world;
 	}
 	
+	@Override
 	public void initGui()
 	{
 		super.initGui();
@@ -48,6 +49,7 @@ public class GuiControlPanel extends GuiScreen
 		zField.setText("" + 0);
 	}
 	
+	@Override
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -66,6 +68,7 @@ public class GuiControlPanel extends GuiScreen
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
 	
+	@Override
 	public void keyTyped(char c, int i)
 	{
 		super.keyTyped(c, i);
@@ -75,11 +78,13 @@ public class GuiControlPanel extends GuiScreen
 		zField.textboxKeyTyped(c, i);
 	}
 	
+	@Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;
 	}
 	
+	@Override
 	public void updateScreen()
 	{
 		xField.updateCursorCounter();
@@ -95,6 +100,7 @@ public class GuiControlPanel extends GuiScreen
 		}
 	}
 	
+	@Override
 	public void mouseClicked(int x, int y, int z)
 	{
 		super.mouseClicked(x, y, z);
@@ -103,6 +109,7 @@ public class GuiControlPanel extends GuiScreen
 		zField.mouseClicked(x, y, z);
 	}
 	
+	@Override
 	public void actionPerformed(GuiButton guibutton)
 	{
 		if(!guibutton.enabled)

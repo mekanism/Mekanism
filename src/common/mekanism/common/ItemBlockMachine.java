@@ -25,16 +25,19 @@ public class ItemBlockMachine extends ItemBlock
 		setHasSubtypes(true);
 	}
 	
+	@Override
 	public int getMetadata(int i)
 	{
 		return i;
 	}
 	
+	@Override
 	public int getIconFromDamage(int i)
 	{
 		return metaBlock.getBlockTextureFromSideAndMetadata(2, i);
 	}
 	
+	@Override
 	public String getItemNameIS(ItemStack itemstack)
 	{
 		String name = "";

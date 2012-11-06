@@ -15,11 +15,13 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 		super("Elementizer.ogg", "Theoretical Elementizer", "/gui/GuiElementizer.png", 50, 1, 1000, 10000, 1000);
 	}
 	
+	@Override
 	public List getRecipes()
 	{
 		return recipes;
 	}
 
+	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
 		if (itemstack.itemID == Item.diamond.shiftedIndex) return 1000;

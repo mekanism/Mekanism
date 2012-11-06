@@ -25,34 +25,27 @@ public class ItemMekanismSword extends ItemMekanism
         weaponDamage = 4 + par2EnumToolMaterial.getDamageVsEntity();
     }
 
-    /**
-     * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if
-     * sword
-     */
+    @Override
     public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
     {
         return par2Block.blockID != Block.web.blockID ? 1.5F : 15F;
     }
 
-    /**
-     * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
-     * the damage on the stack.
-     */
+    @Override
     public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)
     {
         par1ItemStack.damageItem(1, par3EntityLiving);
         return true;
     }
-
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, int par2, int par3, int par4, int par5, EntityLiving par6EntityLiving)
+    
+    @Override
+    public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLiving par7EntityLiving)
     {
-        par1ItemStack.damageItem(2, par6EntityLiving);
+        par1ItemStack.damageItem(2, par7EntityLiving);
         return true;
     }
 
-    /**
-     * Returns the damage against a given entity.
-     */
+    @Override
     public int getDamageVsEntity(Entity par1Entity)
     {
         return weaponDamage;

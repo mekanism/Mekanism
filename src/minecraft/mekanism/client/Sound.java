@@ -119,7 +119,7 @@ public class Sound
             return;
         }
         
-        double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.1;
+        double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.01;
         
         volume = (float)Math.max(1.0F-distanceVolume, 0);
 

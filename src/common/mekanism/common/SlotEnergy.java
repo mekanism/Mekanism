@@ -12,6 +12,7 @@ public class SlotEnergy extends Slot
 		super(inventory, x, y, z);
 	}
 	
+	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
 		return itemstack.getItem() instanceof IEnergizedItem || itemstack.getItem() instanceof IElectricItem || itemstack.getItem() instanceof IItemElectric || itemstack.itemID == Item.redstone.shiftedIndex;

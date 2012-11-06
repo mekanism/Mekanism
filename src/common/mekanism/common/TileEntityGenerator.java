@@ -63,6 +63,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		}
 	}
 	
+	@Override
 	public void onUpdate()
 	{
 		if(powerProvider != null)
@@ -283,6 +284,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 	}
 	
+	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
@@ -311,6 +313,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
         facing = nbtTags.getInteger("facing");
     }
 
+	@Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
@@ -339,16 +342,19 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
         nbtTags.setTag("Items", tagList);
     }
 	
+	@Override
 	public double getVoltage()
 	{
 		return 120;
 	}
 	
+	@Override
 	public void setJoules(double joules, Object... data) 
 	{
 		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
 	}
 
+	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
@@ -363,26 +369,31 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		}
 	}
 	
+	@Override
 	public void sendPacket()
 	{
 		PacketHandler.sendGeneratorPacket(this);
 	}
 	
+	@Override
 	public void sendPacketWithRange()
 	{
 		PacketHandler.sendGeneratorPacketWithRange(this, 50);
 	}
 	
+	@Override
 	public String getType() 
 	{
 		return getInvName();
 	}
 
+	@Override
 	public String[] getMethodNames() 
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
 	}
 
+	@Override
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
@@ -405,79 +416,97 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		}
 	}
 
+	@Override
 	public boolean canAttachToSide(int side) 
 	{
 		return true;
 	}
 
+	@Override
 	public void attach(IComputerAccess computer, String computerSide) {}
 
+	@Override
 	public void detach(IComputerAccess computer) {}
 	
+	@Override
 	public void setPowerProvider(IPowerProvider provider)
 	{
 		powerProvider = provider;
 	}
 
+	@Override
 	public IPowerProvider getPowerProvider() 
 	{
 		return powerProvider;
 	}
 
+	@Override
 	public void doWork() {}
 
+	@Override
 	public int powerRequest() 
 	{
 		return getPowerProvider().getMaxEnergyReceived();
 	}
 	
+	@Override
 	public double getMaxJoules() 
 	{
 		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
 	
+	@Override
 	public double getJoules(Object... data) 
 	{
 		return energyStored*UniversalElectricity.IC2_RATIO;
 	}
 	
+	@Override
 	public int getMaxEnergyOutput()
 	{
 		return output;
 	}
 	
+	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
 	{
 		return direction.toForgeDirection() == ForgeDirection.getOrientation(facing);
 	}
 	
+	@Override
 	public int getStored() 
 	{
 		return energyStored;
 	}
 
+	@Override
 	public int getCapacity() 
 	{
 		return MAX_ENERGY;
 	}
 
+	@Override
 	public int getRate() 
 	{
 		return output;
 	}
 	
+	@Override
 	public boolean canConnect(ForgeDirection side) 
 	{
 		return side == ForgeDirection.getOrientation(facing);
 	}
 	
+	@Override
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) {}
 
+	@Override
 	public double wattRequest() 
 	{
 		return 0;
 	}
 
+	@Override
 	public boolean canReceiveFromSide(ForgeDirection side) 
 	{
 		return false;

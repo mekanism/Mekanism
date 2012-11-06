@@ -38,9 +38,7 @@ public class EntityKnife extends EntityProjectile
         setArrowHeading(motionX, motionY, motionZ, 0.8F, 3F);
     }
 
-    /**
-     * Called to update the entity's position/logic.
-     */
+    @Override
     public void onUpdate()
     {
         super.onUpdate();
@@ -65,6 +63,7 @@ public class EntityKnife extends EntityProjectile
         soundTimer++;
     }
 
+    @Override
     public void onEntityHit(Entity entity)
     {
         if (worldObj.isRemote)
@@ -102,29 +101,31 @@ public class EntityKnife extends EntityProjectile
         }
     }
 
+    @Override
     public boolean aimRotation()
     {
         return beenInGround;
     }
 
+    @Override
     public int getMaxArrowShake()
     {
         return 4;
     }
 
+    @Override
     public float getGravity()
     {
         return 0.03F;
     }
 
+    @Override
     public ItemStack getPickupItem()
     {
         return thrownItem;
     }
 
-    /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
+    @Override
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
@@ -134,10 +135,8 @@ public class EntityKnife extends EntityProjectile
             nbttagcompound.setCompoundTag("thrownItem", thrownItem.writeToNBT(new NBTTagCompound()));
         }
     }
-
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
+    
+    @Override
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);

@@ -31,6 +31,7 @@ public class BlockMachine extends BlockContainer
 		setRequiresSelfNotify();
 	}
 	
+	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
     	if(!(world.getBlockMetadata(x, y, z) == 6))
@@ -51,6 +52,7 @@ public class BlockMachine extends BlockContainer
     	}
     }
 	
+	@Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
@@ -86,6 +88,7 @@ public class BlockMachine extends BlockContainer
         }
     }
     
+	@Override
     public int getBlockTextureFromSideAndMetadata(int side, int meta)
     {
     	if(meta == 0)
@@ -147,6 +150,7 @@ public class BlockMachine extends BlockContainer
     	}
     }
     
+	@Override
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
@@ -219,11 +223,13 @@ public class BlockMachine extends BlockContainer
     	}
     }
     
+	@Override
     public int damageDropped(int i)
     {
     	return i;
     }
     
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
@@ -252,6 +258,7 @@ public class BlockMachine extends BlockContainer
     	return false;
     }
     
+    @Override
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
         TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
@@ -299,6 +306,7 @@ public class BlockMachine extends BlockContainer
     	super.breakBlock(world, x, y, z, i1, i2);
     }
     
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
     	if(world.isRemote)
@@ -331,11 +339,13 @@ public class BlockMachine extends BlockContainer
     	}
     }
     
+    @Override
     public String getTextureFile()
     {
     	return "/textures/terrain.png";
     }
     
+    @Override
     public TileEntity createNewTileEntity(World world, int metadata)
     {
     	if(metadata == MachineType.ENRICHMENT_CHAMBER.index)
@@ -363,7 +373,7 @@ public class BlockMachine extends BlockContainer
     	}
     }
 	
-    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
+    @Override
 	public TileEntity createNewTileEntity(World world)
 	{
 		return null;

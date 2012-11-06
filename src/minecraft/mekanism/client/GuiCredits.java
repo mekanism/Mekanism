@@ -14,6 +14,7 @@ public class GuiCredits extends GuiScreen {
 	
 	private static String updateProgress = "";
 	
+	@Override
 	public void initGui()
 	{
 		controlList.clear();
@@ -21,6 +22,7 @@ public class GuiCredits extends GuiScreen {
         controlList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
 	}
 	
+	@Override
 	public void onGuiClosed()
 	{
         updateProgress = "";
@@ -36,6 +38,7 @@ public class GuiCredits extends GuiScreen {
 		updateProgress = EnumColor.DARK_RED + "Error updating.";
 	}
 	
+	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
 		if(!guibutton.enabled)
@@ -65,6 +68,7 @@ public class GuiCredits extends GuiScreen {
 		drawString(fontRenderer, text, width / 2 - 140, (height / 4 - 60) + 20 + yAxis, 0xa0a0a0);
 	}
 	
+	@Override
 	public void drawScreen(int i, int j, float f)
 	{
 		drawDefaultBackground();

@@ -32,6 +32,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 	
+	@Override
 	public void run()
 	{
 		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods/Mekanism.jar").toString());

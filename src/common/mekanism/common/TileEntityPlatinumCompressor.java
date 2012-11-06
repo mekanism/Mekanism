@@ -19,12 +19,14 @@ public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMach
 	{
 		super("Compressor.ogg", "Platinum Compressor", "/gui/GuiCompressor.png", 5, 1, 200, 1000, 200);
 	}
-	
+
+	@Override
 	public List getRecipes()
 	{
 		return recipes;
 	}
 
+	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
 		if (itemstack.itemID == new ItemStack(Mekanism.Ingot, 1, 1).itemID) return 200;

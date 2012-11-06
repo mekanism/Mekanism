@@ -10,7 +10,9 @@ public class ItemMekanism extends Item
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
-	public String getTextureFile() {
+	@Override
+	public String getTextureFile() 
+	{
 		return "/textures/items.png";
 	}
 }

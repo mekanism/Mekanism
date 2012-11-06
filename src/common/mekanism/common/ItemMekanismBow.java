@@ -13,6 +13,7 @@ public class ItemMekanismBow extends ItemMekanism
         setCreativeTab(Mekanism.tabMekanism);
     }
     
+    @Override
     public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
         EntityPlayer player = (EntityPlayer)entity;
@@ -41,6 +42,7 @@ public class ItemMekanismBow extends ItemMekanism
         }
     }
 
+    @Override
     public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int itemUseCount)
     {
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
@@ -114,21 +116,25 @@ public class ItemMekanismBow extends ItemMekanism
         }
     }
 
+    @Override
     public ItemStack onFoodEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
         return par1ItemStack;
     }
 
+    @Override
     public int getMaxItemUseDuration(ItemStack par1ItemStack)
     {
         return 0x11940;
     }
 
+    @Override
     public EnumAction getItemUseAction(ItemStack par1ItemStack)
     {
         return EnumAction.bow;
     }
 
+    @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
         if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(Item.arrow.shiftedIndex))
@@ -139,6 +145,7 @@ public class ItemMekanismBow extends ItemMekanism
         return par1ItemStack;
     }
 
+    @Override
     public int getItemEnchantability()
     {
         return 1;

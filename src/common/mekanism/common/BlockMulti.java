@@ -32,6 +32,7 @@ public class BlockMulti extends Block
 		setRequiresSelfNotify();
 	}
 	
+	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		switch(meta)
@@ -50,11 +51,13 @@ public class BlockMulti extends Block
 		return 0;
 	}
 	
+	@Override
 	public int damageDropped(int i)
 	{
 		return i;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
@@ -65,6 +68,7 @@ public class BlockMulti extends Block
 		list.add(new ItemStack(i, 1, 4));
 	}
 	
+	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
@@ -81,6 +85,7 @@ public class BlockMulti extends Block
         return false;
     }
     
+	@Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) 
     {
         int metadata = world.getBlockMetadata(x, y, z);
@@ -96,6 +101,7 @@ public class BlockMulti extends Block
         return 0;
     }
 	
+	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
 		if (world.isBlockIndirectlyGettingPowered(x, y + 1, z) && world.getBlockMetadata(z, y, z) == 5)
@@ -148,12 +154,14 @@ public class BlockMulti extends Block
 		}
 	}
 	
+	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
 	{
 		world.markBlockAsNeedsUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 	}
 	
+	@Override
 	public String getTextureFile()
 	{
 		return "/textures/terrain.png";

@@ -45,6 +45,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		inventory = new ItemStack[4];
 	}
 	
+	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
@@ -188,6 +189,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 	}
 
+	@Override
     public void operate()
     {
         if (!canOperate())
@@ -222,6 +224,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         }
     }
 
+	@Override
     public boolean canOperate()
     {
         if (inventory[0] == null)
@@ -256,16 +259,19 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         }
     }
     
+	@Override
     public void sendPacket()
     {
     	PacketHandler.sendElectricMachinePacket(this);
     }
     
+	@Override
     public void sendPacketWithRange()
     {
     	PacketHandler.sendElectricMachinePacketWithRange(this, 50);
     }
 
+	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
@@ -283,11 +289,13 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 	}
 
+	@Override
 	public String[] getMethodNames() 
 	{
 		return new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
+	@Override
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)

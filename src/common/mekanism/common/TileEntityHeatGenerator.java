@@ -11,6 +11,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator
 		super("Heat Generator", 8000, 2000);
 	}
 
+	@Override
 	public int getFuel(ItemStack itemstack)
 	{
 		return TileEntityFurnace.getItemBurnTime(itemstack);

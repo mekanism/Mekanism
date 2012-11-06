@@ -22,6 +22,7 @@ public class BlockGenerator extends BlockContainer
 		setRequiresSelfNotify();
 	}
 	
+	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
     	TileEntityGenerator tileEntity = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
@@ -39,6 +40,7 @@ public class BlockGenerator extends BlockContainer
         tileEntity.setFacing((short)change);
     }
     
+	@Override
     public int getBlockTextureFromSideAndMetadata(int side, int meta)
     {
     	if(meta == 0)
@@ -60,6 +62,7 @@ public class BlockGenerator extends BlockContainer
     	}
     }
     
+	@Override
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
@@ -85,11 +88,13 @@ public class BlockGenerator extends BlockContainer
     	}
     }
     
+	@Override
     public int damageDropped(int i)
     {
     	return i;
     }
     
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
@@ -114,6 +119,7 @@ public class BlockGenerator extends BlockContainer
     	return false;
     }
     
+    @Override
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
         TileEntityGenerator tileEntity = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
@@ -161,6 +167,7 @@ public class BlockGenerator extends BlockContainer
     	super.breakBlock(world, x, y, z, i1, i2);
     }
     
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
         if (world.isRemote)
@@ -190,11 +197,13 @@ public class BlockGenerator extends BlockContainer
         }
     }
     
+    @Override
     public String getTextureFile()
     {
     	return "/textures/terrain.png";
     }
     
+    @Override
     public TileEntity createNewTileEntity(World world, int metadata)
     {
     	if(metadata == MachineType.HEAT_GENERATOR.index)
@@ -207,6 +216,7 @@ public class BlockGenerator extends BlockContainer
     }
 	
     /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
+    @Override
 	public TileEntity createNewTileEntity(World world)
 	{
 		return null;

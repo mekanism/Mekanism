@@ -13,9 +13,7 @@ public class ItemMekanismSpade extends ItemMekanismTool
         super(par1, 1, par2EnumToolMaterial, blocksEffectiveAgainst);
     }
 
-    /**
-     * Returns if the item (tool) can harvest results from the block type.
-     */
+    @Override
     public boolean canHarvestBlock(Block par1Block)
     {
         if (par1Block == Block.snow)

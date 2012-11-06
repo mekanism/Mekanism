@@ -15,6 +15,7 @@ public class ItemMekanismPaxel extends ItemMekanismTool
         super(i, 3, enumtoolmaterial, blocksEffectiveAgainst);
     }
 
+    @Override
     public boolean canHarvestBlock(Block block)
     {
         if (block == Block.obsidian)
@@ -51,6 +52,7 @@ public class ItemMekanismPaxel extends ItemMekanismTool
         }
     }
 
+    @Override
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
         if (block != null && (block.blockMaterial == Material.iron || block.blockMaterial == Material.rock))

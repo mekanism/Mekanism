@@ -32,6 +32,7 @@ public enum EnumColor
 		code = s;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return code;

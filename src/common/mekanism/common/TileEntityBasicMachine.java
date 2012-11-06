@@ -87,6 +87,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		}
 	}
 	
+	@Override
 	public void onUpdate()
 	{
 		if(!registered && worldObj != null && !worldObj.isRemote)
@@ -104,7 +105,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@SideOnly(Side.CLIENT)
 	public void handleSound()
 	{
-		System.out.println(xCoord + " " + yCoord + " " + zCoord);
 		if(audio == null && worldObj != null && worldObj.isRemote)
 		{
 			if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
@@ -127,6 +127,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		}
 	}
 	
+	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
@@ -140,6 +141,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         isActive = nbtTags.getBoolean("isActive");
     }
 
+	@Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
@@ -153,6 +155,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         nbtTags.setBoolean("isActive", isActive);
     }
 	
+	@Override
 	public void invalidate()
 	{
 		super.invalidate();
@@ -168,11 +171,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		}
 	}
 	
+	@Override
 	public boolean demandsEnergy() 
 	{
 		return energyStored < currentMaxEnergy;
 	}
 
+	@Override
     public int injectEnergy(Direction direction, int i)
     {
     	int rejects = 0;
@@ -190,23 +195,28 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	return rejects;
     }
 	
+	@Override
 	public void setPowerProvider(IPowerProvider provider)
 	{
 		powerProvider = provider;
 	}
 	
+	@Override
 	public IPowerProvider getPowerProvider() 
 	{
 		return powerProvider;
 	}
 	
+	@Override
 	public int powerRequest() 
 	{
 		return getPowerProvider().getMaxEnergyReceived();
 	}
 	
+	@Override
 	public void doWork() {}
 	
+	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return true;
@@ -232,41 +242,49 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		return operatingTicks*i / currentTicksRequired;
 	}
 	
+	@Override
 	public double getMaxJoules() 
 	{
 		return currentMaxEnergy*UniversalElectricity.IC2_RATIO;
 	}
 	
+	@Override
 	public double getJoules(Object... data) 
 	{
 		return energyStored*UniversalElectricity.IC2_RATIO;
 	}
 
+	@Override
 	public void setJoules(double joules, Object... data) 
 	{
 		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
 	}
 	
+	@Override
 	public boolean canConnect(ForgeDirection side) 
 	{
 		return true;
 	}
 	
+	@Override
 	public boolean canReceiveFromSide(ForgeDirection side) 
 	{
 		return true;
 	}
 	
+	@Override
 	public double getVoltage() 
 	{
 		return 120;
 	}
 	
+	@Override
 	public double wattRequest() 
 	{
 		return ElectricInfo.getWatts(currentMaxEnergy*UniversalElectricity.IC2_RATIO) - ElectricInfo.getWatts(energyStored*UniversalElectricity.IC2_RATIO);
 	}
 	
+	@Override
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
 		int energyToReceive = (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO);
@@ -293,6 +311,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		energyStored = Math.max(Math.min(energy, currentMaxEnergy), 0);
 	}
 
+	@Override
     public void setActive(boolean active)
     {
     	isActive = active;
@@ -305,20 +324,25 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	prevActive = active;
     }
     
+	@Override
     public String getType()
     {
     	return getInvName();
     }
 
+	@Override
 	public boolean canAttachToSide(int side) 
 	{
 		return true;
 	}
 
+	@Override
 	public void attach(IComputerAccess computer, String computerSide) {}
 
+	@Override
 	public void detach(IComputerAccess computer) {}
     
+	@Override
 	public int transferToAcceptor(int amount)
 	{
     	int rejects = 0;
@@ -336,6 +360,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	return rejects;
 	}
 	
+	@Override
 	public boolean canReceive(ForgeDirection side)
 	{
 		return true;

@@ -47,8 +47,11 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 		MAX_ENERGY = maxEnergy;
 	}
 	
+	@Override
 	public void updateEntity()
 	{
+		super.updateEntity();
+		
 		if(!initialized && worldObj != null)
 		{
 			if(Mekanism.hooks.IC2Loaded)
@@ -65,7 +68,10 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 		{
 			if(playersUsing > 0)
 			{
-				sendPacketWithRange();
+				if(packetTick % 3 == 0)
+				{
+					sendPacketWithRange();
+				}
 			}
 			else {
 				if(packetTick % 20 == 0)
@@ -82,6 +88,7 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 	 */
 	public abstract void onUpdate();
 	
+	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
         if (side == ForgeDirection.DOWN) return 1;
@@ -89,21 +96,25 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         return 2;
 	}
 
+	@Override
 	public int getSizeInventorySide(ForgeDirection side)
 	{
 		return 1;
 	}
 
+	@Override
 	public int getSizeInventory() 
 	{
 		return inventory.length;
 	}
 
+	@Override
 	public ItemStack getStackInSlot(int par1) 
 	{
 		return inventory[par1];
 	}
 
+	@Override
     public ItemStack decrStackSize(int par1, int par2)
     {
         if (inventory[par1] != null)
@@ -134,6 +145,7 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         }
     }
 
+	@Override
     public ItemStack getStackInSlotOnClosing(int par1)
     {
         if (inventory[par1] != null)
@@ -148,6 +160,7 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         }
     }
 
+	@Override
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
         inventory[par1] = par2ItemStack;
@@ -158,6 +171,7 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         }
     }
     
+	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
@@ -180,6 +194,7 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         facing = nbtTags.getInteger("facing");
     }
 
+	@Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
@@ -202,21 +217,25 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         nbtTags.setTag("Items", tagList);
     }
     
+	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
 		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
 	}
 
+	@Override
 	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
 	{
 		return true;
 	}
 
+	@Override
 	public short getFacing() 
 	{
 		return (short)facing;
 	}
 
+	@Override
 	public void setFacing(short direction) 
 	{
 		if(initialized)
@@ -237,11 +256,13 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 		initialized = true;
 	}
 
+	@Override
 	public boolean wrenchCanRemove(EntityPlayer entityPlayer) 
 	{
 		return true;
 	}
 
+	@Override
 	public float getWrenchDropRate() 
 	{
 		return 1.0F;
@@ -252,21 +273,25 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 		return initialized;
 	}
 	
+	@Override
 	public String getInvName()
 	{
 		return fullName;
 	}
 	
+	@Override
 	public int getInventoryStackLimit() 
 	{
 		return 64;
 	}
 	
+	@Override
 	public void openChest() 
 	{
 		playersUsing++;
 	}
 
+	@Override
 	public void closeChest() 
 	{
 		playersUsing--;

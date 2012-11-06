@@ -43,11 +43,13 @@ import net.minecraftforge.client.MinecraftForgeClient;
  */
 public class ClientProxy extends CommonProxy
 {
+	@Override
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
 	}
 	
+	@Override
 	public void registerRenderInformation()
 	{
 		System.out.println("[Mekanism] Beginning render initiative...");
@@ -79,11 +81,13 @@ public class ClientProxy extends CommonProxy
 		System.out.println("[Mekanism] Render initiative complete.");
 	}
 	
+	@Override
 	public World getClientWorld()
 	{
 		return FMLClientHandler.instance().getClient().theWorld;
 	}
 	
+	@Override
 	public void loadUtilities()
 	{
 		System.out.println("[Mekanism] Beginning utility initiative...");
@@ -91,6 +95,7 @@ public class ClientProxy extends CommonProxy
 		System.out.println("[Mekanism] Utility initiative complete.");
 	}
 	
+	@Override
 	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
 		switch(ID)
@@ -128,11 +133,13 @@ public class ClientProxy extends CommonProxy
 		return null;
 	}
 	
+	@Override
 	public void loadTickHandler()
 	{
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 	}
 	
+	@Override
 	public void loadSoundHandler()
 	{
 		Mekanism.audioHandler = new SoundHandler();

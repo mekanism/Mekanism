@@ -11,10 +11,7 @@ public class ItemMekanismHoe extends ItemMekanism
         setMaxDamage(par2EnumToolMaterial.getMaxUses());
     }
 
-    /**
-     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
-     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS !
-     */
+    @Override
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
         if (!par2EntityPlayer.func_82247_a(par4, par5, par6, par7, par1ItemStack))
@@ -47,9 +44,7 @@ public class ItemMekanismHoe extends ItemMekanism
         }
     }
 
-    /**
-     * Returns True is the item is renderer in full 3D when hold.
-     */
+    @Override
     public boolean isFull3D()
     {
         return true;

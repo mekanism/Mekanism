@@ -10,7 +10,9 @@ public class ItemMekanismArmor extends ItemArmor
         setCreativeTab(Mekanism.tabMekanism);
     }
     
-	public String getTextureFile() {
+    @Override
+	public String getTextureFile() 
+	{
 		return "/textures/items.png";
 	}
 }

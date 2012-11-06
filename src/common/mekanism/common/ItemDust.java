@@ -18,6 +18,7 @@ public class ItemDust extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+	@Override
 	public int getIconFromDamage(int meta)
 	{
 		switch (meta)
@@ -30,6 +31,7 @@ public class ItemDust extends ItemMekanism
 		}
 	}
 
+	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
 		for (int counter = 0; counter <= 3; ++counter)
@@ -38,6 +40,7 @@ public class ItemDust extends ItemMekanism
 		}
 	}
 
+	@Override
 	public String getItemNameIS(ItemStack item)
 	{
 		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Dust";

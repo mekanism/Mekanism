@@ -19,6 +19,7 @@ public class DamageSourceMekanism extends EntityDamageSourceIndirect
         return damageSourceProjectile;
     }
 
+    @Override
     public Entity getEntity()
     {
         return damageSourceEntity;

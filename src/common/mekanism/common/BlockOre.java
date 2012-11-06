@@ -23,11 +23,13 @@ public class BlockOre extends Block
 		setRequiresSelfNotify();
 	}
 	
+	@Override
 	public boolean canDragonDestroy(World world, int x, int y, int z)
 	{
 		return world.getBlockMetadata(x, y, z) != 1;
 	}
 	
+	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		switch(meta)
@@ -38,17 +40,20 @@ public class BlockOre extends Block
 		return 0;
 	}
 	
+	@Override
 	public int damageDropped(int i)
 	{
 		return i;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
 		list.add(new ItemStack(i, 1, 0));
 	}
 	
+	@Override
 	public String getTextureFile()
 	{
 		return "/textures/terrain.png";

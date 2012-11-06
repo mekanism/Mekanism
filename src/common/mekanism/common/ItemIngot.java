@@ -8,8 +8,7 @@ import net.minecraft.src.*;
 
 public class ItemIngot extends ItemMekanism
 {
-	public static String[] en_USNames = {"Obsidian", "Platinum", "Redstone",
-										"Glowstone"};
+	public static String[] en_USNames = {"Obsidian", "Platinum", "Redstone", "Glowstone"};
 	
 	public ItemIngot(int id)
 	{
@@ -18,6 +17,7 @@ public class ItemIngot extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+	@Override
 	public int getIconFromDamage(int meta)
 	{
 		switch (meta)
@@ -30,6 +30,7 @@ public class ItemIngot extends ItemMekanism
 		}
 	}
 
+	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
 		for (int counter = 0; counter <= 3; ++counter)
@@ -38,6 +39,7 @@ public class ItemIngot extends ItemMekanism
 		}
 	}
 
+	@Override
 	public String getItemNameIS(ItemStack item)
 	{
 		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Ingot";

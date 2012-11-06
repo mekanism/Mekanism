@@ -20,6 +20,7 @@ public class GuiPowerUnit extends GuiContainer
 		tileEntity = tentity;
 	}
 	
+	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
 		String capacityInfo = MekanismUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + MekanismUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY);
@@ -30,6 +31,7 @@ public class GuiPowerUnit extends GuiContainer
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 	}
 	
+	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
         int texture = mc.renderEngine.getTexture("/gui/GuiPowerUnit.png");

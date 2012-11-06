@@ -14,10 +14,7 @@ public class ItemMekanismAxe extends ItemMekanismTool
         super(par1, 3, par2EnumToolMaterial, blocksEffectiveAgainst);
     }
 
-    /**
-     * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if
-     * sword
-     */
+    @Override
     public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
     {
         if (par2Block != null && par2Block.blockMaterial == Material.wood)

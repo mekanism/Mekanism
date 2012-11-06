@@ -37,6 +37,7 @@ public class Version
 		build = 0;
 	}
 	
+	@Override
 	public String toString()
 	{
 		if(major == 0 && minor == 0 && build == 0)

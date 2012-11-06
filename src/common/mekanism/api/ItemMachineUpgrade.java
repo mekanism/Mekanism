@@ -9,6 +9,11 @@ public class ItemMachineUpgrade extends Item
 	{
 		super(id);
 		setMaxStackSize(1);
-		setCreativeTab(Mekanism.tabMekanism);
+		setCreativeTab(TabProxy.tabMekanism());
+	}
+	
+	public String getTextureFile()
+	{
+		return "/textures/items.png";
 	}
 }

@@ -16,6 +16,7 @@ public class BlockObsidianTNT extends Block
         setResistance(0.0F);
     }
 
+    @Override
     public int getBlockTextureFromSide(int side)
     {
         if(side == 1)
@@ -31,6 +32,7 @@ public class BlockObsidianTNT extends Block
         }
     }
 
+    @Override
     public void onBlockAdded(World world, int x, int y, int z)
     {
         super.onBlockAdded(world, x, y, z);
@@ -42,6 +44,7 @@ public class BlockObsidianTNT extends Block
         }
     }
 
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
     {
         if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && world.isBlockIndirectlyGettingPowered(x, y, z))
@@ -51,11 +54,13 @@ public class BlockObsidianTNT extends Block
         }
     }
 
+    @Override
     public int quantityDropped(Random random)
     {
         return 0;
     }
 
+    @Override
     public void onBlockDestroyedByExplosion(World world, int x, int y, int z)
     {
         if (!world.isRemote)
@@ -66,6 +71,7 @@ public class BlockObsidianTNT extends Block
         }
     }
 
+    @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
         if (!world.isRemote)
@@ -83,11 +89,13 @@ public class BlockObsidianTNT extends Block
         }
     }
 
+    @Override
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityplayer)
     {
         super.onBlockClicked(world, x, y, z, entityplayer);
     }
 
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
         if (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.shiftedIndex)
@@ -102,11 +110,13 @@ public class BlockObsidianTNT extends Block
         }
     }
 
+    @Override
     protected ItemStack createStackedBlock(int i)
     {
         return null;
     }
     
+    @Override
     public String getTextureFile()
     {
     	return "/textures/terrain.png";

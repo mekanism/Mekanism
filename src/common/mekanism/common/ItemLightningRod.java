@@ -12,11 +12,13 @@ public class ItemLightningRod extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
+	@Override
     public boolean hasEffect(ItemStack par1ItemStack)
     {
         return true;
     }
 	
+	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
 		if(itemstack.getItemDamage() == 0)
@@ -49,6 +51,7 @@ public class ItemLightningRod extends ItemMekanism
 		return itemstack;
 	}
 	
+	@Override
 	public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
 	{
 		if(itemstack.getItemDamage() > 0)

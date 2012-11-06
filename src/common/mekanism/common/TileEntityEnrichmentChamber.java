@@ -14,6 +14,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 		super("Chamber.ogg", "Enrichment Chamber", "/gui/GuiChamber.png", 5, 200, 1000);
 	}
 	
+	@Override
 	public List getRecipes()
 	{
 		return recipes;

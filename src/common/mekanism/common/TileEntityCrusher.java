@@ -14,6 +14,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 		super("Crusher.ogg", "Crusher", "/gui/GuiCrusher.png", 5, 200, 1000);
 	}
 	
+	@Override
 	public List getRecipes()
 	{
 		return recipes;

@@ -37,9 +37,8 @@ public abstract class EntityProjectile extends Entity
         setSize(0.5F, 0.5F);
     }
 
-    protected void entityInit()
-    {
-    }
+    @Override
+    protected void entityInit() {}
 
     public void setArrowHeading(double d, double d1, double d2, float f, float f1)
     {
@@ -62,9 +61,7 @@ public abstract class EntityProjectile extends Entity
         ticksInGround = 0;
     }
 
-    /**
-     * Sets the velocity to the args. Args: x, y, z
-     */
+    @Override
     public void setVelocity(double d, double d1, double d2)
     {
         motionX = d;
@@ -87,9 +84,7 @@ public abstract class EntityProjectile extends Entity
         }
     }
 
-    /**
-     * Called to update the entity's position/logic.
-     */
+    @Override
     public void onUpdate()
     {
         super.onUpdate();
@@ -324,13 +319,9 @@ public abstract class EntityProjectile extends Entity
         return 7;
     }
 
-    public void playHitSound()
-    {
-    }
+    public void playHitSound() {}
 
-    /**
-     * Called by a player entity when they collide with an entity
-     */
+    @Override
     public void onCollideWithPlayer(EntityPlayer entityplayer)
     {
         if (worldObj.isRemote)
@@ -358,9 +349,7 @@ public abstract class EntityProjectile extends Entity
         return 0.0F;
     }
 
-    /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
+    @Override
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         nbttagcompound.setShort("xTile", (short)xTile);
@@ -375,9 +364,7 @@ public abstract class EntityProjectile extends Entity
         nbttagcompound.setBoolean("beenInGround", beenInGround);
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
+    @Override
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         xTile = nbttagcompound.getShort("xTile");

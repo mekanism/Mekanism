@@ -12,26 +12,31 @@ import net.minecraft.src.WrongUsageException;
 
 public class CommandMekanism extends CommandBase
 {
+	@Override
     public String getCommandName()
     {
         return "mk";
     }
     
+	@Override
     public String getCommandUsage(ICommandSender sender)
     {
     	return "/mk <parameters>";
     }
 	
+	@Override
 	public List getCommandAliases()
 	{
 		return Arrays.asList(new String[] {"mekanism"});
 	}
 	
+	@Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
         return !MinecraftServer.getServer().isSinglePlayer() && super.canCommandSenderUseCommand(sender);
     }
 	
+	@Override
     public void processCommand(ICommandSender sender, String[] params)
     {
         if(params.length < 1)

@@ -10,6 +10,7 @@ public class SlotMachineUpgrade extends Slot
 		super(inventory, x, y, z);
 	}
 	
+	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
 		return itemstack.getItem() instanceof ItemMachineUpgrade;

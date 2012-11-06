@@ -75,6 +75,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		}
 	}
 	
+	@Override
 	public void onUpdate()
 	{
 		if(powerProvider != null)
@@ -229,6 +230,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 	}
 	
+	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
@@ -256,6 +258,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
         facing = nbtTags.getInteger("facing");
     }
 
+	@Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
@@ -283,6 +286,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
         nbtTags.setTag("Items", tagList);
     }
 
+	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
 	{
 		try {
@@ -296,31 +300,37 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		}
 	}
 
+	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
 	}
 
+	@Override
 	public int getStored() 
 	{
 		return energyStored;
 	}
 
+	@Override
 	public int getCapacity() 
 	{
 		return MAX_ENERGY;
 	}
 
+	@Override
 	public int getRate() 
 	{
 		return output;
 	}
 
+	@Override
 	public boolean demandsEnergy() 
 	{
 		return energyStored < MAX_ENERGY;
 	}
 
+	@Override
     public int injectEnergy(Direction direction, int i)
     {
     	int rejects = 0;
@@ -338,53 +348,64 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
     	return rejects;
     }
 
+	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
 	{
 		return direction.toForgeDirection() == ForgeDirection.getOrientation(facing);
 	}
 
+	@Override
 	public int getMaxEnergyOutput()
 	{
 		return output;
 	}
 
+	@Override
 	public double getJoules(Object... data) 
 	{
 		return energyStored*UniversalElectricity.IC2_RATIO;
 	}
 
+	@Override
 	public void setJoules(double joules, Object... data) 
 	{
 		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
 	}
 
+	@Override
 	public double getMaxJoules() 
 	{
 		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
 
+	@Override
 	public void setPowerProvider(IPowerProvider provider)
 	{
 		powerProvider = provider;
 	}
 
+	@Override
 	public IPowerProvider getPowerProvider() 
 	{
 		return powerProvider;
 	}
 
+	@Override
 	public void doWork() {}
 
+	@Override
 	public int powerRequest() 
 	{
 		return getPowerProvider().getMaxEnergyReceived();
 	}
 
+	@Override
 	public boolean canConnect(ForgeDirection side) 
 	{
 		return true;
 	}
 
+	@Override
 	public double getVoltage() 
 	{
 		return 120;
@@ -406,6 +427,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		return false;
 	}
 
+	@Override
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
 		int energyToReceive = (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO);
@@ -423,26 +445,31 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		setEnergy(energyStored + energyToStore);
 	}
 
+	@Override
 	public double wattRequest() 
 	{
 		return ElectricInfo.getWatts(MAX_ENERGY*UniversalElectricity.IC2_RATIO) - ElectricInfo.getWatts(energyStored*UniversalElectricity.IC2_RATIO);
 	}
 
+	@Override
 	public boolean canReceiveFromSide(ForgeDirection side) 
 	{
 		return side != ForgeDirection.getOrientation(facing);
 	}
 
+	@Override
 	public String getType() 
 	{
 		return getInvName();
 	}
 
+	@Override
 	public String[] getMethodNames() 
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
+	@Override
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
@@ -461,15 +488,19 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		}
 	}
 
+	@Override
 	public boolean canAttachToSide(int side) 
 	{
 		return true;
 	}
 
+	@Override
 	public void attach(IComputerAccess computer, String computerSide) {}
 
+	@Override
 	public void detach(IComputerAccess computer) {}
 
+	@Override
 	public int transferToAcceptor(int amount) 
 	{
     	int rejects = 0;
@@ -487,16 +518,19 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
     	return rejects;
 	}
 
+	@Override
 	public boolean canReceive(ForgeDirection side) 
 	{
 		return side != ForgeDirection.getOrientation(facing);
 	}
 	
+	@Override
     public void sendPacket()
     {
     	PacketHandler.sendPowerUnitPacket(this);
     }
     
+	@Override
     public void sendPacketWithRange()
     {
     	PacketHandler.sendPowerUnitPacketWithRange(this, 50);

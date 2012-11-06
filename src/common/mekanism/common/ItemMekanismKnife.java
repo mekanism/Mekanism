@@ -26,9 +26,7 @@ public class ItemMekanismKnife extends ItemMekanism
         setCreativeTab(Mekanism.tabMekanism);
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     */
+    @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {
     	entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
@@ -56,49 +54,50 @@ public class ItemMekanismKnife extends ItemMekanism
         }
     }
 
-    /**
-     * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if
-     * sword
-     */
+    @Override
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
         return strVsBlock * (block.blockID != Block.web.blockID ? 1.0F : 10F);
     }
 
-    /**
-     * Returns if the item (tool) can harvest results from the block type.
-     */
+    @Override
     public boolean canHarvestBlock(Block block)
     {
         return block.blockID == Block.web.blockID;
     }
     
+    @Override
     public int getItemEnchantability()
     {
         return enchantability;
     }
     
+    @Override
     public int getMaxItemUseDuration(ItemStack itemstack)
     {
         return 0x11940;
     }
     
+    @Override
     public boolean isFull3D()
     {
         return true;
     }
     
+    @Override
     public int getDamageVsEntity(Entity entity)
     {
         return weaponDamage;
     }
     
+    @Override
     public boolean onBlockDestroyed(ItemStack itemstack, World world, int i, int j, int k, int l, EntityLiving entityliving)
     {
         itemstack.damageItem(blockDamage, entityliving);
         return true;
     }
     
+    @Override
     public boolean hitEntity(ItemStack itemstack, EntityLiving entityliving, EntityLiving entityliving1)
     {
         itemstack.damageItem(entityDamage, entityliving1);

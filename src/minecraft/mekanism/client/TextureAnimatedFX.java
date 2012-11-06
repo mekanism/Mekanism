@@ -25,6 +25,7 @@ public class TextureAnimatedFX extends ModTextureAnimation
 		super(index, 1, texture, TextureFXManager.instance().loadImageFromTexturePack(FMLClientHandler.instance().getClient().renderEngine, texture), 5);
 	}
 	
+	@Override
     public void bindImage(RenderEngine renderengine)
     {
     	//Binds texture with GL11 to use specific icon index.

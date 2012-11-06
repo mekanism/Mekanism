@@ -66,6 +66,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
      */
     public abstract int getFuelTicks(ItemStack itemstack);
 	
+    @Override
 	public void onUpdate()
 	{
 		super.onUpdate();
@@ -244,6 +245,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 	}
 
+    @Override
     public void operate()
     {
         if (!canOperate())
@@ -278,6 +280,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         }
     }
 
+    @Override
     public boolean canOperate()
     {
         if (inventory[0] == null)
@@ -317,16 +320,19 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         }
     }
     
+    @Override
     public void sendPacket()
     {
     	PacketHandler.sendAdvancedElectricMachinePacket(this);
     }
     
+    @Override
     public void sendPacketWithRange()
     {
     	PacketHandler.sendAdvancedElectricMachinePacketWithRange(this, 50);
     }
 
+    @Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
@@ -345,6 +351,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 	}
 	
+    @Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
     	super.readFromNBT(nbtTags);
@@ -352,6 +359,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
     }
 
+    @Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
@@ -378,11 +386,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		return secondaryEnergyStored*i / MAX_SECONDARY_ENERGY;
 	}
 
+	@Override
 	public String[] getMethodNames() 
 	{
 		return new String[] {"getStored", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
+	@Override
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)

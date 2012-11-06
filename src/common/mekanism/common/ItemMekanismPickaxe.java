@@ -15,9 +15,7 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
         super(par1, 2, par2EnumToolMaterial, blocksEffectiveAgainst);
     }
 
-    /**
-     * Returns if the item (tool) can harvest results from the block type.
-     */
+    @Override
     public boolean canHarvestBlock(Block par1Block)
     {
         if (par1Block == Block.obsidian)
@@ -58,10 +56,7 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
         return par1Block.blockMaterial == Material.iron;
     }
 
-    /**
-     * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if
-     * sword
-     */
+    @Override
     public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
     {
         if (par2Block != null && (par2Block.blockMaterial == Material.iron || par2Block.blockMaterial == Material.rock))

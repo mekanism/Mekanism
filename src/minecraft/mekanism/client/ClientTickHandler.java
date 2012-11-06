@@ -17,6 +17,7 @@ import cpw.mods.fml.common.TickType;
  */
 public class ClientTickHandler implements ITickHandler
 {
+	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
 		if(Mekanism.ticksPassed == 0 && ModLoader.getMinecraftInstance().theWorld != null && ModLoader.getMinecraftInstance().thePlayer != null)
@@ -26,16 +27,19 @@ public class ClientTickHandler implements ITickHandler
 		}
 	}
 	
+	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
 		
 	}
 
+	@Override
 	public EnumSet<TickType> ticks() 
 	{
 		return EnumSet.of(TickType.CLIENT);
 	}
 
+	@Override
 	public String getLabel()
 	{
 		return "Mekanism";

@@ -213,7 +213,6 @@ public class Mekanism
 	public static Block ObsidianTNT;
 	public static Block PowerUnit;
 	public static Block Generator;
-	public static Block PlatinumWire;
 	
 	//MultiID Items
 	public static Item Dust;
@@ -661,7 +660,6 @@ public class Mekanism
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
 		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
-		LanguageRegistry.addName(new ItemStack(PlatinumWire, 1, 0), "Platinum Wire");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.PlatinumBlock.name", "Platinum Block");

@@ -30,6 +30,7 @@ public class BlockPowerUnit extends BlockContainer
 		setRequiresSelfNotify();
 	}
 	
+	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		if(meta == 0)
@@ -55,6 +56,7 @@ public class BlockPowerUnit extends BlockContainer
 		return 0;
 	}
 	
+	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
     	TileEntityPowerUnit tileEntity = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
@@ -72,11 +74,13 @@ public class BlockPowerUnit extends BlockContainer
         tileEntity.setFacing((short)change);
     }
     
+    @Override
     public int damageDropped(int i)
     {
     	return i;
     }
     
+    @Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
@@ -84,6 +88,7 @@ public class BlockPowerUnit extends BlockContainer
 		list.add(new ItemStack(i, 1, 1));
 	}
 	
+	@Override
     @SideOnly(Side.CLIENT)
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
@@ -113,6 +118,7 @@ public class BlockPowerUnit extends BlockContainer
 		return 0;
     }
 	
+    @Override
     public void breakBlock(World world, int par2, int par3, int par4, int i1, int i2)
     {
         TileEntityPowerUnit var5 = (TileEntityPowerUnit)world.getBlockTileEntity(par2, par3, par4);
@@ -164,6 +170,7 @@ public class BlockPowerUnit extends BlockContainer
     	super.breakBlock(world, par2, par3, par4, i1, i2);
     }
     
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
         if (world.isRemote)
@@ -189,11 +196,13 @@ public class BlockPowerUnit extends BlockContainer
         }
     }
     
+    @Override
     public String getTextureFile()
     {
     	return "/textures/terrain.png";
     }
 
+    @Override
 	public TileEntity createNewTileEntity(World world, int metadata) 
 	{
 		if(metadata == 0)
@@ -207,6 +216,7 @@ public class BlockPowerUnit extends BlockContainer
 		return null;
 	}
 	
+	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
 		return null;

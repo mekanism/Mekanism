@@ -31,6 +31,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
+	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		int energy = getEnergy(itemstack);
@@ -38,17 +39,20 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		list.add("Stored Energy: " + MekanismUtils.getDisplayedEnergy(energy));
 	}
 	
+	@Override
 	public void onCreated(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
 		itemstack = getUnchargedItem();
 	}
 	
+	@Override
     public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
     	ItemEnergized item = ((ItemEnergized)itemstack.getItem());
     	item.setEnergy(itemstack, item.getEnergy(itemstack));
     }
 	
+	@Override
 	public int getEnergy(ItemStack itemstack)
 	{
 		if(itemstack.stackTagCompound == null)
@@ -67,6 +71,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		return stored;
 	}
 	
+	@Override
 	public void setEnergy(ItemStack itemstack, int energy)
 	{
 		if(itemstack.stackTagCompound == null)
@@ -86,6 +91,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		return charged;
 	}
 	
+	@Override
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
@@ -96,16 +102,19 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		list.add(charged);
 	}
 	
+	@Override
 	public int getMaxEnergy()
 	{
 		return maxEnergy;
 	}
 
+	@Override
 	public int getRate() 
 	{
 		return transferRate;
 	}
 
+	@Override
 	public int charge(ItemStack itemstack, int amount) 
 	{
 		int rejects = Math.max((getEnergy(itemstack) + amount) - maxEnergy, 0);
@@ -113,6 +122,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		return rejects;
 	}
 
+	@Override
 	public int discharge(ItemStack itemstack, int amount)
 	{
 		int energyToUse = Math.min(getEnergy(itemstack), amount);
@@ -120,6 +130,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		return energyToUse;
 	}
 
+	@Override
 	public double getJoules(Object... data)
 	{
 		if(data[0] instanceof ItemStack)
@@ -130,6 +141,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		return 0;
 	}
 
+	@Override
 	public void setJoules(double joules, Object... data) 
 	{
 		if(data[0] instanceof ItemStack)
@@ -140,16 +152,19 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		}
 	}
 
+	@Override
 	public double getMaxJoules()
 	{
 		return maxEnergy*UniversalElectricity.IC2_RATIO;
 	}
 
+	@Override
 	public double getVoltage() 
 	{
 		return 20;
 	}
 
+	@Override
 	public double onReceive(double amps, double voltage, ItemStack itemStack)
 	{
 		int rejects = (int)Math.max((getEnergy(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)*UniversalElectricity.TO_IC2_RATIO) - getMaxEnergy(), 0);
@@ -157,6 +172,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
         return rejects*UniversalElectricity.IC2_RATIO;
 	}
 
+	@Override
 	public double onUse(double joulesNeeded, ItemStack itemStack)
 	{
 		int energyRequest = (int)Math.min(getEnergy(itemStack), joulesNeeded*UniversalElectricity.TO_IC2_RATIO);
@@ -164,16 +180,19 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
         return energyRequest*UniversalElectricity.IC2_RATIO;
 	}
 
+	@Override
 	public boolean canReceiveElectricity()
 	{
 		return true;
 	}
 
+	@Override
 	public boolean canProduceElectricity()
 	{
 		return true;
 	}
 	
+	@Override
 	public int getDivider()
 	{
 		return divider;
