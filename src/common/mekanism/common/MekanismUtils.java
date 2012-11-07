@@ -35,7 +35,11 @@ public class MekanismUtils
 		{
 			if(!Mekanism.latestVersionNumber.equals(Mekanism.versionNumber))
 			{
-				entityplayer.addChatMessage(EnumColor.GREY + "Your version of " + EnumColor.DARK_BLUE + "Mekanism " + EnumColor.GREY + "(" + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + ") is outdated. Please update to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
+				entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
+				entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version " + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + " for Minecraft 1.4.2.");
+				entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
+				entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
+				entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
 				return;
 			}
 		}

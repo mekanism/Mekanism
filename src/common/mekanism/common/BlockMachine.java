@@ -394,6 +394,7 @@ public class BlockMachine extends BlockContainer
 			index = i;
 		}
 		
+		@Override
 		public String toString()
 		{
 			return Integer.toString(index);

@@ -41,25 +41,25 @@ public class CommandMekanism extends CommandBase
     {
         if(params.length < 1)
         {
-            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " --------");
+            sender.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
             sender.sendChatToPlayer(EnumColor.GREY + " *Version: " + EnumColor.DARK_GREY + Mekanism.versionNumber);
             sender.sendChatToPlayer(EnumColor.GREY + " *Latest Version: " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
             sender.sendChatToPlayer(EnumColor.GREY + " *Developed on Mac OS X 10.8 Mountain Lion");
             sender.sendChatToPlayer(EnumColor.GREY + " *Code, textures, and ideas by aidancbrady");
             sender.sendChatToPlayer(EnumColor.GREY + " *Recent News: " + EnumColor.INDIGO + Mekanism.recentNews);
-            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[============]" + EnumColor.GREY + " --------");
+            sender.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
         }
         else if(params.length == 1)
         {
 	        if(params[0].equalsIgnoreCase("help"))
 	        {
-	            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " --------");
+	            sender.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk" + EnumColor.GREY + " -- displays the main page.");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk help" + EnumColor.GREY + " -- displays this guide.");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk version" + EnumColor.GREY + " -- displays the version number.");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk latest" + EnumColor.GREY + " -- displays the latest version number.");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk news" + EnumColor.GREY + " -- displays most recent recent news.");
-	            sender.sendChatToPlayer(EnumColor.GREY + "-------- " + EnumColor.DARK_BLUE + "[============]" + EnumColor.GREY + " --------");
+	            sender.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
 	        }
 	        
 	        else if(params[0].equalsIgnoreCase("version"))

@@ -20,6 +20,8 @@ import mekanism.client.SoundHandler;
 import net.minecraftforge.common.*;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraft.src.*;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.*;
@@ -216,9 +218,6 @@ public class Mekanism
 	
 	//MultiID Items
 	public static Item Dust;
-	public static ItemStack IronDust;
-	public static ItemStack GoldDust;
-	public static ItemStack ObsidianDust;
 	public static Item Ingot;
 	
 	//Boolean Values
@@ -242,294 +241,294 @@ public class Mekanism
 	{
 		//Crafting Recipes
 		//Base
-		GameRegistry.addRecipe(new ItemStack(WoodPaxel, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(WoodPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeWood, Character.valueOf('Y'), Item.pickaxeWood, Character.valueOf('Z'), Item.shovelWood, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(StonePaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(StonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeStone, Character.valueOf('Y'), Item.pickaxeStone, Character.valueOf('Z'), Item.shovelStone, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(IronPaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(IronPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeSteel, Character.valueOf('Y'), Item.pickaxeSteel, Character.valueOf('Z'), Item.shovelSteel, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(DiamondPaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(DiamondPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeDiamond, Character.valueOf('Y'), Item.pickaxeDiamond, Character.valueOf('Z'), Item.shovelDiamond, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GoldPaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GoldPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeGold, Character.valueOf('Y'), Item.pickaxeGold, Character.valueOf('Z'), Item.shovelGold, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(WoodKnife), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(WoodKnife), new Object[] {
 			" ^", "I ", Character.valueOf('^'), Block.planks, Character.valueOf('I'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(StoneKnife), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(StoneKnife), new Object[] {
 			" ^", "I ", Character.valueOf('^'), Block.cobblestone, Character.valueOf('I'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(IronKnife), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(IronKnife), new Object[] {
 			" ^", "I ", Character.valueOf('^'), Item.ingotIron, Character.valueOf('I'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(DiamondKnife), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(DiamondKnife), new Object[] {
 			" ^", "I ", Character.valueOf('^'), Item.diamond, Character.valueOf('I'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GoldKnife), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GoldKnife), new Object[] {
 			" ^", "I ", Character.valueOf('^'), Item.ingotGold, Character.valueOf('I'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(Item.coal, 9), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Item.coal, 9), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 3)
-		});
-		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 3), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MultiBlock, 1, 3), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), Item.coal
-		});
+		}));
 		
 		//Obsidian
-		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 2), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MultiBlock, 1, 2), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(Ingot, 9, 0), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 0), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 2)	
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianHelmet, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianBody, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianBody, 1), new Object[] {
 			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianLegs, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianLegs, 1), new Object[] {
 			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianBoots, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianPaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), ObsidianAxe, Character.valueOf('Y'), ObsidianPickaxe, Character.valueOf('Z'), ObsidianSpade, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianPickaxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianPickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianAxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianSpade, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianHoe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianSword, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianKnife, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianKnife, 1), new Object[] {
 			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 0), Character.valueOf('I'), Item.stick
-		});
+		}));
 		
 		//Glowstone
-		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MultiBlock, 1, 4), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		});
-		GameRegistry.addRecipe(new ItemStack(Ingot, 9, 3), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 3), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 4)
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstonePaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), GlowstoneAxe, Character.valueOf('Y'), GlowstonePickaxe, Character.valueOf('Z'), GlowstoneSpade, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstonePickaxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstonePickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneAxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneSpade, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneHoe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneSword, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneHelmet, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneBody, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBody, 1), new Object[] {
 			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneLegs, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneLegs, 1), new Object[] {
 			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneBoots, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		});
-		GameRegistry.addRecipe(new ItemStack(GlowstoneKnife, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneKnife, 1), new Object[] {
 			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 3), Character.valueOf('I'), Item.stick
-		});
+		}));
 		
 		//Lazuli
-		GameRegistry.addRecipe(new ItemStack(LazuliHelmet, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliBody, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliBody, 1), new Object[] {
 			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliLegs, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliLegs, 1), new Object[] {
 			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliBoots, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliPaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), LazuliAxe, Character.valueOf('Y'), LazuliPickaxe, Character.valueOf('Z'), LazuliSpade, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliPickaxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliPickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliAxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliSpade, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliHoe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliSword, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(LazuliKnife, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliKnife, 1), new Object[] {
 			" ^", "I ", Character.valueOf('^'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('I'), Item.stick
-		});
+		}));
 		
 		//Platinum
-		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 0), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MultiBlock, 1, 0), new Object[] {
 			"XXX", "XXX", "XXX", Character.valueOf('X'), new ItemStack(Ingot, 1, 1)
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumPaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), PlatinumAxe, Character.valueOf('Y'), PlatinumPickaxe, Character.valueOf('Z'), PlatinumSpade, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumPickaxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumAxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumSpade, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumHoe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumSword, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumHelmet, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumBody, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBody, 1), new Object[] {
 			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumLegs, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumLegs, 1), new Object[] {
 			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumBoots, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		});
-		GameRegistry.addRecipe(new ItemStack(Ingot, 9, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 1), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(PlatinumKnife, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumKnife, 1), new Object[] {
 			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 1), Character.valueOf('I'), Item.stick
-		});
+		}));
 		
 		//Redstone
-		GameRegistry.addRecipe(new ItemStack(MultiBlock, 1, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MultiBlock, 1, 1), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		});
-		GameRegistry.addRecipe(new ItemStack(Ingot, 9, 2), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 2), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(MultiBlock, 1, 1)
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstonePaxel, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), RedstoneAxe, Character.valueOf('Y'), RedstonePickaxe, Character.valueOf('Z'), RedstoneSpade, Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstonePickaxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstonePickaxe, 1), new Object[] {
 			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneAxe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneAxe, 1), new Object[] {
 			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneSpade, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneSpade, 1), new Object[] {
 			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneHoe, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneHoe, 1), new Object[] {
 			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneSword, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneHelmet, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneBody, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBody, 1), new Object[] {
 			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneLegs, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneLegs, 1), new Object[] {
 			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneBoots, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		});
-		GameRegistry.addRecipe(new ItemStack(RedstoneKnife, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneKnife, 1), new Object[] {
 			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 2), Character.valueOf('I'), Item.stick
-		});
+		}));
 		
 		//Extra
-		GameRegistry.addRecipe(new ItemStack(ObsidianTNT, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianTNT, 1), new Object[] {
 			"***", "XXX", "***", Character.valueOf('*'), Block.obsidian, Character.valueOf('X'), Block.tnt
-		});
-		GameRegistry.addRecipe(new ItemStack(ObsidianBow, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianBow, 1), new Object[] {
 			" AB", "A B", " AB", Character.valueOf('A'), new ItemStack(Ingot, 1, 0), Character.valueOf('B'), Item.silk
-		});
-		GameRegistry.addRecipe(EnergyCube.getUnchargedItem(), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyCube.getUnchargedItem(), new Object[] {
 			"RAR", "APA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), new ItemStack(Dust, 1, 2)
-		});
-		GameRegistry.addRecipe(EnergyTablet.getUnchargedItem(), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyTablet.getUnchargedItem(), new Object[] {
 			"RCR", "ECE", "RCR", Character.valueOf('C'), EnergyCube.getUnchargedItem(), Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy
-		});
-		GameRegistry.addRecipe(EnergyOrb.getUnchargedItem(), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyOrb.getUnchargedItem(), new Object[] {
 			"ECE", "CCC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyCube.getUnchargedItem()
-		});
-		GameRegistry.addRecipe(new ItemStack(PowerUnit, 1, 0), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PowerUnit, 1, 0), new Object[] {
 			"CEC", "EPE", "CEC", Character.valueOf('C'), EnergyCube.getUnchargedItem(), Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), new ItemStack(MultiBlock, 1, 0) 
-		});
-		GameRegistry.addRecipe(new ItemStack(PowerUnit, 1, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PowerUnit, 1, 1), new Object[] {
 			"ECE", "CPC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyCube.getUnchargedItem(), Character.valueOf('P'), new ItemStack(PowerUnit, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
 			"***", "*R*", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 1), Character.valueOf('R'), Item.redstone
-		});
-		GameRegistry.addRecipe(new ItemStack(MachineBlock, 1, 1), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 1), new Object[] {
 			"***", "*P*", "***", Character.valueOf('*'), Item.redstone, Character.valueOf('P'), new ItemStack(MultiBlock, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(MachineBlock, 1, 2), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 2), new Object[] {
 			"***", "*P*", "***", Character.valueOf('*'), Block.cobblestone, Character.valueOf('P'), new ItemStack(MultiBlock, 1, 0)
-		});
-		GameRegistry.addRecipe(new ItemStack(MachineBlock, 1, 3), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 3), new Object[] {
 			"***", "*L*", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 1), Character.valueOf('L'), Item.bucketLava
-		});
-		GameRegistry.addRecipe(new ItemStack(SpeedUpgrade), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SpeedUpgrade), new Object[] {
 			"PAP", "ARA", "PAP", Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
-		});
-		GameRegistry.addRecipe(new ItemStack(EnergyUpgrade), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyUpgrade), new Object[] {
 			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
-		});
-		GameRegistry.addRecipe(new ItemStack(UltimateUpgrade), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(UltimateUpgrade), new Object[] {
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
-		});
-		GameRegistry.addRecipe(new ItemStack(Generator, 1, 0), new Object[] {
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 0), new Object[] {
 			"GGG", "ECE", "IRI", Character.valueOf('G'), Item.lightStoneDust, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(MultiBlock, 1, 3), Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
-		});
+		}));
 		
 		if(extrasEnabled)
 		{
-			GameRegistry.addRecipe(new ItemStack(MachineBlock, 1, 4), new Object[] {
+			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 4), new Object[] {
 				"SGS", "GDG", "SGS", Character.valueOf('S'), EnrichedAlloy, Character.valueOf('G'), Block.glass, Character.valueOf('D'), Block.blockDiamond
-			});
+			}));
 		}
 	
 		//Furnace Recipes
@@ -916,43 +915,50 @@ public class Mekanism
 	 */
 	public void addIntegratedItems()
 	{
-		if(!hooks.RailcraftLoaded && hooks.IC2Loaded)
-		{
-			Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
-		}
+		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
+		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));
+		OreDictionary.registerOre("dustPlatinum", new ItemStack(Dust, 1, 2));
+		OreDictionary.registerOre("dustObsidian", new ItemStack(Dust, 1, 3));
+		
+		OreDictionary.registerOre("ingotObsidian", new ItemStack(Ingot, 1, 0));
+		OreDictionary.registerOre("ingotPlatinum", new ItemStack(Ingot, 1, 1));
+		OreDictionary.registerOre("ingotRedstone", new ItemStack(Ingot, 1, 2));
+		OreDictionary.registerOre("ingotGlowstone", new ItemStack(Ingot, 1, 3));
 		
 		if(hooks.IC2Loaded)
 		{
-			IronDust = hooks.IC2IronDust;
-			GoldDust = hooks.IC2GoldDust;
-		}
-		else {
-			IronDust = new ItemStack(Dust, 1, 0);
-			GoldDust = new ItemStack(Dust, 1, 1);
+			if(!hooks.RailcraftLoaded)
+			{
+				Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
+			}
+			ItemStack dustIron = hooks.IC2IronDust;
+			dustIron.stackSize = 2;
+			ItemStack dustGold = hooks.IC2GoldDust;
+			dustGold.stackSize = 2;
+			RecipeHandler.addCombinerRecipe(dustIron, new ItemStack(Block.oreIron));
+			RecipeHandler.addCombinerRecipe(dustGold, new ItemStack(Block.oreGold));
 		}
 		
 		if(hooks.RailcraftLoaded)
 		{
-			ObsidianDust = hooks.RailcraftObsidianDust;
-		}
-		else {
-			ObsidianDust = new ItemStack(Dust, 1, 3);
+			RecipeHandler.addPlatinumCompressorRecipe(hooks.RailcraftObsidianDust, new ItemStack(Ingot, 1, 0));
+			RecipeHandler.addCombinerRecipe(hooks.RailcraftObsidianDust, new ItemStack(Block.obsidian));
 		}
         
-        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), ObsidianDust);
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(IronDust.itemID, 2, 0));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(GoldDust.itemID, 2, 1));
-        RecipeHandler.addPlatinumCompressorRecipe(ObsidianDust, new ItemStack(Ingot, 1, 0));
-        RecipeHandler.addCombinerRecipe(ObsidianDust, new ItemStack(Block.obsidian));
-		RecipeHandler.addCombinerRecipe(new ItemStack(IronDust.itemID, 2, 0), new ItemStack(Block.oreIron));
-		RecipeHandler.addCombinerRecipe(new ItemStack(GoldDust.itemID, 2, 1), new ItemStack(Block.oreGold));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(ObsidianDust.itemID, 1, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(IronDust.itemID, 1, 0));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(GoldDust.itemID, 1, 1));
+        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
+        RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Ingot, 1, 0));
+        RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Block.obsidian));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 0), new ItemStack(Block.oreIron));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 1), new ItemStack(Block.oreGold));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(Dust, 1, 3));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
         
-		GameRegistry.addShapelessRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
-			Item.redstone, Item.lightStoneDust, IronDust, GoldDust, ObsidianDust, new ItemStack(Dust, 1, 2)
-		});
+		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
+			Item.redstone, Item.lightStoneDust, "dustIron", "dustGold", "dustObsidian", "dustPlatinum"
+		}));
 	}
 	
 	/**
