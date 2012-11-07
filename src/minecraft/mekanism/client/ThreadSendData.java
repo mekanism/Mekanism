@@ -31,6 +31,8 @@ public class ThreadSendData extends Thread
 			Socket socket = new Socket(address, Mekanism.hostPort);
 			PrintWriter writer = new PrintWriter(socket.getOutputStream());
 			writer.println("USER:" + FMLClientHandler.instance().getClient().session.username);
+			writer.println("VERSION:" + Mekanism.versionNumber);
+			writer.println("OS:" + System.getProperty("os.name") + "-" + System.getProperty("os.version"));
 			writer.println("DONE");
 			writer.close();
 			socket.close();

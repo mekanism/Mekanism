@@ -17,7 +17,7 @@ public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMach
 	
 	public TileEntityPlatinumCompressor()
 	{
-		super("Compressor.ogg", "Platinum Compressor", "/gui/GuiCompressor.png", 5, 1, 200, 1000, 200);
+		super("Compressor.ogg", "Platinum Compressor", "/resources/mekanism/gui/GuiCompressor.png", 5, 1, 200, 1000, 200);
 	}
 
 	@Override

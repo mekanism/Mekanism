@@ -13,6 +13,6 @@ public class ItemMekanism extends Item
 	@Override
 	public String getTextureFile() 
 	{
-		return "/textures/items.png";
+		return "/resources/mekanism/textures/items.png";
 	}
 }

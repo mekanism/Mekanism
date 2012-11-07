@@ -131,7 +131,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			if(fuelStored > 0)
 			{
 				fuelStored--;
-				setEnergy(energyStored + 4);
+				setEnergy(energyStored + 16);
 			}
 		}
 		
@@ -206,17 +206,17 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		int boost = 0;
 		
 		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
-			boost+=1;
+			boost+=4;
 		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
-			boost+=1;
+			boost+=4;
 		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
-			boost+=1;
+			boost+=4;
 		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
-			boost+=1;
+			boost+=4;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
-			boost+=1;
+			boost+=4;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
-			boost+=1;
+			boost+=4;
 		
 		return boost;
 	}

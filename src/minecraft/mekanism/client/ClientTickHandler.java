@@ -30,7 +30,7 @@ public class ClientTickHandler implements ITickHandler
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
-		
+		Mekanism.audioHandler.onTick();
 	}
 
 	@Override

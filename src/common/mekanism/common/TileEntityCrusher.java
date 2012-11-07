@@ -11,7 +11,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	
 	public TileEntityCrusher()
 	{
-		super("Crusher.ogg", "Crusher", "/gui/GuiCrusher.png", 5, 200, 1000);
+		super("Crusher.ogg", "Crusher", "/resources/mekanism/gui/GuiCrusher.png", 5, 200, 1000);
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -17,6 +19,8 @@ public class SoundHandler
 	/** The PaulsCode SoundSystem */
 	public SoundSystem soundSystem;
 	
+	public List<Sound> sounds = new ArrayList<Sound>();
+	
 	/** SoundHandler -- a class that handles all Sounds used by Mekanism. */
 	public SoundHandler()
 	{
@@ -24,6 +28,14 @@ public class SoundHandler
 		{
 			soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
 			System.out.println("[Mekanism] Successfully set up SoundHandler.");
+		}
+	}
+	
+	public void onTick()
+	{
+		for(Sound sound : sounds)
+		{
+			sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 		}
 	}
 	

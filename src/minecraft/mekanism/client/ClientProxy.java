@@ -55,21 +55,16 @@ public class ClientProxy extends CommonProxy
 		System.out.println("[Mekanism] Beginning render initiative...");
 		
 		//Preload block/item textures
-		MinecraftForgeClient.preloadTexture("/textures/items.png");
-		MinecraftForgeClient.preloadTexture("/textures/terrain.png");
-		MinecraftForgeClient.preloadTexture("/textures/CompressorFront.png");
-		MinecraftForgeClient.preloadTexture("/textures/CombinerFront.png");
-		MinecraftForgeClient.preloadTexture("/textures/ElementizerFront.png");
-		MinecraftForgeClient.preloadTexture("/textures/ElementizerBack.png");
-		MinecraftForgeClient.preloadTexture("/textures/ElementizerSide.png");
+		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/items.png");
+		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/terrain.png");
 		
 		//Register animated TextureFX for machines
 		try {
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/CompressorFront.png", Mekanism.ANIMATED_TEXTURE_INDEX));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/CombinerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+1));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/ElementizerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+2));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/ElementizerBack.png", Mekanism.ANIMATED_TEXTURE_INDEX+3));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/textures/ElementizerSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+4));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CompressorFront.png", Mekanism.ANIMATED_TEXTURE_INDEX));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CombinerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+1));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+2));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerBack.png", Mekanism.ANIMATED_TEXTURE_INDEX+3));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+4));
 		} catch (IOException e) {
 			System.err.println("[Mekanism] Error registering animation with FML: " + e.getMessage());
 		}

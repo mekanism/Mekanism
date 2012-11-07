@@ -29,6 +29,6 @@ public class TextureAnimatedFX extends ModTextureAnimation
     public void bindImage(RenderEngine renderengine)
     {
     	//Binds texture with GL11 to use specific icon index.
-        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, renderengine.getTexture("/textures/terrain.png"));
+        GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, renderengine.getTexture("/resources/mekanism/textures/terrain.png"));
     }
 }

@@ -14,6 +14,6 @@ public class ItemMachineUpgrade extends Item
 	
 	public String getTextureFile()
 	{
-		return "/textures/items.png";
+		return "/resources/mekanism/textures/items.png";
 	}
 }

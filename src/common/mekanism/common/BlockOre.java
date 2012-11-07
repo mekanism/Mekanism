@@ -56,6 +56,6 @@ public class BlockOre extends Block
 	@Override
 	public String getTextureFile()
 	{
-		return "/textures/terrain.png";
+		return "/resources/mekanism/textures/terrain.png";
 	}
 }

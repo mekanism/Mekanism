@@ -18,7 +18,7 @@ public class RenderKnife extends Render
 
     public void renderKnife(EntityKnife entityknife, double d, double d1, double d2, float f, float f1)
     {
-        loadTexture("/textures/Knife.png");
+        loadTexture("/resources/mekanism/render/Knife.png");
         if (entityknife.prevRotationYaw == 0.0F && entityknife.prevRotationPitch == 0.0F)
         {
             return;

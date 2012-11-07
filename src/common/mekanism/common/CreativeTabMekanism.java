@@ -12,6 +12,6 @@ public class CreativeTabMekanism extends CreativeTabs
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		return new ItemStack(Mekanism.Stopwatch, 1, 0);
+		return new ItemStack(Mekanism.EnergyCube);
 	}
 }

@@ -115,7 +115,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		
 		if(worldObj != null && worldObj.isRemote && audio != null)
 		{
-			audio.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 			if(!audio.isPlaying && isActive == true)
 			{
 				audio.play();

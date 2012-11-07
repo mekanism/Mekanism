@@ -3,6 +3,7 @@ package mekanism.client;
 import java.io.File;
 import java.net.URL;
 
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
@@ -62,12 +63,13 @@ public class Sound
 		yCoord = y;
 		zCoord = z;
 		
-		URL url = getClass().getClassLoader().getResource("sounds/" + sound);
+		URL url = getClass().getClassLoader().getResource("resources/mekanism/sound/" + sound);
 		if(url == null)
 		{
 			System.out.println("[Mekanism] Invalid sound file: " + sound);
 		}
 		
+		Mekanism.audioHandler.sounds.add(this);
 		soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
 		soundSystem.activate(id);
 	}
@@ -103,6 +105,8 @@ public class Sound
 		{
 			stop();
 		}
+		
+		Mekanism.audioHandler.sounds.remove(this);
 		soundSystem.removeSource(identifier);
 	}
 	

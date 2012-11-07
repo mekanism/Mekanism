@@ -53,7 +53,7 @@ public class GuiControlPanel extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int k = mc.renderEngine.getTexture("/gui/GuiControlPanel.png");
+        int k = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiControlPanel.png");
         mc.renderEngine.bindTexture(k);
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
         xField.drawTextBox();

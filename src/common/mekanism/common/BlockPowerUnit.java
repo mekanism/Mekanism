@@ -199,7 +199,7 @@ public class BlockPowerUnit extends BlockContainer
     @Override
     public String getTextureFile()
     {
-    	return "/textures/terrain.png";
+    	return "/resources/mekanism/textures/terrain.png";
     }
 
     @Override
