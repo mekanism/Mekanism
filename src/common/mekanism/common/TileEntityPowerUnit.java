@@ -89,19 +89,23 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 			if(inventory[0].getItem() instanceof IEnergizedItem)
 			{
 				IEnergizedItem item = (IEnergizedItem)inventory[0].getItem();
-				int sendingEnergy = 0;
 				
-				if(item.getRate() <= energyStored)
+				if(item.canBeCharged())
 				{
-					sendingEnergy = item.getRate();
+					int sendingEnergy = 0;
+					
+					if(item.getRate() <= energyStored)
+					{
+						sendingEnergy = item.getRate();
+					}
+					else if(item.getRate() > energyStored)
+					{
+						sendingEnergy = energyStored;
+					}
+					
+					int rejects = item.charge(inventory[0], sendingEnergy);
+					setEnergy(energyStored - (sendingEnergy - rejects));
 				}
-				else if(item.getRate() > energyStored)
-				{
-					sendingEnergy = energyStored;
-				}
-				
-				int rejects = item.charge(inventory[0], sendingEnergy);
-				setEnergy(energyStored - (sendingEnergy - rejects));
 			}
 			else if(inventory[0].getItem() instanceof IItemElectric)
 			{
@@ -121,19 +125,23 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		{
 			if(inventory[1].getItem() instanceof IEnergizedItem)
 			{
-				int received = 0;
-				int energyNeeded = MAX_ENERGY - energyStored;
 				IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
-				if(item.getRate() <= energyNeeded)
-				{
-					received = item.discharge(inventory[1], item.getRate());
-				}
-				else if(item.getRate() > energyNeeded)
-				{
-					received = item.discharge(inventory[1], energyNeeded);
-				}
 				
-				setEnergy(energyStored + received);
+				if(item.canBeDischarged())
+				{
+					int received = 0;
+					int energyNeeded = MAX_ENERGY - energyStored;
+					if(item.getRate() <= energyNeeded)
+					{
+						received = item.discharge(inventory[1], item.getRate());
+					}
+					else if(item.getRate() > energyNeeded)
+					{
+						received = item.discharge(inventory[1], energyNeeded);
+					}
+					
+					setEnergy(energyStored + received);
+				}
 			}
 			else if(inventory[1].getItem() instanceof IItemElectric)
 			{

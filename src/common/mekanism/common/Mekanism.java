@@ -19,6 +19,7 @@ import mekanism.api.ItemMachineUpgrade;
 import mekanism.client.SoundHandler;
 import net.minecraftforge.common.*;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingSpecialSpawnEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -196,7 +197,7 @@ public class Mekanism
 	public static Item LazuliKnife;
 	
 	//Extra Items
-	public static Item ObsidianBow;
+	public static ItemEnergizedBow EnergizedBow;
 	public static Item LightningRod;
 	public static Item Stopwatch;
 	public static Item WeatherOrb;
@@ -207,6 +208,8 @@ public class Mekanism
 	public static Item SpeedUpgrade;
 	public static Item EnergyUpgrade;
 	public static Item UltimateUpgrade;
+	public static ItemNuclearDisassembler NuclearDisassembler;
+	public static Item NuclearCore;
 	
 	//Extra Blocks
 	public static Block MultiBlock;
@@ -481,7 +484,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianTNT, 1), new Object[] {
 			"***", "XXX", "***", Character.valueOf('*'), Block.obsidian, Character.valueOf('X'), Block.tnt
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianBow, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergizedBow.getUnchargedItem(), new Object[] {
 			" AB", "A B", " AB", Character.valueOf('A'), new ItemStack(Ingot, 1, 0), Character.valueOf('B'), Item.silk
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyCube.getUnchargedItem(), new Object[] {
@@ -523,6 +526,15 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 0), new Object[] {
 			"GGG", "ECE", "IRI", Character.valueOf('G'), Item.lightStoneDust, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(MultiBlock, 1, 3), Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(NuclearCore), new Object[] {
+			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), new ItemStack(Dust, 1, 3), Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('D'), Item.diamond
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(NuclearDisassembler.getUnchargedItem(), new Object[] {
+			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), NuclearCore, Character.valueOf('O'), new ItemStack(Ingot, 1, 0)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
+			" R ", "RIR", " R ", Character.valueOf('R'), Item.redstone, Character.valueOf('I'), Item.ingotIron
+		}));
 		
 		if(extrasEnabled)
 		{
@@ -538,10 +550,14 @@ public class Mekanism
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(OreBlock, 1, 0), new ItemStack(Dust, 2, 2));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 2));
+        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
 		
 		//Platinum Compressor Recipes
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.redstone), new ItemStack(Ingot, 1, 2));
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.lightStoneDust), new ItemStack(Ingot, 1, 3));
+        RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Ingot, 1, 0));
 		
 		//Combiner Recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 4), new ItemStack(Block.oreRedstone));
@@ -549,11 +565,17 @@ public class Mekanism
 		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 2), new ItemStack(OreBlock, 1, 0));
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.diamond), new ItemStack(Block.oreDiamond));
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.dyePowder, 4, 4), new ItemStack(Block.oreLapis));
+        RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Block.obsidian));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 0), new ItemStack(Block.oreIron));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 1), new ItemStack(Block.oreGold));
 		
 		//Crusher Recipes
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 2), new ItemStack(Item.redstone));
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 1), new ItemStack(Dust, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(Dust, 1, 3));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
         
         //Theoretical Elementizer Recipes
         RecipeHandler.addTheoreticalElementizerRecipe(new ItemStack(EnrichedAlloy), new ItemStack(TileEntityTheoreticalElementizer.getRandomMagicItem()));
@@ -642,7 +664,7 @@ public class Mekanism
 		LanguageRegistry.addName(GlowstoneKnife, "Glowstone Knife");
 		
 		//Extras
-		LanguageRegistry.addName(ObsidianBow, "Obsidian Bow");
+		LanguageRegistry.addName(EnergizedBow, "Energized Bow");
 		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
 		
 		if(extrasEnabled == true)
@@ -659,6 +681,9 @@ public class Mekanism
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
 		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
+		LanguageRegistry.addName(NuclearDisassembler, "Nuclear Disassembler");
+		LanguageRegistry.addName(NuclearCore, "Nuclear Core");
+		LanguageRegistry.addName(EnergizedBow, "Energized Bow");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.PlatinumBlock.name", "Platinum Block");
@@ -779,9 +804,6 @@ public class Mekanism
 		LazuliBoots.setIconIndex(48);
 		LazuliKnife.setIconIndex(208);
 		
-		//Extras
-		ObsidianBow.setIconIndex(177);
-		
 		if(extrasEnabled == true)
 		{
 			LightningRod.setIconIndex(225);
@@ -796,6 +818,9 @@ public class Mekanism
 		SpeedUpgrade.setIconIndex(232);
 		EnergyUpgrade.setIconIndex(231);
 		UltimateUpgrade.setIconIndex(233);	
+		NuclearDisassembler.setIconIndex(253);
+		NuclearCore.setIconIndex(254);
+		EnergizedBow.setIconIndex(252);
 	}
 	
 	/**
@@ -807,83 +832,85 @@ public class Mekanism
 		RedstoneBody = (new ItemMekanismArmor(11236, armorREDSTONE, proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
 		RedstoneLegs = (new ItemMekanismArmor(11237, armorREDSTONE, proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
 		RedstoneBoots = (new ItemMekanismArmor(11238, armorREDSTONE, proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
-		RedstonePaxel = new ItemMekanismPaxel(11240, toolREDSTONE2).setItemName("RedstonePaxel");
-		RedstonePickaxe = new ItemMekanismPickaxe(11241, toolREDSTONE).setItemName("RedstonePickaxe");
-		RedstoneAxe = new ItemMekanismAxe(11242, toolREDSTONE).setItemName("RedstoneAxe");
-		RedstoneSpade = new ItemMekanismSpade(11243, toolREDSTONE).setItemName("RedstoneSpade");
-		RedstoneHoe = new ItemMekanismHoe(11244, toolREDSTONE).setItemName("RedstoneHoe");
-		RedstoneSword = new ItemMekanismSword(11245, toolREDSTONE).setItemName("RedstoneSword");
-		PlatinumHelmet = (new ItemMekanismArmor(11246, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
-		PlatinumBody = (new ItemMekanismArmor(11247, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
-		PlatinumLegs = (new ItemMekanismArmor(11248, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
-		PlatinumBoots = (new ItemMekanismArmor(11249, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
-		PlatinumPaxel = new ItemMekanismPaxel(11251, toolPLATINUM2).setItemName("PlatinumPaxel");
-		PlatinumPickaxe = new ItemMekanismPickaxe(11252, toolPLATINUM).setItemName("PlatinumPickaxe");
-		PlatinumAxe = new ItemMekanismAxe(11253, toolPLATINUM).setItemName("PlatinumAxe");
-		PlatinumSpade = new ItemMekanismSpade(11254, toolPLATINUM).setItemName("PlatinumSpade");
-		PlatinumHoe = new ItemMekanismHoe(11255, toolPLATINUM).setItemName("PlatinumHoe");
-		PlatinumSword = new ItemMekanismSword(11256, toolPLATINUM).setItemName("PlatinumSword");
-		ObsidianHelmet = (new ItemMekanismArmor(11257, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
-		ObsidianBody = (new ItemMekanismArmor(11258, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
-		ObsidianLegs = (new ItemMekanismArmor(11259, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
-		ObsidianBoots = (new ItemMekanismArmor(11260, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
-		ObsidianPaxel = new ItemMekanismPaxel(11262, toolOBSIDIAN2).setItemName("ObsidianPaxel");
-		ObsidianPickaxe = new ItemMekanismPickaxe(11263, toolOBSIDIAN).setItemName("ObsidianPickaxe");
-		ObsidianAxe = new ItemMekanismAxe(11264, toolOBSIDIAN).setItemName("ObsidianAxe");
-		ObsidianSpade = new ItemMekanismSpade(11265, toolOBSIDIAN).setItemName("ObsidianSpade");
-		ObsidianHoe = new ItemMekanismHoe(11266, toolOBSIDIAN).setItemName("ObsidianHoe");
-		ObsidianSword = new ItemMekanismSword(11267, toolOBSIDIAN).setItemName("ObsidianSword");
-		LazuliPaxel = new ItemMekanismPaxel(11268, toolLAZULI2).setItemName("LazuliPaxel");
-		LazuliPickaxe = new ItemMekanismPickaxe(11269, toolLAZULI).setItemName("LazuliPickaxe");
-		LazuliAxe = new ItemMekanismAxe(11270, toolLAZULI).setItemName("LazuliAxe");
-		LazuliSpade = new ItemMekanismSpade(11271, toolLAZULI).setItemName("LazuliSpade");
-		LazuliHoe = new ItemMekanismHoe(11272, toolLAZULI).setItemName("LazuliHoe");
-		LazuliSword = new ItemMekanismSword(11273, toolLAZULI).setItemName("LazuliSword");
-		LazuliHelmet = (new ItemMekanismArmor(11274, armorLAZULI, proxy.getArmorIndex("lazuli"), 0)).setItemName("LazuliHelmet");
-		LazuliBody = (new ItemMekanismArmor(11275, armorLAZULI, proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
-		LazuliLegs = (new ItemMekanismArmor(11276, armorLAZULI, proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
-		LazuliBoots = (new ItemMekanismArmor(11277, armorLAZULI, proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
-		ObsidianBow = new ItemMekanismBow(11279).setItemName("ObsidianBow");
+		RedstonePaxel = new ItemMekanismPaxel(11239, toolREDSTONE2).setItemName("RedstonePaxel");
+		RedstonePickaxe = new ItemMekanismPickaxe(11240, toolREDSTONE).setItemName("RedstonePickaxe");
+		RedstoneAxe = new ItemMekanismAxe(11241, toolREDSTONE).setItemName("RedstoneAxe");
+		RedstoneSpade = new ItemMekanismSpade(11242, toolREDSTONE).setItemName("RedstoneSpade");
+		RedstoneHoe = new ItemMekanismHoe(11243, toolREDSTONE).setItemName("RedstoneHoe");
+		RedstoneSword = new ItemMekanismSword(11244, toolREDSTONE).setItemName("RedstoneSword");
+		PlatinumHelmet = (new ItemMekanismArmor(11245, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
+		PlatinumBody = (new ItemMekanismArmor(11246, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
+		PlatinumLegs = (new ItemMekanismArmor(11247, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
+		PlatinumBoots = (new ItemMekanismArmor(11248, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
+		PlatinumPaxel = new ItemMekanismPaxel(11249, toolPLATINUM2).setItemName("PlatinumPaxel");
+		PlatinumPickaxe = new ItemMekanismPickaxe(11250, toolPLATINUM).setItemName("PlatinumPickaxe");
+		PlatinumAxe = new ItemMekanismAxe(11251, toolPLATINUM).setItemName("PlatinumAxe");
+		PlatinumSpade = new ItemMekanismSpade(11252, toolPLATINUM).setItemName("PlatinumSpade");
+		PlatinumHoe = new ItemMekanismHoe(11253, toolPLATINUM).setItemName("PlatinumHoe");
+		PlatinumSword = new ItemMekanismSword(11254, toolPLATINUM).setItemName("PlatinumSword");
+		ObsidianHelmet = (new ItemMekanismArmor(11255, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
+		ObsidianBody = (new ItemMekanismArmor(11256, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
+		ObsidianLegs = (new ItemMekanismArmor(11257, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
+		ObsidianBoots = (new ItemMekanismArmor(11258, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
+		ObsidianPaxel = new ItemMekanismPaxel(11259, toolOBSIDIAN2).setItemName("ObsidianPaxel");
+		ObsidianPickaxe = new ItemMekanismPickaxe(11260, toolOBSIDIAN).setItemName("ObsidianPickaxe");
+		ObsidianAxe = new ItemMekanismAxe(11261, toolOBSIDIAN).setItemName("ObsidianAxe");
+		ObsidianSpade = new ItemMekanismSpade(11262, toolOBSIDIAN).setItemName("ObsidianSpade");
+		ObsidianHoe = new ItemMekanismHoe(11263, toolOBSIDIAN).setItemName("ObsidianHoe");
+		ObsidianSword = new ItemMekanismSword(11264, toolOBSIDIAN).setItemName("ObsidianSword");
+		LazuliPaxel = new ItemMekanismPaxel(11265, toolLAZULI2).setItemName("LazuliPaxel");
+		LazuliPickaxe = new ItemMekanismPickaxe(11266, toolLAZULI).setItemName("LazuliPickaxe");
+		LazuliAxe = new ItemMekanismAxe(11267, toolLAZULI).setItemName("LazuliAxe");
+		LazuliSpade = new ItemMekanismSpade(11268, toolLAZULI).setItemName("LazuliSpade");
+		LazuliHoe = new ItemMekanismHoe(11269, toolLAZULI).setItemName("LazuliHoe");
+		LazuliSword = new ItemMekanismSword(11270, toolLAZULI).setItemName("LazuliSword");
+		LazuliHelmet = (new ItemMekanismArmor(11271, armorLAZULI, proxy.getArmorIndex("lazuli"), 0)).setItemName("LazuliHelmet");
+		LazuliBody = (new ItemMekanismArmor(11272, armorLAZULI, proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
+		LazuliLegs = (new ItemMekanismArmor(11273, armorLAZULI, proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
+		LazuliBoots = (new ItemMekanismArmor(11274, armorLAZULI, proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
+		EnergizedBow = (ItemEnergizedBow) new ItemEnergizedBow(11275).setItemName("EnergizedBow");
 		if(extrasEnabled == true)
 		{
-			LightningRod = new ItemLightningRod(11280).setItemName("LightningRod");
-			Stopwatch = new ItemStopwatch(11281).setItemName("Stopwatch");
-			WeatherOrb = new ItemWeatherOrb(11282).setItemName("WeatherOrb");
-			EnrichedAlloy = new ItemMekanism(11313).setItemName("EnrichedAlloy").setCreativeTab(tabMekanism);
+			LightningRod = new ItemLightningRod(11276).setItemName("LightningRod");
+			Stopwatch = new ItemStopwatch(11277).setItemName("Stopwatch");
+			WeatherOrb = new ItemWeatherOrb(11278).setItemName("WeatherOrb");
 		}
-		WoodPaxel = new ItemMekanismPaxel(11283, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
-		StonePaxel = new ItemMekanismPaxel(11284, EnumToolMaterial.STONE).setItemName("StonePaxel");
-		IronPaxel = new ItemMekanismPaxel(11285, EnumToolMaterial.IRON).setItemName("IronPaxel");
-		DiamondPaxel = new ItemMekanismPaxel(11286, EnumToolMaterial.EMERALD).setItemName("DiamondPaxel");
-		GoldPaxel = new ItemMekanismPaxel(11287, EnumToolMaterial.GOLD).setItemName("GoldPaxel");
-		WoodKnife = new ItemMekanismKnife(11288, EnumToolMaterial.WOOD).setItemName("WoodKnife");
-		StoneKnife = new ItemMekanismKnife(11289, EnumToolMaterial.STONE).setItemName("StoneKnife");
-		IronKnife = new ItemMekanismKnife(11290, EnumToolMaterial.IRON).setItemName("IronKnife");
-		DiamondKnife = new ItemMekanismKnife(11291, EnumToolMaterial.EMERALD).setItemName("DiamondKnife");
-		GoldKnife = new ItemMekanismKnife(11292, EnumToolMaterial.GOLD).setItemName("GoldKnife");
-		ObsidianKnife = new ItemMekanismKnife(11293, toolOBSIDIAN).setItemName("ObsidianKnife");
-		LazuliKnife = new ItemMekanismKnife(11294, toolLAZULI).setItemName("LazuliKnife");
-		PlatinumKnife = new ItemMekanismKnife(11295, toolPLATINUM).setItemName("PlatinumKnife");
-		RedstoneKnife = new ItemMekanismKnife(11296, toolREDSTONE).setItemName("RedstoneKnife");
-		Dust = new ItemDust(11297-256);
-		Ingot = new ItemIngot(11298-256);
-		GlowstonePaxel = new ItemMekanismPaxel(11302, toolGLOWSTONE2).setItemName("GlowstonePaxel");
-		GlowstonePickaxe = new ItemMekanismPickaxe(11303, toolGLOWSTONE).setItemName("GlowstonePickaxe");
-		GlowstoneAxe = new ItemMekanismAxe(11304, toolGLOWSTONE).setItemName("GlowstoneAxe");
-		GlowstoneSpade = new ItemMekanismSpade(11305, toolGLOWSTONE).setItemName("GlowstoneSpade");
-		GlowstoneHoe = new ItemMekanismHoe(11306, toolGLOWSTONE).setItemName("GlowstoneHoe");
-		GlowstoneSword = new ItemMekanismSword(11307, toolGLOWSTONE).setItemName("GlowstoneSword");
-		GlowstoneHelmet = new ItemMekanismArmor(11308, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 0).setItemName("GlowstoneHelmet");
-		GlowstoneBody = new ItemMekanismArmor(11309, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 1).setItemName("GlowstoneBody");
-		GlowstoneLegs = new ItemMekanismArmor(11310, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
-		GlowstoneBoots = new ItemMekanismArmor(11311, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
-		GlowstoneKnife = new ItemMekanismKnife(11312, toolGLOWSTONE).setItemName("GlowstoneKnife");
-		EnergyTablet = (ItemEnergized) new ItemEnergized(11314, 50000, 100, 500).setItemName("EnergyTablet");
-		EnergyOrb = (ItemEnergized) new ItemEnergized(11315, 15000000, 1000, 150000).setItemName("EnergyOrb");
-		EnergyCube = (ItemEnergized) new ItemEnergized(11316, 12000, 100, 120).setItemName("EnergyCube");
-		SpeedUpgrade = new ItemMachineUpgrade(11317).setItemName("SpeedUpgrade");
-		EnergyUpgrade = new ItemMachineUpgrade(11318).setItemName("EnergyUpgrade");
-		UltimateUpgrade = new ItemMachineUpgrade(11319).setItemName("UltimateUpgrade");
+		WoodPaxel = new ItemMekanismPaxel(11279, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
+		StonePaxel = new ItemMekanismPaxel(11280, EnumToolMaterial.STONE).setItemName("StonePaxel");
+		IronPaxel = new ItemMekanismPaxel(11281, EnumToolMaterial.IRON).setItemName("IronPaxel");
+		DiamondPaxel = new ItemMekanismPaxel(11282, EnumToolMaterial.EMERALD).setItemName("DiamondPaxel");
+		GoldPaxel = new ItemMekanismPaxel(11283, EnumToolMaterial.GOLD).setItemName("GoldPaxel");
+		WoodKnife = new ItemMekanismKnife(11284, EnumToolMaterial.WOOD).setItemName("WoodKnife");
+		StoneKnife = new ItemMekanismKnife(11285, EnumToolMaterial.STONE).setItemName("StoneKnife");
+		IronKnife = new ItemMekanismKnife(11286, EnumToolMaterial.IRON).setItemName("IronKnife");
+		DiamondKnife = new ItemMekanismKnife(11287, EnumToolMaterial.EMERALD).setItemName("DiamondKnife");
+		GoldKnife = new ItemMekanismKnife(11288, EnumToolMaterial.GOLD).setItemName("GoldKnife");
+		ObsidianKnife = new ItemMekanismKnife(11289, toolOBSIDIAN).setItemName("ObsidianKnife");
+		LazuliKnife = new ItemMekanismKnife(11290, toolLAZULI).setItemName("LazuliKnife");
+		PlatinumKnife = new ItemMekanismKnife(11291, toolPLATINUM).setItemName("PlatinumKnife");
+		RedstoneKnife = new ItemMekanismKnife(11292, toolREDSTONE).setItemName("RedstoneKnife");
+		Dust = new ItemDust(11293-256);
+		Ingot = new ItemIngot(11294-256);
+		GlowstonePaxel = new ItemMekanismPaxel(11295, toolGLOWSTONE2).setItemName("GlowstonePaxel");
+		GlowstonePickaxe = new ItemMekanismPickaxe(11296, toolGLOWSTONE).setItemName("GlowstonePickaxe");
+		GlowstoneAxe = new ItemMekanismAxe(11297, toolGLOWSTONE).setItemName("GlowstoneAxe");
+		GlowstoneSpade = new ItemMekanismSpade(11298, toolGLOWSTONE).setItemName("GlowstoneSpade");
+		GlowstoneHoe = new ItemMekanismHoe(11299, toolGLOWSTONE).setItemName("GlowstoneHoe");
+		GlowstoneSword = new ItemMekanismSword(11300, toolGLOWSTONE).setItemName("GlowstoneSword");
+		GlowstoneHelmet = new ItemMekanismArmor(11301, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 0).setItemName("GlowstoneHelmet");
+		GlowstoneBody = new ItemMekanismArmor(11302, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 1).setItemName("GlowstoneBody");
+		GlowstoneLegs = new ItemMekanismArmor(11303, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
+		GlowstoneBoots = new ItemMekanismArmor(11304, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
+		GlowstoneKnife = new ItemMekanismKnife(11305, toolGLOWSTONE).setItemName("GlowstoneKnife");
+		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 50000, 100, 500).setItemName("EnergyTablet");
+		EnergyOrb = (ItemEnergized) new ItemEnergized(11307, 15000000, 1000, 150000).setItemName("EnergyOrb");
+		EnergyCube = (ItemEnergized) new ItemEnergized(11308, 12000, 100, 120).setItemName("EnergyCube");
+		SpeedUpgrade = new ItemMachineUpgrade(11309, 0, 150).setItemName("SpeedUpgrade");
+		EnergyUpgrade = new ItemMachineUpgrade(11310, 1000, 0).setItemName("EnergyUpgrade");
+		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");
+		NuclearDisassembler = (ItemNuclearDisassembler) new ItemNuclearDisassembler(11312).setItemName("NuclearDisassembler");
+		NuclearCore = new ItemMekanism(11313).setItemName("NuclearCore");
+		EnrichedAlloy = new ItemMekanism(11315).setItemName("EnrichedAlloy");
 	}
 	
 	/**
@@ -944,21 +971,6 @@ public class Mekanism
 			RecipeHandler.addPlatinumCompressorRecipe(hooks.RailcraftObsidianDust, new ItemStack(Ingot, 1, 0));
 			RecipeHandler.addCombinerRecipe(hooks.RailcraftObsidianDust, new ItemStack(Block.obsidian));
 		}
-        
-        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
-        RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Ingot, 1, 0));
-        RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 1, 3), new ItemStack(Block.obsidian));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 0), new ItemStack(Block.oreIron));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 1), new ItemStack(Block.oreGold));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(Dust, 1, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
-        
-		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
-			Item.redstone, Item.lightStoneDust, "dustIron", "dustGold", "dustObsidian", "dustPlatinum"
-		}));
 	}
 	
 	/**
@@ -1029,6 +1041,8 @@ public class Mekanism
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
+		MinecraftForge.EVENT_BUS.register(this);
+		
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabMekanism", "Mekanism");
 		
 		//Attempt to load server commands
@@ -1062,5 +1076,61 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
+	}
+	
+	@ForgeSubscribe
+	public void onLivingSpecialSpawn(LivingSpecialSpawnEvent event)
+	{
+		Random random = new Random();
+		
+		int chance = random.nextInt(100);
+		int secondChance = random.nextInt(4);
+		
+		if(chance < 25)
+		{
+			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
+			{
+				if(secondChance == 0)
+				{
+					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.GlowstoneSword));
+					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.GlowstoneHelmet));
+					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.GlowstoneBody));
+					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.GlowstoneLegs));
+					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.GlowstoneBoots));
+				}
+				else if(secondChance == 1)
+				{
+					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.LazuliSword));
+					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.LazuliHelmet));
+					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.LazuliBody));
+					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.LazuliLegs));
+					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.LazuliBoots));
+				}
+				else if(secondChance == 2)
+				{
+					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.RedstoneSword));
+					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.RedstoneHelmet));
+					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.RedstoneBody));
+					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.RedstoneLegs));
+					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.RedstoneBoots));
+				}
+				else if(secondChance == 3)
+				{
+					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.ObsidianSword));
+					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.ObsidianHelmet));
+					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.ObsidianBody));
+					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.ObsidianLegs));
+					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.ObsidianBoots));
+				}
+				else if(secondChance == 4)
+				{
+					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.PlatinumSword));
+					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.PlatinumHelmet));
+					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.PlatinumBody));
+					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.PlatinumLegs));
+					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.PlatinumBoots));
+				}
+			}
+		}
 	}
 }

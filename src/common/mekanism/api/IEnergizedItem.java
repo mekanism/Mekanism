@@ -56,4 +56,16 @@ public interface IEnergizedItem
 	 * @return divider
 	 */
 	public int getDivider();
+	
+	/**
+	 * Whether or not this energized item be charged.
+	 * @return if the item be charged
+	 */
+	public boolean canBeCharged();
+	
+	/**
+	 * Whether or not this energized item can charge an energy receiver.
+	 * @return if the item can charge
+	 */
+	public boolean canBeDischarged();
 }

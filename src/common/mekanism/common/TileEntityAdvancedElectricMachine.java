@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import mekanism.api.IMachineUpgrade;
 
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
@@ -78,19 +79,23 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			{
 				if(inventory[3].getItem() instanceof IEnergizedItem)
 				{
-					int received = 0;
-					int energyNeeded = currentMaxEnergy - energyStored;
 					IEnergizedItem item = (IEnergizedItem)inventory[3].getItem();
-					if(item.getRate() <= energyNeeded)
-					{
-						received = item.discharge(inventory[3], item.getRate());
-					}
-					else if(item.getRate() > energyNeeded)
-					{
-						received = item.discharge(inventory[3], energyNeeded);
-					}
 					
-					setEnergy(energyStored + received);
+					if(item.canBeDischarged())
+					{
+						int received = 0;
+						int energyNeeded = currentMaxEnergy - energyStored;
+						if(item.getRate() <= energyNeeded)
+						{
+							received = item.discharge(inventory[3], item.getRate());
+						}
+						else if(item.getRate() > energyNeeded)
+						{
+							received = item.discharge(inventory[3], energyNeeded);
+						}
+						
+						setEnergy(energyStored + received);
+					}
 				}
 				else if(inventory[3].getItem() instanceof IItemElectric)
 				{
@@ -147,35 +152,19 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
 		
-		if(inventory[4] != null)
+		if(inventory[4] != null && inventory[4].getItem() instanceof IMachineUpgrade)
 		{
 			int energyToAdd = 0;
 			int ticksToRemove = 0;
 			
-			if(inventory[4].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)))
+			if(currentMaxEnergy == MAX_ENERGY)
 			{
-				if(currentTicksRequired == TICKS_REQUIRED)
-				{
-					ticksToRemove = 150;
-				}
+				energyToAdd = ((IMachineUpgrade)inventory[4].getItem()).getEnergyBoost(inventory[4]);
 			}
-			else if(inventory[4].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)))
+			
+			if(currentTicksRequired == TICKS_REQUIRED)
 			{
-				if(currentMaxEnergy == MAX_ENERGY)
-				{
-					energyToAdd = 600;
-				}
-			}
-			else if(inventory[4].isItemEqual(new ItemStack(Mekanism.UltimateUpgrade)))
-			{
-				if(currentTicksRequired == TICKS_REQUIRED)
-				{
-					ticksToRemove = 150;
-				}
-				if(currentMaxEnergy == MAX_ENERGY)
-				{
-					energyToAdd = 600;
-				}
+				ticksToRemove = ((IMachineUpgrade)inventory[4].getItem()).getTickReduction(inventory[4]);
 			}
 			
 			currentMaxEnergy += energyToAdd;

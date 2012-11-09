@@ -57,19 +57,23 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			{
 				if(inventory[1].getItem() instanceof IEnergizedItem)
 				{
-					int received = 0;
-					int energyNeeded = currentMaxEnergy - energyStored;
 					IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
-					if(item.getRate() <= energyNeeded)
-					{
-						received = item.discharge(inventory[1], item.getRate());
-					}
-					else if(item.getRate() > energyNeeded)
-					{
-						received = item.discharge(inventory[1], energyNeeded);
-					}
 					
-					setEnergy(energyStored + received);
+					if(item.canBeDischarged())
+					{
+						int received = 0;
+						int energyNeeded = currentMaxEnergy - energyStored;
+						if(item.getRate() <= energyNeeded)
+						{
+							received = item.discharge(inventory[1], item.getRate());
+						}
+						else if(item.getRate() > energyNeeded)
+						{
+							received = item.discharge(inventory[1], energyNeeded);
+						}
+						
+						setEnergy(energyStored + received);
+					}
 				}
 				else if(inventory[1].getItem() instanceof IItemElectric)
 				{

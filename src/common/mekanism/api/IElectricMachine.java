@@ -19,7 +19,7 @@ import net.minecraftforge.common.ISidedInventory;
  * @author AidanBrady
  *
  */
-public interface IElectricMachine extends IPowerReceptor, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
+public interface IElectricMachine
 {
     /**
      * Update call for machines. Use instead of updateEntity() - it's called every tick.

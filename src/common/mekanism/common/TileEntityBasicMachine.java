@@ -3,9 +3,12 @@ package mekanism.common;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.electricity.ElectricityManager;
+import universalelectricity.implement.IElectricityReceiver;
+import universalelectricity.implement.IJouleStorage;
 import universalelectricity.prefab.TileEntityDisableable;
 
 import buildcraft.api.power.IPowerProvider;
+import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -15,17 +18,20 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
 
 import ic2.api.Direction;
 import ic2.api.EnergyNet;
+import ic2.api.IEnergySink;
 import ic2.api.IWrenchable;
 import mekanism.api.IElectricMachine;
+import mekanism.api.IEnergyAcceptor;
 import mekanism.client.Sound;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPowerReceptor, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
 {
 	/** The Sound instance for this machine. */
 	public Sound audio;

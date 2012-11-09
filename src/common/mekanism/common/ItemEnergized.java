@@ -13,20 +13,18 @@ import net.minecraft.src.*;
 
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric
 {
-	public int maxEnergy;
-	
-	public int transferRate;
-	
-	public int divider;
+	public int MAX_ENERGY;
+	public int TRANSFER_RATE;
+	public int DIVIDER;
 	
 	public ItemEnergized(int id, int energy, int rate, int divide)
 	{
 		super(id);
-		divider = divide;
-		maxEnergy = energy;
-		transferRate = rate;
+		DIVIDER = divide;
+		MAX_ENERGY = energy;
+		TRANSFER_RATE = rate;
 		setMaxStackSize(1);
-		setMaxDamage(maxEnergy/divider);
+		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -67,7 +65,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 			stored = itemstack.stackTagCompound.getInteger("energy");
 		}
 		
-		itemstack.setItemDamage((maxEnergy - stored)/divider);
+		itemstack.setItemDamage((MAX_ENERGY - stored)/DIVIDER);
 		return stored;
 	}
 	
@@ -79,15 +77,15 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 		
-		int stored = Math.max(Math.min(energy, maxEnergy), 0);
+		int stored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 		itemstack.stackTagCompound.setInteger("energy", stored);
-        itemstack.setItemDamage((maxEnergy - stored)/divider);
+        itemstack.setItemDamage((MAX_ENERGY - stored)/DIVIDER);
 	}
 	
 	public ItemStack getUnchargedItem()
 	{
 		ItemStack charged = new ItemStack(this);
-		charged.setItemDamage(maxEnergy/divider);
+		charged.setItemDamage(100);
 		return charged;
 	}
 	
@@ -95,7 +93,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
-		discharged.setItemDamage(maxEnergy/divider);
+		discharged.setItemDamage(100);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy());
@@ -105,19 +103,19 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public int getMaxEnergy()
 	{
-		return maxEnergy;
+		return MAX_ENERGY;
 	}
 
 	@Override
 	public int getRate() 
 	{
-		return transferRate;
+		return TRANSFER_RATE;
 	}
 
 	@Override
 	public int charge(ItemStack itemstack, int amount) 
 	{
-		int rejects = Math.max((getEnergy(itemstack) + amount) - maxEnergy, 0);
+		int rejects = Math.max((getEnergy(itemstack) + amount) - MAX_ENERGY, 0);
 		setEnergy(itemstack, getEnergy(itemstack) + amount - rejects);
 		return rejects;
 	}
@@ -155,7 +153,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public double getMaxJoules()
 	{
-		return maxEnergy*UniversalElectricity.IC2_RATIO;
+		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
 
 	@Override
@@ -195,6 +193,18 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public int getDivider()
 	{
-		return divider;
+		return DIVIDER;
+	}
+	
+	@Override
+	public boolean canBeCharged()
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canBeDischarged()
+	{
+		return true;
 	}
 }
