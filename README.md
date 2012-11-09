@@ -1,10 +1,10 @@
-# Obsidian Ingots for Minecraft 1.3.2 #
+# Mekanism for Minecraft 1.4.2 #
 
 Source code.  More information can be found on the mod's forum post.
 
 # About #
 
-Obsidian Ingots is a Minecraft add-on featuring special machinery that can be used to create powerful tools, armor and weapons.  It also includes an energy system that can be implemented by different mods.
+Mekanism is a Minecraft add-on featuring special machinery that can be used to create powerful tools, armor and weapons.  It also includes an energy system that can be implemented by different mods.
 
 **Mod Terms and Conditions:**
 
