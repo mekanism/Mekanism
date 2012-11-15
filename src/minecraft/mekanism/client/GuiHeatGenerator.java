@@ -2,21 +2,21 @@ package mekanism.client;
 
 import org.lwjgl.opengl.GL11;
 
-import mekanism.common.ContainerGenerator;
+import mekanism.common.ContainerHeatGenerator;
 import mekanism.common.MekanismUtils;
-import mekanism.common.TileEntityGenerator;
+import mekanism.common.TileEntityHeatGenerator;
 import net.minecraft.src.*;
 
-public class GuiGenerator extends GuiContainer
+public class GuiHeatGenerator extends GuiContainer
 {
-	public TileEntityGenerator tileEntity;
+	public TileEntityHeatGenerator tileEntity;
 	
 	private int guiWidth;
 	private int guiHeight;
 	
-	public GuiGenerator(InventoryPlayer inventory, TileEntityGenerator tentity)
+	public GuiHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator tentity)
     {
-        super(new ContainerGenerator(inventory, tentity));
+        super(new ContainerHeatGenerator(inventory, tentity));
         tileEntity = tentity;
     }
 
@@ -26,14 +26,14 @@ public class GuiGenerator extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(MekanismUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + MekanismUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY), 51, 26, 0x404040);
-        fontRenderer.drawString("Fuel: " + tileEntity.fuelStored, 51, 35, 0x404040);
+        fontRenderer.drawString("Fuel: " + tileEntity.fuelSlot.liquidStored, 51, 35, 0x404040);
         fontRenderer.drawString("Out: " + MekanismUtils.getDisplayedEnergyNoColor(tileEntity.output), 51, 44, 0x404040);
     }
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int texture = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiGenerator.png");
+        int texture = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiHeatGenerator.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         guiWidth = (width - xSize) / 2;

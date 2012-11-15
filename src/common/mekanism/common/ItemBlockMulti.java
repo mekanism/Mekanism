@@ -9,6 +9,7 @@ import net.minecraft.src.*;
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone
+ * 5: Reinforced Iron
  * @author AidanBrady
  *
  */
@@ -55,6 +56,9 @@ public class ItemBlockMulti extends ItemBlock
 				break;
 			case 4:
 				name = "RefinedGlowstone";
+				break;
+			case 5:
+				name = "ReinforcedIron";
 				break;
 			default:
 				name = "Unknown";

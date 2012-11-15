@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.World;
+import net.minecraft.src.*;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -78,14 +76,14 @@ public class CommonProxy
 	public void loadSoundHandler() {}
 	
 	/**
-	 * Get the actual interface for a GUI.  Client-only.
+	 * Get the actual interface for a GUI. Client-only.
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
 	 * @param x - gui's x position
 	 * @param y - gui's y position
 	 * @param z - gui's z position
-	 * @return the GuiScreen of the interface
+	 * @return the GuiScreen of the GUI
 	 */
 	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
@@ -93,40 +91,41 @@ public class CommonProxy
 	}
 	
 	/**
-	 * Get the container for a GUI.  Common.
+	 * Get the container for a GUI. Common.
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
 	 * @param x - gui's x position
 	 * @param y - gui's y position
 	 * @param z - gui's z position
-	 * @return the Container of the interface
+	 * @return the Container of the GUI
 	 */
 	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		
 		switch(ID)
 		{
 			case 3:
-				TileEntityElectricMachine tileentity = (TileEntityElectricMachine)world.getBlockTileEntity(x, y, z);
-				return new ContainerElectricMachine(player.inventory, tileentity);
+				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
-				TileEntityAdvancedElectricMachine tileentity1 = (TileEntityAdvancedElectricMachine)world.getBlockTileEntity(x, y, z);
-				return new ContainerAdvancedElectricMachine(player.inventory, tileentity1);
+				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 5:
-				TileEntityAdvancedElectricMachine tileentity2 = (TileEntityAdvancedElectricMachine)world.getBlockTileEntity(x, y, z);
-				return new ContainerAdvancedElectricMachine(player.inventory, tileentity2);
+				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 6:
-				TileEntityElectricMachine tileentity3 = (TileEntityElectricMachine)world.getBlockTileEntity(x, y, z);
-				return new ContainerElectricMachine(player.inventory, tileentity3);
+				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:
-				TileEntityAdvancedElectricMachine tileentity4 = (TileEntityAdvancedElectricMachine)world.getBlockTileEntity(x, y, z);
-				return new ContainerAdvancedElectricMachine(player.inventory, tileentity4);
+				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 8:
-				TileEntityPowerUnit tileentity5 = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
-				return new ContainerPowerUnit(player.inventory, tileentity5);
+				return new ContainerPowerUnit(player.inventory, (TileEntityPowerUnit)tileEntity);
 			case 9:
-				TileEntityGenerator tileentity6 = (TileEntityGenerator)world.getBlockTileEntity(x, y, z);
-				return new ContainerGenerator(player.inventory, tileentity6);
+				return new ContainerHeatGenerator(player.inventory, (TileEntityHeatGenerator)tileEntity);
+			case 10:
+				return new ContainerSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
+			case 11:
+				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
+			case 12:
+				return new ContainerHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
 		}
 		return null;
 	}

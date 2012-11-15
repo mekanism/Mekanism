@@ -23,7 +23,7 @@ public class ItemEnergizedBow extends ItemEnergized
     @Override
     public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int itemUseCount)
     {
-    	if(!player.isSneaking())
+    	if(!player.isSneaking() && getEnergy(itemstack) > 0)
     	{
 	        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
 	

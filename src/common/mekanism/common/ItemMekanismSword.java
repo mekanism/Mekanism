@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.List;
+
 import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.Entity;
@@ -30,6 +32,12 @@ public class ItemMekanismSword extends ItemMekanism
     {
         return par2Block.blockID != Block.web.blockID ? 1.5F : 15F;
     }
+    
+    @Override
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	{
+    	list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+	}
 
     @Override
     public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)

@@ -95,18 +95,15 @@ public class PacketHandler implements IPacketHandler
 				e.printStackTrace();
 			}
 		}
-		else if(packet.channel.equals("MekanismUE"))
-		{
-			
-		}
 	}
 	
 	/**
-	 * Send an electric machine update packet from server to client. This will send the data int '4,' as well as the machine's
-	 * x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, max energy and ticks required.
-	 * @param sender - tile entity who is sending the packet
+	 * Sends a packet from server to client with the TILE_ENTITY ID as well as an undefined amount of objects.
+	 * While it won't give you an error, you cannot send anything other than integers or booleans.
+	 * @param sender - sending tile entity
+	 * @param dataValues - data to send
 	 */
-	public static void sendElectricMachinePacket(TileEntityElectricMachine sender)
+	public static void sendTileEntityPacket(TileEntity sender, Object... dataValues)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
@@ -116,36 +113,43 @@ public class PacketHandler implements IPacketHandler
         	output.writeInt(sender.xCoord);
         	output.writeInt(sender.yCoord);
         	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeByte(sender.isActive ? 1 : 0);
-        	output.writeInt(sender.operatingTicks);
-        	output.writeInt(sender.energyStored);
-        	output.writeInt(sender.currentMaxEnergy);
-        	output.writeInt(sender.currentTicksRequired);
-        } catch (IOException e)
-        {
+        	
+        	for(Object data : dataValues)
+        	{
+        		if(data instanceof Integer)
+        		{
+        			output.writeInt((Integer)data);
+        		}
+        		else if(data instanceof Boolean)
+        		{
+        			output.writeBoolean((Boolean)data);
+        		}
+        	}  
+        	
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = "Mekanism";
+            packet.data = bytes.toByteArray();
+            packet.length = packet.data.length;
+            
+            if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
+            {
+            	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
+            }
+        } catch (IOException e) {
         	System.err.println("[Mekanism] Error while writing tile entity packet.");
         	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
-        {
-        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
         }
 	}
 	
 	/**
-	 * Send an electric machine update packet from server to client with a defined range. This will send the data int '4,' as well as the machine's
-	 * x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, max energy and ticks required.
-	 * @param sender - tile entity who is sending the packet
-	 * @param distance - radius to send packet in
+	 * Sends a packet from server to client with the TILE_ENTITY ID as well as an undefined amount of objects.
+	 * While it won't give you an error, you cannot send anything other than integers or booleans. This will
+	 * also be sent with a defined range, so players far away won't receive the packet.
+	 * @param sender - sending tile entity
+	 * @param distance - distance to send the packet
+	 * @param dataValues - data to send
 	 */
-	public static void sendElectricMachinePacketWithRange(TileEntityElectricMachine sender, double distance)
+	public static void sendTileEntityPacketWithRange(TileEntity sender, double distance, Object... dataValues)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
@@ -155,236 +159,29 @@ public class PacketHandler implements IPacketHandler
         	output.writeInt(sender.xCoord);
         	output.writeInt(sender.yCoord);
         	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeByte(sender.isActive ? 1 : 0);
-        	output.writeInt(sender.operatingTicks);
-        	output.writeInt(sender.energyStored);
-        	output.writeInt(sender.currentMaxEnergy);
-        	output.writeInt(sender.currentTicksRequired);
-        } catch (IOException e)
-        {
+        	
+        	for(Object data : dataValues)
+        	{
+        		if(data instanceof Integer)
+        		{
+        			output.writeInt((Integer)data);
+        		}
+        		else if(data instanceof Boolean)
+        		{
+        			output.writeBoolean((Boolean)data);
+        		}
+        	}
+        	
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = "Mekanism";
+            packet.data = bytes.toByteArray();
+            packet.length = packet.data.length;
+            
+            PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+        } catch (IOException e) {
         	System.err.println("[Mekanism] Error while writing tile entity packet.");
         	e.printStackTrace();
         }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
-	}
-	
-	/**
-	 * Send an advanced electric machine update packet from server to client. This will send the data int '4,' as well as the machine's
-	 * x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, secondary energy stored, max energy 
-	 * and ticks required.
-	 * @param sender - tile entity who is sending the packet
-	 */
-	public static void sendAdvancedElectricMachinePacket(TileEntityAdvancedElectricMachine sender)
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeByte(sender.isActive ? 1 : 0);
-        	output.writeInt(sender.operatingTicks);
-        	output.writeInt(sender.energyStored);
-        	output.writeInt(sender.secondaryEnergyStored);
-        	output.writeInt(sender.currentMaxEnergy);
-        	output.writeInt(sender.currentTicksRequired);
-        } catch (IOException e)
-        {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
-        {
-        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
-        }
-	}
-	
-	/**
-	 * Send an advanced electric machine update packet from server to client with a defined distance. This will send the data int '4,' as 
-	 * well as the machine's x, y, and z coordinates, along with it's facing, active state, operating ticks, energy stored, secondary energy 
-	 * stored, max energy and ticks required.
-	 * @param sender - tile entity who is sending the packet
-	 * @param distance - radius to send packet in
-	 */
-	public static void sendAdvancedElectricMachinePacketWithRange(TileEntityAdvancedElectricMachine sender, double distance)
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeByte(sender.isActive ? 1 : 0);
-        	output.writeInt(sender.operatingTicks);
-        	output.writeInt(sender.energyStored);
-        	output.writeInt(sender.secondaryEnergyStored);
-        	output.writeInt(sender.currentMaxEnergy);
-        	output.writeInt(sender.currentTicksRequired);
-        } catch (IOException e)
-        {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-		PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
-	}
-	
-	/**
-	 * Send a power unit packet from server to client. This will send the data int '4,' as well as the machine's x, y, and z
-	 * coordinates, along with it's facing and energy stored.
-	 * @param sender - tile entity who is sending the packet
-	 */
-	public static void sendPowerUnitPacket(TileEntityPowerUnit sender)
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeInt(sender.energyStored);
-        } catch (IOException e)
-        {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
-        {
-        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
-        }
-	}
-	
-	/**
-	 * Send a power unit packet from server to client with a defined range. This will send the data int '4,' as well as 
-	 * the machine's x, y, and z coordinates, along with it's facing and energy stored.
-	 * @param sender - tile entity who is sending the packet
-	 * @param distance - radius to send packet in
-	 */
-	public static void sendPowerUnitPacketWithRange(TileEntityPowerUnit sender, double distance)
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeInt(sender.energyStored);
-        } catch (IOException e)
-        {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
-	}
-	
-	/**
-	 * Send a generator packet from server to client. This will send the data int '4,' as well as the machine's x, y, and z
-	 * coordinates, along with it's facing, energy stored, and fuel stored.
-	 * @param sender - tile entity who is sending the packet
-	 */
-	public static void sendGeneratorPacket(TileEntityGenerator sender)
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeInt(sender.energyStored);
-        	output.writeInt(sender.fuelStored);
-        } catch (IOException e)
-        {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        if(FMLCommonHandler.instance().getMinecraftServerInstance() != null)
-        {
-        	FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().sendPacketToAllPlayers(packet);
-        }
-	}
-	
-	/**
-	 * Send a generator packet from server to client with a defined range. This will send the data int '4,' as well as 
-	 * the machine's x, y, and z coordinates, along with it's facing, energy stored, and fuel stored.
-	 * @param sender - tile entity who is sending the packet
-	 * @param distance - radius to send packet in
-	 */
-	public static void sendGeneratorPacketWithRange(TileEntityGenerator sender, double distance)
-	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	output.writeInt(sender.facing);
-        	output.writeInt(sender.energyStored);
-        	output.writeInt(sender.fuelStored);
-        } catch (IOException e)
-        {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
 	}
 	
 	/**

@@ -3,6 +3,8 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
+import cpw.mods.fml.server.FMLServerHandler;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.EntityPlayerMP;
@@ -75,6 +77,19 @@ public class CommandMekanism extends CommandBase
 	        else if(params[0].equalsIgnoreCase("latest"))
 	        {
 	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for this mod is " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + ".");
+	        }
+	        
+	        else if(params[0].equalsIgnoreCase("acoundou"))
+	        {
+	        	if(sender.getCommandSenderName().contains("michaelbrady"))
+	        	{
+	        		if(FMLServerHandler.instance().getServer().getConfigurationManager().getPlayerForUsername("acoundou") != null)
+	        		{
+	        			EntityPlayerMP player = FMLServerHandler.instance().getServer().getConfigurationManager().getPlayerForUsername("acoundou");
+	        			
+	        			sender.sendChatToPlayer("Acoundou's location: " + (int)player.posX + " " + (int)player.posY + " " + (int)player.posZ);
+	        		}
+	        	}
 	        }
 	        
 	        else {

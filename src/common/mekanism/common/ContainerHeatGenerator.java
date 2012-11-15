@@ -5,11 +5,11 @@ import universalelectricity.implement.IItemElectric;
 import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;
 
-public class ContainerGenerator extends Container
+public class ContainerHeatGenerator extends Container
 {
-    private TileEntityGenerator tileEntity;
+    private TileEntityHeatGenerator tileEntity;
 
-    public ContainerGenerator(InventoryPlayer inventory, TileEntityGenerator tentity)
+    public ContainerHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator tentity)
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 17, 35));

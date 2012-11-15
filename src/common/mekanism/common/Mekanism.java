@@ -210,6 +210,9 @@ public class Mekanism
 	public static Item UltimateUpgrade;
 	public static ItemNuclearDisassembler NuclearDisassembler;
 	public static Item NuclearCore;
+	public static Item SolarPanel;
+	public static ItemStorageTank HydrogenTank;
+	public static ItemStorageTank OxygenTank;
 	
 	//Extra Blocks
 	public static Block MultiBlock;
@@ -532,8 +535,23 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(NuclearDisassembler.getUnchargedItem(), new Object[] {
 			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), NuclearCore, Character.valueOf('O'), new ItemStack(Ingot, 1, 0)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedAlloy, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedAlloy), new Object[] {
 			" R ", "RIR", " R ", Character.valueOf('R'), Item.redstone, Character.valueOf('I'), Item.ingotIron
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SolarPanel), new Object[] {
+			"GGG", "RAR", "PPP", Character.valueOf('G'), Block.thinGlass, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), new ItemStack(Ingot, 1, 1)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 1), new Object[] {
+			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Block.blockSteel, Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('E'), EnergyTablet.getUnchargedItem()
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MultiBlock, 1, 5), new Object[] {
+			"PAP", "AIA", "PAP", Character.valueOf('P'), new ItemStack(Ingot, 1, 1), Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Block.blockSteel
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(HydrogenTank.getEmptyItem(), new Object[] {
+			"III", "IDI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('D'), "dustIron"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(OxygenTank.getEmptyItem(), new Object[] {
+			"III", "IGI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('G'), "dustGold"
 		}));
 		
 		if(extrasEnabled)
@@ -548,6 +566,7 @@ public class Mekanism
 		GameRegistry.addSmelting(new ItemStack(Dust, 1, 2).itemID, new ItemStack(Ingot, 1, 1), 1.0F);
 		
 		//Enrichment Chamber Recipes
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Dust, 1, 4), new ItemStack(Item.diamond));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(OreBlock, 1, 0), new ItemStack(Dust, 2, 2));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 2));
         RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
@@ -570,6 +589,7 @@ public class Mekanism
 		RecipeHandler.addCombinerRecipe(new ItemStack(Dust, 2, 1), new ItemStack(Block.oreGold));
 		
 		//Crusher Recipes
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.diamond), new ItemStack(Dust, 1, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 2), new ItemStack(Item.redstone));
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 1), new ItemStack(Dust, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
@@ -684,13 +704,17 @@ public class Mekanism
 		LanguageRegistry.addName(NuclearDisassembler, "Nuclear Disassembler");
 		LanguageRegistry.addName(NuclearCore, "Nuclear Core");
 		LanguageRegistry.addName(EnergizedBow, "Energized Bow");
+		LanguageRegistry.addName(SolarPanel, "Solar Panel");
+		LanguageRegistry.addName(HydrogenTank, "Hydrogen Tank");
+		LanguageRegistry.addName(OxygenTank, "Oxygen Tank");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.PlatinumBlock.name", "Platinum Block");
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RedstoneBlock.name", "Redstone Block");
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedObsidian.name", "Refined Obsidian");
 		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.CoalBlock.name", "Coal Block");
-		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedGlowstone.name", "Refined Glowstone Block");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.RefinedGlowstone.name", "Refined Glowstone");
+		LanguageRegistry.instance().addStringLocalization("tile.MultiBlock.ReinforcedIron.name", "Reinforced Iron");
 		
 		//Localization for MachineBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnrichmentChamber.name", "Enrichment Chamber");
@@ -708,12 +732,16 @@ public class Mekanism
 		
 		//Localization for Generator
 		LanguageRegistry.instance().addStringLocalization("tile.Generator.HeatGenerator.name", "Heat Generator");
+		LanguageRegistry.instance().addStringLocalization("tile.Generator.SolarGenerator.name", "Solar Generator");
+		LanguageRegistry.instance().addStringLocalization("tile.Generator.ElectrolyticSeparator.name", "Electrolytic Separator");
+		LanguageRegistry.instance().addStringLocalization("tile.Generator.HydrogenGenerator.name", "Hydrogen Generator");
 		
 		//Localization for Dust
 		LanguageRegistry.instance().addStringLocalization("item.ironDust.name", "Iron Dust");
 		LanguageRegistry.instance().addStringLocalization("item.goldDust.name", "Gold Dust");
 		LanguageRegistry.instance().addStringLocalization("item.platinumDust.name", "Platinum Dust");
 		LanguageRegistry.instance().addStringLocalization("item.obsidianDust.name", "Obsidian Dust");
+		LanguageRegistry.instance().addStringLocalization("item.diamondDust.name", "Diamond Dust");
 		
 		//Localization for Ingot
 		LanguageRegistry.instance().addStringLocalization("item.obsidianIngot.name", "Obsidian Ingot");
@@ -821,6 +849,9 @@ public class Mekanism
 		NuclearDisassembler.setIconIndex(253);
 		NuclearCore.setIconIndex(254);
 		EnergizedBow.setIconIndex(252);
+		SolarPanel.setIconIndex(255);
+		HydrogenTank.setIconIndex(251);
+		OxygenTank.setIconIndex(239);
 	}
 	
 	/**
@@ -910,7 +941,10 @@ public class Mekanism
 		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");
 		NuclearDisassembler = (ItemNuclearDisassembler) new ItemNuclearDisassembler(11312).setItemName("NuclearDisassembler");
 		NuclearCore = new ItemMekanism(11313).setItemName("NuclearCore");
+		SolarPanel = new ItemMekanism(11314).setItemName("SolarPanel");
 		EnrichedAlloy = new ItemMekanism(11315).setItemName("EnrichedAlloy");
+		HydrogenTank = (ItemHydrogenTank) new ItemHydrogenTank(11316).setItemName("HydrogenTank");
+		OxygenTank = (ItemOxygenTank) new ItemOxygenTank(11317).setItemName("OxygenTank");
 	}
 	
 	/**
@@ -929,7 +963,7 @@ public class Mekanism
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT);
 		
-		//Add block items into itemsList for blocks with multiple IDs.
+		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[multiBlockID] = new ItemBlockMulti(multiBlockID - 256, MultiBlock).setItemName("MultiBlock");
 		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setItemName("MachineBlock");
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setItemName("OreBlock");
@@ -938,7 +972,8 @@ public class Mekanism
 	}
 	
 	/**
-	 * Adds the items integrated between separate mods, like Iron and Gold dust.
+	 * Integrates the mod with other mods -- registering items and blocks with the Forge Ore Dictionary
+	 * and adding machine recipes with other items' corresponding resources.
 	 */
 	public void addIntegratedItems()
 	{
@@ -947,10 +982,18 @@ public class Mekanism
 		OreDictionary.registerOre("dustPlatinum", new ItemStack(Dust, 1, 2));
 		OreDictionary.registerOre("dustObsidian", new ItemStack(Dust, 1, 3));
 		
+		//Damn you RichardG and your weird Ore Dictionary standards
+		OreDictionary.registerOre("itemDustIron", new ItemStack(Dust, 1, 0));
+		OreDictionary.registerOre("itemDustGold", new ItemStack(Dust, 1, 1));
+		OreDictionary.registerOre("itemDustPlatinum", new ItemStack(Dust, 1, 2));
+		OreDictionary.registerOre("itemDustObsidian", new ItemStack(Dust, 1, 3));
+		
 		OreDictionary.registerOre("ingotObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotPlatinum", new ItemStack(Ingot, 1, 1));
 		OreDictionary.registerOre("ingotRedstone", new ItemStack(Ingot, 1, 2));
 		OreDictionary.registerOre("ingotGlowstone", new ItemStack(Ingot, 1, 3));
+		
+		OreDictionary.registerOre("orePlatinum", new ItemStack(OreBlock, 1, 0));
 		
 		if(hooks.IC2Loaded)
 		{
@@ -958,9 +1001,9 @@ public class Mekanism
 			{
 				Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
 			}
-			ItemStack dustIron = hooks.IC2IronDust;
+			ItemStack dustIron = hooks.IC2IronDust.copy();
 			dustIron.stackSize = 2;
-			ItemStack dustGold = hooks.IC2GoldDust;
+			ItemStack dustGold = hooks.IC2GoldDust.copy();
 			dustGold.stackSize = 2;
 			RecipeHandler.addCombinerRecipe(dustIron, new ItemStack(Block.oreIron));
 			RecipeHandler.addCombinerRecipe(dustGold, new ItemStack(Block.oreGold));
@@ -995,6 +1038,9 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityPowerUnit.class, "PowerUnit");
 		GameRegistry.registerTileEntity(TileEntityAdvancedPowerUnit.class, "AdvancedPowerUnit");
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
+		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
+		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
+		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
 	}
 	
 	/**
@@ -1086,7 +1132,7 @@ public class Mekanism
 		int chance = random.nextInt(100);
 		int secondChance = random.nextInt(4);
 		
-		if(chance < 25)
+		if(chance < 5)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
 			{
@@ -1115,14 +1161,6 @@ public class Mekanism
 					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.RedstoneBoots));
 				}
 				else if(secondChance == 3)
-				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.ObsidianSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.ObsidianHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.ObsidianBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.ObsidianLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.ObsidianBoots));
-				}
-				else if(secondChance == 4)
 				{
 					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.PlatinumSword));
 					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.PlatinumHelmet));

@@ -31,7 +31,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPowerReceptor, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
 {
 	/** The Sound instance for this machine. */
 	public Sound audio;
@@ -66,9 +66,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** The GUI texture path for this machine. */
 	public String guiTexturePath;
 	
-	/** BuildCraft power provider. */
-	public IPowerProvider powerProvider;
-	
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
 	 * @param soundPath - location of the sound effect
@@ -86,11 +83,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		soundURL = soundPath;
 		guiTexturePath = path;
 		isActive = false;
-		if(PowerFramework.currentFramework != null)
-		{
-			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
-		}
 	}
 	
 	@Override
@@ -136,11 +128,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
-        }
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
         isActive = nbtTags.getBoolean("isActive");
@@ -150,11 +137,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
-        }
         
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("isActive", isActive);
@@ -199,27 +181,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	
     	return rejects;
     }
-	
-	@Override
-	public void setPowerProvider(IPowerProvider provider)
-	{
-		powerProvider = provider;
-	}
-	
-	@Override
-	public IPowerProvider getPowerProvider() 
-	{
-		return powerProvider;
-	}
-	
-	@Override
-	public int powerRequest() 
-	{
-		return getPowerProvider().getMaxEnergyReceived();
-	}
-	
-	@Override
-	public void doWork() {}
 	
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
@@ -286,7 +247,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public double wattRequest() 
 	{
-		return ElectricInfo.getWatts(currentMaxEnergy*UniversalElectricity.IC2_RATIO) - ElectricInfo.getWatts(energyStored*UniversalElectricity.IC2_RATIO);
+		return isActive ? ElectricInfo.getWatts((ENERGY_PER_TICK*4)*UniversalElectricity.IC2_RATIO) : 0;
 	}
 	
 	@Override

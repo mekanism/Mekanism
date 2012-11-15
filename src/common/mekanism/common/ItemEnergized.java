@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.util.List;
 
-
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.electricity.ElectricInfo;
 import universalelectricity.implement.IItemElectric;

@@ -15,7 +15,7 @@ public class ItemMachineUpgrade extends Item implements IMachineUpgrade
 	{
 		super(id);
 		setMaxStackSize(1);
-		setCreativeTab(TabProxy.tabMekanism());
+		setCreativeTab(TabProxy.tabMekanism(CreativeTabs.tabMisc));
 		ENERGY_BOOST = energyBoost;
 		TICK_REDUCTION = tickReduction;
 	}

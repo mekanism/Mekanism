@@ -33,17 +33,17 @@ import net.minecraftforge.common.ForgeDirection;
 
 public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IPeripheral
 {
-	/** The amount of fuel stored in this generator. */
-	public int fuelStored;
-	
-	/** The maximum amount of fuel this generator can store. */
-	public int MAX_FUEL;
-	
 	/** Output per tick this generator can transfer. */
-	public int output = 128;
+	public int output;
 	
 	/** BuildCraft power provider. */
 	public IPowerProvider powerProvider;
+	
+	/** Whether or not this block is in it's active state. */
+	public boolean isActive;
+	
+	/** The previous active state for this block. */
+	public boolean prevActive;
 	
 	/**
 	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
@@ -51,11 +51,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 * @param maxEnergy - how much energy this generator can store
 	 * @param maxFuel - how much fuel this generator can store
 	 */
-	public TileEntityGenerator(String name, int maxEnergy, int maxFuel)
+	public TileEntityGenerator(String name, int maxEnergy, int out)
 	{
 		super(name, maxEnergy);
-		MAX_FUEL = maxFuel;
-		inventory = new ItemStack[2];
+		
+		output = out;
+		isActive = false;
+		
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
@@ -65,76 +67,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	
 	@Override
 	public void onUpdate()
-	{
-		if(powerProvider != null)
-		{
-			int received = (int)(powerProvider.useEnergy(25, 25, true)*10);
-			setEnergy(energyStored + received);
-		}
-		
-		if(inventory[1] != null && energyStored > 0)
-		{
-			if(inventory[1].getItem() instanceof IEnergizedItem)
-			{
-				IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
-				int sendingEnergy = 0;
-				
-				if(item.getRate() <= energyStored)
-				{
-					sendingEnergy = item.getRate();
-				}
-				else if(item.getRate() > energyStored)
-				{
-					sendingEnergy = energyStored;
-				}
-				
-				int rejects = item.charge(inventory[1], sendingEnergy);
-				setEnergy(energyStored - (sendingEnergy - rejects));
-			}
-			else if(inventory[1].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), (energyStored*UniversalElectricity.IC2_RATIO));
-				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-				setJoules((energyStored*UniversalElectricity.IC2_RATIO) - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
-			}
-			else if(inventory[1].getItem() instanceof IElectricItem)
-			{
-				int sent = ElectricItem.charge(inventory[1], energyStored, 3, false, false);
-				setEnergy(energyStored - sent);
-			}
-		}
-		
-		if(inventory[0] != null && fuelStored < MAX_ENERGY)
-		{
-			int fuel = getFuel(inventory[0]);
-			if(fuel > 0)
-			{
-				int fuelNeeded = MAX_FUEL - fuelStored;
-				if(fuel <= fuelNeeded)
-				{
-					fuelStored += fuel;
-					--inventory[0].stackSize;
-				}
-				
-				if(inventory[0].stackSize == 0)
-				{
-					inventory[0] = null;
-				}
-			}
-		}
-		
-		if(energyStored < MAX_ENERGY)
-		{
-			setEnergy(energyStored + getEnvironmentBoost());
-			
-			if(fuelStored > 0)
-			{
-				fuelStored--;
-				setEnergy(energyStored + 16);
-			}
-		}
-		
+	{	
 		if(energyStored > 0)
 		{
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, Vector3.get(this), ForgeDirection.getOrientation(facing));
@@ -191,53 +124,16 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	/**
-	 * Gets the amount of fuel a certain ItemStack contains.
-	 * @param itemstack - slot stack to check
-	 * @return amount of fuel the stack contains
-	 */
-	public abstract int getFuel(ItemStack itemstack);
-	
-	/**
 	 * Gets the boost this generator can receive in it's current location.
 	 * @return environmental boost
 	 */
-	public int getEnvironmentBoost()
-	{
-		int boost = 0;
-		
-		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
-			boost+=4;
-		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
-			boost+=4;
-		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
-			boost+=4;
-		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
-			boost+=4;
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
-			boost+=4;
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
-			boost+=4;
-		
-		return boost;
-	}
+	public abstract int getEnvironmentBoost();
 	
 	/**
-	 * Whether or not this machine can operate and generate power.
-	 * @return if the machine can generate power
+	 * Whether or not this generator can operate.
+	 * @return if the generator can operate
 	 */
-	public boolean canPower()
-	{
-		if(fuelStored <= 0)
-		{
-			return false;
-		}
-		
-		if(energyStored >= MAX_ENERGY)
-		{
-			return false;
-		}
-		return true;
-	}
+	public abstract boolean canOperate();
 	
 	/**
 	 * Whether or not the declared Tile Entity is an instance of a BuildCraft power receptor.
@@ -266,16 +162,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	/**
-	 * Gets the scaled fuel level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getScaledFuelLevel(int i)
-	{
-		return fuelStored*i / MAX_FUEL;
-	}
-	
-	/**
 	 * Set this block's energy to a new amount.
 	 * @param energy - new amount of energy
 	 */
@@ -284,62 +170,20 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 	}
 	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
+	/**
+	 * Sets this block's active state to a new value.
+	 * @param active - new active state
+	 */
+    public void setActive(boolean active)
     {
-        super.readFromNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
-        }
-        
-        NBTTagList tagList = nbtTags.getTagList("Items");
-        inventory = new ItemStack[getSizeInventory()];
-
-        for (int slots = 0; slots < tagList.tagCount(); ++slots)
-        {
-            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
-            byte slotID = tagCompound.getByte("Slot");
-
-            if (slotID >= 0 && slotID < inventory.length)
-            {
-                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
-            }
-        }
-
-        energyStored = nbtTags.getInteger("energyStored");
-        fuelStored = nbtTags.getInteger("fuelStored");
-        facing = nbtTags.getInteger("facing");
-    }
-
-	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
-        }
-        
-        nbtTags.setInteger("energyStored", energyStored);
-        nbtTags.setInteger("fuelStored", fuelStored);
-        nbtTags.setInteger("facing", facing);
-        NBTTagList tagList = new NBTTagList();
-
-        for (int slots = 0; slots < inventory.length; ++slots)
-        {
-            if (inventory[slots] != null)
-            {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte("Slot", (byte)slots);
-                inventory[slots].writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
-            }
-        }
-
-        nbtTags.setTag("Items", tagList);
+    	isActive = active;
+    	
+    	if(prevActive != active)
+    	{
+    		sendPacket();
+    	}
+    	
+    	prevActive = active;
     }
 	
 	@Override
@@ -353,67 +197,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
 	}
-
-	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try {
-			facing = dataStream.readInt();
-			energyStored = dataStream.readInt();
-			fuelStored = dataStream.readInt();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void sendPacket()
-	{
-		PacketHandler.sendGeneratorPacket(this);
-	}
-	
-	@Override
-	public void sendPacketWithRange()
-	{
-		PacketHandler.sendGeneratorPacketWithRange(this, 50);
-	}
 	
 	@Override
 	public String getType() 
 	{
 		return getInvName();
-	}
-
-	@Override
-	public String[] getMethodNames() 
-	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
-	}
-
-	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
-	{
-		switch(method)
-		{
-			case 0:
-				return new Object[] {energyStored};
-			case 1:
-				return new Object[] {output};
-			case 2:
-				return new Object[] {MAX_ENERGY};
-			case 3:
-				return new Object[] {(MAX_ENERGY-energyStored)};
-			case 4:
-				return new Object[] {fuelStored};
-			case 5:
-				return new Object[] {MAX_FUEL-fuelStored};
-			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
-		}
 	}
 
 	@Override
@@ -511,4 +299,20 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		return false;
 	}
+	
+	@Override
+    public void readFromNBT(NBTTagCompound nbtTags)
+    {
+        super.readFromNBT(nbtTags);
+
+        isActive = nbtTags.getBoolean("isActive");
+    }
+
+	@Override
+    public void writeToNBT(NBTTagCompound nbtTags)
+    {
+        super.writeToNBT(nbtTags);
+        
+        nbtTags.setBoolean("isActive", isActive);
+    }
 }

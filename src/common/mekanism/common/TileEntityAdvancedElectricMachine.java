@@ -309,24 +309,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         }
     }
     
-    @Override
-    public void sendPacket()
-    {
-    	PacketHandler.sendAdvancedElectricMachinePacket(this);
-    }
-    
-    @Override
-    public void sendPacketWithRange()
-    {
-    	PacketHandler.sendAdvancedElectricMachinePacketWithRange(this, 50);
-    }
-
-    @Override
+	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
 			facing = dataStream.readInt();
-			isActive = dataStream.readByte() != 0;
+			isActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
 			energyStored = dataStream.readInt();
 			secondaryEnergyStored = dataStream.readInt();
@@ -339,6 +327,18 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			e.printStackTrace();
 		}
 	}
+    
+    @Override
+    public void sendPacket()
+    {
+    	PacketHandler.sendTileEntityPacket(this, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
+    }
+    
+    @Override
+    public void sendPacketWithRange()
+    {
+    	PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
+    }
 	
     @Override
     public void readFromNBT(NBTTagCompound nbtTags)

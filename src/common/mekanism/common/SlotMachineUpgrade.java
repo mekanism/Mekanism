@@ -5,9 +5,9 @@ import net.minecraft.src.*;
 
 public class SlotMachineUpgrade extends Slot
 {
-	public SlotMachineUpgrade(IInventory inventory, int x, int y, int z)
+	public SlotMachineUpgrade(IInventory inventory, int index, int x, int y)
 	{
-		super(inventory, x, y, z);
+		super(inventory, index, x, y);
 	}
 	
 	@Override

@@ -59,16 +59,27 @@ public class BlockPowerUnit extends BlockContainer
 	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
     {
-    	TileEntityPowerUnit tileEntity = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int height = Math.round(entityliving.rotationPitch);
         int change = 3;
         
-        switch(side)
+        if(height >= 65)
         {
-        	case 0: change = 2; break;
-        	case 1: change = 5; break;
-        	case 2: change = 3; break;
-        	case 3: change = 4; break;
+        	change = 1;
+        }
+        else if(height <= -65)
+        {
+        	change = 0;
+        }
+        else {
+	        switch(side)
+	        {
+	        	case 0: change = 2; break;
+	        	case 1: change = 5; break;
+	        	case 2: change = 3; break;
+	        	case 3: change = 4; break;
+	        }
         }
         
         tileEntity.setFacing((short)change);
@@ -173,12 +184,11 @@ public class BlockPowerUnit extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-        if (world.isRemote)
+        if(world.isRemote)
         {
             return true;
         }
-        else
-        {
+        else {
         	TileEntityPowerUnit tileEntity = (TileEntityPowerUnit)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
         	
@@ -187,13 +197,11 @@ public class BlockPowerUnit extends BlockContainer
             	if(!entityplayer.isSneaking())
             	{
             		entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
-            	}
-            	else {
-            		return false;
+            		return true;
             	}
             }
-            return true;
         }
+        return false;
     }
     
     @Override

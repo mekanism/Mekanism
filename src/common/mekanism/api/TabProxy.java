@@ -18,7 +18,7 @@ public final class TabProxy
 	 * null before you use it!
 	 * @return mekanism creative tab if can, otherwise null
 	 */
-	public static CreativeTabs tabMekanism()
+	public static CreativeTabs tabMekanism(CreativeTabs preferred)
 	{
 		try {
 			if(Mekanism == null)
@@ -33,11 +33,11 @@ public final class TabProxy
 				return (CreativeTabs)ret;
 			}
 			else {
-				return null;
+				return preferred;
 			}
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error retrieving Mekanism creative tab.");
-			return null;
+			return preferred;
 		}
 	}
 }

@@ -237,76 +237,6 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	{
 		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
-        }
-        
-        NBTTagList tagList = nbtTags.getTagList("Items");
-        inventory = new ItemStack[getSizeInventory()];
-
-        for (int slots = 0; slots < tagList.tagCount(); ++slots)
-        {
-            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
-            byte slotID = tagCompound.getByte("Slot");
-
-            if (slotID >= 0 && slotID < inventory.length)
-            {
-                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
-            }
-        }
-
-        energyStored = nbtTags.getInteger("energyStored");
-        facing = nbtTags.getInteger("facing");
-    }
-
-	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
-        }
-        
-        nbtTags.setInteger("energyStored", energyStored);
-        nbtTags.setInteger("facing", facing);
-        NBTTagList tagList = new NBTTagList();
-
-        for (int slots = 0; slots < inventory.length; ++slots)
-        {
-            if (inventory[slots] != null)
-            {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte("Slot", (byte)slots);
-                inventory[slots].writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
-            }
-        }
-
-        nbtTags.setTag("Items", tagList);
-    }
-
-	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
-	{
-		try {
-			facing = dataStream.readInt();
-			energyStored = dataStream.readInt();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
@@ -533,14 +463,28 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	}
 	
 	@Override
+	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	{
+		try {
+			facing = dataStream.readInt();
+			energyStored = dataStream.readInt();
+			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+		} catch (Exception e)
+		{
+			System.out.println("[Mekanism] Error while handling tile entity packet.");
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
     public void sendPacket()
     {
-    	PacketHandler.sendPowerUnitPacket(this);
+		PacketHandler.sendTileEntityPacket(this, facing, energyStored);
     }
     
 	@Override
     public void sendPacketWithRange()
     {
-    	PacketHandler.sendPowerUnitPacketWithRange(this, 50);
+		PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, energyStored);
     }
 }

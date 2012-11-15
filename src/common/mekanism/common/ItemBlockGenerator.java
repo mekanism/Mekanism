@@ -5,6 +5,9 @@ import net.minecraft.src.*;
 /**
  * Item class for handling multiple generator block IDs.
  * 0: Heat Generator
+ * 1: Solar Generator
+ * 2: Electrolytic Separator
+ * 3: Hydrogen Generator
  * @author AidanBrady
  *
  */
@@ -39,6 +42,15 @@ public class ItemBlockGenerator extends ItemBlock
 		{
 			case 0:
 				name = "HeatGenerator";
+				break;
+			case 1:
+				name = "SolarGenerator";
+				break;
+			case 2:
+				name = "ElectrolyticSeparator";
+				break;
+			case 3:
+				name = "HydrogenGenerator";
 				break;
 			default:
 				name = "Unknown";

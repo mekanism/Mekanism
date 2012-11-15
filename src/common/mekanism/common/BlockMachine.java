@@ -5,6 +5,7 @@ import java.util.Random;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+import mekanism.common.BlockGenerator.GeneratorType;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -36,7 +37,7 @@ public class BlockMachine extends BlockContainer
     {
     	if(!(world.getBlockMetadata(x, y, z) == 6))
     	{
-	    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+	    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
 	        int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 	        int change = 3;
 	        
@@ -56,7 +57,7 @@ public class BlockMachine extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
         if (isActive(world, x, y, z))
         {
             float xRandom = (float)x + 0.5F;
@@ -155,7 +156,7 @@ public class BlockMachine extends BlockContainer
     public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
-    	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
         
     	if(metadata == 0)
     	{
@@ -261,7 +262,7 @@ public class BlockMachine extends BlockContainer
     @Override
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
-        TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+        TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
 
         if (tileEntity != null)
         {
@@ -313,30 +314,20 @@ public class BlockMachine extends BlockContainer
     	{
     		return true;
     	}
-    	
     	else {
-        	TileEntityBasicMachine tileEntity = (TileEntityBasicMachine)world.getBlockTileEntity(x, y, z);
+        	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
         	
             if (tileEntity != null)
             {
             	if(!entityplayer.isSneaking())
             	{
-            		int id = 0;
-            		
-            		if(metadata == 0) id = 3;
-            		else if(metadata == 1) id = 4;
-            		else if(metadata == 2) id = 5;
-            		else if(metadata == 3) id = 6;
-            		else if(metadata == 4) id = 7;
-            		else if(metadata == 5) id = 10;
-            		
-            		entityplayer.openGui(Mekanism.instance, id, world, x, y, z);
+            		entityplayer.openGui(Mekanism.instance, MachineType.getGuiID(metadata), world, x, y, z);
             		return true;
             	}
             }
-            return true;
     	}
+    	return false;
     }
     
     @Override
@@ -348,23 +339,23 @@ public class BlockMachine extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
     {
-    	if(metadata == MachineType.ENRICHMENT_CHAMBER.index)
+    	if(metadata == MachineType.ENRICHMENT_CHAMBER.meta)
     	{
     		return new TileEntityEnrichmentChamber();
     	}
-    	else if(metadata == MachineType.PLATINUM_COMPRESSOR.index)
+    	else if(metadata == MachineType.PLATINUM_COMPRESSOR.meta)
     	{
     		return new TileEntityPlatinumCompressor();
     	}
-    	else if(metadata == MachineType.COMBINER.index)
+    	else if(metadata == MachineType.COMBINER.meta)
     	{
     		return new TileEntityCombiner();
     	}
-    	else if(metadata == MachineType.CRUSHER.index)
+    	else if(metadata == MachineType.CRUSHER.meta)
     	{
     		return new TileEntityCrusher();
     	}
-    	else if(metadata == MachineType.THEORETICAL_ELEMENTIZER.index)
+    	else if(metadata == MachineType.THEORETICAL_ELEMENTIZER.meta)
     	{
     		return new TileEntityTheoreticalElementizer();
     	}
@@ -381,23 +372,30 @@ public class BlockMachine extends BlockContainer
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0),
-		PLATINUM_COMPRESSOR(1),
-		COMBINER(2),
-		CRUSHER(3),
-		THEORETICAL_ELEMENTIZER(4);
+		ENRICHMENT_CHAMBER(0, 3),
+		PLATINUM_COMPRESSOR(1, 4),
+		COMBINER(2, 5),
+		CRUSHER(3, 6),
+		THEORETICAL_ELEMENTIZER(4, 7);
 		
-		private int index;
+		private int meta;
+		private int guiId;
 		
-		private MachineType(int i)
+		private MachineType(int i, int j)
 		{
-			index = i;
+			meta = i;
+			guiId = j;
+		}
+		
+		public static int getGuiID(int meta)
+		{
+			return values()[meta].guiId;
 		}
 		
 		@Override
 		public String toString()
 		{
-			return Integer.toString(index);
+			return Integer.toString(meta);
 		}
 	}
 }

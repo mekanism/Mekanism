@@ -262,25 +262,13 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }
-    
-	@Override
-    public void sendPacket()
-    {
-    	PacketHandler.sendElectricMachinePacket(this);
-    }
-    
-	@Override
-    public void sendPacketWithRange()
-    {
-    	PacketHandler.sendElectricMachinePacketWithRange(this, 50);
-    }
-
+	
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
 			facing = dataStream.readInt();
-			isActive = dataStream.readByte() != 0;
+			isActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
 			energyStored = dataStream.readInt();
 			currentMaxEnergy = dataStream.readInt();
@@ -292,6 +280,18 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			e.printStackTrace();
 		}
 	}
+    
+	@Override
+    public void sendPacket()
+    {
+		PacketHandler.sendTileEntityPacket(this, facing, isActive, operatingTicks, energyStored, currentMaxEnergy, currentTicksRequired);
+    }
+    
+	@Override
+    public void sendPacketWithRange()
+    {
+		PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, isActive, operatingTicks, energyStored, currentMaxEnergy, currentTicksRequired);
+    }
 
 	@Override
 	public String[] getMethodNames() 

@@ -3,20 +3,19 @@ package mekanism.common;
 import ic2.api.IElectricItem;
 import universalelectricity.implement.IItemElectric;
 import mekanism.api.IEnergizedItem;
-import mekanism.api.ItemMachineUpgrade;
+import mekanism.api.IStorageTank;
+import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;
 
-public class ContainerElectricMachine extends Container
+public class ContainerHydrogenGenerator extends Container
 {
-    private TileEntityElectricMachine tileEntity;
+    private TileEntityHydrogenGenerator tileEntity;
 
-    public ContainerElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tentity)
+    public ContainerHydrogenGenerator(InventoryPlayer inventory, TileEntityHydrogenGenerator tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 56, 17));
-        addSlotToContainer(new SlotEnergy(tentity, 1, 56, 53));
-        addSlotToContainer(new SlotFurnace(inventory.player, tentity, 2, 116, 35));
-        addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 7, 7));
+        addSlotToContainer(new Slot(tentity, 0, 17, 35));
+        addSlotToContainer(new SlotEnergy(tentity, 1, 143, 35));
         int slotX;
 
         for (slotX = 0; slotX < 3; ++slotX)
@@ -58,15 +57,8 @@ public class ContainerElectricMachine extends Container
         {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
-            if(slotID == 2)
-            {
-            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
-            	{
-            		return null;
-            	}
-            }
-        	else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+            
+        	if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
             {
 	            if(slotID != 1)
 	            {
@@ -77,44 +69,31 @@ public class ContainerElectricMachine extends Container
 	            }
 	            else if(slotID == 1)
 	            {
-	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
-            else if(RecipeHandler.getOutput(slotStack, false, tileEntity.getRecipes()) != null)
-    		{
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+        	else if(slotStack.getItem() instanceof IStorageTank)
+        	{
+            	if(slotID != 0 && slotID != 1)
             	{
-                    if (!mergeItemStack(slotStack, 0, 1, false))
-	                {
-	                    return null;
-	                }
+            		if(((IStorageTank)slotStack.getItem()).gasType() == EnumGas.HYDROGEN)
+            		{
+	                    if (!mergeItemStack(slotStack, 0, 1, false))
+		                {
+		                    return null;
+		                }
+            		}
             	}
             	else {
-	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
             	}
-    		}
-            else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-            {
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
-            	{
-            		if(!mergeItemStack(slotStack, 3, 4, false))
-            		{
-            			return null;
-            		}
-            	}
-            	else {
-            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
-            		{
-            			return null;
-            		}
-            	}
-            }
+        	}
             
             if (slotStack.stackSize == 0)
             {

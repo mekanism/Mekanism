@@ -18,6 +18,7 @@ import net.minecraftforge.common.ForgeChunkManager;
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone
+ * 5: Reinforced Iron
  * @author AidanBrady
  *
  */
@@ -47,6 +48,8 @@ public class BlockMulti extends Block
 				return 10;
 			case 4:
 				return 11;
+			case 5:
+				return 29;
 		}
 		return 0;
 	}
@@ -66,6 +69,7 @@ public class BlockMulti extends Block
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
 	}
 	
 	@Override
@@ -78,7 +82,6 @@ public class BlockMulti extends Block
     		if(entityplayer.isSneaking())
     		{
     			entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
-    			//entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
     			return true;
     		}
     	}
@@ -102,57 +105,15 @@ public class BlockMulti extends Block
     }
 	
 	@Override
-	public void randomDisplayTick(World world, int x, int y, int z, Random random)
-	{
-		if (world.isBlockIndirectlyGettingPowered(x, y + 1, z) && world.getBlockMetadata(z, y, z) == 5)
+    public float getBlockHardness(World world, int x, int y, int z)
+    {
+		int metadata = world.getBlockMetadata(x, y, z);
+		if(metadata == 5)
 		{
-			Chunk chunkInside = world.getChunkFromBlockCoords(x, z);
-			int xPosMax = chunkInside.xPosition << 4;
-			int zPosMax = chunkInside.zPosition << 4;
-			int xPosMin = xPosMax + 16;
-			int zPosMin = zPosMax + 16;
-			
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 1.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 2.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 3.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 4.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 1.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 2.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 3.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMax + 4.5, 0, 0, 0);
-			
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 1.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 2.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 3.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 4.5, y + 1, zPosMax + 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 1.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 2.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 3.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMax + 4.5, 0, 0, 0);
-			
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 1.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 2.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 3.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 4.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 1.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 2.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 3.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMax + 0.5, y + 1, zPosMin - 4.5, 0, 0, 0);
-			
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 1.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 2.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 3.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 4.5, y + 1, zPosMin - 0.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 1.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 2.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 3.5, 0, 0, 0);
-			world.spawnParticle("portal", xPosMin - 0.5, y + 1, zPosMin - 4.5, 0, 0, 0);
+			return 12F;
 		}
-	}
+        return blockHardness;
+    }
 	
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)

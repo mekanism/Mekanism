@@ -1,5 +1,9 @@
 package mekanism.common;
 
+import com.google.common.io.ByteArrayDataInput;
+
+import buildcraft.api.power.IPowerProvider;
+import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 import universalelectricity.prefab.TileEntityDisableable;
 import ic2.api.EnergyNet;
@@ -9,7 +13,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityElectricBlock extends TileEntityDisableable implements IWrenchable, ISidedInventory, IInventory, ITileNetwork
+public abstract class TileEntityElectricBlock extends TileEntityBasicBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
@@ -17,23 +21,14 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 	/** How much energy is stored in this block. */
 	public int energyStored;
 	
-	/** The direction this block is facing. */
-	public int facing;
-	
 	/** Maximum amount of energy this machine can hold. */
 	public int MAX_ENERGY;
 	
 	/** The full name of this machine. */
 	public String fullName;
 	
-	/** Whether or not this machine has initialized and registered with other mods. */
-	public boolean initialized;
-	
-	/** The amount of players using this block */
-	public int playersUsing = 0;
-	
-	/** A timer used to send packets to clients. */
-	public int packetTick;
+	/** BuildCraft power provider. */
+	public IPowerProvider powerProvider;
 	
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
@@ -45,48 +40,12 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 	{
 		fullName = name;
 		MAX_ENERGY = maxEnergy;
-	}
-	
-	@Override
-	public void updateEntity()
-	{
-		super.updateEntity();
-		
-		if(!initialized && worldObj != null)
+		if(PowerFramework.currentFramework != null)
 		{
-			if(Mekanism.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).addTileEntity(this);
-			}
-			
-			initialized = true;
-		}
-		
-		onUpdate();
-		
-		if(!worldObj.isRemote)
-		{
-			if(playersUsing > 0)
-			{
-				if(packetTick % 3 == 0)
-				{
-					sendPacketWithRange();
-				}
-			}
-			else {
-				if(packetTick % 20 == 0)
-				{
-					sendPacketWithRange();
-				}
-			}
-			packetTick++;
+			powerProvider = PowerFramework.currentFramework.createPowerProvider();
+			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
 		}
 	}
-	
-	/**
-	 * Update call for machines. Use instead of updateEntity -- it's called every tick.
-	 */
-	public abstract void onUpdate();
 	
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
@@ -176,6 +135,11 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
     {
         super.readFromNBT(nbtTags);
         
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
+        }
+        
         NBTTagList tagList = nbtTags.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
 
@@ -191,7 +155,6 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
         }
 
         energyStored = nbtTags.getInteger("energyStored");
-        facing = nbtTags.getInteger("facing");
     }
 
 	@Override
@@ -199,8 +162,12 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
     {
         super.writeToNBT(nbtTags);
         
+        if(PowerFramework.currentFramework != null)
+        {
+        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
+        }
+        
         nbtTags.setInteger("energyStored", energyStored);
-        nbtTags.setInteger("facing", facing);
         NBTTagList tagList = new NBTTagList();
 
         for (int slots = 0; slots < inventory.length; ++slots)
@@ -221,51 +188,6 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
 		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
-	{
-		return true;
-	}
-
-	@Override
-	public short getFacing() 
-	{
-		return (short)facing;
-	}
-
-	@Override
-	public void setFacing(short direction) 
-	{
-		if(initialized)
-		{
-			if(Mekanism.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).removeTileEntity(this);
-			}
-		}
-		
-		initialized = false;
-		facing = direction;
-		sendPacket();
-		if(Mekanism.hooks.IC2Loaded)
-		{
-			EnergyNet.getForWorld(worldObj).addTileEntity(this);
-		}
-		initialized = true;
-	}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) 
-	{
-		return true;
-	}
-
-	@Override
-	public float getWrenchDropRate() 
-	{
-		return 1.0F;
 	}
 	
 	public boolean isAddedToEnergyNet()
@@ -296,4 +218,25 @@ public abstract class TileEntityElectricBlock extends TileEntityDisableable impl
 	{
 		playersUsing--;
 	}
+	
+	@Override
+	public void setPowerProvider(IPowerProvider provider)
+	{
+		powerProvider = provider;
+	}
+	
+	@Override
+	public IPowerProvider getPowerProvider() 
+	{
+		return powerProvider;
+	}
+	
+	@Override
+	public int powerRequest() 
+	{
+		return getPowerProvider().getMaxEnergyReceived();
+	}
+	
+	@Override
+	public void doWork() {}
 }

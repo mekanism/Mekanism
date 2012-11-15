@@ -9,7 +9,7 @@ import net.minecraft.src.*;
  * @author AidanBrady
  *
  */
-public class MekanismHooks 
+public final class MekanismHooks 
 {
 	private Class Ic2Items;
 	private Class IC2;
@@ -18,20 +18,27 @@ public class MekanismHooks
 	
 	private Class BCLoader;
 	
+	private Class BuildCraftEnergy;
+	
 	public ItemStack IC2IronDust;
 	public ItemStack IC2GoldDust;
 	
 	public ItemStack RailcraftObsidianDust;
 	
+	public int BuildCraftFuelID = 3808;
+	public ItemStack BuildCraftFuelBucket;
+	
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
-	public boolean BCLoaded = false;
+	public boolean BasicComponentsLoaded = false;
+	public boolean BuildCraftLoaded = false;
 	
 	public void hook()
 	{
 		if(isIC2Installed()) IC2Loaded = true;
 		if(isRailcraftInstalled()) RailcraftLoaded = true;
-		if(isBCInstalled()) BCLoaded = true;
+		if(isBasicComponentsInstalled()) BasicComponentsLoaded = true;
+		if(isBuildCraftInstalled()) BuildCraftLoaded = true;
 		
 		if(IC2Loaded)
 		{
@@ -49,9 +56,15 @@ public class MekanismHooks
 			
 			System.out.println("[Mekanism] Hooked into Railcraft successfully.");
 		}
-		if(BCLoaded)
+		if(BasicComponentsLoaded)
 		{
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
+		}
+		if(BuildCraftLoaded)
+		{
+			BuildCraftFuelID = getBuildCraftItem("fuel").itemID;
+			BuildCraftFuelBucket = getBuildCraftItem("bucketFuel");
+			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
 	}
 	
@@ -86,6 +99,26 @@ public class MekanismHooks
 		return ItemRegistry.getItem(name, 1);
 	}
 	
+	public ItemStack getBuildCraftItem(String name)
+	{
+		try {
+			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("buildcraft.BuildCraftEnergy");
+			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("net.minecraft.src.buildcraft.BuildCraftEnergy");
+			Object ret = BuildCraftEnergy.getField(name).get(null);
+			
+			if(ret instanceof Item)
+			{
+				return new ItemStack((Item)ret);
+			}
+			else {
+				return null;
+			}
+		} catch(Exception e) {
+			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
+			return null;
+		}
+	}
+	
 	public boolean isIC2Installed()
 	{
 		try {
@@ -108,6 +141,7 @@ public class MekanismHooks
 	{
 		try {
 			if(Railcraft == null) Railcraft = Class.forName("railcraft.common.core.Railcraft");
+			if(Railcraft == null) Railcraft = Class.forName("net.minecraft.src.railcraft.common.core.Railcraft");
 			Object ret = Railcraft.getField("instance").get(null);
 			
 			if(ret != null)
@@ -121,10 +155,11 @@ public class MekanismHooks
 		}
 	}
 	
-	public boolean isBCInstalled()
+	public boolean isBasicComponentsInstalled()
 	{
 		try {
 			if(BCLoader == null) BCLoader = Class.forName("basiccomponents.BCLoader");
+			if(BCLoader == null) BCLoader = Class.forName("net.minecraft.src.basiccomponents.BCLoader");
 			Object ret = BCLoader.getField("instance").get(null);
 			
 			if(ret != null)
@@ -134,6 +169,24 @@ public class MekanismHooks
 			return false;
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to hook into BasicComponents.");
+			return false;
+		}
+	}
+	
+	public boolean isBuildCraftInstalled()
+	{
+		try {
+			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("buildcraft.BuildCraftEnergy");
+			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("net.minecraft.src.buildcraft.BuildCraftEnergy");
+			Object ret = BuildCraftEnergy.getField("instance").get(null);
+			
+			if(ret != null)
+			{
+				return true;
+			}
+			return false;
+		} catch(Exception e) {
+			System.out.println("[Mekanism] Unable to hook into BuildCraft.");
 			return false;
 		}
 	}
