@@ -1,6 +1,5 @@
 package railcraft.common.api.tracks;
 
-import railcraft.common.api.core.items.ITrackItem;
 import net.minecraft.src.Block;
 import net.minecraft.src.BlockRail;
 import net.minecraft.src.EntityMinecart;
@@ -9,6 +8,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.MathHelper;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
+import railcraft.common.api.core.items.ITrackItem;
 
 /**
  * A number of utility functions related to rails.

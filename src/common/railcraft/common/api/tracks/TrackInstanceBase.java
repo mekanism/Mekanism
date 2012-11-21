@@ -79,7 +79,7 @@ public abstract class TrackInstanceBase implements ITrackInstance
     }
 
     @Override
-    public void onBlockPlaced(int side)
+    public void onBlockPlaced()
     {
         switchTrack(true);
         testPower();
@@ -101,7 +101,7 @@ public abstract class TrackInstanceBase implements ITrackInstance
 
     public void markBlockNeedsUpdate()
     {
-        getWorld().markBlockNeedsUpdate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+        getWorld().markBlockForRenderUpdate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
     }
 
     protected boolean isRailValid(World world, int i, int j, int k, int meta)

@@ -5,17 +5,10 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.IEnergySink;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.Vector3;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.implement.IElectricityReceiver;
-import universalelectricity.implement.IItemElectric;
-import universalelectricity.implement.IJouleStorage;
-
-import buildcraft.api.core.Orientations;
-import buildcraft.api.liquids.ILiquidTank;
-import buildcraft.api.liquids.ITankContainer;
-import buildcraft.api.liquids.LiquidStack;
-import buildcraft.api.liquids.LiquidTank;
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -30,6 +23,10 @@ import mekanism.api.IStorageTank.EnumGas;
 import mekanism.api.ITileNetwork;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, ITankContainer, IPeripheral
 {
@@ -254,7 +251,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			waterSlot.liquidStored = dataStream.readInt();
 			oxygenStored = dataStream.readInt();
 			hydrogenStored = dataStream.readInt();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
@@ -336,7 +333,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public double getMaxJoules() 
+	public double getMaxJoules(Object... data) 
 	{
 		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
@@ -426,9 +423,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int fill(Orientations from, LiquidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		if(from.toDirection() != ForgeDirection.getOrientation(facing))
+		if(from != ForgeDirection.getOrientation(facing))
 		{
 			if(resource.itemID == Block.waterStill.blockID)
 			{
@@ -463,7 +460,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public LiquidStack drain(Orientations from, int maxDrain, boolean doDrain)
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
@@ -475,9 +472,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public ILiquidTank[] getTanks() 
+	public ILiquidTank[] getTanks(ForgeDirection direction) 
 	{
 		return new ILiquidTank[] {new LiquidTank(waterSlot.liquidID, waterSlot.liquidStored, waterSlot.MAX_LIQUID)};
+	}
+	
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	{
+		return null;
 	}
 	
 	@Override

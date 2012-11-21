@@ -3,13 +3,8 @@ package mekanism.common;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.implement.IItemElectric;
-import buildcraft.api.core.Orientations;
-import buildcraft.api.liquids.ILiquidTank;
-import buildcraft.api.liquids.ITankContainer;
-import buildcraft.api.liquids.LiquidStack;
-import buildcraft.api.liquids.LiquidTank;
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -17,6 +12,10 @@ import dan200.computer.api.IComputerAccess;
 import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements ITankContainer
 {
@@ -166,7 +165,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			energyStored = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			bioFuelSlot.liquidStored = dataStream.readInt();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
@@ -216,9 +215,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 
 	@Override
-	public int fill(Orientations from, LiquidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		if(from.toDirection() != ForgeDirection.getOrientation(facing))
+		if(from != ForgeDirection.getOrientation(facing))
 		{
 			if(resource.itemID == Mekanism.hooks.ForestryBiofuelID)
 			{
@@ -253,7 +252,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 
 	@Override
-	public LiquidStack drain(Orientations from, int maxDrain, boolean doDrain) 
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
 		return null;
 	}
@@ -265,8 +264,14 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 
 	@Override
-	public ILiquidTank[] getTanks() 
+	public ILiquidTank[] getTanks(ForgeDirection direction) 
 	{
 		return new ILiquidTank[] {new LiquidTank(bioFuelSlot.liquidID, bioFuelSlot.liquidStored, bioFuelSlot.MAX_LIQUID)};
+	}
+	
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	{
+		return null;
 	}
 }

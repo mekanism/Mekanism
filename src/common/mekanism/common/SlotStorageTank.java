@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import universalelectricity.implement.IItemElectric;
 import ic2.api.IElectricItem;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IStorageTank;

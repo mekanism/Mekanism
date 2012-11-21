@@ -2,7 +2,7 @@ package mekanism.common;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import universalelectricity.prefab.TileEntityDisableable;
+import universalelectricity.prefab.tile.TileEntityDisableable;
 import ic2.api.EnergyNet;
 import ic2.api.IWrenchable;
 import mekanism.api.ITileNetwork;

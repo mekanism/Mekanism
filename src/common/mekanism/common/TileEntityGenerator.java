@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import buildcraft.api.core.Orientations;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -18,14 +17,13 @@ import ic2.api.IElectricItem;
 import ic2.api.IEnergySource;
 import ic2.api.IEnergyStorage;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.Vector3;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.electricity.ElectricityManager;
-import universalelectricity.implement.IConductor;
-import universalelectricity.implement.IElectricityReceiver;
-import universalelectricity.implement.IItemElectric;
-import universalelectricity.implement.IJouleStorage;
-import universalelectricity.prefab.TileEntityConductor;
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.electricity.ElectricityManager;
+import universalelectricity.core.implement.IConductor;
+import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.prefab.tile.TileEntityConductor;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IEnergyAcceptor;
 import net.minecraft.src.*;
@@ -87,7 +85,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
 	            	int energyNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*10;
 	            	float transferEnergy = Math.max(Math.min(Math.min(energyNeeded, energyStored), 54000), 0);
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), Orientations.dirs()[ForgeDirection.getOrientation(facing).getOpposite().ordinal()]);
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), ForgeDirection.getOrientation(facing).getOpposite());
 	            	setEnergy(energyStored - (int)transferEnergy);
 				}
 				else if(tileEntity instanceof TileEntityConductor)
@@ -238,7 +236,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public double getMaxJoules() 
+	public double getMaxJoules(Object... data) 
 	{
 		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
@@ -274,7 +272,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public int getRate() 
+	public int getOutput() 
 	{
 		return output;
 	}

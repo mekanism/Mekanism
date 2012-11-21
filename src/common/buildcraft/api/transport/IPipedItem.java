@@ -1,6 +1,6 @@
 package buildcraft.api.transport;
 
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.core.Position;
 import buildcraft.api.core.SafeTimeTracker;
 import net.minecraft.src.EntityItem;
@@ -89,7 +89,7 @@ public interface IPipedItem {
 
 	public abstract void writeToNBT(NBTTagCompound nbttagcompound);
 
-	public abstract EntityItem toEntityItem(Orientations dir);
+	public abstract EntityItem toEntityItem(ForgeDirection dir);
 
 	public abstract float getEntityBrightness(float f);
 

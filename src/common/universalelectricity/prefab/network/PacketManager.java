@@ -10,7 +10,7 @@ import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import universalelectricity.core.Vector3;
+import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -21,13 +21,11 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 /**
- * This class is used for sending and receiving packets between the server and
- * the client. You can directly use this by registering this packet manager with
- * NetworkMod. Example:
+ * This class is used for sending and receiving packets between the server and the client. You can
+ * directly use this by registering this packet manager with NetworkMod. Example:
  * 
- * @NetworkMod(channels = { "BasicComponents" }, clientSideRequired = true,
- *                      serverSideRequired = false, packetHandler =
- *                      PacketManager.class)
+ * @NetworkMod(channels = { "BasicComponents" }, clientSideRequired = true, serverSideRequired =
+ *                      false, packetHandler = PacketManager.class)
  * 
  *                      Check out {@link #BasicComponents} for better reference.
  * 
@@ -46,6 +44,7 @@ public class PacketManager implements IPacketHandler, IPacketReceiver
 		}
 	}
 
+	@SuppressWarnings("resource")
 	public static Packet getPacketWithID(String channelName, int id, Object... sendData)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -83,6 +82,7 @@ public class PacketManager implements IPacketHandler, IPacketReceiver
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("resource")
 	public static Packet getPacket(String channelName, TileEntity sender, Object... sendData)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -114,9 +114,8 @@ public class PacketManager implements IPacketHandler, IPacketReceiver
 	}
 
 	/**
-	 * Sends packets to clients around a specific coordinate. A wrapper using
-	 * Vector3. See {@PacketDispatcher} for detailed
-	 * information.
+	 * Sends packets to clients around a specific coordinate. A wrapper using Vector3. See
+	 * {@PacketDispatcher} for detailed information.
 	 */
 	public static void sendPacketToClients(Packet packet, World worldObj, Vector3 position, double range)
 	{

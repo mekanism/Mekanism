@@ -10,15 +10,15 @@
 package buildcraft.api.transport;
 
 import net.minecraft.src.ItemStack;
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 
 /**
  * Interface used to put objects into pipes, implemented by pipe tile entities.
  */
 public interface IPipeEntry {
 
-	void entityEntering(ItemStack payload, Orientations orientation);
-	void entityEntering(IPipedItem item, Orientations orientation);
+	void entityEntering(ItemStack payload, ForgeDirection orientation);
+	void entityEntering(IPipedItem item, ForgeDirection orientation);
 
 	boolean acceptItems();
 

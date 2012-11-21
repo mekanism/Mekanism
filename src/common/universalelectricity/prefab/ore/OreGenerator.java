@@ -14,8 +14,7 @@ public class OreGenerator implements IWorldGenerator
 	public static boolean isInitiated = false;
 
 	/**
-	 * Add your ore data to this list of ores for it to automatically generate!
-	 * No hassle indeed!
+	 * Add your ore data to this list of ores for it to automatically generate! No hassle indeed!
 	 */
 	private static final List<OreGenBase> ORES_TO_GENERATE = new ArrayList<OreGenBase>();
 
@@ -62,7 +61,8 @@ public class OreGenerator implements IWorldGenerator
 		chunkX = chunkX << 4;
 		chunkZ = chunkZ << 4;
 
-		// Checks to make sure this is the normal world
+		// Checks to make sure this is the normal
+		// world
 		for (OreGenBase oreData : ORES_TO_GENERATE)
 		{
 			if (oreData.shouldGenerate && oreData.isOreGeneratedInWorld(world, chunkGenerator))

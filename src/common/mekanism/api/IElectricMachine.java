@@ -4,9 +4,6 @@ import java.util.List;
 
 import buildcraft.api.power.IPowerReceptor;
 
-import universalelectricity.implement.IElectricityReceiver;
-import universalelectricity.implement.IJouleStorage;
-
 import dan200.computer.api.IPeripheral;
 
 import ic2.api.IEnergySink;

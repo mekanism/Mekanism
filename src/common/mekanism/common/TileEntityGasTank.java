@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import universalelectricity.core.Vector3;
+import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -181,7 +181,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 			facing = dataStream.readInt();
 			gasStored = dataStream.readInt();
 			gasType = EnumGas.getFromName(dataStream.readUTF());
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import universalelectricity.core.Vector3;
+import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.multiblock.*;
 import mekanism.common.BlockGenerator.GeneratorType;
 import net.minecraft.src.*;

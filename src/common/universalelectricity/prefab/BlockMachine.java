@@ -12,13 +12,13 @@ import net.minecraft.src.Material;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.implement.IItemElectric;
 import buildcraft.api.tools.IToolWrench;
 
 /**
- * A block you may extend from to create your machine blocks! You do not have to
- * extend from this block if you do not want to. It's optional but it comes with
- * some useful functions that will make coding easier for you.
+ * A block you may extend from to create your machine blocks! You do not have to extend from this
+ * block if you do not want to. It's optional but it comes with some useful functions that will make
+ * coding easier for you.
  */
 public abstract class BlockMachine extends BlockContainer
 {
@@ -60,10 +60,9 @@ public abstract class BlockMachine extends BlockContainer
 	}
 
 	/**
-	 * DO NOT OVERRIDE THIS FUNCTION! Called when the block is right clicked by
-	 * the player. This modified version detects electric items and wrench
-	 * actions on your machine block. Do not override this function. Use
-	 * machineActivated instead! (It does the same thing)
+	 * DO NOT OVERRIDE THIS FUNCTION! Called when the block is right clicked by the player. This
+	 * modified version detects electric items and wrench actions on your machine block. Do not
+	 * override this function. Use machineActivated instead! (It does the same thing)
 	 */
 	@Override
 	public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
@@ -71,8 +70,7 @@ public abstract class BlockMachine extends BlockContainer
 		int metadata = par1World.getBlockMetadata(x, y, z);
 
 		/**
-		 * Check if the player is holding a wrench or an electric item. If so,
-		 * do not open the GUI.
+		 * Check if the player is holding a wrench or an electric item. If so, do not open the GUI.
 		 */
 		if (par5EntityPlayer.inventory.getCurrentItem() != null)
 		{
@@ -117,8 +115,7 @@ public abstract class BlockMachine extends BlockContainer
 	}
 
 	/**
-	 * Called when the machine is right clicked by the player while sneaking
-	 * (shift clicking)
+	 * Called when the machine is right clicked by the player while sneaking (shift clicking)
 	 * 
 	 * @return True if something happens
 	 */
@@ -158,8 +155,8 @@ public abstract class BlockMachine extends BlockContainer
 	}
 
 	/**
-	 * Returns the TileEntity used by this block. You should use the metadata
-	 * sensitive version of this to get the maximum optimization!
+	 * Returns the TileEntity used by this block. You should use the metadata sensitive version of
+	 * this to get the maximum optimization!
 	 */
 	@Override
 	public TileEntity createNewTileEntity(World var1)
@@ -168,8 +165,8 @@ public abstract class BlockMachine extends BlockContainer
 	}
 
 	/**
-	 * Override this if you don't need it. This will eject all items out of this
-	 * machine if it has an inventory
+	 * Override this if you don't need it. This will eject all items out of this machine if it has
+	 * an inventory
 	 */
 	@Override
 	public void breakBlock(World par1World, int x, int y, int z, int par5, int par6)

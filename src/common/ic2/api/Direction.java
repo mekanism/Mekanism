@@ -72,7 +72,7 @@ public enum Direction {
 	public Direction getInverse() {
 		int inverseDir = dir - getSign();
 		
-		for (Direction direction: Direction.values()) {
+		for (Direction direction : directions) {
 			if (direction.dir == inverseDir) return direction;
 		}
 		
@@ -102,5 +102,6 @@ public enum Direction {
 	}
 	
 	private int dir;
+	private static final Direction[] directions = Direction.values();
 }
 

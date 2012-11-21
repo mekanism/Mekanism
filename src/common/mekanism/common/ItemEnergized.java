@@ -3,8 +3,8 @@ package mekanism.common;
 import java.util.List;
 
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.implement.IItemElectric;
 
 import ic2.api.IElectricItem;
 import mekanism.api.IEnergizedItem;
@@ -150,7 +150,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	}
 
 	@Override
-	public double getMaxJoules()
+	public double getMaxJoules(Object... data)
 	{
 		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}

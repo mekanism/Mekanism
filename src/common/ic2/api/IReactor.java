@@ -91,9 +91,9 @@ public interface IReactor {
 	public int addOutput(int energy);
 	
 	/**
-	 * Get's the EU worth of a single basic Uranium pulse
-	 * Please use this variable to alter energy output, as it represents the config modifiers as well.
+	 * Replaced by IC2Reactor.getEUOutput() - stays at the universal output value of 1 for compatibility
 	 */
+	@Deprecated
 	public int getPulsePower();
 	
 	/**

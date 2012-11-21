@@ -1,6 +1,5 @@
 package railcraft.common.api.carts;
 
-import railcraft.common.api.core.items.IMinecartItem;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +11,7 @@ import net.minecraft.src.ItemMinecart;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
+import railcraft.common.api.core.items.IMinecartItem;
 
 public abstract class CartTools
 {

@@ -142,7 +142,7 @@ public class BlockBasic extends Block
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
 	{
-		world.markBlockAsNeedsUpdate(x, y, z);
+		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 	}
 	

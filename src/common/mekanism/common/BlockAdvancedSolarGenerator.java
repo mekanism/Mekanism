@@ -3,7 +3,7 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
-import universalelectricity.core.Vector3;
+import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.multiblock.IMultiBlock;
 
 import cpw.mods.fml.common.Side;

@@ -1,7 +1,7 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.implement.IItemElectric;
 import mekanism.api.*;
 import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;

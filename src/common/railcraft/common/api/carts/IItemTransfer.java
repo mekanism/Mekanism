@@ -1,7 +1,7 @@
 package railcraft.common.api.carts;
 
 import net.minecraft.src.ItemStack;
-import railcraft.common.api.core.items.EnumItemType;
+import railcraft.common.api.core.items.IItemType;
 
 /**
  * This interface allows items to be passed around with out needing
@@ -55,11 +55,11 @@ public interface IItemTransfer
      * determine which ItemStack to return, or none at all.
      * However, if the return value is not null
      * it should fulfill the following condition:<br/>
-     * EnumItemType.isItemType(it.requestItem(this,request), request) == true
+     * IItemType.isItemType(it.requestItem(this,request), request) == true
      *
      * @param source The Object submitting the request
      * @param request The type of item requested
      * @return An ItemStack to fulfill the request or null if refused.
      */
-    public ItemStack requestItem(Object source, EnumItemType request);
+    public ItemStack requestItem(Object source, IItemType request);
 }

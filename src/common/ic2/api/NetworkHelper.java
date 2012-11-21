@@ -81,7 +81,7 @@ public final class NetworkHelper {
 			if (NetworkManager_initiateTileEntityEvent == null) NetworkManager_initiateTileEntityEvent = Class.forName(getPackage() + ".common.NetworkManager").getMethod("initiateTileEntityEvent", TileEntity.class, Integer.TYPE, Boolean.TYPE);
 			if (instance == null) instance = getInstance();
 			
-			NetworkManager_initiateTileEntityEvent.invoke(null, te, event, limitRange);
+			NetworkManager_initiateTileEntityEvent.invoke(instance, te, event, limitRange);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -126,8 +126,9 @@ public final class NetworkHelper {
 	public static void announceBlockUpdate(World world, int x, int y, int z) {
 		try {
 			if (NetworkManager_announceBlockUpdate == null) NetworkManager_announceBlockUpdate = Class.forName(getPackage() + ".common.NetworkManager").getMethod("announceBlockUpdate", World.class, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+			if (instance == null) instance = getInstance();
 			
-			NetworkManager_announceBlockUpdate.invoke(null, world, x, y, z);
+			NetworkManager_announceBlockUpdate.invoke(instance, world, x, y, z);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

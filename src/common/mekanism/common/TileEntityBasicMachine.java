@@ -1,12 +1,9 @@
 package mekanism.common;
 
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.electricity.ElectricityManager;
-import universalelectricity.implement.IElectricityReceiver;
-import universalelectricity.implement.IJouleStorage;
-import universalelectricity.prefab.TileEntityDisableable;
-
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.implement.IJouleStorage;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -209,7 +206,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public double getMaxJoules() 
+	public double getMaxJoules(Object... data) 
 	{
 		return currentMaxEnergy*UniversalElectricity.IC2_RATIO;
 	}

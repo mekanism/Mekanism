@@ -1,6 +1,6 @@
 package buildcraft.api.power;
 
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.core.SafeTimeTracker;
 import net.minecraft.src.NBTTagCompound;
 
@@ -32,9 +32,9 @@ public interface IPowerProvider {
 
 	void writeToNBT(NBTTagCompound nbttagcompound);
 
-	void receiveEnergy(float quantity, Orientations from);
+	void receiveEnergy(float quantity, ForgeDirection from);
 
-	boolean isPowerSource(Orientations from);
+	boolean isPowerSource(ForgeDirection from);
 
 	SafeTimeTracker getTimeTracker();
 

@@ -1,7 +1,6 @@
 package railcraft.common.api.tracks;
 
 import net.minecraft.src.ItemStack;
-import railcraft.common.api.core.items.ItemRegistry;
 
 /**
  * Each type of Track has a single instance of TrackSpec

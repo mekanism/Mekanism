@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.implement.IItemElectric;
 import ic2.api.IElectricItem;
 import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;

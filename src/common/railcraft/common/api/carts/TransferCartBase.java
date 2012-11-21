@@ -4,7 +4,7 @@ import net.minecraft.src.EntityMinecart;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
-import railcraft.common.api.core.items.EnumItemType;
+import railcraft.common.api.core.items.IItemType;
 
 /**
  * Abstract minecart class that implements the IItemTransfer
@@ -124,7 +124,7 @@ public abstract class TransferCartBase extends CartBase implements IItemTransfer
     }
 
     @Override
-    public ItemStack requestItem(Object source, EnumItemType request)
+    public ItemStack requestItem(Object source, IItemType request)
     {
         ItemStack result = null;
         if(!passThrough && getSizeInventory() > 0) {
@@ -192,7 +192,7 @@ public abstract class TransferCartBase extends CartBase implements IItemTransfer
      * @param filter EnumItemType to match against
      * @return An ItemStack
      */
-    protected final ItemStack removeOneItem(IInventory inv, EnumItemType filter)
+    protected final ItemStack removeOneItem(IInventory inv, IItemType filter)
     {
         for(int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack slot = inv.getStackInSlot(i);

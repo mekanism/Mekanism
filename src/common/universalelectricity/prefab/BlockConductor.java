@@ -4,7 +4,7 @@ import net.minecraft.src.BlockContainer;
 import net.minecraft.src.Material;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import universalelectricity.implement.IConductor;
+import universalelectricity.core.implement.IConductor;
 
 public abstract class BlockConductor extends BlockContainer
 {
@@ -20,36 +20,35 @@ public abstract class BlockConductor extends BlockContainer
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
 		super.onBlockAdded(world, x, y, z);
-		
+
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
-		if(tileEntity != null)
+
+		if (tileEntity != null)
 		{
-			if(tileEntity instanceof IConductor)
+			if (tileEntity instanceof IConductor)
 			{
-				((IConductor)tileEntity).refreshConnectedBlocks();
+				((IConductor) tileEntity).refreshConnectedBlocks();
 			}
 		}
 	}
 
 	/**
-	 * Lets the block know when one of its neighbor changes. Doesn't know which
-	 * neighbor changed (coordinates passed are their own) Args: x, y, z,
-	 * neighbor blockID
+	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed
+	 * (coordinates passed are their own) Args: x, y, z, neighbor blockID
 	 */
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
-		if(tileEntity != null)
+
+		if (tileEntity != null)
 		{
-			if(tileEntity instanceof IConductor)
+			if (tileEntity instanceof IConductor)
 			{
-				((IConductor)tileEntity).refreshConnectedBlocks();
+				((IConductor) tileEntity).refreshConnectedBlocks();
 			}
 		}
-		
-		world.markBlockNeedsUpdate(x, y, z);
+
+		world.markBlockForUpdate(x, y, z);
 	}
 }

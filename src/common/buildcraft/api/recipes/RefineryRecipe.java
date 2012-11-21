@@ -9,14 +9,16 @@
 
 package buildcraft.api.recipes;
 
-import java.util.LinkedList;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import buildcraft.api.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidStack;
 
 
-public class RefineryRecipe {
 
-	private static LinkedList<RefineryRecipe> recipes = new LinkedList<RefineryRecipe>();
+public class RefineryRecipe implements Comparable<RefineryRecipe> {
+
+	private static SortedSet<RefineryRecipe> recipes = new TreeSet<RefineryRecipe>();
 	
 	public static void registerRefineryRecipe(RefineryRecipe recipe) {
 		if (!recipes.contains(recipe)) {
@@ -44,8 +46,24 @@ public class RefineryRecipe {
 		this(new LiquidStack(ingredientId1, ingredientQty1, 0), new LiquidStack(ingredientId2, ingredientQty2, 0), new LiquidStack(resultId, resultQty, 0), energy, delay);
 	}
 	public RefineryRecipe(LiquidStack ingredient1, LiquidStack ingredient2, LiquidStack result, int energy, int delay) {
-		this.ingredient1 = ingredient1;
-		this.ingredient2 = ingredient2;
+		
+		// Sort starting materials.
+		if(ingredient1 != null && ingredient2 != null) {
+			if( (ingredient1.itemID > ingredient2.itemID) || (ingredient1.itemID == ingredient2.itemID && ingredient1.itemMeta > ingredient2.itemMeta) ) {
+				this.ingredient1 = ingredient2;
+				this.ingredient2 = ingredient1;
+			} else {
+				this.ingredient1 = ingredient1;
+				this.ingredient2 = ingredient2;
+			}
+		} else if(ingredient2 != null) {
+			this.ingredient1 = ingredient2;
+			this.ingredient2 = ingredient1;
+		} else {
+			this.ingredient1 = ingredient1;
+			this.ingredient2 = ingredient2;
+		}
+		
 		this.result = result;
 		this.energy = energy;
 		this.delay = delay;
@@ -75,5 +93,64 @@ public class RefineryRecipe {
 		else
 			return false;
 
+	}
+	
+	// Compares to only the types of source materials.
+	// We consider non-null < null in order that one-ingredient recipe is checked after
+	// the failure of matching two-ingredient recipes which include that liquid.
+	@Override
+	public int compareTo(RefineryRecipe other) {
+		
+		if(other == null) {
+			return -1;
+		} else if (ingredient1 == null) {
+			if(other.ingredient1 == null) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else if(other.ingredient1 == null) {
+			return -1;
+		} else if(ingredient1.itemID != other.ingredient1.itemID) {
+			return ingredient1.itemID - other.ingredient1.itemID;
+		} else if(ingredient1.itemMeta != other.ingredient1.itemMeta) {
+			return ingredient1.itemMeta - other.ingredient1.itemMeta;
+		} else if(ingredient2 == null) {
+			if(other.ingredient2 == null) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else if(other.ingredient2 == null) {
+			return -1;
+		} else if(ingredient2.itemID != other.ingredient2.itemID) {
+			return ingredient2.itemID - other.ingredient2.itemID;
+		} else if(ingredient2.itemMeta != other.ingredient2.itemMeta) {
+			return ingredient2.itemMeta - other.ingredient2.itemMeta;
+		}
+		
+		return 0;
+	}
+	
+	
+	// equals() should be consistent with compareTo().
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof RefineryRecipe) {
+			return this.compareTo((RefineryRecipe)obj) == 0;
+		}
+		return false;
+	}
+	
+	// hashCode() should be overridden because equals() was overridden.
+	@Override
+	public int hashCode() {
+		if(ingredient1 == null) {
+			return 0;
+		} else if(ingredient2 == null) {
+			return ingredient1.itemID ^ ingredient1.itemMeta;
+		}
+		
+		return ingredient1.itemID ^ ingredient1.itemMeta ^ ingredient2.itemID ^ ingredient2.itemMeta;
 	}
 }

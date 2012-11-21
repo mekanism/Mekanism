@@ -5,7 +5,6 @@ import com.google.common.io.ByteArrayDataInput;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
-import universalelectricity.prefab.TileEntityDisableable;
 import ic2.api.EnergyNet;
 import ic2.api.IWrenchable;
 import mekanism.api.ITileNetwork;

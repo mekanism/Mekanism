@@ -3,11 +3,10 @@ package universalelectricity.prefab;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.implement.IItemElectric;
 
 /**
- * This slot should be used by any container that needs the slot for an electric
- * items only.
+ * This slot should be used by any container that needs the slot for an electric items only.
  * 
  * @author Calclavia
  * 
@@ -20,8 +19,7 @@ public class SlotElectricItem extends Slot
 	}
 
 	/**
-	 * Check if the stack is a valid item for this slot. Always true beside for
-	 * the armor slots.
+	 * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
 	 */
 	@Override
 	public boolean isItemValid(ItemStack par1ItemStack)

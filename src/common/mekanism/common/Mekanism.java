@@ -644,7 +644,7 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.melonSeeds), new ItemStack(BioFuel, 1));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.appleRed), new ItemStack(BioFuel, 3));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.potatoe), new ItemStack(BioFuel, 2));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 2));
         
         for(int i = 0; i < BlockLeaves.LEAF_TYPES.length; i++)
         {

@@ -11,8 +11,9 @@ package buildcraft.api.fuels;
 
 import java.util.LinkedList;
 
-import buildcraft.api.liquids.LiquidManager;
-import buildcraft.api.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidStack;
+
 
 
 public class IronEngineFuel {
@@ -37,7 +38,7 @@ public class IronEngineFuel {
 	public final int totalBurningTime;
 
 	public IronEngineFuel(int liquidId, float powerPerCycle, int totalBurningTime) {
-		this(new LiquidStack(liquidId, LiquidManager.BUCKET_VOLUME, 0), powerPerCycle, totalBurningTime);
+		this(new LiquidStack(liquidId, LiquidContainerRegistry.BUCKET_VOLUME, 0), powerPerCycle, totalBurningTime);
 	}
 	public IronEngineFuel(LiquidStack liquid, float powerPerCycle, int totalBurningTime) {
 		this.liquid = liquid;

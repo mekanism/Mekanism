@@ -3,8 +3,8 @@ package mekanism.common;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -134,7 +134,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			energyStored = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			seesSun = dataStream.readBoolean();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

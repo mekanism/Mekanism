@@ -11,10 +11,9 @@ import net.minecraft.src.MathHelper;
 import net.minecraft.src.World;
 
 /**
- * This class is used for storing ore generation data. If you are too lazy to
- * generate your own ores, you can do
- * {@link #OreGenerator.ORES_TO_GENERATE.add()} to add your ore to the list of
- * ores to generate.
+ * This class is used for storing ore generation data. If you are too lazy to generate your own
+ * ores, you can do {@link #OreGenerator.ORES_TO_GENERATE.add()} to add your ore to the list of ores
+ * to generate.
  * 
  * @author Calclavia
  * 
@@ -44,9 +43,8 @@ public class OreGenReplace extends OreGenBase
 	 * @param amountPerChunk
 	 *            - The amount of ores to generate per chunk
 	 * @param amountPerBranch
-	 *            - The amount of ores to generate in a clutter. E.g coal
-	 *            generates with a lot of other coal next to it. How much do you
-	 *            want?
+	 *            - The amount of ores to generate in a clutter. E.g coal generates with a lot of
+	 *            other coal next to it. How much do you want?
 	 */
 	public OreGenReplace(String name, String oreDiectionaryName, ItemStack stack, int replaceID, int minGenerateLevel, int maxGenerateLevel, int amountPerChunk, int amountPerBranch, String harvestTool, int harvestLevel)
 	{

@@ -9,9 +9,9 @@
 
 package buildcraft.api.transport;
 
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 
 public interface IPipeConnection {
 
-	public boolean isPipeConnected(Orientations with);
+	public boolean isPipeConnected(ForgeDirection with);
 }

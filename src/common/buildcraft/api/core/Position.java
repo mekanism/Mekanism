@@ -1,8 +1,8 @@
-/** 
+/**
  * Copyright (c) SpaceToad, 2011
  * http://www.mod-buildcraft.com
- * 
- * BuildCraft is distributed under the terms of the Minecraft Mod Public 
+ *
+ * BuildCraft is distributed under the terms of the Minecraft Mod Public
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
@@ -11,20 +11,21 @@ package buildcraft.api.core;
 
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 public class Position {
 
 	public double x, y, z;
-	public Orientations orientation;
+	public ForgeDirection orientation;
 
 	public Position(double ci, double cj, double ck) {
 		x = ci;
 		y = cj;
 		z = ck;
-		orientation = Orientations.Unknown;
+		orientation = ForgeDirection.UNKNOWN;
 	}
 
-	public Position(double ci, double cj, double ck, Orientations corientation) {
+	public Position(double ci, double cj, double ck, ForgeDirection corientation) {
 		x = ci;
 		y = cj;
 		z = ck;
@@ -43,7 +44,7 @@ public class Position {
 		y = nbttagcompound.getDouble("j");
 		z = nbttagcompound.getDouble("k");
 
-		orientation = Orientations.Unknown;
+		orientation = ForgeDirection.UNKNOWN;
 	}
 
 	public Position(TileEntity tile) {
@@ -54,16 +55,16 @@ public class Position {
 
 	public void moveRight(double step) {
 		switch (orientation) {
-		case ZPos:
+		case SOUTH:
 			x = x - step;
 			break;
-		case ZNeg:
+		case NORTH:
 			x = x + step;
 			break;
-		case XPos:
+		case EAST:
 			z = z + step;
 			break;
-		case XNeg:
+		case WEST:
 			z = z - step;
 			break;
 		default:
@@ -76,22 +77,22 @@ public class Position {
 
 	public void moveForwards(double step) {
 		switch (orientation) {
-		case YPos:
+		case UP:
 			y = y + step;
 			break;
-		case YNeg:
+		case DOWN:
 			y = y - step;
 			break;
-		case ZPos:
+		case SOUTH:
 			z = z + step;
 			break;
-		case ZNeg:
+		case NORTH:
 			z = z - step;
 			break;
-		case XPos:
+		case EAST:
 			x = x + step;
 			break;
-		case XNeg:
+		case WEST:
 			x = x - step;
 			break;
 		default:
@@ -104,10 +105,10 @@ public class Position {
 
 	public void moveUp(double step) {
 		switch (orientation) {
-		case ZPos:
-		case ZNeg:
-		case XPos:
-		case XNeg:
+		case SOUTH:
+		case NORTH:
+		case EAST:
+		case WEST:
 			y = y + step;
 			break;
 		default:

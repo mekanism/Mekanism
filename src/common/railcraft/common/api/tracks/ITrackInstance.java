@@ -79,7 +79,7 @@ public interface ITrackInstance extends INetworkedObject
 
     public boolean blockActivated(EntityPlayer player);
 
-    public void onBlockPlaced(int side);
+    public void onBlockPlaced();
 
     public void onBlockPlacedBy(EntityLiving entity);
 

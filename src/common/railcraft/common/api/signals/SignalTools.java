@@ -7,8 +7,8 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import railcraft.common.api.tracks.RailTools;
 import railcraft.common.api.core.WorldCoordinate;
+import railcraft.common.api.tracks.RailTools;
 
 /**
  * This is not documented and needs some reworking to simplify usage.

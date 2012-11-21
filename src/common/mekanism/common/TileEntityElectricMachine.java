@@ -7,8 +7,7 @@ import java.util.List;
 
 
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.implement.IItemElectric;
+import universalelectricity.core.implement.IItemElectric;
 
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.PowerFramework;
@@ -273,7 +272,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			energyStored = dataStream.readInt();
 			currentMaxEnergy = dataStream.readInt();
 			currentTicksRequired = dataStream.readInt();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

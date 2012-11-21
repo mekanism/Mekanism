@@ -1,6 +1,6 @@
 package buildcraft.api.inventory;
 
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraft.src.ItemStack;
 
 public interface ISelectiveInventory extends ISpecialInventory {
@@ -13,5 +13,5 @@ public interface ISelectiveInventory extends ISpecialInventory {
 	 * @param maxItemCount Maximum amount of items to extract (spread over all returned item stacks) 
 	 * @return Array of item stacks extracted from the inventory
 	 */
-	ItemStack[] extractItem(Object[] desired, boolean exclusion, boolean doRemove, Orientations from, int maxItemCount);
+	ItemStack[] extractItem(Object[] desired, boolean exclusion, boolean doRemove, ForgeDirection from, int maxItemCount);
 }

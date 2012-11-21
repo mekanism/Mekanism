@@ -9,7 +9,7 @@
 
 package buildcraft.api.power;
 
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.core.SafeTimeTracker;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
@@ -145,7 +145,7 @@ public abstract class PowerProvider implements IPowerProvider {
 	}
 
 	@Override
-	public void receiveEnergy(float quantity, Orientations from) {
+	public void receiveEnergy(float quantity, ForgeDirection from) {
 		powerSources[from.ordinal()] = 2;
 
 		energyStored += quantity;
@@ -156,7 +156,7 @@ public abstract class PowerProvider implements IPowerProvider {
 	}
 
 	@Override
-	public boolean isPowerSource(Orientations from) {
+	public boolean isPowerSource(ForgeDirection from) {
 		return powerSources[from.ordinal()] != 0;
 	}
 }

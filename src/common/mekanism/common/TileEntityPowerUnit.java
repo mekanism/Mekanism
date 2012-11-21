@@ -4,23 +4,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.Vector3;
-import universalelectricity.electricity.ElectricInfo;
-import universalelectricity.electricity.ElectricityManager;
-import universalelectricity.implement.IConductor;
-import universalelectricity.implement.IElectricityReceiver;
-import universalelectricity.implement.IItemElectric;
-import universalelectricity.implement.IJouleStorage;
-import universalelectricity.prefab.TileEntityConductor;
-import universalelectricity.prefab.TileEntityDisableable;
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.electricity.ElectricityManager;
+import universalelectricity.core.implement.IConductor;
+import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.prefab.tile.TileEntityConductor;
+import universalelectricity.core.vector.Vector3;
 
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 import buildcraft.api.power.PowerProvider;
-import buildcraft.api.core.Orientations;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -193,7 +190,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
 	            	int energyNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*10;
 	            	float transferEnergy = Math.max(Math.min(Math.min(energyNeeded, energyStored), 54000), 0);
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), Orientations.dirs()[ForgeDirection.getOrientation(facing).getOpposite().ordinal()]);
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), ForgeDirection.getOrientation(facing).getOpposite());
 	            	setEnergy(energyStored - (int)transferEnergy);
 				}
 				else if(tileEntity instanceof TileEntityConductor)
@@ -257,7 +254,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	}
 
 	@Override
-	public int getRate() 
+	public int getOutput() 
 	{
 		return output;
 	}
@@ -311,7 +308,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	}
 
 	@Override
-	public double getMaxJoules() 
+	public double getMaxJoules(Object... data) 
 	{
 		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
 	}
@@ -468,7 +465,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		try {
 			facing = dataStream.readInt();
 			energyStored = dataStream.readInt();
-			worldObj.markBlockAsNeedsUpdate(xCoord, yCoord, zCoord);
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
