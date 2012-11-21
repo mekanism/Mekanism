@@ -17,5 +17,7 @@ public interface IAccessibleGui
 	 * The mod's instance object
 	 * @return mod instance
 	 */
-	public Object getModInstance();
+	public String getInstanceName();
+	
+	public String getClassPath();
 }

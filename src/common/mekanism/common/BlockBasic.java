@@ -19,12 +19,13 @@ import net.minecraftforge.common.ForgeChunkManager;
  * 3: Coal Block
  * 4: Refined Glowstone
  * 5: Reinforced Iron
+ * 6: Control Panel
  * @author AidanBrady
  *
  */
-public class BlockMulti extends Block
+public class BlockBasic extends Block
 {
-	public BlockMulti(int i)
+	public BlockBasic(int i)
 	{
 		super(i, Material.iron);
 		setHardness(5F);
@@ -50,6 +51,8 @@ public class BlockMulti extends Block
 				return 11;
 			case 5:
 				return 29;
+			case 6:
+				return 0;
 		}
 		return 0;
 	}
@@ -70,6 +73,7 @@ public class BlockMulti extends Block
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
+		list.add(new ItemStack(i, 1, 6));
 	}
 	
 	@Override
@@ -81,7 +85,15 @@ public class BlockMulti extends Block
     	{
     		if(entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
+    			entityplayer.openGui(Mekanism.instance, /*1*/ 14, world, x, y, z);
+    			return true;
+    		}
+    	}
+    	else if(metadata == 6)
+    	{
+    		if(!entityplayer.isSneaking())
+    		{
+    			entityplayer.openGui(Mekanism.instance, /*1*/ 14, world, x, y, z);
     			return true;
     		}
     	}
@@ -114,6 +126,18 @@ public class BlockMulti extends Block
 		}
         return blockHardness;
     }
+	
+	@Override
+	public boolean hasTileEntity(int metadata)
+	{
+		return metadata == 6;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, int metadata)
+	{
+		return metadata == 6 ? new TileEntityControlPanel() : null;
+	}
 	
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)

@@ -3,7 +3,7 @@ package mekanism.api;
 import net.minecraft.src.*;
 
 /**
- * Class used to add items or blocks to the Mekanism creative tab.
+ * Class used to indirectly reference the Mekanism creative tab.
  * @author AidanBrady
  *
  */
@@ -14,9 +14,9 @@ public final class TabProxy
 	
 	/**
 	 * Attempts to get the Mekanism creative tab instance from the 'Mekanism' class. Will return
-	 * the tab if the mod is loaded, but otherwise will return null. Be sure you check it isn't 
-	 * null before you use it!
-	 * @return mekanism creative tab if can, otherwise null
+	 * the tab if the mod is loaded, but otherwise will return the defined 'preferred' creative tab. This way
+	 * you don't need to worry about NPEs!
+	 * @return mekanism creative tab if can, otherwise preferred tab
 	 */
 	public static CreativeTabs tabMekanism(CreativeTabs preferred)
 	{

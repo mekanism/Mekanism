@@ -331,13 +331,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public void sendPacket()
     {
-    	PacketHandler.sendTileEntityPacket(this, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
+    	PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
     }
     
     @Override
     public void sendPacketWithRange()
     {
-    	PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
+    	PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
     }
 	
     @Override

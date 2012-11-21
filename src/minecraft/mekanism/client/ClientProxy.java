@@ -20,11 +20,15 @@ import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityAdvancedElectricMachine;
+import mekanism.common.TileEntityAdvancedSolarGenerator;
+import mekanism.common.TileEntityBioGenerator;
 import mekanism.common.TileEntityCombiner;
+import mekanism.common.TileEntityControlPanel;
 import mekanism.common.TileEntityCrusher;
 import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityElectrolyticSeparator;
 import mekanism.common.TileEntityEnrichmentChamber;
+import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityGenerator;
 import mekanism.common.TileEntityHeatGenerator;
 import mekanism.common.TileEntityHydrogenGenerator;
@@ -47,6 +51,13 @@ public class ClientProxy extends CommonProxy
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
+	}
+	
+	@Override
+	public void registerSpecialTileEntities()
+	{
+		ClientRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator", new RenderAdvancedSolarGenerator(new ModelAdvancedSolarGenerator()));
+		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
 	}
 	
 	@Override
@@ -83,6 +94,9 @@ public class ClientProxy extends CommonProxy
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
 		RenderingRegistry.registerEntityRenderingHandler(EntityKnife.class, new RenderKnife());
+		
+		//Register block handler
+		RenderingRegistry.registerBlockHandler(new RenderHandler());
 		
 		System.out.println("[Mekanism] Render initiative complete.");
 	}
@@ -135,7 +149,11 @@ public class ClientProxy extends CommonProxy
 			case 12:
 				return new GuiHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
 			case 13:
-				return new GuiControlPanel(player, world);
+				return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
+			case 14:
+				return new GuiControlPanel((TileEntityControlPanel)tileEntity, player, world);
+			case 15:
+				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 		}
 		return null;
 	}

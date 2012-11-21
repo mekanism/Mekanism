@@ -94,6 +94,13 @@ public class ContainerHydrogenGenerator extends Container
 	            	}
             	}
         	}
+        	else if(slotStack.itemID == Item.bucketEmpty.shiftedIndex)
+        	{
+        		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+        		{
+        			return null;
+        		}
+        	}
             
             if (slotStack.stackSize == 0)
             {

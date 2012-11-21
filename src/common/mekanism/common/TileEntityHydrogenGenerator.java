@@ -74,7 +74,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			{
 				IStorageTank item = (IStorageTank)inventory[0].getItem();
 				
-				if(item.canProvideGas())
+				if(item.canProvideGas() && item.gasType() == EnumGas.HYDROGEN)
 				{
 					int received = 0;
 					int hydrogenNeeded = MAX_HYDROGEN - hydrogenStored;
@@ -199,13 +199,13 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public void sendPacket() 
 	{
-		PacketHandler.sendTileEntityPacket(this, facing, energyStored, hydrogenStored, isActive);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored, hydrogenStored, isActive);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, energyStored, hydrogenStored, isActive);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored, hydrogenStored, isActive);
 	}
 
 	@Override

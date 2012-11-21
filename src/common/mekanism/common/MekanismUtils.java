@@ -18,6 +18,7 @@ import cpw.mods.fml.server.FMLServerHandler;
 
 import mekanism.client.ThreadSendData;
 import net.minecraft.src.*;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -33,7 +34,7 @@ public class MekanismUtils
 	{
 		if(!Mekanism.latestVersionNumber.equals("Error retrieving data."))
 		{
-			if(!Mekanism.latestVersionNumber.equals(Mekanism.versionNumber))
+			if(!Mekanism.latestVersionNumber.contains(Mekanism.versionNumber.toString()))
 			{
 				entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
 				entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version " + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + " for Minecraft 1.4.2.");
@@ -242,5 +243,28 @@ public class MekanismUtils
 	{
 		world.spawnParticle("hugeexplosion", x, y, z, 0.0D, 0.0D, 0.0D);
 		world.playSound(x, y, z, "random.explode", 1.0F, 1.0F);
+	}
+	
+	/**
+	 * Copies an ItemStack and returns it with a defined stackSize.
+	 * @param itemstack - stack to change size
+	 * @param size - size to change to
+	 * @return resized ItemStack
+	 */
+	public static ItemStack getStackWithSize(ItemStack itemstack, int size)
+	{
+		ItemStack tempStack = itemstack.copy();
+		tempStack.stackSize = size;
+		return tempStack;
+	}
+	
+	/**
+	 * Adds a recipe directly to the CraftingManager that works with the Forge Ore Dictionary.
+	 * @param output the ItemStack produced by this recipe
+	 * @param params the items/blocks/itemstacks required to create the output ItemStack
+	 */
+	public static void addRecipe(ItemStack output, Object[] params)
+	{
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
 	}
 }

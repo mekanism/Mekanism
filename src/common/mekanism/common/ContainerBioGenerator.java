@@ -5,11 +5,11 @@ import universalelectricity.implement.IItemElectric;
 import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;
 
-public class ContainerHeatGenerator extends Container
+public class ContainerBioGenerator extends Container
 {
-    private TileEntityHeatGenerator tileEntity;
+    private TileEntityBioGenerator tileEntity;
 
-    public ContainerHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator tentity)
+    public ContainerBioGenerator(InventoryPlayer inventory, TileEntityBioGenerator tentity)
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 17, 35));
@@ -73,7 +73,7 @@ public class ContainerHeatGenerator extends Container
 	            	}
 	            }
             }
-        	else if(tileEntity.getFuel(slotStack) > 0 || (Mekanism.hooks.BuildCraftLoaded && slotStack.itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID))
+        	else if(tileEntity.getFuel(slotStack) > 0 || (Mekanism.hooks.ForestryLoaded && slotStack.itemID == Mekanism.hooks.ForestryBiofuelBucket.itemID))
         	{
             	if(slotID != 0 && slotID != 1)
             	{

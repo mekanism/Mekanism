@@ -114,7 +114,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		if(!worldObj.isRemote)
 		{
-			if(inventory[1] != null && hydrogenStored < MAX_GAS)
+			if(inventory[1] != null && hydrogenStored > 0)
 			{
 				if(inventory[1].getItem() instanceof IStorageTank)
 				{
@@ -142,7 +142,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				}
 			}
 			
-			if(inventory[2] != null && oxygenStored < MAX_GAS)
+			if(inventory[2] != null && oxygenStored > 0)
 			{
 				if(inventory[2].getItem() instanceof IStorageTank)
 				{
@@ -265,13 +265,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public void sendPacket() 
 	{
-		PacketHandler.sendTileEntityPacket(this, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored);
 	}
 	
 	/**

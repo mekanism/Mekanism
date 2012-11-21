@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import mekanism.api.IAccessibleGui;
 import mekanism.common.EnumColor;
 import mekanism.common.MekanismUtils;
+import mekanism.common.PacketHandler;
+import mekanism.common.TileEntityControlPanel;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiScreen;
@@ -13,6 +15,7 @@ import net.minecraft.src.World;
 
 public class GuiControlPanel extends GuiScreen
 {
+	public TileEntityControlPanel tileEntity;
 	public EntityPlayer usingPlayer;
 	public World worldObj;
 	public String displayText = "";
@@ -22,8 +25,9 @@ public class GuiControlPanel extends GuiScreen
 	private GuiTextField yField;
 	private GuiTextField zField;
 	
-	public GuiControlPanel(EntityPlayer player, World world)
+	public GuiControlPanel(TileEntityControlPanel tentity, EntityPlayer player, World world)
 	{
+		tileEntity = tentity;
 		usingPlayer = player;
 		worldObj = world;
 	}
@@ -37,16 +41,16 @@ public class GuiControlPanel extends GuiScreen
 		
 		xField = new GuiTextField(fontRenderer, width / 2 - 80, 53, 35, 12);
 		xField.setMaxStringLength(4);
-		xField.setText("" + 0);
+		xField.setText(Integer.toString(tileEntity.xCached));
 		xField.setFocused(true);
 		
 		yField = new GuiTextField(fontRenderer, width / 2 - 80, 70, 35, 12);
 		yField.setMaxStringLength(4);
-		yField.setText("" + 0);
+		yField.setText(Integer.toString(tileEntity.yCached));
 		
 		zField = new GuiTextField(fontRenderer, width / 2 - 80, 87, 35, 12);
 		zField.setMaxStringLength(4);
-		zField.setText("" + 0);
+		zField.setText(Integer.toString(tileEntity.zCached));
 	}
 	
 	@Override
@@ -76,6 +80,16 @@ public class GuiControlPanel extends GuiScreen
 		xField.textboxKeyTyped(c, i);
 		yField.textboxKeyTyped(c, i);
 		zField.textboxKeyTyped(c, i);
+		
+		try {
+			tileEntity.xCached = Integer.parseInt(xField.getText());
+		} catch(NumberFormatException e) { tileEntity.xCached = 0; }
+		try {
+			tileEntity.yCached = Integer.parseInt(yField.getText());
+		} catch(NumberFormatException e) { tileEntity.yCached = 0; }
+		try {
+			tileEntity.zCached = Integer.parseInt(zField.getText());
+		} catch(NumberFormatException e) { tileEntity.zCached = 0; }
 	}
 	
 	@Override
@@ -125,7 +139,32 @@ public class GuiControlPanel extends GuiScreen
 					if(worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())) instanceof IAccessibleGui)
 					{
 						IAccessibleGui gui = (IAccessibleGui)worldObj.getBlockTileEntity(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
-						usingPlayer.openGui(gui.getModInstance(), gui.getGuiID(), worldObj, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
+						
+						try {
+				    		Class mod = Class.forName(gui.getClassPath());
+				    		
+				    		if(mod == null)
+				    		{
+				    			System.err.println("[Mekanism] Incorrectly implemented IAccessibleGui -- ignoring handler packet.");
+				    			System.err.println(" ~ Unable to locate class '" + gui.getClassPath() + ".'");
+				    			return;
+				    		}
+				    		
+				    		Object instance = mod.getField(gui.getInstanceName()).get(null);
+				    		
+				    		if(instance == null)
+				    		{
+				    			System.err.println("[Mekanism] Incorrectly implemented IAccessibleGui -- ignoring handler packet.");
+				    			System.err.println(" ~ Unable to locate instance object '" + gui.getInstanceName() + ".'");
+				    			return;
+				    		}
+							
+							PacketHandler.sendGuiRequest(gui.getClassPath(), gui.getInstanceName(), Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()), gui.getGuiID());
+							usingPlayer.openGui(instance, gui.getGuiID(), worldObj, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
+						} catch(Exception e) {
+							System.err.println("[Mekanism] Error while handling Control Panel GUI request.");
+							e.printStackTrace();
+						}
 					}
 					else {
 						displayText = EnumColor.DARK_RED + "Tile entity isn't available.";

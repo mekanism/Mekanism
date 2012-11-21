@@ -479,12 +479,12 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	@Override
     public void sendPacket()
     {
-		PacketHandler.sendTileEntityPacket(this, facing, energyStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored);
     }
     
 	@Override
     public void sendPacketWithRange()
     {
-		PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, energyStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored);
     }
 }

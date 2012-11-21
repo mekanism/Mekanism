@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import cpw.mods.fml.common.Loader;
 import railcraft.common.api.core.items.ItemRegistry;
 import ic2.api.Ic2Recipes;
 import net.minecraft.src.*;
@@ -20,6 +21,9 @@ public final class MekanismHooks
 	
 	private Class BuildCraftEnergy;
 	
+	private Class ForestryItem;
+	private Class Forestry;
+	
 	public ItemStack IC2IronDust;
 	public ItemStack IC2GoldDust;
 	
@@ -28,17 +32,22 @@ public final class MekanismHooks
 	public int BuildCraftFuelID = 3808;
 	public ItemStack BuildCraftFuelBucket;
 	
+	public int ForestryBiofuelID = 5013;
+	public ItemStack ForestryBiofuelBucket;
+	
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
 	public boolean BasicComponentsLoaded = false;
 	public boolean BuildCraftLoaded = false;
+	public boolean ForestryLoaded = false;
 	
 	public void hook()
 	{
-		if(isIC2Installed()) IC2Loaded = true;
-		if(isRailcraftInstalled()) RailcraftLoaded = true;
-		if(isBasicComponentsInstalled()) BasicComponentsLoaded = true;
-		if(isBuildCraftInstalled()) BuildCraftLoaded = true;
+		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
+		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
+		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
+		if(Loader.isModLoaded("BuildCraft")) BuildCraftLoaded = true;
+		if(Loader.isModLoaded("Forestry")) ForestryLoaded = true;
 		
 		if(IC2Loaded)
 		{
@@ -65,6 +74,12 @@ public final class MekanismHooks
 			BuildCraftFuelID = getBuildCraftItem("fuel").itemID;
 			BuildCraftFuelBucket = getBuildCraftItem("bucketFuel");
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
+		}
+		if(ForestryLoaded)
+		{
+			ForestryBiofuelID = getForestryItem("liquidBiofuel").itemID;
+			ForestryBiofuelBucket = getForestryItem("bucketBiofuel");
+			System.out.println("[Mekanism] Hooked into Forestry successfully.");
 		}
 	}
 	
@@ -119,75 +134,23 @@ public final class MekanismHooks
 		}
 	}
 	
-	public boolean isIC2Installed()
+	public ItemStack getForestryItem(String name)
 	{
 		try {
-			if(IC2 == null) IC2 = Class.forName("ic2.common.IC2");
-			if(IC2 == null) IC2 = Class.forName("net.minecraft.src.ic2.common.IC2");
-			Object ret = IC2.getField("platform").get(null);
+			if(ForestryItem == null) ForestryItem = Class.forName("forestry.core.config.ForestryItem");
+			if(ForestryItem == null) ForestryItem = Class.forName("net.minecraft.src.forestry.core.config.ForestryItem");
+			Object ret = ForestryItem.getField(name).get(null);
 			
-			if(ret != null)
+			if(ret instanceof Item)
 			{
-				return true;
+				return new ItemStack((Item)ret);
 			}
-			return false;
-		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to hook into IC2.");
-			return false;
-		}
-	}
-	
-	public boolean isRailcraftInstalled()
-	{
-		try {
-			if(Railcraft == null) Railcraft = Class.forName("railcraft.common.core.Railcraft");
-			if(Railcraft == null) Railcraft = Class.forName("net.minecraft.src.railcraft.common.core.Railcraft");
-			Object ret = Railcraft.getField("instance").get(null);
-			
-			if(ret != null)
-			{
-				return true;
+			else {
+				return null;
 			}
-			return false;
 		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to hook into Railcraft.");
-			return false;
-		}
-	}
-	
-	public boolean isBasicComponentsInstalled()
-	{
-		try {
-			if(BCLoader == null) BCLoader = Class.forName("basiccomponents.BCLoader");
-			if(BCLoader == null) BCLoader = Class.forName("net.minecraft.src.basiccomponents.BCLoader");
-			Object ret = BCLoader.getField("instance").get(null);
-			
-			if(ret != null)
-			{
-				return true;
-			}
-			return false;
-		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to hook into BasicComponents.");
-			return false;
-		}
-	}
-	
-	public boolean isBuildCraftInstalled()
-	{
-		try {
-			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("buildcraft.BuildCraftEnergy");
-			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("net.minecraft.src.buildcraft.BuildCraftEnergy");
-			Object ret = BuildCraftEnergy.getField("instance").get(null);
-			
-			if(ret != null)
-			{
-				return true;
-			}
-			return false;
-		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to hook into BuildCraft.");
-			return false;
+			System.out.println("[Mekanism] Unable to retrieve Forestry item " + name + ".");
+			return null;
 		}
 	}
 }

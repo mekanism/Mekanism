@@ -13,10 +13,12 @@ public enum EnumPacketType
 	TIME(0),
 	/** Used for sending a weather update to the server. Send this along with an EnumWeatherType. */
 	WEATHER(1),
-	/** Used for sending a tile entity update to the server. Send this along with x, y, and z coordinates of the block. */
+	/** Used for sending a tile entity update to all clients. Send this along with x, y, and z coordinates of the block. */
 	TILE_ENTITY(2),
+	/** Used for sending a control panel GUI request to the server. */
+	CONTROL_PANEL(3),
 	/** A custom packet type. Handled in PacketHandler. */
-	CUSTOM(3);
+	CUSTOM(4);
 	
 	/** The ID of the packet type */
 	public final int id;

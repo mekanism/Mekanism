@@ -14,7 +14,7 @@ import net.minecraftforge.common.ForgeDirection;
  * 0: Heat Generator
  * 1: Solar Generator
  * 2: Electrolytic Separator
- * 4: Hydrogen Generator
+ * 3: Hydrogen Generator
  * @author AidanBrady
  *
  */
@@ -264,6 +264,7 @@ public class BlockGenerator extends BlockContainer
                     }
                 }
         	}
+            
             tileEntity.invalidate();
         }
 	        

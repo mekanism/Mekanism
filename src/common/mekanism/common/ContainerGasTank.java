@@ -2,20 +2,22 @@ package mekanism.common;
 
 import ic2.api.IElectricItem;
 import universalelectricity.implement.IItemElectric;
-import mekanism.api.IEnergizedItem;
+import mekanism.api.*;
+import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;
 
-public class ContainerHeatGenerator extends Container
+public class ContainerGasTank extends Container
 {
-    private TileEntityHeatGenerator tileEntity;
-
-    public ContainerHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator tentity)
-    {
-        tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 17, 35));
-        addSlotToContainer(new SlotEnergy(tentity, 1, 143, 35));
-        int slotX;
-
+	private TileEntityGasTank tileEntity;
+	
+	public ContainerGasTank(InventoryPlayer inventory, TileEntityGasTank tentity)
+	{
+		tileEntity = tentity;
+		addSlotToContainer(new SlotStorageTank(tentity, EnumGas.NONE, true, 0, 8, 8));
+		addSlotToContainer(new SlotStorageTank(tentity, EnumGas.NONE, true, 1, 8, 40));
+		
+		int slotX;
+		
         for (slotX = 0; slotX < 3; ++slotX)
         {
             for (int slotY = 0; slotY < 9; ++slotY)
@@ -32,20 +34,20 @@ public class ContainerHeatGenerator extends Container
         tileEntity.openChest();
     }
     
-    @Override
+	@Override
     public void onCraftGuiClosed(EntityPlayer entityplayer)
     {
 		super.onCraftGuiClosed(entityplayer);
 		tileEntity.closeChest();
     }
-
-    @Override
+	
+	@Override
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
         return tileEntity.isUseableByPlayer(par1EntityPlayer);
     }
-
-    @Override
+    
+	@Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
     {
         ItemStack stack = null;
@@ -55,47 +57,37 @@ public class ContainerHeatGenerator extends Container
         {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            
-        	if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+
+            if(slotStack.getItem() instanceof IStorageTank)
             {
-	            if(slotID != 1)
+	            if(slotID != 0 && slotID != 1)
 	            {
 	                if (!mergeItemStack(slotStack, 1, 2, false))
 	                {
-	                	return null;
+		                if (!mergeItemStack(slotStack, 0, 1, false))
+		                {
+		                    return null;
+		                }
 	                }
 	            }
 	            else if(slotID == 1)
 	            {
-	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
+	            	if(!mergeItemStack(slotStack, 0, 1, false))
+	            	{
+		            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
+		            	{
+		            		return null;
+		            	}
+	            	}
+	            }
+	            else if(slotID == 0)
+	            {
+	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
-        	else if(tileEntity.getFuel(slotStack) > 0 || (Mekanism.hooks.BuildCraftLoaded && slotStack.itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID))
-        	{
-            	if(slotID != 0 && slotID != 1)
-            	{
-                    if (!mergeItemStack(slotStack, 0, 1, false))
-	                {
-	                    return null;
-	                }
-            	}
-            	else {
-	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
-	            	{
-	            		return null;
-	            	}
-            	}
-        	}
-        	else if(slotStack.itemID == Item.bucketEmpty.shiftedIndex)
-        	{
-        		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
-        		{
-        			return null;
-        		}
-        	}
             
             if (slotStack.stackSize == 0)
             {

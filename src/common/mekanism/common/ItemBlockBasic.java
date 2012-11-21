@@ -10,14 +10,15 @@ import net.minecraft.src.*;
  * 3: Coal Block
  * 4: Refined Glowstone
  * 5: Reinforced Iron
+ * 6: Control Panel
  * @author AidanBrady
  *
  */
-public class ItemBlockMulti extends ItemBlock
+public class ItemBlockBasic extends ItemBlock
 {
 	public Block metaBlock;
 	
-	public ItemBlockMulti(int id, Block block)
+	public ItemBlockBasic(int id, Block block)
 	{
 		super(id);
 		metaBlock = block;
@@ -59,6 +60,9 @@ public class ItemBlockMulti extends ItemBlock
 				break;
 			case 5:
 				name = "ReinforcedIron";
+				break;
+			case 6:
+				name = "ControlPanel";
 				break;
 			default:
 				name = "Unknown";

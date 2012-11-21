@@ -16,9 +16,19 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 {
 	public boolean seesSun = false;
 	
+	public int GENERATION_RATE;
+	
 	public TileEntitySolarGenerator()
 	{
 		super("Solar Generator", 16000, 32);
+		GENERATION_RATE = 32;
+		inventory = new ItemStack[1];
+	}
+	
+	public TileEntitySolarGenerator(String name, int maxEnergy, int output, int generation)
+	{
+		super(name, maxEnergy, output);
+		GENERATION_RATE = generation;
 		inventory = new ItemStack[1];
 	}
 	
@@ -86,7 +96,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public int getEnvironmentBoost()
 	{
-		return seesSun ? 32 : 0;
+		return seesSun ? GENERATION_RATE : 0;
 	}
 
 	@Override
@@ -135,12 +145,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public void sendPacket()
 	{
-		PacketHandler.sendTileEntityPacket(this, facing, energyStored, isActive, seesSun);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored, isActive, seesSun);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketWithRange(this, 50, facing, energyStored, isActive, seesSun);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored, isActive, seesSun);
 	}
 }
