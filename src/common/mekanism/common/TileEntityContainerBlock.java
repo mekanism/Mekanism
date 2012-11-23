@@ -13,6 +13,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	/** The full name of this machine. */
 	public String fullName;
 	
+	/**
+	 * A simple tile entity with a container and facing state.
+	 * @param name - full name of this tile entity
+	 */
 	public TileEntityContainerBlock(String name)
 	{
 		fullName = name;

@@ -85,7 +85,7 @@ public class BlockBasic extends Block
     	{
     		if(entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(Mekanism.instance, /*1*/ 14, world, x, y, z);
+    			entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
     			return true;
     		}
     	}
@@ -93,7 +93,7 @@ public class BlockBasic extends Block
     	{
     		if(!entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(Mekanism.instance, /*1*/ 14, world, x, y, z);
+    			entityplayer.openGui(Mekanism.instance, 14, world, x, y, z);
     			return true;
     		}
     	}
@@ -109,8 +109,6 @@ public class BlockBasic extends Block
         	case 2:
         		return 8;
         	case 4:
-        		return 15;
-        	case 5:
         		return 15;
         }
         return 0;

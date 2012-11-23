@@ -1,9 +1,9 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
+import mekanism.api.EnumGas;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IStorageTank;
-import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;
 
 public class SlotStorageTank extends Slot

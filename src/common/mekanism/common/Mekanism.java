@@ -519,7 +519,7 @@ public class Mekanism
 			"ECE", "CPC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyCube.getUnchargedItem(), Character.valueOf('P'), new ItemStack(PowerUnit, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
-			"***", "*R*", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 1), Character.valueOf('R'), Item.redstone
+			"***", "*R*", "***", Character.valueOf('*'), "ingotPlatinum", Character.valueOf('R'), Item.redstone
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 1), new Object[] {
 			"***", "*P*", "***", Character.valueOf('*'), Item.redstone, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0)
@@ -528,13 +528,13 @@ public class Mekanism
 			"***", "*P*", "***", Character.valueOf('*'), Block.cobblestone, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 3), new Object[] {
-			"***", "*L*", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 1), Character.valueOf('L'), Item.bucketLava
+			"***", "*L*", "***", Character.valueOf('*'), "ingotPlatinum", Character.valueOf('L'), Item.bucketLava
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SpeedUpgrade), new Object[] {
-			"PAP", "ARA", "PAP", Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
+			"PAP", "AEA", "PAP", Character.valueOf('P'), "dustPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyUpgrade), new Object[] {
-			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
+			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyCube.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(UltimateUpgrade), new Object[] {
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
@@ -543,7 +543,7 @@ public class Mekanism
 			"GGG", "ECE", "IRI", Character.valueOf('G'), Item.lightStoneDust, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(BasicBlock, 1, 3), Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(NuclearCore), new Object[] {
-			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), new ItemStack(Dust, 1, 3), Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('D'), Item.diamond
+			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), "dustObsidian", Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('D'), Item.diamond
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(NuclearDisassembler.getUnchargedItem(), new Object[] {
 			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), NuclearCore, Character.valueOf('O'), "ingotObsidian"
@@ -566,17 +566,8 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(OxygenTank.getEmptyItem(), new Object[] {
 			"III", "IGI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('G'), "dustGold"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(HydrogenTank.getEmptyItem(), new Object[] {
-			"III", "IDI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('D'), "itemDustIron"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(OxygenTank.getEmptyItem(), new Object[] {
-			"III", "IGI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('G'), "itemDustGold"
-		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ElectrolyticCore), new Object[] {
 			"EPE", "IEG", "EPE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), "dustPlatinum", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold" 
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ElectrolyticCore), new Object[] {
-			"EPE", "IEG", "EPE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), "dustPlatinum", Character.valueOf('I'), "itemDustIron", Character.valueOf('G'), "itemDustGold" 
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(GasTank, new Object[] {
 			"PPP", "P P", "PPP", Character.valueOf('P'), "ingotPlatinum"
@@ -585,13 +576,13 @@ public class Mekanism
 			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(Generator, 1, 1), Character.valueOf('E'), EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BioGenerator), new Object[] {
-			"RER", "BIB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('B'), BioFuel, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 6), Character.valueOf('N'), Item.ingotIron
+			"RER", "BIB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('B'), BioFuel, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5), Character.valueOf('N'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 2), new Object[] {
 			"IRI", "ECE", "IRI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), ElectrolyticCore
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 3), new Object[] {
-			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 6), Character.valueOf('C'), ElectrolyticCore
+			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5), Character.valueOf('C'), ElectrolyticCore
 		}));
 		
 		if(extrasEnabled)
@@ -1055,12 +1046,6 @@ public class Mekanism
 		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));
 		OreDictionary.registerOre("dustPlatinum", new ItemStack(Dust, 1, 2));
 		OreDictionary.registerOre("dustObsidian", new ItemStack(Dust, 1, 3));
-		
-		//Damn you RichardG and your weird Ore Dictionary standards
-		OreDictionary.registerOre("itemDustIron", new ItemStack(Dust, 1, 0));
-		OreDictionary.registerOre("itemDustGold", new ItemStack(Dust, 1, 1));
-		OreDictionary.registerOre("itemDustPlatinum", new ItemStack(Dust, 1, 2));
-		OreDictionary.registerOre("itemDustObsidian", new ItemStack(Dust, 1, 3));
 		
 		OreDictionary.registerOre("ingotObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotPlatinum", new ItemStack(Ingot, 1, 1));

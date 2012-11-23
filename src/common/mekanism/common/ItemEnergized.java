@@ -12,8 +12,13 @@ import net.minecraft.src.*;
 
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric
 {
+	/** The maximum amount of energy this item can hold. */
 	public int MAX_ENERGY;
+	
+	/** How fast this item can transfer energy. */
 	public int TRANSFER_RATE;
+	
+	/** The number that, when the max amount of energy is divided by, will make it equal 100. */
 	public int DIVIDER;
 	
 	public ItemEnergized(int id, int energy, int rate, int divide)

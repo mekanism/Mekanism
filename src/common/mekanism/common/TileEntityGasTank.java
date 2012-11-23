@@ -5,28 +5,32 @@ import universalelectricity.core.vector.Vector3;
 import com.google.common.io.ByteArrayDataInput;
 
 import net.minecraftforge.common.ForgeDirection;
+import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
-import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;
 
 public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor
 {
+	/** The type of gas stored in this tank. */
+	public EnumGas gasType;
+	
+	/** The maximum amount of gas this tank can hold. */
+	public int MAX_GAS = 96000;
+	
+	/** How much gas this tank is currently storing. */
+	public int gasStored;
+	
+	/** How fast this tank can output gas. */
+	public int output = 16;
+	
 	public TileEntityGasTank()
 	{
 		super("Gas Tank");
 		gasType = EnumGas.NONE;
 		inventory = new ItemStack[2];
 	}
-	
-	public EnumGas gasType;
-	
-	public int MAX_GAS = 96000;
-	
-	public int gasStored;
-	
-	public int output = 16;
 	
 	@Override
 	public void onUpdate()

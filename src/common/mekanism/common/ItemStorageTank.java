@@ -8,8 +8,13 @@ import net.minecraft.src.*;
 
 public abstract class ItemStorageTank extends ItemMekanism implements IStorageTank
 {
+	/** The maximum amount of gas this tank can hold. */
 	public int MAX_GAS;
+	
+	/** How fast this tank can transfer gas. */
 	public int TRANSFER_RATE;
+	
+	/** The number that, when the max amount of gas is divided by, will make it equal 100. */
 	public int DIVIDER;
 	
 	public ItemStorageTank(int id, int gas, int rate, int divide)

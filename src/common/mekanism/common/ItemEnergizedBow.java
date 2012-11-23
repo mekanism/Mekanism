@@ -6,8 +6,6 @@ import net.minecraft.src.*;
 
 public class ItemEnergizedBow extends ItemEnergized
 {
-	public boolean fireMode = false;
-	
     public ItemEnergizedBow(int id)
     {
         super(id, 10000, 100, 100);
@@ -17,7 +15,7 @@ public class ItemEnergizedBow extends ItemEnergized
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add("Fire Mode: " + (fireMode ? "ON" : "OFF"));
+		list.add("Fire Mode: " + (getFireState(itemstack) ? "ON" : "OFF"));
 	}
 
     @Override
@@ -52,7 +50,7 @@ public class ItemEnergizedBow extends ItemEnergized
 	            
 	            if(!player.capabilities.isCreativeMode)
 	            {
-	            	discharge(itemstack, (fireMode ? 100 : 10));
+	            	discharge(itemstack, (getFireState(itemstack) ? 100 : 10));
 	            }
 	            
 	            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
@@ -69,7 +67,7 @@ public class ItemEnergizedBow extends ItemEnergized
 	            if (!world.isRemote)
 	            {
 	                world.spawnEntityInWorld(entityarrow);
-	                entityarrow.setFire(fireMode ? 60 : 0);
+	                entityarrow.setFire(getFireState(itemstack) ? 60 : 0);
 	            }
 	        }
     	}
@@ -106,10 +104,47 @@ public class ItemEnergizedBow extends ItemEnergized
     	else {
     		if(!world.isRemote)
     		{
-	    		fireMode = !fireMode;
-	    		entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (fireMode ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF")));
+    			setFireState(itemstack, !getFireState(itemstack));
+	    		entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (getFireState(itemstack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF")));
     		}
     	}
         return itemstack;
+    }
+    
+    /**
+     * Sets the bow's fire state in NBT.
+     * @param itemstack - the bow's itemstack
+     * @param state - state to change to
+     */
+    public void setFireState(ItemStack itemstack, boolean state)
+    {
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+		
+		itemstack.stackTagCompound.setBoolean("fireState", state);
+    }
+    
+    /**
+     * Gets the bow's fire state from NBT.
+     * @param itemstack - the bow's itemstack
+     * @return fire state
+     */
+    public boolean getFireState(ItemStack itemstack)
+    {
+		if(itemstack.stackTagCompound == null)
+		{
+			return false;
+		}
+		
+		boolean state = false;
+		
+		if(itemstack.stackTagCompound.getTag("fireState") != null)
+		{
+			state = itemstack.stackTagCompound.getBoolean("fireState");
+		}
+		
+		return state;
     }
 }

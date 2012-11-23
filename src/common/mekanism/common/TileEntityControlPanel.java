@@ -7,10 +7,16 @@ import net.minecraft.src.*;
 
 public class TileEntityControlPanel extends TileEntity implements ITileNetwork
 {
+	/** A counter to send packets at defined intervals. */
 	public int packetTick = 0;
 	
+	/** x value stored in the GUI */
 	public int xCached;
+	
+	/** y value stored in the GUI */
 	public int yCached;
+	
+	/** z value stored in the GUI */
 	public int zCached;
 	
 	@Override
@@ -65,14 +71,8 @@ public class TileEntityControlPanel extends TileEntity implements ITileNetwork
 	}
 
 	@Override
-	public void sendPacket() 
-	{
-		//null
-	}
+	public void sendPacket() {}
 
 	@Override
-	public void sendPacketWithRange() 
-	{
-		//null
-	}
+	public void sendPacketWithRange() {}
 }

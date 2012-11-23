@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import mekanism.api.IStorageTank.EnumGas;
+import mekanism.api.EnumGas;
 import net.minecraft.src.*;
 
 public class ItemOxygenTank extends ItemStorageTank

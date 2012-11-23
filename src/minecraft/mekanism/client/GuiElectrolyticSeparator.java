@@ -2,9 +2,11 @@ package mekanism.client;
 
 import org.lwjgl.opengl.GL11;
 
+import mekanism.api.EnumGas;
 import mekanism.common.ContainerElectrolyticSeparator;
 import mekanism.common.ContainerHeatGenerator;
 import mekanism.common.MekanismUtils;
+import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectrolyticSeparator;
 import net.minecraft.src.*;
 
@@ -20,6 +22,37 @@ public class GuiElectrolyticSeparator extends GuiContainer
         super(new ContainerElectrolyticSeparator(inventory, tentity));
         tileEntity = tentity;
     }
+	
+	/*@Override
+	public void initGui()
+	{
+		controlList.clear();
+		controlList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, ""));
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		if(!guibutton.enabled)
+		{
+			return;
+		}
+		if(guibutton.id == 1)
+		{
+			if(tileEntity.outputType == EnumGas.OXYGEN)
+			{
+				tileEntity.outputType = EnumGas.HYDROGEN;
+			}
+			else if(tileEntity.outputType == EnumGas.HYDROGEN)
+			{
+				tileEntity.outputType = EnumGas.OXYGEN;
+			}
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, tileEntity.outputType.name);
+			
+			outputButton.displayString = tileEntity.outputType.name;
+		}
+	}*/
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)

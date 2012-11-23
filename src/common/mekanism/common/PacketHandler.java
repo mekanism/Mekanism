@@ -10,6 +10,7 @@ import java.io.IOException;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import mekanism.api.EnumGas;
 import mekanism.api.ITileNetwork;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.INetworkManager;

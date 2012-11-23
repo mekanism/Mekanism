@@ -2,9 +2,9 @@ package mekanism.common;
 
 import ic2.api.IElectricItem;
 import universalelectricity.core.implement.IItemElectric;
+import mekanism.api.EnumGas;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IStorageTank;
-import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;
 
 public class ContainerHydrogenGenerator extends Container

@@ -14,12 +14,12 @@ import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
+import mekanism.api.EnumGas;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IEnergyAcceptor;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
-import mekanism.api.IStorageTank.EnumGas;
 import mekanism.api.ITileNetwork;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
@@ -245,12 +245,25 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			try {
+				outputType = EnumGas.getFromName(dataStream.readUTF());
+			} catch (Exception e)
+			{
+				System.out.println("[Mekanism] Error while handling tile entity packet.");
+				e.printStackTrace();
+			}
+			return;
+		}
+		
 		try {
 			facing = dataStream.readInt();
 			energyStored = dataStream.readInt();
 			waterSlot.liquidStored = dataStream.readInt();
 			oxygenStored = dataStream.readInt();
 			hydrogenStored = dataStream.readInt();
+			outputType = EnumGas.getFromName(dataStream.readUTF());
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
@@ -262,13 +275,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public void sendPacket() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name);
 	}
 	
 	/**
@@ -491,6 +504,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         hydrogenStored = nbtTags.getInteger("hydrogenStored");
         oxygenStored = nbtTags.getInteger("oxygenStored");
         waterSlot.liquidStored = nbtTags.getInteger("waterStored");
+        outputType = EnumGas.getFromName(nbtTags.getString("outputType"));
     }
 
 	@Override
@@ -501,6 +515,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         nbtTags.setInteger("hydrogenStored", hydrogenStored);
         nbtTags.setInteger("oxygenStored", oxygenStored);
         nbtTags.setInteger("waterStored", waterSlot.liquidStored);
+        nbtTags.setString("outputType", outputType.name);
     }
 
 	@Override

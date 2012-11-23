@@ -14,8 +14,10 @@ import net.minecraft.src.*;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
 {
+	/** Whether or not this generator sees the sun. */
 	public boolean seesSun = false;
 	
+	/** How fast this tile entity generates energy. */
 	public int GENERATION_RATE;
 	
 	public TileEntitySolarGenerator()

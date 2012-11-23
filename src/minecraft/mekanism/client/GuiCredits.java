@@ -68,6 +68,7 @@ public class GuiCredits extends GuiScreen {
 		drawString(fontRenderer, text, width / 2 - 140, (height / 4 - 60) + 20 + yAxis, 0xa0a0a0);
 	}
 	
+	@Override
 	public boolean doesGuiPauseGame()
 	{
 		return false;

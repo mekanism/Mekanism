@@ -1,7 +1,5 @@
 package mekanism.api;
 
-import mekanism.api.IStorageTank.EnumGas;
-
 /**
  * Implement this if your tile entity can store some form of gas.
  * @author AidanBrady

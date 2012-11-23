@@ -9,11 +9,11 @@ import universalelectricity.core.implement.IItemElectric;
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+import mekanism.api.EnumGas;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
-import mekanism.api.IStorageTank.EnumGas;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
