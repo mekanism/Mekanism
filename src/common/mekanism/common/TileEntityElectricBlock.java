@@ -15,10 +15,10 @@ import net.minecraftforge.common.ISidedInventory;
 public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor
 {
 	/** How much energy is stored in this block. */
-	public int energyStored;
+	public double electricityStored;
 	
 	/** Maximum amount of energy this machine can hold. */
-	public int MAX_ENERGY;
+	public double MAX_ELECTRICITY;
 	
 	/** BuildCraft power provider. */
 	public IPowerProvider powerProvider;
@@ -32,7 +32,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public TileEntityElectricBlock(String name, int maxEnergy)
 	{
 		super(name);
-		MAX_ENERGY = maxEnergy;
+		MAX_ELECTRICITY = maxEnergy;
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
@@ -50,7 +50,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
         }
 
-        energyStored = nbtTags.getInteger("energyStored");
+        electricityStored = nbtTags.getDouble("electricityStored");
     }
 
 	@Override
@@ -63,7 +63,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
         }
         
-        nbtTags.setInteger("energyStored", energyStored);
+        nbtTags.setDouble("electricityStored", electricityStored);
     }
 	
 	public boolean isAddedToEnergyNet()

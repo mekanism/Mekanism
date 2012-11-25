@@ -15,26 +15,18 @@ import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.registry.TickRegistry;
 import mekanism.common.CommonProxy;
-import mekanism.common.EntityKnife;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityAdvancedElectricMachine;
-import mekanism.common.TileEntityAdvancedSolarGenerator;
-import mekanism.common.TileEntityBioGenerator;
 import mekanism.common.TileEntityCombiner;
 import mekanism.common.TileEntityControlPanel;
 import mekanism.common.TileEntityCrusher;
 import mekanism.common.TileEntityElectricMachine;
-import mekanism.common.TileEntityElectrolyticSeparator;
 import mekanism.common.TileEntityEnrichmentChamber;
 import mekanism.common.TileEntityGasTank;
-import mekanism.common.TileEntityGenerator;
-import mekanism.common.TileEntityHeatGenerator;
-import mekanism.common.TileEntityHydrogenGenerator;
 import mekanism.common.TileEntityPlatinumCompressor;
 import mekanism.common.TileEntityPowerUnit;
-import mekanism.common.TileEntitySolarGenerator;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
@@ -54,13 +46,6 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void registerSpecialTileEntities()
-	{
-		ClientRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator", new RenderAdvancedSolarGenerator(new ModelAdvancedSolarGenerator()));
-		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
-	}
-	
-	@Override
 	public void registerRenderInformation()
 	{
 		System.out.println("[Mekanism] Beginning render initiative...");
@@ -75,8 +60,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerFront.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerBack.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerSide.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/HydrogenFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/HydrogenSide.png");
 		
 		//Register animated TextureFX
 		try {
@@ -85,18 +68,12 @@ public class ClientProxy extends CommonProxy
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+2));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerBack.png", Mekanism.ANIMATED_TEXTURE_INDEX+3));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+4));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/HydrogenFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+5));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/HydrogenSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+6));
 		} catch (IOException e) {
 			System.err.println("[Mekanism] Error registering animation with FML: " + e.getMessage());
 		}
 		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
-		RenderingRegistry.registerEntityRenderingHandler(EntityKnife.class, new RenderKnife());
-		
-		//Register block handler
-		RenderingRegistry.registerBlockHandler(new RenderHandler());
 		
 		System.out.println("[Mekanism] Render initiative complete.");
 	}
@@ -141,18 +118,8 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiPowerUnit(player.inventory, (TileEntityPowerUnit)tileEntity);
 			case 9:
-				return new GuiHeatGenerator(player.inventory, (TileEntityHeatGenerator)tileEntity);
-			case 10:
-				return new GuiSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
-			case 11:
-				return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
-			case 12:
-				return new GuiHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
-			case 13:
-				return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
-			case 14:
 				return new GuiControlPanel((TileEntityControlPanel)tileEntity, player, world);
-			case 15:
+			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 		}
 		return null;

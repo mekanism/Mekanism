@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.IElectricItem;
 import universalelectricity.core.implement.IItemElectric;
-import mekanism.api.IEnergizedItem;
 import mekanism.api.ItemMachineUpgrade;
 import net.minecraft.src.*;
 
@@ -67,7 +66,7 @@ public class ContainerAdvancedElectricMachine extends Container
             		return null;
             	}
             }
-            else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
+            else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 	            {

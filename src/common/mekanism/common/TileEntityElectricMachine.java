@@ -20,7 +20,6 @@ import ic2.api.ElectricItem;
 import ic2.api.EnergyNet;
 import ic2.api.IElectricItem;
 import ic2.api.IWrenchable;
-import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
@@ -52,36 +51,16 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		
 		if(inventory[1] != null)
 		{
-			if(energyStored < currentMaxEnergy)
+			if(electricityStored < currentMaxElectricity)
 			{
-				if(inventory[1].getItem() instanceof IEnergizedItem)
-				{
-					IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
-					
-					if(item.canBeDischarged())
-					{
-						int received = 0;
-						int energyNeeded = currentMaxEnergy - energyStored;
-						if(item.getRate() <= energyNeeded)
-						{
-							received = item.discharge(inventory[1], item.getRate());
-						}
-						else if(item.getRate() > energyNeeded)
-						{
-							received = item.discharge(inventory[1], energyNeeded);
-						}
-						
-						setEnergy(energyStored + received);
-					}
-				}
-				else if(inventory[1].getItem() instanceof IItemElectric)
+				if(inventory[1].getItem() instanceof IItemElectric)
 				{
 					IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
 
 					if (electricItem.canProduceElectricity())
 					{
 						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules() * 0.005, inventory[1]);
-						setEnergy(energyStored + (int)(joulesReceived*UniversalElectricity.TO_IC2_RATIO));
+						setJoules(electricityStored + joulesReceived);
 					}
 				}
 				else if(inventory[1].getItem() instanceof IElectricItem)
@@ -89,14 +68,14 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 					IElectricItem item = (IElectricItem)inventory[1].getItem();
 					if(item.canProvideEnergy())
 					{
-						int gain = ElectricItem.discharge(inventory[1], currentMaxEnergy - energyStored, 3, false, false);
-						setEnergy(energyStored + gain);
+						double gain = ElectricItem.discharge(inventory[1], (int)((MAX_ELECTRICITY - electricityStored)*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+						setJoules(electricityStored + gain);
 					}
 				}
 			}
-			if(inventory[1].itemID == Item.redstone.shiftedIndex && energyStored <= (currentMaxEnergy-1000))
+			if(inventory[1].itemID == Item.redstone.shiftedIndex && electricityStored <= (currentMaxElectricity-1000))
 			{
-				setEnergy(energyStored + 1000);
+				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
 				
 	            if (inventory[1].stackSize <= 0)
@@ -120,7 +99,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			}
 			else if(inventory[3].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)))
 			{
-				if(currentMaxEnergy == MAX_ENERGY)
+				if(currentMaxElectricity == MAX_ELECTRICITY)
 				{
 					energyToAdd = 600;
 				}
@@ -131,25 +110,25 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				{
 					ticksToRemove = 150;
 				}
-				if(currentMaxEnergy == MAX_ENERGY)
+				if(currentMaxElectricity == MAX_ELECTRICITY)
 				{
 					energyToAdd = 600;
 				}
 			}
 			
-			currentMaxEnergy += energyToAdd;
+			currentMaxElectricity += energyToAdd;
 			currentTicksRequired -= ticksToRemove;
 		}
 		else if(inventory[3] == null)
 		{
 			currentTicksRequired = TICKS_REQUIRED;
-			currentMaxEnergy = MAX_ENERGY;
+			currentMaxElectricity = MAX_ELECTRICITY;
 		}
 		
 		if(canOperate() && (operatingTicks+1) < currentTicksRequired)
 		{
 			++operatingTicks;
-			energyStored -= ENERGY_PER_TICK;
+			electricityStored -= ENERGY_PER_TICK;
 		}
 		else if(canOperate() && (operatingTicks+1) >= currentTicksRequired)
 		{
@@ -158,17 +137,17 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				operate();
 			}
 			operatingTicks = 0;
-			energyStored -= ENERGY_PER_TICK;
+			electricityStored -= ENERGY_PER_TICK;
 		}
 		
-		if(energyStored < 0)
+		if(electricityStored < 0)
 		{
-			energyStored = 0;
+			electricityStored = 0;
 		}
 		
-		if(energyStored > currentMaxEnergy)
+		if(electricityStored > currentMaxElectricity)
 		{
-			energyStored = currentMaxEnergy;
+			electricityStored = currentMaxElectricity;
 		}
 		
 		if(!canOperate())
@@ -235,7 +214,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
             return false;
         }
         
-        if(energyStored < ENERGY_PER_TICK)
+        if(electricityStored < ENERGY_PER_TICK)
         {
         	return false;
         }
@@ -269,8 +248,8 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			facing = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
-			energyStored = dataStream.readInt();
-			currentMaxEnergy = dataStream.readInt();
+			electricityStored = dataStream.readDouble();
+			currentMaxElectricity = dataStream.readDouble();
 			currentTicksRequired = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
@@ -283,13 +262,13 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	@Override
     public void sendPacket()
     {
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, energyStored, currentMaxEnergy, currentTicksRequired);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, electricityStored, currentMaxElectricity, currentTicksRequired);
     }
     
 	@Override
     public void sendPacketWithRange()
     {
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, energyStored, currentMaxEnergy, currentTicksRequired);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, electricityStored, currentMaxElectricity, currentTicksRequired);
     }
 
 	@Override
@@ -304,7 +283,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		switch(method)
 		{
 			case 0:
-				return new Object[] {energyStored};
+				return new Object[] {electricityStored};
 			case 1:
 				return new Object[] {operatingTicks};
 			case 2:
@@ -314,9 +293,9 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			case 4:
 				return new Object[] {canOperate()};
 			case 5:
-				return new Object[] {currentMaxEnergy};
+				return new Object[] {currentMaxElectricity};
 			case 6:
-				return new Object[] {(currentMaxEnergy-energyStored)};
+				return new Object[] {(currentMaxElectricity-electricityStored)};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

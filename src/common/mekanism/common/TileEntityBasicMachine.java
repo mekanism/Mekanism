@@ -22,22 +22,22 @@ import ic2.api.EnergyNet;
 import ic2.api.IEnergySink;
 import ic2.api.IWrenchable;
 import mekanism.api.IElectricMachine;
-import mekanism.api.IEnergyAcceptor;
 import mekanism.client.Sound;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IElectricityReceiver, IPeripheral
 {
 	/** The Sound instance for this machine. */
+	@SideOnly(Side.CLIENT)
 	public Sound audio;
 	
 	/** The bundled URL of this machine's sound effect */
 	public String soundURL;
 	
 	/** How much energy this machine uses per tick. */
-	public int ENERGY_PER_TICK;
+	public double ENERGY_PER_TICK;
 	
 	/** How many ticks this machine has operated for. */
 	public int operatingTicks = 0;
@@ -49,7 +49,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int currentTicksRequired;
 	
 	/** The current energy capacity for this machine. */
-	public int currentMaxEnergy;
+	public double currentMaxElectricity;
 	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
@@ -75,6 +75,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public TileEntityBasicMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
 		super(name, maxEnergy);
+		currentMaxElectricity = MAX_ELECTRICITY;
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
 		soundURL = soundPath;
@@ -128,6 +129,8 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
         isActive = nbtTags.getBoolean("isActive");
+        currentTicksRequired = nbtTags.getInteger("currentTicksRequired");
+        currentMaxElectricity = nbtTags.getDouble("currentMaxElectricity");
     }
 
 	@Override
@@ -137,6 +140,8 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("currentTicksRequired", currentTicksRequired);
+        nbtTags.setDouble("currentMaxElectricity", currentMaxElectricity);
     }
 	
 	@Override
@@ -158,25 +163,25 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public boolean demandsEnergy() 
 	{
-		return energyStored < currentMaxEnergy;
+		return electricityStored < currentMaxElectricity;
 	}
 
 	@Override
     public int injectEnergy(Direction direction, int i)
     {
-    	int rejects = 0;
-    	int neededEnergy = currentMaxEnergy-energyStored;
+    	double rejects = 0;
+    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
     	if(i <= neededEnergy)
     	{
-    		energyStored += i;
+    		electricityStored += i;
     	}
     	else if(i > neededEnergy)
     	{
-    		energyStored += neededEnergy;
+    		electricityStored += neededEnergy;
     		rejects = i-neededEnergy;
     	}
     	
-    	return rejects;
+    	return (int)(rejects*UniversalElectricity.TO_IC2_RATIO);
     }
 	
 	@Override
@@ -192,7 +197,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public int getScaledEnergyLevel(int i)
 	{
-		return energyStored*i / currentMaxEnergy;
+		return (int)(electricityStored*i / currentMaxElectricity);
 	}
 
 	/**
@@ -208,19 +213,19 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return currentMaxEnergy*UniversalElectricity.IC2_RATIO;
+		return currentMaxElectricity*UniversalElectricity.IC2_RATIO;
 	}
 	
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return energyStored*UniversalElectricity.IC2_RATIO;
+		return electricityStored*UniversalElectricity.IC2_RATIO;
 	}
 
 	@Override
-	public void setJoules(double joules, Object... data) 
+	public void setJoules(double joules, Object... data)
 	{
-		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
+		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
 	}
 	
 	@Override
@@ -244,34 +249,25 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public double wattRequest() 
 	{
-		return isActive ? ElectricInfo.getWatts((ENERGY_PER_TICK*4)*UniversalElectricity.IC2_RATIO) : 0;
+		return currentMaxElectricity - electricityStored;
 	}
 	
 	@Override
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
-		int energyToReceive = (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO);
-		int energyNeeded = currentMaxEnergy - energyStored;
-		int energyToStore = 0;
+		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
+		double electricityNeeded = MAX_ELECTRICITY - electricityStored;
+		double electricityToStore = 0;
 		
-		if(energyToReceive <= energyNeeded)
+		if(electricityToReceive <= electricityNeeded)
 		{
-			energyToStore = energyToReceive;
+			electricityToStore = electricityToReceive;
 		}
-		else if(energyToReceive > energyNeeded)
+		else if(electricityToReceive > electricityNeeded)
 		{
-			energyToStore = energyNeeded;
+			electricityToStore = electricityNeeded;
 		}
-		setEnergy(energyStored + energyToStore);
-	}
-	
-	/**
-	 * Sets the energy to a new amount.
-	 * @param energy - amount to store
-	 */
-	public void setEnergy(int energy)
-	{
-		energyStored = Math.max(Math.min(energy, currentMaxEnergy), 0);
+		setJoules(electricityStored + electricityToStore);
 	}
 
 	@Override
@@ -304,28 +300,4 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-    
-	@Override
-	public int transferToAcceptor(int amount)
-	{
-    	int rejects = 0;
-    	int neededEnergy = currentMaxEnergy-energyStored;
-    	if(amount <= neededEnergy)
-    	{
-    		energyStored += amount;
-    	}
-    	else if(amount > neededEnergy)
-    	{
-    		energyStored += neededEnergy;
-    		rejects = amount-neededEnergy;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceive(ForgeDirection side)
-	{
-		return true;
-	}
 }

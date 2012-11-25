@@ -91,25 +91,6 @@ public class Mekanism
 	
 	/** The port used to connect to the Mekanism server */
 	public static int hostPort = 3073;
-	
-    //Enums: Tools
-    public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 50);
-    public static EnumToolMaterial toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2", 3, 3000, 25F, 10, 100);
-    public static EnumToolMaterial toolLAZULI = EnumHelper.addToolMaterial("LAZULI", 2, 200, 5.0F, 0, 22);
-    public static EnumToolMaterial toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2", 2, 250, 6.0F, 4, 50);
-    public static EnumToolMaterial toolPLATINUM = EnumHelper.addToolMaterial("PLATINUM", 2, 500, 10F, 4, 30);
-    public static EnumToolMaterial toolPLATINUM2 = EnumHelper.addToolMaterial("PLATINUM2", 3, 700, 12F, 5, 40);
-    public static EnumToolMaterial toolREDSTONE = EnumHelper.addToolMaterial("REDSTONE", 2, 250, 10F, 6, 50);
-    public static EnumToolMaterial toolREDSTONE2 = EnumHelper.addToolMaterial("REDSTONE2", 2, 400, 12F, 6, 60);
-    public static EnumToolMaterial toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE", 2, 300, 14, 5, 80);
-    public static EnumToolMaterial toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2", 2, 450, 18, 5, 100);
-    
-    //Enums: Armor
-    public static EnumArmorMaterial armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", 50, new int[]{5, 12, 8, 5}, 50);
-    public static EnumArmorMaterial armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", 13, new int[]{2, 5, 4, 2}, 50);
-    public static EnumArmorMaterial armorPLATINUM = EnumHelper.addArmorMaterial("PLATINUM", 30, new int[]{4, 10, 7, 4}, 50);
-    public static EnumArmorMaterial armorREDSTONE = EnumHelper.addArmorMaterial("REDSTONE", 16, new int[]{2, 7, 5, 3}, 50);
-    public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
     
 	//Block IDs
     public static int basicBlockID = 3000;
@@ -117,91 +98,11 @@ public class Mekanism
     public static int oreBlockID = 3002;
 	public static int obsidianTNTID = 3003;
 	public static int powerUnitID = 3004;
-	public static int generatorID = 3005;
-	public static int advancedSolarGeneratorID = 3006;
 	public static int nullRenderID = 3007;
-	public static int bioGeneratorID = 3008;
 	public static int gasTankID = 3009;
 	
-	//Base Items
-	public static Item WoodPaxel;
-	public static Item StonePaxel;
-	public static Item IronPaxel;
-	public static Item DiamondPaxel;
-	public static Item GoldPaxel;
-	public static Item WoodKnife;
-	public static Item StoneKnife;
-	public static Item IronKnife;
-	public static Item DiamondKnife;
-	public static Item GoldKnife;
-	
-	//Glowstone Items
-	public static Item GlowstonePaxel;
-	public static Item GlowstonePickaxe;
-	public static Item GlowstoneAxe;
-	public static Item GlowstoneSpade;
-	public static Item GlowstoneHoe;
-	public static Item GlowstoneSword;
-	public static Item GlowstoneHelmet;
-	public static Item GlowstoneBody;
-	public static Item GlowstoneLegs;
-	public static Item GlowstoneBoots;
-	public static Item GlowstoneKnife;
-	
-	//Redstone Items
-	public static Item RedstonePaxel;
-	public static Item RedstonePickaxe;
-	public static Item RedstoneAxe;
-	public static Item RedstoneSpade;
-	public static Item RedstoneHoe;
-	public static Item RedstoneSword;
-	public static Item RedstoneHelmet;
-	public static Item RedstoneBody;
-	public static Item RedstoneLegs;
-	public static Item RedstoneBoots;
-	public static Item RedstoneKnife;
-	
-	//Platinum Items
-	public static Item PlatinumPaxel;
-	public static Item PlatinumPickaxe;
-	public static Item PlatinumAxe;
-	public static Item PlatinumSpade;
-	public static Item PlatinumHoe;
-	public static Item PlatinumSword;
-	public static Item PlatinumHelmet;
-	public static Item PlatinumBody;
-	public static Item PlatinumLegs;
-	public static Item PlatinumBoots;
-	public static Item PlatinumKnife;
-	
-	//Obsidian Items
-	public static Item ObsidianHelmet;
-	public static Item ObsidianBody;
-	public static Item ObsidianLegs;
-	public static Item ObsidianBoots;
-	public static Item ObsidianPaxel;
-	public static Item ObsidianPickaxe;
-	public static Item ObsidianAxe;
-	public static Item ObsidianSpade;
-	public static Item ObsidianHoe;
-	public static Item ObsidianSword;
-	public static Item ObsidianKnife;
-	
-	//Lazuli Items
-	public static Item LazuliPaxel;
-	public static Item LazuliPickaxe;
-	public static Item LazuliAxe;
-	public static Item LazuliSpade;
-	public static Item LazuliHoe;
-	public static Item LazuliSword;
-	public static Item LazuliHelmet;
-	public static Item LazuliBody;
-	public static Item LazuliLegs;
-	public static Item LazuliBoots;
-	public static Item LazuliKnife;
-	
 	//Extra Items
-	public static ItemEnergizedBow EnergizedBow;
+	public static ItemElectricBow ElectricBow;
 	public static Item LightningRod;
 	public static Item Stopwatch;
 	public static Item WeatherOrb;
@@ -212,13 +113,10 @@ public class Mekanism
 	public static Item SpeedUpgrade;
 	public static Item EnergyUpgrade;
 	public static Item UltimateUpgrade;
-	public static ItemNuclearDisassembler NuclearDisassembler;
+	public static ItemAtomicDisassembler NuclearDisassembler;
 	public static Item NuclearCore;
-	public static Item SolarPanel;
 	public static ItemStorageTank HydrogenTank;
 	public static ItemStorageTank OxygenTank;
-	public static Item BioFuel;
-	public static Item ElectrolyticCore;
 	
 	//Extra Blocks
 	public static Block BasicBlock;
@@ -226,14 +124,8 @@ public class Mekanism
 	public static Block OreBlock;
 	public static Block ObsidianTNT;
 	public static Block PowerUnit;
-	public static Block Generator;
-	public static Block AdvancedSolarGenerator;
 	public static BlockMulti NullRender;
-	public static Block BioGenerator;
 	public static Block GasTank;
-	
-	@SideOnly(Side.CLIENT)
-	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	//MultiID Items
 	public static Item Dust;
@@ -251,7 +143,6 @@ public class Mekanism
 	public static int ticksPassed = 0;
 	
 	public static int ANIMATED_TEXTURE_INDEX = 240;
-	public static int BOW_TEXTURE_INDEX = 177;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -259,248 +150,42 @@ public class Mekanism
 	public void addRecipes()
 	{
 		//Crafting Recipes
-		//Base
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(WoodPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeWood, Character.valueOf('Y'), Item.pickaxeWood, Character.valueOf('Z'), Item.shovelWood, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(StonePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeStone, Character.valueOf('Y'), Item.pickaxeStone, Character.valueOf('Z'), Item.shovelStone, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(IronPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeSteel, Character.valueOf('Y'), Item.pickaxeSteel, Character.valueOf('Z'), Item.shovelSteel, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(DiamondPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeDiamond, Character.valueOf('Y'), Item.pickaxeDiamond, Character.valueOf('Z'), Item.shovelDiamond, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GoldPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeGold, Character.valueOf('Y'), Item.pickaxeGold, Character.valueOf('Z'), Item.shovelGold, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(WoodKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Block.planks, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(StoneKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Block.cobblestone, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(IronKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Item.ingotIron, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(DiamondKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Item.diamond, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GoldKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Item.ingotGold, Character.valueOf('I'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 3), new Object[] {
+			"***", "***", "***", Character.valueOf('*'), Item.coal
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Item.coal, 9), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 3)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 3), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), Item.coal
-		}));
-		
-		//Obsidian
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 2), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
+			"***", "***", "***", Character.valueOf('*'), "ingotObsidian"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 0), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 2)	
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 0)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), ObsidianAxe, Character.valueOf('Y'), ObsidianPickaxe, Character.valueOf('Z'), ObsidianSpade, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 0), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 0), Character.valueOf('I'), Item.stick
-		}));
-		
-		//Glowstone
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 4), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
+			"***", "***", "***", Character.valueOf('*'), "ingotGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 3), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 4)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstonePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), GlowstoneAxe, Character.valueOf('Y'), GlowstonePickaxe, Character.valueOf('Z'), GlowstoneSpade, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstonePickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 3), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 3)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 3), Character.valueOf('I'), Item.stick
-		}));
-		
-		//Lazuli
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), LazuliAxe, Character.valueOf('Y'), LazuliPickaxe, Character.valueOf('Z'), LazuliSpade, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('I'), Item.stick
-		}));
-		
-		//Platinum
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 0), new Object[] {
-			"XXX", "XXX", "XXX", Character.valueOf('X'), new ItemStack(Ingot, 1, 1)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), PlatinumAxe, Character.valueOf('Y'), PlatinumPickaxe, Character.valueOf('Z'), PlatinumSpade, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 1), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 1)
+			"XXX", "XXX", "XXX", Character.valueOf('X'), "ingotPlatinum"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 1), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 0)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 1), Character.valueOf('I'), Item.stick
-		}));
-		
-		//Redstone
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 1), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
+			"***", "***", "***", Character.valueOf('*'), "ingotRedstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 2), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 1)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstonePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), RedstoneAxe, Character.valueOf('Y'), RedstonePickaxe, Character.valueOf('Z'), RedstoneSpade, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstonePickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), new ItemStack(Ingot, 1, 2), Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), new ItemStack(Ingot, 1, 2)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), new ItemStack(Ingot, 1, 2), Character.valueOf('I'), Item.stick
 		}));
 		
 		//Extra
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianTNT, 1), new Object[] {
 			"***", "XXX", "***", Character.valueOf('*'), Block.obsidian, Character.valueOf('X'), Block.tnt
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergizedBow.getUnchargedItem(), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(ElectricBow.getUnchargedItem(), new Object[] {
 			" AB", "E B", " AB", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('B'), Item.silk, Character.valueOf('E'), EnergyCube.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyCube.getUnchargedItem(), new Object[] {
@@ -539,9 +224,6 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(UltimateUpgrade), new Object[] {
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 0), new Object[] {
-			"GGG", "ECE", "IRI", Character.valueOf('G'), Item.lightStoneDust, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(BasicBlock, 1, 3), Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
-		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(NuclearCore), new Object[] {
 			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), "dustObsidian", Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('D'), Item.diamond
 		}));
@@ -550,12 +232,6 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedAlloy), new Object[] {
 			" R ", "RIR", " R ", Character.valueOf('R'), Item.redstone, Character.valueOf('I'), Item.ingotIron
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SolarPanel), new Object[] {
-			"GGG", "RAR", "PPP", Character.valueOf('G'), Block.thinGlass, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), "ingotPlatinum"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 1), new Object[] {
-			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Block.blockSteel, Character.valueOf('P'), "dustPlatinum", Character.valueOf('E'), EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 5), new Object[] {
 			"PAP", "AIA", "PAP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Block.blockSteel
@@ -566,23 +242,8 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(OxygenTank.getEmptyItem(), new Object[] {
 			"III", "IGI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('G'), "dustGold"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ElectrolyticCore), new Object[] {
-			"EPE", "IEG", "EPE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), "dustPlatinum", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold" 
-		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(GasTank, new Object[] {
 			"PPP", "P P", "PPP", Character.valueOf('P'), "ingotPlatinum"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(AdvancedSolarGenerator), new Object[] {
-			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(Generator, 1, 1), Character.valueOf('E'), EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BioGenerator), new Object[] {
-			"RER", "BIB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('B'), BioFuel, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5), Character.valueOf('N'), Item.ingotIron
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 2), new Object[] {
-			"IRI", "ECE", "IRI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), ElectrolyticCore
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 3), new Object[] {
-			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5), Character.valueOf('C'), ElectrolyticCore
 		}));
 		
 		if(extrasEnabled)
@@ -627,20 +288,6 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Ingot, 1, 0), new ItemStack(Dust, 1, 3));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Block.tallGrass), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.seeds), new ItemStack(BioFuel, 1));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.wheat), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.pumpkinSeeds), new ItemStack(BioFuel, 1));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.melonSeeds), new ItemStack(BioFuel, 1));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.appleRed), new ItemStack(BioFuel, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 2));
-        
-        for(int i = 0; i < BlockLeaves.LEAF_TYPES.length; i++)
-        {
-        	RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling, 1, i), new ItemStack(BioFuel, 2));
-        }
         
         //Theoretical Elementizer Recipes
         RecipeHandler.addTheoreticalElementizerRecipe(new ItemStack(EnrichedAlloy), new ItemStack(TileEntityTheoreticalElementizer.getRandomMagicItem()));
@@ -651,85 +298,8 @@ public class Mekanism
 	 */
 	public void addNames()
 	{
-		//Base
-		LanguageRegistry.addName(WoodPaxel, "Wood Paxel");
-		LanguageRegistry.addName(StonePaxel, "Stone Paxel");
-		LanguageRegistry.addName(IronPaxel, "Iron Paxel");
-		LanguageRegistry.addName(DiamondPaxel, "Diamond Paxel");
-		LanguageRegistry.addName(GoldPaxel, "Gold Paxel");
-		LanguageRegistry.addName(WoodKnife, "Wood Knife");
-		LanguageRegistry.addName(StoneKnife, "Stone Knife");
-		LanguageRegistry.addName(IronKnife, "Iron Knife");
-		LanguageRegistry.addName(DiamondKnife, "Diamond Knife");
-		LanguageRegistry.addName(GoldKnife, "Gold Knife");
-		
-		//Obsidian
-		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
-		LanguageRegistry.addName(ObsidianBody, "Obsidian Chestplate");
-		LanguageRegistry.addName(ObsidianLegs, "Obsidian Leggings");
-		LanguageRegistry.addName(ObsidianBoots, "Obsidian Boots");
-		LanguageRegistry.addName(ObsidianPaxel, "Obsidian Paxel");
-		LanguageRegistry.addName(ObsidianPickaxe, "Obsidian Pickaxe");
-		LanguageRegistry.addName(ObsidianAxe, "Obsidian Axe");
-		LanguageRegistry.addName(ObsidianSpade, "Obsidian Shovel");
-		LanguageRegistry.addName(ObsidianHoe, "Obsidian Hoe");
-		LanguageRegistry.addName(ObsidianSword, "Obsidian Sword");
-		LanguageRegistry.addName(ObsidianKnife, "Obsidian Knife");
-		
-		//Lazuli
-		LanguageRegistry.addName(LazuliHelmet, "Lapis Lazuli Helmet");
-		LanguageRegistry.addName(LazuliBody, "Lapis Lazuli Chestplate");
-		LanguageRegistry.addName(LazuliLegs, "Lapis Lazuli Leggings");
-		LanguageRegistry.addName(LazuliBoots, "Lapis Lazuli Boots");
-		LanguageRegistry.addName(LazuliPaxel, "Lapis Lazuli Paxel");
-		LanguageRegistry.addName(LazuliPickaxe, "Lapis Lazuli Pickaxe");
-		LanguageRegistry.addName(LazuliAxe, "Lapis Lazuli Axe");
-		LanguageRegistry.addName(LazuliSpade, "Lapis Lazuli Shovel");
-		LanguageRegistry.addName(LazuliHoe, "Lapis Lazuli Hoe");
-		LanguageRegistry.addName(LazuliSword, "Lapis Lazuli Sword");
-		LanguageRegistry.addName(LazuliKnife, "Lazuli Knife");
-		
-		//Platinum
-		LanguageRegistry.addName(PlatinumHelmet, "Platinum Helmet");
-		LanguageRegistry.addName(PlatinumBody, "Platinum Chestplate");
-		LanguageRegistry.addName(PlatinumLegs, "Platinum Leggings");
-		LanguageRegistry.addName(PlatinumBoots, "Platinum Boots");
-		LanguageRegistry.addName(PlatinumPaxel, "Platinum Paxel");
-		LanguageRegistry.addName(PlatinumPickaxe, "Platinum Pickaxe");
-		LanguageRegistry.addName(PlatinumAxe, "Platinum Axe");
-		LanguageRegistry.addName(PlatinumSpade, "Platinum Shovel");
-		LanguageRegistry.addName(PlatinumHoe, "Platinum Hoe");
-		LanguageRegistry.addName(PlatinumSword, "Platinum Sword");
-		LanguageRegistry.addName(PlatinumKnife, "Platinum Knife");
-		
-		//Redstone
-		LanguageRegistry.addName(RedstoneHelmet, "Redstone Helmet");
-		LanguageRegistry.addName(RedstoneBody, "Redstone Chestplate");
-		LanguageRegistry.addName(RedstoneLegs, "Redstone Leggings");
-		LanguageRegistry.addName(RedstoneBoots, "Redstone Boots");
-		LanguageRegistry.addName(RedstonePaxel, "Redstone Paxel");
-		LanguageRegistry.addName(RedstonePickaxe, "Redstone Pickaxe");
-		LanguageRegistry.addName(RedstoneAxe, "Redstone Axe");
-		LanguageRegistry.addName(RedstoneSpade, "Redstone Shovel");
-		LanguageRegistry.addName(RedstoneHoe, "Redstone Hoe");
-		LanguageRegistry.addName(RedstoneSword, "Redstone Sword");
-		LanguageRegistry.addName(RedstoneKnife, "Redstone Knife");	
-		
-		//Glowstone
-		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
-		LanguageRegistry.addName(GlowstonePickaxe, "Glowstone Pickaxe");
-		LanguageRegistry.addName(GlowstoneAxe, "Glowstone Axe");
-		LanguageRegistry.addName(GlowstoneSpade, "Glowstone Shovel");
-		LanguageRegistry.addName(GlowstoneHoe, "Glowstone Hoe");
-		LanguageRegistry.addName(GlowstoneSword, "Glowstone Sword");
-		LanguageRegistry.addName(GlowstoneHelmet, "Glowstone Helmet");
-		LanguageRegistry.addName(GlowstoneBody, "Glowstone Chestplate");
-		LanguageRegistry.addName(GlowstoneLegs, "Glowstone Leggings");
-		LanguageRegistry.addName(GlowstoneBoots, "Glowstone Boots");
-		LanguageRegistry.addName(GlowstoneKnife, "Glowstone Knife");
-		
 		//Extras
-		LanguageRegistry.addName(EnergizedBow, "Energized Bow");
+		LanguageRegistry.addName(ElectricBow, "Energized Bow");
 		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
 		
 		if(extrasEnabled == true)
@@ -748,15 +318,10 @@ public class Mekanism
 		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
 		LanguageRegistry.addName(NuclearDisassembler, "Nuclear Disassembler");
 		LanguageRegistry.addName(NuclearCore, "Nuclear Core");
-		LanguageRegistry.addName(EnergizedBow, "Energized Bow");
-		LanguageRegistry.addName(SolarPanel, "Solar Panel");
+		LanguageRegistry.addName(ElectricBow, "Electric Bow");
 		LanguageRegistry.addName(HydrogenTank, "Hydrogen Tank");
 		LanguageRegistry.addName(OxygenTank, "Oxygen Tank");
-		LanguageRegistry.addName(AdvancedSolarGenerator, "Advanced Solar Generator");
 		LanguageRegistry.addName(NullRender, "Null Render");
-		LanguageRegistry.addName(BioGenerator, "Bio-Generator");
-		LanguageRegistry.addName(BioFuel, "Bio Fuel");
-		LanguageRegistry.addName(ElectrolyticCore, "Electrolytic Core");
 		LanguageRegistry.addName(GasTank, "Gas Tank");
 		
 		//Localization for MultiBlock
@@ -782,12 +347,6 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.PowerUnit.PowerUnit.name", "Power Unit");
 		LanguageRegistry.instance().addStringLocalization("tile.PowerUnit.AdvancedPowerUnit.name", "Advanced Power Unit");
 		
-		//Localization for Generator
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.HeatGenerator.name", "Heat Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.SolarGenerator.name", "Solar Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.ElectrolyticSeparator.name", "Electrolytic Separator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.HydrogenGenerator.name", "Hydrogen Generator");
-		
 		//Localization for Dust
 		LanguageRegistry.instance().addStringLocalization("item.ironDust.name", "Iron Dust");
 		LanguageRegistry.instance().addStringLocalization("item.goldDust.name", "Gold Dust");
@@ -807,83 +366,6 @@ public class Mekanism
 	 */
 	public void addTextures()
 	{
-		//Base
-		WoodPaxel.setIconIndex(150);
-		StonePaxel.setIconIndex(151);
-		IronPaxel.setIconIndex(152);
-		DiamondPaxel.setIconIndex(153);
-		GoldPaxel.setIconIndex(154);
-		WoodKnife.setIconIndex(214);
-		StoneKnife.setIconIndex(215);
-		IronKnife.setIconIndex(216);
-		DiamondKnife.setIconIndex(217);
-		GoldKnife.setIconIndex(218);
-		
-		//Glowstone
-		GlowstoneHelmet.setIconIndex(4);
-		GlowstoneBody.setIconIndex(20);
-		GlowstoneLegs.setIconIndex(36);
-		GlowstoneBoots.setIconIndex(52);
-		GlowstonePaxel.setIconIndex(148);
-		GlowstonePickaxe.setIconIndex(68);
-		GlowstoneAxe.setIconIndex(84);
-		GlowstoneSpade.setIconIndex(100);
-		GlowstoneHoe.setIconIndex(116);
-		GlowstoneSword.setIconIndex(132);
-		GlowstoneKnife.setIconIndex(212);
-		
-		//Redstone
-		RedstoneHelmet.setIconIndex(3);
-		RedstoneBody.setIconIndex(19);
-		RedstoneLegs.setIconIndex(35);
-		RedstoneBoots.setIconIndex(51);
-		RedstonePaxel.setIconIndex(147);
-		RedstonePickaxe.setIconIndex(67);
-		RedstoneAxe.setIconIndex(83);
-		RedstoneSpade.setIconIndex(99);
-		RedstoneHoe.setIconIndex(115);
-		RedstoneSword.setIconIndex(131);
-		RedstoneKnife.setIconIndex(211);
-		
-		//Platinum
-		PlatinumHelmet.setIconIndex(2);
-		PlatinumBody.setIconIndex(18);
-		PlatinumLegs.setIconIndex(34);
-		PlatinumBoots.setIconIndex(50);
-		PlatinumPaxel.setIconIndex(146);
-		PlatinumPickaxe.setIconIndex(66);
-		PlatinumAxe.setIconIndex(82);
-		PlatinumSpade.setIconIndex(98);
-		PlatinumHoe.setIconIndex(114);
-		PlatinumSword.setIconIndex(130);
-		PlatinumKnife.setIconIndex(210);
-		
-		//Obsidian
-		ObsidianHelmet.setIconIndex(1);
-		ObsidianBody.setIconIndex(17);
-		ObsidianLegs.setIconIndex(33);
-		ObsidianBoots.setIconIndex(49);
-		ObsidianPaxel.setIconIndex(145);
-		ObsidianPickaxe.setIconIndex(65);
-		ObsidianAxe.setIconIndex(81);
-		ObsidianSpade.setIconIndex(97);
-		ObsidianHoe.setIconIndex(113);
-		ObsidianSword.setIconIndex(129);
-		ObsidianKnife.setIconIndex(209);
-		
-		//Lazuli
-		LazuliPaxel.setIconIndex(144);
-		LazuliPickaxe.setIconIndex(64);
-		LazuliAxe.setIconIndex(80);
-		LazuliSpade.setIconIndex(96);
-		LazuliHoe.setIconIndex(112);
-		LazuliSword.setIconIndex(128);
-		LazuliHelmet.setIconIndex(0);
-		LazuliBody.setIconIndex(16);
-		LazuliLegs.setIconIndex(32);
-		LazuliBoots.setIconIndex(48);
-		LazuliKnife.setIconIndex(208);
-		
 		if(extrasEnabled == true)
 		{
 			LightningRod.setIconIndex(225);
@@ -900,12 +382,9 @@ public class Mekanism
 		UltimateUpgrade.setIconIndex(233);	
 		NuclearDisassembler.setIconIndex(253);
 		NuclearCore.setIconIndex(254);
-		EnergizedBow.setIconIndex(252);
-		SolarPanel.setIconIndex(255);
+		ElectricBow.setIconIndex(252);
 		HydrogenTank.setIconIndex(251);
 		OxygenTank.setIconIndex(239);
-		BioFuel.setIconIndex(237);
-		ElectrolyticCore.setIconIndex(238);
 	}
 	
 	/**
@@ -913,94 +392,26 @@ public class Mekanism
 	 */
 	public void addItems()
 	{
-		RedstoneHelmet = (new ItemMekanismArmor(11235, armorREDSTONE, proxy.getArmorIndex("redstone"), 0)).setItemName("RedstoneHelmet");
-		RedstoneBody = (new ItemMekanismArmor(11236, armorREDSTONE, proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
-		RedstoneLegs = (new ItemMekanismArmor(11237, armorREDSTONE, proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
-		RedstoneBoots = (new ItemMekanismArmor(11238, armorREDSTONE, proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
-		RedstonePaxel = new ItemMekanismPaxel(11239, toolREDSTONE2).setItemName("RedstonePaxel");
-		RedstonePickaxe = new ItemMekanismPickaxe(11240, toolREDSTONE).setItemName("RedstonePickaxe");
-		RedstoneAxe = new ItemMekanismAxe(11241, toolREDSTONE).setItemName("RedstoneAxe");
-		RedstoneSpade = new ItemMekanismSpade(11242, toolREDSTONE).setItemName("RedstoneSpade");
-		RedstoneHoe = new ItemMekanismHoe(11243, toolREDSTONE).setItemName("RedstoneHoe");
-		RedstoneSword = new ItemMekanismSword(11244, toolREDSTONE).setItemName("RedstoneSword");
-		PlatinumHelmet = (new ItemMekanismArmor(11245, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
-		PlatinumBody = (new ItemMekanismArmor(11246, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
-		PlatinumLegs = (new ItemMekanismArmor(11247, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
-		PlatinumBoots = (new ItemMekanismArmor(11248, EnumArmorMaterial.DIAMOND, proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
-		PlatinumPaxel = new ItemMekanismPaxel(11249, toolPLATINUM2).setItemName("PlatinumPaxel");
-		PlatinumPickaxe = new ItemMekanismPickaxe(11250, toolPLATINUM).setItemName("PlatinumPickaxe");
-		PlatinumAxe = new ItemMekanismAxe(11251, toolPLATINUM).setItemName("PlatinumAxe");
-		PlatinumSpade = new ItemMekanismSpade(11252, toolPLATINUM).setItemName("PlatinumSpade");
-		PlatinumHoe = new ItemMekanismHoe(11253, toolPLATINUM).setItemName("PlatinumHoe");
-		PlatinumSword = new ItemMekanismSword(11254, toolPLATINUM).setItemName("PlatinumSword");
-		ObsidianHelmet = (new ItemMekanismArmor(11255, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
-		ObsidianBody = (new ItemMekanismArmor(11256, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
-		ObsidianLegs = (new ItemMekanismArmor(11257, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
-		ObsidianBoots = (new ItemMekanismArmor(11258, armorOBSIDIAN, proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
-		ObsidianPaxel = new ItemMekanismPaxel(11259, toolOBSIDIAN2).setItemName("ObsidianPaxel");
-		ObsidianPickaxe = new ItemMekanismPickaxe(11260, toolOBSIDIAN).setItemName("ObsidianPickaxe");
-		ObsidianAxe = new ItemMekanismAxe(11261, toolOBSIDIAN).setItemName("ObsidianAxe");
-		ObsidianSpade = new ItemMekanismSpade(11262, toolOBSIDIAN).setItemName("ObsidianSpade");
-		ObsidianHoe = new ItemMekanismHoe(11263, toolOBSIDIAN).setItemName("ObsidianHoe");
-		ObsidianSword = new ItemMekanismSword(11264, toolOBSIDIAN).setItemName("ObsidianSword");
-		LazuliPaxel = new ItemMekanismPaxel(11265, toolLAZULI2).setItemName("LazuliPaxel");
-		LazuliPickaxe = new ItemMekanismPickaxe(11266, toolLAZULI).setItemName("LazuliPickaxe");
-		LazuliAxe = new ItemMekanismAxe(11267, toolLAZULI).setItemName("LazuliAxe");
-		LazuliSpade = new ItemMekanismSpade(11268, toolLAZULI).setItemName("LazuliSpade");
-		LazuliHoe = new ItemMekanismHoe(11269, toolLAZULI).setItemName("LazuliHoe");
-		LazuliSword = new ItemMekanismSword(11270, toolLAZULI).setItemName("LazuliSword");
-		LazuliHelmet = (new ItemMekanismArmor(11271, armorLAZULI, proxy.getArmorIndex("lazuli"), 0)).setItemName("LazuliHelmet");
-		LazuliBody = (new ItemMekanismArmor(11272, armorLAZULI, proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
-		LazuliLegs = (new ItemMekanismArmor(11273, armorLAZULI, proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
-		LazuliBoots = (new ItemMekanismArmor(11274, armorLAZULI, proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
-		EnergizedBow = (ItemEnergizedBow) new ItemEnergizedBow(11275).setItemName("EnergizedBow");
+		ElectricBow = (ItemElectricBow) new ItemElectricBow(11275).setItemName("ElectricBow");
 		if(extrasEnabled == true)
 		{
 			LightningRod = new ItemLightningRod(11276).setItemName("LightningRod");
 			Stopwatch = new ItemStopwatch(11277).setItemName("Stopwatch");
 			WeatherOrb = new ItemWeatherOrb(11278).setItemName("WeatherOrb");
 		}
-		WoodPaxel = new ItemMekanismPaxel(11279, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
-		StonePaxel = new ItemMekanismPaxel(11280, EnumToolMaterial.STONE).setItemName("StonePaxel");
-		IronPaxel = new ItemMekanismPaxel(11281, EnumToolMaterial.IRON).setItemName("IronPaxel");
-		DiamondPaxel = new ItemMekanismPaxel(11282, EnumToolMaterial.EMERALD).setItemName("DiamondPaxel");
-		GoldPaxel = new ItemMekanismPaxel(11283, EnumToolMaterial.GOLD).setItemName("GoldPaxel");
-		WoodKnife = new ItemMekanismKnife(11284, EnumToolMaterial.WOOD).setItemName("WoodKnife");
-		StoneKnife = new ItemMekanismKnife(11285, EnumToolMaterial.STONE).setItemName("StoneKnife");
-		IronKnife = new ItemMekanismKnife(11286, EnumToolMaterial.IRON).setItemName("IronKnife");
-		DiamondKnife = new ItemMekanismKnife(11287, EnumToolMaterial.EMERALD).setItemName("DiamondKnife");
-		GoldKnife = new ItemMekanismKnife(11288, EnumToolMaterial.GOLD).setItemName("GoldKnife");
-		ObsidianKnife = new ItemMekanismKnife(11289, toolOBSIDIAN).setItemName("ObsidianKnife");
-		LazuliKnife = new ItemMekanismKnife(11290, toolLAZULI).setItemName("LazuliKnife");
-		PlatinumKnife = new ItemMekanismKnife(11291, toolPLATINUM).setItemName("PlatinumKnife");
-		RedstoneKnife = new ItemMekanismKnife(11292, toolREDSTONE).setItemName("RedstoneKnife");
 		Dust = new ItemDust(11293-256);
 		Ingot = new ItemIngot(11294-256);
-		GlowstonePaxel = new ItemMekanismPaxel(11295, toolGLOWSTONE2).setItemName("GlowstonePaxel");
-		GlowstonePickaxe = new ItemMekanismPickaxe(11296, toolGLOWSTONE).setItemName("GlowstonePickaxe");
-		GlowstoneAxe = new ItemMekanismAxe(11297, toolGLOWSTONE).setItemName("GlowstoneAxe");
-		GlowstoneSpade = new ItemMekanismSpade(11298, toolGLOWSTONE).setItemName("GlowstoneSpade");
-		GlowstoneHoe = new ItemMekanismHoe(11299, toolGLOWSTONE).setItemName("GlowstoneHoe");
-		GlowstoneSword = new ItemMekanismSword(11300, toolGLOWSTONE).setItemName("GlowstoneSword");
-		GlowstoneHelmet = new ItemMekanismArmor(11301, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 0).setItemName("GlowstoneHelmet");
-		GlowstoneBody = new ItemMekanismArmor(11302, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 1).setItemName("GlowstoneBody");
-		GlowstoneLegs = new ItemMekanismArmor(11303, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
-		GlowstoneBoots = new ItemMekanismArmor(11304, armorGLOWSTONE, proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
-		GlowstoneKnife = new ItemMekanismKnife(11305, toolGLOWSTONE).setItemName("GlowstoneKnife");
-		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 50000, 100, 500).setItemName("EnergyTablet");
-		EnergyOrb = (ItemEnergized) new ItemEnergized(11307, 15000000, 1000, 150000).setItemName("EnergyOrb");
-		EnergyCube = (ItemEnergized) new ItemEnergized(11308, 12000, 100, 120).setItemName("EnergyCube");
+		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 2500000, 512, 25000).setItemName("EnergyTablet");
+		EnergyOrb = (ItemEnergized) new ItemEnergized(11307, 5000000, 512, 50000).setItemName("EnergyOrb");
+		EnergyCube = (ItemEnergized) new ItemEnergized(11308, 1000000, 512, 10000).setItemName("EnergyCube");
 		SpeedUpgrade = new ItemMachineUpgrade(11309, 0, 150).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(11310, 1000, 0).setItemName("EnergyUpgrade");
 		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");
-		NuclearDisassembler = (ItemNuclearDisassembler) new ItemNuclearDisassembler(11312).setItemName("NuclearDisassembler");
+		NuclearDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(11312).setItemName("NuclearDisassembler");
 		NuclearCore = new ItemMekanism(11313).setItemName("NuclearCore");
-		SolarPanel = new ItemMekanism(11314).setItemName("SolarPanel");
 		EnrichedAlloy = new ItemMekanism(11315).setItemName("EnrichedAlloy");
 		HydrogenTank = (ItemHydrogenTank) new ItemHydrogenTank(11316).setItemName("HydrogenTank");
 		OxygenTank = (ItemOxygenTank) new ItemOxygenTank(11317).setItemName("OxygenTank");
-		BioFuel = new ItemMekanism(11318).setItemName("BioFuel");
-		ElectrolyticCore = new ItemMekanism(11319).setItemName("ElectrolyticCore");
 	}
 	
 	/**
@@ -1013,18 +424,13 @@ public class Mekanism
 		MachineBlock = new BlockMachine(machineBlockID).setBlockName("MachineBlock");
 		OreBlock = new BlockOre(oreBlockID).setBlockName("OreBlock");
 		PowerUnit = new BlockPowerUnit(powerUnitID).setBlockName("PowerUnit");
-		Generator = new BlockGenerator(generatorID).setBlockName("Generator");
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(tabMekanism);
-		AdvancedSolarGenerator = new BlockAdvancedSolarGenerator(advancedSolarGeneratorID).setBlockName("AdvancedSolarGenerator");
 		NullRender = (BlockMulti) new BlockMulti(nullRenderID).setBlockName("NullRender");
-		BioGenerator = new BlockBioGenerator(bioGeneratorID).setBlockName("BioGenerator");
 		GasTank = new BlockGasTank(gasTankID).setBlockName("GasTank");
 		
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT);
-		GameRegistry.registerBlock(AdvancedSolarGenerator);
 		GameRegistry.registerBlock(NullRender);
-		GameRegistry.registerBlock(BioGenerator);
 		GameRegistry.registerBlock(GasTank);
 		
 		//Add block items into itemsList for blocks with common IDs.
@@ -1032,8 +438,6 @@ public class Mekanism
 		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setItemName("MachineBlock");
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setItemName("OreBlock");
 		Item.itemsList[powerUnitID] = new ItemBlockPowerUnit(powerUnitID - 256, PowerUnit).setItemName("PowerUnit");
-		Item.itemsList[generatorID] = new ItemBlockGenerator(generatorID - 256, Generator).setItemName("Generator");
-		
 	}
 	
 	/**
@@ -1082,11 +486,9 @@ public class Mekanism
 	{
 		//Entity IDs
 		EntityRegistry.registerGlobalEntityID(EntityObsidianTNT.class, "ObsidianTNT", EntityRegistry.findGlobalUniqueEntityId());
-		EntityRegistry.registerGlobalEntityID(EntityKnife.class, "Knife", EntityRegistry.findGlobalUniqueEntityId());
 		
 		//Registrations
 		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 51, this, 40, 5, true);
-		EntityRegistry.registerModEntity(EntityKnife.class, "Knife", 52, this, 40, 5, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber");
@@ -1096,10 +498,6 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 		GameRegistry.registerTileEntity(TileEntityPowerUnit.class, "PowerUnit");
 		GameRegistry.registerTileEntity(TileEntityAdvancedPowerUnit.class, "AdvancedPowerUnit");
-		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
-		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
-		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
-		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
 		GameRegistry.registerTileEntity(TileEntityMulti.class, "Multi");
 		GameRegistry.registerTileEntity(TileEntityControlPanel.class, "ControlPanel");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
@@ -1142,7 +540,7 @@ public class Mekanism
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		//Register the mod's GUI handler
-		NetworkRegistry.instance().registerGuiHandler(this, new CommonGuiHandler());
+		NetworkRegistry.instance().registerGuiHandler(this, new CoreGuiHandler());
 		//Register the MachineryManager
 		manager = new MachineryManager();
 		System.out.println("[Mekanism] Version " + versionNumber + " initializing...");
@@ -1187,53 +585,5 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
-	}
-	
-	@ForgeSubscribe
-	public void onLivingSpecialSpawn(LivingSpecialSpawnEvent event)
-	{
-		Random random = new Random();
-		
-		int chance = random.nextInt(100);
-		int secondChance = random.nextInt(4);
-		
-		if(chance < 5)
-		{
-			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
-			{
-				if(secondChance == 0)
-				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.GlowstoneSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.GlowstoneHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.GlowstoneBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.GlowstoneLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.GlowstoneBoots));
-				}
-				else if(secondChance == 1)
-				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.LazuliSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.LazuliHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.LazuliBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.LazuliLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.LazuliBoots));
-				}
-				else if(secondChance == 2)
-				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.RedstoneSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.RedstoneHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.RedstoneBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.RedstoneLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.RedstoneBoots));
-				}
-				else if(secondChance == 3)
-				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(Mekanism.PlatinumSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(Mekanism.PlatinumHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(Mekanism.PlatinumBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(Mekanism.PlatinumLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(Mekanism.PlatinumBoots));
-				}
-			}
-		}
 	}
 }

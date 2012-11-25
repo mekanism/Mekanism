@@ -32,14 +32,12 @@ import ic2.api.IEnergySource;
 import ic2.api.IEnergyStorage;
 import ic2.api.IWrenchable;
 import ic2.api.IElectricItem;
-import mekanism.api.IEnergizedItem;
-import mekanism.api.IEnergyAcceptor;
 import mekanism.api.ITileNetwork;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IEnergyAcceptor, IPeripheral
+public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IPeripheral
 {
 	/** Output per tick this machine can transfer. */
 	public int output;
@@ -68,7 +66,7 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(0, 2, 2000, 1, MAX_ENERGY/10);
+			powerProvider.configure(0, 2, 2000, 1, (int)(MAX_ELECTRICITY*UniversalElectricity.TO_BC_RATIO));
 		}
 	}
 	
@@ -78,76 +76,35 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		if(powerProvider != null)
 		{
 			int received = (int)(powerProvider.useEnergy(25, 25, true)*10);
-			setEnergy(energyStored + received);
+			setJoules(electricityStored + received);
 		}
 		
-		if(inventory[0] != null && energyStored > 0)
+		if(inventory[0] != null && electricityStored > 0)
 		{
-			if(inventory[0].getItem() instanceof IEnergizedItem)
-			{
-				IEnergizedItem item = (IEnergizedItem)inventory[0].getItem();
-				
-				if(item.canBeCharged())
-				{
-					int sendingEnergy = 0;
-					
-					if(item.getRate() <= energyStored)
-					{
-						sendingEnergy = item.getRate();
-					}
-					else if(item.getRate() > energyStored)
-					{
-						sendingEnergy = energyStored;
-					}
-					
-					int rejects = item.charge(inventory[0], sendingEnergy);
-					setEnergy(energyStored - (sendingEnergy - rejects));
-				}
-			}
-			else if(inventory[0].getItem() instanceof IItemElectric)
+			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric) inventory[0].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), (energyStored*UniversalElectricity.IC2_RATIO));
+				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), electricityStored);
 				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-				setJoules((energyStored*UniversalElectricity.IC2_RATIO) - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
+				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
-				int sent = ElectricItem.charge(inventory[0], energyStored, 3, false, false);
-				setEnergy(energyStored - sent);
+				double sent = ElectricItem.charge(inventory[0], (int)(electricityStored*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+				setJoules(electricityStored - sent);
 			}
 		}
 		
-		if(inventory[1] != null && energyStored < MAX_ENERGY)
+		if(inventory[1] != null && electricityStored < MAX_ELECTRICITY)
 		{
-			if(inventory[1].getItem() instanceof IEnergizedItem)
-			{
-				IEnergizedItem item = (IEnergizedItem)inventory[1].getItem();
-				
-				if(item.canBeDischarged())
-				{
-					int received = 0;
-					int energyNeeded = MAX_ENERGY - energyStored;
-					if(item.getRate() <= energyNeeded)
-					{
-						received = item.discharge(inventory[1], item.getRate());
-					}
-					else if(item.getRate() > energyNeeded)
-					{
-						received = item.discharge(inventory[1], energyNeeded);
-					}
-					
-					setEnergy(energyStored + received);
-				}
-			}
-			else if(inventory[1].getItem() instanceof IItemElectric)
+			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
 
 				if (electricItem.canProduceElectricity())
 				{
 					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules() * 0.005, inventory[1]);
-					setJoules((energyStored*UniversalElectricity.IC2_RATIO) + joulesReceived);
+					setJoules(electricityStored + joulesReceived);
 				}
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
@@ -155,13 +112,13 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 				IElectricItem item = (IElectricItem)inventory[1].getItem();
 				if(item.canProvideEnergy())
 				{
-					int gain = ElectricItem.discharge(inventory[1], MAX_ENERGY - energyStored, 3, false, false);
-					setEnergy(energyStored + gain);
+					double gain = ElectricItem.discharge(inventory[1], (int)((MAX_ELECTRICITY - electricityStored)*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+					setJoules(electricityStored + gain);
 				}
 			}
 			else if(inventory[1].itemID == Item.redstone.shiftedIndex)
 			{
-				setEnergy(energyStored + 1000);
+				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
 				
                 if (inventory[1].stackSize <= 0)
@@ -171,15 +128,15 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 			}
 		}
 		
-		if(energyStored > 0)
+		if(electricityStored > 0)
 		{
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, Vector3.get(this), ForgeDirection.getOrientation(facing));
 			
 			if(Mekanism.hooks.IC2Loaded)
 			{
-				if(energyStored >= output)
+				if(electricityStored >= output)
 				{
-					setEnergy(energyStored - (output - EnergyNet.getForWorld(worldObj).emitEnergyFrom(this, output)));
+					setJoules(electricityStored - (output - EnergyNet.getForWorld(worldObj).emitEnergyFrom(this, output))*UniversalElectricity.IC2_RATIO);
 				}
 			}
 			
@@ -188,51 +145,23 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 				if(isPowerReceptor(tileEntity))
 				{
 					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	int energyNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*10;
-	            	float transferEnergy = Math.max(Math.min(Math.min(energyNeeded, energyStored), 54000), 0);
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy/10), ForgeDirection.getOrientation(facing).getOpposite());
-	            	setEnergy(energyStored - (int)transferEnergy);
+	            	double electricityNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*UniversalElectricity.BC3_RATIO;
+	            	float transferEnergy = (float)Math.max(Math.min(Math.min(electricityNeeded, electricityStored), 80000), 0);
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*UniversalElectricity.TO_BC_RATIO), ForgeDirection.getOrientation(facing).getOpposite());
+	            	setJoules(electricityStored - (int)transferEnergy);
 				}
 				else if(tileEntity instanceof TileEntityConductor)
 				{
 					double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor) tileEntity).getNetwork());
-					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(energyStored*UniversalElectricity.IC2_RATIO, getVoltage())), 80), 0);
+					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(electricityStored*UniversalElectricity.IC2_RATIO, getVoltage())), 80), 0);
 					if (!worldObj.isRemote)
 					{
 						ElectricityManager.instance.produceElectricity(this, (IConductor)tileEntity, transferAmps, getVoltage());
 					}
-					setEnergy(energyStored - (int)(ElectricInfo.getJoules(transferAmps, getVoltage())*UniversalElectricity.TO_IC2_RATIO));
-				}
-				else if(tileEntity instanceof IEnergyAcceptor)
-				{
-					if(((IEnergyAcceptor)tileEntity).canReceive(ForgeDirection.getOrientation(facing).getOpposite()))
-					{
-						int sendingEnergy = 0;
-						if(energyStored >= output)
-						{
-							sendingEnergy = output;
-						}
-						else if(energyStored < output)
-						{
-							sendingEnergy = energyStored;
-						}
-						
-						int rejects = ((IEnergyAcceptor)tileEntity).transferToAcceptor(sendingEnergy);
-						
-						setEnergy(energyStored - (sendingEnergy - rejects));
-					}
+					setJoules(electricityStored - (int)(ElectricInfo.getJoules(transferAmps, getVoltage())*UniversalElectricity.TO_IC2_RATIO));
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Set this block's energy to a new amount.
-	 * @param energy - new amount of energy
-	 */
-	public void setEnergy(int energy)
-	{
-		energyStored = Math.max(Math.min(energy, MAX_ENERGY), 0);
 	}
 
 	@Override
@@ -244,13 +173,13 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	@Override
 	public int getStored() 
 	{
-		return energyStored;
+		return (int)(electricityStored*UniversalElectricity.IC2_RATIO);
 	}
 
 	@Override
 	public int getCapacity() 
 	{
-		return MAX_ENERGY;
+		return (int)(MAX_ELECTRICITY*UniversalElectricity.IC2_RATIO);
 	}
 
 	@Override
@@ -262,25 +191,25 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	@Override
 	public boolean demandsEnergy() 
 	{
-		return energyStored < MAX_ENERGY;
+		return electricityStored < MAX_ELECTRICITY;
 	}
 
 	@Override
     public int injectEnergy(Direction direction, int i)
     {
-    	int rejects = 0;
-    	int neededEnergy = MAX_ENERGY-energyStored;
+    	double rejects = 0;
+    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
     	if(i <= neededEnergy)
     	{
-    		energyStored += i;
+    		electricityStored += i;
     	}
     	else if(i > neededEnergy)
     	{
-    		energyStored += neededEnergy;
+    		electricityStored += neededEnergy;
     		rejects = i-neededEnergy;
     	}
     	
-    	return rejects;
+    	return (int)(rejects*UniversalElectricity.TO_IC2_RATIO);
     }
 
 	@Override
@@ -298,19 +227,19 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return energyStored*UniversalElectricity.IC2_RATIO;
+		return electricityStored*UniversalElectricity.IC2_RATIO;
 	}
 
 	@Override
-	public void setJoules(double joules, Object... data) 
+	public void setJoules(double joules, Object... data)
 	{
-		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
+		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
 	}
 
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
+		return MAX_ELECTRICITY*UniversalElectricity.IC2_RATIO;
 	}
 
 	@Override
@@ -365,25 +294,25 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	@Override
 	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
 	{
-		int energyToReceive = (int)(ElectricInfo.getJoules(amps, voltage)*UniversalElectricity.TO_IC2_RATIO);
-		int energyNeeded = MAX_ENERGY - energyStored;
-		int energyToStore = 0;
+		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
+		double electricityNeeded = MAX_ELECTRICITY - electricityStored;
+		double electricityToStore = 0;
 		
-		if(energyToReceive <= energyNeeded)
+		if(electricityToReceive <= electricityNeeded)
 		{
-			energyToStore = energyToReceive;
+			electricityToStore = electricityToReceive;
 		}
-		else if(energyToReceive > energyNeeded)
+		else if(electricityToReceive > electricityNeeded)
 		{
-			energyToStore = energyNeeded;
+			electricityToStore = electricityNeeded;
 		}
-		setEnergy(energyStored + energyToStore);
+		setJoules(electricityStored + electricityToStore);
 	}
 
 	@Override
 	public double wattRequest() 
 	{
-		return ElectricInfo.getWatts(MAX_ENERGY*UniversalElectricity.IC2_RATIO) - ElectricInfo.getWatts(energyStored*UniversalElectricity.IC2_RATIO);
+		return ElectricInfo.getWatts(MAX_ELECTRICITY) - ElectricInfo.getWatts(electricityStored);
 	}
 
 	@Override
@@ -410,13 +339,13 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 		switch(method)
 		{
 			case 0:
-				return new Object[] {energyStored};
+				return new Object[] {electricityStored};
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ENERGY};
+				return new Object[] {MAX_ELECTRICITY};
 			case 3:
-				return new Object[] {(MAX_ENERGY-energyStored)};
+				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
@@ -434,37 +363,13 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-
-	@Override
-	public int transferToAcceptor(int amount) 
-	{
-    	int rejects = 0;
-    	int neededEnergy = MAX_ENERGY-energyStored;
-    	if(amount <= neededEnergy)
-    	{
-    		energyStored += amount;
-    	}
-    	else if(amount > neededEnergy)
-    	{
-    		energyStored += neededEnergy;
-    		rejects = amount-neededEnergy;
-    	}
-    	
-    	return rejects;
-	}
-
-	@Override
-	public boolean canReceive(ForgeDirection side) 
-	{
-		return side != ForgeDirection.getOrientation(facing);
-	}
 	
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {
 			facing = dataStream.readInt();
-			energyStored = dataStream.readInt();
+			electricityStored = dataStream.readDouble();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
@@ -476,12 +381,12 @@ public class TileEntityPowerUnit extends TileEntityElectricBlock implements IEne
 	@Override
     public void sendPacket()
     {
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, energyStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored);
     }
     
 	@Override
     public void sendPacketWithRange()
     {
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, energyStored);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored);
     }
 }

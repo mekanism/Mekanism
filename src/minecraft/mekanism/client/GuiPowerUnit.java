@@ -2,6 +2,9 @@ package mekanism.client;
 
 import org.lwjgl.opengl.GL11;
 
+import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
+
 import mekanism.common.ContainerPowerUnit;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityPowerUnit;
@@ -23,8 +26,8 @@ public class GuiPowerUnit extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String capacityInfo = MekanismUtils.getDisplayedEnergyNoColor(tileEntity.energyStored) + "/" + MekanismUtils.getDisplayedEnergyNoColor(tileEntity.MAX_ENERGY);
-		String outputInfo = "Out: " + MekanismUtils.getDisplayedEnergyNoColor(tileEntity.output) + "/t";
+		String capacityInfo = ElectricInfo.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricInfo.getDisplayShort(tileEntity.MAX_ELECTRICITY, ElectricUnit.JOULES);
+		String outputInfo = "Out: " + tileEntity.output + "w";
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
 		fontRenderer.drawString(outputInfo, 45, 49, 0x404040);
@@ -41,7 +44,7 @@ public class GuiPowerUnit extends GuiContainer
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int scale = (int)(((double)tileEntity.energyStored / tileEntity.MAX_ENERGY) * 72);
+        int scale = (int)(((double)tileEntity.electricityStored / tileEntity.MAX_ELECTRICITY) * 72);
         drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
     }
 }

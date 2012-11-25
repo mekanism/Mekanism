@@ -22,11 +22,7 @@ public class CommonProxy
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */
-	public void registerSpecialTileEntities()
-	{
-		GameRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator");
-		GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
-	}
+	public void registerSpecialTileEntities() {}
 	
 	/**
 	 * Register and load client-only render information.
@@ -63,10 +59,7 @@ public class CommonProxy
 		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", 3002).getInt();
 	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", 3003).getInt();
 	  	Mekanism.powerUnitID = Mekanism.configuration.getBlock("PowerUnit", 3004).getInt();
-	  	Mekanism.generatorID = Mekanism.configuration.getBlock("Generator", 3005).getInt();
-	  	Mekanism.advancedSolarGeneratorID = Mekanism.configuration.getBlock("AdvancedSolarGenerator", 3006).getInt();
 	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3007).getInt();
-	  	Mekanism.bioGeneratorID = Mekanism.configuration.getBlock("BioGenerator", 3008).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3009).getInt();
 	  	Mekanism.extrasEnabled = Mekanism.configuration.get("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
 	  	Mekanism.oreGenerationEnabled = Mekanism.configuration.get("OreGenerationEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
@@ -131,17 +124,7 @@ public class CommonProxy
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 8:
 				return new ContainerPowerUnit(player.inventory, (TileEntityPowerUnit)tileEntity);
-			case 9:
-				return new ContainerHeatGenerator(player.inventory, (TileEntityHeatGenerator)tileEntity);
 			case 10:
-				return new ContainerSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
-			case 11:
-				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
-			case 12:
-				return new ContainerHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
-			case 13:
-				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
-			case 15:
 				return new ContainerGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 		}
 		return null;

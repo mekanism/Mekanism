@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.IElectricItem;
 import universalelectricity.core.implement.IItemElectric;
-import mekanism.api.IEnergizedItem;
 import mekanism.api.ItemMachineUpgrade;
 import net.minecraft.src.*;
 
@@ -66,7 +65,7 @@ public class ContainerElectricMachine extends Container
             		return null;
             	}
             }
-        	else if(slotStack.getItem() instanceof IEnergizedItem || slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
             {
 	            if(slotID != 1)
 	            {

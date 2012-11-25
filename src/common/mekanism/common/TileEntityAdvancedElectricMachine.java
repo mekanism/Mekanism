@@ -21,7 +21,6 @@ import ic2.api.ElectricItem;
 import ic2.api.EnergyNet;
 import ic2.api.IElectricItem;
 import ic2.api.IWrenchable;
-import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
@@ -74,36 +73,16 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		if(inventory[3] != null)
 		{
-			if(energyStored < currentMaxEnergy)
+			if(electricityStored < currentMaxElectricity)
 			{
-				if(inventory[3].getItem() instanceof IEnergizedItem)
+				if(inventory[3].getItem() instanceof IItemElectric)
 				{
-					IEnergizedItem item = (IEnergizedItem)inventory[3].getItem();
-					
-					if(item.canBeDischarged())
-					{
-						int received = 0;
-						int energyNeeded = currentMaxEnergy - energyStored;
-						if(item.getRate() <= energyNeeded)
-						{
-							received = item.discharge(inventory[3], item.getRate());
-						}
-						else if(item.getRate() > energyNeeded)
-						{
-							received = item.discharge(inventory[3], energyNeeded);
-						}
-						
-						setEnergy(energyStored + received);
-					}
-				}
-				else if(inventory[3].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
+					IItemElectric electricItem = (IItemElectric) inventory[3].getItem();
 
 					if (electricItem.canProduceElectricity())
 					{
 						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules() * 0.005, inventory[3]);
-						setEnergy(energyStored + (int)(joulesReceived*UniversalElectricity.TO_IC2_RATIO));
+						setJoules(electricityStored + joulesReceived);
 					}
 				}
 				else if(inventory[3].getItem() instanceof IElectricItem)
@@ -111,14 +90,14 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 					IElectricItem item = (IElectricItem)inventory[3].getItem();
 					if(item.canProvideEnergy())
 					{
-						int gain = ElectricItem.discharge(inventory[3], currentMaxEnergy - energyStored, 3, false, false);
-						setEnergy(energyStored + gain);
+						double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+						setJoules(electricityStored + gain);
 					}
 				}
 			}
-			if(inventory[3].itemID == Item.redstone.shiftedIndex && energyStored <= (MAX_ENERGY-1000))
+			if(inventory[3].itemID == Item.redstone.shiftedIndex && electricityStored <= (MAX_ELECTRICITY-1000))
 			{
-				setEnergy(energyStored + 1000);
+				setJoules(electricityStored + 1000);
 				--inventory[3].stackSize;
 				
 	            if (inventory[3].stackSize <= 0)
@@ -156,7 +135,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			int energyToAdd = 0;
 			int ticksToRemove = 0;
 			
-			if(currentMaxEnergy == MAX_ENERGY)
+			if(currentMaxElectricity == MAX_ELECTRICITY)
 			{
 				energyToAdd = ((IMachineUpgrade)inventory[4].getItem()).getEnergyBoost(inventory[4]);
 			}
@@ -166,20 +145,20 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				ticksToRemove = ((IMachineUpgrade)inventory[4].getItem()).getTickReduction(inventory[4]);
 			}
 			
-			currentMaxEnergy += energyToAdd;
+			currentMaxElectricity += energyToAdd;
 			currentTicksRequired -= ticksToRemove;
 		}
 		else if(inventory[4] == null)
 		{
 			currentTicksRequired = TICKS_REQUIRED;
-			currentMaxEnergy = MAX_ENERGY;
+			currentMaxElectricity = MAX_ELECTRICITY;
 		}
 		
 		if(canOperate() && (operatingTicks+1) < currentTicksRequired && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 		{
 			++operatingTicks;
 			secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-			energyStored -= ENERGY_PER_TICK;
+			electricityStored -= ENERGY_PER_TICK;
 		}
 		else if((operatingTicks+1) >= currentTicksRequired)
 		{
@@ -189,12 +168,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 			operatingTicks = 0;
 			secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-			energyStored -= ENERGY_PER_TICK;
+			electricityStored -= ENERGY_PER_TICK;
 		}
 		
-		if(energyStored < 0)
+		if(electricityStored < 0)
 		{
-			energyStored = 0;
+			electricityStored = 0;
 		}
 		
 		if(secondaryEnergyStored < 0)
@@ -202,9 +181,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			secondaryEnergyStored = 0;
 		}
 		
-		if(energyStored > currentMaxEnergy)
+		if(electricityStored > currentMaxElectricity)
 		{
-			energyStored = currentMaxEnergy;
+			electricityStored = currentMaxElectricity;
 		}
 		
 		if(secondaryEnergyStored > MAX_SECONDARY_ENERGY)
@@ -276,7 +255,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
             return false;
         }
         
-        if(energyStored < ENERGY_PER_TICK)
+        if(electricityStored < ENERGY_PER_TICK)
         {
         	return false;
         }
@@ -315,9 +294,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			facing = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
-			energyStored = dataStream.readInt();
+			electricityStored = dataStream.readDouble();
 			secondaryEnergyStored = dataStream.readInt();
-			currentMaxEnergy = dataStream.readInt();
+			currentMaxElectricity = dataStream.readDouble();
 			currentTicksRequired = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
@@ -330,13 +309,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public void sendPacket()
     {
-    	PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
+    	PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, electricityStored, secondaryEnergyStored, currentMaxElectricity, currentTicksRequired);
     }
     
     @Override
     public void sendPacketWithRange()
     {
-    	PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, energyStored, secondaryEnergyStored, currentMaxEnergy, currentTicksRequired);
+    	PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, electricityStored, secondaryEnergyStored, currentMaxElectricity, currentTicksRequired);
     }
 	
     @Override
@@ -386,7 +365,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		switch(method)
 		{
 			case 0:
-				return new Object[] {energyStored};
+				return new Object[] {electricityStored};
 			case 1:
 				return new Object[] {secondaryEnergyStored};
 			case 2:
@@ -398,9 +377,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			case 5:
 				return new Object[] {canOperate()};
 			case 6:
-				return new Object[] {currentMaxEnergy};
+				return new Object[] {currentMaxElectricity};
 			case 7:
-				return new Object[] {(currentMaxEnergy-energyStored)};
+				return new Object[] {(currentMaxElectricity-electricityStored)};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

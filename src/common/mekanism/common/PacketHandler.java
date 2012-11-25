@@ -165,6 +165,14 @@ public class PacketHandler implements IPacketHandler
         		{
         			output.writeBoolean((Boolean)data);
         		}
+        		else if(data instanceof Double)
+        		{
+        			output.writeDouble((Double)data);
+        		}
+        		else if(data instanceof Float)
+        		{
+        			output.writeFloat((Float)data);
+        		}
         		else if(data instanceof String)
         		{
         			output.writeUTF((String)data);
@@ -211,6 +219,14 @@ public class PacketHandler implements IPacketHandler
         		else if(data instanceof Boolean)
         		{
         			output.writeBoolean((Boolean)data);
+        		}
+        		else if(data instanceof Double)
+        		{
+        			output.writeDouble((Double)data);
+        		}
+        		else if(data instanceof Float)
+        		{
+        			output.writeFloat((Float)data);
         		}
         		else if(data instanceof String)
         		{

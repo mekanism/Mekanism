@@ -4,29 +4,29 @@ import java.util.List;
 
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricInfo;
+import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import universalelectricity.core.implement.IItemElectric;
 
 import ic2.api.IElectricItem;
-import mekanism.api.IEnergizedItem;
 import net.minecraft.src.*;
 
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric
+public class ItemEnergized extends ItemMekanism implements IItemElectric
 {
 	/** The maximum amount of energy this item can hold. */
-	public int MAX_ENERGY;
+	public double MAX_ELECTRICITY;
 	
 	/** How fast this item can transfer energy. */
-	public int TRANSFER_RATE;
+	public double VOLTAGE;
 	
 	/** The number that, when the max amount of energy is divided by, will make it equal 100. */
 	public int DIVIDER;
 	
-	public ItemEnergized(int id, int energy, int rate, int divide)
+	public ItemEnergized(int id, double maxElectricity, double voltage, int divider)
 	{
 		super(id);
-		DIVIDER = divide;
-		MAX_ENERGY = energy;
-		TRANSFER_RATE = rate;
+		DIVIDER = divider;
+		MAX_ELECTRICITY = maxElectricity;
+		VOLTAGE = voltage;
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
@@ -36,9 +36,9 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		int energy = getEnergy(itemstack);
+		double energy = getJoules(itemstack);
 		
-		list.add("Stored Energy: " + MekanismUtils.getDisplayedEnergy(energy));
+		list.add("Stored Energy: " + ElectricInfo.getDisplayShort(energy, ElectricUnit.JOULES));
 	}
 	
 	@Override
@@ -51,40 +51,8 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
     public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
     	ItemEnergized item = ((ItemEnergized)itemstack.getItem());
-    	item.setEnergy(itemstack, item.getEnergy(itemstack));
+    	item.setJoules(item.getJoules(itemstack), itemstack);
     }
-	
-	@Override
-	public int getEnergy(ItemStack itemstack)
-	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return 0;
-		}
-		
-		int stored = 0;
-		
-		if(itemstack.stackTagCompound.getTag("energy") != null)
-		{
-			stored = itemstack.stackTagCompound.getInteger("energy");
-		}
-		
-		itemstack.setItemDamage((MAX_ENERGY - stored)/DIVIDER);
-		return stored;
-	}
-	
-	@Override
-	public void setEnergy(ItemStack itemstack, int energy)
-	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-		
-		int stored = Math.max(Math.min(energy, MAX_ENERGY), 0);
-		itemstack.stackTagCompound.setInteger("energy", stored);
-        itemstack.setItemDamage((MAX_ENERGY - stored)/DIVIDER);
-	}
 	
 	public ItemStack getUnchargedItem()
 	{
@@ -100,86 +68,84 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		discharged.setItemDamage(100);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);
-		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy());
+		setJoules(((IItemElectric)charged.getItem()).getMaxJoules(), charged);
 		list.add(charged);
-	}
-	
-	@Override
-	public int getMaxEnergy()
-	{
-		return MAX_ENERGY;
-	}
-
-	@Override
-	public int getRate() 
-	{
-		return TRANSFER_RATE;
-	}
-
-	@Override
-	public int charge(ItemStack itemstack, int amount) 
-	{
-		int rejects = Math.max((getEnergy(itemstack) + amount) - MAX_ENERGY, 0);
-		setEnergy(itemstack, getEnergy(itemstack) + amount - rejects);
-		return rejects;
-	}
-
-	@Override
-	public int discharge(ItemStack itemstack, int amount)
-	{
-		int energyToUse = Math.min(getEnergy(itemstack), amount);
-		setEnergy(itemstack, getEnergy(itemstack) - energyToUse);
-		return energyToUse;
 	}
 
 	@Override
 	public double getJoules(Object... data)
 	{
-		if(data[0] instanceof ItemStack)
+		if (data[0] instanceof ItemStack)
 		{
-			ItemStack itemstack = (ItemStack)data[0];
-			return getEnergy(itemstack)*UniversalElectricity.IC2_RATIO;
+			ItemStack itemStack = (ItemStack) data[0];
+
+			if (itemStack.stackTagCompound == null) 
+			{ 
+				return 0; 
+			}
+			
+			double electricityStored = 0;
+			
+			if (itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
+			{
+				electricityStored = itemStack.stackTagCompound.getFloat("electricity");
+			}
+			else
+			{
+				electricityStored = itemStack.stackTagCompound.getDouble("electricity");
+			}
+			
+			itemStack.setItemDamage((int)(MAX_ELECTRICITY - electricityStored)/DIVIDER);
+			return electricityStored;
 		}
-		return 0;
+
+		return -1;
 	}
 
 	@Override
-	public void setJoules(double joules, Object... data) 
+	public void setJoules(double wattHours, Object... data)
 	{
-		if(data[0] instanceof ItemStack)
+		if (data[0] instanceof ItemStack)
 		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			setEnergy(itemstack, (int)(joules*UniversalElectricity.TO_IC2_RATIO));
+			ItemStack itemStack = (ItemStack) data[0];
+
+			if (itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+
+			double electricityStored = Math.max(Math.min(wattHours, getMaxJoules()), 0);
+			itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+			itemStack.setItemDamage((int)(MAX_ELECTRICITY - electricityStored)/DIVIDER);
 		}
 	}
 
 	@Override
 	public double getMaxJoules(Object... data)
 	{
-		return MAX_ENERGY*UniversalElectricity.IC2_RATIO;
+		return MAX_ELECTRICITY;
 	}
 
 	@Override
 	public double getVoltage() 
 	{
-		return 20;
+		return VOLTAGE;
 	}
 
 	@Override
 	public double onReceive(double amps, double voltage, ItemStack itemStack)
 	{
-		int rejects = (int)Math.max((getEnergy(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)*UniversalElectricity.TO_IC2_RATIO) - getMaxEnergy(), 0);
-		setEnergy(itemStack, (int)(getEnergy(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)*UniversalElectricity.TO_IC2_RATIO - rejects));
-        return rejects*UniversalElectricity.IC2_RATIO;
+		double rejectedElectricity = Math.max((getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)) - getMaxJoules(), 0);
+		setJoules(getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1) - rejectedElectricity, itemStack);
+		return rejectedElectricity;
 	}
 
 	@Override
 	public double onUse(double joulesNeeded, ItemStack itemStack)
 	{
-		int energyRequest = (int)Math.min(getEnergy(itemStack), joulesNeeded*UniversalElectricity.TO_IC2_RATIO);
-		setEnergy(itemStack, getEnergy(itemStack) - energyRequest);
-        return energyRequest*UniversalElectricity.IC2_RATIO;
+		double electricityToUse = Math.min(getJoules(itemStack), joulesNeeded);
+		setJoules(getJoules(itemStack) - electricityToUse, itemStack);
+		return electricityToUse;
 	}
 
 	@Override
@@ -190,24 +156,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 
 	@Override
 	public boolean canProduceElectricity()
-	{
-		return true;
-	}
-	
-	@Override
-	public int getDivider()
-	{
-		return DIVIDER;
-	}
-	
-	@Override
-	public boolean canBeCharged()
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean canBeDischarged()
 	{
 		return true;
 	}

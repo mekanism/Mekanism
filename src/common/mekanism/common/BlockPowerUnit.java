@@ -14,6 +14,7 @@ import net.minecraftforge.common.ForgeDirection;
  * Block class for handling multiple ore block IDs. 
  * 0: Power Unit
  * 1: Advanced Power Unit
+ * 2: Ultimate Power Unit
  * @author AidanBrady
  *
  */

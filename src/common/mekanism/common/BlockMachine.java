@@ -5,7 +5,7 @@ import java.util.Random;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
-import mekanism.common.BlockGenerator.GeneratorType;
+import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
