@@ -40,8 +40,6 @@ public class GeneratorsCommonProxy
 	{
 		Mekanism.configuration.load();
 	  	MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3005).getInt();
-	  	MekanismGenerators.advancedSolarGeneratorID = Mekanism.configuration.getBlock("AdvancedSolarGenerator", 3006).getInt();
-	  	MekanismGenerators.bioGeneratorID = Mekanism.configuration.getBlock("BioGenerator", 3008).getInt();
 		Mekanism.configuration.save();
 	}
 	

@@ -49,7 +49,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		}
 		
 		//Register block handler
-		RenderingRegistry.registerBlockHandler(new RenderHandler());
+		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
 		
 		System.out.println("[MekanismGenerators] Render initiative complete.");
 	}

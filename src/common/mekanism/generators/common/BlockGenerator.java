@@ -3,12 +3,16 @@ package mekanism.generators.common;
 import java.util.List;
 import java.util.Random;
 
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.prefab.multiblock.IMultiBlock;
+
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityBasicBlock;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.common.BlockMachine.MachineType;
+import mekanism.generators.client.GeneratorsClientProxy;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -18,6 +22,8 @@ import net.minecraftforge.common.ForgeDirection;
  * 1: Solar Generator
  * 2: Electrolytic Separator
  * 3: Hydrogen Generator
+ * 4: Bio-Generator
+ * 5: Advanced Solar Generator
  * @author AidanBrady
  *
  */
@@ -90,6 +96,11 @@ public class BlockGenerator extends BlockContainer
         }
         
         tileEntity.setFacing((short)change);
+        
+        if(tileEntity instanceof IMultiBlock)
+        {
+        	((IMultiBlock)tileEntity).onCreate(new Vector3(x, y, z));
+        }
     }
     
 	@Override
@@ -224,6 +235,31 @@ public class BlockGenerator extends BlockContainer
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 	}
+	
+	@Override
+	public boolean canPlaceBlockAt(World world, int x, int y, int z)
+    {
+		if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+		{
+	        boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
+	        
+	        int idSum = 0;
+	        idSum += world.getBlockId(x, y, z);
+	        World worldObj = world;
+	        
+			for(int xPos=-1;xPos<=2;xPos++)
+			{
+				for(int zPos=-1;zPos<=2;zPos++)
+				{
+					idSum += worldObj.getBlockId(x+xPos, y+2, z+zPos);
+				}
+			}
+			
+			return (idSum == 0) && canPlace;
+		}
+		
+		return super.canPlaceBlockAt(world, x, y, z);
+    }
     
     @Override
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
@@ -267,6 +303,11 @@ public class BlockGenerator extends BlockContainer
                     }
                 }
         	}
+            
+            if(tileEntity instanceof IMultiBlock)
+            {
+            	((IMultiBlock)tileEntity).onDestroy(tileEntity);
+            }
             
             tileEntity.invalidate();
         }
@@ -330,10 +371,37 @@ public class BlockGenerator extends BlockContainer
     	{
     		return new TileEntityHydrogenGenerator();
     	}
+    	else if(metadata == GeneratorType.BIO_GENERATOR.meta)
+    	{
+    		return new TileEntityBioGenerator();
+    	}
+    	else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+    	{
+    		return new TileEntityAdvancedSolarGenerator();
+    	}
     	else {
     		return null;
     	}
     }
+    
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderType()
+	{
+		return GeneratorsClientProxy.RENDER_ID;
+	}
 	
     /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
     @Override
@@ -347,7 +415,9 @@ public class BlockGenerator extends BlockContainer
 		HEAT_GENERATOR(0, 0),
 		SOLAR_GENERATOR(1, 1),
 		ELECTROLYTIC_SEPARATOR(2, 2),
-		HYDROGEN_GENERATOR(3, 3);
+		HYDROGEN_GENERATOR(3, 3),
+		BIO_GENERATOR(4, 4),
+		ADVANCED_SOLAR_GENERATOR(5, 1);
 		
 		private int meta;
 		private int guiId;

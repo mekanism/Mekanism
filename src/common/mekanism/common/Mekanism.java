@@ -113,8 +113,8 @@ public class Mekanism
 	public static Item SpeedUpgrade;
 	public static Item EnergyUpgrade;
 	public static Item UltimateUpgrade;
-	public static ItemAtomicDisassembler NuclearDisassembler;
-	public static Item NuclearCore;
+	public static ItemAtomicDisassembler AtomicDisassembler;
+	public static Item AtomicCore;
 	public static ItemStorageTank HydrogenTank;
 	public static ItemStorageTank OxygenTank;
 	
@@ -224,11 +224,11 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(UltimateUpgrade), new Object[] {
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(NuclearCore), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(AtomicCore), new Object[] {
 			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), "dustObsidian", Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('D'), Item.diamond
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(NuclearDisassembler.getUnchargedItem(), new Object[] {
-			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), NuclearCore, Character.valueOf('O'), "ingotObsidian"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(AtomicDisassembler.getUnchargedItem(), new Object[] {
+			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), AtomicCore, Character.valueOf('O'), "ingotObsidian"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedAlloy), new Object[] {
 			" R ", "RIR", " R ", Character.valueOf('R'), Item.redstone, Character.valueOf('I'), Item.ingotIron
@@ -316,8 +316,8 @@ public class Mekanism
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
 		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
-		LanguageRegistry.addName(NuclearDisassembler, "Nuclear Disassembler");
-		LanguageRegistry.addName(NuclearCore, "Nuclear Core");
+		LanguageRegistry.addName(AtomicDisassembler, "Nuclear Disassembler");
+		LanguageRegistry.addName(AtomicCore, "Nuclear Core");
 		LanguageRegistry.addName(ElectricBow, "Electric Bow");
 		LanguageRegistry.addName(HydrogenTank, "Hydrogen Tank");
 		LanguageRegistry.addName(OxygenTank, "Oxygen Tank");
@@ -380,8 +380,8 @@ public class Mekanism
 		SpeedUpgrade.setIconIndex(232);
 		EnergyUpgrade.setIconIndex(231);
 		UltimateUpgrade.setIconIndex(233);	
-		NuclearDisassembler.setIconIndex(253);
-		NuclearCore.setIconIndex(254);
+		AtomicDisassembler.setIconIndex(253);
+		AtomicCore.setIconIndex(254);
 		ElectricBow.setIconIndex(252);
 		HydrogenTank.setIconIndex(251);
 		OxygenTank.setIconIndex(239);
@@ -407,8 +407,8 @@ public class Mekanism
 		SpeedUpgrade = new ItemMachineUpgrade(11309, 0, 150).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(11310, 1000, 0).setItemName("EnergyUpgrade");
 		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");
-		NuclearDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(11312).setItemName("NuclearDisassembler");
-		NuclearCore = new ItemMekanism(11313).setItemName("NuclearCore");
+		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(11312).setItemName("AtomicDisassembler");
+		AtomicCore = new ItemMekanism(11313).setItemName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(11315).setItemName("EnrichedAlloy");
 		HydrogenTank = (ItemHydrogenTank) new ItemHydrogenTank(11316).setItemName("HydrogenTank");
 		OxygenTank = (ItemOxygenTank) new ItemOxygenTank(11317).setItemName("OxygenTank");

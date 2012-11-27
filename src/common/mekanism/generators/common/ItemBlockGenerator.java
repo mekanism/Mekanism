@@ -8,6 +8,7 @@ import net.minecraft.src.*;
  * 1: Solar Generator
  * 2: Electrolytic Separator
  * 3: Hydrogen Generator
+ * 4: Bio-Generator
  * @author AidanBrady
  *
  */
@@ -51,6 +52,12 @@ public class ItemBlockGenerator extends ItemBlock
 				break;
 			case 3:
 				name = "HydrogenGenerator";
+				break;
+			case 4:
+				name = "BioGenerator";
+				break;
+			case 5:
+				name = "AdvancedSolarGenerator";
 				break;
 			default:
 				name = "Unknown";
