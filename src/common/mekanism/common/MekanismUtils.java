@@ -92,7 +92,8 @@ public class MekanismUtils
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			while ((line = rd.readLine()) != null) {
+			while ((line = rd.readLine()) != null) 
+			{
 				result += line;
 				sb.append(line);
 			}
@@ -201,22 +202,14 @@ public class MekanismUtils
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
 	}
 	
+	/**
+	 * Retrieves an empty Energy Cube with a defined tier.
+	 * @param tier - tier to add to the Energy Cube
+	 * @return empty energy cube with defined tier
+	 */
 	public static ItemStack getEnergyCubeWithTier(EnumTier tier)
 	{
-		ItemStack itemstack = new ItemStack(Mekanism.EnergyCube);
-		
-		if(!(itemstack.getItem() instanceof IEnergyCube))
-		{
-			System.out.println("[Mekanism] Attempted to add tier to an invalid item.");
-			return itemstack;
-		}
-		
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-		
-		itemstack.stackTagCompound.setString("tier", tier.name);
+		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(Mekanism.EnergyCube).getItem()).getUnchargedItem(tier);
 		return itemstack;
 	}
 }

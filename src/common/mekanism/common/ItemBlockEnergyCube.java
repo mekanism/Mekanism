@@ -41,6 +41,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	public ItemStack getUnchargedItem(EnumTier tier)
 	{
 		ItemStack charged = new ItemStack(this);
+		setTier(charged, tier);
 		charged.setItemDamage(100);
 		return charged;
 	}

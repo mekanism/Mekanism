@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import universalelectricity.prefab.multiblock.*;
+import mekanism.api.IEnergyCube.EnumTier;
 import mekanism.api.ItemMachineUpgrade;
 import mekanism.client.SoundHandler;
 import net.minecraftforge.common.*;
@@ -109,8 +110,6 @@ public class Mekanism
 	public static Item WeatherOrb;
 	public static Item EnrichedAlloy;
 	public static ItemEnergized EnergyTablet;
-	public static ItemEnergized EnergyOrb;
-	public static ItemEnergized EnergyCubeX;
 	public static Item SpeedUpgrade;
 	public static Item EnergyUpgrade;
 	public static Item UltimateUpgrade;
@@ -186,22 +185,16 @@ public class Mekanism
 			"***", "XXX", "***", Character.valueOf('*'), Block.obsidian, Character.valueOf('X'), Block.tnt
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(ElectricBow.getUnchargedItem(), new Object[] {
-			" AB", "E B", " AB", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('B'), Item.silk, Character.valueOf('E'), EnergyCubeX.getUnchargedItem()
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyCubeX.getUnchargedItem(), new Object[] {
-			"RAR", "APA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), "dustPlatinum"
+			" AB", "E B", " AB", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('B'), Item.silk, Character.valueOf('E'), EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyTablet.getUnchargedItem(), new Object[] {
-			"RCR", "ECE", "RCR", Character.valueOf('C'), EnergyCubeX.getUnchargedItem(), Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyOrb.getUnchargedItem(), new Object[] {
-			"ECE", "CCC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyCubeX.getUnchargedItem()
+			"RCR", "ECE", "RCR", Character.valueOf('C'), Item.ingotGold, Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyCube, 1, 0), new Object[] {
-			"CEC", "EPE", "CEC", Character.valueOf('C'), EnergyCubeX.getUnchargedItem(), Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0) 
+			"CEC", "EPE", "CEC", Character.valueOf('C'), EnergyTablet.getUnchargedItem(), Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0) 
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyCube, 1, 1), new Object[] {
-			"ECE", "CPC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyCubeX.getUnchargedItem(), Character.valueOf('P'), new ItemStack(EnergyCube, 1, 0)
+			"ECE", "CPC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyTablet.getUnchargedItem(), Character.valueOf('P'), new ItemStack(EnergyCube, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
 			"***", "*R*", "***", Character.valueOf('*'), "ingotPlatinum", Character.valueOf('R'), Item.redstone
@@ -219,7 +212,7 @@ public class Mekanism
 			"PAP", "AEA", "PAP", Character.valueOf('P'), "dustPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyUpgrade), new Object[] {
-			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyCubeX.getUnchargedItem()
+			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(UltimateUpgrade), new Object[] {
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
@@ -241,6 +234,15 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(GasTank, new Object[] {
 			"PPP", "P P", "PPP", Character.valueOf('P'), "ingotPlatinum"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.BASIC), new Object[] {
+			"ELE", "TIT", "ELE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.ADVANCED), new Object[] {
+			"EGE", "TBT", "EGE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('G'), Item.ingotGold, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('B'), MekanismUtils.getEnergyCubeWithTier(EnumTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.ULTIMATE), new Object[] {
+			"EDE", "TAT", "EDE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('A'), MekanismUtils.getEnergyCubeWithTier(EnumTier.ADVANCED)
 		}));
 		
 		if(extrasEnabled)
@@ -308,8 +310,6 @@ public class Mekanism
 		}
 		
 		LanguageRegistry.addName(EnergyTablet, "Energy Tablet");
-		LanguageRegistry.addName(EnergyOrb, "Energy Orb");
-		LanguageRegistry.addName(EnergyCubeX, "Energy Cube");
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
 		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
@@ -373,8 +373,6 @@ public class Mekanism
 		}
 		
 		EnergyTablet.setIconIndex(228);
-		EnergyOrb.setIconIndex(229);
-		EnergyCubeX.setIconIndex(230);
 		SpeedUpgrade.setIconIndex(232);
 		EnergyUpgrade.setIconIndex(231);
 		UltimateUpgrade.setIconIndex(233);	
@@ -398,9 +396,7 @@ public class Mekanism
 		}
 		Dust = new ItemDust(11293-256);
 		Ingot = new ItemIngot(11294-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 2500000, 512, 25000).setItemName("EnergyTablet");
-		EnergyOrb = (ItemEnergized) new ItemEnergized(11307, 5000000, 512, 50000).setItemName("EnergyOrb");
-		EnergyCubeX = (ItemEnergized) new ItemEnergized(11308, 1000000, 512, 10000).setItemName("EnergyCube");
+		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 250000, 256, 2500).setItemName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(11309, 0, 150).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(11310, 1000, 0).setItemName("EnergyUpgrade");
 		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");

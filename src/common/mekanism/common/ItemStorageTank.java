@@ -112,8 +112,8 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	public ItemStack getEmptyItem()
 	{
 		ItemStack empty = new ItemStack(this);
-		empty.setItemDamage(100);
 		setGasType(empty, EnumGas.NONE);
+		empty.setItemDamage(100);
 		return empty;
 	}
 	
@@ -121,6 +121,7 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
 		ItemStack empty = new ItemStack(this);
+		setGasType(empty, EnumGas.NONE);
 		empty.setItemDamage(100);
 		list.add(empty);
 		

@@ -5,9 +5,13 @@ import ic2.api.EnergyNet;
 import java.util.List;
 import java.util.Random;
 
+import universalelectricity.core.implement.IItemElectric;
+
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+import mekanism.api.IEnergyCube;
 import mekanism.api.IEnergyCube.EnumTier;
+import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -144,55 +148,71 @@ public class BlockEnergyCube extends BlockContainer
     }
 	
     @Override
-    public void breakBlock(World world, int par2, int par3, int par4, int i1, int i2)
+    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
-        TileEntityEnergyCube var5 = (TileEntityEnergyCube)world.getBlockTileEntity(par2, par3, par4);
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
 
-        if (var5 != null)
+        if (tileEntity != null)
         {
-            for (int var6 = 0; var6 < var5.getSizeInventory(); ++var6)
+        	for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
             {
-                ItemStack var7 = var5.getStackInSlot(var6);
+                ItemStack slotStack = tileEntity.getStackInSlot(i);
 
-                if (var7 != null)
+                if (slotStack != null)
                 {
-                    float var8 = powerRand.nextFloat() * 0.8F + 0.1F;
-                    float var9 = powerRand.nextFloat() * 0.8F + 0.1F;
-                    float var10 = powerRand.nextFloat() * 0.8F + 0.1F;
+                    float xRandom = powerRand.nextFloat() * 0.8F + 0.1F;
+                    float yRandom = powerRand.nextFloat() * 0.8F + 0.1F;
+                    float zRandom = powerRand.nextFloat() * 0.8F + 0.1F;
 
-                    while (var7.stackSize > 0)
+                    while (slotStack.stackSize > 0)
                     {
-                        int var11 = powerRand.nextInt(21) + 10;
+                        int j = powerRand.nextInt(21) + 10;
 
-                        if (var11 > var7.stackSize)
+                        if (j > slotStack.stackSize)
                         {
-                            var11 = var7.stackSize;
+                            j = slotStack.stackSize;
                         }
 
-                        var7.stackSize -= var11;
-                        EntityItem var12 = new EntityItem(world, (double)((float)par2 + var8), (double)((float)par3 + var9), (double)((float)par4 + var10), new ItemStack(var7.itemID, var11, var7.getItemDamage()));
+                        slotStack.stackSize -= j;
+                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
 
-                        if (var7.hasTagCompound())
+                        if (slotStack.hasTagCompound())
                         {
-                            var12.item.setTagCompound((NBTTagCompound)var7.getTagCompound().copy());
+                            item.item.setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
-                        float var13 = 0.05F;
-                        var12.motionX = (double)((float)powerRand.nextGaussian() * var13);
-                        var12.motionY = (double)((float)powerRand.nextGaussian() * var13 + 0.2F);
-                        var12.motionZ = (double)((float)powerRand.nextGaussian() * var13);
-                        world.spawnEntityInWorld(var12);
+                        float k = 0.05F;
+                        item.motionX = (double)((float)powerRand.nextGaussian() * k);
+                        item.motionY = (double)((float)powerRand.nextGaussian() * k + 0.2F);
+                        item.motionZ = (double)((float)powerRand.nextGaussian() * k);
+                        world.spawnEntityInWorld(item);
                     }
                 }
             }
+        	
+            EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(Mekanism.EnergyCube));
+            
+            float motion = 0.05F;
+            entityItem.motionX = powerRand.nextGaussian() * motion;
+            entityItem.motionY = powerRand.nextGaussian() * motion + 0.2F;
+            entityItem.motionZ = powerRand.nextGaussian() * motion;
+            
+            IEnergyCube energyCube = (IEnergyCube)entityItem.item.getItem();
+            energyCube.setTier(entityItem.item, tileEntity.tier);
+            
+            IItemElectric electricItem = (IItemElectric)entityItem.item.getItem();
+            electricItem.setJoules(tileEntity.electricityStored, entityItem.item);
+            
+            world.spawnEntityInWorld(entityItem);
+        	
             if(Mekanism.hooks.IC2Loaded)
             {
-            	EnergyNet.getForWorld(var5.worldObj).removeTileEntity(var5);
+            	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
             }
-            var5.invalidate();
+            tileEntity.invalidate();
         }
 	        
-    	super.breakBlock(world, par2, par3, par4, i1, i2);
+    	super.breakBlock(world, x, y, z, i1, i2);
     }
     
 	@Override
@@ -210,6 +230,12 @@ public class BlockEnergyCube extends BlockContainer
 			((ItemBlockEnergyCube)charged.getItem()).setJoules(tier.MAX_ELECTRICITY, charged);
 			list.add(charged);
 		};
+	}
+	
+	@Override
+	public int quantityDropped(Random random)
+	{
+		return 0;
 	}
     
     @Override

@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import ic2.api.EnergyNet;
+
 import java.util.List;
 import java.util.Random;
 
@@ -262,7 +264,7 @@ public class BlockMachine extends BlockContainer
     @Override
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
     {
-        TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+        TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
 
         if (tileEntity != null)
         {
@@ -300,6 +302,11 @@ public class BlockMachine extends BlockContainer
                         world.spawnEntityInWorld(item);
                     }
                 }
+            }
+            
+            if(Mekanism.hooks.IC2Loaded)
+            {
+            	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
             }
             tileEntity.invalidate();
         }
