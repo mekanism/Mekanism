@@ -5,25 +5,17 @@ import java.util.List;
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import universalelectricity.core.implement.IItemElectric;
+import mekanism.api.IEnergyCube;
 import net.minecraft.src.*;
 
-public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric
+public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEnergyCube
 {
-	/** The maximum amount of energy this item can hold. */
-	public double MAX_ELECTRICITY;
+	public Block metaBlock;
 	
-	/** How fast this item can transfer energy. */
-	public double VOLTAGE;
-	
-	/** The number that, when the max amount of energy is divided by, will make it equal 100. */
-	public int DIVIDER;
-	
-	public ItemBlockEnergyCube(int id, double maxElectricity, double voltage, int divider)
+	public ItemBlockEnergyCube(int id, Block block)
 	{
 		super(id);
-		DIVIDER = divider;
-		MAX_ELECTRICITY = maxElectricity;
-		VOLTAGE = voltage;
+		metaBlock = block;
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
@@ -39,34 +31,18 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric
 	}
 	
 	@Override
-	public void onCreated(ItemStack itemstack, World world, EntityPlayer entityplayer)
-	{
-		itemstack = getUnchargedItem();
-	}
-	
-	@Override
     public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
-    	ItemEnergized item = ((ItemEnergized)itemstack.getItem());
+    	ItemBlockEnergyCube item = ((ItemBlockEnergyCube)itemstack.getItem());
     	item.setJoules(item.getJoules(itemstack), itemstack);
+    	item.setTier(itemstack, item.getTier(itemstack));
     }
 	
-	public ItemStack getUnchargedItem()
+	public ItemStack getUnchargedItem(EnumTier tier)
 	{
 		ItemStack charged = new ItemStack(this);
 		charged.setItemDamage(100);
 		return charged;
-	}
-	
-	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
-	{
-		ItemStack discharged = new ItemStack(this);
-		discharged.setItemDamage(100);
-		list.add(discharged);
-		ItemStack charged = new ItemStack(this);
-		setJoules(((IItemElectric)charged.getItem()).getMaxJoules(), charged);
-		list.add(charged);
 	}
 
 	@Override
@@ -92,7 +68,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric
 				electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 			}
 			
-			itemStack.setItemDamage((int)(MAX_ELECTRICITY - electricityStored)/DIVIDER);
+			itemStack.setItemDamage((int)(getTier(itemStack).MAX_ELECTRICITY - electricityStored)/getTier(itemStack).DIVIDER);
 			return electricityStored;
 		}
 
@@ -111,28 +87,34 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			double electricityStored = Math.max(Math.min(wattHours, getMaxJoules()), 0);
+			double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
 			itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-			itemStack.setItemDamage((int)(MAX_ELECTRICITY - electricityStored)/DIVIDER);
+			itemStack.setItemDamage((int)(getTier(itemStack).MAX_ELECTRICITY - electricityStored)/getTier(itemStack).DIVIDER);
 		}
 	}
 
 	@Override
 	public double getMaxJoules(Object... data)
 	{
-		return MAX_ELECTRICITY;
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemstack = (ItemStack)data[0];
+			
+			return getTier(itemstack).MAX_ELECTRICITY;
+		}
+		return EnumTier.BASIC.MAX_ELECTRICITY;
 	}
 
 	@Override
 	public double getVoltage() 
 	{
-		return VOLTAGE;
+		return 120;
 	}
 
 	@Override
 	public double onReceive(double amps, double voltage, ItemStack itemStack)
 	{
-		double rejectedElectricity = Math.max((getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)) - getMaxJoules(), 0);
+		double rejectedElectricity = Math.max((getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)) - getMaxJoules(itemStack), 0);
 		setJoules(getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1) - rejectedElectricity, itemStack);
 		return rejectedElectricity;
 	}
@@ -155,5 +137,53 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric
 	public boolean canProduceElectricity()
 	{
 		return true;
+	}
+	
+	@Override
+	public String getItemNameIS(ItemStack itemstack)
+	{
+		return getItemName() + "." + getTier(itemstack).name;
+	}
+	
+	@Override
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+    {
+    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+    	
+    	if (place)
+    	{
+    		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+    		tileEntity.tier = ((IEnergyCube)stack.getItem()).getTier(stack);
+    		tileEntity.electricityStored = getJoules(stack);
+    	}
+    	
+    	return place;
+    }
+
+	@Override
+	public EnumTier getTier(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
+		{ 
+			return EnumTier.BASIC; 
+		}
+		
+		if(itemstack.stackTagCompound.getString("tier") == null)
+		{
+			return EnumTier.BASIC;
+		}
+		
+		return EnumTier.getFromName(itemstack.stackTagCompound.getString("tier"));
+	}
+
+	@Override
+	public void setTier(ItemStack itemstack, EnumTier tier) 
+	{
+		if (itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemstack.stackTagCompound.setString("tier", tier.name);
 	}
 }

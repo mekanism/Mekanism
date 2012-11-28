@@ -253,7 +253,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
+	public void onReceive(Object sender, double amps, double voltage, ForgeDirection side) 
 	{
 		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
 		double electricityNeeded = MAX_ELECTRICITY - electricityStored;

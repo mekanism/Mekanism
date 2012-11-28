@@ -15,16 +15,6 @@ public class ToolsCommonProxy
 	public void registerRenderInformation() {}
 	
 	/**
-	 * Gets the armor index number from ClientProxy.
-	 * @param armor indicator
-	 * @return armor index number
-	 */
-	public int getArmorIndex(String string) 
-	{
-		return 0;
-	}
-	
-	/**
 	 * Set and load the mod's common configuration properties.
 	 */
 	public void loadConfiguration() {}

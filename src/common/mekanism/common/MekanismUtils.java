@@ -16,6 +16,8 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.server.FMLServerHandler;
 
+import mekanism.api.IEnergyCube;
+import mekanism.api.IEnergyCube.EnumTier;
 import mekanism.client.ThreadSendData;
 import net.minecraft.src.*;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -185,9 +187,8 @@ public class MekanismUtils
 	 */
 	public static ItemStack getStackWithSize(ItemStack itemstack, int size)
 	{
-		ItemStack tempStack = itemstack.copy();
-		tempStack.stackSize = size;
-		return tempStack;
+		itemstack.stackSize = size;
+		return itemstack;
 	}
 	
 	/**
@@ -198,5 +199,24 @@ public class MekanismUtils
 	public static void addRecipe(ItemStack output, Object[] params)
 	{
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
+	}
+	
+	public static ItemStack getEnergyCubeWithTier(EnumTier tier)
+	{
+		ItemStack itemstack = new ItemStack(Mekanism.EnergyCube);
+		
+		if(!(itemstack.getItem() instanceof IEnergyCube))
+		{
+			System.out.println("[Mekanism] Attempted to add tier to an invalid item.");
+			return itemstack;
+		}
+		
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+		
+		itemstack.stackTagCompound.setString("tier", tier.name);
+		return itemstack;
 	}
 }

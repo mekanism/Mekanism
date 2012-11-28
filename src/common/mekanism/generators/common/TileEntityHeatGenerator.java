@@ -43,8 +43,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		{
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
-				IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), electricityStored);
+				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
+				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules(inventory[1]) * 0.005, getVoltage()), electricityStored);
 				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
 				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
 			}

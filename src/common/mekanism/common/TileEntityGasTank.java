@@ -39,14 +39,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		{
 			if(inventory[0].getItem() instanceof IStorageTank)
 			{
-				if(((IStorageTank)inventory[0].getItem()).gasType() == gasType || gasType == EnumGas.NONE)
+				if(((IStorageTank)inventory[0].getItem()).getGasType(inventory[0]) == gasType || ((IStorageTank)inventory[0].getItem()).getGasType(inventory[0]) == EnumGas.NONE)
 				{
 					IStorageTank item = (IStorageTank)inventory[0].getItem();
 					
 					if(gasType == EnumGas.NONE)
-						gasType = item.gasType();
+						gasType = item.getGasType(inventory[0]);
 					
-					if(item.canReceiveGas())
+					if(item.canReceiveGas(inventory[0], gasType))
 					{
 						int sendingGas = 0;
 						
@@ -59,7 +59,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 							sendingGas = gasStored;
 						}
 						
-						int rejects = item.addGas(inventory[0], sendingGas);
+						int rejects = item.addGas(inventory[0], gasType, sendingGas);
 						setGas(gasType, gasStored - (sendingGas - rejects));
 					}
 				}
@@ -70,24 +70,24 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		{
 			if(inventory[1].getItem() instanceof IStorageTank)
 			{
-				if(((IStorageTank)inventory[1].getItem()).gasType() == gasType || gasType == EnumGas.NONE)
+				if(((IStorageTank)inventory[1].getItem()).getGasType(inventory[1]) == gasType || gasType == EnumGas.NONE)
 				{
 					IStorageTank item = (IStorageTank)inventory[1].getItem();
 					
 					if(gasType == EnumGas.NONE)
-						gasType = item.gasType();
+						gasType = item.getGasType(inventory[1]);
 					
-					if(item.canProvideGas())
+					if(item.canProvideGas(inventory[1], gasType))
 					{
 						int received = 0;
 						int gasNeeded = MAX_GAS - gasStored;
 						if(item.getRate() <= gasNeeded)
 						{
-							received = item.removeGas(inventory[1], item.getRate());
+							received = item.removeGas(inventory[1], gasType, item.getRate());
 						}
 						else if(item.getRate() > gasNeeded)
 						{
-							received = item.removeGas(inventory[1], gasNeeded);
+							received = item.removeGas(inventory[1], gasType, gasNeeded);
 						}
 						
 						setGas(gasType, gasStored + received);

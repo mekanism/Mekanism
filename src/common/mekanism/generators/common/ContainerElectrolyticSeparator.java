@@ -72,18 +72,28 @@ public class ContainerElectrolyticSeparator extends Container
             	}
             	else if(slotStack.getItem() instanceof IStorageTank)
             	{
-            		if(((IStorageTank)slotStack.getItem()).gasType() == EnumGas.HYDROGEN)
+            		if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.HYDROGEN)
             		{
             			if(!mergeItemStack(slotStack, 1, 2, false))
             			{
             				return null;
             			}
             		}
-            		else if(((IStorageTank)slotStack.getItem()).gasType() == EnumGas.OXYGEN)
+            		else if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.OXYGEN)
             		{
             			if(!mergeItemStack(slotStack, 2, 3, false))
             			{
             				return null;
+            			}
+            		}
+            		else if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.NONE)
+            		{
+            			if(!mergeItemStack(slotStack, 1, 2, false))
+            			{
+            				if(!mergeItemStack(slotStack, 2, 3, false))
+            				{
+            					return null;
+            				}
             			}
             		}
             	}

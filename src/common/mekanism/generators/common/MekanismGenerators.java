@@ -54,6 +54,7 @@ public class MekanismGenerators
 		NetworkRegistry.instance().registerGuiHandler(this, new GeneratorsGuiHandler());
 		
 		//Load the proxy
+		proxy.loadConfiguration();
 		proxy.registerSpecialTileEntities();
 		proxy.registerRenderInformation();
 		

@@ -3,7 +3,7 @@ package mekanism.api;
 import net.minecraft.src.*;
 
 /**
- * Implement this in your item class if it can store or transfer hydrogen.
+ * Implement this in your item class if it can store or transfer certain gasses.
  * @author AidanBrady
  *
  */
@@ -12,16 +12,17 @@ public interface IStorageTank
 	/**
 	 * Gets the amount of gas the item has from NBT storage.
 	 * @param itemstack
-	 * @return amount of hydrogen
+	 * @return amount of gas
 	 */
 	public int getGas(ItemStack itemstack);
 	
 	/**
-	 * Sets the hydrogen the item has with NBT.
-	 * @param itemstack
-	 * @param energy
+	 * Sets the gas the item has stored in it's NBTTagCompound.
+	 * @param itemstack - itemstack of a Storage Tank to set the gas of
+	 * @param type - the type of gas to set
+	 * @param amount - the amount of gas to set
 	 */
-	public void setGas(ItemStack itemstack, int hydrogen);
+	public void setGas(ItemStack itemstack, EnumGas type, int amount);
 	
 	/**
 	 * Gets the maximum amount of hydrogen this item can hold.
@@ -36,20 +37,22 @@ public interface IStorageTank
 	public int getRate();
 	
 	/**
-	 * Charges the item with the defined amount of hydrogen.
-	 * @param itemstack
-	 * @param amount
-	 * @return leftover hydrogen
+	 * Adds a defined about of a certain gas to a Storage Tank.
+	 * @param itemstack - the itemstack of a Storage Tank to add gas to
+	 * @param type - the type of gas to add
+	 * @param amount - the amount of gas to add
+	 * @return leftover gas
 	 */
-	public int addGas(ItemStack itemstack, int amount);
+	public int addGas(ItemStack itemstack, EnumGas type, int amount);
 	
 	/**
-	 * Removes the defined amount of hydrogen from the item.
-	 * @param itemstack
-	 * @param amount
-	 * @return hydrogen discharged
+	 * Removes the defined amount of a certain gas from the item.
+	 * @param itemstack - the itemstack of a Storage Tank to remove gas from
+	 * @param type - the type of gas to remove
+	 * @param amount - the amount of gas to remove
+	 * @return how much gas was used by this item
 	 */
-	public int removeGas(ItemStack itemstack, int amount);
+	public int removeGas(ItemStack itemstack, EnumGas type, int amount);
 	
 	/**
 	 * Gets the divider that gets that returns the max damage as 100.
@@ -58,16 +61,32 @@ public interface IStorageTank
 	public int getDivider();
 	
 	/**
-	 * Whether or not this energized item be given hydrogen.
+	 * Whether or not this storage tank be given a specific gas.
+	 * @param itemstack - the itemstack to check
+	 * @param type - the type of gas the tank can possibly receive
 	 * @return if the item be charged
 	 */
-	public boolean canReceiveGas();
+	public boolean canReceiveGas(ItemStack itemstack, EnumGas type);
 	
 	/**
-	 * Whether or not this energized item can give a hydrogen receiver hydrogen.
-	 * @return if the item can charge
+	 * Whether or not this energized item can give a gas receiver a certain amount of gas.
+	 * @param itemstack - the itemstack to check
+	 * @param type - the type of gas the tank can possibly provide
+	 * @return if the item can provide gas
 	 */
-	public boolean canProvideGas();
+	public boolean canProvideGas(ItemStack itemstack, EnumGas type);
 	
-	public EnumGas gasType();
+	/**
+	 * Gets this storage tank's current stored gas.
+	 * @param itemstack - the itemstack of a Storage Tank to check.
+	 * @return which gas the tank is holding
+	 */
+	public EnumGas getGasType(ItemStack itemstack);
+	
+	/**
+	 * Sets a storage tank's current stored gas.
+	 * @param itemstack - the itemstack of a Storage Tank to set.
+	 * @param type - the type of gas to change to
+	 */
+	public void setGasType(ItemStack itemstack, EnumGas type);
 }

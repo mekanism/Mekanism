@@ -1,84 +1,43 @@
-package mekanism.generators.client;
+package mekanism.client;
+
+import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
+import mekanism.api.IEnergyCube;
+import mekanism.api.IEnergyCube.EnumTier;
 import mekanism.common.Mekanism;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.BlockGenerator.GeneratorType;
-import net.minecraft.src.Block;
-import net.minecraft.src.IBlockAccess;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.RenderBlocks;
-import net.minecraft.src.Tessellator;
+import net.minecraft.src.*;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
-public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
+public class ItemRenderingHandler implements IItemRenderer
 {
-	public ModelAdvancedSolarGenerator solarGenerator = new ModelAdvancedSolarGenerator();
-	public ModelBioGenerator bioGenerator = new ModelBioGenerator();
-	
 	@Override
-	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
-	{
-	    GL11.glPushMatrix();
-	    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
-	    
-	    if(block.blockID == MekanismGenerators.generatorID)
-	    {
-    		if(metadata == 4)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    	    	GL11.glTranslated(0.0F, -1.1F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/BioGenerator.png"));
-    	    	bioGenerator.render(0.0625F);
-    		}
-    		else if(metadata == 5)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
-    	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/AdvancedSolarGenerator.png"));
-    	        solarGenerator.render(0.0F, 0.024F);
-    		}
-    		else {
-    	        ForgeHooksClient.bindTexture(block.getTextureFile(), 0);
-    	        renderItem(renderer, metadata, block);
-    		}
-	    }
-	    
-	    GL11.glPopMatrix();
-	}
-
-	@Override
-	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
-	{
-		if(block.blockID == MekanismGenerators.generatorID)
-		{
-			int metadata = world.getBlockMetadata(x, y, z);
-			
-			if(metadata != 4 && metadata != 5)
-			{
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.func_83018_a(block);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	@Override
-	public boolean shouldRender3DInInventory() 
+	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
 		return true;
 	}
 
 	@Override
-	public int getRenderId() 
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
 	{
-		return GeneratorsClientProxy.RENDER_ID;
+		return true;
+	}
+
+	@Override
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data) 
+	{
+		EnumTier tier = ((IEnergyCube)item.getItem()).getTier(item);
+		
+        ForgeHooksClient.bindTexture(item.getItem().getTextureFile(), 0);
+        
+        if(type == ItemRenderType.EQUIPPED)
+        {
+        	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        }
+        
+        renderItem((RenderBlocks)data[0], tier == EnumTier.BASIC ? 0 : (tier == EnumTier.ADVANCED ? 1 : (tier == EnumTier.ULTIMATE ? 2 : 0)));
 	}
 	
 	/**
@@ -88,8 +47,10 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	 * @param metadata - block/item metadata
 	 * @param block - block to render
 	 */
-	public void renderItem(RenderBlocks renderer, int metadata, Block block)
+	public void renderItem(RenderBlocks renderer, int metadata)
 	{
+		Block block = Block.blocksList[Mekanism.energyCubeID];
+		renderer.func_83018_a(block);
 		block.setBlockBoundsForItemRender();
 
         if (renderer.useInventoryTint)

@@ -39,8 +39,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		{
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
-				IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules() * 0.005, getVoltage()), electricityStored);
+				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
+				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules(inventory[1]) * 0.005, getVoltage()), electricityStored);
 				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
 				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
 			}
@@ -57,17 +57,17 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			{
 				IStorageTank item = (IStorageTank)inventory[0].getItem();
 				
-				if(item.canProvideGas() && item.gasType() == EnumGas.HYDROGEN)
+				if(item.canProvideGas(inventory[0], EnumGas.HYDROGEN) && item.getGasType(inventory[0]) == EnumGas.HYDROGEN)
 				{
 					int received = 0;
 					int hydrogenNeeded = MAX_HYDROGEN - hydrogenStored;
 					if(item.getRate() <= hydrogenNeeded)
 					{
-						received = item.removeGas(inventory[0], item.getRate());
+						received = item.removeGas(inventory[0], EnumGas.HYDROGEN, item.getRate());
 					}
 					else if(item.getRate() > hydrogenNeeded)
 					{
-						received = item.removeGas(inventory[0], hydrogenNeeded);
+						received = item.removeGas(inventory[0], EnumGas.HYDROGEN, hydrogenNeeded);
 					}
 					
 					setGas(EnumGas.HYDROGEN, hydrogenStored + received);

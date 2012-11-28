@@ -26,7 +26,7 @@ import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityEnrichmentChamber;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityPlatinumCompressor;
-import mekanism.common.TileEntityPowerUnit;
+import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
@@ -39,6 +39,8 @@ import net.minecraftforge.client.MinecraftForgeClient;
  */
 public class ClientProxy extends CommonProxy
 {
+	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	
 	@Override
 	public int getArmorIndex(String string)
 	{
@@ -48,8 +50,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
-		System.out.println("[Mekanism] Beginning render initiative...");
-		
 		//Preload block/item textures
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/items.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/terrain.png");
@@ -75,7 +75,10 @@ public class ClientProxy extends CommonProxy
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
 		
-		System.out.println("[Mekanism] Render initiative complete.");
+		//Register item handler
+		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, new ItemRenderingHandler());
+		
+		System.out.println("[Mekanism] Render registrations complete.");
 	}
 	
 	@Override
@@ -116,7 +119,7 @@ public class ClientProxy extends CommonProxy
 			case 7:
 				return new GuiTheoreticalElementizer(player.inventory, (TileEntityTheoreticalElementizer)tileEntity);
 			case 8:
-				return new GuiPowerUnit(player.inventory, (TileEntityPowerUnit)tileEntity);
+				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
 				return new GuiControlPanel((TileEntityControlPanel)tileEntity, player, world);
 			case 10:

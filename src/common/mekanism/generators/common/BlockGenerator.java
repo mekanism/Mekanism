@@ -234,6 +234,8 @@ public class BlockGenerator extends BlockContainer
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
+		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
 	}
 	
 	@Override
@@ -304,6 +306,14 @@ public class BlockGenerator extends BlockContainer
                 }
         	}
             
+            EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z)));
+            
+            float motion = 0.05F;
+            entityItem.motionX = machineRand.nextGaussian() * motion;
+            entityItem.motionY = machineRand.nextGaussian() * motion + 0.2F;
+            entityItem.motionZ = machineRand.nextGaussian() * motion;
+            world.spawnEntityInWorld(entityItem);
+            
             if(tileEntity instanceof IMultiBlock)
             {
             	((IMultiBlock)tileEntity).onDestroy(tileEntity);
@@ -350,6 +360,12 @@ public class BlockGenerator extends BlockContainer
     public String getTextureFile()
     {
     	return "/resources/mekanism/textures/generators/terrain.png";
+    }
+    
+    @Override
+    public int quantityDropped(Random random)
+    {
+    	return 0;
     }
     
     @Override
@@ -409,6 +425,20 @@ public class BlockGenerator extends BlockContainer
 	{
 		return null;
 	}
+    
+    /*@Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) 
+    {
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
+    	{
+    		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.4F, 1.0F);
+    	}
+    	else {
+    		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+    	}
+    }*/
 	
 	public static enum GeneratorType
 	{
@@ -419,8 +449,8 @@ public class BlockGenerator extends BlockContainer
 		BIO_GENERATOR(4, 4),
 		ADVANCED_SOLAR_GENERATOR(5, 1);
 		
-		private int meta;
-		private int guiId;
+		public int meta;
+		public int guiId;
 		
 		private GeneratorType(int i, int j)
 		{

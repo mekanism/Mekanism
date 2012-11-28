@@ -30,8 +30,6 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
-		System.out.println("[MekanismGenerators] Beginning render initiative...");
-		
 		//Preload block/item textures
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/generators/items.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/generators/terrain.png");
@@ -51,7 +49,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		//Register block handler
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
 		
-		System.out.println("[MekanismGenerators] Render initiative complete.");
+		System.out.println("[MekanismGenerators] Render registrations complete.");
 	}
 	
 	@Override

@@ -58,7 +58,7 @@ public class CommonProxy
 		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", 3001).getInt();
 		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", 3002).getInt();
 	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", 3003).getInt();
-	  	Mekanism.powerUnitID = Mekanism.configuration.getBlock("PowerUnit", 3004).getInt();
+	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
 	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3007).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3009).getInt();
 	  	Mekanism.extrasEnabled = Mekanism.configuration.get("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
@@ -123,7 +123,7 @@ public class CommonProxy
 			case 7:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 8:
-				return new ContainerPowerUnit(player.inventory, (TileEntityPowerUnit)tileEntity);
+				return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 10:
 				return new ContainerGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 		}

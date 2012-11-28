@@ -4,12 +4,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import mekanism.common.ContainerAdvancedElectricMachine;
 import mekanism.common.ContainerElectricMachine;
 import mekanism.common.ContainerGasTank;
-import mekanism.common.ContainerPowerUnit;
+import mekanism.common.ContainerEnergyCube;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityGasTank;
-import mekanism.common.TileEntityPowerUnit;
+import mekanism.common.TileEntityEnergyCube;
 import net.minecraft.src.*;
 
 /**

@@ -135,7 +135,7 @@ public class BlockGasTank extends BlockContainer
         {
         	if(!entityplayer.isSneaking())
         	{
-        		entityplayer.openGui(Mekanism.instance, 15, world, x, y, z);
+        		entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
         		return true;
         	}
         }

@@ -1,23 +1,22 @@
-package mekanism.generators.common;
+package mekanism.common;
 
 import ic2.api.IElectricItem;
 import universalelectricity.core.implement.IItemElectric;
-import mekanism.api.EnumGas;
-import mekanism.api.IStorageTank;
-import mekanism.common.SlotEnergy;
+import mekanism.api.*;
 import net.minecraft.src.*;
 
-public class ContainerHydrogenGenerator extends Container
+public class ContainerEnergyCube extends Container
 {
-    private TileEntityHydrogenGenerator tileEntity;
-
-    public ContainerHydrogenGenerator(InventoryPlayer inventory, TileEntityHydrogenGenerator tentity)
-    {
-        tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 17, 35));
-        addSlotToContainer(new SlotEnergy(tentity, 1, 143, 35));
-        int slotX;
-
+	private TileEntityEnergyCube tileEntity;
+	
+	public ContainerEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube unit)
+	{
+		tileEntity = unit;
+		addSlotToContainer(new SlotEnergy(unit, 0, 8, 8));
+		addSlotToContainer(new SlotEnergy(unit, 1, 8, 40));
+		
+		int slotX;
+		
         for (slotX = 0; slotX < 3; ++slotX)
         {
             for (int slotY = 0; slotY < 9; ++slotY)
@@ -34,20 +33,20 @@ public class ContainerHydrogenGenerator extends Container
         tileEntity.openChest();
     }
     
-    @Override
+	@Override
     public void onCraftGuiClosed(EntityPlayer entityplayer)
     {
 		super.onCraftGuiClosed(entityplayer);
 		tileEntity.closeChest();
     }
-
-    @Override
+	
+	@Override
     public boolean canInteractWith(EntityPlayer par1EntityPlayer)
     {
         return tileEntity.isUseableByPlayer(par1EntityPlayer);
     }
-
-    @Override
+    
+	@Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
     {
         ItemStack stack = null;
@@ -57,50 +56,37 @@ public class ContainerHydrogenGenerator extends Container
         {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            
-        	if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
+
+            if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
             {
-	            if(slotID != 1)
+	            if(slotID != 0 && slotID != 1)
 	            {
 	                if (!mergeItemStack(slotStack, 1, 2, false))
 	                {
-	                	return null;
+		                if (!mergeItemStack(slotStack, 0, 1, false))
+		                {
+		                    return null;
+		                }
 	                }
 	            }
 	            else if(slotID == 1)
 	            {
-	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
+	            	if(!mergeItemStack(slotStack, 0, 1, false))
+	            	{
+		            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
+		            	{
+		            		return null;
+		            	}
+	            	}
+	            }
+	            else if(slotID == 0)
+	            {
+	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
-        	else if(slotStack.getItem() instanceof IStorageTank)
-        	{
-            	if(slotID != 0 && slotID != 1)
-            	{
-            		if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.HYDROGEN)
-            		{
-	                    if (!mergeItemStack(slotStack, 0, 1, false))
-		                {
-		                    return null;
-		                }
-            		}
-            	}
-            	else {
-	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
-	            	{
-	            		return null;
-	            	}
-            	}
-        	}
-        	else if(slotStack.itemID == Item.bucketEmpty.shiftedIndex)
-        	{
-        		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
-        		{
-        			return null;
-        		}
-        	}
             
             if (slotStack.stackSize == 0)
             {

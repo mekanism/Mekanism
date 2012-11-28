@@ -20,7 +20,7 @@ import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricityManager;
 import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.implement.IElectricityProducer;
 import universalelectricity.core.implement.IJouleStorage;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.tile.TileEntityConductor;
@@ -29,7 +29,7 @@ import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IPeripheral
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityProducer, IPeripheral
 {
 	/** Output per tick this generator can transfer. */
 	public int output;
@@ -253,21 +253,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public boolean canConnect(ForgeDirection side) 
 	{
 		return side == ForgeDirection.getOrientation(facing);
-	}
-	
-	@Override
-	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) {}
-
-	@Override
-	public double wattRequest() 
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean canReceiveFromSide(ForgeDirection side) 
-	{
-		return false;
 	}
 	
 	@Override

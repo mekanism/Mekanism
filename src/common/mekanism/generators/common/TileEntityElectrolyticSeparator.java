@@ -73,11 +73,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			if(inventory[3].getItem() instanceof IItemElectric)
 			{
-				IItemElectric electricItem = (IItemElectric) inventory[3].getItem();
+				IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
 
 				if (electricItem.canProduceElectricity())
 				{
-					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules() * 0.005, inventory[3]);
+					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(inventory[3]) * 0.005, inventory[3]);
 					setJoules(electricityStored + joulesReceived);
 				}
 			}
@@ -107,11 +107,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1].getItem() instanceof IStorageTank)
 				{
-					if(((IStorageTank)inventory[1].getItem()).gasType() == EnumGas.HYDROGEN)
+					if(((IStorageTank)inventory[1].getItem()).getGasType(inventory[1]) == EnumGas.HYDROGEN || ((IStorageTank)inventory[1].getItem()).getGasType(inventory[1]) == EnumGas.NONE)
 					{
 						IStorageTank item = (IStorageTank)inventory[1].getItem();
 						
-						if(item.canReceiveGas())
+						if(item.canReceiveGas(inventory[1], EnumGas.HYDROGEN))
 						{
 							int sendingGas = 0;
 							
@@ -124,7 +124,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 								sendingGas = hydrogenStored;
 							}
 							
-							int rejects = item.addGas(inventory[1], sendingGas);
+							int rejects = item.addGas(inventory[1], EnumGas.HYDROGEN, sendingGas);
 							setGas(EnumGas.HYDROGEN, hydrogenStored - (sendingGas - rejects));
 						}
 					}
@@ -135,11 +135,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(inventory[2].getItem() instanceof IStorageTank)
 				{
-					if(((IStorageTank)inventory[2].getItem()).gasType() == EnumGas.OXYGEN)
+					if(((IStorageTank)inventory[2].getItem()).getGasType(inventory[2]) == EnumGas.OXYGEN || ((IStorageTank)inventory[2].getItem()).getGasType(inventory[2]) == EnumGas.NONE)
 					{
 						IStorageTank item = (IStorageTank)inventory[2].getItem();
 						
-						if(item.canReceiveGas())
+						if(item.canReceiveGas(inventory[2], EnumGas.OXYGEN))
 						{
 							int sendingGas = 0;
 							
@@ -152,7 +152,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 								sendingGas = oxygenStored;
 							}
 							
-							int rejects = item.addGas(inventory[2], sendingGas);
+							int rejects = item.addGas(inventory[2], EnumGas.OXYGEN, sendingGas);
 							setGas(EnumGas.OXYGEN, oxygenStored - (sendingGas - rejects));
 						}
 					}
@@ -356,7 +356,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public void onReceive(TileEntity sender, double amps, double voltage, ForgeDirection side) 
+	public void onReceive(Object sender, double amps, double voltage, ForgeDirection side) 
 	{
 		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
 		double electricityNeeded = MAX_ELECTRICITY - electricityStored;

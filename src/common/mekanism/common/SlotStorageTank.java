@@ -27,7 +27,7 @@ public class SlotStorageTank extends Slot
 		
 		if(itemstack.getItem() instanceof IStorageTank)
 		{
-			return ((IStorageTank)itemstack.getItem()).gasType() == type;
+			return ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == type || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE;
 		}
 		return false;
 	}
