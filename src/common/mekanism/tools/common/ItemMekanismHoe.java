@@ -13,27 +13,27 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 
 public class ItemMekanismHoe extends ItemMekanism
 {
-    protected EnumToolMaterial theToolMaterial;
+    protected EnumToolMaterial toolMaterial;
 
-    public ItemMekanismHoe(int id, EnumToolMaterial par2EnumToolMaterial)
+    public ItemMekanismHoe(int id, EnumToolMaterial enumtoolmaterial)
     {
         super(id);
-        theToolMaterial = par2EnumToolMaterial;
+        toolMaterial = enumtoolmaterial;
         maxStackSize = 1;
-        setMaxDamage(par2EnumToolMaterial.getMaxUses());
+        setMaxDamage(enumtoolmaterial.getMaxUses());
         setCreativeTab(CreativeTabs.tabTools);
     }
 
     @Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float entityX, float entityY, float entityZ)
     {
-        if (!par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack))
+        if (!entityplayer.canPlayerEdit(x, y, z, side, itemstack))
         {
             return false;
         }
         else
         {
-            UseHoeEvent event = new UseHoeEvent(par2EntityPlayer, par1ItemStack, par3World, par4, par5, par6);
+            UseHoeEvent event = new UseHoeEvent(entityplayer, itemstack, world, x, y, z);
             if (MinecraftForge.EVENT_BUS.post(event))
             {
                 return false;
@@ -41,38 +41,38 @@ public class ItemMekanismHoe extends ItemMekanism
 
             if (event.getResult() == Result.ALLOW)
             {
-                par1ItemStack.damageItem(1, par2EntityPlayer);
+                itemstack.damageItem(1, entityplayer);
                 return true;
             }
 
-            int var11 = par3World.getBlockId(par4, par5, par6);
-            int var12 = par3World.getBlockId(par4, par5 + 1, par6);
+            int blockID = world.getBlockId(x, y, z);
+            int aboveBlockID = world.getBlockId(x, y + 1, z);
 
-            if ((par7 == 0 || var12 != 0 || var11 != Block.grass.blockID) && var11 != Block.dirt.blockID)
+            if ((side == 0 || aboveBlockID != 0 || blockID != Block.grass.blockID) && blockID != Block.dirt.blockID)
             {
                 return false;
             }
             else
             {
-                Block var13 = Block.tilledField;
-                par3World.playSoundEffect((double)((float)par4 + 0.5F), (double)((float)par5 + 0.5F), (double)((float)par6 + 0.5F), var13.stepSound.getStepSound(), (var13.stepSound.getVolume() + 1.0F) / 2.0F, var13.stepSound.getPitch() * 0.8F);
+                Block block = Block.tilledField;
+                world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getStepSound(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
 
-                if (par3World.isRemote)
+                if (world.isRemote)
                 {
                     return true;
                 }
                 else
                 {
-                    par3World.setBlockWithNotify(par4, par5, par6, var13.blockID);
-                    par1ItemStack.damageItem(1, par2EntityPlayer);
+                    world.setBlockWithNotify(x, y, z, block.blockID);
+                    itemstack.damageItem(1, entityplayer);
                     return true;
                 }
             }
         }
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean isFull3D()
     {
         return true;

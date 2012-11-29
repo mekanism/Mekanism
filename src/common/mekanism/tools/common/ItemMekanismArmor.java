@@ -7,9 +7,9 @@ import net.minecraft.src.*;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-    public ItemMekanismArmor(int par1, EnumArmorMaterial par2EnumArmorMaterial, int par3, int par4)
+    public ItemMekanismArmor(int id, EnumArmorMaterial par2EnumArmorMaterial, int renderIndex, int armorType)
     {
-        super(par1, par2EnumArmorMaterial, par3, par4);
+        super(id, par2EnumArmorMaterial, renderIndex, armorType);
         setCreativeTab(Mekanism.tabMekanism);
     }
     

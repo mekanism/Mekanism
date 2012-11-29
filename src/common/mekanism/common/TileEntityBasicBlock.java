@@ -101,7 +101,11 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 		}
 		
 		initialized = false;
-		facing = direction;
+		
+		if(canSetFacing(direction))
+		{
+			facing = direction;
+		}
 		
 		sendPacket();
 		
@@ -110,6 +114,16 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 			EnergyNet.getForWorld(worldObj).addTileEntity(this);
 		}
 		initialized = true;
+	}
+	
+	/**
+	 * Whether or not this block's orientation can be changed to a specific direction. True by default.
+	 * @param facing - facing to check
+	 * @return if the block's orientation can be changed
+	 */
+	public boolean canSetFacing(int facing)
+	{
+		return true;
 	}
 
 	@Override

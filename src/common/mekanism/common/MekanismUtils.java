@@ -27,7 +27,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  * @author AidanBrady
  *
  */
-public class MekanismUtils
+public final class MekanismUtils
 {
 	/**
 	 * Checks for a new version of Mekanism.

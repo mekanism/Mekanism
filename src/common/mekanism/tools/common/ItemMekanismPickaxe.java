@@ -10,62 +10,62 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
 {
     private static Block blocksEffectiveAgainst[];
 
-    public ItemMekanismPickaxe(int par1, EnumToolMaterial par2EnumToolMaterial)
+    public ItemMekanismPickaxe(int id, EnumToolMaterial enumtoolmaterial)
     {
-        super(par1, 2, par2EnumToolMaterial, blocksEffectiveAgainst);
+        super(id, 2, enumtoolmaterial, blocksEffectiveAgainst);
     }
 
     @Override
-    public boolean canHarvestBlock(Block par1Block)
+    public boolean canHarvestBlock(Block block)
     {
-        if (par1Block == Block.obsidian)
+        if (block == Block.obsidian)
         {
             return toolMaterial.getHarvestLevel() == 3;
         }
 
-        if (par1Block == Block.blockDiamond || par1Block == Block.oreDiamond)
+        if (block == Block.blockDiamond || block == Block.oreDiamond)
         {
             return toolMaterial.getHarvestLevel() >= 2;
         }
 
-        if (par1Block == Block.blockGold || par1Block == Block.oreGold)
+        if (block == Block.blockGold || block == Block.oreGold)
         {
             return toolMaterial.getHarvestLevel() >= 2;
         }
 
-        if (par1Block == Block.blockSteel || par1Block == Block.oreIron)
+        if (block == Block.blockSteel || block == Block.oreIron)
         {
             return toolMaterial.getHarvestLevel() >= 1;
         }
 
-        if (par1Block == Block.blockLapis || par1Block == Block.oreLapis)
+        if (block == Block.blockLapis || block == Block.oreLapis)
         {
             return toolMaterial.getHarvestLevel() >= 1;
         }
 
-        if (par1Block == Block.oreRedstone || par1Block == Block.oreRedstoneGlowing)
+        if (block == Block.oreRedstone || block == Block.oreRedstoneGlowing)
         {
             return toolMaterial.getHarvestLevel() >= 2;
         }
 
-        if (par1Block.blockMaterial == Material.rock)
+        if (block.blockMaterial == Material.rock)
         {
             return true;
         }
 
-        return par1Block.blockMaterial == Material.iron;
+        return block.blockMaterial == Material.iron;
     }
 
     @Override
-    public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
+    public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-        if (par2Block != null && (par2Block.blockMaterial == Material.iron || par2Block.blockMaterial == Material.rock))
+        if (block != null && (block.blockMaterial == Material.iron || block.blockMaterial == Material.rock))
         {
             return efficiencyOnProperMaterial;
         }
         else
         {
-            return super.getStrVsBlock(par1ItemStack, par2Block);
+            return super.getStrVsBlock(itemstack, block);
         }
     }
 

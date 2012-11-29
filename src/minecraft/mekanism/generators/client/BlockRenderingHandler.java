@@ -91,6 +91,16 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	public void renderItem(RenderBlocks renderer, int metadata, Block block)
 	{
 		block.setBlockBoundsForItemRender();
+		
+		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
+		{
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.4F, 1.0F);
+		}
+		else {
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		}
+		
+		renderer.func_83018_a(block);
 
         if (renderer.useInventoryTint)
         {

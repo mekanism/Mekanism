@@ -9,21 +9,21 @@ public class ItemMekanismAxe extends ItemMekanismTool
 {
     private static Block blocksEffectiveAgainst[];
 
-    public ItemMekanismAxe(int par1, EnumToolMaterial par2EnumToolMaterial)
+    public ItemMekanismAxe(int id, EnumToolMaterial enumtoolmaterial)
     {
-        super(par1, 3, par2EnumToolMaterial, blocksEffectiveAgainst);
+        super(id, 3, enumtoolmaterial, blocksEffectiveAgainst);
     }
 
     @Override
-    public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
+    public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-        if (par2Block != null && par2Block.blockMaterial == Material.wood)
+        if (block != null && block.blockMaterial == Material.wood)
         {
             return efficiencyOnProperMaterial;
         }
         else
         {
-            return super.getStrVsBlock(par1ItemStack, par2Block);
+            return super.getStrVsBlock(itemstack, block);
         }
     }
 

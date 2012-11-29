@@ -143,6 +143,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 	
 	@Override
+	public boolean canSetFacing(int facing)
+	{
+		return facing != 0 && facing != 1;
+	}
+	
+	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try {

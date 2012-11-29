@@ -94,7 +94,7 @@ public class ItemMekanismKnife extends ItemMekanism
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack itemstack, World world, int i, int j, int k, int l, EntityLiving entityliving)
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, int x, int y, int z, int side, EntityLiving entityliving)
     {
         itemstack.damageItem(blockDamage, entityliving);
         return true;

@@ -1,5 +1,7 @@
 package mekanism.generators.common;
 
+import ic2.api.EnergyNet;
+
 import java.util.List;
 import java.util.Random;
 
@@ -124,14 +126,18 @@ public class BlockGenerator extends BlockContainer
     	{
     		if(side == 3)
     		{
-    			return 5;
+    			return 10;
     		}
     		else if(side == 1)
     		{
     			return 3;
     		}
-    		else {
+    		else if(side == 0)
+    		{
     			return 4;
+    		}
+    		else {
+    			return 11;
     		}
     	}
     	else if(meta == 2)
@@ -184,14 +190,18 @@ public class BlockGenerator extends BlockContainer
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 5;
+    			return 10;
     		}
     		else if(side == 1)
     		{
     			return 3;
     		}
-    		else {
+    		else if(side == 0)
+    		{
     			return 4;
+    		}
+    		else {
+    			return 11;
     		}
     	}
     	else if(metadata == 2)
@@ -314,6 +324,11 @@ public class BlockGenerator extends BlockContainer
             entityItem.motionZ = machineRand.nextGaussian() * motion;
             world.spawnEntityInWorld(entityItem);
             
+            if(Mekanism.hooks.IC2Loaded)
+            {
+            	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
+            }
+            
             if(tileEntity instanceof IMultiBlock)
             {
             	((IMultiBlock)tileEntity).onDestroy(tileEntity);
@@ -426,7 +441,7 @@ public class BlockGenerator extends BlockContainer
 		return null;
 	}
     
-    /*@Override
+    @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) 
     {
     	int metadata = world.getBlockMetadata(x, y, z);
@@ -438,7 +453,7 @@ public class BlockGenerator extends BlockContainer
     	else {
     		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     	}
-    }*/
+    }
 	
 	public static enum GeneratorType
 	{

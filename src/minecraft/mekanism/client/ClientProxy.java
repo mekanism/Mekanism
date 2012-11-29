@@ -91,7 +91,12 @@ public class ClientProxy extends CommonProxy
 	public void loadUtilities()
 	{
 		System.out.println("[Mekanism] Beginning utility initiative...");
-		new ThreadSendData();
+		
+		if(FMLClientHandler.instance().getClient().gameSettings.snooperEnabled)
+		{
+			new ThreadSendData();
+		}
+		
 		System.out.println("[Mekanism] Utility initiative complete.");
 	}
 	

@@ -253,8 +253,8 @@ public class Mekanism
 		}
 	
 		//Furnace Recipes
-		GameRegistry.addSmelting(new ItemStack(OreBlock, 1, 0).itemID, new ItemStack(Ingot, 2, 1), 1.0F);
-		GameRegistry.addSmelting(new ItemStack(Dust, 1, 2).itemID, new ItemStack(Ingot, 1, 1), 1.0F);
+		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 2, new ItemStack(Ingot, 1, 1), 1.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Dust, 1, 4), new ItemStack(Item.diamond));

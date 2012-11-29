@@ -45,7 +45,7 @@ public class PacketHandler implements IPacketHandler
 			    if(packetType == EnumPacketType.TIME.id)
 			    {
 			        System.out.println("[Mekanism] Received time update packet from " + entityplayer.username + ".");
-			        MekanismUtils.setHourForward(FMLServerHandler.instance().getServer().worldServerForDimension(0), dataStream.readInt());
+			        MekanismUtils.setHourForward(entityplayer.worldObj, dataStream.readInt());
 			    }
 			    if(packetType == EnumPacketType.WEATHER.id)
 			    {

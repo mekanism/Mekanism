@@ -101,7 +101,7 @@ public final class MekanismHooks
 				return (ItemStack)ret;
 			}
 			else {
-				return null;
+				throw new Exception();
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
@@ -126,7 +126,7 @@ public final class MekanismHooks
 				return new ItemStack((Item)ret);
 			}
 			else {
-				return null;
+				throw new Exception();
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
@@ -146,7 +146,7 @@ public final class MekanismHooks
 				return new ItemStack((Item)ret);
 			}
 			else {
-				return null;
+				throw new Exception();
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve Forestry item " + name + ".");

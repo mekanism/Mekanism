@@ -10,6 +10,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import mekanism.common.PacketHandler;
+import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.src.*;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
@@ -32,6 +33,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		super(name, maxEnergy, output);
 		GENERATION_RATE = generation;
 		inventory = new ItemStack[1];
+	}
+	
+	@Override
+	public boolean canSetFacing(int facing)
+	{
+		return facing != 0 && facing != 1;
 	}
 	
 	@Override
@@ -62,6 +69,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				seesSun = true;
 			}
 			else {
+				seesSun = false;
+			}
+			
+			if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == MekanismGenerators.generatorID && worldObj.getBlockMetadata(xCoord, yCoord+1, zCoord) == GeneratorType.SOLAR_GENERATOR.meta)
+			{
 				seesSun = false;
 			}
 		}

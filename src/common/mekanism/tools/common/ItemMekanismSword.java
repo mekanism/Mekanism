@@ -19,19 +19,19 @@ public class ItemMekanismSword extends ItemMekanism
     private int weaponDamage;
     private final EnumToolMaterial toolMaterial;
 
-    public ItemMekanismSword(int par1, EnumToolMaterial par2EnumToolMaterial)
+    public ItemMekanismSword(int id, EnumToolMaterial enumtoolmaterial)
     {
-        super(par1);
-        toolMaterial = par2EnumToolMaterial;
+        super(id);
+        toolMaterial = enumtoolmaterial;
         maxStackSize = 1;
-        setMaxDamage(par2EnumToolMaterial.getMaxUses());
-        weaponDamage = 4 + par2EnumToolMaterial.getDamageVsEntity();
+        setMaxDamage(enumtoolmaterial.getMaxUses());
+        weaponDamage = 4 + enumtoolmaterial.getDamageVsEntity();
     }
 
     @Override
-    public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
+    public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-        return par2Block.blockID != Block.web.blockID ? 1.5F : 15F;
+        return block.blockID != Block.web.blockID ? 1.5F : 15F;
     }
     
     @Override
@@ -41,21 +41,21 @@ public class ItemMekanismSword extends ItemMekanism
 	}
 
     @Override
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)
+    public boolean hitEntity(ItemStack itemstack, EntityLiving entityplayer, EntityLiving entityliving)
     {
-        par1ItemStack.damageItem(1, par3EntityLiving);
+        itemstack.damageItem(1, entityliving);
         return true;
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6, EntityLiving par7EntityLiving)
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, int x, int y, int z, int facing, EntityLiving entityplayer)
     {
-        par1ItemStack.damageItem(2, par7EntityLiving);
+        itemstack.damageItem(2, entityplayer);
         return true;
     }
 
     @Override
-    public int getDamageVsEntity(Entity par1Entity)
+    public int getDamageVsEntity(Entity entity)
     {
         return weaponDamage;
     }
@@ -67,28 +67,28 @@ public class ItemMekanismSword extends ItemMekanism
     }
 
     @Override
-    public EnumAction getItemUseAction(ItemStack par1ItemStack)
+    public EnumAction getItemUseAction(ItemStack itemstack)
     {
         return EnumAction.block;
     }
 
     @Override
-    public int getMaxItemUseDuration(ItemStack par1ItemStack)
+    public int getMaxItemUseDuration(ItemStack itemstack)
     {
         return 0x11940;
     }
     
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {
-        par3EntityPlayer.setItemInUse(par1ItemStack, getMaxItemUseDuration(par1ItemStack));
-        return par1ItemStack;
+        entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
+        return itemstack;
     }
 
     @Override
-    public boolean canHarvestBlock(Block par1Block)
+    public boolean canHarvestBlock(Block block)
     {
-        return par1Block.blockID == Block.web.blockID;
+        return block.blockID == Block.web.blockID;
     }
 
     @Override

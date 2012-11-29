@@ -294,6 +294,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		return true;
 	}
+	
+	@Override
+	public boolean canSetFacing(int facing)
+	{
+		return facing != 0 && facing != 1;
+	}
 
 	@Override
 	public void attach(IComputerAccess computer, String computerSide) {}

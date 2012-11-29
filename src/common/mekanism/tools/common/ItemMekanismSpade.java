@@ -8,20 +8,20 @@ public class ItemMekanismSpade extends ItemMekanismTool
 {
     private static Block blocksEffectiveAgainst[];
 
-    public ItemMekanismSpade(int par1, EnumToolMaterial par2EnumToolMaterial)
+    public ItemMekanismSpade(int id, EnumToolMaterial enumtoolmaterial)
     {
-        super(par1, 1, par2EnumToolMaterial, blocksEffectiveAgainst);
+        super(id, 1, enumtoolmaterial, blocksEffectiveAgainst);
     }
 
     @Override
-    public boolean canHarvestBlock(Block par1Block)
+    public boolean canHarvestBlock(Block block)
     {
-        if (par1Block == Block.snow)
+        if (block == Block.snow)
         {
             return true;
         }
 
-        return par1Block == Block.blockSnow;
+        return block == Block.blockSnow;
     }
 
     static
