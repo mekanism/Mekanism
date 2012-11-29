@@ -88,9 +88,32 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules(inventory[0]) * 0.005, getVoltage()), electricityStored);
-				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
+				double sendingElectricity = 0;
+				double actualSendingElectricity = 0;
+				double rejectedElectricity = 0;
+				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[0]) - electricItem.getJoules(inventory[0]);
+				
+				if(electricItem.getVoltage() <= electricityStored)
+				{
+					sendingElectricity = electricItem.getVoltage();
+				}
+				else if(electricItem.getVoltage() > electricityStored)
+				{
+					sendingElectricity = electricityStored;
+				}
+				
+				if(sendingElectricity <= itemElectricityNeeded)
+				{
+					actualSendingElectricity = sendingElectricity;
+				}
+				else if(sendingElectricity > itemElectricityNeeded)
+				{
+					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
+					actualSendingElectricity = itemElectricityNeeded;
+				}
+				
+				electricItem.setJoules((electricItem.getJoules(inventory[0]) + actualSendingElectricity), inventory[0]);
+				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
@@ -103,11 +126,22 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		{
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
-				IItemElectric electricItem = (IItemElectric) inventory[1].getItem();
+				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
 
 				if (electricItem.canProduceElectricity())
 				{
-					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(inventory[1]) * 0.005, inventory[1]);
+					double joulesNeeded = tier.MAX_ELECTRICITY-electricityStored;
+					double joulesReceived = 0;
+					
+					if(electricItem.getVoltage() <= joulesNeeded)
+					{
+						joulesReceived = electricItem.onUse(electricItem.getVoltage(), inventory[1]);
+					}
+					else if(electricItem.getVoltage() > joulesNeeded)
+					{
+						joulesReceived = electricItem.onUse(joulesNeeded, inventory[1]);
+					}
+					
 					setJoules(electricityStored + joulesReceived);
 				}
 			}

@@ -23,8 +23,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	
 	public TileEntitySolarGenerator()
 	{
-		super("Solar Generator", 16000, 8);
-		GENERATION_RATE = 8;
+		super("Solar Generator", 96000, 64);
+		GENERATION_RATE = 64;
 		inventory = new ItemStack[1];
 	}
 	
@@ -51,9 +51,32 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules(inventory[0]) * 0.005, getVoltage()), electricityStored);
-				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
+				double sendingElectricity = 0;
+				double actualSendingElectricity = 0;
+				double rejectedElectricity = 0;
+				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[0]) - electricItem.getJoules(inventory[0]);
+				
+				if(electricItem.getVoltage() <= electricityStored)
+				{
+					sendingElectricity = electricItem.getVoltage();
+				}
+				else if(electricItem.getVoltage() > electricityStored)
+				{
+					sendingElectricity = electricityStored;
+				}
+				
+				if(sendingElectricity <= itemElectricityNeeded)
+				{
+					actualSendingElectricity = sendingElectricity;
+				}
+				else if(sendingElectricity > itemElectricityNeeded)
+				{
+					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
+					actualSendingElectricity = itemElectricityNeeded;
+				}
+				
+				electricItem.setJoules((electricItem.getJoules(inventory[0]) + actualSendingElectricity), inventory[0]);
+				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{

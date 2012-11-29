@@ -106,9 +106,4 @@ public class ItemMekanismKnife extends ItemMekanism
         itemstack.damageItem(entityDamage, entityliving1);
         return true;
     }
-    
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/tools/items.png";
-    }
 }

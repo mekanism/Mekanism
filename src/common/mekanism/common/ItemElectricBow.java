@@ -10,7 +10,7 @@ public class ItemElectricBow extends ItemEnergized
 {
     public ItemElectricBow(int id)
     {
-        super(id, 12000, 60, 120);
+        super(id, 120000, 512, 1200);
     }
     
 	@Override
@@ -52,7 +52,7 @@ public class ItemElectricBow extends ItemEnergized
 	            
 	            if(!player.capabilities.isCreativeMode)
 	            {
-	            	onUse((getFireState(itemstack) ? 100 : 10), itemstack);
+	            	onUse((getFireState(itemstack) ? 1200 : 120), itemstack);
 	            }
 	            
 	            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);

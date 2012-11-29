@@ -96,10 +96,4 @@ public class ItemMekanismSword extends ItemMekanism
     {
         return toolMaterial.getEnchantability();
     }
-    
-    @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/tools/items.png";
-    }
 }

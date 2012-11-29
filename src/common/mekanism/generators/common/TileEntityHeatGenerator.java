@@ -30,7 +30,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	
 	public TileEntityHeatGenerator()
 	{
-		super("Heat Generator", 16000, 32);
+		super("Heat Generator", 160000, 512);
 		inventory = new ItemStack[2];
 	}
 	
@@ -44,9 +44,32 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules(inventory[1]) * 0.005, getVoltage()), electricityStored);
-				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
+				double sendingElectricity = 0;
+				double actualSendingElectricity = 0;
+				double rejectedElectricity = 0;
+				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[1]) - electricItem.getJoules(inventory[1]);
+				
+				if(electricItem.getVoltage() <= electricityStored)
+				{
+					sendingElectricity = electricItem.getVoltage();
+				}
+				else if(electricItem.getVoltage() > electricityStored)
+				{
+					sendingElectricity = electricityStored;
+				}
+				
+				if(sendingElectricity <= itemElectricityNeeded)
+				{
+					actualSendingElectricity = sendingElectricity;
+				}
+				else if(sendingElectricity > itemElectricityNeeded)
+				{
+					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
+					actualSendingElectricity = itemElectricityNeeded;
+				}
+				
+				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
+				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -94,7 +117,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					setActive(true);
 				}
 				fuelSlot.setLiquid(fuelSlot.liquidStored - 10);
-				setJoules(electricityStored + 8);
+				setJoules(electricityStored + 400);
 			}
 			else {
 				if(!worldObj.isRemote)
@@ -133,17 +156,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		int boost = 0;
 		
 		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
-			boost+=4;
+			boost+=200;
 		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
-			boost+=4;
+			boost+=200;
 		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
-			boost+=4;
+			boost+=200;
 		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
-			boost+=4;
+			boost+=200;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
-			boost+=4;
+			boost+=200;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
-			boost+=4;
+			boost+=200;
 		
 		return boost;
 	}

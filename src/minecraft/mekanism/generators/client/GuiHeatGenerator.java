@@ -28,7 +28,7 @@ public class GuiHeatGenerator extends GuiContainer
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer.drawString(ElectricInfo.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricInfo.getDisplayShort(tileEntity.MAX_ELECTRICITY, ElectricUnit.JOULES), 51, 26, 0x404040);
+        fontRenderer.drawString(ElectricInfo.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x404040);
         fontRenderer.drawString("Fuel: " + tileEntity.fuelSlot.liquidStored, 51, 35, 0x404040);
         fontRenderer.drawString("Out: " + tileEntity.output + "w", 51, 44, 0x404040);
     }

@@ -396,7 +396,7 @@ public class Mekanism
 		}
 		Dust = new ItemDust(11293-256);
 		Ingot = new ItemIngot(11294-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 250000, 256, 2500).setItemName("EnergyTablet");
+		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 250000, 800, 2500).setItemName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(11309, 0, 150).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(11310, 1000, 0).setItemName("EnergyUpgrade");
 		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");

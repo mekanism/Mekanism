@@ -7,9 +7,9 @@ import net.minecraft.src.*;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-    public ItemMekanismArmor(int id, EnumArmorMaterial par2EnumArmorMaterial, int renderIndex, int armorType)
+    public ItemMekanismArmor(int id, EnumArmorMaterial enumarmormaterial, int renderIndex, int armorType)
     {
-        super(id, par2EnumArmorMaterial, renderIndex, armorType);
+        super(id, enumarmormaterial, renderIndex, armorType);
         setCreativeTab(Mekanism.tabMekanism);
     }
     
@@ -22,6 +22,6 @@ public class ItemMekanismArmor extends ItemArmor
     @Override
 	public String getTextureFile() 
 	{
-		return "/resources/mekanism/textures/tools/items.png";
+		return "/resources/mekanism/textures/items.png";
 	}
 }

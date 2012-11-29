@@ -112,52 +112,52 @@ public class BlockGenerator extends BlockContainer
     	{
     		if(side == 3)
     		{
-    			return 2;
+    			return 27;
     		}
     		else if(side != 0 && side != 1)
         	{
-        		return 0;
+        		return 25;
         	}
         	else {
-        		return 1;
+        		return 26;
         	}
     	}
     	else if(meta == 1)
     	{
     		if(side == 3)
     		{
-    			return 10;
+    			return 39;
     		}
     		else if(side == 1)
     		{
-    			return 3;
+    			return 28;
     		}
     		else if(side == 0)
     		{
-    			return 4;
+    			return 29;
     		}
     		else {
-    			return 11;
+    			return 40;
     		}
     	}
     	else if(meta == 2)
     	{
     		if(side == 3)
     		{
-    			return 8;
+    			return 34;
     		}
     		else {
-    			return 9;
+    			return 35;
     		}
     	}
     	else if(meta == 3)
     	{
     		if(side == 3)
     		{
-    			return 7;
+    			return 33;
     		}
     		else {
-    			return 6;
+    			return 32;
     		}
     	}
     	else {
@@ -176,42 +176,42 @@ public class BlockGenerator extends BlockContainer
     	{
 	        if(side == tileEntity.facing)
 	        {
-	        	return 2;
+	        	return 27;
 	        }
 	        else if(side != 0 && side != 1)
 	        {
-	        	return 0;
+	        	return 25;
 	        }
 	        else {
-	        	return 1;
+	        	return 26;
 	        }
     	}
     	else if(metadata == 1)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 10;
+    			return 39;
     		}
     		else if(side == 1)
     		{
-    			return 3;
+    			return 28;
     		}
     		else if(side == 0)
     		{
-    			return 4;
+    			return 29;
     		}
     		else {
-    			return 11;
+    			return 40;
     		}
     	}
     	else if(metadata == 2)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 8;
+    			return 34;
     		}
     		else {
-    			return 9;
+    			return 35;
     		}
     	}
     	else if(metadata == 3)
@@ -219,10 +219,10 @@ public class BlockGenerator extends BlockContainer
     		TileEntityHydrogenGenerator generator = (TileEntityHydrogenGenerator)world.getBlockTileEntity(x, y, z);
     		if(side == tileEntity.facing)
     		{
-    			return generator.isActive ? Mekanism.ANIMATED_TEXTURE_INDEX+5 : 7;
+    			return generator.isActive ? Mekanism.ANIMATED_TEXTURE_INDEX+5 : 33;
     		}
     		else {
-    			return generator.isActive ? Mekanism.ANIMATED_TEXTURE_INDEX+6 : 6;
+    			return generator.isActive ? Mekanism.ANIMATED_TEXTURE_INDEX+6 : 32;
     		}
     	}
     	else {
@@ -374,7 +374,7 @@ public class BlockGenerator extends BlockContainer
     @Override
     public String getTextureFile()
     {
-    	return "/resources/mekanism/textures/generators/terrain.png";
+    	return "/resources/mekanism/textures/terrain.png";
     }
     
     @Override

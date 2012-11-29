@@ -77,10 +77,4 @@ public class ItemMekanismHoe extends ItemMekanism
     {
         return true;
     }
-    
-    @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/tools/items.png";
-    }
 }

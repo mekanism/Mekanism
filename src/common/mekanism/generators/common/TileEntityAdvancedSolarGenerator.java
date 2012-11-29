@@ -10,7 +10,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
-		super("Advanced Solar Generator", 96000, 32, 32);
+		super("Advanced Solar Generator", 600000, 256, 256);
 	}
 
 	@Override

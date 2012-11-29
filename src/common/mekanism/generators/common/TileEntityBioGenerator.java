@@ -26,7 +26,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 16000, 64);
+		super("Bio-Generator", 160000, 512);
 		inventory = new ItemStack[2];
 	}
 	
@@ -40,9 +40,32 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(electricItem.getMaxJoules(inventory[1]) * 0.005, getVoltage()), electricityStored);
-				double joules = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - joules));
+				double sendingElectricity = 0;
+				double actualSendingElectricity = 0;
+				double rejectedElectricity = 0;
+				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[1]) - electricItem.getJoules(inventory[1]);
+				
+				if(electricItem.getVoltage() <= electricityStored)
+				{
+					sendingElectricity = electricItem.getVoltage();
+				}
+				else if(electricItem.getVoltage() > electricityStored)
+				{
+					sendingElectricity = electricityStored;
+				}
+				
+				if(sendingElectricity <= itemElectricityNeeded)
+				{
+					actualSendingElectricity = sendingElectricity;
+				}
+				else if(sendingElectricity > itemElectricityNeeded)
+				{
+					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
+					actualSendingElectricity = itemElectricityNeeded;
+				}
+				
+				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
+				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -88,7 +111,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 					setActive(true);
 				}
 				bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 10);
-				setJoules(electricityStored + 16);
+				setJoules(electricityStored + 800);
 			}
 			else {
 				if(!worldObj.isRemote)

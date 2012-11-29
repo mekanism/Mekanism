@@ -59,7 +59,18 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 
 					if (electricItem.canProduceElectricity())
 					{
-						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(inventory[1]) * 0.005, inventory[1]);
+						double joulesNeeded = currentMaxElectricity-electricityStored;
+						double joulesReceived = 0;
+						
+						if(electricItem.getVoltage() <= joulesNeeded)
+						{
+							joulesReceived = electricItem.onUse(electricItem.getVoltage(), inventory[1]);
+						}
+						else if(electricItem.getVoltage() > joulesNeeded)
+						{
+							joulesReceived = electricItem.onUse(joulesNeeded, inventory[1]);
+						}
+						
 						setJoules(electricityStored + joulesReceived);
 					}
 				}

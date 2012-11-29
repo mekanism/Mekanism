@@ -77,7 +77,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 				if (electricItem.canProduceElectricity())
 				{
-					double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(inventory[3]) * 0.005, inventory[3]);
+					double joulesNeeded = MAX_ELECTRICITY-electricityStored;
+					double joulesReceived = 0;
+					
+					if(electricItem.getVoltage() <= joulesNeeded)
+					{
+						joulesReceived = electricItem.onUse(electricItem.getVoltage(), inventory[3]);
+					}
+					else if(electricItem.getVoltage() > joulesNeeded)
+					{
+						joulesReceived = electricItem.onUse(joulesNeeded, inventory[3]);
+					}
+					
 					setJoules(electricityStored + joulesReceived);
 				}
 			}

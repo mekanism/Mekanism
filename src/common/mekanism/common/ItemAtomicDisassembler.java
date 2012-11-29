@@ -12,7 +12,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 {
 	public ItemAtomicDisassembler(int id)
 	{
-		super(id, 12000, 60, 120);
+		super(id, 120000, 512, 1200);
 	}
 	
     @Override
@@ -35,7 +35,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	if(getJoules(itemstack) > 0)
     	{
 			hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 18);
-			onUse(40, itemstack);
+			onUse(2000, itemstack);
     	}
     	else {
     		hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 4);
@@ -53,10 +53,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     {
         if ((double)Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
         {
-            onUse(10, itemstack);
+            onUse(120, itemstack);
         }
         else {
-        	onUse(5, itemstack);
+        	onUse(60, itemstack);
         }
 
         return true;
@@ -72,17 +72,5 @@ public class ItemAtomicDisassembler extends ItemEnergized
     public boolean canProduceElectricity()
     {
     	return false;
-    }
-    
-    @Override
-    public double getMaxJoules(Object... data)
-    {
-    	return 12000;
-    }
-    
-    @Override
-    public double getVoltage()
-    {
-    	return 60;
     }
 }

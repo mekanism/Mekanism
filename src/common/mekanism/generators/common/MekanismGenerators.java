@@ -131,9 +131,9 @@ public class MekanismGenerators
 	
 	public void addTextures()
 	{
-		SolarPanel.setIconIndex(2);
-		BioFuel.setIconIndex(0);
-		ElectrolyticCore.setIconIndex(1);
+		SolarPanel.setIconIndex(239);
+		BioFuel.setIconIndex(237);
+		ElectrolyticCore.setIconIndex(238);
 	}
 	
 	public void addEntities()
@@ -153,8 +153,8 @@ public class MekanismGenerators
 	
 	public void addItems()
 	{
-		SolarPanel = new ItemMekanismGenerators(11314).setItemName("SolarPanel");
-		BioFuel = new ItemMekanismGenerators(11318).setItemName("BioFuel");
-		ElectrolyticCore = new ItemMekanismGenerators(11319).setItemName("ElectrolyticCore");
+		SolarPanel = new ItemMekanism(11314).setItemName("SolarPanel");
+		BioFuel = new ItemMekanism(11318).setItemName("BioFuel");
+		ElectrolyticCore = new ItemMekanism(11319).setItemName("ElectrolyticCore");
 	}
 }

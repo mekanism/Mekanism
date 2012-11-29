@@ -29,6 +29,6 @@ public class ItemMekanismTool extends ItemTool
     @Override
     public String getTextureFile()
     {
-    	return "/resources/mekanism/textures/tools/items.png";
+    	return "/resources/mekanism/textures/items.png";
     }
 }

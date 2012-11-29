@@ -109,7 +109,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	@Override
 	public double getVoltage() 
 	{
-		return 120;
+		return 2000;
 	}
 
 	@Override
