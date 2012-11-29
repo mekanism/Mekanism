@@ -44,7 +44,7 @@ public class GuiEnergyCube extends GuiContainer
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int scale = (int)(((double)tileEntity.electricityStored / tileEntity.MAX_ELECTRICITY) * 72);
+        int scale = (int)(((double)tileEntity.electricityStored / tileEntity.tier.MAX_ELECTRICITY) * 72);
         drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
     }
 }

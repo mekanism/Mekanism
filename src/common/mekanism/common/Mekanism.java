@@ -313,8 +313,8 @@ public class Mekanism
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
 		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
-		LanguageRegistry.addName(AtomicDisassembler, "Nuclear Disassembler");
-		LanguageRegistry.addName(AtomicCore, "Nuclear Core");
+		LanguageRegistry.addName(AtomicDisassembler, "Atomic Disassembler");
+		LanguageRegistry.addName(AtomicCore, "Atomic Core");
 		LanguageRegistry.addName(ElectricBow, "Electric Bow");
 		LanguageRegistry.addName(StorageTank, "Hydrogen Tank");
 		LanguageRegistry.addName(NullRender, "Null Render");
