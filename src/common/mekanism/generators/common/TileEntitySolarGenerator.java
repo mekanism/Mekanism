@@ -2,15 +2,18 @@ package mekanism.generators.common;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
-import universalelectricity.core.UniversalElectricity;
+
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
+
 import net.minecraft.src.*;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
@@ -80,7 +83,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.charge(inventory[0], (int)(electricityStored*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+				double sent = ElectricItem.charge(inventory[0], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setJoules(electricityStored - sent);
 			}
 		}

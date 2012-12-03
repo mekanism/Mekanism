@@ -1,9 +1,9 @@
 package mekanism.common;
 
-import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IElectricityReceiver;
 import universalelectricity.core.implement.IJouleStorage;
+
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -14,6 +14,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -21,8 +22,10 @@ import ic2.api.Direction;
 import ic2.api.EnergyNet;
 import ic2.api.IEnergySink;
 import ic2.api.IWrenchable;
+
 import mekanism.api.IElectricMachine;
 import mekanism.client.Sound;
+
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
@@ -169,19 +172,21 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
     public int injectEnergy(Direction direction, int i)
     {
+		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
-    	if(i <= neededEnergy)
+    	double neededEnergy = currentMaxElectricity-electricityStored;
+    	
+    	if(givenEnergy <= neededEnergy)
     	{
-    		electricityStored += i;
+    		electricityStored += givenEnergy;
     	}
-    	else if(i > neededEnergy)
+    	else if(givenEnergy > neededEnergy)
     	{
     		electricityStored += neededEnergy;
-    		rejects = i-neededEnergy;
+    		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*UniversalElectricity.TO_IC2_RATIO);
+    	return (int)(rejects*Mekanism.TO_IC2);
     }
 	
 	@Override
@@ -213,13 +218,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return currentMaxElectricity*UniversalElectricity.IC2_RATIO;
+		return currentMaxElectricity;
 	}
 	
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return electricityStored*UniversalElectricity.IC2_RATIO;
+		return electricityStored;
 	}
 
 	@Override

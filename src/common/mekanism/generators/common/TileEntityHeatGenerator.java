@@ -4,9 +4,10 @@ import java.io.DataOutputStream;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
-import universalelectricity.core.UniversalElectricity;
+
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IItemElectric;
+
 import buildcraft.api.power.PowerFramework;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -16,6 +17,7 @@ import dan200.computer.api.IComputerAccess;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
@@ -73,7 +75,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.charge(inventory[1], (int)(electricityStored*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+				double sent = ElectricItem.charge(inventory[1], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setJoules(electricityStored - sent);
 			}
 		}

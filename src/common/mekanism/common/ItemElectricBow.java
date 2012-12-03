@@ -149,16 +149,4 @@ public class ItemElectricBow extends ItemEnergized
 		
 		return state;
     }
-    
-    @Override
-    public double getMaxJoules(Object... data)
-    {
-    	return 12000;
-    }
-    
-    @Override
-    public double getVoltage()
-    {
-    	return 60;
-    }
 }

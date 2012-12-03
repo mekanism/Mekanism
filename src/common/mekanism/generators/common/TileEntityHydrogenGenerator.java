@@ -111,7 +111,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			}
 			
 			hydrogenStored--;
-			setJoules(electricityStored + 2000);
+			setJoules(electricityStored + 1600);
 		}
 		else {
 			if(!worldObj.isRemote)
@@ -144,7 +144,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && hydrogenStored > 0;
+		return electricityStored < MAX_ELECTRICITY && hydrogenStored-10 > 0;
 	}
 	
 	/**

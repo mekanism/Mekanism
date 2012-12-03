@@ -27,17 +27,17 @@ public class GuiEnergyCube extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
 		String capacityInfo = ElectricInfo.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricInfo.getDisplayShort(tileEntity.tier.MAX_ELECTRICITY, ElectricUnit.JOULES);
-		String outputInfo = "Out: " + tileEntity.output + "w";
+		String outputInfo = "Voltage: " + tileEntity.getVoltage() + "v";
 		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
-		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
-		fontRenderer.drawString(outputInfo, 45, 49, 0x404040);
-		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
+		fontRenderer.drawString(outputInfo, 45, 49, 0x00CD00);
+		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x00CD00);
 	}
 	
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int texture = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiPowerUnit.png");
+        int texture = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiEnergyCube.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         

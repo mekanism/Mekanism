@@ -16,7 +16,7 @@ import ic2.api.EnergyNet;
 import ic2.api.IElectricItem;
 import ic2.api.IEnergySource;
 import ic2.api.IEnergyStorage;
-import universalelectricity.core.UniversalElectricity;
+
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricityManager;
 import universalelectricity.core.implement.IConductor;
@@ -24,8 +24,10 @@ import universalelectricity.core.implement.IElectricityProducer;
 import universalelectricity.core.implement.IJouleStorage;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.tile.TileEntityConductor;
+
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityElectricBlock;
+
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -59,7 +61,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(0, 2, 2000, 1, (int)(MAX_ELECTRICITY*UniversalElectricity.TO_BC_RATIO));
+			powerProvider.configure(0, 2, 2000, 1, (int)(MAX_ELECTRICITY*Mekanism.TO_BC));
 		}
 	}
 	
@@ -74,7 +76,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			{
 				if(electricityStored >= output)
 				{
-					setJoules(electricityStored - (output - EnergyNet.getForWorld(worldObj).emitEnergyFrom(this, output))*UniversalElectricity.IC2_RATIO);
+					setJoules(electricityStored - (output*Mekanism.TO_IC2 - EnergyNet.getForWorld(worldObj).emitEnergyFrom(this, (int)(output*Mekanism.TO_IC2)))*Mekanism.FROM_IC2);
 				}
 			}
 			
@@ -83,20 +85,22 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				if(isPowerReceptor(tileEntity))
 				{
 					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	double electricityNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*UniversalElectricity.BC3_RATIO;
+	            	double electricityNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*Mekanism.FROM_BC;
 	            	float transferEnergy = (float)Math.max(Math.min(Math.min(electricityNeeded, electricityStored), 80000), 0);
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*UniversalElectricity.TO_BC_RATIO), ForgeDirection.getOrientation(facing).getOpposite());
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
 	            	setJoules(electricityStored - (int)transferEnergy);
 				}
-				else if(tileEntity instanceof TileEntityConductor)
+				else if(tileEntity instanceof IConductor)
 				{
-					double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor) tileEntity).getNetwork());
-					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(electricityStored*UniversalElectricity.IC2_RATIO, getVoltage())), 80), 0);
+					double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor)tileEntity).getNetwork());
+					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(electricityStored, getVoltage())), 80), 0);
+
 					if (!worldObj.isRemote)
 					{
 						ElectricityManager.instance.produceElectricity(this, (IConductor)tileEntity, transferAmps, getVoltage());
 					}
-					setJoules(electricityStored - (int)(ElectricInfo.getJoules(transferAmps, getVoltage())*UniversalElectricity.TO_IC2_RATIO));
+
+					setJoules(electricityStored - ElectricInfo.getJoules(transferAmps, getVoltage()));
 				}
 			}
 		}
@@ -210,13 +214,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return MAX_ELECTRICITY*UniversalElectricity.IC2_RATIO;
+		return MAX_ELECTRICITY*Mekanism.FROM_IC2;
 	}
 	
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return electricityStored*UniversalElectricity.IC2_RATIO;
+		return electricityStored*Mekanism.FROM_IC2;
 	}
 	
 	@Override
@@ -234,13 +238,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public int getStored() 
 	{
-		return (int)(electricityStored*UniversalElectricity.IC2_RATIO);
+		return (int)(electricityStored*Mekanism.FROM_IC2);
 	}
 
 	@Override
 	public int getCapacity() 
 	{
-		return (int)(MAX_ELECTRICITY*UniversalElectricity.IC2_RATIO);
+		return (int)(MAX_ELECTRICITY*Mekanism.FROM_IC2);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import net.minecraft.src.*;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
+ * 6: Hydro Generator
  * @author AidanBrady
  *
  */
@@ -53,9 +54,9 @@ public class ItemBlockGenerator extends ItemBlock
 	        		canPlace = true; 
 	        }
 	        
-			for(int xPos=-1;xPos<=2;xPos++)
+			for(int xPos=-1;xPos<=1;xPos++)
 			{
-				for(int zPos=-1;zPos<=2;zPos++)
+				for(int zPos=-1;zPos<=1;zPos++)
 				{
 					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0) 
 						canPlace = false;
@@ -95,6 +96,9 @@ public class ItemBlockGenerator extends ItemBlock
 				break;
 			case 5:
 				name = "AdvancedSolarGenerator";
+				break;
+			case 6:
+				name = "HydroGenerator";
 				break;
 			default:
 				name = "Unknown";

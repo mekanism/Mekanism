@@ -5,8 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-
-import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.implement.IItemElectric;
 
 import buildcraft.api.power.IPowerProvider;
@@ -79,7 +77,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 					IElectricItem item = (IElectricItem)inventory[1].getItem();
 					if(item.canProvideEnergy())
 					{
-						double gain = ElectricItem.discharge(inventory[1], (int)((MAX_ELECTRICITY - electricityStored)*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+						double gain = ElectricItem.discharge(inventory[1], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 						setJoules(electricityStored + gain);
 					}
 				}

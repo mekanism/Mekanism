@@ -31,16 +31,18 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     		if(metadata == 4)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    	    	GL11.glTranslated(0.0F, -1.1F, 0.0F);
+    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/BioGenerator.png"));
     	    	bioGenerator.render(0.0625F);
     		}
     		else if(metadata == 5)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
     	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/AdvancedSolarGenerator.png"));
-    	        solarGenerator.render(0.0F, 0.024F);
+    	        solarGenerator.render(0.0F, 0.022F);
     		}
     		else {
     	        ForgeHooksClient.bindTexture(block.getTextureFile(), 0);

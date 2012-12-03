@@ -7,7 +7,6 @@ import java.util.List;
 
 import mekanism.api.IMachineUpgrade;
 
-import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.implement.IItemElectric;
 
 import buildcraft.api.power.IPowerProvider;
@@ -101,7 +100,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 					IElectricItem item = (IElectricItem)inventory[3].getItem();
 					if(item.canProvideEnergy())
 					{
-						double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+						double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 						setJoules(electricityStored + gain);
 					}
 				}

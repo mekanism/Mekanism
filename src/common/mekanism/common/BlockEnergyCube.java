@@ -16,7 +16,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
 /**
- * Block class for handling multiple ore block IDs. 
+ * Block class for handling multiple energy cube block IDs. 
  * 0: Power Unit
  * 1: Advanced Power Unit
  * 2: Ultimate Power Unit

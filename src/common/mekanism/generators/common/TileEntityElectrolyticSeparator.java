@@ -4,7 +4,7 @@ import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.IEnergySink;
-import universalelectricity.core.UniversalElectricity;
+
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IElectricityReceiver;
 import universalelectricity.core.implement.IItemElectric;
@@ -21,6 +21,7 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITileNetwork;
 import mekanism.common.LiquidSlot;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.src.*;
@@ -97,7 +98,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				IElectricItem item = (IElectricItem)inventory[3].getItem();
 				if(item.canProvideEnergy())
 				{
-					double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
+					double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 					setJoules(electricityStored + gain);
 				}
 			}
@@ -327,19 +328,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return MAX_ELECTRICITY*UniversalElectricity.IC2_RATIO;
+		return MAX_ELECTRICITY*Mekanism.FROM_IC2;
 	}
 	
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return electricityStored*UniversalElectricity.IC2_RATIO;
+		return electricityStored*Mekanism.FROM_IC2;
 	}
 
 	@Override
 	public void setJoules(double joules, Object... data) 
 	{
-		setEnergy((int)(joules*UniversalElectricity.TO_IC2_RATIO));
+		setEnergy((int)(joules*Mekanism.TO_IC2));
 	}
 	
 	@Override
@@ -363,7 +364,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public double wattRequest() 
 	{
-		return electricityStored < MAX_ELECTRICITY ? ElectricInfo.getWatts((16)*UniversalElectricity.IC2_RATIO) : 0;
+		return electricityStored < MAX_ELECTRICITY ? ElectricInfo.getWatts((16)*Mekanism.FROM_IC2) : 0;
 	}
 	
 	@Override
@@ -405,7 +406,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
     		rejects = i-neededEnergy;
     	}
     	
-    	return (int)(rejects*UniversalElectricity.TO_IC2_RATIO);
+    	return (int)(rejects*Mekanism.TO_IC2);
     }
 	
 	@Override

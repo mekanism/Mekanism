@@ -26,6 +26,9 @@ public final class MekanismHooks
 	
 	public ItemStack IC2IronDust;
 	public ItemStack IC2GoldDust;
+	public ItemStack IC2CopperDust;
+	public ItemStack IC2TinDust;
+	public ItemStack IC2CoalDust;
 	
 	public ItemStack RailcraftObsidianDust;
 	
@@ -53,8 +56,16 @@ public final class MekanismHooks
 		{
 			IC2IronDust = getIC2Item("ironDust");
 			IC2GoldDust = getIC2Item("goldDust");
+			IC2CopperDust = getIC2Item("copperDust");
+			IC2TinDust = getIC2Item("tinDust");
+			IC2CoalDust = getIC2Item("coalDust");
 			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.OreBlock, 1, 0), new ItemStack(Mekanism.Dust, 2, 2));
+			
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.Dust, 1, 2));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 0), new ItemStack(Mekanism.Dust, 1, 3));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 2), new ItemStack(Item.redstone));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
 			Ic2Recipes.addMatterAmplifier(Mekanism.EnrichedAlloy, 100000);
 			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");

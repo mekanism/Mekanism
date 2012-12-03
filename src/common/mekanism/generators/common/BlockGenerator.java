@@ -26,6 +26,7 @@ import net.minecraftforge.common.ForgeDirection;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
+ * 6: Hydro Generator
  * @author AidanBrady
  *
  */

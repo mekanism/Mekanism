@@ -5,10 +5,12 @@ import universalelectricity.core.vector.Vector3;
 import com.google.common.io.ByteArrayDataInput;
 
 import net.minecraftforge.common.ForgeDirection;
+
 import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+
 import net.minecraft.src.*;
 
 public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor

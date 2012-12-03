@@ -18,9 +18,9 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	{
 		Mekanism.NullRender.makeFakeBlock(worldObj, new Vector3(xCoord, yCoord+1, zCoord), new Vector3(xCoord, yCoord, zCoord));
 		
-		for(int x=-1;x<2;x++)
+		for(int x=-1;x<=1;x++)
 		{
-			for(int z=-1;z<2;z++)
+			for(int z=-1;z<=1;z++)
 			{
 				Mekanism.NullRender.makeFakeBlock(worldObj, new Vector3(xCoord+x, yCoord+2, zCoord+z), position);
 			}
@@ -32,9 +32,9 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	{
 		worldObj.setBlock(xCoord, yCoord+1, zCoord, 0);
 		
-		for(int x=-1;x<2;x++)
+		for(int x=-1;x<=1;x++)
 		{
-			for(int z=-1;z<2;z++)
+			for(int z=-1;z<=1;z++)
 			{
 				worldObj.setBlock(xCoord+x, yCoord+2, zCoord+z, 0);
 			}
