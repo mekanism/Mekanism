@@ -1,5 +1,7 @@
 package mekanism.generators.common;
 
+import java.util.EnumSet;
+
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -18,10 +20,10 @@ import ic2.api.IEnergySource;
 import ic2.api.IEnergyStorage;
 
 import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricityManager;
+import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IElectricityProducer;
 import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.core.implement.IVoltage;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.tile.TileEntityConductor;
 
@@ -31,7 +33,7 @@ import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityProducer, IPeripheral
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral
 {
 	/** Output per tick this generator can transfer. */
 	public int output;
@@ -54,6 +56,8 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public TileEntityGenerator(String name, int maxEnergy, int out)
 	{
 		super(name, maxEnergy);
+		
+		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		
 		output = out;
 		isActive = false;
@@ -92,15 +96,18 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				}
 				else if(tileEntity instanceof IConductor)
 				{
-					double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor)tileEntity).getNetwork());
+					double joulesNeeded = ((IConductor)tileEntity).getNetwork().getRequest().getWatts();
 					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(electricityStored, getVoltage())), 80), 0);
 
-					if (!worldObj.isRemote)
+					if (!worldObj.isRemote && transferAmps > 0)
 					{
-						ElectricityManager.instance.produceElectricity(this, (IConductor)tileEntity, transferAmps, getVoltage());
+						((IConductor)tileEntity).getNetwork().startProducing(this, transferAmps, getVoltage());
+						setJoules(electricityStored - ElectricInfo.getWatts(transferAmps, getVoltage()));
 					}
-
-					setJoules(electricityStored - ElectricInfo.getJoules(transferAmps, getVoltage()));
+					else
+					{
+						((IConductor)tileEntity).getNetwork().stopProducing(this);
+					}
 				}
 			}
 		}
@@ -251,12 +258,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public int getOutput() 
 	{
 		return output;
-	}
-	
-	@Override
-	public boolean canConnect(ForgeDirection side) 
-	{
-		return side == ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override

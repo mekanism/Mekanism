@@ -1,8 +1,13 @@
 package mekanism.common;
 
+import java.util.EnumSet;
+
 import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.electricity.ElectricityConnections;
+import universalelectricity.core.implement.IConductor;
 import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.vector.Vector3;
 
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
@@ -30,7 +35,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IElectricityReceiver, IPeripheral
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -78,6 +83,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public TileEntityBasicMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
 		super(name, maxEnergy);
+		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		currentMaxElectricity = MAX_ELECTRICITY;
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
@@ -93,6 +99,33 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		{
 			Mekanism.manager.register(this);
 			registered = true;
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			for(ForgeDirection direction : ForgeDirection.values())
+			{
+				if(direction != ForgeDirection.getOrientation(facing))
+				{
+					TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, Vector3.get(this), direction);
+					if(tileEntity != null)
+					{
+						if(tileEntity instanceof IConductor)
+						{
+							if(electricityStored < currentMaxElectricity)
+							{
+								double electricityNeeded = currentMaxElectricity - electricityStored;
+								((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+								setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
+							}
+							else if(electricityStored >= currentMaxElectricity)
+							{
+								((IConductor)tileEntity).getNetwork().stopRequesting(this);
+							}
+						}
+					}
+				}
+			}
 		}
 		
 		if(worldObj.isRemote)
@@ -234,45 +267,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection side) 
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean canReceiveFromSide(ForgeDirection side) 
-	{
-		return true;
-	}
-	
-	@Override
 	public double getVoltage() 
 	{
 		return 120;
-	}
-	
-	@Override
-	public double wattRequest() 
-	{
-		return currentMaxElectricity - electricityStored;
-	}
-	
-	@Override
-	public void onReceive(Object sender, double amps, double voltage, ForgeDirection side) 
-	{
-		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
-		double electricityNeeded = MAX_ELECTRICITY - electricityStored;
-		double electricityToStore = 0;
-		
-		if(electricityToReceive <= electricityNeeded)
-		{
-			electricityToStore = electricityToReceive;
-		}
-		else if(electricityToReceive > electricityNeeded)
-		{
-			electricityToStore = electricityNeeded;
-		}
-		setJoules(electricityStored + electricityToStore);
 	}
 
 	@Override

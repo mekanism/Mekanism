@@ -3,13 +3,14 @@ package mekanism.common;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.EnumSet;
 
 import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricityManager;
+import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IElectricityReceiver;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.core.implement.IVoltage;
 import universalelectricity.prefab.tile.TileEntityConductor;
 import universalelectricity.core.vector.Vector3;
 
@@ -38,7 +39,7 @@ import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IElectricityReceiver, IPeripheral
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral
 {
 	public EnumTier tier = EnumTier.BASIC;
 	
@@ -64,6 +65,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public TileEntityEnergyCube(String name, int maxEnergy, int i)
 	{
 		super(name, maxEnergy);
+		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[2];
 		output = i;
 		if(PowerFramework.currentFramework != null)
@@ -80,6 +82,33 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		{
 			int received = (int)(powerProvider.useEnergy(25, 25, true)*10);
 			setJoules(electricityStored + received);
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			for(ForgeDirection direction : ForgeDirection.values())
+			{
+				if(direction != ForgeDirection.getOrientation(facing))
+				{
+					TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, Vector3.get(this), direction);
+					if(tileEntity != null)
+					{
+						if(tileEntity instanceof IConductor)
+						{
+							if(electricityStored < tier.MAX_ELECTRICITY)
+							{
+								double electricityNeeded = tier.MAX_ELECTRICITY - electricityStored;
+								((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+								setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
+							}
+							else if(electricityStored >= tier.MAX_ELECTRICITY)
+							{
+								((IConductor)tileEntity).getNetwork().stopRequesting(this);
+							}
+						}
+					}
+				}
+			}
 		}
 		
 		if(inventory[0] != null && electricityStored > 0)
@@ -189,15 +218,18 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				}
 				else if(tileEntity instanceof IConductor)
 				{
-					double joulesNeeded = ElectricityManager.instance.getElectricityRequired(((IConductor)tileEntity).getNetwork());
+					double joulesNeeded = ((IConductor)tileEntity).getNetwork().getRequest().getWatts();
 					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(electricityStored, getVoltage())), 80), 0);
 
-					if (!worldObj.isRemote)
+					if (!worldObj.isRemote && transferAmps > 0)
 					{
-						ElectricityManager.instance.produceElectricity(this, (IConductor)tileEntity, transferAmps, getVoltage());
+						((IConductor)tileEntity).getNetwork().startProducing(this, transferAmps, getVoltage());
+						setJoules(electricityStored - ElectricInfo.getWatts(transferAmps, getVoltage()));
 					}
-
-					setJoules(electricityStored - ElectricInfo.getJoules(transferAmps, getVoltage()));
+					else
+					{
+						((IConductor)tileEntity).getNetwork().stopProducing(this);
+					}
 				}
 			}
 		}
@@ -305,12 +337,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection side) 
-	{
-		return true;
-	}
-
-	@Override
 	public double getVoltage() 
 	{
 		return 120;
@@ -330,36 +356,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			return provider != null && provider.getClass().getSuperclass().equals(PowerProvider.class);
 		}
 		return false;
-	}
-
-	@Override
-	public void onReceive(Object sender, double amps, double voltage, ForgeDirection side) 
-	{
-		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
-		double electricityNeeded = tier.MAX_ELECTRICITY - electricityStored;
-		double electricityToStore = 0;
-		
-		if(electricityToReceive <= electricityNeeded)
-		{
-			electricityToStore = electricityToReceive;
-		}
-		else if(electricityToReceive > electricityNeeded)
-		{
-			electricityToStore = electricityNeeded;
-		}
-		setJoules(electricityStored + electricityToStore);
-	}
-
-	@Override
-	public double wattRequest() 
-	{
-		return ElectricInfo.getWatts(tier.MAX_ELECTRICITY) - ElectricInfo.getWatts(electricityStored);
-	}
-
-	@Override
-	public boolean canReceiveFromSide(ForgeDirection side) 
-	{
-		return side != ForgeDirection.getOrientation(facing);
 	}
 
 	@Override

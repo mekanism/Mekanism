@@ -1,14 +1,18 @@
 package mekanism.generators.common;
 
+import java.util.EnumSet;
+
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.IEnergySink;
 
 import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.implement.IElectricityReceiver;
+import universalelectricity.core.electricity.ElectricityConnections;
+import universalelectricity.core.implement.IConductor;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
+import universalelectricity.core.implement.IVoltage;
 import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -31,7 +35,7 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IElectricityReceiver, ITankContainer, IPeripheral
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IVoltage, ITankContainer, IPeripheral
 {
 	public LiquidSlot waterSlot = new LiquidSlot(24000, 9);
 	
@@ -53,6 +57,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public TileEntityElectrolyticSeparator()
 	{
 		super("Electrolytic Seperator", 9600);
+		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[4];
 		outputType = EnumGas.HYDROGEN;
 	}
@@ -68,6 +73,33 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(oxygenStored > MAX_GAS)
 		{
 			oxygenStored = MAX_GAS;
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			for(ForgeDirection direction : ForgeDirection.values())
+			{
+				if(direction != ForgeDirection.getOrientation(facing))
+				{
+					TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, Vector3.get(this), direction);
+					if(tileEntity != null)
+					{
+						if(tileEntity instanceof IConductor)
+						{
+							if(electricityStored < MAX_ELECTRICITY)
+							{
+								double electricityNeeded = MAX_ELECTRICITY - electricityStored;
+								((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+								setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
+							}
+							else if(electricityStored >= MAX_ELECTRICITY)
+							{
+								((IConductor)tileEntity).getNetwork().stopRequesting(this);
+							}
+						}
+					}
+				}
+			}
 		}
 		
 		if(inventory[3] != null && electricityStored < MAX_ELECTRICITY)
@@ -344,48 +376,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection side) 
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean canReceiveFromSide(ForgeDirection side) 
-	{
-		return side != ForgeDirection.getOrientation(facing);
-	}
-	
-	@Override
-	public double getVoltage() 
-	{
-		return 120;
-	}
-	
-	@Override
-	public double wattRequest() 
-	{
-		return electricityStored < MAX_ELECTRICITY ? ElectricInfo.getWatts((16)*Mekanism.FROM_IC2) : 0;
-	}
-	
-	@Override
-	public void onReceive(Object sender, double amps, double voltage, ForgeDirection side) 
-	{
-		double electricityToReceive = ElectricInfo.getJoules(amps, voltage);
-		double electricityNeeded = MAX_ELECTRICITY - electricityStored;
-		double electricityToStore = 0;
-		
-		if(electricityToReceive <= electricityNeeded)
-		{
-			electricityToStore = electricityToReceive;
-		}
-		else if(electricityToReceive > electricityNeeded)
-		{
-			electricityToStore = electricityNeeded;
-		}
-		setJoules(electricityStored + electricityToStore);
-	}
-	
-	@Override
 	public boolean demandsEnergy() 
 	{
 		return electricityStored < MAX_ELECTRICITY;
@@ -552,4 +542,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+
+	@Override
+	public double getVoltage() 
+	{
+		return 120;
+	}
 }

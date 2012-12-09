@@ -174,7 +174,7 @@ public class BlockMachine extends BlockContainer
     	{
             if(side == tileEntity.facing)
             {
-            	return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX : 14;
+            	return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+2 : 14;
             	
             }
             else {
@@ -185,7 +185,7 @@ public class BlockMachine extends BlockContainer
     	{
             if(side == tileEntity.facing)
             {
-            	return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+1 : 15;
+            	return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+3 : 15;
             }
             else {
             	return 2;
@@ -195,7 +195,7 @@ public class BlockMachine extends BlockContainer
     	{
             if(side == tileEntity.facing)
             {
-            	return isActive(world, x, y, z) ? 12 : 13;
+            	return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+1 : 13;
             }
             else {
             	return 2;
@@ -210,14 +210,14 @@ public class BlockMachine extends BlockContainer
             else {
             	if(side == tileEntity.facing)
             	{
-            		return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+2 : 16;
+            		return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+4 : 16;
             	}
             	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
             	{
-            		return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+3 : 17;
+            		return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+5 : 17;
             	}
             	else {
-            		return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+4 : 19;
+            		return isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+6 : 19;
             	}
             }
     	}

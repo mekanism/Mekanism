@@ -116,6 +116,7 @@ public class Mekanism
 	public static ItemAtomicDisassembler AtomicDisassembler;
 	public static Item AtomicCore;
 	public static ItemStorageTank StorageTank;
+	public static Item ControlCircuit;
 	
 	//Extra Blocks
 	public static Block BasicBlock;
@@ -202,16 +203,16 @@ public class Mekanism
 			"ECE", "CPC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyTablet.getUnchargedItem(), Character.valueOf('P'), new ItemStack(EnergyCube, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
-			"***", "*R*", "***", Character.valueOf('*'), "ingotPlatinum", Character.valueOf('R'), Item.redstone
+			"ARA", "CIC", "ARA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('R'), Item.redstone, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5), Character.valueOf('C'), ControlCircuit
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 1), new Object[] {
-			"***", "*P*", "***", Character.valueOf('*'), Item.redstone, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0)
+			"RCR", "GIG", "RCR", Character.valueOf('R'), Item.redstone, Character.valueOf('C'), ControlCircuit, Character.valueOf('G'), Block.glass, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 2), new Object[] {
-			"***", "*P*", "***", Character.valueOf('*'), Block.cobblestone, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0)
+			"SCS", "RIR", "SCS", Character.valueOf('S'), Block.cobblestone, Character.valueOf('C'), ControlCircuit, Character.valueOf('R'), Item.redstone, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 3), new Object[] {
-			"***", "*L*", "***", Character.valueOf('*'), "ingotPlatinum", Character.valueOf('L'), Item.bucketLava
+			"RLR", "CIC", "RLR", Character.valueOf('R'), Item.redstone, Character.valueOf('L'), Item.bucketLava, Character.valueOf('C'), ControlCircuit, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SpeedUpgrade), new Object[] {
 			"PAP", "AEA", "PAP", Character.valueOf('P'), "dustPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
@@ -232,7 +233,7 @@ public class Mekanism
 			" R ", "RIR", " R ", Character.valueOf('R'), Item.redstone, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 5), new Object[] {
-			"PAP", "AIA", "PAP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Block.blockSteel
+			"PAP", "AIA", "PAP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(StorageTank.getEmptyItem(), new Object[] {
 			"III", "IDI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('D'), "dustIron"
@@ -248,6 +249,9 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.ULTIMATE), new Object[] {
 			"EDE", "TAT", "EDE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('A'), MekanismUtils.getEnergyCubeWithTier(EnumTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ControlCircuit), new Object[] {
+			" P ", "PEP", " P ", Character.valueOf('P'), new ItemStack(Ingot, 1, 1), Character.valueOf('E'), EnrichedAlloy
 		}));
 		
 		if(extrasEnabled)
@@ -317,6 +321,7 @@ public class Mekanism
 		LanguageRegistry.addName(NullRender, "Null Render");
 		LanguageRegistry.addName(GasTank, "Gas Tank");
 		LanguageRegistry.addName(StorageTank, "Storage Tank");
+		LanguageRegistry.addName(ControlCircuit, "Control Circuit");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.PlatinumBlock.name", "Platinum Block");
@@ -380,6 +385,7 @@ public class Mekanism
 		AtomicCore.setIconIndex(254);
 		ElectricBow.setIconIndex(252);
 		StorageTank.setIconIndex(255);
+		ControlCircuit.setIconIndex(223);
 	}
 	
 	/**
@@ -387,23 +393,24 @@ public class Mekanism
 	 */
 	public void addItems()
 	{
-		ElectricBow = (ItemElectricBow) new ItemElectricBow(11275).setItemName("ElectricBow");
+		ElectricBow = (ItemElectricBow) new ItemElectricBow(11200).setItemName("ElectricBow");
 		if(extrasEnabled == true)
 		{
-			LightningRod = new ItemLightningRod(11276).setItemName("LightningRod");
-			Stopwatch = new ItemStopwatch(11277).setItemName("Stopwatch");
-			WeatherOrb = new ItemWeatherOrb(11278).setItemName("WeatherOrb");
+			LightningRod = new ItemLightningRod(11201).setItemName("LightningRod");
+			Stopwatch = new ItemStopwatch(11202).setItemName("Stopwatch");
+			WeatherOrb = new ItemWeatherOrb(11203).setItemName("WeatherOrb");
 		}
-		Dust = new ItemDust(11293-256);
-		Ingot = new ItemIngot(11294-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(11306, 250000, 800, 2500).setItemName("EnergyTablet");
-		SpeedUpgrade = new ItemMachineUpgrade(11309, 0, 150).setItemName("SpeedUpgrade");
-		EnergyUpgrade = new ItemMachineUpgrade(11310, 1000, 0).setItemName("EnergyUpgrade");
-		UltimateUpgrade = new ItemMachineUpgrade(11311, 2500, 180).setItemName("UltimateUpgrade");
-		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(11312).setItemName("AtomicDisassembler");
-		AtomicCore = new ItemMekanism(11313).setItemName("AtomicCore");
-		EnrichedAlloy = new ItemMekanism(11315).setItemName("EnrichedAlloy");
-		StorageTank = (ItemStorageTank) new ItemStorageTank(11316, 1600, 16, 16).setItemName("StorageTank");
+		Dust = new ItemDust(11204-256);
+		Ingot = new ItemIngot(11205-256);
+		EnergyTablet = (ItemEnergized) new ItemEnergized(11206, 250000, 800, 2500).setItemName("EnergyTablet");
+		SpeedUpgrade = new ItemMachineUpgrade(11207, 0, 150).setItemName("SpeedUpgrade");
+		EnergyUpgrade = new ItemMachineUpgrade(11208, 1000, 0).setItemName("EnergyUpgrade");
+		UltimateUpgrade = new ItemMachineUpgrade(11209, 2500, 180).setItemName("UltimateUpgrade");
+		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(11210).setItemName("AtomicDisassembler");
+		AtomicCore = new ItemMekanism(11211).setItemName("AtomicCore");
+		EnrichedAlloy = new ItemMekanism(11212).setItemName("EnrichedAlloy");
+		StorageTank = (ItemStorageTank) new ItemStorageTank(11213, 1600, 16, 16).setItemName("StorageTank");
+		ControlCircuit = new ItemMekanism(11214).setItemName("ControlCircuit");
 	}
 	
 	/**
@@ -485,7 +492,7 @@ public class Mekanism
 			{
 				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustLead").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("oreSilver"))
@@ -497,7 +504,7 @@ public class Mekanism
 			{
 				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustSilver").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotObsidian"))
 		{
@@ -524,14 +531,14 @@ public class Mekanism
 			{
 				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustCopper").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotTin"))
 			{
 				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustTin").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustIron"))
 		{
@@ -559,28 +566,28 @@ public class Mekanism
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 2), OreDictionary.getOres("oreCopper").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 			
 		try {
 			for(ItemStack ore : OreDictionary.getOres("dustTin"))
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 2), OreDictionary.getOres("oreTin").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("dustLead"))
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 2), OreDictionary.getOres("oreLead").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("dustSilver"))
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 2), OreDictionary.getOres("oreSilver").get(0));
 			}
-		} catch(ArrayIndexOutOfBoundsException e) {}
+		} catch(Exception e) {}
 	}
 	
 	/**
@@ -642,12 +649,18 @@ public class Mekanism
 	{
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
+		
 		//Register the mod's GUI handler
 		NetworkRegistry.instance().registerGuiHandler(this, new CoreGuiHandler());
+		
 		//Register the MachineryManager
 		manager = new MachineryManager();
+		
 		System.out.println("[Mekanism] Version " + versionNumber + " initializing...");
+		
 		new ThreadGetData();
+		
+		//Load proxy
 		proxy.registerRenderInformation();
 		proxy.loadConfiguration();
 		proxy.loadUtilities();

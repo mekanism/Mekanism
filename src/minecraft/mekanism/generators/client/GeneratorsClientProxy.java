@@ -40,8 +40,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		
 		//Register animated TextureFX
 		try {
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/HydrogenFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+5));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/HydrogenSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+6));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/HydrogenFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+7));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/HydrogenSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+8));
 		} catch (IOException e) {
 			System.err.println("[Mekanism] Error registering animation with FML: " + e.getMessage());
 		}

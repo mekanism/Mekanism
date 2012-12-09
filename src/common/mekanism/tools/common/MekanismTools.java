@@ -534,83 +534,83 @@ public class MekanismTools
 	public void addItems()
 	{
 		//Redstone
-		RedstoneHelmet = (new ItemMekanismArmor(11235, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 0)).setItemName("RedstoneHelmet");
-		RedstoneBody = (new ItemMekanismArmor(11236, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
-		RedstoneLegs = (new ItemMekanismArmor(11237, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
-		RedstoneBoots = (new ItemMekanismArmor(11238, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
-		RedstonePaxel = new ItemMekanismPaxel(11239, toolREDSTONE2).setItemName("RedstonePaxel");
-		RedstonePickaxe = new ItemMekanismPickaxe(11240, toolREDSTONE).setItemName("RedstonePickaxe");
-		RedstoneAxe = new ItemMekanismAxe(11241, toolREDSTONE).setItemName("RedstoneAxe");
-		RedstoneSpade = new ItemMekanismSpade(11242, toolREDSTONE).setItemName("RedstoneSpade");
-		RedstoneHoe = new ItemMekanismHoe(11243, toolREDSTONE).setItemName("RedstoneHoe");
-		RedstoneSword = new ItemMekanismSword(11244, toolREDSTONE).setItemName("RedstoneSword");
+		RedstoneHelmet = (new ItemMekanismArmor(11400, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 0)).setItemName("RedstoneHelmet");
+		RedstoneBody = (new ItemMekanismArmor(11401, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
+		RedstoneLegs = (new ItemMekanismArmor(11402, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
+		RedstoneBoots = (new ItemMekanismArmor(11403, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
+		RedstonePaxel = new ItemMekanismPaxel(11404, toolREDSTONE2).setItemName("RedstonePaxel");
+		RedstonePickaxe = new ItemMekanismPickaxe(11405, toolREDSTONE).setItemName("RedstonePickaxe");
+		RedstoneAxe = new ItemMekanismAxe(11406, toolREDSTONE).setItemName("RedstoneAxe");
+		RedstoneSpade = new ItemMekanismSpade(11407, toolREDSTONE).setItemName("RedstoneSpade");
+		RedstoneHoe = new ItemMekanismHoe(11408, toolREDSTONE).setItemName("RedstoneHoe");
+		RedstoneSword = new ItemMekanismSword(11409, toolREDSTONE).setItemName("RedstoneSword");
 		
 		//Platinum
-		PlatinumHelmet = (new ItemMekanismArmor(11245, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
-		PlatinumBody = (new ItemMekanismArmor(11246, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
-		PlatinumLegs = (new ItemMekanismArmor(11247, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
-		PlatinumBoots = (new ItemMekanismArmor(11248, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
-		PlatinumPaxel = new ItemMekanismPaxel(11249, toolPLATINUM2).setItemName("PlatinumPaxel");
-		PlatinumPickaxe = new ItemMekanismPickaxe(11250, toolPLATINUM).setItemName("PlatinumPickaxe");
-		PlatinumAxe = new ItemMekanismAxe(11251, toolPLATINUM).setItemName("PlatinumAxe");
-		PlatinumSpade = new ItemMekanismSpade(11252, toolPLATINUM).setItemName("PlatinumSpade");
-		PlatinumHoe = new ItemMekanismHoe(11253, toolPLATINUM).setItemName("PlatinumHoe");
-		PlatinumSword = new ItemMekanismSword(11254, toolPLATINUM).setItemName("PlatinumSword");
+		PlatinumHelmet = (new ItemMekanismArmor(11410, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
+		PlatinumBody = (new ItemMekanismArmor(11411, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
+		PlatinumLegs = (new ItemMekanismArmor(11412, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
+		PlatinumBoots = (new ItemMekanismArmor(11413, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
+		PlatinumPaxel = new ItemMekanismPaxel(11414, toolPLATINUM2).setItemName("PlatinumPaxel");
+		PlatinumPickaxe = new ItemMekanismPickaxe(11415, toolPLATINUM).setItemName("PlatinumPickaxe");
+		PlatinumAxe = new ItemMekanismAxe(11416, toolPLATINUM).setItemName("PlatinumAxe");
+		PlatinumSpade = new ItemMekanismSpade(11417, toolPLATINUM).setItemName("PlatinumSpade");
+		PlatinumHoe = new ItemMekanismHoe(11418, toolPLATINUM).setItemName("PlatinumHoe");
+		PlatinumSword = new ItemMekanismSword(11419, toolPLATINUM).setItemName("PlatinumSword");
 		
 		//Obsidian
-		ObsidianHelmet = (new ItemMekanismArmor(11255, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
-		ObsidianBody = (new ItemMekanismArmor(11256, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
-		ObsidianLegs = (new ItemMekanismArmor(11257, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
-		ObsidianBoots = (new ItemMekanismArmor(11258, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
-		ObsidianPaxel = new ItemMekanismPaxel(11259, toolOBSIDIAN2).setItemName("ObsidianPaxel");
-		ObsidianPickaxe = new ItemMekanismPickaxe(11260, toolOBSIDIAN).setItemName("ObsidianPickaxe");
-		ObsidianAxe = new ItemMekanismAxe(11261, toolOBSIDIAN).setItemName("ObsidianAxe");
-		ObsidianSpade = new ItemMekanismSpade(11262, toolOBSIDIAN).setItemName("ObsidianSpade");
-		ObsidianHoe = new ItemMekanismHoe(11263, toolOBSIDIAN).setItemName("ObsidianHoe");
-		ObsidianSword = new ItemMekanismSword(11264, toolOBSIDIAN).setItemName("ObsidianSword");
+		ObsidianHelmet = (new ItemMekanismArmor(11420, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
+		ObsidianBody = (new ItemMekanismArmor(11421, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 1)).setItemName("ObsidianBody");
+		ObsidianLegs = (new ItemMekanismArmor(11422, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 2)).setItemName("ObsidianLegs");
+		ObsidianBoots = (new ItemMekanismArmor(11423, armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 3)).setItemName("ObsidianBoots");
+		ObsidianPaxel = new ItemMekanismPaxel(11424, toolOBSIDIAN2).setItemName("ObsidianPaxel");
+		ObsidianPickaxe = new ItemMekanismPickaxe(11425, toolOBSIDIAN).setItemName("ObsidianPickaxe");
+		ObsidianAxe = new ItemMekanismAxe(11426, toolOBSIDIAN).setItemName("ObsidianAxe");
+		ObsidianSpade = new ItemMekanismSpade(11427, toolOBSIDIAN).setItemName("ObsidianSpade");
+		ObsidianHoe = new ItemMekanismHoe(11428, toolOBSIDIAN).setItemName("ObsidianHoe");
+		ObsidianSword = new ItemMekanismSword(11429, toolOBSIDIAN).setItemName("ObsidianSword");
 		
 		//Lazuli
-		LazuliPaxel = new ItemMekanismPaxel(11265, toolLAZULI2).setItemName("LazuliPaxel");
-		LazuliPickaxe = new ItemMekanismPickaxe(11266, toolLAZULI).setItemName("LazuliPickaxe");
-		LazuliAxe = new ItemMekanismAxe(11267, toolLAZULI).setItemName("LazuliAxe");
-		LazuliSpade = new ItemMekanismSpade(11268, toolLAZULI).setItemName("LazuliSpade");
-		LazuliHoe = new ItemMekanismHoe(11269, toolLAZULI).setItemName("LazuliHoe");
-		LazuliSword = new ItemMekanismSword(11270, toolLAZULI).setItemName("LazuliSword");
-		LazuliHelmet = (new ItemMekanismArmor(11271, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 0)).setItemName("LazuliHelmet");
-		LazuliBody = (new ItemMekanismArmor(11272, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
-		LazuliLegs = (new ItemMekanismArmor(11273, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
-		LazuliBoots = (new ItemMekanismArmor(11274, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
+		LazuliPaxel = new ItemMekanismPaxel(11430, toolLAZULI2).setItemName("LazuliPaxel");
+		LazuliPickaxe = new ItemMekanismPickaxe(11431, toolLAZULI).setItemName("LazuliPickaxe");
+		LazuliAxe = new ItemMekanismAxe(11432, toolLAZULI).setItemName("LazuliAxe");
+		LazuliSpade = new ItemMekanismSpade(11433, toolLAZULI).setItemName("LazuliSpade");
+		LazuliHoe = new ItemMekanismHoe(11434, toolLAZULI).setItemName("LazuliHoe");
+		LazuliSword = new ItemMekanismSword(11435, toolLAZULI).setItemName("LazuliSword");
+		LazuliHelmet = (new ItemMekanismArmor(11436, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 0)).setItemName("LazuliHelmet");
+		LazuliBody = (new ItemMekanismArmor(11437, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setItemName("LazuliBody");
+		LazuliLegs = (new ItemMekanismArmor(11438, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setItemName("LazuliLegs");
+		LazuliBoots = (new ItemMekanismArmor(11439, armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setItemName("LazuliBoots");
 		
 		//Glowstone
-		GlowstonePaxel = new ItemMekanismPaxel(11295, toolGLOWSTONE2).setItemName("GlowstonePaxel");
-		GlowstonePickaxe = new ItemMekanismPickaxe(11296, toolGLOWSTONE).setItemName("GlowstonePickaxe");
-		GlowstoneAxe = new ItemMekanismAxe(11297, toolGLOWSTONE).setItemName("GlowstoneAxe");
-		GlowstoneSpade = new ItemMekanismSpade(11298, toolGLOWSTONE).setItemName("GlowstoneSpade");
-		GlowstoneHoe = new ItemMekanismHoe(11299, toolGLOWSTONE).setItemName("GlowstoneHoe");
-		GlowstoneSword = new ItemMekanismSword(11300, toolGLOWSTONE).setItemName("GlowstoneSword");
-		GlowstoneHelmet = new ItemMekanismArmor(11301, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 0).setItemName("GlowstoneHelmet");
-		GlowstoneBody = new ItemMekanismArmor(11302, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 1).setItemName("GlowstoneBody");
-		GlowstoneLegs = new ItemMekanismArmor(11303, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
-		GlowstoneBoots = new ItemMekanismArmor(11304, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
+		GlowstonePaxel = new ItemMekanismPaxel(11440, toolGLOWSTONE2).setItemName("GlowstonePaxel");
+		GlowstonePickaxe = new ItemMekanismPickaxe(11441, toolGLOWSTONE).setItemName("GlowstonePickaxe");
+		GlowstoneAxe = new ItemMekanismAxe(11442, toolGLOWSTONE).setItemName("GlowstoneAxe");
+		GlowstoneSpade = new ItemMekanismSpade(11443, toolGLOWSTONE).setItemName("GlowstoneSpade");
+		GlowstoneHoe = new ItemMekanismHoe(11444, toolGLOWSTONE).setItemName("GlowstoneHoe");
+		GlowstoneSword = new ItemMekanismSword(11445, toolGLOWSTONE).setItemName("GlowstoneSword");
+		GlowstoneHelmet = new ItemMekanismArmor(11446, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 0).setItemName("GlowstoneHelmet");
+		GlowstoneBody = new ItemMekanismArmor(11447, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 1).setItemName("GlowstoneBody");
+		GlowstoneLegs = new ItemMekanismArmor(11448, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setItemName("GlowstoneLegs");
+		GlowstoneBoots = new ItemMekanismArmor(11449, armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setItemName("GlowstoneBoots");
 		
 		//Base Paxels
-		WoodPaxel = new ItemMekanismPaxel(11279, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
-		StonePaxel = new ItemMekanismPaxel(11280, EnumToolMaterial.STONE).setItemName("StonePaxel");
-		IronPaxel = new ItemMekanismPaxel(11281, EnumToolMaterial.IRON).setItemName("IronPaxel");
-		DiamondPaxel = new ItemMekanismPaxel(11282, EnumToolMaterial.EMERALD).setItemName("DiamondPaxel");
-		GoldPaxel = new ItemMekanismPaxel(11283, EnumToolMaterial.GOLD).setItemName("GoldPaxel");
+		WoodPaxel = new ItemMekanismPaxel(11450, EnumToolMaterial.WOOD).setItemName("WoodPaxel");
+		StonePaxel = new ItemMekanismPaxel(11451, EnumToolMaterial.STONE).setItemName("StonePaxel");
+		IronPaxel = new ItemMekanismPaxel(11452, EnumToolMaterial.IRON).setItemName("IronPaxel");
+		DiamondPaxel = new ItemMekanismPaxel(11453, EnumToolMaterial.EMERALD).setItemName("DiamondPaxel");
+		GoldPaxel = new ItemMekanismPaxel(11454, EnumToolMaterial.GOLD).setItemName("GoldPaxel");
 		
 		//Knives
-		WoodKnife = new ItemMekanismKnife(11284, EnumToolMaterial.WOOD).setItemName("WoodKnife");
-		StoneKnife = new ItemMekanismKnife(11285, EnumToolMaterial.STONE).setItemName("StoneKnife");
-		IronKnife = new ItemMekanismKnife(11286, EnumToolMaterial.IRON).setItemName("IronKnife");
-		DiamondKnife = new ItemMekanismKnife(11287, EnumToolMaterial.EMERALD).setItemName("DiamondKnife");
-		GoldKnife = new ItemMekanismKnife(11288, EnumToolMaterial.GOLD).setItemName("GoldKnife");
-		ObsidianKnife = new ItemMekanismKnife(11289, toolOBSIDIAN).setItemName("ObsidianKnife");
-		LazuliKnife = new ItemMekanismKnife(11290, toolLAZULI).setItemName("LazuliKnife");
-		PlatinumKnife = new ItemMekanismKnife(11291, toolPLATINUM).setItemName("PlatinumKnife");
-		RedstoneKnife = new ItemMekanismKnife(11292, toolREDSTONE).setItemName("RedstoneKnife");
-		GlowstoneKnife = new ItemMekanismKnife(11305, toolGLOWSTONE).setItemName("GlowstoneKnife");
+		WoodKnife = new ItemMekanismKnife(11455, EnumToolMaterial.WOOD).setItemName("WoodKnife");
+		StoneKnife = new ItemMekanismKnife(11456, EnumToolMaterial.STONE).setItemName("StoneKnife");
+		IronKnife = new ItemMekanismKnife(11457, EnumToolMaterial.IRON).setItemName("IronKnife");
+		DiamondKnife = new ItemMekanismKnife(11458, EnumToolMaterial.EMERALD).setItemName("DiamondKnife");
+		GoldKnife = new ItemMekanismKnife(11459, EnumToolMaterial.GOLD).setItemName("GoldKnife");
+		ObsidianKnife = new ItemMekanismKnife(11460, toolOBSIDIAN).setItemName("ObsidianKnife");
+		LazuliKnife = new ItemMekanismKnife(11461, toolLAZULI).setItemName("LazuliKnife");
+		PlatinumKnife = new ItemMekanismKnife(11462, toolPLATINUM).setItemName("PlatinumKnife");
+		RedstoneKnife = new ItemMekanismKnife(11463, toolREDSTONE).setItemName("RedstoneKnife");
+		GlowstoneKnife = new ItemMekanismKnife(11464, toolGLOWSTONE).setItemName("GlowstoneKnife");
 	}
 	
 	public void addEntities()

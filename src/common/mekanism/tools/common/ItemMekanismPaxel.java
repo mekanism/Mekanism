@@ -74,7 +74,7 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 	                Block.railDetector, Block.railPowered, Block.leaves, Block.grass, Block.dirt, Block.sand,
 	                Block.gravel, Block.snow, Block.blockSnow, Block.blockClay, Block.tilledField, Block.slowSand, Block.mycelium, Block.planks, Block.bookShelf, Block.wood,
 	                Block.chest, Block.stoneDoubleSlab, Block.stoneSingleSlab, Block.pumpkin, Block.pumpkinLantern, Block.snow, Block.pistonBase, Block.pistonStickyBase, Block.workbench, 
-	                Block.stoneOvenActive, Block.stoneOvenIdle, Block.music, Block.trapdoor, Block.silverfish, Block.stoneBrick, Block.glowStone
+	                Block.stoneOvenActive, Block.stoneOvenIdle, Block.music, Block.trapdoor, Block.silverfish, Block.stoneBrick, Block.glowStone, Block.thinGlass
                 });
     }
 }

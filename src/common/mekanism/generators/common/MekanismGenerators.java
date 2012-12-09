@@ -153,8 +153,8 @@ public class MekanismGenerators
 	
 	public void addItems()
 	{
-		SolarPanel = new ItemMekanism(11314).setItemName("SolarPanel");
-		BioFuel = new ItemMekanism(11318).setItemName("BioFuel");
-		ElectrolyticCore = new ItemMekanism(11319).setItemName("ElectrolyticCore");
+		SolarPanel = new ItemMekanism(11300).setItemName("SolarPanel");
+		BioFuel = new ItemMekanism(11301).setItemName("BioFuel");
+		ElectrolyticCore = new ItemMekanism(11302).setItemName("ElectrolyticCore");
 	}
 }

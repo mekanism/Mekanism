@@ -21,6 +21,8 @@ public class SoundHandler
 	
 	public List<Sound> sounds = new ArrayList<Sound>();
 	
+	public float masterVolume = 0;
+	
 	/** SoundHandler -- a class that handles all Sounds used by Mekanism. */
 	public SoundHandler()
 	{
@@ -35,8 +37,11 @@ public class SoundHandler
 	{
 		for(Sound sound : sounds)
 		{
+			if(FMLClientHandler.instance().getClient().theWorld != null && FMLClientHandler.instance().getClient().thePlayer != null)
 			sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 		}
+		
+		masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;
 	}
 	
 	/** Create and return an instance of a Sound.

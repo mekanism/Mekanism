@@ -3,6 +3,8 @@ package mekanism.client;
 import java.io.File;
 import java.net.URL;
 
+import cpw.mods.fml.client.FMLClientHandler;
+
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Block;
@@ -74,7 +76,9 @@ public class Sound
 		soundSystem.activate(id);
 	}
 	
-	/** Start looping the sound effect */
+	/** 
+	 * Start looping the sound effect 
+	 */
 	public void play()
 	{
 		if(isPlaying)
@@ -86,7 +90,9 @@ public class Sound
 		isPlaying = true;
 	}
 	
-	/** Stop looping the sound effect */
+	/** 
+	 * Stop looping the sound effect 
+	 */
 	public void stop()
 	{
 		if(!isPlaying)
@@ -98,7 +104,9 @@ public class Sound
 		isPlaying = false;
 	}
 	
-	/** Remove the sound effect from the PaulsCode SoundSystem */
+	/** 
+	 * Remove the sound effect from the PaulsCode SoundSystem 
+	 */
 	public void remove()
 	{
 		if(isPlaying)
@@ -124,8 +132,7 @@ public class Sound
         }
         
         double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.01;
-        
-        volume = (float)Math.max(1.0F-distanceVolume, 0);
+        volume = (float)Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0);
 
         soundSystem.setVolume(identifier, volume);
     }
