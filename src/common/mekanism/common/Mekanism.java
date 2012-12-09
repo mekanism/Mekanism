@@ -117,6 +117,7 @@ public class Mekanism
 	public static Item AtomicCore;
 	public static ItemStorageTank StorageTank;
 	public static Item ControlCircuit;
+	public static Item EnrichedIron;
 	
 	//Extra Blocks
 	public static Block BasicBlock;
@@ -144,10 +145,10 @@ public class Mekanism
 	
 	public static int ANIMATED_TEXTURE_INDEX = 240;
 	
-	public static double TO_IC2 = .1;
-	public static double TO_BC = .01;
-	public static double FROM_IC2 = 10;
-	public static double FROM_BC = 100;
+	public static double TO_IC2 = 1;
+	public static double TO_BC = .1;
+	public static double FROM_IC2 = 1;
+	public static double FROM_BC = 10;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -195,12 +196,6 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(EnergyTablet.getUnchargedItem(), new Object[] {
 			"RCR", "ECE", "RCR", Character.valueOf('C'), Item.ingotGold, Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyCube, 1, 0), new Object[] {
-			"CEC", "EPE", "CEC", Character.valueOf('C'), EnergyTablet.getUnchargedItem(), Character.valueOf('E'), EnrichedAlloy, Character.valueOf('P'), new ItemStack(BasicBlock, 1, 0) 
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyCube, 1, 1), new Object[] {
-			"ECE", "CPC", "ECE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), EnergyTablet.getUnchargedItem(), Character.valueOf('P'), new ItemStack(EnergyCube, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
 			"ARA", "CIC", "ARA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('R'), Item.redstone, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5), Character.valueOf('C'), ControlCircuit
@@ -253,6 +248,15 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ControlCircuit), new Object[] {
 			" P ", "PEP", " P ", Character.valueOf('P'), new ItemStack(Ingot, 1, 1), Character.valueOf('E'), EnrichedAlloy
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 6), new Object[] {
+			"A", "I", "A", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), "dustIron"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
+			"C", "I", "C", Character.valueOf('C'), "dustCopper", Character.valueOf('I'), "dustIron"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
+			"T", "I", "T", Character.valueOf('T'), "dustTin", Character.valueOf('I'), "dustIron"
+		}));
 		
 		if(extrasEnabled)
 		{
@@ -273,6 +277,7 @@ public class Mekanism
         RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(EnrichedIron, 2), new ItemStack(Dust, 1, 2));
 		
 		//Platinum Compressor Recipes
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.redstone), new ItemStack(Ingot, 1, 2));
@@ -299,7 +304,7 @@ public class Mekanism
 	public void addNames()
 	{
 		//Extras
-		LanguageRegistry.addName(ElectricBow, "Energized Bow");
+		LanguageRegistry.addName(ElectricBow, "Electric Bow");
 		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
 		
 		if(extrasEnabled == true)
@@ -322,6 +327,7 @@ public class Mekanism
 		LanguageRegistry.addName(GasTank, "Gas Tank");
 		LanguageRegistry.addName(StorageTank, "Storage Tank");
 		LanguageRegistry.addName(ControlCircuit, "Control Circuit");
+		LanguageRegistry.addName(EnrichedIron, "Enriched Iron");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.PlatinumBlock.name", "Platinum Block");
@@ -386,6 +392,7 @@ public class Mekanism
 		ElectricBow.setIconIndex(252);
 		StorageTank.setIconIndex(255);
 		ControlCircuit.setIconIndex(223);
+		EnrichedIron.setIconIndex(222);
 	}
 	
 	/**
@@ -411,6 +418,7 @@ public class Mekanism
 		EnrichedAlloy = new ItemMekanism(11212).setItemName("EnrichedAlloy");
 		StorageTank = (ItemStorageTank) new ItemStorageTank(11213, 1600, 16, 16).setItemName("StorageTank");
 		ControlCircuit = new ItemMekanism(11214).setItemName("ControlCircuit");
+		EnrichedIron = new ItemMekanism(11215).setItemName("EnrichedIron");
 	}
 	
 	/**

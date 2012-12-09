@@ -76,7 +76,7 @@ public class MekanismGenerators
 			"GGG", "ECE", "IRI", Character.valueOf('G'), Item.lightStoneDust, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('C'), new ItemStack(Mekanism.BasicBlock, 1, 3), Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 1), new Object[] {
-			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Block.blockSteel, Character.valueOf('P'), "dustPlatinum", Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem()
+			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Item.ingotIron, Character.valueOf('P'), "dustPlatinum", Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 5), new Object[] {
 			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(Generator, 1, 1), Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
