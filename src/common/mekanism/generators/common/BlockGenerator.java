@@ -2,6 +2,7 @@ package mekanism.generators.common;
 
 import ic2.api.EnergyNet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -317,13 +318,16 @@ public class BlockGenerator extends BlockContainer
                 }
         	}
             
-            EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z)));
-            
-            float motion = 0.05F;
-            entityItem.motionX = machineRand.nextGaussian() * motion;
-            entityItem.motionY = machineRand.nextGaussian() * motion + 0.2F;
-            entityItem.motionZ = machineRand.nextGaussian() * motion;
-            world.spawnEntityInWorld(entityItem);
+            if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+            {
+	            EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z)));
+	            
+	            float motion = 0.05F;
+	            entityItem.motionX = machineRand.nextGaussian() * motion;
+	            entityItem.motionY = machineRand.nextGaussian() * motion + 0.2F;
+	            entityItem.motionZ = machineRand.nextGaussian() * motion;
+	            world.spawnEntityInWorld(entityItem);
+            }
             
             if(Mekanism.hooks.IC2Loaded)
             {
@@ -334,8 +338,6 @@ public class BlockGenerator extends BlockContainer
             {
             	((IMultiBlock)tileEntity).onDestroy(tileEntity);
             }
-            
-            tileEntity.invalidate();
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);
@@ -414,6 +416,19 @@ public class BlockGenerator extends BlockContainer
     	else {
     		return null;
     	}
+    }
+    
+    @Override
+    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        
+        if(metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+        {
+        	ret.add(new ItemStack(blockID, 1, metadata));
+        }
+        
+        return ret;
     }
     
 	@Override

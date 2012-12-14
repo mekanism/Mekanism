@@ -308,7 +308,6 @@ public class BlockMachine extends BlockContainer
             {
             	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
             }
-            tileEntity.invalidate();
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);

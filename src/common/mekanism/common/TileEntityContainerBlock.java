@@ -66,15 +66,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
-        if (side == ForgeDirection.DOWN) return 1;
-        if (side == ForgeDirection.UP) return 0; 
-        return 2;
+        return 0;
 	}
 
 	@Override
 	public int getSizeInventorySide(ForgeDirection side)
 	{
-		return 1;
+		return 0;
 	}
 
 	@Override

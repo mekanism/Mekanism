@@ -228,13 +228,13 @@ public class Mekanism
 			" R ", "RIR", " R ", Character.valueOf('R'), Item.redstone, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 5), new Object[] {
-			"PAP", "AIA", "PAP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
+			"PAP", "AEA", "PAP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnrichedIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(StorageTank.getEmptyItem(), new Object[] {
 			"III", "IDI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('D'), "dustIron"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(GasTank, new Object[] {
-			"PPP", "P P", "PPP", Character.valueOf('P'), "ingotPlatinum"
+			"PPP", "PDP", "PPP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('D'), "dustIron"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.BASIC), new Object[] {
 			"ELE", "TIT", "ELE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
@@ -267,6 +267,7 @@ public class Mekanism
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
+		FurnaceRecipes.smelting().addSmelting(EnrichedIron.shiftedIndex, 0, new ItemStack(EnrichedAlloy), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 2, new ItemStack(Ingot, 1, 1), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 0, new ItemStack(Item.ingotIron), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 1, new ItemStack(Item.ingotGold), 1.0F);

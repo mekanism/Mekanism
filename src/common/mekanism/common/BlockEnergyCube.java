@@ -2,6 +2,7 @@ package mekanism.common;
 
 import ic2.api.EnergyNet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -12,6 +13,7 @@ import cpw.mods.fml.common.asm.SideOnly;
 import mekanism.api.IEnergyCube;
 import mekanism.api.IEnergyCube.EnumTier;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -174,23 +176,23 @@ public class BlockEnergyCube extends BlockContainer
                         }
 
                         slotStack.stackSize -= j;
-                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
+                        EntityItem entityItem = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
 
                         if (slotStack.hasTagCompound())
                         {
-                            item.item.setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+                            entityItem.item.setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
-                        float k = 0.05F;
-                        item.motionX = (double)((float)powerRand.nextGaussian() * k);
-                        item.motionY = (double)((float)powerRand.nextGaussian() * k + 0.2F);
-                        item.motionZ = (double)((float)powerRand.nextGaussian() * k);
-                        world.spawnEntityInWorld(item);
+                        float motion = 0.05F;
+                        entityItem.motionX = powerRand.nextGaussian() * motion;
+                        entityItem.motionY = powerRand.nextGaussian() * motion + 0.2F;
+                        entityItem.motionZ = powerRand.nextGaussian() * motion;
+                        world.spawnEntityInWorld(entityItem);
                     }
                 }
             }
         	
-            EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(Mekanism.EnergyCube));
+        	EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(Mekanism.EnergyCube));
             
             float motion = 0.05F;
             entityItem.motionX = powerRand.nextGaussian() * motion;
@@ -209,7 +211,6 @@ public class BlockEnergyCube extends BlockContainer
             {
             	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
             }
-            tileEntity.invalidate();
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);
@@ -232,11 +233,27 @@ public class BlockEnergyCube extends BlockContainer
 		};
 	}
 	
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
+    /*@Override
+    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        
+        if(world.getBlockTileEntity(x, y, z) != null)
+        {
+	        ItemStack itemstack = new ItemStack(Mekanism.EnergyCube);
+	        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+	        
+	        IEnergyCube energyCube = (IEnergyCube)itemstack.getItem();
+	        energyCube.setTier(itemstack, tileEntity.tier);
+	        
+	        IItemElectric electricItem = (IItemElectric)itemstack.getItem();
+	        electricItem.setJoules(tileEntity.electricityStored, itemstack);
+	        
+	        ret.add(itemstack);
+        }
+        
+        return ret;
+    }*/
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)

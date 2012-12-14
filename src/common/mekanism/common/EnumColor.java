@@ -1,7 +1,7 @@
 package mekanism.common;
 
 /**
- * Simple color enum for adding colors to in-game GUI Strings of text.
+ * Simple color enum for adding colors to in-game GUI strings of text.
  * @author AidanBrady
  *
  */
