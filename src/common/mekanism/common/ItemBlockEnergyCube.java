@@ -6,6 +6,7 @@ import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import universalelectricity.core.implement.IItemElectric;
 import mekanism.api.IEnergyCube;
+import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.src.*;
 
 public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEnergyCube
@@ -38,7 +39,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     	item.setTier(itemstack, item.getTier(itemstack));
     }
 	
-	public ItemStack getUnchargedItem(EnumTier tier)
+	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
 		ItemStack charged = new ItemStack(this);
 		setTier(charged, tier);
@@ -103,7 +104,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 			
 			return getTier(itemstack).MAX_ELECTRICITY;
 		}
-		return EnumTier.BASIC.MAX_ELECTRICITY;
+		return EnergyCubeTier.BASIC.MAX_ELECTRICITY;
 	}
 
 	@Override
@@ -162,23 +163,23 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     }
 
 	@Override
-	public EnumTier getTier(ItemStack itemstack)
+	public EnergyCubeTier getTier(ItemStack itemstack)
 	{
 		if(itemstack.stackTagCompound == null)
 		{ 
-			return EnumTier.BASIC; 
+			return EnergyCubeTier.BASIC; 
 		}
 		
 		if(itemstack.stackTagCompound.getString("tier") == null)
 		{
-			return EnumTier.BASIC;
+			return EnergyCubeTier.BASIC;
 		}
 		
-		return EnumTier.getFromName(itemstack.stackTagCompound.getString("tier"));
+		return EnergyCubeTier.getFromName(itemstack.stackTagCompound.getString("tier"));
 	}
 
 	@Override
-	public void setTier(ItemStack itemstack, EnumTier tier) 
+	public void setTier(ItemStack itemstack, EnergyCubeTier tier) 
 	{
 		if (itemstack.stackTagCompound == null)
 		{

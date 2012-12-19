@@ -16,8 +16,9 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.server.FMLServerHandler;
 
+import mekanism.api.IActiveState;
 import mekanism.api.IEnergyCube;
-import mekanism.api.IEnergyCube.EnumTier;
+import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.client.ThreadSendData;
 import net.minecraft.src.*;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -207,9 +208,30 @@ public final class MekanismUtils
 	 * @param tier - tier to add to the Energy Cube
 	 * @return empty energy cube with defined tier
 	 */
-	public static ItemStack getEnergyCubeWithTier(EnumTier tier)
+	public static ItemStack getEnergyCubeWithTier(EnergyCubeTier tier)
 	{
 		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(Mekanism.EnergyCube).getItem()).getUnchargedItem(tier);
 		return itemstack;
 	}
+	
+	/**
+	 * Checks if a machine is in it's active state.
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return if machine is active
+	 */
+    public static boolean isActive(IBlockAccess world, int x, int y, int z)
+    {
+    	TileEntity tileEntity = (TileEntity)world.getBlockTileEntity(x, y, z);
+    	if(tileEntity != null)
+    	{
+    		if(tileEntity instanceof IActiveState)
+    		{
+    			return ((IActiveState)tileEntity).getActive();
+    		}
+    	}
+    	return false;
+    }
 }

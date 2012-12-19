@@ -138,10 +138,7 @@ public class MekanismGenerators
 	
 	public void addEntities()
 	{
-		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
-		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
-		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
 	}
 	
 	public void addBlocks()

@@ -5,8 +5,10 @@ import com.google.common.io.ByteArrayDataInput;
 import universalelectricity.prefab.tile.TileEntityDisableable;
 import ic2.api.EnergyNet;
 import ic2.api.IWrenchable;
+import ic2.api.energy.EnergyTileLoadEvent;
 import mekanism.api.ITileNetwork;
 import net.minecraft.src.*;
+import net.minecraftforge.common.MinecraftForge;
 
 public abstract class TileEntityBasicBlock extends TileEntityDisableable implements IWrenchable, ITileNetwork
 {
@@ -26,16 +28,6 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	public void updateEntity()
 	{
 		super.updateEntity();
-		
-		if(!initialized && worldObj != null)
-		{
-			if(Mekanism.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).addTileEntity(this);
-			}
-			
-			initialized = true;
-		}
 		
 		onUpdate();
 		
@@ -136,5 +128,11 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	public float getWrenchDropRate() 
 	{
 		return 1.0F;
+	}
+	
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+	{
+		return new ItemStack(blockType.blockID, 1, blockMetadata);
 	}
 }

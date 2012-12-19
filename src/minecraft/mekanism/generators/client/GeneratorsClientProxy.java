@@ -25,6 +25,9 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	{
 		ClientRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator", new RenderAdvancedSolarGenerator(new ModelAdvancedSolarGenerator()));
 		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
+		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
+		ClientRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator", new RenderHydrogenGenerator());
+		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
 	}
 	
 	@Override

@@ -26,6 +26,9 @@ public class GeneratorsCommonProxy
 	{
 		GameRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator");
 		GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
+		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
+		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
+		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
 	}
 	
 	/**

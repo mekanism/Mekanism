@@ -15,8 +15,8 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import universalelectricity.prefab.multiblock.*;
-import mekanism.api.IEnergyCube.EnumTier;
 import mekanism.api.ItemMachineUpgrade;
+import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.client.SoundHandler;
 import net.minecraftforge.common.*;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -47,7 +47,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.1")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -69,7 +69,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 0, 0);
+	public static Version versionNumber = new Version(5, 0, 1);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -236,26 +236,35 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(GasTank, new Object[] {
 			"PPP", "PDP", "PPP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('D'), "dustIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.BASIC), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.BASIC), new Object[] {
 			"ELE", "TIT", "ELE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.ADVANCED), new Object[] {
-			"EGE", "TBT", "EGE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('G'), Item.ingotGold, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('B'), MekanismUtils.getEnergyCubeWithTier(EnumTier.BASIC)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.ADVANCED), new Object[] {
+			"EGE", "TBT", "EGE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('G'), Item.ingotGold, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('B'), MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.BASIC)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnumTier.ULTIMATE), new Object[] {
-			"EDE", "TAT", "EDE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('A'), MekanismUtils.getEnergyCubeWithTier(EnumTier.ADVANCED)
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.ULTIMATE), new Object[] {
+			"EDE", "TAT", "EDE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('A'), MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.ADVANCED)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ControlCircuit), new Object[] {
 			" P ", "PEP", " P ", Character.valueOf('P'), new ItemStack(Ingot, 1, 1), Character.valueOf('E'), EnrichedAlloy
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 6), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 2), new Object[] {
 			"A", "I", "A", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), "dustIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 1), new Object[] {
 			"C", "I", "C", Character.valueOf('C'), "dustCopper", Character.valueOf('I'), "dustIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 1), new Object[] {
 			"T", "I", "T", Character.valueOf('T'), "dustTin", Character.valueOf('I'), "dustIron"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 5), new Object[] {
+			"CAC", "GIG", "CAC", Character.valueOf('C'), ControlCircuit, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('G'), "dustGold", Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 6), new Object[] {
+			"CAC", "DFD", "CAC", Character.valueOf('C'), ControlCircuit, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), "dustDiamond", Character.valueOf('F'), new ItemStack(MachineBlock, 1, 5)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 7), new Object[] {
+			"CAC", "cFc", "CAC", Character.valueOf('C'), ControlCircuit, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('c'), AtomicCore, Character.valueOf('F'), new ItemStack(MachineBlock, 1, 6)
 		}));
 		
 		if(extrasEnabled)
@@ -345,6 +354,9 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Combiner.name", "Combiner");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Crusher.name", "Crusher");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.TheoreticalElementizer.name", "Theoretical Elementizer");
+		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.BasicSmeltingFactory.name", "Basic Smelting Factory");
+		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.AdvancedSmeltingFactory.name", "Advanced Smelting Factory");
+		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.UltimateSmeltingFactory.name", "Ultimate Smelting Factory");
 		
 		//Localization for OreBlock
 		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.PlatinumOre.name", "Platinum Ore");
@@ -458,6 +470,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));
 		OreDictionary.registerOre("dustPlatinum", new ItemStack(Dust, 1, 2));
 		OreDictionary.registerOre("dustObsidian", new ItemStack(Dust, 1, 3));
+		OreDictionary.registerOre("dustDiamond", new ItemStack(Dust, 1, 4));
 		
 		OreDictionary.registerOre("ingotObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotPlatinum", new ItemStack(Ingot, 1, 1));
@@ -620,6 +633,9 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityMulti.class, "Multi");
 		GameRegistry.registerTileEntity(TileEntityControlPanel.class, "ControlPanel");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
+		GameRegistry.registerTileEntity(TileEntitySmeltingFactory.class, "SmeltingFactory");
+		GameRegistry.registerTileEntity(TileEntityAdvancedSmeltingFactory.class, "AdvancedSmeltingFactory");
+		GameRegistry.registerTileEntity(TileEntityUltimateSmeltingFactory.class, "UltimateSmeltingFactory");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

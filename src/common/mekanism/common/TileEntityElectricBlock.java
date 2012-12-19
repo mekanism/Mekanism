@@ -6,13 +6,17 @@ import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 import ic2.api.EnergyNet;
+import ic2.api.IEnergyTile;
 import ic2.api.IWrenchable;
+import ic2.api.energy.EnergyTileLoadEvent;
+import ic2.api.energy.EnergyTileUnloadEvent;
 import mekanism.api.ITileNetwork;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.minecraftforge.common.MinecraftForge;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor, IEnergyTile
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -37,6 +41,34 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
 			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
+		}
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		if(!initialized && worldObj != null)
+		{
+			if(Mekanism.hooks.IC2Loaded)
+			{
+				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			}
+			
+			initialized = true;
+		}
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		if(initialized)
+		{
+			if(Mekanism.hooks.IC2Loaded)
+			{
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			}
 		}
 	}
     

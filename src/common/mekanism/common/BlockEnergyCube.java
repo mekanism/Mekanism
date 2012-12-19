@@ -11,7 +11,7 @@ import universalelectricity.core.implement.IItemElectric;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import mekanism.api.IEnergyCube;
-import mekanism.api.IEnergyCube.EnumTier;
+import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.src.*;
@@ -116,7 +116,7 @@ public class BlockEnergyCube extends BlockContainer
     	int metadata = world.getBlockMetadata(x, y, z);
     	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
         
-		if(tileEntity.tier == EnumTier.BASIC)
+		if(tileEntity.tier == EnergyCubeTier.BASIC)
 		{
 			if(side == tileEntity.facing)
 			{
@@ -126,7 +126,7 @@ public class BlockEnergyCube extends BlockContainer
 				return 21;
 			}
 		}
-		else if(tileEntity.tier == EnumTier.ADVANCED)
+		else if(tileEntity.tier == EnergyCubeTier.ADVANCED)
 		{
 			if(side == tileEntity.facing)
 			{
@@ -136,7 +136,7 @@ public class BlockEnergyCube extends BlockContainer
 				return 22;
 			}
 		}
-		else if(tileEntity.tier == EnumTier.ULTIMATE)
+		else if(tileEntity.tier == EnergyCubeTier.ULTIMATE)
 		{
 			if(side == tileEntity.facing)
 			{
@@ -206,21 +206,22 @@ public class BlockEnergyCube extends BlockContainer
             electricItem.setJoules(tileEntity.electricityStored, entityItem.item);
             
             world.spawnEntityInWorld(entityItem);
-        	
-            if(Mekanism.hooks.IC2Loaded)
-            {
-            	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
-            }
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);
+    }
+    
+    @Override
+    public int quantityDropped(Random random)
+    {
+    	return 0;
     }
     
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
-		for(EnumTier tier : EnumTier.values())
+		for(EnergyCubeTier tier : EnergyCubeTier.values())
 		{
 			ItemStack discharged = new ItemStack(this);
 			discharged.setItemDamage(100);

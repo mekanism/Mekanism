@@ -73,7 +73,7 @@ public class BlockBasic extends Block
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
-		list.add(new ItemStack(i, 1, 6));
+		//list.add(new ItemStack(i, 1, 6));
 	}
 	
 	@Override
@@ -134,7 +134,12 @@ public class BlockBasic extends Block
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		return metadata == 6 ? new TileEntityControlPanel() : null;
+		switch(metadata)
+		{
+		     case 6:
+		    	 return new TileEntityControlPanel();
+		}
+		return null;
 	}
 	
 	@Override

@@ -232,6 +232,13 @@ public class PacketHandler implements IPacketHandler
         		{
         			output.writeUTF((String)data);
         		}
+        		else if(data instanceof int[])
+        		{
+        			for(int i : (int[])data)
+        			{
+        				output.writeInt(i);
+        			}
+        		}
         	}
         	
             Packet250CustomPayload packet = new Packet250CustomPayload();

@@ -5,7 +5,7 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import mekanism.api.IEnergyCube;
-import mekanism.api.IEnergyCube.EnumTier;
+import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.common.Mekanism;
 import net.minecraft.src.*;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -28,7 +28,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) 
 	{
-		EnumTier tier = ((IEnergyCube)item.getItem()).getTier(item);
+		EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getTier(item);
 		
         ForgeHooksClient.bindTexture(item.getItem().getTextureFile(), 0);
         
@@ -37,7 +37,7 @@ public class ItemRenderingHandler implements IItemRenderer
         	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         }
         
-        renderItem((RenderBlocks)data[0], tier == EnumTier.BASIC ? 0 : (tier == EnumTier.ADVANCED ? 1 : (tier == EnumTier.ULTIMATE ? 2 : 0)));
+        renderItem((RenderBlocks)data[0], tier == EnergyCubeTier.BASIC ? 0 : (tier == EnergyCubeTier.ADVANCED ? 1 : (tier == EnergyCubeTier.ULTIMATE ? 2 : 0)));
 	}
 	
 	/**

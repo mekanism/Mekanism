@@ -5,7 +5,6 @@ import java.util.List;
 import ic2.api.IElectricItem;
 import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
-import mekanism.api.IEnergyCube.EnumTier;
 import net.minecraft.src.*;
 
 public class ItemStorageTank extends ItemMekanism implements IStorageTank

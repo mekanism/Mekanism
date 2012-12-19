@@ -39,10 +39,4 @@ public interface IElectricMachine
 	 * @return recipes
 	 */
 	public List getRecipes();
-	
-	/**
-	 * Sets this machine's active state, sending a packet to the server if it differs from the previous update.
-	 * @param active
-	 */
-	public void setActive(boolean active);
 }

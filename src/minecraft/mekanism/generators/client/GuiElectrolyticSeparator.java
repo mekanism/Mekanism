@@ -2,6 +2,8 @@ package mekanism.generators.client;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
+
 import mekanism.api.EnumGas;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
@@ -23,21 +25,15 @@ public class GuiElectrolyticSeparator extends GuiContainer
         tileEntity = tentity;
     }
 	
-	/*@Override
-	public void initGui()
-	{
-		controlList.clear();
-		controlList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, ""));
-	}
-	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
-	{
-		if(!guibutton.enabled)
-		{
-			return;
-		}
-		if(guibutton.id == 1)
+    protected void mouseClicked(int x, int y, int button)
+    {
+		super.mouseClicked(x, y, button);
+		
+		int xAxis = (x - (width - xSize) / 2);
+		int yAxis = (y - (height - ySize) / 2);
+		
+		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
 			if(tileEntity.outputType == EnumGas.OXYGEN)
 			{
@@ -49,16 +45,16 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			}
 			
 			PacketHandler.sendTileEntityPacketToServer(tileEntity, tileEntity.outputType.name);
-			
-			outputButton.displayString = tileEntity.outputType.name;
+			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
-	}*/
+    }
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString("Output", 124, 73, 0x404040);
     }
 
 	@Override
@@ -70,6 +66,9 @@ public class GuiElectrolyticSeparator extends GuiContainer
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, (tileEntity.outputType == EnumGas.OXYGEN ? 82 : 90), 8, 8);
+        
         int displayInt;
         
         displayInt = tileEntity.getScaledWaterLevel(52);

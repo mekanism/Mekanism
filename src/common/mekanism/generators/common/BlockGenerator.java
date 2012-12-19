@@ -329,11 +329,6 @@ public class BlockGenerator extends BlockContainer
 	            world.spawnEntityInWorld(entityItem);
             }
             
-            if(Mekanism.hooks.IC2Loaded)
-            {
-            	EnergyNet.getForWorld(tileEntity.worldObj).removeTileEntity(tileEntity);
-            }
-            
             if(tileEntity instanceof IMultiBlock)
             {
             	((IMultiBlock)tileEntity).onDestroy(tileEntity);
@@ -367,7 +362,7 @@ public class BlockGenerator extends BlockContainer
         {
         	if(!entityplayer.isSneaking())
         	{
-        		entityplayer.openGui(MekanismGenerators.instance, GeneratorType.getGuiID(metadata), world, x, y, z);
+        		entityplayer.openGui(MekanismGenerators.instance, GeneratorType.getFromMetadata(metadata).guiId, world, x, y, z);
         		return true;
         	}
         }
@@ -389,33 +384,7 @@ public class BlockGenerator extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
     {
-    	if(metadata == GeneratorType.HEAT_GENERATOR.meta)
-    	{
-    		return new TileEntityHeatGenerator();
-    	}
-    	else if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
-    	{
-    		return new TileEntitySolarGenerator();
-    	}
-    	else if(metadata == GeneratorType.ELECTROLYTIC_SEPARATOR.meta)
-    	{
-    		return new TileEntityElectrolyticSeparator();
-    	}
-    	else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
-    	{
-    		return new TileEntityHydrogenGenerator();
-    	}
-    	else if(metadata == GeneratorType.BIO_GENERATOR.meta)
-    	{
-    		return new TileEntityBioGenerator();
-    	}
-    	else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
-    	{
-    		return new TileEntityAdvancedSolarGenerator();
-    	}
-    	else {
-    		return null;
-    	}
+    	return GeneratorType.getFromMetadata(metadata).create();
     }
     
     @Override
@@ -473,25 +442,43 @@ public class BlockGenerator extends BlockContainer
 	
 	public static enum GeneratorType
 	{
-		HEAT_GENERATOR(0, 0),
-		SOLAR_GENERATOR(1, 1),
-		ELECTROLYTIC_SEPARATOR(2, 2),
-		HYDROGEN_GENERATOR(3, 3),
-		BIO_GENERATOR(4, 4),
-		ADVANCED_SOLAR_GENERATOR(5, 1);
+		HEAT_GENERATOR(0, 0, TileEntityHeatGenerator.class, true),
+		SOLAR_GENERATOR(1, 1, TileEntitySolarGenerator.class, false),
+		ELECTROLYTIC_SEPARATOR(2, 2, TileEntityElectrolyticSeparator.class, true),
+		HYDROGEN_GENERATOR(3, 3, TileEntityHydrogenGenerator.class, true),
+		BIO_GENERATOR(4, 4, TileEntityBioGenerator.class, true),
+		ADVANCED_SOLAR_GENERATOR(5, 1, TileEntityAdvancedSolarGenerator.class, true);
 		
 		public int meta;
 		public int guiId;
+		public Class<? extends TileEntity> tileEntityClass;
+		public boolean hasModel;
 		
-		private GeneratorType(int i, int j)
+		private GeneratorType(int i, int j, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
 			guiId = j;
+			tileEntityClass = tileClass;
+			hasModel = model;
 		}
 		
-		public static int getGuiID(int meta)
+		public static GeneratorType getFromMetadata(int meta)
 		{
-			return values()[meta].guiId;
+			return values()[meta];
+		}
+		
+		public TileEntity create()
+		{
+			TileEntity tileEntity;
+			
+			try {
+				tileEntity = tileEntityClass.newInstance();
+				return tileEntity;
+			} catch(Exception e) {
+				System.err.println("[Mekanism] Unable to indirectly create tile entity.");
+				e.printStackTrace();
+				return null;
+			}
 		}
 		
 		@Override

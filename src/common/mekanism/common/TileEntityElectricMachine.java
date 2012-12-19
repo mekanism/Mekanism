@@ -45,6 +45,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
 		boolean testActive = operatingTicks > 0;
 		
 		if(inventory[1] != null)
@@ -188,17 +189,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
             return;
         }
 
-        ItemStack itemstack;
-
-        if (inventory[0].getItem().hasContainerItem())
-        {
-            itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes()).copy();
-            inventory[0] = new ItemStack(inventory[0].getItem().getContainerItem());
-        }
-        else
-        {
-            itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes()).copy();
-        }
+        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
 
         if (inventory[0].stackSize <= 0)
         {

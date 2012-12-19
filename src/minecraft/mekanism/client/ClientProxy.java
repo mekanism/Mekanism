@@ -27,6 +27,7 @@ import mekanism.common.TileEntityEnrichmentChamber;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityPlatinumCompressor;
 import mekanism.common.TileEntityEnergyCube;
+import mekanism.common.TileEntitySmeltingFactory;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
@@ -129,6 +130,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiControlPanel((TileEntityControlPanel)tileEntity, player, world);
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
+			case 11:
+				return new GuiSmeltingFactory(player.inventory, (TileEntitySmeltingFactory)tileEntity);
 		}
 		return null;
 	}

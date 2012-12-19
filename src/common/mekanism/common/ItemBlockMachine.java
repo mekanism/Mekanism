@@ -11,6 +11,9 @@ import net.minecraft.src.ItemStack;
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
+ * 5: Basic Smelting Factory
+ * 6: Advanced Smelting Factory
+ * 7: Ultimate Smelting Factory
  * @author AidanBrady
  *
  */
@@ -57,6 +60,15 @@ public class ItemBlockMachine extends ItemBlock
 				break;
 			case 4:
 				name = "TheoreticalElementizer";
+				break;
+			case 5:
+				name = "BasicSmeltingFactory";
+				break;
+			case 6:
+				name = "AdvancedSmeltingFactory";
+				break;
+			case 7:
+				name = "UltimateSmeltingFactory";
 				break;
 			default:
 				name = "Unknown";

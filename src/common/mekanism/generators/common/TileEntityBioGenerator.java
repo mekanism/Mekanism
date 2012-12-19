@@ -89,6 +89,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			}
 			
 			int fuel = getFuel(inventory[0]);
+			ItemStack prevStack = inventory[0].copy();
 			if(fuel > 0)
 			{
 				int fuelNeeded = bioFuelSlot.MAX_LIQUID - bioFuelSlot.liquidStored;
@@ -96,6 +97,11 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 				{
 					bioFuelSlot.liquidStored += fuel;
 					--inventory[0].stackSize;
+				}
+				
+				if(prevStack.itemID == Mekanism.hooks.ForestryBiofuelBucket.itemID)
+				{
+					inventory[0] = Mekanism.hooks.ForestryBiofuelBucket;
 				}
 				
 				if(inventory[0].stackSize == 0)

@@ -32,16 +32,17 @@ import ic2.api.IEnergySource;
 import ic2.api.IEnergyStorage;
 import ic2.api.IWrenchable;
 import ic2.api.IElectricItem;
-import mekanism.api.IEnergyCube.EnumTier;
 import mekanism.api.EnumGas;
+import mekanism.api.IEnergyCube;
 import mekanism.api.ITileNetwork;
+import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
 public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral
 {
-	public EnumTier tier = EnumTier.BASIC;
+	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
 	
 	/** Output per tick this machine can transfer. */
 	public int output;
@@ -244,13 +245,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int getStored() 
 	{
-		return (int)(electricityStored*Mekanism.FROM_IC2);
+		return (int)(electricityStored*Mekanism.TO_IC2);
 	}
 
 	@Override
 	public int getCapacity() 
 	{
-		return (int)(tier.MAX_ELECTRICITY*Mekanism.FROM_IC2);
+		return (int)(tier.MAX_ELECTRICITY*Mekanism.TO_IC2);
 	}
 
 	@Override
@@ -407,7 +408,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		try {
 			facing = dataStream.readInt();
 			electricityStored = dataStream.readDouble();
-			tier = EnumTier.getFromName(dataStream.readUTF());
+			tier = EnergyCubeTier.getFromName(dataStream.readUTF());
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
@@ -421,7 +422,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
     {
         super.readFromNBT(nbtTags);
 
-        tier = EnumTier.getFromName(nbtTags.getString("tier"));
+        tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
     }
 
 	@Override
@@ -443,4 +444,37 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
     {
 		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, tier.name);
     }
+
+	@Override
+	public void setStored(int energy)
+	{
+		setJoules(energy*Mekanism.FROM_IC2);
+	}
+
+	@Override
+	public int addEnergy(int amount)
+	{
+		setJoules(electricityStored + amount*Mekanism.FROM_IC2);
+		return (int)electricityStored;
+	}
+
+	@Override
+	public boolean isTeleporterCompatible(Direction side) 
+	{
+		return side.toForgeDirection() == ForgeDirection.getOrientation(facing);
+	}
+	
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+	{
+		ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
+		
+        IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
+        energyCube.setTier(itemStack, tier);
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(electricityStored, itemStack);
+        
+        return itemStack;
+	}
 }

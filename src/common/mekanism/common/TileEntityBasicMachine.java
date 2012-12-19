@@ -27,15 +27,18 @@ import ic2.api.Direction;
 import ic2.api.EnergyNet;
 import ic2.api.IEnergySink;
 import ic2.api.IWrenchable;
+import ic2.api.energy.EnergyTileSinkEvent;
 
+import mekanism.api.IActiveState;
 import mekanism.api.IElectricMachine;
 import mekanism.client.Sound;
 
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.minecraftforge.common.MinecraftForge;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -95,10 +98,17 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(!registered && worldObj != null && !worldObj.isRemote)
 		{
 			Mekanism.manager.register(this);
 			registered = true;
+		}
+		
+		if(demandsEnergy())
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileSinkEvent(this, (int)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_IC2)));
 		}
 		
 		if(!worldObj.isRemote)
@@ -270,6 +280,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public double getVoltage() 
 	{
 		return 120;
+	}
+	
+	@Override
+	public boolean getActive()
+	{
+		return isActive;
 	}
 
 	@Override

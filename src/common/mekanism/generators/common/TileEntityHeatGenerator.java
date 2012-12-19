@@ -92,6 +92,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			}
 			
 			int fuel = getFuel(inventory[0]);
+			ItemStack prevStack = inventory[0].copy();
 			if(fuel > 0)
 			{
 				int fuelNeeded = fuelSlot.MAX_LIQUID - fuelSlot.liquidStored;
@@ -99,6 +100,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				{
 					fuelSlot.liquidStored += fuel;
 					--inventory[0].stackSize;
+					
+					if(prevStack.itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID)
+					{
+						inventory[0] = Mekanism.hooks.BuildCraftFuelBucket;
+					}
 				}
 				
 				if(inventory[0].stackSize == 0)

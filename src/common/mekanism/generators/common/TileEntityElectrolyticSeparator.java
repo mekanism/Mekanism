@@ -6,6 +6,7 @@ import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.IEnergySink;
+import ic2.api.energy.EnergyTileSinkEvent;
 
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricityConnections;
@@ -30,6 +31,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
@@ -65,6 +67,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
+		if(demandsEnergy())
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileSinkEvent(this, (int)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_IC2)));
+		}
+		
 		if(hydrogenStored > MAX_GAS)
 		{
 			hydrogenStored = MAX_GAS;

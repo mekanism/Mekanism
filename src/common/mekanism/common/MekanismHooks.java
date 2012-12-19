@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import cpw.mods.fml.common.Loader;
-import railcraft.common.api.core.items.ItemRegistry;
 import ic2.api.Ic2Recipes;
 import net.minecraft.src.*;
 
@@ -29,8 +28,6 @@ public final class MekanismHooks
 	public ItemStack IC2CopperDust;
 	public ItemStack IC2TinDust;
 	public ItemStack IC2CoalDust;
-	
-	public ItemStack RailcraftObsidianDust;
 	
 	public int BuildCraftFuelID = 3808;
 	public ItemStack BuildCraftFuelBucket;
@@ -72,8 +69,6 @@ public final class MekanismHooks
 		}
 		if(RailcraftLoaded)
 		{
-			RailcraftObsidianDust = getRailcraftItem("dust.obsidian");
-			
 			System.out.println("[Mekanism] Hooked into Railcraft successfully.");
 		}
 		if(BasicComponentsLoaded)
@@ -118,11 +113,6 @@ public final class MekanismHooks
 			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
 			return null;
 		}
-	}
-	
-	public ItemStack getRailcraftItem(String name)
-	{
-		return ItemRegistry.getItem(name, 1);
 	}
 	
 	public ItemStack getBuildCraftItem(String name)

@@ -15,9 +15,13 @@ public interface IAccessibleGui
 	
 	/**
 	 * The mod's instance object
-	 * @return mod instance
+	 * @return what the @Instance field is named in your mod.
 	 */
 	public String getInstanceName();
 	
+	/**
+	 * Gets the mod's main class path as a string.  For Mekanism I would return "mekanism.common.Mekanism"
+	 * @return
+	 */
 	public String getClassPath();
 }

@@ -126,6 +126,8 @@ public class CommonProxy
 				return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 10:
 				return new ContainerGasTank(player.inventory, (TileEntityGasTank)tileEntity);
+			case 11:
+				return new ContainerSmeltingFactory(player.inventory, (TileEntitySmeltingFactory)tileEntity);
 		}
 		return null;
 	}

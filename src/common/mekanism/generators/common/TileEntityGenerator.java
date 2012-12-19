@@ -27,13 +27,14 @@ import universalelectricity.core.implement.IVoltage;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.tile.TileEntityConductor;
 
+import mekanism.api.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityElectricBlock;
 
 import net.minecraft.src.*;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral, IActiveState
 {
 	/** Output per tick this generator can transfer. */
 	public int output;
@@ -61,17 +62,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		
 		output = out;
 		isActive = false;
-		
-		if(PowerFramework.currentFramework != null)
-		{
-			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(0, 2, 2000, 1, (int)(MAX_ELECTRICITY*Mekanism.TO_BC));
-		}
 	}
 	
 	@Override
 	public void onUpdate()
 	{	
+		super.onUpdate();
+		
 		if(electricityStored > 0)
 		{
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, Vector3.get(this), ForgeDirection.getOrientation(facing));
@@ -151,10 +148,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		return (int)(electricityStored*i / MAX_ELECTRICITY);
 	}
 	
-	/**
-	 * Sets this block's active state to a new value.
-	 * @param active - new active state
-	 */
+	@Override
+	public boolean getActive()
+	{
+		return isActive;
+	}
+	
+	@Override
     public void setActive(boolean active)
     {
     	isActive = active;
@@ -245,19 +245,38 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public int getStored() 
 	{
-		return (int)(electricityStored*Mekanism.FROM_IC2);
+		return (int)(electricityStored*Mekanism.TO_IC2);
 	}
 
 	@Override
 	public int getCapacity() 
 	{
-		return (int)(MAX_ELECTRICITY*Mekanism.FROM_IC2);
+		return (int)(MAX_ELECTRICITY*Mekanism.TO_IC2);
 	}
 
 	@Override
 	public int getOutput() 
 	{
 		return output;
+	}
+	
+	@Override
+	public boolean isTeleporterCompatible(Direction side) 
+	{
+		return side.toForgeDirection() == ForgeDirection.getOrientation(facing);
+	}
+	
+	@Override
+	public int addEnergy(int amount)
+	{
+		setJoules(electricityStored + amount*Mekanism.FROM_IC2);
+		return (int)electricityStored;
+	}
+	
+	@Override
+	public void setStored(int energy)
+	{
+		setJoules(energy*Mekanism.FROM_IC2);
 	}
 	
 	@Override
