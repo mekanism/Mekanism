@@ -16,6 +16,7 @@ import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -229,5 +230,25 @@ public final class MekanismUtils
     		}
     	}
     	return false;
+    }
+    
+    public static ForgeDirection getLeft(int orientation)
+    {
+    	switch(orientation)
+    	{
+    		case 2:
+    			return ForgeDirection.EAST;
+    		case 3:
+    			return ForgeDirection.WEST;
+    		case 4:
+    			return ForgeDirection.SOUTH;
+    		default:
+    			return ForgeDirection.NORTH;
+    	}
+    }
+    
+    public static ForgeDirection getRight(int orientation)
+    {
+    	return getLeft(orientation).getOpposite();
     }
 }

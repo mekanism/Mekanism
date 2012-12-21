@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
@@ -322,6 +323,35 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	infuseStored = nbtTags.getInteger("infuseStored");
     	type = InfusionType.getFromName(nbtTags.getString("type"));
     }
+    
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(1))
+		{
+			return 0;
+		}
+		else if(side == MekanismUtils.getLeft(facing))
+		{
+			return 1;
+		}
+		else if(side == MekanismUtils.getRight(facing))
+		{
+			return 4;
+		}
+		else if(side == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return 3;
+		}
+		
+		return 2;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTags)

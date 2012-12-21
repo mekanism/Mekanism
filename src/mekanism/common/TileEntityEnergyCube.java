@@ -335,6 +335,23 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		return getPowerProvider().getMaxEnergyReceived();
 	}
+	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(1))
+		{
+			return 0;
+		}
+		
+		return 1;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
 
 	@Override
 	public double getVoltage() 

@@ -4,6 +4,7 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -177,7 +178,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
-		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		if(side == MekanismUtils.getRight(facing))
 		{
 			return 1;
 		}

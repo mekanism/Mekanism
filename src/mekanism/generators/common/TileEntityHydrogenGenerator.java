@@ -6,6 +6,7 @@ import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -127,7 +128,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
-		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		if(side == MekanismUtils.getRight(facing))
 		{
 			return 1;
 		}

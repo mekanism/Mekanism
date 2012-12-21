@@ -130,6 +130,23 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 			}
 		}
 	}
+	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(1))
+		{
+			return 0;
+		}
+		
+		return 1;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
 
 	@Override
 	public int getGas(EnumGas type) 

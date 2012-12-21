@@ -295,16 +295,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		{
 			return 2;
 		}
-		else if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.WEST))
-		{
-			return 3;
-		}
-		else if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		else if(side == MekanismUtils.getLeft(facing))
 		{
 			return 4;
 		}
 		
-		return 0;
+		return 3;
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.block.Block;
@@ -255,7 +256,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
-		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.WEST))
+		if(side == MekanismUtils.getLeft(facing))
 		{
 			return 3;
 		}
