@@ -32,9 +32,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	/** Output per tick this generator can transfer. */
 	public int output;
 	
-	/** BuildCraft power provider. */
-	public IPowerProvider powerProvider;
-	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
 	
@@ -189,27 +186,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-	
-	@Override
-	public void setPowerProvider(IPowerProvider provider)
-	{
-		powerProvider = provider;
-	}
-
-	@Override
-	public IPowerProvider getPowerProvider() 
-	{
-		return powerProvider;
-	}
-
-	@Override
-	public void doWork() {}
-
-	@Override
-	public int powerRequest() 
-	{
-		return getPowerProvider().getMaxEnergyReceived();
-	}
 	
 	@Override
 	public double getMaxJoules(Object... data) 

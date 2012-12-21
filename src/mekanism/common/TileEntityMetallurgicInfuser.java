@@ -15,6 +15,7 @@ import mekanism.api.InfusionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
@@ -32,24 +33,34 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 {
 	public static Map<Infusion, ItemStack> recipes = new HashMap<Infusion, ItemStack>();
 	
+	/** The type of infuse this machine stores. */
 	public InfusionType type = InfusionType.NONE;
 	
+	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
 	
+	/** How much energy this machine consumes per-tick. */
 	public double ENERGY_PER_TICK = 100;
 	
+	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
 	
+	/** The current cap of electricity this machine can hold. */
 	public double currentMaxElectricity;
 	
+	/** The current amount of ticks it takes this machine to run an operation. */
 	public int currentTicksRequired;
 	
+	/** The amount of infuse this machine has stored. */
 	public int infuseStored;
 	
+	/** How many ticks this machine has been operating for. */
 	public int operatingTicks;
 	
+	/** Whether or not this machine is in it's active state. */
 	public boolean isActive;
 	
+	/** This machine's previous active state, used for tick callbacks. */
 	public boolean prevActive;
 	
 	public TileEntityMetallurgicInfuser()
@@ -291,13 +302,39 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public int getScaledEnergyLevel(int i)
 	{
-		return (int)(electricityStored*i / MAX_ELECTRICITY);
+		return (int)(electricityStored*i / currentMaxElectricity);
 	}
 	
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / TICKS_REQUIRED;
+		return operatingTicks*i / currentTicksRequired;
 	}
+	
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags)
+    {
+    	super.readFromNBT(nbtTags);
+    	
+    	currentTicksRequired = nbtTags.getInteger("currentTicksRequired");
+    	currentMaxElectricity = nbtTags.getDouble("currentMaxElectricity");
+    	isActive = nbtTags.getBoolean("isActive");
+    	operatingTicks = nbtTags.getInteger("operatingTicks");
+    	infuseStored = nbtTags.getInteger("infuseStored");
+    	type = InfusionType.getFromName(nbtTags.getString("type"));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTags)
+    {
+        super.writeToNBT(nbtTags);
+        
+        nbtTags.setInteger("currentTicksRequired", currentTicksRequired);
+        nbtTags.setDouble("currentMaxElectricity", currentMaxElectricity);
+        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("operatingTicks", operatingTicks);
+        nbtTags.setInteger("infuseStored", infuseStored);
+        nbtTags.setString("type", type.name);
+    }
 
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
@@ -352,7 +389,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public String[] getMethodNames() 
 	{
-		return new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+		return new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
 	}
 
 	@Override
@@ -372,6 +409,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				return new Object[] {currentMaxElectricity};
 			case 5:
 				return new Object[] {(currentMaxElectricity-electricityStored)};
+			case 6:
+				return new Object[] {infuseStored};
+			case 7:
+				return new Object[] {(MAX_INFUSE-infuseStored)};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

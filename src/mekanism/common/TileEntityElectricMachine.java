@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -233,6 +234,31 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(1))
+		{
+			return 0;
+		}
+		else if(side == ForgeDirection.getOrientation(0))
+		{
+			return 1;
+		}
+		else if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		{
+			return 2;
+		}
+		
+		return 3;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
 	}
     
 	@Override

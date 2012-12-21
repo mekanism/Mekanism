@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -278,6 +279,39 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }
+    
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(1))
+		{
+			return 0;
+		}
+		else if(side == ForgeDirection.getOrientation(0))
+		{
+			return 1;
+		}
+		else if(side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return 2;
+		}
+		else if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.WEST))
+		{
+			return 3;
+		}
+		else if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		{
+			return 4;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
     
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)

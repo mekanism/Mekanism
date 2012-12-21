@@ -32,16 +32,18 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
+			String nameToSet = "";
+			
 			if(tileEntity.outputType == EnumGas.OXYGEN)
 			{
-				tileEntity.outputType = EnumGas.HYDROGEN;
+				nameToSet = EnumGas.HYDROGEN.name;
 			}
 			else if(tileEntity.outputType == EnumGas.HYDROGEN)
 			{
-				tileEntity.outputType = EnumGas.OXYGEN;
+				nameToSet = EnumGas.OXYGEN.name;
 			}
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, tileEntity.outputType.name);
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, nameToSet);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

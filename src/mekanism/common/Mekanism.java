@@ -262,6 +262,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 7), new Object[] {
 			"CAC", "cFc", "CAC", Character.valueOf('C'), ControlCircuit, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('c'), AtomicCore, Character.valueOf('F'), new ItemStack(MachineBlock, 1, 6)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 8), new Object[] {
+			"IFI", "CEC", "IFI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('F'), Block.stoneOvenIdle, Character.valueOf('C'), ControlCircuit, Character.valueOf('E'), EnrichedAlloy
+		}));
 		
 		if(extrasEnabled)
 		{

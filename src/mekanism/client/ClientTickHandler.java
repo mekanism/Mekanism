@@ -17,15 +17,15 @@ import cpw.mods.fml.common.TickType;
  */
 public class ClientTickHandler implements ITickHandler
 {
-	public boolean hasNotified;
+	public boolean hasNotified = false;
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		if(Mekanism.ticksPassed > 0 && ModLoader.getMinecraftInstance().theWorld != null && ModLoader.getMinecraftInstance().thePlayer != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
+		if(!hasNotified && ModLoader.getMinecraftInstance().theWorld != null && ModLoader.getMinecraftInstance().thePlayer != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 		{
 			MekanismUtils.checkForUpdates(ModLoader.getMinecraftInstance().thePlayer);
-			Mekanism.ticksPassed++;
+			hasNotified = true;
 		}
 	}
 	

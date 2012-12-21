@@ -30,9 +30,6 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismTools 
 {
-	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
-	public static ToolsCommonProxy proxy;
-	
 	@Instance("MekanismTools")
 	public static MekanismTools instance;
 	
@@ -64,11 +61,6 @@ public class MekanismTools
 	public static Item IronPaxel;
 	public static Item DiamondPaxel;
 	public static Item GoldPaxel;
-	public static Item WoodKnife;
-	public static Item StoneKnife;
-	public static Item IronKnife;
-	public static Item DiamondKnife;
-	public static Item GoldKnife;
 	
 	//Glowstone Items
 	public static Item GlowstonePaxel;
@@ -81,7 +73,6 @@ public class MekanismTools
 	public static Item GlowstoneBody;
 	public static Item GlowstoneLegs;
 	public static Item GlowstoneBoots;
-	public static Item GlowstoneKnife;
 	
 	//Redstone Items
 	public static Item RedstonePaxel;
@@ -94,7 +85,6 @@ public class MekanismTools
 	public static Item RedstoneBody;
 	public static Item RedstoneLegs;
 	public static Item RedstoneBoots;
-	public static Item RedstoneKnife;
 	
 	//Platinum Items
 	public static Item PlatinumPaxel;
@@ -107,7 +97,6 @@ public class MekanismTools
 	public static Item PlatinumBody;
 	public static Item PlatinumLegs;
 	public static Item PlatinumBoots;
-	public static Item PlatinumKnife;
 	
 	//Obsidian Items
 	public static Item ObsidianHelmet;
@@ -120,7 +109,6 @@ public class MekanismTools
 	public static Item ObsidianSpade;
 	public static Item ObsidianHoe;
 	public static Item ObsidianSword;
-	public static Item ObsidianKnife;
 	
 	//Lazuli Items
 	public static Item LazuliPaxel;
@@ -133,7 +121,6 @@ public class MekanismTools
 	public static Item LazuliBody;
 	public static Item LazuliLegs;
 	public static Item LazuliBoots;
-	public static Item LazuliKnife;
 	
 	//Steel Items
 	public static Item SteelPaxel;
@@ -146,7 +133,6 @@ public class MekanismTools
 	public static Item SteelBody;
 	public static Item SteelLegs;
 	public static Item SteelBoots;
-	public static Item SteelKnife;
 	
 	@Init
 	public void init(FMLInitializationEvent event)
@@ -154,15 +140,11 @@ public class MekanismTools
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
 		
-		//Load the proxy
-		proxy.registerRenderInformation();
-		
 		//Load this module
 		addItems();
 		addTextures();
 		addNames();
 		addRecipes();
-		addEntities();
 		
 		//Finalization
 		Mekanism.logger.info("[MekanismTools] Loaded module.");
@@ -186,21 +168,6 @@ public class MekanismTools
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GoldPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeGold, Character.valueOf('Y'), Item.pickaxeGold, Character.valueOf('Z'), Item.shovelGold, Character.valueOf('T'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(WoodKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Block.planks, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(StoneKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Block.cobblestone, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(IronKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Item.ingotIron, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(DiamondKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Item.diamond, Character.valueOf('I'), Item.stick
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GoldKnife), new Object[] {
-			" ^", "I ", Character.valueOf('^'), Item.ingotGold, Character.valueOf('I'), Item.stick
 		}));
 		
 		//Obsidian
@@ -234,9 +201,6 @@ public class MekanismTools
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), "ingotObsidian", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ObsidianKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), "ingotObsidian", Character.valueOf('I'), Item.stick
-		}));
 		
 		//Glowstone
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstonePaxel, 1), new Object[] {
@@ -268,9 +232,6 @@ public class MekanismTools
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotGlowstone"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), "ingotGlowstone", Character.valueOf('I'), Item.stick
 		}));
 		
 		//Lazuli
@@ -304,9 +265,6 @@ public class MekanismTools
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(LazuliKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('I'), Item.stick
-		}));
 		
 		//Platinum
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPaxel, 1), new Object[] {
@@ -338,9 +296,6 @@ public class MekanismTools
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotPlatinum"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), "ingotPlatinum", Character.valueOf('I'), Item.stick
 		}));
 		
 		//Redstone
@@ -374,8 +329,37 @@ public class MekanismTools
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotRedstone"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneKnife, 1), new Object[] {
-			" ^", "I ", Character.valueOf('^'), "ingotRedstone", Character.valueOf('I'), Item.stick
+		
+		//Steel
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelPaxel, 1), new Object[] {
+			"XYZ", " T ", " T ", Character.valueOf('X'), SteelAxe, Character.valueOf('Y'), SteelPickaxe, Character.valueOf('Z'), SteelSpade, Character.valueOf('T'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelPickaxe, 1), new Object[] {
+			"XXX", " T ", " T ", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelAxe, 1), new Object[] {
+			"XX", "XT", " T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelSpade, 1), new Object[] {
+			"X", "T", "T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelHoe, 1), new Object[] {
+			"XX", " T", " T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelSword, 1), new Object[] {
+			"X", "X", "T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelHelmet, 1), new Object[] {
+			"***", "* *", Character.valueOf('*'), "ingotRefinedSteel"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelBody, 1), new Object[] {
+			"* *", "***", "***", Character.valueOf('*'), "ingotRefinedSteel"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelLegs, 1), new Object[] {
+			"***", "* *", "* *", Character.valueOf('*'), "ingotRefinedSteel"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelBoots, 1), new Object[] {
+			"* *", "* *", Character.valueOf('*'), "ingotRefinedSteel"
 		}));
 	}
 	
@@ -387,11 +371,6 @@ public class MekanismTools
 		LanguageRegistry.addName(IronPaxel, "Iron Paxel");
 		LanguageRegistry.addName(DiamondPaxel, "Diamond Paxel");
 		LanguageRegistry.addName(GoldPaxel, "Gold Paxel");
-		LanguageRegistry.addName(WoodKnife, "Wood Knife");
-		LanguageRegistry.addName(StoneKnife, "Stone Knife");
-		LanguageRegistry.addName(IronKnife, "Iron Knife");
-		LanguageRegistry.addName(DiamondKnife, "Diamond Knife");
-		LanguageRegistry.addName(GoldKnife, "Gold Knife");
 		
 		//Obsidian
 		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
@@ -404,7 +383,6 @@ public class MekanismTools
 		LanguageRegistry.addName(ObsidianSpade, "Obsidian Shovel");
 		LanguageRegistry.addName(ObsidianHoe, "Obsidian Hoe");
 		LanguageRegistry.addName(ObsidianSword, "Obsidian Sword");
-		LanguageRegistry.addName(ObsidianKnife, "Obsidian Knife");
 		
 		//Lazuli
 		LanguageRegistry.addName(LazuliHelmet, "Lapis Lazuli Helmet");
@@ -417,7 +395,6 @@ public class MekanismTools
 		LanguageRegistry.addName(LazuliSpade, "Lapis Lazuli Shovel");
 		LanguageRegistry.addName(LazuliHoe, "Lapis Lazuli Hoe");
 		LanguageRegistry.addName(LazuliSword, "Lapis Lazuli Sword");
-		LanguageRegistry.addName(LazuliKnife, "Lazuli Knife");
 		
 		//Platinum
 		LanguageRegistry.addName(PlatinumHelmet, "Platinum Helmet");
@@ -430,7 +407,6 @@ public class MekanismTools
 		LanguageRegistry.addName(PlatinumSpade, "Platinum Shovel");
 		LanguageRegistry.addName(PlatinumHoe, "Platinum Hoe");
 		LanguageRegistry.addName(PlatinumSword, "Platinum Sword");
-		LanguageRegistry.addName(PlatinumKnife, "Platinum Knife");
 		
 		//Redstone
 		LanguageRegistry.addName(RedstoneHelmet, "Redstone Helmet");
@@ -443,7 +419,6 @@ public class MekanismTools
 		LanguageRegistry.addName(RedstoneSpade, "Redstone Shovel");
 		LanguageRegistry.addName(RedstoneHoe, "Redstone Hoe");
 		LanguageRegistry.addName(RedstoneSword, "Redstone Sword");
-		LanguageRegistry.addName(RedstoneKnife, "Redstone Knife");	
 		
 		//Glowstone
 		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
@@ -456,7 +431,18 @@ public class MekanismTools
 		LanguageRegistry.addName(GlowstoneBody, "Glowstone Chestplate");
 		LanguageRegistry.addName(GlowstoneLegs, "Glowstone Leggings");
 		LanguageRegistry.addName(GlowstoneBoots, "Glowstone Boots");
-		LanguageRegistry.addName(GlowstoneKnife, "Glowstone Knife");
+		
+		//Steel
+		LanguageRegistry.addName(SteelPaxel, "Steel Paxel");
+		LanguageRegistry.addName(SteelPickaxe, "Steel Pickaxe");
+		LanguageRegistry.addName(SteelAxe, "Steel Axe");
+		LanguageRegistry.addName(SteelSpade, "Steel Shovel");
+		LanguageRegistry.addName(SteelHoe, "Steel Hoe");
+		LanguageRegistry.addName(SteelSword, "Steel Sword");
+		LanguageRegistry.addName(SteelHelmet, "Steel Helmet");
+		LanguageRegistry.addName(SteelBody, "Steel Chestplate");
+		LanguageRegistry.addName(SteelLegs, "Steel Leggings");
+		LanguageRegistry.addName(SteelBoots, "Steel Boots");
 	}
 	
 	public void addTextures()
@@ -467,11 +453,6 @@ public class MekanismTools
 		IronPaxel.setIconIndex(152);
 		DiamondPaxel.setIconIndex(153);
 		GoldPaxel.setIconIndex(154);
-		WoodKnife.setIconIndex(214);
-		StoneKnife.setIconIndex(215);
-		IronKnife.setIconIndex(216);
-		DiamondKnife.setIconIndex(217);
-		GoldKnife.setIconIndex(218);
 		
 		//Glowstone
 		GlowstoneHelmet.setIconIndex(4);
@@ -484,7 +465,6 @@ public class MekanismTools
 		GlowstoneSpade.setIconIndex(100);
 		GlowstoneHoe.setIconIndex(116);
 		GlowstoneSword.setIconIndex(132);
-		GlowstoneKnife.setIconIndex(212);
 		
 		//Redstone
 		RedstoneHelmet.setIconIndex(3);
@@ -497,7 +477,6 @@ public class MekanismTools
 		RedstoneSpade.setIconIndex(99);
 		RedstoneHoe.setIconIndex(115);
 		RedstoneSword.setIconIndex(131);
-		RedstoneKnife.setIconIndex(211);
 		
 		//Platinum
 		PlatinumHelmet.setIconIndex(2);
@@ -510,7 +489,6 @@ public class MekanismTools
 		PlatinumSpade.setIconIndex(98);
 		PlatinumHoe.setIconIndex(114);
 		PlatinumSword.setIconIndex(130);
-		PlatinumKnife.setIconIndex(210);
 		
 		//Obsidian
 		ObsidianHelmet.setIconIndex(1);
@@ -523,7 +501,6 @@ public class MekanismTools
 		ObsidianSpade.setIconIndex(97);
 		ObsidianHoe.setIconIndex(113);
 		ObsidianSword.setIconIndex(129);
-		ObsidianKnife.setIconIndex(209);
 		
 		//Lazuli
 		LazuliPaxel.setIconIndex(144);
@@ -536,7 +513,18 @@ public class MekanismTools
 		LazuliBody.setIconIndex(16);
 		LazuliLegs.setIconIndex(32);
 		LazuliBoots.setIconIndex(48);
-		LazuliKnife.setIconIndex(208);
+		
+		//Steel
+		SteelHelmet.setIconIndex(5);
+		SteelBody.setIconIndex(21);
+		SteelLegs.setIconIndex(37);
+		SteelBoots.setIconIndex(53);
+		SteelPaxel.setIconIndex(149);
+		SteelPickaxe.setIconIndex(69);
+		SteelAxe.setIconIndex(85);
+		SteelSpade.setIconIndex(101);
+		SteelHoe.setIconIndex(117);
+		SteelSword.setIconIndex(133);
 	}
 	
 	public void addItems()
@@ -608,23 +596,17 @@ public class MekanismTools
 		DiamondPaxel = new ItemMekanismPaxel(11453, EnumToolMaterial.EMERALD).setItemName("DiamondPaxel");
 		GoldPaxel = new ItemMekanismPaxel(11454, EnumToolMaterial.GOLD).setItemName("GoldPaxel");
 		
-		//Knives
-		WoodKnife = new ItemMekanismKnife(11455, EnumToolMaterial.WOOD).setItemName("WoodKnife");
-		StoneKnife = new ItemMekanismKnife(11456, EnumToolMaterial.STONE).setItemName("StoneKnife");
-		IronKnife = new ItemMekanismKnife(11457, EnumToolMaterial.IRON).setItemName("IronKnife");
-		DiamondKnife = new ItemMekanismKnife(11458, EnumToolMaterial.EMERALD).setItemName("DiamondKnife");
-		GoldKnife = new ItemMekanismKnife(11459, EnumToolMaterial.GOLD).setItemName("GoldKnife");
-		ObsidianKnife = new ItemMekanismKnife(11460, toolOBSIDIAN).setItemName("ObsidianKnife");
-		LazuliKnife = new ItemMekanismKnife(11461, toolLAZULI).setItemName("LazuliKnife");
-		PlatinumKnife = new ItemMekanismKnife(11462, toolPLATINUM).setItemName("PlatinumKnife");
-		RedstoneKnife = new ItemMekanismKnife(11463, toolREDSTONE).setItemName("RedstoneKnife");
-		GlowstoneKnife = new ItemMekanismKnife(11464, toolGLOWSTONE).setItemName("GlowstoneKnife");
-	}
-	
-	public void addEntities()
-	{
-		EntityRegistry.registerGlobalEntityID(EntityKnife.class, "Knife", EntityRegistry.findGlobalUniqueEntityId());
-		EntityRegistry.registerModEntity(EntityKnife.class, "Knife", 52, this, 40, 5, true);
+		//Steel
+		SteelPaxel = new ItemMekanismPaxel(11455, toolSTEEL2).setItemName("SteelPaxel");
+		SteelPickaxe = new ItemMekanismPickaxe(11456, toolSTEEL).setItemName("SteelPickaxe");
+		SteelAxe = new ItemMekanismAxe(11457, toolSTEEL).setItemName("SteelAxe");
+		SteelSpade = new ItemMekanismSpade(11458, toolSTEEL).setItemName("SteelSpade");
+		SteelHoe = new ItemMekanismHoe(11459, toolSTEEL).setItemName("SteelHoe");
+		SteelSword = new ItemMekanismSword(11460, toolSTEEL).setItemName("SteelSword");
+		SteelHelmet = new ItemMekanismArmor(11461, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 0).setItemName("SteelHelmet");
+		SteelBody = new ItemMekanismArmor(11462, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 1).setItemName("SteelBody");
+		SteelLegs = new ItemMekanismArmor(11463, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 2).setItemName("SteelLegs");
+		SteelBoots = new ItemMekanismArmor(11464, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 3).setItemName("SteelBoots");
 	}
 	
 	@ForgeSubscribe

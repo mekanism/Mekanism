@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -35,6 +36,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		super(name, maxEnergy, output);
 		GENERATION_RATE = generation;
 		inventory = new ItemStack[1];
+	}
+	
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
 	}
 	
 	@Override

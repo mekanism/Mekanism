@@ -175,6 +175,23 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 	
 	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
+	
+	@Override
 	public boolean canSetFacing(int facing)
 	{
 		return facing != 0 && facing != 1;

@@ -123,6 +123,23 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			}
 		}
 	}
+	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
     
     @Override
 	public void setGas(EnumGas type, int amount)

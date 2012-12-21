@@ -182,6 +182,23 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		return TileEntityFurnace.getItemBurnTime(itemstack);
 	}
 	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.EAST))
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
+	}
+	
 	/**
 	 * Gets the scaled fuel level for the GUI.
 	 * @param i - multiplier

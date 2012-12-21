@@ -32,8 +32,7 @@ public class GuiMetallurgicInfuser extends GuiContainer
 		
 		if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
 		{
-			tileEntity.infuseStored = 0;
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, tileEntity.infuseStored);
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, 0);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

@@ -124,17 +124,6 @@ public class BlockBasic extends Block
     }
 	
 	@Override
-    public float getBlockHardness(World world, int x, int y, int z)
-    {
-		int metadata = world.getBlockMetadata(x, y, z);
-		if(metadata == 5)
-		{
-			return 12F;
-		}
-        return blockHardness;
-    }
-	
-	@Override
 	public boolean hasTileEntity(int metadata)
 	{
 		return metadata == 6;

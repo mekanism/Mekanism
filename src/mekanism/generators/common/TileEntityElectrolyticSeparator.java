@@ -252,6 +252,31 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 	}
 	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(facing).getRotation(ForgeDirection.WEST))
+		{
+			return 3;
+		}
+		else if(side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		if(side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return 2;
+		}
+		return 1;
+	}
+	
 	/**
 	 * Gets the scaled hydrogen level for the GUI.
 	 * @param i - multiplier

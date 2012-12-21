@@ -34,6 +34,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
+		
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
