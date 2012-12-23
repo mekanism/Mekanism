@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.client.ClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -422,28 +423,49 @@ public class BlockMachine extends BlockContainer
 	{
 		return null;
 	}
+    
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderType()
+	{
+		return ClientProxy.RENDER_ID;
+	}
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0, 3, TileEntityEnrichmentChamber.class),
-		PLATINUM_COMPRESSOR(1, 4, TileEntityPlatinumCompressor.class),
-		COMBINER(2, 5, TileEntityCombiner.class),
-		CRUSHER(3, 6, TileEntityCrusher.class),
-		THEORETICAL_ELEMENTIZER(4, 7, TileEntityTheoreticalElementizer.class),
-		BASIC_SMELTING_FACTORY(5, 11, TileEntitySmeltingFactory.class),
-		ADVANCED_SMELTING_FACTORY(6, 11, TileEntityAdvancedSmeltingFactory.class),
-		ULTIMATE_SMELTING_FACTORY(7, 11, TileEntityUltimateSmeltingFactory.class),
-		METALLURGIC_INFUSER(8, 12, TileEntityMetallurgicInfuser.class);
+		ENRICHMENT_CHAMBER(0, 3, TileEntityEnrichmentChamber.class, false),
+		PLATINUM_COMPRESSOR(1, 4, TileEntityPlatinumCompressor.class, false),
+		COMBINER(2, 5, TileEntityCombiner.class, false),
+		CRUSHER(3, 6, TileEntityCrusher.class, false),
+		THEORETICAL_ELEMENTIZER(4, 7, TileEntityTheoreticalElementizer.class, true),
+		BASIC_SMELTING_FACTORY(5, 11, TileEntitySmeltingFactory.class, false),
+		ADVANCED_SMELTING_FACTORY(6, 11, TileEntityAdvancedSmeltingFactory.class, false),
+		ULTIMATE_SMELTING_FACTORY(7, 11, TileEntityUltimateSmeltingFactory.class, false),
+		METALLURGIC_INFUSER(8, 12, TileEntityMetallurgicInfuser.class, false);
 		
 		public int meta;
 		public int guiId;
 		public Class<? extends TileEntity> tileEntityClass;
+		public boolean hasModel;
 		
-		private MachineType(int i, int j, Class<? extends TileEntity> tileClass)
+		private MachineType(int i, int j, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
 			guiId = j;
 			tileEntityClass = tileClass;
+			hasModel = model;
 		}
 		
 		public static MachineType getFromMetadata(int meta)

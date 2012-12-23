@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import ic2.api.Direction;
-import ic2.api.energy.event.EnergyTileSinkEvent;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.EnumSet;
@@ -90,11 +89,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		{
 			Mekanism.manager.register(this);
 			registered = true;
-		}
-		
-		if(demandsEnergy())
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileSinkEvent(this, (int)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_IC2)));
 		}
 		
 		if(!worldObj.isRemote)
@@ -193,9 +187,15 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean demandsEnergy() 
+	public int getMaxSafeInput()
 	{
-		return electricityStored < currentMaxElectricity;
+		return 2048;
+	}
+	
+	@Override
+	public int demandsEnergy() 
+	{
+		return (int)((currentMaxElectricity - electricityStored)*Mekanism.TO_IC2);
 	}
 
 	@Override

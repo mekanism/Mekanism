@@ -218,7 +218,7 @@ public class Mekanism
 			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(AtomicCore), new Object[] {
-			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), "dustObsidian", Character.valueOf('P'), new ItemStack(Dust, 1, 2), Character.valueOf('D'), Item.diamond
+			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), "dustObsidian", Character.valueOf('P'), "dustPlatinum", Character.valueOf('D'), Item.diamond
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(AtomicDisassembler.getUnchargedItem(), new Object[] {
 			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), AtomicCore, Character.valueOf('O'), "ingotObsidian"
@@ -242,7 +242,7 @@ public class Mekanism
 			"EDE", "TAT", "EDE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('A'), MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.ADVANCED)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ControlCircuit), new Object[] {
-			" P ", "PEP", " P ", Character.valueOf('P'), new ItemStack(Ingot, 1, 1), Character.valueOf('E'), EnrichedAlloy
+			" P ", "PEP", " P ", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('E'), EnrichedAlloy
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 2), new Object[] {
 			"A", "I", "A", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), "dustIron"
@@ -275,11 +275,12 @@ public class Mekanism
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
-		FurnaceRecipes.smelting().addSmelting(EnrichedIron.shiftedIndex, 0, new ItemStack(EnrichedAlloy), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 2, new ItemStack(Ingot, 1, 1), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 0, new ItemStack(Item.ingotIron), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 1, new ItemStack(Item.ingotGold), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 5, new ItemStack(Ingot, 1, 4), 1.0F);
+		GameRegistry.addSmelting(Item.coal.shiftedIndex, new ItemStack(CompressedCarbon), 1.0F);
+		GameRegistry.addSmelting(EnrichedIron.shiftedIndex, new ItemStack(EnrichedAlloy), 1.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Dust, 1, 4), new ItemStack(Item.diamond));
@@ -288,7 +289,7 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(EnrichedIron, 2), new ItemStack(Dust, 1, 2));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 4), new ItemStack(CompressedCarbon));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 4), new ItemStack(CompressedCarbon, 8));
 		
 		//Platinum Compressor Recipes
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.redstone), new ItemStack(Ingot, 1, 2));
@@ -610,7 +611,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
-				RecipeHandler.addMetallurgicInfuserRecipe(Infusion.getInfusion(InfusionType.TIN, ore), OreDictionary.getOres("ingotBronze").get(0));
+				RecipeHandler.addMetallurgicInfuserRecipe(Infusion.getInfusion(InfusionType.TIN, ore), MekanismUtils.getStackWithSize(OreDictionary.getOres("ingotBronze").get(0), 1));
 			}
 		} catch(Exception e) {}
 			
@@ -652,7 +653,6 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityPlatinumCompressor.class, "PlatinumCompressor");
 		GameRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner");
 		GameRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher");
-		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityMulti.class, "Multi");
 		GameRegistry.registerTileEntity(TileEntityControlPanel.class, "ControlPanel");

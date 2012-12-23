@@ -96,6 +96,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         nbtTags.setDouble("electricityStored", electricityStored);
     }
 	
+	@Override
 	public boolean isAddedToEnergyNet()
 	{
 		return initialized;

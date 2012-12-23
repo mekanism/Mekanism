@@ -3,7 +3,6 @@ package mekanism.generators.common;
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
-import ic2.api.energy.event.EnergyTileSinkEvent;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.EnumSet;
@@ -74,11 +73,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
-		if(demandsEnergy())
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileSinkEvent(this, (int)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_IC2)));
-		}
 		
 		if(hydrogenStored > MAX_GAS)
 		{
@@ -416,9 +410,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean demandsEnergy() 
+	public int demandsEnergy() 
 	{
-		return electricityStored < MAX_ELECTRICITY;
+		return (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
+	}
+	
+	@Override
+	public int getMaxSafeInput()
+	{
+		return 2048;
 	}
 
 	@Override

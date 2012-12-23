@@ -13,6 +13,17 @@ import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.TileEntitySmeltingFactory;
 import mekanism.common.TileEntityTheoreticalElementizer;
+import mekanism.generators.client.ModelAdvancedSolarGenerator;
+import mekanism.generators.client.RenderAdvancedSolarGenerator;
+import mekanism.generators.client.RenderBioGenerator;
+import mekanism.generators.client.RenderElectrolyticSeparator;
+import mekanism.generators.client.RenderHeatGenerator;
+import mekanism.generators.client.RenderHydrogenGenerator;
+import mekanism.generators.common.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.TileEntityBioGenerator;
+import mekanism.generators.common.TileEntityElectrolyticSeparator;
+import mekanism.generators.common.TileEntityHeatGenerator;
+import mekanism.generators.common.TileEntityHydrogenGenerator;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.TextureFXManager;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -37,6 +49,12 @@ public class ClientProxy extends CommonProxy
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
+	}
+	
+	@Override
+	public void registerSpecialTileEntities() 
+	{
+		ClientRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer", new RenderTheoreticalElementizer());
 	}
 	
 	@Override
@@ -75,6 +93,9 @@ public class ClientProxy extends CommonProxy
 		
 		//Register item handler
 		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, new ItemRenderingHandler());
+		
+		//Register block handler
+		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
 		
 		System.out.println("[Mekanism] Render registrations complete.");
 	}

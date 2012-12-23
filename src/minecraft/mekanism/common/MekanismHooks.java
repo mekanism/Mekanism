@@ -2,6 +2,7 @@ package mekanism.common;
 
 import cpw.mods.fml.common.Loader;
 import ic2.api.Ic2Recipes;
+import ic2.api.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.*;
@@ -48,7 +49,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
 		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
-		if(Loader.isModLoaded("BuildCraft")) BuildCraftLoaded = true;
+		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("Forestry")) ForestryLoaded = true;
 		
 		if(IC2Loaded)
@@ -94,14 +95,13 @@ public final class MekanismHooks
 	/**
 	 * Gets an object out of the class Ic2Items.
 	 * @param name - name of the item
-	 * @param test - whether or not this is a test
 	 * @return the object
 	 */
 	public ItemStack getIC2Item(String name)
 	{
 		try {
-			if(Ic2Items == null) Ic2Items = Class.forName("ic2.common.Ic2Items");
-			if(Ic2Items == null) Ic2Items = Class.forName("net.minecraft.src.ic2.common.Ic2Items");
+			if(Ic2Items == null) Ic2Items = Class.forName("ic2.core.Ic2Items");
+			if(Ic2Items == null) Ic2Items = Class.forName("net.minecraft.src.ic2.core.Ic2Items");
 			Object ret = Ic2Items.getField(name).get(null);
 			
 			if(ret instanceof ItemStack)
@@ -109,7 +109,7 @@ public final class MekanismHooks
 				return (ItemStack)ret;
 			}
 			else {
-				throw new Exception();
+				throw new Exception("not instanceof ItemStack");
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
@@ -129,10 +129,10 @@ public final class MekanismHooks
 				return new ItemStack((Item)ret);
 			}
 			else {
-				throw new Exception();
+				throw new Exception("not instanceof ItemStack");
 			}
 		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
+			System.out.println("[Mekanism] Unable to retrieve BuildCraft item " + name + ".");
 			return null;
 		}
 	}
@@ -149,7 +149,7 @@ public final class MekanismHooks
 				return new ItemStack((Item)ret);
 			}
 			else {
-				throw new Exception();
+				throw new Exception("not instanceof ItemStack");
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve Forestry item " + name + ".");

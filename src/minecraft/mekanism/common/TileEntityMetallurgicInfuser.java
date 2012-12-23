@@ -152,9 +152,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			currentMaxElectricity = MAX_ELECTRICITY;
 		}
 		
-		if(inventory[1] != null)
+		if(inventory[1] != null && infuseStored+100 <= MAX_INFUSE)
 		{
-			if(inventory[1].itemID == Mekanism.CompressedCarbon.shiftedIndex && infuseStored+100 <= MAX_INFUSE)
+			if(inventory[1].isItemEqual(new ItemStack(Mekanism.CompressedCarbon)))
 			{
 				if(type == InfusionType.NONE || type == InfusionType.COAL)
 				{
@@ -173,7 +173,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				{
 					for(ItemStack itemStack : OreDictionary.getOres("dustTin"))
 					{
-						if(inventory[1].isItemEqual(itemStack) && infuseStored+100 <= MAX_INFUSE)
+						if(inventory[1] != null && inventory[1].isItemEqual(itemStack))
 						{
 							infuseStored += 100;
 							inventory[1].stackSize--;
@@ -486,9 +486,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public boolean demandsEnergy()
+	public int demandsEnergy() 
 	{
-		return electricityStored < currentMaxElectricity;
+		return (int)((currentMaxElectricity - electricityStored)*Mekanism.TO_IC2);
 	}
 	
 	@Override
@@ -514,6 +514,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction) 
 	{
 		return true;
+	}
+	
+	@Override
+	public int getMaxSafeInput()
+	{
+		return 2048;
 	}
 
 	@Override

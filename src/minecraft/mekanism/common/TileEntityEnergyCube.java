@@ -260,9 +260,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public boolean demandsEnergy() 
+	public int demandsEnergy() 
 	{
-		return electricityStored < tier.MAX_ELECTRICITY;
+		return (int)((tier.MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
 	}
 
 	@Override
@@ -460,6 +460,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
     {
 		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, tier.name);
     }
+	
+	@Override
+	public int getMaxSafeInput()
+	{
+		return 2048;
+	}
 
 	@Override
 	public void setStored(int energy)

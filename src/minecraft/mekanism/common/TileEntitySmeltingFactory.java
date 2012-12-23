@@ -3,7 +3,6 @@ package mekanism.common;
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
-import ic2.api.energy.event.EnergyTileSinkEvent;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.IActiveState;
 import mekanism.api.Tier.SmeltingFactoryTier;
@@ -80,11 +79,6 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 			{
 				testActive = true;
 			}
-		}
-		
-		if(demandsEnergy())
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileSinkEvent(this, (int)((currentMaxElectricity-electricityStored)*Mekanism.TO_IC2)));
 		}
 		
 		if(inventory[1] != null)
@@ -501,9 +495,9 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	}
 
 	@Override
-	public boolean demandsEnergy()
+	public int demandsEnergy() 
 	{
-		return electricityStored < currentMaxElectricity;
+		return (int)((currentMaxElectricity - electricityStored)*Mekanism.TO_IC2);
 	}
 	
 	@Override
@@ -524,6 +518,12 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     {
     	return isActive;
     }
+    
+	@Override
+	public int getMaxSafeInput()
+	{
+		return 2048;
+	}
 
 	@Override
     public int injectEnergy(Direction direction, int i)

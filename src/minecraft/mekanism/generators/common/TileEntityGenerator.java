@@ -48,8 +48,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super(name, maxEnergy);
 		
-		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
-		
 		output = out;
 		isActive = false;
 	}
@@ -203,6 +201,19 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public int getMaxEnergyOutput()
 	{
 		return output;
+	}
+	
+	@Override
+	public void setFacing(short orientation)
+	{
+		super.setFacing(orientation);
+		
+		if(ElectricityConnections.isConnector(this))
+		{
+			ElectricityConnections.unregisterConnector(this);
+		}
+		
+		ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(orientation)));
 	}
 	
 	@Override
