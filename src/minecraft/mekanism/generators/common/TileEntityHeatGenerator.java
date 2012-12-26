@@ -37,9 +37,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	
 	@Override
 	public void onUpdate()
-	{
-		super.onUpdate();
-		
+	{		
 		if(inventory[1] != null && electricityStored > 0)
 		{
 			if(inventory[1].getItem() instanceof IItemElectric)
@@ -100,9 +98,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					fuelSlot.liquidStored += fuel;
 					--inventory[0].stackSize;
 					
-					if(prevStack.itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID)
+					if(prevStack != null && Mekanism.hooks.BuildCraftFuelBucket != null)
 					{
-						inventory[0] = Mekanism.hooks.BuildCraftFuelBucket;
+						if(prevStack.itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID)
+						{
+							inventory[0] = Mekanism.hooks.BuildCraftFuelBucket;
+						}
+					
 					}
 				}
 				
