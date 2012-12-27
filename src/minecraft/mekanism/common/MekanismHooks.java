@@ -6,6 +6,9 @@ import ic2.api.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.*;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.liquids.LiquidStack;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -155,5 +158,10 @@ public final class MekanismHooks
 			System.out.println("[Mekanism] Unable to retrieve Forestry item " + name + ".");
 			return null;
 		}
+	}
+	
+	public LiquidStack getLiquid(String name)
+	{
+		return LiquidDictionary.getLiquid(name, 1);
 	}
 }

@@ -97,6 +97,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				{
 					fuelSlot.liquidStored += fuel;
 					--inventory[0].stackSize;
+<<<<<<< HEAD
 					
 					if(prevStack != null && Mekanism.hooks.BuildCraftFuelBucket != null)
 					{
@@ -106,6 +107,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 						}
 					
 					}
+=======
+>>>>>>> v5.0.2 Release
 				}
 				
 				if(inventory[0].stackSize == 0)

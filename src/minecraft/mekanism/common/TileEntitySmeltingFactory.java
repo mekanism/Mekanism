@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.EnumSet;
+
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
@@ -14,7 +16,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
 import universalelectricity.core.implement.IVoltage;
@@ -58,6 +62,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public TileEntitySmeltingFactory(SmeltingFactoryTier type)
 	{
 		super(type.name + " Smelting Factory", type.processes*1000);
+		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		tier = type;
 		currentTicksRequired = TICKS_REQUIRED;
 		currentMaxElectricity = MAX_ELECTRICITY;

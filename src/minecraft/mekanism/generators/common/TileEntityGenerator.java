@@ -214,6 +214,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		}
 		
 		ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(orientation)));
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 	}
 	
 	@Override

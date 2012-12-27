@@ -42,7 +42,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.1")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.2")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -64,7 +64,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 0, 1);
+	public static Version versionNumber = new Version(5, 0, 2);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -245,13 +245,13 @@ public class Mekanism
 			" P ", "PEP", " P ", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('E'), EnrichedAlloy
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 2), new Object[] {
-			"A", "I", "A", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), "dustIron"
+			"A", "I", "A", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 1), new Object[] {
-			"C", "I", "C", Character.valueOf('C'), "dustCopper", Character.valueOf('I'), "dustIron"
+			"C", "I", "C", Character.valueOf('C'), "dustCopper", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 1), new Object[] {
-			"T", "I", "T", Character.valueOf('T'), "dustTin", Character.valueOf('I'), "dustIron"
+			"T", "I", "T", Character.valueOf('T'), "dustTin", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 5), new Object[] {
 			"CAC", "GIG", "CAC", Character.valueOf('C'), ControlCircuit, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('G'), "dustGold", Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
@@ -538,6 +538,13 @@ public class Mekanism
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
 			{
 				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustSilver").get(0));
+			}
+		} catch(Exception e) {}
+		
+		try {
+			for(ItemStack ore : OreDictionary.getOres("ingotRefinedSteel"))
+			{
+				RecipeHandler.addEnrichmentChamberRecipe(ore, OreDictionary.getOres("ingotSteel").get(0));
 			}
 		} catch(Exception e) {}
 		

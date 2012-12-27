@@ -100,11 +100,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 					--inventory[0].stackSize;
 				}
 				
-				if(prevStack.itemID == Mekanism.hooks.ForestryBiofuelBucket.itemID)
-				{
-					inventory[0] = Mekanism.hooks.ForestryBiofuelBucket;
-				}
-				
 				if(inventory[0].stackSize == 0)
 				{
 					inventory[0] = null;
