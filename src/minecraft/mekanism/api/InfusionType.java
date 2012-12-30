@@ -1,7 +1,5 @@
 package mekanism.api;
 
-import mekanism.api.Tier.EnergyCubeTier;
-
 public enum InfusionType 
 {
 	COAL("COAL"),
@@ -20,7 +18,7 @@ public enum InfusionType
 			}
 		}
 		
-		System.out.println("[Mekanism] Invalid tier identifier when retrieving with name.");
+		System.out.println("[Mekanism] Invalid infusion identifier when retrieving with name.");
 		return NONE;
 	}
 	

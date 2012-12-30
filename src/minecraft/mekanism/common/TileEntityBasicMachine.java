@@ -95,23 +95,20 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		{
 			for(ForgeDirection direction : ForgeDirection.values())
 			{
-				if(direction != ForgeDirection.getOrientation(facing))
+				TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
+				if(tileEntity != null)
 				{
-					TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
-					if(tileEntity != null)
+					if(tileEntity instanceof IConductor)
 					{
-						if(tileEntity instanceof IConductor)
+						if(electricityStored < currentMaxElectricity)
 						{
-							if(electricityStored < currentMaxElectricity)
-							{
-								double electricityNeeded = currentMaxElectricity - electricityStored;
-								((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-								setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
-							}
-							else if(electricityStored >= currentMaxElectricity)
-							{
-								((IConductor)tileEntity).getNetwork().stopRequesting(this);
-							}
+							double electricityNeeded = currentMaxElectricity - electricityStored;
+							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
+						}
+						else if(electricityStored >= currentMaxElectricity)
+						{
+							((IConductor)tileEntity).getNetwork().stopRequesting(this);
 						}
 					}
 				}
@@ -120,30 +117,38 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		
 		if(worldObj.isRemote)
 		{
-			handleSound();
+			try {
+				synchronized(Mekanism.audioHandler.sounds)
+				{
+					handleSound();
+				}
+			} catch(NoSuchMethodError e) {}
 		}
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public void handleSound()
 	{
-		if(audio == null && worldObj != null && worldObj.isRemote)
+		synchronized(Mekanism.audioHandler.sounds)
 		{
-			if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+			if(audio == null && worldObj != null && worldObj.isRemote)
 			{
-				audio = Mekanism.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
+				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				{
+					audio = Mekanism.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
+				}
 			}
-		}
-		
-		if(worldObj != null && worldObj.isRemote && audio != null)
-		{
-			if(!audio.isPlaying && isActive == true)
+			
+			if(worldObj != null && worldObj.isRemote && audio != null)
 			{
-				audio.play();
-			}
-			else if(audio.isPlaying && isActive == false)
-			{
-				audio.stop();
+				if(!audio.isPlaying && isActive == true)
+				{
+					audio.play();
+				}
+				else if(audio.isPlaying && isActive == false)
+				{
+					audio.stop();
+				}
 			}
 		}
 	}

@@ -9,8 +9,10 @@ public class Version
 {
 	/** Major number for version */
 	public int major;
+	
 	/** Minor number for version */
 	public int minor;
+	
 	/** Build number for version */
 	public int build;
 	

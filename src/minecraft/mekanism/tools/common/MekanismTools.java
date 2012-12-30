@@ -26,7 +26,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.0.2", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.0.3", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismTools 
 {
@@ -34,14 +34,14 @@ public class MekanismTools
 	public static MekanismTools instance;
 	
     //Enums: Tools
-    public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 50);
+    public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 100);
     public static EnumToolMaterial toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2", 3, 3000, 25F, 10, 100);
     public static EnumToolMaterial toolLAZULI = EnumHelper.addToolMaterial("LAZULI", 2, 200, 5F, 2, 22);
     public static EnumToolMaterial toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2", 2, 250, 6F, 4, 50);
     public static EnumToolMaterial toolPLATINUM = EnumHelper.addToolMaterial("PLATINUM", 2, 500, 10F, 4, 30);
     public static EnumToolMaterial toolPLATINUM2 = EnumHelper.addToolMaterial("PLATINUM2", 3, 700, 12F, 5, 40);
-    public static EnumToolMaterial toolREDSTONE = EnumHelper.addToolMaterial("REDSTONE", 2, 250, 10F, 6, 50);
-    public static EnumToolMaterial toolREDSTONE2 = EnumHelper.addToolMaterial("REDSTONE2", 2, 400, 12F, 6, 60);
+    public static EnumToolMaterial toolBRONZE = EnumHelper.addToolMaterial("BRONZE", 3, 1000, 16F, 6, 100);
+    public static EnumToolMaterial toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2", 3, 1400, 22F, 10, 100);
     public static EnumToolMaterial toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE", 2, 300, 14F, 5, 80);
     public static EnumToolMaterial toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2", 2, 450, 18F, 5, 100);
     public static EnumToolMaterial toolSTEEL = EnumHelper.addToolMaterial("STEEL", 3, 850, 14F, 4, 100);
@@ -50,10 +50,10 @@ public class MekanismTools
     //Enums: Armor
     public static EnumArmorMaterial armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", 50, new int[]{5, 12, 8, 5}, 50);
     public static EnumArmorMaterial armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", 13, new int[]{2, 5, 4, 2}, 50);
-    public static EnumArmorMaterial armorPLATINUM = EnumHelper.addArmorMaterial("PLATINUM", 30, new int[]{4, 10, 7, 4}, 50);
-    public static EnumArmorMaterial armorREDSTONE = EnumHelper.addArmorMaterial("REDSTONE", 16, new int[]{2, 7, 5, 3}, 50);
+    public static EnumArmorMaterial armorPLATINUM = EnumHelper.addArmorMaterial("PLATINUM", 30, new int[]{3, 9, 7, 3}, 50);
+    public static EnumArmorMaterial armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", 42, new int[]{4, 10, 8, 4}, 50);
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
-    public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {4, 11, 8, 4}, 50);
+    public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {4, 10, 8, 4}, 50);
     
 	//Base Items
 	public static Item WoodPaxel;
@@ -75,16 +75,16 @@ public class MekanismTools
 	public static Item GlowstoneBoots;
 	
 	//Redstone Items
-	public static Item RedstonePaxel;
-	public static Item RedstonePickaxe;
-	public static Item RedstoneAxe;
-	public static Item RedstoneSpade;
-	public static Item RedstoneHoe;
-	public static Item RedstoneSword;
-	public static Item RedstoneHelmet;
-	public static Item RedstoneBody;
-	public static Item RedstoneLegs;
-	public static Item RedstoneBoots;
+	public static Item BronzePaxel;
+	public static Item BronzePickaxe;
+	public static Item BronzeAxe;
+	public static Item BronzeSpade;
+	public static Item BronzeHoe;
+	public static Item BronzeSword;
+	public static Item BronzeHelmet;
+	public static Item BronzeBody;
+	public static Item BronzeLegs;
+	public static Item BronzeBoots;
 	
 	//Platinum Items
 	public static Item PlatinumPaxel;
@@ -298,68 +298,68 @@ public class MekanismTools
 			"* *", "* *", Character.valueOf('*'), "ingotPlatinum"
 		}));
 		
-		//Redstone
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstonePaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), RedstoneAxe, Character.valueOf('Y'), RedstonePickaxe, Character.valueOf('Z'), RedstoneSpade, Character.valueOf('T'), Item.stick
+		//Bronze
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzePaxel, 1), new Object[] {
+			"XYZ", " T ", " T ", Character.valueOf('X'), BronzeAxe, Character.valueOf('Y'), BronzePickaxe, Character.valueOf('Z'), BronzeSpade, Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstonePickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotRedstone", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzePickaxe, 1), new Object[] {
+			"XXX", " T ", " T ", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotRedstone", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeAxe, 1), new Object[] {
+			"XX", "XT", " T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotRedstone", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeSpade, 1), new Object[] {
+			"X", "T", "T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotRedstone", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeHoe, 1), new Object[] {
+			"XX", " T", " T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotRedstone", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeSword, 1), new Object[] {
+			"X", "X", "T", Character.valueOf('X'), "ingotBronze", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotRedstone"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeHelmet, 1), new Object[] {
+			"***", "* *", Character.valueOf('*'), "ingotBronze"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotRedstone"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeBody, 1), new Object[] {
+			"* *", "***", "***", Character.valueOf('*'), "ingotBronze"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotRedstone"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeLegs, 1), new Object[] {
+			"***", "* *", "* *", Character.valueOf('*'), "ingotBronze"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(RedstoneBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotRedstone"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BronzeBoots, 1), new Object[] {
+			"* *", "* *", Character.valueOf('*'), "ingotBronze"
 		}));
 		
 		//Steel
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), SteelAxe, Character.valueOf('Y'), SteelPickaxe, Character.valueOf('Z'), SteelSpade, Character.valueOf('T'), Item.stick
+			"XYZ", " I ", " I ", Character.valueOf('X'), SteelAxe, Character.valueOf('Y'), SteelPickaxe, Character.valueOf('Z'), SteelSpade, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+			"XXX", " I ", " I ", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+			"XX", "XI", " I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+			"X", "I", "I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+			"XX", " I", " I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotRefinedSteel", Character.valueOf('T'), Item.stick
+			"X", "X", "I", Character.valueOf('X'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotRefinedSteel"
+			"***", "I I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotRefinedSteel"
+			"I I", "*I*", "***", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotRefinedSteel"
+			"I*I", "* *", "* *", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SteelBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotRefinedSteel"
+			"I *", "* I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 	}
 	
@@ -409,16 +409,16 @@ public class MekanismTools
 		LanguageRegistry.addName(PlatinumSword, "Platinum Sword");
 		
 		//Redstone
-		LanguageRegistry.addName(RedstoneHelmet, "Redstone Helmet");
-		LanguageRegistry.addName(RedstoneBody, "Redstone Chestplate");
-		LanguageRegistry.addName(RedstoneLegs, "Redstone Leggings");
-		LanguageRegistry.addName(RedstoneBoots, "Redstone Boots");
-		LanguageRegistry.addName(RedstonePaxel, "Redstone Paxel");
-		LanguageRegistry.addName(RedstonePickaxe, "Redstone Pickaxe");
-		LanguageRegistry.addName(RedstoneAxe, "Redstone Axe");
-		LanguageRegistry.addName(RedstoneSpade, "Redstone Shovel");
-		LanguageRegistry.addName(RedstoneHoe, "Redstone Hoe");
-		LanguageRegistry.addName(RedstoneSword, "Redstone Sword");
+		LanguageRegistry.addName(BronzeHelmet, "Bronze Helmet");
+		LanguageRegistry.addName(BronzeBody, "Bronze Chestplate");
+		LanguageRegistry.addName(BronzeLegs, "Bronze Leggings");
+		LanguageRegistry.addName(BronzeBoots, "Bronze Boots");
+		LanguageRegistry.addName(BronzePaxel, "Bronze Paxel");
+		LanguageRegistry.addName(BronzePickaxe, "Bronze Pickaxe");
+		LanguageRegistry.addName(BronzeAxe, "Bronze Axe");
+		LanguageRegistry.addName(BronzeSpade, "Bronze Shovel");
+		LanguageRegistry.addName(BronzeHoe, "Bronze Hoe");
+		LanguageRegistry.addName(BronzeSword, "Bronze Sword");
 		
 		//Glowstone
 		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
@@ -467,16 +467,16 @@ public class MekanismTools
 		GlowstoneSword.setIconIndex(132);
 		
 		//Redstone
-		RedstoneHelmet.setIconIndex(3);
-		RedstoneBody.setIconIndex(19);
-		RedstoneLegs.setIconIndex(35);
-		RedstoneBoots.setIconIndex(51);
-		RedstonePaxel.setIconIndex(147);
-		RedstonePickaxe.setIconIndex(67);
-		RedstoneAxe.setIconIndex(83);
-		RedstoneSpade.setIconIndex(99);
-		RedstoneHoe.setIconIndex(115);
-		RedstoneSword.setIconIndex(131);
+		BronzeHelmet.setIconIndex(3);
+		BronzeBody.setIconIndex(19);
+		BronzeLegs.setIconIndex(35);
+		BronzeBoots.setIconIndex(51);
+		BronzePaxel.setIconIndex(147);
+		BronzePickaxe.setIconIndex(67);
+		BronzeAxe.setIconIndex(83);
+		BronzeSpade.setIconIndex(99);
+		BronzeHoe.setIconIndex(115);
+		BronzeSword.setIconIndex(131);
 		
 		//Platinum
 		PlatinumHelmet.setIconIndex(2);
@@ -529,17 +529,17 @@ public class MekanismTools
 	
 	public void addItems()
 	{
-		//Redstone
-		RedstoneHelmet = (new ItemMekanismArmor(11400, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 0)).setItemName("RedstoneHelmet");
-		RedstoneBody = (new ItemMekanismArmor(11401, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 1)).setItemName("RedstoneBody");
-		RedstoneLegs = (new ItemMekanismArmor(11402, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 2)).setItemName("RedstoneLegs");
-		RedstoneBoots = (new ItemMekanismArmor(11403, armorREDSTONE, Mekanism.proxy.getArmorIndex("redstone"), 3)).setItemName("RedstoneBoots");
-		RedstonePaxel = new ItemMekanismPaxel(11404, toolREDSTONE2).setItemName("RedstonePaxel");
-		RedstonePickaxe = new ItemMekanismPickaxe(11405, toolREDSTONE).setItemName("RedstonePickaxe");
-		RedstoneAxe = new ItemMekanismAxe(11406, toolREDSTONE).setItemName("RedstoneAxe");
-		RedstoneSpade = new ItemMekanismSpade(11407, toolREDSTONE).setItemName("RedstoneSpade");
-		RedstoneHoe = new ItemMekanismHoe(11408, toolREDSTONE).setItemName("RedstoneHoe");
-		RedstoneSword = new ItemMekanismSword(11409, toolREDSTONE).setItemName("RedstoneSword");
+		//Bronze
+		BronzeHelmet = (new ItemMekanismArmor(11400, armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 0)).setItemName("BronzeHelmet");
+		BronzeBody = (new ItemMekanismArmor(11401, armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 1)).setItemName("BronzeBody");
+		BronzeLegs = (new ItemMekanismArmor(11402, armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 2)).setItemName("BronzeLegs");
+		BronzeBoots = (new ItemMekanismArmor(11403, armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 3)).setItemName("BronzeBoots");
+		BronzePaxel = new ItemMekanismPaxel(11404, toolBRONZE2).setItemName("BronzePaxel");
+		BronzePickaxe = new ItemMekanismPickaxe(11405, toolBRONZE).setItemName("BronzePickaxe");
+		BronzeAxe = new ItemMekanismAxe(11406, toolBRONZE).setItemName("BronzeAxe");
+		BronzeSpade = new ItemMekanismSpade(11407, toolBRONZE).setItemName("BronzeSpade");
+		BronzeHoe = new ItemMekanismHoe(11408, toolBRONZE).setItemName("BronzeHoe");
+		BronzeSword = new ItemMekanismSword(11409, toolBRONZE).setItemName("BronzeSword");
 		
 		//Platinum
 		PlatinumHelmet = (new ItemMekanismArmor(11410, EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
@@ -603,10 +603,10 @@ public class MekanismTools
 		SteelSpade = new ItemMekanismSpade(11458, toolSTEEL).setItemName("SteelSpade");
 		SteelHoe = new ItemMekanismHoe(11459, toolSTEEL).setItemName("SteelHoe");
 		SteelSword = new ItemMekanismSword(11460, toolSTEEL).setItemName("SteelSword");
-		SteelHelmet = new ItemMekanismArmor(11461, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 0).setItemName("SteelHelmet");
-		SteelBody = new ItemMekanismArmor(11462, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 1).setItemName("SteelBody");
-		SteelLegs = new ItemMekanismArmor(11463, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 2).setItemName("SteelLegs");
-		SteelBoots = new ItemMekanismArmor(11464, armorSTEEL, Mekanism.proxy.getArmorIndex("Steel"), 3).setItemName("SteelBoots");
+		SteelHelmet = new ItemMekanismArmor(11461, armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 0).setItemName("SteelHelmet");
+		SteelBody = new ItemMekanismArmor(11462, armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setItemName("SteelBody");
+		SteelLegs = new ItemMekanismArmor(11463, armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setItemName("SteelLegs");
+		SteelBoots = new ItemMekanismArmor(11464, armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setItemName("SteelBoots");
 	}
 	
 	@ForgeSubscribe
@@ -615,9 +615,9 @@ public class MekanismTools
 		Random random = new Random();
 		
 		int chance = random.nextInt(100);
-		int secondChance = random.nextInt(4);
+		int secondChance = random.nextInt(3);
 		
-		if(chance < 5)
+		if(chance < 4)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
 			{
@@ -638,14 +638,6 @@ public class MekanismTools
 					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(LazuliBoots));
 				}
 				else if(secondChance == 2)
-				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(RedstoneSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(RedstoneHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(RedstoneBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(RedstoneLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(RedstoneBoots));
-				}
-				else if(secondChance == 3)
 				{
 					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(PlatinumSword));
 					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(PlatinumHelmet));

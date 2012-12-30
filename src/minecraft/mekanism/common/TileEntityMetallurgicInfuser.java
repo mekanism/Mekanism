@@ -5,6 +5,7 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +22,12 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+import universalelectricity.core.electricity.ElectricityConnections;
+import universalelectricity.core.implement.IConductor;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
 import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -41,7 +45,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 	
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = 100;
+	public double ENERGY_PER_TICK = 12;
 	
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
@@ -72,6 +76,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		currentTicksRequired = TICKS_REQUIRED;
 		currentMaxElectricity = MAX_ELECTRICITY;
+		
+		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 	}
 	
 	@Override
@@ -80,6 +86,30 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		super.onUpdate();
 		
 		boolean testActive = operatingTicks > 0;
+		
+		if(!worldObj.isRemote)
+		{
+			for(ForgeDirection direction : ForgeDirection.values())
+			{
+				TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
+				if(tileEntity != null)
+				{
+					if(tileEntity instanceof IConductor)
+					{
+						if(electricityStored < currentMaxElectricity)
+						{
+							double electricityNeeded = currentMaxElectricity - electricityStored;
+							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
+						}
+						else if(electricityStored >= currentMaxElectricity)
+						{
+							((IConductor)tileEntity).getNetwork().stopRequesting(this);
+						}
+					}
+				}
+			}
+		}
 		
 		if(inventory[4] != null)
 		{

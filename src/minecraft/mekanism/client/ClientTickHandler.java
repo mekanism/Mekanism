@@ -32,7 +32,10 @@ public class ClientTickHandler implements ITickHandler
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
-		Mekanism.audioHandler.onTick();
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			Mekanism.audioHandler.onTick();
+		}
 	}
 
 	@Override

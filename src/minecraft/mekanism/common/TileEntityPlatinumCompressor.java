@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMachine
 {
@@ -23,7 +24,18 @@ public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMach
 	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
-		if (itemstack.itemID == new ItemStack(Mekanism.Ingot, 1, 1).itemID) return 200;
+		boolean hasPlatinum = false;
+		
+		for(ItemStack ore : OreDictionary.getOres("ingotPlatinum"))
+		{
+			if(ore.isItemEqual(itemstack))
+			{
+				hasPlatinum = true;
+				break;
+			}
+		}
+		
+		if(hasPlatinum) return 200;
 		return 0;
 	}
 }

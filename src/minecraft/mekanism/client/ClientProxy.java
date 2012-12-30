@@ -165,4 +165,19 @@ public class ClientProxy extends CommonProxy
 	{
 		Mekanism.audioHandler = new SoundHandler();
 	}
+	
+	@Override
+	public void unloadSoundHandler()
+	{
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			for(Sound sound : Mekanism.audioHandler.sounds)
+			{
+				sound.stop();
+				Mekanism.audioHandler.soundSystem.removeSource(sound.identifier);
+			}
+			
+			Mekanism.audioHandler.sounds.clear();
+		}
+	}
 }

@@ -23,7 +23,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 /**
  * Block class for handling multiple metal block IDs.
  * 0: Platinum Block
- * 1: Redstone Block
+ * 1: Bronze Block
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone

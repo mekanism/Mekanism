@@ -34,7 +34,7 @@ public class CommonProxy
 	
 	/**
 	 * Gets the armor index number from ClientProxy.
-	 * @param armor indicator
+	 * @param string - armor indicator
 	 * @return armor index number
 	 */
 	public int getArmorIndex(String string) 
@@ -53,10 +53,10 @@ public class CommonProxy
 		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", 3002).getInt();
 	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", 3003).getInt();
 	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
-	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3007).getInt();
-	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3009).getInt();
-	  	Mekanism.extrasEnabled = Mekanism.configuration.get("ExtrasEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
-	  	Mekanism.oreGenerationEnabled = Mekanism.configuration.get("OreGenerationEnabled", Configuration.CATEGORY_GENERAL, true).getBoolean(true);
+	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3005).getInt();
+	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
+	  	Mekanism.extrasEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ExtrasEnabled", true).getBoolean(true);
+	  	Mekanism.oreGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.configuration.save();
 	}
 	
@@ -74,6 +74,11 @@ public class CommonProxy
 	 * Set up and load the sound handler.
 	 */
 	public void loadSoundHandler() {}
+	
+	/**
+	 * Unload the sound handler.
+	 */
+	public void unloadSoundHandler() {}
 	
 	/**
 	 * Get the actual interface for a GUI. Client-only.

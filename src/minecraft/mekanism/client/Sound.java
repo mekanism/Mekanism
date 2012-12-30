@@ -17,23 +17,20 @@ import paulscode.sound.SoundSystem;
  */
 public class Sound 
 {
-	/** The PaulsCode SoundSystem */
-	public SoundSystem soundSystem;
-	
 	/** The bundled path where the sound is */
 	public String soundPath;
+	
 	/** A unique identifier for this sound */
 	public String identifier;
 	
 	/** X coordinate of this sound effect */
 	public int xCoord;
+	
 	/** Y coordinate of this sound effect */
 	public int yCoord;
+	
 	/** Z coordinate of this sound effect */
 	public int zCoord;
-	
-	/** The world in which this sound is playing */
-	public World worldObj;
 	
 	/** Whether or not this sound is playing */
 	public boolean isPlaying = false;
@@ -48,25 +45,26 @@ public class Sound
 	 * @param y - y coord
 	 * @param z - z coord
 	 */
-	public Sound(SoundSystem system, String id, String sound, World world, int x, int y, int z)
+	public Sound(String id, String sound, World world, int x, int y, int z)
 	{
-		soundSystem = system;
-		soundPath = sound;
-		identifier = id;
-		worldObj = world;
-		xCoord = x;
-		yCoord = y;
-		zCoord = z;
-		
-		URL url = getClass().getClassLoader().getResource("resources/mekanism/sound/" + sound);
-		if(url == null)
+		synchronized(Mekanism.audioHandler.sounds)
 		{
-			System.out.println("[Mekanism] Invalid sound file: " + sound);
+			soundPath = sound;
+			identifier = id;
+			xCoord = x;
+			yCoord = y;
+			zCoord = z;
+			
+			URL url = getClass().getClassLoader().getResource("resources/mekanism/sound/" + sound);
+			if(url == null)
+			{
+				System.out.println("[Mekanism] Invalid sound file: " + sound);
+			}
+			
+			Mekanism.audioHandler.sounds.add(this);
+			Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
+			Mekanism.audioHandler.soundSystem.activate(id);
 		}
-		
-		Mekanism.audioHandler.sounds.add(this);
-		soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
-		soundSystem.activate(id);
 	}
 	
 	/** 
@@ -74,13 +72,16 @@ public class Sound
 	 */
 	public void play()
 	{
-		if(isPlaying)
+		synchronized(Mekanism.audioHandler.sounds)
 		{
-			return;
+			if(isPlaying)
+			{
+				return;
+			}
+			
+			Mekanism.audioHandler.soundSystem.play(identifier);
+			isPlaying = true;
 		}
-		
-		soundSystem.play(identifier);
-		isPlaying = true;
 	}
 	
 	/** 
@@ -88,13 +89,16 @@ public class Sound
 	 */
 	public void stop()
 	{
-		if(!isPlaying)
+		synchronized(Mekanism.audioHandler.sounds)
 		{
-			return;
+			if(!isPlaying)
+			{
+				return;
+			}
+			
+			Mekanism.audioHandler.soundSystem.stop(identifier);
+			isPlaying = false;
 		}
-		
-		soundSystem.stop(identifier);
-		isPlaying = false;
 	}
 	
 	/** 
@@ -102,31 +106,37 @@ public class Sound
 	 */
 	public void remove()
 	{
-		if(isPlaying)
+		synchronized(Mekanism.audioHandler.sounds)
 		{
-			stop();
+			if(isPlaying)
+			{
+				stop();
+			}
+			
+			Mekanism.audioHandler.sounds.remove(this);
+			Mekanism.audioHandler.soundSystem.removeSource(identifier);
 		}
-		
-		Mekanism.audioHandler.sounds.remove(this);
-		soundSystem.removeSource(identifier);
 	}
 	
-	/** Updates the volume based on how far away the player is from the machine
+	/** Updates the volume based on how far away the player is from the machine.
 	 * 
-	 * @param entityplayer - player who is near the machine, usually Minecraft.thePlayer
+	 * @param entityplayer - player who is near the machine, always Minecraft.thePlayer
 	 */
     public void updateVolume(EntityPlayer entityplayer)
     {
-    	float volume = 0;
-        if (!isPlaying)
-        {
-            volume = 0.0F;
-            return;
-        }
-        
-        double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.01;
-        volume = (float)Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0);
-
-        soundSystem.setVolume(identifier, volume);
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+	    	float volume = 0;
+	    	
+	        if (!isPlaying)
+	        {
+	            return;
+	        }
+	        
+	        double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.01;
+	        volume = (float)Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0);
+	
+	        Mekanism.audioHandler.soundSystem.setVolume(identifier, volume);
+		}
     }
 }

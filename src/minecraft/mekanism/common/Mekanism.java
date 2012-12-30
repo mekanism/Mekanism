@@ -25,10 +25,12 @@ import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -42,7 +44,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.2")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.3")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -64,7 +66,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 0, 2);
+	public static Version versionNumber = new Version(5, 0, 3);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -94,8 +96,8 @@ public class Mekanism
     public static int oreBlockID = 3002;
 	public static int obsidianTNTID = 3003;
 	public static int energyCubeID = 3004;
-	public static int nullRenderID = 3007;
-	public static int gasTankID = 3009;
+	public static int nullRenderID = 3005;
+	public static int gasTankID = 3006;
 	
 	
 	//Extra Items
@@ -177,13 +179,13 @@ public class Mekanism
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 1), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotRedstone"
+			"***", "***", "***", Character.valueOf('*'), "ingotBronze"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 2), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 1)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 5), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotRefinedSteel"
+			"***", "***", "***", Character.valueOf('*'), "ingotSteel"
 		}));
 		
 		//Extra
@@ -244,13 +246,13 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(ControlCircuit), new Object[] {
 			" P ", "PEP", " P ", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('E'), EnrichedAlloy
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 2), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 6), new Object[] {
 			"A", "I", "A", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
 			"C", "I", "C", Character.valueOf('C'), "dustCopper", Character.valueOf('I'), Item.ingotIron
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
 			"T", "I", "T", Character.valueOf('T'), "dustTin", Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 5), new Object[] {
@@ -280,7 +282,6 @@ public class Mekanism
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 1, new ItemStack(Item.ingotGold), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.shiftedIndex, 5, new ItemStack(Ingot, 1, 4), 1.0F);
 		GameRegistry.addSmelting(Item.coal.shiftedIndex, new ItemStack(CompressedCarbon), 1.0F);
-		GameRegistry.addSmelting(EnrichedIron.shiftedIndex, new ItemStack(EnrichedAlloy), 1.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Dust, 1, 4), new ItemStack(Item.diamond));
@@ -288,11 +289,9 @@ public class Mekanism
         RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(EnrichedIron, 2), new ItemStack(Dust, 1, 2));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 4), new ItemStack(CompressedCarbon, 8));
 		
 		//Platinum Compressor Recipes
-		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.redstone), new ItemStack(Ingot, 1, 2));
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.lightStoneDust), new ItemStack(Ingot, 1, 3));
 		
 		//Combiner Recipes
@@ -347,7 +346,7 @@ public class Mekanism
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.PlatinumBlock.name", "Platinum Block");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RedstoneBlock.name", "Redstone Block");
+		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.BronzeBlock.name", "Bronze Block");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RefinedObsidian.name", "Refined Obsidian");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.CoalBlock.name", "Coal Block");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RefinedGlowstone.name", "Refined Glowstone");
@@ -379,14 +378,14 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.platinumDust.name", "Platinum Dust");
 		LanguageRegistry.instance().addStringLocalization("item.obsidianDust.name", "Obsidian Dust");
 		LanguageRegistry.instance().addStringLocalization("item.diamondDust.name", "Diamond Dust");
-		LanguageRegistry.instance().addStringLocalization("item.refinedsteelDust.name", "Refined Steel Dust");
+		LanguageRegistry.instance().addStringLocalization("item.steelDust.name", "Steel Dust");
 		
 		//Localization for Ingot
 		LanguageRegistry.instance().addStringLocalization("item.obsidianIngot.name", "Obsidian Ingot");
 		LanguageRegistry.instance().addStringLocalization("item.platinumIngot.name", "Platinum Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.redstoneIngot.name", "Redstone Ingot");
+		LanguageRegistry.instance().addStringLocalization("item.bronzeIngot.name", "Bronze Ingot");
 		LanguageRegistry.instance().addStringLocalization("item.glowstoneIngot.name", "Glowstone Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.refinedsteelIngot.name", "Refined Steel Ingot");
+		LanguageRegistry.instance().addStringLocalization("item.steelIngot.name", "Steel Ingot");
 		
 		//Localization for Mekanism creative tab
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabMekanism", "Mekanism");
@@ -460,9 +459,9 @@ public class Mekanism
 		GasTank = new BlockGasTank(gasTankID).setBlockName("GasTank");
 		
 		//Registrations
-		GameRegistry.registerBlock(ObsidianTNT);
-		GameRegistry.registerBlock(NullRender);
-		GameRegistry.registerBlock(GasTank);
+		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
+		GameRegistry.registerBlock(NullRender, "NullRender");
+		GameRegistry.registerBlock(GasTank, "GasTank");
 		
 		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setItemName("BasicBlock");
@@ -482,13 +481,13 @@ public class Mekanism
 		OreDictionary.registerOre("dustPlatinum", new ItemStack(Dust, 1, 2));
 		OreDictionary.registerOre("dustObsidian", new ItemStack(Dust, 1, 3));
 		OreDictionary.registerOre("dustDiamond", new ItemStack(Dust, 1, 4));
-		OreDictionary.registerOre("dustRefinedSteel", new ItemStack(Dust, 1, 5));
+		OreDictionary.registerOre("dustSteel", new ItemStack(Dust, 1, 5));
 		
 		OreDictionary.registerOre("ingotObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotPlatinum", new ItemStack(Ingot, 1, 1));
-		OreDictionary.registerOre("ingotRedstone", new ItemStack(Ingot, 1, 2));
+		OreDictionary.registerOre("ingotBronze", new ItemStack(Ingot, 1, 2));
 		OreDictionary.registerOre("ingotGlowstone", new ItemStack(Ingot, 1, 3));
-		OreDictionary.registerOre("ingotRefinedSteel", new ItemStack(Ingot, 1, 4));
+		OreDictionary.registerOre("ingotSteel", new ItemStack(Ingot, 1, 4));
 		
 		OreDictionary.registerOre("orePlatinum", new ItemStack(OreBlock, 1, 0));
 		
@@ -538,13 +537,6 @@ public class Mekanism
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
 			{
 				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustSilver").get(0));
-			}
-		} catch(Exception e) {}
-		
-		try {
-			for(ItemStack ore : OreDictionary.getOres("ingotRefinedSteel"))
-			{
-				RecipeHandler.addEnrichmentChamberRecipe(ore, OreDictionary.getOres("ingotSteel").get(0));
 			}
 		} catch(Exception e) {}
 		
@@ -618,7 +610,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
-				RecipeHandler.addMetallurgicInfuserRecipe(Infusion.getInfusion(InfusionType.TIN, ore), MekanismUtils.getStackWithSize(OreDictionary.getOres("ingotBronze").get(0), 1));
+				RecipeHandler.addMetallurgicInfuserRecipe(Infusion.getInfusion(InfusionType.TIN, ore), new ItemStack(Ingot, 1, 2));
 			}
 		} catch(Exception e) {}
 			
@@ -680,6 +672,12 @@ public class Mekanism
 	public void registerServerCommands()
 	{
 		ServerCommandHandler.initialize();
+	}
+	
+	@ServerStopping
+	public void serverStopping(FMLServerStoppingEvent event)
+	{
+		proxy.unloadSoundHandler();
 	}
 	
 	@PreInit

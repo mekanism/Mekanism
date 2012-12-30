@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Item class for handling multiple metal block IDs.
  * 0: Platinum Block
- * 1: Redstone Block
+ * 1: Bronze Block
  * 2: Refined Obsidian
  * 3: Coal Block
  * 4: Refined Glowstone
@@ -49,7 +49,7 @@ public class ItemBlockBasic extends ItemBlock
 				name = "PlatinumBlock";
 				break;
 			case 1:
-				name = "RedstoneBlock";
+				name = "BronzeBlock";
 				break;
 			case 2:
 				name = "RefinedObsidian";
