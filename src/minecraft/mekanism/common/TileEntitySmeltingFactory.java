@@ -19,9 +19,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.electricity.ElectricityConnections;
+import universalelectricity.core.implement.IConductor;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
 import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -77,6 +79,30 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		super.onUpdate();
 		
 		boolean testActive = false;
+		
+		if(!worldObj.isRemote)
+		{
+			for(ForgeDirection direction : ForgeDirection.values())
+			{
+				TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
+				if(tileEntity != null)
+				{
+					if(tileEntity instanceof IConductor)
+					{
+						if(electricityStored < currentMaxElectricity)
+						{
+							double electricityNeeded = currentMaxElectricity - electricityStored;
+							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
+						}
+						else if(electricityStored >= currentMaxElectricity)
+						{
+							((IConductor)tileEntity).getNetwork().stopRequesting(this);
+						}
+					}
+				}
+			}
+		}
 		
 		for(int i : progress)
 		{

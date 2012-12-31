@@ -198,23 +198,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		            }
 				}
 			}
-			else {
+			else if(MekanismUtils.oreDictCheck(inventory[1], "dustTin"))
+			{
 				if(type == InfusionType.NONE || type == InfusionType.TIN)
 				{
-					for(ItemStack itemStack : OreDictionary.getOres("dustTin"))
-					{
-						if(inventory[1] != null && inventory[1].isItemEqual(itemStack))
-						{
-							infuseStored += 100;
-							inventory[1].stackSize--;
-							type = InfusionType.TIN;
-							
-				            if (inventory[1].stackSize <= 0)
-				            {
-				                inventory[1] = null;
-				            }
-						}
-					}
+					infuseStored += 100;
+					inventory[1].stackSize--;
+					type = InfusionType.TIN;
+					
+		            if (inventory[1].stackSize <= 0)
+		            {
+		                inventory[1] = null;
+		            }
 				}
 			}
 		}

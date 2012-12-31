@@ -3,6 +3,7 @@ package mekanism.common;
 import ic2.api.IElectricItem;
 import mekanism.api.Infusion;
 import mekanism.api.InfusionType;
+import mekanism.api.ItemMachineUpgrade;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -68,19 +69,16 @@ public class ContainerMetallurgicInfuser extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
             {
-            	boolean isTin = false;
-            	
-            	for(ItemStack ore : OreDictionary.getOres("dustTin"))
-            	{
-            		if(ore.isItemEqual(slotStack))
-            		{
-            			isTin = true;
-            		}
-            	}
-            	
-            	if(isTin && (tileEntity.type == InfusionType.TIN || tileEntity.type == InfusionType.NONE))
+            	if(MekanismUtils.oreDictCheck(slotStack, "dustTin") && (tileEntity.type == InfusionType.TIN || tileEntity.type == InfusionType.NONE))
             	{
             		if(!mergeItemStack(slotStack, 1, 2, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(slotStack.getItem() instanceof ItemMachineUpgrade)
+            	{
+            		if(!mergeItemStack(slotStack, 0, 1, false))
             		{
             			return null;
             		}

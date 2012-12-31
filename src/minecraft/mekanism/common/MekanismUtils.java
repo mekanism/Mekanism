@@ -17,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -250,5 +251,21 @@ public final class MekanismUtils
     public static ForgeDirection getRight(int orientation)
     {
     	return getLeft(orientation).getOpposite();
+    }
+    
+    public static boolean oreDictCheck(ItemStack check, String oreDict)
+    {
+    	boolean hasResource = false;
+    	
+    	for(ItemStack ore : OreDictionary.getOres(oreDict))
+    	{
+    		
+    		if(ore.isItemEqual(check))
+    		{
+    			hasResource = true;
+    		}
+    	}
+    	
+    	return hasResource;
     }
 }

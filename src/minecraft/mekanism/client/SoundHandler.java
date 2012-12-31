@@ -65,9 +65,7 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
-			String s = getIdentifier();
-			System.out.println(s);
-			return new Sound(s, path, world, x, y, z);
+			return new Sound(getIdentifier(), path, world, x, y, z);
 		}
 	}
 	
