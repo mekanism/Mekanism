@@ -4,7 +4,8 @@ import ic2.api.Ic2Recipes;
 
 import java.util.logging.Logger;
 
-import mekanism.api.Infusion;
+import mekanism.api.InfusionInput;
+import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.api.ItemMachineUpgrade;
 import mekanism.api.Tier.EnergyCubeTier;
@@ -44,7 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.4")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.5")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -66,7 +67,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 0, 4);
+	public static Version versionNumber = new Version(5, 0, 5);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -309,7 +310,7 @@ public class Mekanism
         RecipeHandler.addTheoreticalElementizerRecipe(new ItemStack(EnrichedAlloy), new ItemStack(TileEntityTheoreticalElementizer.getRandomMagicItem()));
         
         //Metallurgic Infuser Recipes
-        RecipeHandler.addMetallurgicInfuserRecipe(Infusion.getInfusion(InfusionType.COAL, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
 	}
 	
 	/**
@@ -610,7 +611,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
-				RecipeHandler.addMetallurgicInfuserRecipe(Infusion.getInfusion(InfusionType.TIN, ore), new ItemStack(Ingot, 1, 2));
+				RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.TIN, 10, ore), new ItemStack(Ingot, 1, 2));
 			}
 		} catch(Exception e) {}
 			

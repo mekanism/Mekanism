@@ -31,7 +31,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	
 	public TileEntityHydrogenGenerator()
 	{
-		super("Hydrogen Generator", 4000000, 1200);
+		super("Hydrogen Generator", 400000, 1200);
 		inventory = new ItemStack[2];
 	}
 	
@@ -114,7 +114,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				setActive(true);
 			}
 			
-			hydrogenStored--;
+			hydrogenStored-=10;
 			setJoules(electricityStored + 1000);
 		}
 		else {

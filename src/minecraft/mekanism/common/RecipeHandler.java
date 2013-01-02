@@ -2,7 +2,8 @@ package mekanism.common;
 
 import java.util.Map;
 
-import mekanism.api.Infusion;
+import mekanism.api.InfusionInput;
+import mekanism.api.InfusionOutput;
 import net.minecraft.item.ItemStack;
 
 /** 
@@ -67,32 +68,32 @@ public final class RecipeHandler
 	 * @param input - input Infusion
 	 * @param output - output ItemStack
 	 */
-	public static void addMetallurgicInfuserRecipe(Infusion input, ItemStack output)
+	public static void addMetallurgicInfuserRecipe(InfusionInput input, ItemStack output)
 	{
-		TileEntityMetallurgicInfuser.recipes.put(input, output);
+		TileEntityMetallurgicInfuser.recipes.put(input, InfusionOutput.getInfusion(input, output));
 	}
 	
 	/**
-	 * Gets the output ItemStack of the Infusion in the parameters.
+	 * Gets the InfusionOutput of the InfusionInput in the parameters.
 	 * @param infusion - input Infusion
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size AND the infuse amount
 	 * @param recipes - Map of recipes
-	 * @return output ItemStack
+	 * @return InfusionOutput
 	 */
-	public static ItemStack getOutput(Infusion infusion, boolean stackDecrease, Map<Infusion, ItemStack> recipes)
+	public static InfusionOutput getOutput(InfusionInput infusion, boolean stackDecrease, Map<InfusionInput, InfusionOutput> recipes)
 	{
 		for(Map.Entry entry : recipes.entrySet())
 		{
-			if(((Infusion)entry.getKey()).resource.isItemEqual(infusion.resource) && infusion.resource.stackSize >= ((Infusion)entry.getKey()).resource.stackSize)
+			if(((InfusionInput)entry.getKey()).inputSlot.isItemEqual(infusion.inputSlot) && infusion.inputSlot.stackSize >= ((InfusionInput)entry.getKey()).inputSlot.stackSize)
 			{
-				if(infusion.type == ((Infusion)entry.getKey()).type)
+				if(infusion.infusionType == ((InfusionInput)entry.getKey()).infusionType)
 				{
 					if(stackDecrease)
 					{
-						infusion.resource.stackSize -= ((Infusion)entry.getKey()).resource.stackSize;
+						infusion.inputSlot.stackSize -= ((InfusionInput)entry.getKey()).inputSlot.stackSize;
 					}
 					
-					return ((ItemStack)entry.getValue()).copy();
+					return ((InfusionOutput)entry.getValue()).copy();
 				}
 			}
 		}

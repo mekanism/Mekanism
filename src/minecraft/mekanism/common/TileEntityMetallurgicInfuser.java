@@ -11,7 +11,8 @@ import java.util.Map;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IMachineUpgrade;
-import mekanism.api.Infusion;
+import mekanism.api.InfusionInput;
+import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -36,7 +37,7 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
 {
-	public static Map<Infusion, ItemStack> recipes = new HashMap<Infusion, ItemStack>();
+	public static Map<InfusionInput, InfusionOutput> recipes = new HashMap<InfusionInput, InfusionOutput>();
 	
 	/** The type of infuse this machine stores. */
 	public InfusionType type = InfusionType.NONE;
@@ -263,9 +264,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
             return;
         }
 
-        ItemStack itemstack = RecipeHandler.getOutput(Infusion.getInfusion(type, inventory[2]), true, recipes);
+        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true, recipes);
         
-        infuseStored -= 10;
+        infuseStored -= output.getInfuseRequired();
 
         if (inventory[2].stackSize <= 0)
         {
@@ -274,11 +275,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
         if (inventory[3] == null)
         {
-            inventory[3] = itemstack;
+            inventory[3] = output.resource;
         }
-        else
-        {
-            inventory[3].stackSize += itemstack.stackSize;
+        else {
+            inventory[3].stackSize += output.resource.stackSize;
         }
 	}
 	
@@ -293,17 +293,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         {
         	return false;
         }
-        
-        if(infuseStored-10 < 0)
-        {
-        	return false;
-        }
 
-        ItemStack itemstack = RecipeHandler.getOutput(Infusion.getInfusion(type, inventory[2]), false, recipes);
+        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false, recipes);
 
-        if (itemstack == null)
+        if (output == null)
         {
             return false;
+        }
+        
+        if(infuseStored-output.getInfuseRequired() < 0)
+        {
+        	return false;
         }
 
         if (inventory[3] == null)
@@ -311,13 +311,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
             return true;
         }
 
-        if (!inventory[3].isItemEqual(itemstack))
+        if (!inventory[3].isItemEqual(output.resource))
         {
             return false;
         }
         else
         {
-            return inventory[3].stackSize + itemstack.stackSize <= inventory[3].getMaxStackSize();
+            return inventory[3].stackSize + output.resource.stackSize <= inventory[3].getMaxStackSize();
         }
 	}
 	

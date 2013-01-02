@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import universalelectricity.prefab.RecipeHelper;
 import cpw.mods.fml.common.Loader;
 import ic2.api.Ic2Recipes;
 import ic2.api.Items;
@@ -22,7 +23,7 @@ public final class MekanismHooks
 	
 	private Class Railcraft;
 	
-	private Class BCLoader;
+	private Class BasicComponents;
 	
 	private Class BuildCraftEnergy;
 	
@@ -69,6 +70,7 @@ public final class MekanismHooks
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 0), new ItemStack(Mekanism.Dust, 1, 3));
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 2), new ItemStack(Item.redstone));
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 4), new ItemStack(Mekanism.Dust, 1, 5));
 			Ic2Recipes.addMatterAmplifier(Mekanism.EnrichedAlloy, 100000);
 			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
@@ -79,6 +81,8 @@ public final class MekanismHooks
 		}
 		if(BasicComponentsLoaded)
 		{
+			RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelDust"));
+			RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
 		}
 		if(BuildCraftLoaded)
@@ -156,6 +160,26 @@ public final class MekanismHooks
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve Forestry item " + name + ".");
+			return null;
+		}
+	}
+	
+	public ItemStack getBasicComponentsItem(String name)
+	{
+		try {
+			if(BasicComponents == null) BasicComponents = Class.forName("basiccomponents.common.BasicComponents");
+			if(BasicComponents == null) BasicComponents = Class.forName("net.minecraft.src.basiccomponents.common.BasicComponents");
+			Object ret = BasicComponents.getField(name).get(null);
+			
+			if(ret instanceof Item)
+			{
+				return new ItemStack((Item)ret);
+			}
+			else {
+				throw new Exception("not instanceof ItemStack");
+			}
+		} catch(Exception e) {
+			System.out.println("[Mekanism] Unable to retrieve Basic Components item " + name + ".");
 			return null;
 		}
 	}

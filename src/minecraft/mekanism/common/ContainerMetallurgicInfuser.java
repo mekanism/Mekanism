@@ -1,7 +1,8 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
-import mekanism.api.Infusion;
+import mekanism.api.InfusionInput;
+import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.api.ItemMachineUpgrade;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,7 +98,7 @@ public class ContainerMetallurgicInfuser extends Container
             			return null;
             		}
             	}
-            	else if(RecipeHandler.getOutput(Infusion.getInfusion(tileEntity.type, slotStack), false, TileEntityMetallurgicInfuser.recipes) != null)
+            	else if(RecipeHandler.getOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, slotStack), false, TileEntityMetallurgicInfuser.recipes) != null)
             	{
             		if(!mergeItemStack(slotStack, 2, 3, false))
             		{
