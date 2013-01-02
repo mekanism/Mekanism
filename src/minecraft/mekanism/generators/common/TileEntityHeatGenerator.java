@@ -31,7 +31,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	
 	public TileEntityHeatGenerator()
 	{
-		super("Heat Generator", 160000, 512);
+		super("Heat Generator", 160000, 840);
 		inventory = new ItemStack[2];
 	}
 	
@@ -119,7 +119,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					setActive(true);
 				}
 				fuelSlot.setLiquid(fuelSlot.liquidStored - 10);
-				setJoules(electricityStored + 400);
+				setJoules(electricityStored + 320);
 			}
 			else {
 				if(!worldObj.isRemote)
@@ -158,17 +158,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		int boost = 0;
 		
 		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
-			boost+=200;
+			boost+=100;
 		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
-			boost+=200;
+			boost+=100;
 		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
-			boost+=200;
+			boost+=100;
 		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
-			boost+=200;
+			boost+=100;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
-			boost+=200;
+			boost+=100;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
-			boost+=200;
+			boost+=100;
 		
 		return boost;
 	}

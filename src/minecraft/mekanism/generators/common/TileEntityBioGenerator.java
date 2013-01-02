@@ -30,7 +30,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 160000, 512);
+		super("Bio-Generator", 160000, 600);
 		inventory = new ItemStack[2];
 	}
 	
@@ -116,7 +116,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 					setActive(true);
 				}
 				bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 10);
-				setJoules(electricityStored + 800);
+				setJoules(electricityStored + 560);
 			}
 			else {
 				if(!worldObj.isRemote)

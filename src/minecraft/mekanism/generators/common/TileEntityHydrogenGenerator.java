@@ -115,7 +115,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			}
 			
 			hydrogenStored--;
-			setJoules(electricityStored + 1600);
+			setJoules(electricityStored + 1000);
 		}
 		else {
 			if(!worldObj.isRemote)
