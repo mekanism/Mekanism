@@ -156,6 +156,12 @@ public class ContainerSmeltingFactory extends Container
 	                    }
 	                }
             	}
+            	else {
+            		if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
     		}
             else if(slotStack.getItem() instanceof ItemMachineUpgrade)
             {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityBasicBlock;
 import mekanism.common.TileEntityElectricBlock;
@@ -113,6 +114,22 @@ public class BlockGenerator extends BlockContainer
         	((IMultiBlock)tileEntity).onCreate(new Vector3(x, y, z));
         }
     }
+	
+	@Override
+	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		
+		if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
+		{
+			if(((IActiveState)tileEntity).getActive())
+			{
+				return 15;
+			}
+		}
+		
+		return 0;
+	}
     
 	@Override
     public int getBlockTextureFromSideAndMetadata(int side, int meta)

@@ -10,6 +10,7 @@ import mekanism.api.IElectricMachine;
 import mekanism.client.Sound;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.electricity.ElectricityConnections;
@@ -85,6 +86,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 		
+		if(powerProvider != null)
+		{
+			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*10);
+			setJoules(electricityStored + received);
+		}
+		
 		if(!registered && worldObj != null && !worldObj.isRemote)
 		{
 			Mekanism.manager.register(this);
@@ -135,7 +142,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			{
 				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
 				{
-					audio = Mekanism.audioHandler.getSound(fullName.replace(" ", ""), soundURL, worldObj, xCoord, yCoord, zCoord);
+					audio = Mekanism.audioHandler.getSound(soundURL, worldObj, xCoord, yCoord, zCoord);
 				}
 			}
 			

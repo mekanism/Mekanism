@@ -78,6 +78,12 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	{
 		super.onUpdate();
 		
+		if(powerProvider != null)
+		{
+			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*10);
+			setJoules(electricityStored + received);
+		}
+		
 		boolean testActive = false;
 		
 		if(!worldObj.isRemote)
@@ -295,7 +301,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         	return false;
         }
 
-        ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[inputSlot]).copy();
+        ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[inputSlot]);
 
         if (itemstack == null)
         {
@@ -359,6 +365,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 			}
 			
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

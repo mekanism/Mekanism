@@ -46,9 +46,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	/** Output per tick this machine can transfer. */
 	public int output;
 	
-	/** BuildCraft power provider. */
-	public IPowerProvider powerProvider;
-	
 	/**
 	 * A block used to store and transfer electricity.
 	 */
@@ -68,19 +65,16 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[2];
 		output = i;
-		if(PowerFramework.currentFramework != null)
-		{
-			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(0, 2, 2000, 1, (int)(tier.MAX_ELECTRICITY*Mekanism.TO_BC));
-		}
 	}
 	
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(25, 25, true)*10);
+			int received = (int)(powerProvider.useEnergy(0, (float)((tier.MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*10);
 			setJoules(electricityStored + received);
 		}
 		
@@ -313,27 +307,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public double getMaxJoules(Object... data) 
 	{
 		return tier.MAX_ELECTRICITY;
-	}
-
-	@Override
-	public void setPowerProvider(IPowerProvider provider)
-	{
-		powerProvider = provider;
-	}
-
-	@Override
-	public IPowerProvider getPowerProvider() 
-	{
-		return powerProvider;
-	}
-
-	@Override
-	public void doWork() {}
-
-	@Override
-	public int powerRequest() 
-	{
-		return getPowerProvider().getMaxEnergyReceived();
 	}
 	
 	@Override

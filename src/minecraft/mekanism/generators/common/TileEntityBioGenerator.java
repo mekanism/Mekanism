@@ -2,6 +2,7 @@ package mekanism.generators.common;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import mekanism.client.Sound;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -21,10 +22,17 @@ import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computer.api.IComputerAccess;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements ITankContainer
 {
+	/** The Sound instance for this machine. */
+	@SideOnly(Side.CLIENT)
+	public Sound audio;
+	
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
 
@@ -202,6 +210,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			isActive = dataStream.readBoolean();
 			bioFuelSlot.liquidStored = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

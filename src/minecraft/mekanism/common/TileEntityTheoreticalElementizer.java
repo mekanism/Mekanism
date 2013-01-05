@@ -32,10 +32,9 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
     public static Item getRandomMagicItem()
     {
     	Random rand = new Random();
-    	int random = rand.nextInt(3);
-    	if(random == 0) return Mekanism.LightningRod;
-    	if(random == 1) return Mekanism.Stopwatch;
-    	if(random == 2) return Mekanism.WeatherOrb;
+    	int random = rand.nextInt(2);
+    	if(random == 0) return Mekanism.Stopwatch;
+    	if(random == 1) return Mekanism.WeatherOrb;
     	return Mekanism.EnrichedAlloy;
     }
 }

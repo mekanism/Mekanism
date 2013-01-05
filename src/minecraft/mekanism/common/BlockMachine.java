@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.IActiveState;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -100,6 +101,22 @@ public class BlockMachine extends BlockContainer
             }
         }
     }
+	
+	@Override
+	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		
+		if(tileEntity instanceof IActiveState)
+		{
+			if(((IActiveState)tileEntity).getActive())
+			{
+				return 15;
+			}
+		}
+		
+		return 0;
+	}
     
 	@Override
     public int getBlockTextureFromSideAndMetadata(int side, int meta)

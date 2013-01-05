@@ -229,6 +229,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			currentMaxElectricity = dataStream.readDouble();
 			currentTicksRequired = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

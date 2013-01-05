@@ -165,7 +165,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && hydrogenStored-10 > 0;
+		return electricityStored < MAX_ELECTRICITY && hydrogenStored-10 > -1;
 	}
 	
 	/**
@@ -216,6 +216,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			hydrogenStored = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
@@ -253,6 +254,12 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			boost = 4;
 		}
 		return boost;
+	}
+	
+	@Override
+	public double getVoltage()
+	{
+		return 240;
 	}
 
 	@Override

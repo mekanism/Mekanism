@@ -61,7 +61,7 @@ public class SoundHandler
 	 * @param z - z coord
 	 * @return Sound instance
 	 */
-	public Sound getSound(String name, String path, World world, int x, int y, int z)
+	public Sound getSound(String path, World world, int x, int y, int z)
 	{
 		synchronized(sounds)
 		{

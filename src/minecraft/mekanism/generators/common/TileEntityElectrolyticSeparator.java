@@ -74,6 +74,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 		
+		if(powerProvider != null)
+		{
+			int received = (int)(powerProvider.useEnergy(0, (float)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*10);
+			setJoules(electricityStored + received);
+		}
+		
 		if(hydrogenStored > MAX_GAS)
 		{
 			hydrogenStored = MAX_GAS;

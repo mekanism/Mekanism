@@ -2,6 +2,7 @@ package mekanism.generators.common;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import mekanism.client.Sound;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -22,12 +23,20 @@ import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computer.api.IComputerAccess;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements ITankContainer
 {
 	/** The LiquidSlot fuel instance for this generator. */
 	public LiquidSlot fuelSlot = new LiquidSlot(24000, Mekanism.hooks.BuildCraftFuelID);
+	
+	/** The Sound instance for this machine. */
+	@SideOnly(Side.CLIENT)
+	public Sound audio;
 	
 	public TileEntityHeatGenerator()
 	{
@@ -39,6 +48,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(worldObj.isRemote)
+		{
+			try {
+				synchronized(Mekanism.audioHandler.sounds)
+				{
+					handleSound();
+				}
+			} catch(NoSuchMethodError e) {}
+		}
 		
 		if(inventory[1] != null && electricityStored > 0)
 		{
@@ -130,6 +149,33 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
+	public void handleSound()
+	{
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			if(audio == null && worldObj != null && worldObj.isRemote)
+			{
+				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				{
+					audio = Mekanism.audioHandler.getSound("HeatGenerator.ogg", worldObj, xCoord, yCoord, zCoord);
+				}
+			}
+			
+			if(worldObj != null && worldObj.isRemote && audio != null)
+			{
+				if(!audio.isPlaying && isActive == true)
+				{
+					audio.play();
+				}
+				else if(audio.isPlaying && isActive == false)
+				{
+					audio.stop();
+				}
+			}
+		}
+	}
+	
 	@Override
 	public boolean canOperate()
 	{
@@ -179,6 +225,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	}
 	
 	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		if(worldObj.isRemote && audio != null)
+		{
+			audio.remove();
+		}
+	}
+	
+	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
 		if(side == MekanismUtils.getRight(facing))
@@ -214,6 +271,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			isActive = dataStream.readBoolean();
 			fuelSlot.liquidStored = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

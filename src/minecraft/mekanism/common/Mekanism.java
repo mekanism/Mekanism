@@ -45,7 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.5")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.7")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -67,7 +67,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 0, 5);
+	public static Version versionNumber = new Version(5, 0, 7);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -103,7 +103,6 @@ public class Mekanism
 	
 	//Extra Items
 	public static ItemElectricBow ElectricBow;
-	public static Item LightningRod;
 	public static Item Stopwatch;
 	public static Item WeatherOrb;
 	public static Item EnrichedAlloy;
@@ -324,7 +323,6 @@ public class Mekanism
 		
 		if(extrasEnabled == true)
 		{
-			LanguageRegistry.addName(LightningRod, "Lightning Rod");
 			LanguageRegistry.addName(Stopwatch, "Steve's Stopwatch");
 			LanguageRegistry.addName(WeatherOrb, "Weather Orb");
 			LanguageRegistry.addName(EnrichedAlloy, "Enriched Alloy");
@@ -399,7 +397,6 @@ public class Mekanism
 	{
 		if(extrasEnabled == true)
 		{
-			LightningRod.setIconIndex(225);
 			Stopwatch.setIconIndex(224);
 			WeatherOrb.setIconIndex(226);
 			EnrichedAlloy.setIconIndex(227);
@@ -426,7 +423,6 @@ public class Mekanism
 		ElectricBow = (ItemElectricBow) new ItemElectricBow(11200).setItemName("ElectricBow");
 		if(extrasEnabled == true)
 		{
-			LightningRod = new ItemLightningRod(11201).setItemName("LightningRod");
 			Stopwatch = new ItemStopwatch(11202).setItemName("Stopwatch");
 			WeatherOrb = new ItemWeatherOrb(11203).setItemName("WeatherOrb");
 		}

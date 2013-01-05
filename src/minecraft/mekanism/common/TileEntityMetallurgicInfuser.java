@@ -14,6 +14,7 @@ import mekanism.api.IMachineUpgrade;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
+import mekanism.client.Sound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,12 +33,20 @@ import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
 {
 	public static Map<InfusionInput, InfusionOutput> recipes = new HashMap<InfusionInput, InfusionOutput>();
+	
+	/** The Sound instance for this machine. */
+	@SideOnly(Side.CLIENT)
+	public Sound audio;
 	
 	/** The type of infuse this machine stores. */
 	public InfusionType type = InfusionType.NONE;
@@ -85,6 +94,22 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(worldObj.isRemote)
+		{
+			try {
+				synchronized(Mekanism.audioHandler.sounds)
+				{
+					handleSound();
+				}
+			} catch(NoSuchMethodError e) {}
+		}
+		
+		if(powerProvider != null)
+		{
+			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*10);
+			setJoules(electricityStored + received);
+		}
 		
 		boolean testActive = operatingTicks > 0;
 		
@@ -257,6 +282,33 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
+	public void handleSound()
+	{
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			if(audio == null && worldObj != null && worldObj.isRemote)
+			{
+				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				{
+					audio = Mekanism.audioHandler.getSound("MetallurgicInfuser.ogg", worldObj, xCoord, yCoord, zCoord);
+				}
+			}
+			
+			if(worldObj != null && worldObj.isRemote && audio != null)
+			{
+				if(!audio.isPlaying && isActive == true)
+				{
+					audio.play();
+				}
+				else if(audio.isPlaying && isActive == false)
+				{
+					audio.stop();
+				}
+			}
+		}
+	}
+	
 	public void operate()
 	{
         if (!canOperate())
@@ -275,7 +327,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
         if (inventory[3] == null)
         {
-            inventory[3] = output.resource;
+            inventory[3] = output.resource.copy();
         }
         else {
             inventory[3].stackSize += output.resource.stackSize;
@@ -334,6 +386,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int getScaledProgress(int i)
 	{
 		return operatingTicks*i / currentTicksRequired;
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		if(worldObj.isRemote && audio != null)
+		{
+			audio.remove();
+		}
 	}
 	
     @Override
@@ -416,6 +479,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			infuseStored = dataStream.readInt();
 			type = InfusionType.getFromName(dataStream.readUTF());
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
