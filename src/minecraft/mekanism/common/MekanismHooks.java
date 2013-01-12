@@ -72,7 +72,6 @@ public final class MekanismHooks
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 4), new ItemStack(Mekanism.Dust, 1, 5));
 			Ic2Recipes.addMatterAmplifier(Mekanism.EnrichedAlloy, 100000);
-			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
 		}
 		if(RailcraftLoaded)
@@ -83,6 +82,8 @@ public final class MekanismHooks
 		{
 			RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelDust"));
 			RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
+			RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
+			RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
 		}
 		if(BuildCraftLoaded)

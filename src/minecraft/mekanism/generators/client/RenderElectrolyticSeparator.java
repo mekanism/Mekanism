@@ -20,7 +20,8 @@ public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
-		bindTextureByName(tileEntity.outputType == EnumGas.HYDROGEN ? "/resources/mekanism/render/ElectrolyticSeparatorHydrogen.png" : "/resources/mekanism/render/ElectrolyticSeparatorOxygen.png");
+		bindTextureByName(tileEntity.outputType == EnumGas.HYDROGEN ? "/resources/mekanism/render/ElectrolyticSeparatorHydrogen.png" : 
+			(tileEntity.outputType == EnumGas.OXYGEN ? "/resources/mekanism/render/ElectrolyticSeparatorOxygen.png" : "/resources/mekanism/render/ElectrolyticSeparatorNone.png"));
 		
 	    switch(tileEntity.facing)
 	    {

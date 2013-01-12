@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
-import mekanism.api.ItemMachineUpgrade;
 import mekanism.api.Tier.SmeltingFactoryTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

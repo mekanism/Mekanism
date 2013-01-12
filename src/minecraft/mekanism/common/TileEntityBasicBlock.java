@@ -82,28 +82,12 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	@Override
 	public void setFacing(short direction) 
 	{
-		if(initialized)
-		{
-			if(Mekanism.hooks.IC2Loaded)
-			{
-				EnergyNet.getForWorld(worldObj).removeTileEntity(this);
-			}
-		}
-		
-		initialized = false;
-		
 		if(canSetFacing(direction))
 		{
 			facing = direction;
 		}
 		
 		sendPacket();
-		
-		if(Mekanism.hooks.IC2Loaded)
-		{
-			EnergyNet.getForWorld(worldObj).addTileEntity(this);
-		}
-		initialized = true;
 	}
 	
 	/**

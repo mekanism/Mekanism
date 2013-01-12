@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
 public class ItemDust extends ItemMekanism
 {
 	public static String[] en_USNames = {"Iron", "Gold", "Platinum", 
-										"Obsidian", "Diamond", "Steel"};
+										"Obsidian", "Diamond", "Steel",
+										"Copper", "Tin"};
 	
 	public ItemDust(int id)
 	{
@@ -28,6 +29,8 @@ public class ItemDust extends ItemMekanism
 			case 3: return 241;
 			case 4: return 249;
 			case 5: return 245;
+			case 6: return 243;
+			case 7: return 244;
 			default: return 0;
 		}
 	}
@@ -35,7 +38,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for (int counter = 0; counter <= 5; ++counter)
+		for (int counter = 0; counter <= 7; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

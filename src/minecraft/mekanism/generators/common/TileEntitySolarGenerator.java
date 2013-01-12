@@ -39,6 +39,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
+	public void handleSound()
+	{
+		//Overridden to prevent sound effects
+	}
+	
+	@Override
 	public int getSizeInventorySide(ForgeDirection side)
 	{
 		return 1;

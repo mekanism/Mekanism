@@ -34,16 +34,40 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		{
 			String nameToSet = "";
 			
-			if(tileEntity.outputType == EnumGas.OXYGEN)
-			{
-				nameToSet = EnumGas.HYDROGEN.name;
-			}
-			else if(tileEntity.outputType == EnumGas.HYDROGEN)
+			if(tileEntity.outputType == EnumGas.HYDROGEN)
 			{
 				nameToSet = EnumGas.OXYGEN.name;
 			}
+			else if(tileEntity.outputType == EnumGas.OXYGEN)
+			{
+				nameToSet = EnumGas.NONE.name;
+			}
+			else if(tileEntity.outputType == EnumGas.NONE)
+			{
+				nameToSet = EnumGas.HYDROGEN.name;
+			}
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, nameToSet);
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, (byte)0, nameToSet);
+			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+		}
+		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
+		{
+			String nameToSet = "";
+			
+			if(tileEntity.dumpType == EnumGas.NONE)
+			{
+				nameToSet = EnumGas.OXYGEN.name;
+			}
+			else if(tileEntity.dumpType == EnumGas.OXYGEN)
+			{
+				nameToSet = EnumGas.HYDROGEN.name;
+			}
+			else if(tileEntity.dumpType == EnumGas.HYDROGEN)
+			{
+				nameToSet = EnumGas.NONE.name;
+			}
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, (byte)1, nameToSet);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }
@@ -52,8 +76,8 @@ public class GuiElectrolyticSeparator extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString("Output", 124, 73, 0x404040);
+        fontRenderer.drawString("Dump", 21, 73, 0x404040);
     }
 
 	@Override
@@ -66,7 +90,11 @@ public class GuiElectrolyticSeparator extends GuiContainer
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, (tileEntity.outputType == EnumGas.OXYGEN ? 82 : 90), 8, 8);
+        int outputDisplay = tileEntity.outputType == EnumGas.OXYGEN ? 82 : (tileEntity.outputType == EnumGas.HYDROGEN ? 90 : 98);
+        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, outputDisplay, 8, 8);
+        
+        int dumpDisplay = tileEntity.dumpType == EnumGas.OXYGEN ? 82 : (tileEntity.dumpType == EnumGas.HYDROGEN ? 90 : 98);
+        drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, dumpDisplay, 8, 8);
         
         int displayInt;
         

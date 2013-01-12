@@ -34,10 +34,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	/** The LiquidSlot fuel instance for this generator. */
 	public LiquidSlot fuelSlot = new LiquidSlot(24000, Mekanism.hooks.BuildCraftFuelID);
 	
-	/** The Sound instance for this machine. */
-	@SideOnly(Side.CLIENT)
-	public Sound audio;
-	
 	public TileEntityHeatGenerator()
 	{
 		super("Heat Generator", 160000, 480);
@@ -48,16 +44,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
-		if(worldObj.isRemote)
-		{
-			try {
-				synchronized(Mekanism.audioHandler.sounds)
-				{
-					handleSound();
-				}
-			} catch(NoSuchMethodError e) {}
-		}
 		
 		if(inventory[1] != null && electricityStored > 0)
 		{
@@ -149,33 +135,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		}
 	}
 	
-	@SideOnly(Side.CLIENT)
-	public void handleSound()
-	{
-		synchronized(Mekanism.audioHandler.sounds)
-		{
-			if(audio == null && worldObj != null && worldObj.isRemote)
-			{
-				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
-				{
-					audio = Mekanism.audioHandler.getSound("HeatGenerator.ogg", worldObj, xCoord, yCoord, zCoord);
-				}
-			}
-			
-			if(worldObj != null && worldObj.isRemote && audio != null)
-			{
-				if(!audio.isPlaying && isActive == true)
-				{
-					audio.play();
-				}
-				else if(audio.isPlaying && isActive == false)
-				{
-					audio.stop();
-				}
-			}
-		}
-	}
-	
 	@Override
 	public boolean canOperate()
 	{
@@ -222,17 +181,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	public int getFuel(ItemStack itemstack)
 	{
 		return TileEntityFurnace.getItemBurnTime(itemstack);
-	}
-	
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-		
-		if(worldObj.isRemote && audio != null)
-		{
-			audio.remove();
-		}
 	}
 	
 	@Override

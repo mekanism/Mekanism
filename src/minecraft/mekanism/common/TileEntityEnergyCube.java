@@ -24,6 +24,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricityConnections;
+import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.implement.IConductor;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
@@ -196,7 +197,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			{
 				if(electricityStored >= output)
 				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileSourceEvent(this, output));
+					EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, output);
+					MinecraftForge.EVENT_BUS.post(event);
+					setJoules(electricityStored - (output - event.amount));
 				}
 			}
 			
@@ -210,20 +213,27 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.FROM_BC), ForgeDirection.getOrientation(facing).getOpposite());
 	            	setJoules(electricityStored - (int)transferEnergy);
 				}
-				else if(tileEntity instanceof IConductor)
-				{
-					double joulesNeeded = ((IConductor)tileEntity).getNetwork().getRequest().getWatts();
-					double transferAmps = Math.max(Math.min(Math.min(ElectricInfo.getAmps(joulesNeeded, getVoltage()), ElectricInfo.getAmps(electricityStored, getVoltage())), 80), 0);
+			}
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+			TileEntity outputTile = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 
-					if (!worldObj.isRemote && transferAmps > 0)
-					{
-						((IConductor)tileEntity).getNetwork().startProducing(this, transferAmps, getVoltage());
-						setJoules(electricityStored - ElectricInfo.getWatts(transferAmps, getVoltage()));
-					}
-					else
-					{
-						((IConductor)tileEntity).getNetwork().stopProducing(this);
-					}
+			ElectricityNetwork outputNetwork = ElectricityNetwork.getNetworkFromTileEntity(outputTile, outputDirection);
+
+			if(outputNetwork != null)
+			{
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
+
+				if(getJoules() > 0 && outputWatts > 0)
+				{
+					outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
+					setJoules(electricityStored - outputWatts);
+				}
+				else {
+					outputNetwork.stopProducing(this);
 				}
 			}
 		}

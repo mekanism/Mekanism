@@ -60,6 +60,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	
 	/** The type of gas this block is outputting. */
 	public EnumGas outputType;
+	
+	/** Type type of gas this block is dumping. */
+	public EnumGas dumpType;
 
 	public TileEntityElectrolyticSeparator()
 	{
@@ -67,6 +70,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[4];
 		outputType = EnumGas.HYDROGEN;
+		dumpType = EnumGas.NONE;
 	}
 	
 	@Override
@@ -227,7 +231,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			setGas(EnumGas.HYDROGEN, hydrogenStored + 1);
 		}
 		
-		if(hydrogenStored > 0 && !worldObj.isRemote)
+		if(outputType != EnumGas.NONE && getGas(outputType) > 0 && !worldObj.isRemote)
 		{
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
@@ -250,6 +254,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					setGas(outputType, getGas(outputType) - (sendingGas - rejects));
 				}
 			}
+		}
+		
+		if(dumpType != EnumGas.NONE  && getGas(dumpType) > 0)
+		{
+			setGas(dumpType, (getGas(dumpType) - 8));
 		}
 	}
 	
@@ -324,13 +333,25 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(!worldObj.isRemote)
 		{
 			try {
-				outputType = EnumGas.getFromName(dataStream.readUTF());
+				byte type = dataStream.readByte();
+				
+				if(type == 0)
+				{
+					outputType = EnumGas.getFromName(dataStream.readUTF());
+					return;
+				}
+				else if(type == 1)
+				{
+					dumpType = EnumGas.getFromName(dataStream.readUTF());
+					return;
+				}
+				
 			} catch (Exception e)
 			{
 				System.out.println("[Mekanism] Error while handling tile entity packet.");
 				e.printStackTrace();
+				return;
 			}
-			return;
 		}
 		
 		try {
@@ -340,6 +361,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			oxygenStored = dataStream.readInt();
 			hydrogenStored = dataStream.readInt();
 			outputType = EnumGas.getFromName(dataStream.readUTF());
+			dumpType = EnumGas.getFromName(dataStream.readUTF());
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		} catch (Exception e)
 		{
@@ -351,13 +373,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public void sendPacket() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name, dumpType.name);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name, dumpType.name);
 	}
 	
 	/**
@@ -521,6 +543,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         oxygenStored = nbtTags.getInteger("oxygenStored");
         waterSlot.liquidStored = nbtTags.getInteger("waterStored");
         outputType = EnumGas.getFromName(nbtTags.getString("outputType"));
+        dumpType = EnumGas.getFromName(nbtTags.getString("dumpType"));
     }
 
 	@Override
@@ -532,6 +555,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         nbtTags.setInteger("oxygenStored", oxygenStored);
         nbtTags.setInteger("waterStored", waterSlot.liquidStored);
         nbtTags.setString("outputType", outputType.name);
+        nbtTags.setString("dumpType", dumpType.name);
     }
 
 	@Override

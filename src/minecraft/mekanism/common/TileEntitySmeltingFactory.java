@@ -8,6 +8,7 @@ import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.IActiveState;
 import mekanism.api.Tier.SmeltingFactoryTier;
+import mekanism.client.Sound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,10 @@ import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -34,6 +39,10 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 {	
 	/** This Smelting Factory's tier. */
 	public SmeltingFactoryTier tier;
+	
+	/** The Sound instance for this machine. */
+	@SideOnly(Side.CLIENT)
+	public Sound audio;
 	
 	/** An int[] used to track all current operations' progress. */
 	public int[] progress;
@@ -77,6 +86,16 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(worldObj.isRemote)
+		{
+			try {
+				synchronized(Mekanism.audioHandler.sounds)
+				{
+					handleSound();
+				}
+			} catch(NoSuchMethodError e) {}
+		}
 		
 		if(powerProvider != null)
 		{
@@ -271,6 +290,44 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 					setActive(false);
 				}
 			}
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void handleSound()
+	{
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			if(audio == null && worldObj != null && worldObj.isRemote)
+			{
+				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				{
+					audio = Mekanism.audioHandler.getSound("SmeltingFactory.ogg", worldObj, xCoord, yCoord, zCoord);
+				}
+			}
+			
+			if(worldObj != null && worldObj.isRemote && audio != null)
+			{
+				if(!audio.isPlaying && isActive == true)
+				{
+					audio.play();
+				}
+				else if(audio.isPlaying && isActive == false)
+				{
+					audio.stop();
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		if(worldObj.isRemote && audio != null)
+		{
+			audio.remove();
 		}
 	}
 	

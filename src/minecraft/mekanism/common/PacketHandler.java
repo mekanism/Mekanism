@@ -171,6 +171,17 @@ public class PacketHandler implements IPacketHandler
         		{
         			output.writeUTF((String)data);
         		}
+        		else if(data instanceof Byte)
+        		{
+        			output.writeByte((Byte)data);
+        		}
+        		else if(data instanceof int[])
+        		{
+        			for(int i : (int[])data)
+        			{
+        				output.writeInt(i);
+        			}
+        		}
         	}
         	
             Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -225,6 +236,10 @@ public class PacketHandler implements IPacketHandler
         		else if(data instanceof String)
         		{
         			output.writeUTF((String)data);
+        		}
+        		else if(data instanceof Byte)
+        		{
+        			output.writeByte((Byte)data);
         		}
         		else if(data instanceof int[])
         		{
