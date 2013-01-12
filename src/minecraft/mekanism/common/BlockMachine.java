@@ -346,7 +346,12 @@ public class BlockMachine extends BlockContainer
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
-		list.add(new ItemStack(i, 1, 4));
+		
+		if(Mekanism.extrasEnabled)
+		{
+			list.add(new ItemStack(i, 1, 4));
+		}
+		
 		list.add(new ItemStack(i, 1, 5));
 		list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));

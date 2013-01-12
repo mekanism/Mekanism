@@ -295,17 +295,19 @@ public class Mekanism
 		
 		//Combiner Recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 10), new ItemStack(Block.oreRedstone));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone), new ItemStack(Ingot, 1, 2));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Item.diamond), new ItemStack(Block.oreDiamond));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Item.dyePowder, 4, 4), new ItemStack(Block.oreLapis));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Item.diamond, 2), new ItemStack(Block.oreDiamond));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Item.dyePowder, 8, 4), new ItemStack(Block.oreLapis));
 		
 		//Crusher Recipes
 		RecipeHandler.addCrusherRecipe(new ItemStack(Item.diamond), new ItemStack(Dust, 1, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
         
-        //Theoretical Elementizer Recipes
-        RecipeHandler.addTheoreticalElementizerRecipe(new ItemStack(EnrichedAlloy), new ItemStack(TileEntityTheoreticalElementizer.getRandomMagicItem()));
+        if(extrasEnabled)
+        {
+	        //Theoretical Elementizer Recipes
+	        RecipeHandler.addTheoreticalElementizerRecipe(new ItemStack(EnrichedAlloy), new ItemStack(TileEntityTheoreticalElementizer.getRandomMagicItem()));
+        }
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
