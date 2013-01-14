@@ -69,13 +69,29 @@ public class ContainerSolarGenerator extends Container
 	                	return null;
 	                }
 	            }
-	            else if(slotID == 1)
+	            else if(slotID == 0)
 	            {
 	            	if(!mergeItemStack(slotStack, 1, inventorySlots.size(), false))
 	            	{
 	            		return null;
 	            	}
 	            }
+            }
+            else {
+	        	if(slotID >= 1 && slotID <= 27)
+	        	{
+	        		if(!mergeItemStack(slotStack, 28, inventorySlots.size(), false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+	        	else if(slotID > 27)
+	        	{
+	        		if(!mergeItemStack(slotStack, 1, 27, false))
+	        		{
+	        			return null;
+	        		}
+	        	}
             }
             
             if (slotStack.stackSize == 0)

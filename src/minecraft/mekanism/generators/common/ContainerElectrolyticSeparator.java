@@ -109,6 +109,22 @@ public class ContainerElectrolyticSeparator extends Container
             			return null;
             		}
             	}
+            	else {
+	            	if(slotID >= 4 && slotID <= 30)
+	            	{
+	            		if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
+	            		{
+	            			return null;
+	            		}
+	            	}
+	            	else if(slotID > 30)
+	            	{
+	            		if(!mergeItemStack(slotStack, 4, 30, false))
+	            		{
+	            			return null;
+	            		}
+	            	}
+            	}
             }
             else {
             	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))

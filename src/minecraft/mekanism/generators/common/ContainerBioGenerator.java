@@ -102,6 +102,22 @@ public class ContainerBioGenerator extends Container
         			return null;
         		}
         	}
+            else {
+	        	if(slotID >= 2 && slotID <= 28)
+	        	{
+	        		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+	        	else if(slotID > 28)
+	        	{
+	        		if(!mergeItemStack(slotStack, 2, 28, false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+            }
             
             if (slotStack.stackSize == 0)
             {

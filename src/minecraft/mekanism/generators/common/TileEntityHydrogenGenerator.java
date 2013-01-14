@@ -69,7 +69,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				}
 				
 				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
-				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
+				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -257,7 +257,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 	
 	@Override
-	public double getVoltage()
+	public double getVoltage(Object... data)
 	{
 		return 240;
 	}

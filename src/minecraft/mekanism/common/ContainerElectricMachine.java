@@ -119,6 +119,22 @@ public class ContainerElectricMachine extends Container
             		}
             	}
             }
+            else {
+            	if(slotID >= 4 && slotID <= 30)
+            	{
+            		if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(slotID > 30)
+            	{
+            		if(!mergeItemStack(slotStack, 4, 30, false))
+            		{
+            			return null;
+            		}
+            	}
+            }
             
             if (slotStack.stackSize == 0)
             {

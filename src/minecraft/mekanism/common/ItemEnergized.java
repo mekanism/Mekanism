@@ -130,7 +130,7 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric
 	}
 
 	@Override
-	public double getVoltage() 
+	public double getVoltage(Object... data) 
 	{
 		return VOLTAGE;
 	}

@@ -91,7 +91,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				}
 				
 				electricItem.setJoules((electricItem.getJoules(inventory[0]) + actualSendingElectricity), inventory[0]);
-				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
+				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{

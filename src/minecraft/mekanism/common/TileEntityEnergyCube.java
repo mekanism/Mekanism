@@ -116,11 +116,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				double rejectedElectricity = 0;
 				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[0]) - electricItem.getJoules(inventory[0]);
 				
-				if(electricItem.getVoltage() <= electricityStored)
+				if(electricItem.getVoltage(inventory[0]) <= electricityStored)
 				{
-					sendingElectricity = electricItem.getVoltage();
+					sendingElectricity = electricItem.getVoltage(inventory[0]);
 				}
-				else if(electricItem.getVoltage() > electricityStored)
+				else if(electricItem.getVoltage(inventory[0]) > electricityStored)
 				{
 					sendingElectricity = electricityStored;
 				}
@@ -136,7 +136,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				}
 				
 				electricItem.setJoules((electricItem.getJoules(inventory[0]) + actualSendingElectricity), inventory[0]);
-				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
+				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
@@ -156,11 +156,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 					double joulesNeeded = tier.MAX_ELECTRICITY-electricityStored;
 					double joulesReceived = 0;
 					
-					if(electricItem.getVoltage() <= joulesNeeded)
+					if(electricItem.getVoltage(inventory[1]) <= joulesNeeded)
 					{
-						joulesReceived = electricItem.onUse(electricItem.getVoltage(), inventory[1]);
+						joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[0]), inventory[1]);
 					}
-					else if(electricItem.getVoltage() > joulesNeeded)
+					else if(electricItem.getVoltage(inventory[0]) > joulesNeeded)
 					{
 						joulesReceived = electricItem.onUse(joulesNeeded, inventory[1]);
 					}
@@ -337,7 +337,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public double getVoltage() 
+	public double getVoltage(Object... data) 
 	{
 		return 120;
 	}

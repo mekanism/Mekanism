@@ -275,7 +275,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public double getVoltage() 
+	public double getVoltage(Object... data) 
 	{
 		return 120;
 	}

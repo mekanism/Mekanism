@@ -44,7 +44,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.9")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.0.10")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -66,7 +66,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 0, 9);
+	public static Version versionNumber = new Version(5, 0, 10);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -295,7 +295,6 @@ public class Mekanism
 		
 		//Combiner Recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 10), new ItemStack(Block.oreRedstone));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Item.diamond, 2), new ItemStack(Block.oreDiamond));
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.dyePowder, 8, 4), new ItemStack(Block.oreLapis));
 		
 		//Crusher Recipes

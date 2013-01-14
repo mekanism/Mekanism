@@ -77,7 +77,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 				}
 				
 				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
-				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
+				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{

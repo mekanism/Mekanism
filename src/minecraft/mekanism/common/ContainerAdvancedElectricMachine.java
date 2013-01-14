@@ -162,6 +162,22 @@ public class ContainerAdvancedElectricMachine extends Container
             		}
             	}
             }
+            else {
+            	if(slotID >= 5 && slotID <= 31)
+            	{
+            		if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(slotID > 31)
+            	{
+            		if(!mergeItemStack(slotStack, 5, 31, false))
+            		{
+            			return null;
+            		}
+            	}
+            }
             
             if (slotStack.stackSize == 0)
             {

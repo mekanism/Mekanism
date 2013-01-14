@@ -223,7 +223,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     }
 	
 	@Override
-	public double getVoltage()
+	public double getVoltage(Object... data)
 	{
 		return 120;
 	}

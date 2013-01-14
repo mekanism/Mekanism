@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
+import mekanism.api.Tier;
 import mekanism.api.Tier.SmeltingFactoryTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -98,7 +99,7 @@ public class ContainerSmeltingFactory extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotID == 3 || slotID == 5 || slotID == 7 || slotID == 9 || slotID == 11 || slotID == 13 || slotID == 15)
+            if(isOutputSlot(slotID))
             {
             	if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
             	{
@@ -124,7 +125,7 @@ public class ContainerSmeltingFactory extends Container
             }
             else if(FurnaceRecipes.smelting().getSmeltingResult(slotStack) != null)
     		{
-            	if(slotID != 2 && slotID != 4 && slotID != 6 && slotID != 8 && slotID != 10 && slotID != 12 && slotID != 14)
+            	if(!isInputSlot(slotID))
             	{
                     if(!mergeItemStack(slotStack, 2, 3, false))
 	                {
@@ -178,6 +179,24 @@ public class ContainerSmeltingFactory extends Container
             		}
             	}
             }
+            else {
+            	int slotEnd = tileEntity.inventory.length;
+            	
+            	if(slotID >= slotEnd && slotID <= (slotEnd+26))
+            	{
+            		if(!mergeItemStack(slotStack, (slotEnd+27), inventorySlots.size(), false))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(slotID > (slotEnd+26))
+            	{
+            		if(!mergeItemStack(slotStack, slotEnd, (slotEnd+26), false))
+            		{
+            			return null;
+            		}
+            	}
+            }
             
             if (slotStack.stackSize == 0)
             {
@@ -197,5 +216,29 @@ public class ContainerSmeltingFactory extends Container
         }
 
         return stack;
+    }
+    
+    public boolean isInputSlot(int slot)
+    {
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.BASIC)
+    		return slot == 2 || slot == 4 || slot == 6;
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
+    		return slot == 2 || slot == 4 || slot == 6 || slot == 8 || slot == 10;
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ULTIMATE)
+    		return slot == 2 || slot == 4 || slot == 6 || slot == 8 || slot == 12 || slot == 14;
+    	
+    	return false;
+    }
+    
+    public boolean isOutputSlot(int slot)
+    {
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.BASIC)
+    		return slot == 3 || slot == 5 || slot == 7;
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
+    		return slot == 3 || slot == 5 || slot == 7 || slot == 9 || slot == 11;
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ULTIMATE)
+    		return slot == 3 || slot == 5 || slot == 7 || slot == 9 || slot == 11 || slot == 13 || slot == 15;
+    	
+    	return false;
     }
 }

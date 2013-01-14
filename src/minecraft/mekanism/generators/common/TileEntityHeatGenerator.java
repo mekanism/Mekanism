@@ -55,11 +55,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				double rejectedElectricity = 0;
 				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[1]) - electricItem.getJoules(inventory[1]);
 				
-				if(electricItem.getVoltage() <= electricityStored)
+				if(electricItem.getVoltage(inventory[1]) <= electricityStored)
 				{
-					sendingElectricity = electricItem.getVoltage();
+					sendingElectricity = electricItem.getVoltage(inventory[1]);
 				}
-				else if(electricItem.getVoltage() > electricityStored)
+				else if(electricItem.getVoltage(inventory[1]) > electricityStored)
 				{
 					sendingElectricity = electricityStored;
 				}
@@ -75,7 +75,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				}
 				
 				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
-				setJoules(electricityStored - (actualSendingElectricity - rejectedElectricity));
+				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{

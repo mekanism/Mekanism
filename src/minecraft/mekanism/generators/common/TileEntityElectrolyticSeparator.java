@@ -132,11 +132,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					double joulesNeeded = MAX_ELECTRICITY-electricityStored;
 					double joulesReceived = 0;
 					
-					if(electricItem.getVoltage() <= joulesNeeded)
+					if(electricItem.getVoltage(inventory[3]) <= joulesNeeded)
 					{
-						joulesReceived = electricItem.onUse(electricItem.getVoltage(), inventory[3]);
+						joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[3]), inventory[3]);
 					}
-					else if(electricItem.getVoltage() > joulesNeeded)
+					else if(electricItem.getVoltage(inventory[3]) > joulesNeeded)
 					{
 						joulesReceived = electricItem.onUse(joulesNeeded, inventory[3]);
 					}
@@ -614,7 +614,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public double getVoltage() 
+	public double getVoltage(Object... data) 
 	{
 		return 120;
 	}

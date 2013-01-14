@@ -150,11 +150,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 						double joulesNeeded = currentMaxElectricity-electricityStored;
 						double joulesReceived = 0;
 						
-						if(electricItem.getVoltage() <= joulesNeeded)
+						if(electricItem.getVoltage(inventory[4]) <= joulesNeeded)
 						{
-							joulesReceived = electricItem.onUse(electricItem.getVoltage(), inventory[4]);
+							joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[4]), inventory[4]);
 						}
-						else if(electricItem.getVoltage() > joulesNeeded)
+						else if(electricItem.getVoltage(inventory[4]) > joulesNeeded)
 						{
 							joulesReceived = electricItem.onUse(joulesNeeded, inventory[4]);
 						}
@@ -551,7 +551,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public double getVoltage() 
+	public double getVoltage(Object... data) 
 	{
 		return 120;
 	}
