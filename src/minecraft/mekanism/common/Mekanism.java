@@ -639,6 +639,23 @@ public class Mekanism
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 2), OreDictionary.getOres("oreSilver").get(0));
 			}
 		} catch(Exception e) {}
+		
+		
+		//COPPER DUST TO INGOT RECIPE
+			try {
+			for(ItemStack ore : OreDictionary.getOres("dustCopper"))
+			{
+					FurnaceRecipes.smelting().addSmelting(Dust.itemID, 6, ore, 1.0F);
+			}
+		} catch(Exception e) {}
+		
+			//TIN DUST TO INGOT RECIPE
+			try {
+			for(ItemStack ore : OreDictionary.getOres("dustTin"))
+			{
+					FurnaceRecipes.smelting().addSmelting(Dust.itemID, 7, ore, 1.0F);
+			}
+		} catch(Exception e) {}
 	}
 	
 	/**
