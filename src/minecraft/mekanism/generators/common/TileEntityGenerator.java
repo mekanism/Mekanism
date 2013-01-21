@@ -77,6 +77,17 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			} catch(NoSuchMethodError e) {}
 		}
 		
+		if(packetTick == 20)
+		{
+			if(ElectricityConnections.isConnector(this))
+			{
+				ElectricityConnections.unregisterConnector(this);
+			}
+			
+			ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(facing)));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
+		}
+		
 		if(electricityStored > 0)
 		{
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
@@ -117,7 +128,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 
 				if(getJoules() > 0 && outputWatts > 0)
 				{
-					outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
+					outputNetwork.startProducing(this, (outputWatts / getVoltage()) / 20, getVoltage());
 					setJoules(electricityStored - outputWatts);
 				}
 				else {
@@ -247,7 +258,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {}
+	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}

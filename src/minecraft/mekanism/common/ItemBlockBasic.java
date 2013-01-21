@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
  * 4: Refined Glowstone
  * 5: Steel Block
  * 6: Control Panel
+ * 7: Teleporter
  * @author AidanBrady
  *
  */
@@ -65,6 +66,9 @@ public class ItemBlockBasic extends ItemBlock
 				break;
 			case 6:
 				name = "ControlPanel";
+				break;
+			case 7:
+				name = "Teleporter";
 				break;
 			default:
 				name = "Unknown";

@@ -115,6 +115,6 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-		return new ItemStack(blockType.blockID, 1, blockMetadata);
+		return new ItemStack(worldObj.getBlockId(xCoord, yCoord, zCoord), 1, worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
 	}
 }

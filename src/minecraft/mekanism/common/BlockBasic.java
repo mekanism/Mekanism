@@ -29,6 +29,7 @@ import net.minecraftforge.common.ForgeChunkManager;
  * 4: Refined Glowstone
  * 5: Steel Block
  * 6: Control Panel
+ * 7: Teleporter
  * @author AidanBrady
  *
  */
@@ -62,6 +63,8 @@ public class BlockBasic extends Block
 				return 29;
 			case 6:
 				return 0;
+			case 7:
+				return 25;
 		}
 		return 0;
 	}
@@ -83,6 +86,7 @@ public class BlockBasic extends Block
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
 		//list.add(new ItemStack(i, 1, 6));
+		list.add(new ItemStack(i, 1, 7));
 	}
 	
 	@Override
@@ -102,8 +106,25 @@ public class BlockBasic extends Block
     	{
     		if(!entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(Mekanism.instance, 14, world, x, y, z);
+    			entityplayer.openGui(Mekanism.instance, 9, world, x, y, z);
     			return true;
+    		}
+    	}
+    	else if(metadata == 7)
+    	{
+    		if(entityplayer.isSneaking())
+    		{
+    			entityplayer.openGui(Mekanism.instance, 13, world, x, y, z);
+    			return true;
+    		}
+    		if(!world.isRemote)
+    		{
+    			TileEntityTeleporter tileEntity = (TileEntityTeleporter)world.getBlockTileEntity(x, y, z);
+    			
+    			if(tileEntity.canTeleport() == 1)
+    			{
+    				tileEntity.teleport();
+    			}
     		}
     	}
         return false;
@@ -126,7 +147,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		return metadata == 6;
+		return metadata == 6 || metadata == 7;
 	}
 	
 	@Override
@@ -136,6 +157,8 @@ public class BlockBasic extends Block
 		{
 		     case 6:
 		    	 return new TileEntityControlPanel();
+		     case 7:
+		    	 return new TileEntityTeleporter();
 		}
 		return null;
 	}

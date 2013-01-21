@@ -3,6 +3,8 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
+import universalelectricity.prefab.implement.IToolConfigurator;
+
 import mekanism.api.IActiveState;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.BlockContainer;
@@ -30,7 +32,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 4: Theoretical Elementizer
  * 5: Basic Smelting Factory
  * 6: Advanced Smelting Factory
- * 7: Ultimate Smelting Factory
+ * 7: Elite Smelting Factory
  * 8: Metallurgic Infuser
  * @author AidanBrady
  *
@@ -389,7 +391,7 @@ public class BlockMachine extends BlockContainer
 
                         if (slotStack.hasTagCompound())
                         {
-                            item.func_92014_d().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
                         float k = 0.05F;
@@ -415,6 +417,33 @@ public class BlockMachine extends BlockContainer
     	else {
         	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
+        	
+        	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+        	{
+        		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+        		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+        		
+        		int change = 0;
+        		
+        		switch(tileEntity.facing)
+        		{
+        			case 3:
+        				change = 4;
+        				break;
+        			case 4:
+        				change = 5;
+        				break;
+        			case 5:
+        				change = 2;
+        				break;
+        			case 2:
+        				change = 3;
+        				break;
+        		}
+        		
+        		tileEntity.setFacing((short)change);
+        		return true;
+        	}
         	
             if (tileEntity != null)
             {
@@ -474,7 +503,7 @@ public class BlockMachine extends BlockContainer
 		THEORETICAL_ELEMENTIZER(4, 7, TileEntityTheoreticalElementizer.class, true),
 		BASIC_SMELTING_FACTORY(5, 11, TileEntitySmeltingFactory.class, false),
 		ADVANCED_SMELTING_FACTORY(6, 11, TileEntityAdvancedSmeltingFactory.class, false),
-		ULTIMATE_SMELTING_FACTORY(7, 11, TileEntityUltimateSmeltingFactory.class, false),
+		ELITE_SMELTING_FACTORY(7, 11, TileEntityEliteSmeltingFactory.class, false),
 		METALLURGIC_INFUSER(8, 12, TileEntityMetallurgicInfuser.class, false);
 		
 		public int meta;

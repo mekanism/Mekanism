@@ -80,10 +80,18 @@ public final class MekanismHooks
 		}
 		if(BasicComponentsLoaded)
 		{
-			RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelDust"));
-			RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
-			RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
-			RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
+			if(Mekanism.disableBCSteelCrafting)
+			{
+				RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelDust"));
+				RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
+			}
+			
+			if(Mekanism.disableBCBronzeCrafting)
+			{
+				RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
+				RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
+			}
+			
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
 		}
 		if(BuildCraftLoaded)

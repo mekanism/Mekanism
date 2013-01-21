@@ -19,6 +19,7 @@ import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
+import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -50,32 +51,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double sendingElectricity = 0;
-				double actualSendingElectricity = 0;
-				double rejectedElectricity = 0;
-				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[1]) - electricItem.getJoules(inventory[1]);
-				
-				if(electricItem.getVoltage(inventory[1]) <= electricityStored)
-				{
-					sendingElectricity = electricItem.getVoltage(inventory[1]);
-				}
-				else if(electricItem.getVoltage(inventory[1]) > electricityStored)
-				{
-					sendingElectricity = electricityStored;
-				}
-				
-				if(sendingElectricity <= itemElectricityNeeded)
-				{
-					actualSendingElectricity = sendingElectricity;
-				}
-				else if(sendingElectricity > itemElectricityNeeded)
-				{
-					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
-					actualSendingElectricity = itemElectricityNeeded;
-				}
-				
-				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
-				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
+				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
+				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
+				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -163,17 +141,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		int boost = 0;
 		
 		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
-			boost+=80;
+			boost+=10;
 		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
-			boost+=80;
+			boost+=10;
 		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
-			boost+=80;
+			boost+=10;
 		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
-			boost+=80;
+			boost+=10;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
-			boost+=80;
+			boost+=10;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
-			boost+=80;
+			boost+=10;
 		
 		return boost;
 	}

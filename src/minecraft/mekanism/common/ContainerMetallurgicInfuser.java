@@ -119,6 +119,12 @@ public class ContainerMetallurgicInfuser extends Container
                 			return null;
                 		}
                 	}
+                	else {
+                		if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+                		{
+                			return null;
+                		}
+                	}
                 }
             }
             else {

@@ -68,7 +68,7 @@ public class ContainerElectrolyticSeparator extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             {
-            	if(slotStack.itemID == Item.bucketWater.shiftedIndex)
+            	if(slotStack.itemID == Item.bucketWater.itemID)
             	{
             		if(!mergeItemStack(slotStack, 0, 1, false))
             		{
@@ -120,6 +120,12 @@ public class ContainerElectrolyticSeparator extends Container
 	            	else if(slotID > 30)
 	            	{
 	            		if(!mergeItemStack(slotStack, 4, 30, false))
+	            		{
+	            			return null;
+	            		}
+	            	}
+	            	else {
+	            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 	            		{
 	            			return null;
 	            		}

@@ -71,6 +71,22 @@ public class ContainerAdvancedElectricMachine extends Container
             		return null;
             	}
             }
+            else if(tileEntity.getInvName().equals("Theoretical Elementizer") && slotStack.isItemEqual(new ItemStack(Mekanism.EnrichedAlloy)))
+            {
+            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+            	{
+                    if (!mergeItemStack(slotStack, 0, 1, false))
+	                {
+	                    return null;
+	                }
+            	}
+            	else {
+	            	if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+	            	{
+	            		return null;
+	            	}
+            	}
+            }
             else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
@@ -87,7 +103,7 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
 	            }
             }
-        	else if(slotStack.itemID == Item.redstone.shiftedIndex)
+        	else if(slotStack.itemID == Item.redstone.itemID)
         	{
         		if(slotID != 3 && slotID != 0)
         		{
@@ -173,6 +189,12 @@ public class ContainerAdvancedElectricMachine extends Container
             	else if(slotID > 31)
             	{
             		if(!mergeItemStack(slotStack, 5, 31, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else {
+            		if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
             		{
             			return null;
             		}

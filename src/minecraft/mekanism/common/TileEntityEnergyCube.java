@@ -63,6 +63,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public TileEntityEnergyCube(String name, int maxEnergy, int i)
 	{
 		super(name, maxEnergy);
+		powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[2];
 		output = i;
@@ -111,32 +112,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				double sendingElectricity = 0;
-				double actualSendingElectricity = 0;
-				double rejectedElectricity = 0;
-				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[0]) - electricItem.getJoules(inventory[0]);
-				
-				if(electricItem.getVoltage(inventory[0]) <= electricityStored)
-				{
-					sendingElectricity = electricItem.getVoltage(inventory[0]);
-				}
-				else if(electricItem.getVoltage(inventory[0]) > electricityStored)
-				{
-					sendingElectricity = electricityStored;
-				}
-				
-				if(sendingElectricity <= itemElectricityNeeded)
-				{
-					actualSendingElectricity = sendingElectricity;
-				}
-				else if(sendingElectricity > itemElectricityNeeded)
-				{
-					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
-					actualSendingElectricity = itemElectricityNeeded;
-				}
-				
-				electricItem.setJoules((electricItem.getJoules(inventory[0]) + actualSendingElectricity), inventory[0]);
-				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
+				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
+				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
+				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
@@ -158,9 +136,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 					
 					if(electricItem.getVoltage(inventory[1]) <= joulesNeeded)
 					{
-						joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[0]), inventory[1]);
+						joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[1]), inventory[1]);
 					}
-					else if(electricItem.getVoltage(inventory[0]) > joulesNeeded)
+					else if(electricItem.getVoltage(inventory[1]) > joulesNeeded)
 					{
 						joulesReceived = electricItem.onUse(joulesNeeded, inventory[1]);
 					}
@@ -177,7 +155,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 					setJoules(electricityStored + gain);
 				}
 			}
-			else if(inventory[1].itemID == Item.redstone.shiftedIndex)
+			else if(inventory[1].itemID == Item.redstone.itemID)
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
@@ -396,7 +374,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {}
+	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}

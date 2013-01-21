@@ -87,7 +87,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			if(!GeneratorType.getFromMetadata(metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
-				renderer.updateCustomBlockBounds(block);
+				renderer.setRenderBoundsFromBlock(block);
 				return true;
 			}
 		}
@@ -126,7 +126,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 		}
 		
-		renderer.updateCustomBlockBounds(block);
+		renderer.setRenderBoundsFromBlock(block);
 
         if (renderer.useInventoryTint)
         {

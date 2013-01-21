@@ -172,7 +172,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 					}
 				}
 			}
-			if(inventory[4].itemID == Item.redstone.shiftedIndex && electricityStored <= (currentMaxElectricity-1000))
+			if(inventory[4].itemID == Item.redstone.itemID && electricityStored <= (currentMaxElectricity-1000))
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[4].stackSize;
@@ -545,7 +545,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {}
+	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}

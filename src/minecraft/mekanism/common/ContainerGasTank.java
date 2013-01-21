@@ -105,6 +105,12 @@ public class ContainerGasTank extends Container
             			return null;
             		}
             	}
+            	else {
+            		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
             }
             
             if (slotStack.stackSize == 0)

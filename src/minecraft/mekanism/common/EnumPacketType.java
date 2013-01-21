@@ -17,8 +17,16 @@ public enum EnumPacketType
 	TILE_ENTITY(2),
 	/** Used for sending a control panel GUI request to the server. */
 	CONTROL_PANEL(3),
+	/** Used to send a portal FX packet to all clients. */
+	PORTAL_FX(4),
+	/** Used to send a teleport packet from an ItemStack to the server. */
+	PORTABLE_TELEPORT(5),
+	/** Used to send a digit update packet from a portable teleporter to the server. */
+	DIGIT_UPDATE(6),
+	/** Used to send a status update packet from a portable teleporter to the client. */
+	STATUS_UPDATE(7),
 	/** A custom packet type. Handled in PacketHandler. */
-	CUSTOM(4);
+	CUSTOM(8);
 	
 	/** The ID of the packet type */
 	public final int id;

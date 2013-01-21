@@ -61,7 +61,7 @@ public class ContainerEnergyCube extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+            if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 0 && slotID != 1)
 	            {
@@ -106,6 +106,12 @@ public class ContainerEnergyCube extends Container
 	        			return null;
 	        		}
 	        	}
+	        	else {
+            		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
             }
             
             if (slotStack.stackSize == 0)

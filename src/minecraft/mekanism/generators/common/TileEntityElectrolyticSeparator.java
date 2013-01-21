@@ -157,7 +157,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		if(inventory[0] != null && waterSlot.liquidStored < waterSlot.MAX_LIQUID)
 		{
-			if(inventory[0].itemID == Item.bucketWater.shiftedIndex)
+			if(inventory[0].itemID == Item.bucketWater.itemID)
 			{
 				inventory[0] = new ItemStack(Item.bucketEmpty, 1);
 				waterSlot.setLiquid(waterSlot.liquidStored + 1000);
@@ -608,7 +608,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {}
+	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}

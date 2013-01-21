@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IEnergyCube;
 import mekanism.api.Tier.EnergyCubeTier;
@@ -30,9 +31,9 @@ import net.minecraftforge.common.ForgeDirection;
 
 /**
  * Block class for handling multiple energy cube block IDs. 
- * 0: Power Unit
- * 1: Advanced Power Unit
- * 2: Ultimate Power Unit
+ * 0: Basic Energy Cube
+ * 1: Advanced Energy Cube
+ * 2: Elite Energy Cube
  * @author AidanBrady
  *
  */
@@ -147,7 +148,7 @@ public class BlockEnergyCube extends BlockContainer
 				return 22;
 			}
 		}
-		else if(tileEntity.tier == EnergyCubeTier.ULTIMATE)
+		else if(tileEntity.tier == EnergyCubeTier.ELITE)
 		{
 			if(side == tileEntity.facing)
 			{
@@ -191,7 +192,7 @@ public class BlockEnergyCube extends BlockContainer
 
                         if (slotStack.hasTagCompound())
                         {
-                            entityItem.func_92014_d().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+                            entityItem.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
                         float motion = 0.05F;
@@ -210,11 +211,11 @@ public class BlockEnergyCube extends BlockContainer
             entityItem.motionY = powerRand.nextGaussian() * motion + 0.2F;
             entityItem.motionZ = powerRand.nextGaussian() * motion;
             
-            IEnergyCube energyCube = (IEnergyCube)entityItem.func_92014_d().getItem();
-            energyCube.setTier(entityItem.func_92014_d(), tileEntity.tier);
+            IEnergyCube energyCube = (IEnergyCube)entityItem.getEntityItem().getItem();
+            energyCube.setTier(entityItem.getEntityItem(), tileEntity.tier);
             
-            IItemElectric electricItem = (IItemElectric)entityItem.func_92014_d().getItem();
-            electricItem.setJoules(tileEntity.electricityStored, entityItem.func_92014_d());
+            IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
+            electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
             
             world.spawnEntityInWorld(entityItem);
         }
@@ -277,6 +278,39 @@ public class BlockEnergyCube extends BlockContainer
         else {
         	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
+        	
+        	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+        	{
+        		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+        		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+        		
+        		int change = 0;
+        		
+        		switch(tileEntity.facing)
+        		{
+        			case 3:
+        				change = 4;
+        				break;
+        			case 4:
+        				change = 5;
+        				break;
+        			case 5:
+        				change = 2;
+        				break;
+        			case 2:
+        				change = 1;
+        				break;
+        			case 1:
+        				change = 0;
+        				break;
+        			case 0:
+        				change = 3;
+        				break;
+        		}
+        		
+        		tileEntity.setFacing((short)change);
+        		return true;
+        	}
         	
             if (tileEntity != null)
             {

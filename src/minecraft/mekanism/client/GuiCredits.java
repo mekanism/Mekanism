@@ -14,7 +14,7 @@ public class GuiCredits extends GuiScreen {
 	public void initGui()
 	{
 		controlList.clear();
-		controlList.add(new GuiButton(2, width / 2 - 100, height / 4 + 72 + 12, "Update"));
+		controlList.add(new GuiButton(0, width / 2 - 100, height / 4 + 72 + 12, "Update"));
         controlList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
 	}
 	
@@ -41,7 +41,7 @@ public class GuiCredits extends GuiScreen {
 		{
 			return;
 		}
-		if(guibutton.id == 2)
+		if(guibutton.id == 0)
 		{
 			if(!MekanismUtils.isLatestVersion())
 			{

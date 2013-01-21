@@ -53,14 +53,14 @@ public class ItemMachineUpgrade extends Item implements IMachineUpgrade, IModifi
 	@Override
 	public String getName(ItemStack itemstack)
 	{
-		return shiftedIndex == Mekanism.SpeedUpgrade.shiftedIndex ? "Speed" :
-			(shiftedIndex == Mekanism.EnergyUpgrade.shiftedIndex ? "Capacity" : "All");
+		return itemID == Mekanism.SpeedUpgrade.itemID ? "Speed" :
+			(itemID == Mekanism.EnergyUpgrade.itemID ? "Capacity" : "All");
 	}
 
 	@Override
 	public int getEffectiveness(ItemStack itemstack)
 	{
-		return shiftedIndex == Mekanism.SpeedUpgrade.shiftedIndex ? 150 :
-			(shiftedIndex == Mekanism.EnergyUpgrade.shiftedIndex ? 1000 : 2500);
+		return itemID == Mekanism.SpeedUpgrade.itemID ? 150 :
+			(itemID == Mekanism.EnergyUpgrade.itemID ? 1000 : 2500);
 	}
 }

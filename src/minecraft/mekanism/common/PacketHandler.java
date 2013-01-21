@@ -3,9 +3,12 @@ package mekanism.common;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 import mekanism.api.ITileNetwork;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
@@ -71,7 +74,7 @@ public class PacketHandler implements IPacketHandler
 						int y = dataStream.readInt();
 						int z = dataStream.readInt();
 						
-						World world = ((EntityPlayer)player).worldObj;
+						World world = entityplayer.worldObj;
 						TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 						if(tileEntity instanceof ITileNetwork)
 						{
@@ -114,17 +117,103 @@ public class PacketHandler implements IPacketHandler
 			    		}
 			    		
 			    		entityplayer.openGui(instance, guiId, entityplayer.worldObj, x, y, z);
-			    		
 			    	} catch (Exception e)
 			    	{
 			    		System.err.println("[Mekanism] Error while handling control panel packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
+			    if(packetType == EnumPacketType.PORTAL_FX.id)
+			    {
+			    	try {
+			    		Random random = new Random();
+			    		int x = dataStream.readInt();
+			    		int y = dataStream.readInt();
+			    		int z = dataStream.readInt();
+			    		
+						for(int i = 0; i < 50; i++)
+						{
+							entityplayer.worldObj.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+							entityplayer.worldObj.spawnParticle("portal", x + random.nextFloat(), y + 1 + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+						}
+			    	} catch (Exception e)
+			    	{
+			    		System.err.println("[Mekanism] Error while handling portal FX packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    if(packetType == EnumPacketType.DIGIT_UPDATE.id)
+			    {
+			    	try {
+			    		int index = dataStream.readInt();
+			    		int digit = dataStream.readInt();
+			    		
+			    		ItemStack currentStack = entityplayer.getCurrentEquippedItem();
+			    		
+			    		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
+			    		{
+			    			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
+			    			item.setDigit(currentStack, index, digit);
+			    		}
+			    	} catch (Exception e)
+			    	{
+			    		System.err.println("[Mekanism] Error while handling digit update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    if(packetType == EnumPacketType.STATUS_UPDATE.id)
+			    {
+			    	try {
+			    		ItemStack currentStack = entityplayer.getCurrentEquippedItem();
+			    		
+			    		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
+			    		{
+			    			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
+			    			item.setStatus(currentStack, dataStream.readInt());
+			    		}
+			    	} catch (Exception e)
+			    	{
+			    		System.err.println("[Mekanism] Error while handling status update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    if(packetType == EnumPacketType.PORTABLE_TELEPORT.id)
+			    {
+			    	try {
+			    		if(entityplayer instanceof EntityPlayerMP)
+			    		{
+			    			EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityplayer;
+			    			ItemStack itemstack = entityPlayerMP.getCurrentEquippedItem();
+			    			
+			    			if(itemstack != null && itemstack.getItem() instanceof ItemPortableTeleporter)
+			    			{
+			    				ItemPortableTeleporter item = (ItemPortableTeleporter)itemstack.getItem();
+			    				
+			    				if(item.getStatus(itemstack) == 1)
+			    				{
+			    					Teleporter.Coords coords = Mekanism.teleporters.get(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3))).get(0);
+			    					
+			    					if(entityPlayerMP.worldObj.provider.dimensionId != coords.dimensionId)
+			    					{
+			    						entityPlayerMP.travelToDimension(coords.dimensionId);
+			    					}
+			    					
+			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord, coords.yCoord, coords.zCoord, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
+			    					
+			    					item.onUse(item.calculateEnergyCost(entityPlayerMP, coords), itemstack);
+			    				}
+			    			}
+			    		}
+			    	} catch (Exception e)
+			    	{
+			    		System.err.println("[Mekanism] Error while handling portable teleport packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
 			}
 			catch (Exception e)
 			{
-				System.err.println("[Mekanism] Error while handling data int packet.");
+				System.err.println("[Mekanism] Error while handling packet.");
 				e.printStackTrace();
 			}
 		}
@@ -301,6 +390,70 @@ public class PacketHandler implements IPacketHandler
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
         System.out.println("[Mekanism] Sent control panel packet to server.");
+	}
+	
+	public static void sendPortalFX(int x, int y, int z, int id)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.PORTAL_FX.id);
+        	data.writeInt(x);
+        	data.writeInt(y);
+        	data.writeInt(z);
+        } catch (IOException e) {
+        	System.out.println("[Mekanism] An error occured while writing packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToAllAround(x, y, z, 40, id, packet);
+        System.out.println("[Mekanism] Sent portal FX packet to server.");
+	}
+	
+	public static void sendDigitUpdate(int index, int digit)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.DIGIT_UPDATE.id);
+			data.writeInt(index);
+			data.writeInt(digit);
+		} catch (IOException e) {
+			System.out.println("[Mekanism] An error occured while writing packet data.");
+			e.printStackTrace();
+		}
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+	}
+	
+	public static void sendStatusUpdate(EntityPlayer entityplayer, int status)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.STATUS_UPDATE.id);
+			data.writeInt(status);
+		} catch (IOException e) {
+			System.out.println("[Mekanism] An error occured while writing packet data.");
+			e.printStackTrace();
+		}
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToPlayer(packet, (Player)entityplayer);
 	}
 	
 	/**

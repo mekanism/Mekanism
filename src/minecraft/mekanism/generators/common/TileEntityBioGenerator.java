@@ -18,6 +18,7 @@ import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
+import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -52,32 +53,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double sendingElectricity = 0;
-				double actualSendingElectricity = 0;
-				double rejectedElectricity = 0;
-				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[1]) - electricItem.getJoules(inventory[1]);
-				
-				if(electricItem.getVoltage() <= electricityStored)
-				{
-					sendingElectricity = electricItem.getVoltage();
-				}
-				else if(electricItem.getVoltage() > electricityStored)
-				{
-					sendingElectricity = electricityStored;
-				}
-				
-				if(sendingElectricity <= itemElectricityNeeded)
-				{
-					actualSendingElectricity = sendingElectricity;
-				}
-				else if(sendingElectricity > itemElectricityNeeded)
-				{
-					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
-					actualSendingElectricity = itemElectricityNeeded;
-				}
-				
-				electricItem.setJoules((electricItem.getJoules(inventory[1]) + actualSendingElectricity), inventory[1]);
-				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
+				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
+				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
+				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -165,7 +143,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public int getFuel(ItemStack itemstack)
 	{
-		return itemstack.itemID == MekanismGenerators.BioFuel.shiftedIndex ? 100 : 0;
+		return itemstack.itemID == MekanismGenerators.BioFuel.itemID ? 100 : 0;
 	}
 	
 	/**
@@ -211,6 +189,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			bioFuelSlot.liquidStored = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

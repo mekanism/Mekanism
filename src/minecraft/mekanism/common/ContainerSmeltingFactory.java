@@ -46,7 +46,7 @@ public class ContainerSmeltingFactory extends Container
         	}
         }
         
-        else if(tileEntity.tier == SmeltingFactoryTier.ULTIMATE)
+        else if(tileEntity.tier == SmeltingFactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -106,7 +106,7 @@ public class ContainerSmeltingFactory extends Container
             		return null;
             	}
             }
-        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 1)
 	            {
@@ -196,6 +196,12 @@ public class ContainerSmeltingFactory extends Container
             			return null;
             		}
             	}
+            	else {
+            		if(!mergeItemStack(slotStack, slotEnd, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
             }
             
             if (slotStack.stackSize == 0)
@@ -224,7 +230,7 @@ public class ContainerSmeltingFactory extends Container
     		return slot == 2 || slot == 4 || slot == 6;
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
     		return slot == 2 || slot == 4 || slot == 6 || slot == 8 || slot == 10;
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ULTIMATE)
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ELITE)
     		return slot == 2 || slot == 4 || slot == 6 || slot == 8 || slot == 12 || slot == 14;
     	
     	return false;
@@ -236,7 +242,7 @@ public class ContainerSmeltingFactory extends Container
     		return slot == 3 || slot == 5 || slot == 7;
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
     		return slot == 3 || slot == 5 || slot == 7 || slot == 9 || slot == 11;
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ULTIMATE)
+    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ELITE)
     		return slot == 3 || slot == 5 || slot == 7 || slot == 9 || slot == 11 || slot == 13 || slot == 15;
     	
     	return false;

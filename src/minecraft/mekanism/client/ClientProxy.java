@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
+import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import mekanism.common.TileEntityControlPanel;
@@ -12,6 +13,7 @@ import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.TileEntitySmeltingFactory;
+import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import mekanism.generators.client.ModelAdvancedSolarGenerator;
 import mekanism.generators.client.RenderAdvancedSolarGenerator;
@@ -26,6 +28,7 @@ import mekanism.generators.common.TileEntityHeatGenerator;
 import mekanism.generators.common.TileEntityHydrogenGenerator;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -151,6 +154,14 @@ public class ClientProxy extends CommonProxy
 				return new GuiSmeltingFactory(player.inventory, (TileEntitySmeltingFactory)tileEntity);
 			case 12:
 				return new GuiMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser)tileEntity);
+			case 13:
+				return new GuiTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
+			case 14:
+				ItemStack itemStack = player.getCurrentEquippedItem();
+				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
+				{
+					return new GuiPortableTeleporter(player, itemStack);
+				}
 		}
 		return null;
 	}
@@ -158,6 +169,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void loadTickHandler()
 	{
+		super.loadTickHandler();
+		
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 	}
 	

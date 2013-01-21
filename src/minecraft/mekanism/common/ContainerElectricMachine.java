@@ -70,7 +70,7 @@ public class ContainerElectricMachine extends Container
             		return null;
             	}
             }
-        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 1)
 	            {
@@ -130,6 +130,12 @@ public class ContainerElectricMachine extends Container
             	else if(slotID > 30)
             	{
             		if(!mergeItemStack(slotStack, 4, 30, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else {
+            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
             		{
             			return null;
             		}

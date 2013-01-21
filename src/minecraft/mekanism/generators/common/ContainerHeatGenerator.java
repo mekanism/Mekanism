@@ -62,7 +62,7 @@ public class ContainerHeatGenerator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-        	if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.shiftedIndex)
+        	if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 1)
 	            {
@@ -95,7 +95,7 @@ public class ContainerHeatGenerator extends Container
 	            	}
             	}
         	}
-        	else if(slotStack.itemID == Item.bucketEmpty.shiftedIndex)
+        	else if(slotStack.itemID == Item.bucketEmpty.itemID)
         	{
         		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
         		{
@@ -117,6 +117,12 @@ public class ContainerHeatGenerator extends Container
 	        			return null;
 	        		}
 	        	}
+            	else {
+            		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
             }
             
             if (slotStack.stackSize == 0)

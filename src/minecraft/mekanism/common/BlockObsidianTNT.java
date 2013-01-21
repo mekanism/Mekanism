@@ -101,7 +101,7 @@ public class BlockObsidianTNT extends Block
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-        if (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.shiftedIndex)
+        if (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
             world.setBlockWithNotify(x, y, z, 0);

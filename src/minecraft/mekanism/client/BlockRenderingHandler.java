@@ -52,7 +52,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			if(!MachineType.getFromMetadata(metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
-				renderer.updateCustomBlockBounds(block);
+				renderer.setRenderBoundsFromBlock(block);
 				return true;
 			}
 		}
@@ -83,7 +83,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	{
 		block.setBlockBoundsForItemRender();
 		
-		renderer.updateCustomBlockBounds(block);
+		renderer.setRenderBoundsFromBlock(block);
 
         if (renderer.useInventoryTint)
         {

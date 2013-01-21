@@ -54,16 +54,6 @@ public final class RecipeHandler
 	}
 	
 	/**
-	 * Add a Theoretical Elementizer recipe.
-	 * @param input - input ItemStack
-	 * @param output - output ItemStack
-	 */
-	public static void addTheoreticalElementizerRecipe(ItemStack input, ItemStack output)
-	{
-		TileEntityTheoreticalElementizer.recipes.put(input, output);
-	}
-	
-	/**
 	 * Adds a Metallurgic Infuser recipe.
 	 * @param input - input Infusion
 	 * @param output - output ItemStack

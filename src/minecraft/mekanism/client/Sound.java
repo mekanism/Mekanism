@@ -62,8 +62,12 @@ public class Sound
 			}
 			
 			Mekanism.audioHandler.sounds.add(this);
-			Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
-			Mekanism.audioHandler.soundSystem.activate(id);
+			
+			if(Mekanism.audioHandler.soundSystem != null)
+			{
+				Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
+				Mekanism.audioHandler.soundSystem.activate(id);
+			}
 		}
 	}
 	
@@ -79,7 +83,10 @@ public class Sound
 				return;
 			}
 			
-			Mekanism.audioHandler.soundSystem.play(identifier);
+			if(Mekanism.audioHandler.soundSystem != null)
+			{
+				Mekanism.audioHandler.soundSystem.play(identifier);
+			}
 			isPlaying = true;
 		}
 	}
@@ -96,7 +103,10 @@ public class Sound
 				return;
 			}
 			
-			Mekanism.audioHandler.soundSystem.stop(identifier);
+			if(Mekanism.audioHandler.soundSystem != null)
+			{
+				Mekanism.audioHandler.soundSystem.stop(identifier);
+			}
 			isPlaying = false;
 		}
 	}
@@ -114,7 +124,11 @@ public class Sound
 			}
 			
 			Mekanism.audioHandler.sounds.remove(this);
-			Mekanism.audioHandler.soundSystem.removeSource(identifier);
+			
+			if(Mekanism.audioHandler.soundSystem != null)
+			{
+				Mekanism.audioHandler.soundSystem.removeSource(identifier);
+			}
 		}
 	}
 	
@@ -136,7 +150,10 @@ public class Sound
 	        double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.01;
 	        volume = (float)Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0);
 	
-	        Mekanism.audioHandler.soundSystem.setVolume(identifier, volume);
+	        if(Mekanism.audioHandler.soundSystem != null)
+	        {
+	        	Mekanism.audioHandler.soundSystem.setVolume(identifier, volume);
+	        }
 		}
     }
 }

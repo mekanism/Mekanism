@@ -1,5 +1,10 @@
 package mekanism.common;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
+import mekanism.client.GuiTeleporter;
+import mekanism.generators.common.TileEntityAdvancedSolarGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -17,7 +22,10 @@ public class CommonProxy
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */
-	public void registerSpecialTileEntities() {}
+	public void registerSpecialTileEntities() 
+	{
+		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
+	}
 	
 	/**
 	 * Register and load client-only render information.
@@ -57,7 +65,9 @@ public class CommonProxy
 	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3005).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
 	  	Mekanism.extrasEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ExtrasEnabled", true).getBoolean(true);
-	  	Mekanism.oreGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreGenerationEnabled", true).getBoolean(true);
+	  	Mekanism.platinumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PlatinumGenerationEnabled", true).getBoolean(true);
+	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", true).getBoolean(true);
+	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", true).getBoolean(true);
 	  	Mekanism.configuration.save();
 	}
 	
@@ -67,9 +77,12 @@ public class CommonProxy
 	public void loadUtilities() {}
 	
 	/**
-	 * Set up and load the client-only tick handler.
+	 * Set up and load the tick handlers.
 	 */
-	public void loadTickHandler() {}
+	public void loadTickHandler()
+	{
+		TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
+	}
 	
 	/**
 	 * Set up and load the sound handler.
@@ -130,6 +143,8 @@ public class CommonProxy
 				return new ContainerSmeltingFactory(player.inventory, (TileEntitySmeltingFactory)tileEntity);
 			case 12:
 				return new ContainerMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser)tileEntity);
+			case 13:
+				return new ContainerTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
 		}
 		return null;
 	}

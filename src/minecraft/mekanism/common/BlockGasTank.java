@@ -24,6 +24,8 @@ public class BlockGasTank extends BlockContainer
 	{
 		super(id, Material.iron);
 		setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
+		setHardness(3.5F);
+		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
@@ -112,7 +114,7 @@ public class BlockGasTank extends BlockContainer
 
                         if (slotStack.hasTagCompound())
                         {
-                            item.func_92014_d().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
                         float k = 0.05F;

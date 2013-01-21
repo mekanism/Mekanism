@@ -99,13 +99,28 @@ public class ContainerHydrogenGenerator extends Container
 	            	}
             	}
         	}
-        	else if(slotStack.itemID == Item.bucketEmpty.shiftedIndex)
-        	{
-        		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
-        		{
-        			return null;
-        		}
-        	}
+            else {
+	        	if(slotID >= 2 && slotID <= 28)
+	        	{
+	        		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+	        	else if(slotID > 28)
+	        	{
+	        		if(!mergeItemStack(slotStack, 2, 28, false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+            	else {
+            		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
+            }
             
             if (slotStack.stackSize == 0)
             {

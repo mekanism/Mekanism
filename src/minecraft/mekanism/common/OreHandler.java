@@ -29,7 +29,7 @@ public class OreHandler implements IWorldGenerator
 	 */
 	public void generateSurface(World world, Random random, int chunkX, int chunkZ)
 	{
-		if(Mekanism.oreGenerationEnabled == true)
+		if(Mekanism.platinumGenerationEnabled == true)
 		{
 			for(int i=0;i<6;i++)
 			{

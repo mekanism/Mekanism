@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
  * 4: Theoretical Elementizer
  * 5: Basic Smelting Factory
  * 6: Advanced Smelting Factory
- * 7: Ultimate Smelting Factory
+ * 7: Elite Smelting Factory
  * 8: Metallurgic Infuser
  * @author AidanBrady
  *
@@ -69,7 +69,7 @@ public class ItemBlockMachine extends ItemBlock
 				name = "AdvancedSmeltingFactory";
 				break;
 			case 7:
-				name = "UltimateSmeltingFactory";
+				name = "EliteSmeltingFactory";
 				break;
 			case 8:
 				name = "MetallurgicInfuser";

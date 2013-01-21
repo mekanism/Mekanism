@@ -23,6 +23,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.prefab.implement.IToolConfigurator;
 import universalelectricity.prefab.multiblock.IMultiBlock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -89,13 +90,16 @@ public class BlockGenerator extends BlockContainer
         int height = Math.round(entityliving.rotationPitch);
         int change = 3;
         
-        if(height >= 65)
+        if(!GeneratorType.getFromMetadata(world.getBlockMetadata(x, y, z)).hasModel && world.getBlockMetadata(x, y, z) != 1)
         {
-        	change = 1;
-        }
-        else if(height <= -65)
-        {
-        	change = 0;
+	        if(height >= 65)
+	        {
+	        	change = 1;
+	        }
+	        else if(height <= -65)
+	        {
+	        	change = 0;
+	        }
         }
         else {
 	        switch(side)
@@ -329,7 +333,7 @@ public class BlockGenerator extends BlockContainer
 
                         if (slotStack.hasTagCompound())
                         {
-                            item.func_92014_d().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }
 
                         float k = 0.05F;
@@ -364,12 +368,40 @@ public class BlockGenerator extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	int metadata = world.getBlockMetadata(x, y, z);
     	
         if(world.isRemote)
         {
             return true;
         }
+        
+    	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+    	{
+    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+    		
+    		int change = 0;
+    		
+    		switch(tileEntity.facing)
+    		{
+    			case 3:
+    				change = 4;
+    				break;
+    			case 4:
+    				change = 5;
+    				break;
+    			case 5:
+    				change = 2;
+    				break;
+    			case 2:
+    				change = 3;
+    				break;
+    		}
+    		
+    		tileEntity.setFacing((short)change);
+    		return true;
+    	}
         
         if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(MekanismGenerators.Generator, 1, 2)))
         {
@@ -378,8 +410,6 @@ public class BlockGenerator extends BlockContainer
         		return false;
         	}
         }
-        
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	
         if (tileEntity != null)
         {

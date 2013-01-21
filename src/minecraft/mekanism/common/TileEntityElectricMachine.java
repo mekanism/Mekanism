@@ -77,7 +77,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 					}
 				}
 			}
-			if(inventory[1].itemID == Item.redstone.shiftedIndex && electricityStored <= (currentMaxElectricity-1000))
+			if(inventory[1].itemID == Item.redstone.itemID && electricityStored <= (currentMaxElectricity-1000))
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;

@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -66,32 +67,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				double sendingElectricity = 0;
-				double actualSendingElectricity = 0;
-				double rejectedElectricity = 0;
-				double itemElectricityNeeded = electricItem.getMaxJoules(inventory[0]) - electricItem.getJoules(inventory[0]);
-				
-				if(electricItem.getVoltage() <= electricityStored)
-				{
-					sendingElectricity = electricItem.getVoltage();
-				}
-				else if(electricItem.getVoltage() > electricityStored)
-				{
-					sendingElectricity = electricityStored;
-				}
-				
-				if(sendingElectricity <= itemElectricityNeeded)
-				{
-					actualSendingElectricity = sendingElectricity;
-				}
-				else if(sendingElectricity > itemElectricityNeeded)
-				{
-					rejectedElectricity = sendingElectricity-itemElectricityNeeded;
-					actualSendingElectricity = itemElectricityNeeded;
-				}
-				
-				electricItem.setJoules((electricItem.getJoules(inventory[0]) + actualSendingElectricity), inventory[0]);
-				setJoules(electricityStored - Math.max(actualSendingElectricity - rejectedElectricity, 0));
+				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
+				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
+				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
@@ -170,6 +148,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			isActive = dataStream.readBoolean();
 			seesSun = dataStream.readBoolean();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

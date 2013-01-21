@@ -10,6 +10,7 @@ import mekanism.api.IActiveState;
 import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.packet.Packet3Chat;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
 /**
@@ -120,6 +122,11 @@ public final class MekanismUtils
 		}
 	}
 	
+	public static void sendChatMessageToAllPlayers(String msg)
+	{
+		PacketDispatcher.sendPacketToAllPlayers(new Packet3Chat(msg));
+	}
+	
 	/**
 	 * Checks if the mod is running on the latest version.
 	 * @return if mod is latest version
@@ -188,8 +195,9 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getStackWithSize(ItemStack itemstack, int size)
 	{
-		itemstack.stackSize = size;
-		return itemstack;
+		ItemStack newStack = itemstack.copy();
+		newStack.stackSize = size;
+		return newStack;
 	}
 	
 	/**
@@ -234,6 +242,11 @@ public final class MekanismUtils
     	return false;
     }
     
+    /**
+     * Gets the left side of a certain orientation.
+     * @param orientation
+     * @return left side
+     */
     public static ForgeDirection getLeft(int orientation)
     {
     	switch(orientation)
@@ -249,18 +262,28 @@ public final class MekanismUtils
     	}
     }
     
+    /**
+     * Gets the right side of a certain orientation.
+     * @param orientation
+     * @return right side
+     */
     public static ForgeDirection getRight(int orientation)
     {
     	return getLeft(orientation).getOpposite();
     }
     
+    /**
+     * Checks to see if a specified ItemStack is stored in the Ore Dictionary with the specified name.
+     * @param check - ItemStack to check
+     * @param oreDict - name to check with
+     * @return if the ItemStack has the Ore Dictionary key
+     */
     public static boolean oreDictCheck(ItemStack check, String oreDict)
     {
     	boolean hasResource = false;
     	
     	for(ItemStack ore : OreDictionary.getOres(oreDict))
     	{
-    		
     		if(ore.isItemEqual(check))
     		{
     			hasResource = true;

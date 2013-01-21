@@ -62,7 +62,7 @@ public class GuiSmeltingFactory extends GuiContainer
         	}
         }
         
-        if(tileEntity.tier == SmeltingFactoryTier.ULTIMATE)
+        if(tileEntity.tier == SmeltingFactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{

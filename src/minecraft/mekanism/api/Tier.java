@@ -16,7 +16,7 @@ public final class Tier
 	{
 		BASIC("Basic", 1000000, 10000),
 		ADVANCED("Advanced", 2500000, 25000),
-		ULTIMATE("Ultimate", 5000000, 50000);
+		ELITE("Elite", 5000000, 50000);
 		
 		public double MAX_ELECTRICITY;
 		public double VOLTAGE;
@@ -54,7 +54,7 @@ public final class Tier
 	{
 		BASIC("Basic", 3, "GuiBasicSmeltingFactory.png"),
 		ADVANCED("Advanced", 5, "GuiAdvancedSmeltingFactory.png"),
-		ULTIMATE("Ultimate", 7, "GuiUltimateSmeltingFactory.png");
+		ELITE("Elite", 7, "GuiUltimateSmeltingFactory.png");
 		
 		public int processes;
 		public String guiTexturePath;

@@ -7,6 +7,7 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.IActiveState;
+import mekanism.api.IMachineUpgrade;
 import mekanism.api.Tier.SmeltingFactoryTier;
 import mekanism.client.Sound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -172,7 +173,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 					}
 				}
 			}
-			if(inventory[1].itemID == Item.redstone.shiftedIndex && electricityStored <= (currentMaxElectricity-1000))
+			if(inventory[1].itemID == Item.redstone.itemID && electricityStored <= (currentMaxElectricity-1000))
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
@@ -184,35 +185,19 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 			}
 		}
 		
-		if(inventory[0] != null)
+		if(inventory[0] != null && inventory[0].getItem() instanceof IMachineUpgrade)
 		{
 			int energyToAdd = 0;
 			int ticksToRemove = 0;
 			
-			if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)))
+			if(currentMaxElectricity == MAX_ELECTRICITY)
 			{
-				if(currentTicksRequired == TICKS_REQUIRED)
-				{
-					ticksToRemove = 150;
-				}
+				energyToAdd = ((IMachineUpgrade)inventory[0].getItem()).getEnergyBoost(inventory[0]);
 			}
-			else if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)))
+			
+			if(currentTicksRequired == TICKS_REQUIRED)
 			{
-				if(currentMaxElectricity == MAX_ELECTRICITY)
-				{
-					energyToAdd = 600;
-				}
-			}
-			else if(inventory[0].isItemEqual(new ItemStack(Mekanism.UltimateUpgrade)))
-			{
-				if(currentTicksRequired == TICKS_REQUIRED)
-				{
-					ticksToRemove = 150;
-				}
-				if(currentMaxElectricity == MAX_ELECTRICITY)
-				{
-					energyToAdd = 600;
-				}
+				ticksToRemove = ((IMachineUpgrade)inventory[0].getItem()).getTickReduction(inventory[0]);
 			}
 			
 			currentMaxElectricity += energyToAdd;
@@ -560,7 +545,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {}
+	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}

@@ -1,23 +1,23 @@
-package mekanism.generators.common;
+package mekanism.common;
 
 import ic2.api.IElectricItem;
-import mekanism.common.SlotEnergy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.implement.IItemElectric;
 
-public class ContainerSolarGenerator extends Container
+public class ContainerTeleporter extends Container
 {
-    private TileEntitySolarGenerator tileEntity;
+    private TileEntityTeleporter tileEntity;
 
-    public ContainerSolarGenerator(InventoryPlayer inventory, TileEntitySolarGenerator tentity)
+    public ContainerTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new SlotEnergy(tentity, 0, 143, 35));
+        addSlotToContainer(new SlotEnergy(tentity, 0, 27, 14));
         int slotX;
 
         for (slotX = 0; slotX < 3; ++slotX)
@@ -48,8 +48,8 @@ public class ContainerSolarGenerator extends Container
     {
         return tileEntity.isUseableByPlayer(par1EntityPlayer);
     }
-
-    @Override
+    
+	@Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
     {
         ItemStack stack = null;
@@ -59,19 +59,19 @@ public class ContainerSolarGenerator extends Container
         {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            
-        	if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
+
+            if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 0)
 	            {
-	                if (!mergeItemStack(slotStack, 0, 1, false))
+	                if(!mergeItemStack(slotStack, 0, 1, false))
 	                {
 	                	return null;
 	                }
 	            }
 	            else if(slotID == 0)
 	            {
-	            	if(!mergeItemStack(slotStack, 1, inventorySlots.size(), false))
+	            	if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
@@ -92,7 +92,7 @@ public class ContainerSolarGenerator extends Container
 	        			return null;
 	        		}
 	        	}
-            	else {
+	        	else {
             		if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
             		{
             			return null;
