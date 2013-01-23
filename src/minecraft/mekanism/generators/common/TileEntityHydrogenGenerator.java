@@ -195,7 +195,6 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			isActive = dataStream.readBoolean();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

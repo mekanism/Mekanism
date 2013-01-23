@@ -30,30 +30,46 @@ public class ContainerSmeltingFactory extends Container
         	{
         		int xAxis = 55 + (i*38);
         		
-		        addSlotToContainer(new Slot(tentity, 2+i*2, xAxis, 13));
-		        addSlotToContainer(new SlotFurnace(inventory.player, tentity, 3+i*2, xAxis, 57));
+		        addSlotToContainer(new Slot(tentity, 2+i, xAxis, 13));
+        	}
+        	
+        	for(int i = 0; i < tileEntity.tier.processes; i++)
+        	{
+        		int xAxis = 55 + (i*38);
+        		
+		        addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
-        
         else if(tileEntity.tier == SmeltingFactoryTier.ADVANCED)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
 	        	int xAxis = 35 + (i*26);
 	        	
-	        	addSlotToContainer(new Slot(tentity, 2+i*2, xAxis, 13));
-	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, 3+i*2, xAxis, 57));
+	        	addSlotToContainer(new Slot(tentity, 2+i, xAxis, 13));
+        	}
+        	
+        	for(int i = 0; i < tileEntity.tier.processes; i++)
+        	{
+	        	int xAxis = 35 + (i*26);
+	        	
+	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
-        
         else if(tileEntity.tier == SmeltingFactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
 	        	int xAxis = 29 + (i*19);
 	        	
-	        	addSlotToContainer(new Slot(tentity, 2+i*2, xAxis, 13));
-	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, 3+i*2, xAxis, 57));
+	        	addSlotToContainer(new Slot(tentity, 2+i, xAxis, 13));
+        	}
+        	
+        	for(int i = 0; i < tileEntity.tier.processes; i++)
+        	{
+	        	int xAxis = 29 + (i*19);
+	        	
+	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
         
@@ -127,34 +143,10 @@ public class ContainerSmeltingFactory extends Container
     		{
             	if(!isInputSlot(slotID))
             	{
-                    if(!mergeItemStack(slotStack, 2, 3, false))
-	                {
-	                    if(!mergeItemStack(slotStack, 4, 5, false))
-	                    {
-	                    	if(!mergeItemStack(slotStack, 6, 7, false))
-	                    	{
-	                    		if(tileEntity.tier != SmeltingFactoryTier.BASIC)
-	                    		{
-	                    			if(!mergeItemStack(slotStack, 8, 9, false))
-	                    			{
-	                    				if(!mergeItemStack(slotStack, 10, 11, false))
-	                    				{
-	                    					if(tileEntity.tier != SmeltingFactoryTier.ADVANCED)
-	                    					{
-	                    						if(!mergeItemStack(slotStack, 12, 13, false))
-	                    						{
-	                    							if(!mergeItemStack(slotStack, 14, 15, false))
-	                    							{
-	                    								return null;
-	                    							}
-	                    						}
-	                    					}
-	                    				}
-	                    			}
-	                    		}
-	                    	}
-	                    }
-	                }
+            		if(!mergeItemStack(slotStack, 2, 2+tileEntity.tier.processes, false))
+            		{
+            			return null;
+            		}
             	}
             	else {
             		if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
@@ -227,11 +219,11 @@ public class ContainerSmeltingFactory extends Container
     public boolean isInputSlot(int slot)
     {
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.BASIC)
-    		return slot == 2 || slot == 4 || slot == 6;
+    		return slot >= 2 && slot <= 4;
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
-    		return slot == 2 || slot == 4 || slot == 6 || slot == 8 || slot == 10;
+    		return slot >= 2 && slot <= 6;
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.ELITE)
-    		return slot == 2 || slot == 4 || slot == 6 || slot == 8 || slot == 12 || slot == 14;
+    		return slot >= 2 && slot <= 8;
     	
     	return false;
     }
@@ -239,11 +231,11 @@ public class ContainerSmeltingFactory extends Container
     public boolean isOutputSlot(int slot)
     {
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.BASIC)
-    		return slot == 3 || slot == 5 || slot == 7;
+    		return slot >= 5 && slot <= 7;
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
-    		return slot == 3 || slot == 5 || slot == 7 || slot == 9 || slot == 11;
+    		return slot >= 7 && slot <= 11;
     	if(tileEntity.tier == Tier.SmeltingFactoryTier.ELITE)
-    		return slot == 3 || slot == 5 || slot == 7 || slot == 9 || slot == 11 || slot == 13 || slot == 15;
+    		return slot >= 9 && slot <= 15;
     	
     	return false;
     }

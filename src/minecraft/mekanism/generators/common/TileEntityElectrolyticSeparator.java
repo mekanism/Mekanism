@@ -228,7 +228,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			waterSlot.setLiquid(waterSlot.liquidStored - 10);
 			setJoules(electricityStored - 4);
 			setGas(EnumGas.OXYGEN, oxygenStored + 1);
-			setGas(EnumGas.HYDROGEN, hydrogenStored + 1);
+			setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 		}
 		
 		if(outputType != EnumGas.NONE && getGas(outputType) > 0 && !worldObj.isRemote)

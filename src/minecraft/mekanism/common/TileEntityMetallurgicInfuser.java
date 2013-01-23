@@ -15,6 +15,7 @@ import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.client.Sound;
+import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,8 +43,6 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
 {
-	public static Map<InfusionInput, InfusionOutput> recipes = new HashMap<InfusionInput, InfusionOutput>();
-	
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
@@ -316,7 +315,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
             return;
         }
 
-        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true, recipes);
+        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true, Recipe.METALLURGIC_INFUSER.get());
         
         infuseStored -= output.getInfuseRequired();
 
@@ -346,7 +345,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	return false;
         }
 
-        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false, recipes);
+        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false, Recipe.METALLURGIC_INFUSER.get());
 
         if (output == null)
         {

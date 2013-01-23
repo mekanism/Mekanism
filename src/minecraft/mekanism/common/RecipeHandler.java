@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.InfusionInput;
@@ -13,6 +14,11 @@ import net.minecraft.item.ItemStack;
  */
 public final class RecipeHandler
 {	
+	public static void addRecipe(Recipe recipe, Object input, Object output)
+	{
+		recipe.put(input, output);
+	}
+	
 	/**
 	 * Add an Enrichment Chamber recipe.
 	 * @param input - input ItemStack
@@ -20,7 +26,7 @@ public final class RecipeHandler
 	 */
 	public static void addEnrichmentChamberRecipe(ItemStack input, ItemStack output)
 	{
-		TileEntityEnrichmentChamber.recipes.put(input, output);
+		Recipe.ENRICHMENT_CHAMBER.put(input, output);
 	}
 	
 	/**
@@ -30,7 +36,7 @@ public final class RecipeHandler
 	 */
 	public static void addPlatinumCompressorRecipe(ItemStack input, ItemStack output)
 	{
-		TileEntityPlatinumCompressor.recipes.put(input, output);
+		Recipe.PLATINUM_COMPRESSOR.put(input, output);
 	}
 	
 	/**
@@ -40,7 +46,7 @@ public final class RecipeHandler
 	 */
 	public static void addCombinerRecipe(ItemStack input, ItemStack output)
 	{
-		TileEntityCombiner.recipes.put(input, output);
+		Recipe.COMBINER.put(input, output);
 	}
 	
 	/**
@@ -50,7 +56,17 @@ public final class RecipeHandler
 	 */
 	public static void addCrusherRecipe(ItemStack input, ItemStack output)
 	{
-		TileEntityCrusher.recipes.put(input, output);
+		Recipe.CRUSHER.put(input, output);
+	}
+	
+	/**
+	 * Add a Purification Chamber recipe.
+	 * @param input - input ItemStack
+	 * @param output - output ItemStack
+	 */
+	public static void addPurificationChamberRecipe(ItemStack input, ItemStack output)
+	{
+		Recipe.PURIFICATION_CHAMBER.put(input, output);
 	}
 	
 	/**
@@ -60,7 +76,7 @@ public final class RecipeHandler
 	 */
 	public static void addMetallurgicInfuserRecipe(InfusionInput input, ItemStack output)
 	{
-		TileEntityMetallurgicInfuser.recipes.put(input, InfusionOutput.getInfusion(input, output));
+		Recipe.METALLURGIC_INFUSER.put(input, InfusionOutput.getInfusion(input, output));
 	}
 	
 	/**
@@ -114,5 +130,32 @@ public final class RecipeHandler
 		}
 		
 		return null;
+	}
+	
+	public static enum Recipe
+	{
+		ENRICHMENT_CHAMBER(new HashMap<ItemStack, ItemStack>()),
+		PLATINUM_COMPRESSOR(new HashMap<ItemStack, ItemStack>()),
+		COMBINER(new HashMap<ItemStack, ItemStack>()),
+		CRUSHER(new HashMap<ItemStack, ItemStack>()),
+		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
+		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>());
+		
+		private HashMap recipes;
+		
+		private Recipe(HashMap map)
+		{
+			recipes = map;
+		}
+		
+		public void put(Object input, Object output)
+		{
+			recipes.put(input, output);
+		}
+		
+		public HashMap get()
+		{
+			return recipes;
+		}
 	}
 }

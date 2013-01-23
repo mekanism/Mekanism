@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,10 +25,9 @@ public interface IElectricMachine
 	 * Runs this machine's operation -- or smelts the item.
 	 */
 	public void operate();
-
+	
 	/**
-	 * Gets the recipe vector from the machine tile entity.
-	 * @return recipes
+	 * Gets this machine's recipes.
 	 */
-	public Map getRecipes();
+	public HashMap getRecipes();
 }

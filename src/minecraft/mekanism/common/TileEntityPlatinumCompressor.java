@@ -3,22 +3,21 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMachine
 {
-	public static Map<ItemStack, ItemStack> recipes = new HashMap<ItemStack, ItemStack>();
-	
 	public TileEntityPlatinumCompressor()
 	{
 		super("Compressor.ogg", "Platinum Compressor", "/resources/mekanism/gui/GuiCompressor.png", 5, 1, 200, 1000, 200);
 	}
-
+	
 	@Override
-	public Map getRecipes()
+	public HashMap getRecipes()
 	{
-		return recipes;
+		return Recipe.PLATINUM_COMPRESSOR.get();
 	}
 
 	@Override

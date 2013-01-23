@@ -34,6 +34,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
 	
+	/** The amount of electricity this machine can produce with a unit of fuel. */
+	public final int GENERATION = 560;
+	
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
 
@@ -93,22 +96,19 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			}
 		}
 		
-		if(electricityStored < MAX_ELECTRICITY)
-		{
-			if(canOperate())
-			{	
-				if(!worldObj.isRemote)
-				{
-					setActive(true);
-				}
-				bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 10);
-				setJoules(electricityStored + 560);
+		if(canOperate())
+		{	
+			if(!worldObj.isRemote)
+			{
+				setActive(true);
 			}
-			else {
-				if(!worldObj.isRemote)
-				{
-					setActive(false);
-				}
+			bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 10);
+			setJoules(electricityStored + GENERATION);
+		}
+		else {
+			if(!worldObj.isRemote)
+			{
+				setActive(false);
 			}
 		}
 	}
@@ -189,7 +189,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			bioFuelSlot.liquidStored = dataStream.readInt();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

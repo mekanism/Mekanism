@@ -50,8 +50,7 @@ public class GuiSmeltingFactory extends GuiContainer
 	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
-        
-        if(tileEntity.tier == SmeltingFactoryTier.ADVANCED)
+        else if(tileEntity.tier == SmeltingFactoryTier.ADVANCED)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -61,8 +60,7 @@ public class GuiSmeltingFactory extends GuiContainer
 	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
-        
-        if(tileEntity.tier == SmeltingFactoryTier.ELITE)
+        else if(tileEntity.tier == SmeltingFactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{

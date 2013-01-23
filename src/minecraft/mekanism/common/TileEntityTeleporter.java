@@ -264,15 +264,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		{
 			setJoules(electricityStored - calculateEnergyCost(entity, closestCoords));
 			
-			entity.worldObj.playSoundAtEntity((EntityPlayerMP)entity, "mob.enderman.portal", 1.0F, 1.0F);
+			worldObj.playSoundAtEntity((EntityPlayerMP)entity, "mob.endermen.portal", 1.0F, 1.0F);
 			
 			if(entity.worldObj.provider.dimensionId != closestCoords.dimensionId)
 			{
 				entity.travelToDimension(closestCoords.dimensionId);
 			}
 			
-			((EntityPlayerMP)entity).setLocationAndAngles(closestCoords.xCoord, closestCoords.yCoord, closestCoords.zCoord, entity.rotationYaw, entity.rotationPitch);
-			((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord, closestCoords.yCoord, closestCoords.zCoord, entity.rotationYaw, entity.rotationPitch);
+			((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 			
 			for(Teleporter.Coords coords : Mekanism.teleporters.get(code))
 			{

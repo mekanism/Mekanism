@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
  * 6: Advanced Smelting Factory
  * 7: Elite Smelting Factory
  * 8: Metallurgic Infuser
+ * 9: Purification Chamber
  * @author AidanBrady
  *
  */
@@ -73,6 +74,9 @@ public class ItemBlockMachine extends ItemBlock
 				break;
 			case 8:
 				name = "MetallurgicInfuser";
+				break;
+			case 9:
+				name = "PurificationChamber";
 				break;
 			default:
 				name = "Unknown";

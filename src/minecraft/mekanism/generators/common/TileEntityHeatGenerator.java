@@ -35,6 +35,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	/** The LiquidSlot fuel instance for this generator. */
 	public LiquidSlot fuelSlot = new LiquidSlot(24000, Mekanism.hooks.BuildCraftFuelID);
 	
+	/** The amount of electricity this machine can produce with a unit of fuel. */
+	public final int GENERATION = 100;
+	
 	public TileEntityHeatGenerator()
 	{
 		super("Heat Generator", 160000, 480);
@@ -88,27 +91,29 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				{
 					inventory[0] = null;
 				}
+				
+				if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
+				{
+					inventory[0] = new ItemStack(Item.bucketEmpty);
+				}
 			}
 		}
 		
-		if(electricityStored < MAX_ELECTRICITY)
-		{
-			setJoules(electricityStored + getEnvironmentBoost());
-			
-			if(canOperate())
-			{	
-				if(!worldObj.isRemote)
-				{
-					setActive(true);
-				}
-				fuelSlot.setLiquid(fuelSlot.liquidStored - 10);
-				setJoules(electricityStored + 100);
+		setJoules(electricityStored + getEnvironmentBoost());
+		
+		if(canOperate())
+		{	
+			if(!worldObj.isRemote)
+			{
+				setActive(true);
 			}
-			else {
-				if(!worldObj.isRemote)
-				{
-					setActive(false);
-				}
+			fuelSlot.setLiquid(fuelSlot.liquidStored - 10);
+			setJoules(electricityStored + GENERATION);
+		}
+		else {
+			if(!worldObj.isRemote)
+			{
+				setActive(false);
 			}
 		}
 	}

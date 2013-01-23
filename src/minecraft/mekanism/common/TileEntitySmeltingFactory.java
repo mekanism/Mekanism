@@ -390,6 +390,52 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
             inventory[outputSlot].stackSize += itemstack.stackSize;
         }
 	}
+	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		if(side == ForgeDirection.getOrientation(1) || side == MekanismUtils.getLeft(facing))
+		{
+			return 2;
+		}
+		else if(side == ForgeDirection.getOrientation(0) || side == MekanismUtils.getRight(facing))
+		{
+			return 2+tier.processes;
+		}
+		else if(side == ForgeDirection.getOrientation(facing))
+		{
+			return 0;
+		}
+		else if(side == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		if(side == ForgeDirection.getOrientation(1) || side == MekanismUtils.getLeft(facing))
+		{
+			return tier.processes;
+		}
+		else if(side == ForgeDirection.getOrientation(0) || side == MekanismUtils.getRight(facing))
+		{
+			return tier.processes;
+		}
+		else if(side == ForgeDirection.getOrientation(facing))
+		{
+			return 1;
+		}
+		else if(side == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return 1;
+		}
+		
+		return 0;
+	}
 
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
@@ -465,12 +511,12 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	
 	public int getInputSlot(int operation)
 	{
-		return (operation+operation)+2;
+		return operation+2;
 	}
 	
 	public int getOutputSlot(int operation)
 	{
-		return (operation+operation)+3;
+		return tier.processes+2+operation;
 	}
 
 	@Override

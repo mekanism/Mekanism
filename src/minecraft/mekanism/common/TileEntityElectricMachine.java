@@ -40,8 +40,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		super.onUpdate();
 		
-		boolean testActive = operatingTicks > 0;
-		
 		if(inventory[1] != null)
 		{
 			if(electricityStored < currentMaxElectricity)
@@ -113,29 +111,22 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			currentMaxElectricity = MAX_ELECTRICITY;
 		}
 		
-		if(canOperate() && (operatingTicks+1) < currentTicksRequired)
+		if(electricityStored >= ENERGY_PER_TICK)
 		{
-			++operatingTicks;
-			electricityStored -= ENERGY_PER_TICK;
-		}
-		else if(canOperate() && (operatingTicks+1) >= currentTicksRequired)
-		{
-			if(!worldObj.isRemote)
+			if(canOperate() && (operatingTicks+1) < currentTicksRequired)
 			{
-				operate();
+					operatingTicks++;
+					electricityStored -= ENERGY_PER_TICK;
 			}
-			operatingTicks = 0;
-			electricityStored -= ENERGY_PER_TICK;
-		}
-		
-		if(electricityStored < 0)
-		{
-			electricityStored = 0;
-		}
-		
-		if(electricityStored > currentMaxElectricity)
-		{
-			electricityStored = currentMaxElectricity;
+			else if(canOperate() && (operatingTicks+1) >= currentTicksRequired)
+			{
+				if(!worldObj.isRemote)
+				{
+					operate();
+				}
+				operatingTicks = 0;
+				electricityStored -= ENERGY_PER_TICK;
+			}
 		}
 		
 		if(!canOperate())
@@ -145,16 +136,12 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		
 		if(!worldObj.isRemote)
 		{
-			if(testActive != operatingTicks > 0)
+			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
 			{
-				if(operatingTicks > 0)
-				{
-					setActive(true);
-				}
-				else if(!canOperate())
-				{
-					setActive(false);
-				}
+				setActive(true);
+			}
+			else {
+				setActive(false);
 			}
 		}
 	}
@@ -162,11 +149,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	@Override
     public void operate()
     {
-        if (!canOperate())
-        {
-            return;
-        }
-
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
 
         if (inventory[0].stackSize <= 0)
@@ -190,11 +172,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         if (inventory[0] == null)
         {
             return false;
-        }
-        
-        if(electricityStored < ENERGY_PER_TICK)
-        {
-        	return false;
         }
 
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());

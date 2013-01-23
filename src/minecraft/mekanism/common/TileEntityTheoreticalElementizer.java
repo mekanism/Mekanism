@@ -16,9 +16,9 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 	}
 	
 	@Override
-	public Map getRecipes()
+	public HashMap getRecipes()
 	{
-		return Collections.synchronizedMap(new HashMap<ItemStack, ItemStack>());
+		return (HashMap)Collections.synchronizedMap(new HashMap<ItemStack, ItemStack>());
 	}
 	
     @Override

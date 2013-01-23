@@ -193,14 +193,17 @@ public class PacketHandler implements IPacketHandler
 			    				{
 			    					Teleporter.Coords coords = Mekanism.teleporters.get(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3))).get(0);
 			    					
+			    					item.onUse(item.calculateEnergyCost(entityPlayerMP, coords), itemstack);
+			    					
 			    					if(entityPlayerMP.worldObj.provider.dimensionId != coords.dimensionId)
 			    					{
 			    						entityPlayerMP.travelToDimension(coords.dimensionId);
 			    					}
 			    					
-			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord, coords.yCoord, coords.zCoord, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
+			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord, coords.zCoord+0.5, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
 			    					
-			    					item.onUse(item.calculateEnergyCost(entityPlayerMP, coords), itemstack);
+			    					entityplayer.worldObj.playSound(coords.xCoord, coords.yCoord, coords.zCoord, "mob.endermen.portal", 1.0F, 1.0F, true);
+			    					PacketHandler.sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
 			    				}
 			    			}
 			    		}
@@ -479,6 +482,6 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
-        System.out.println("[Mekanism] Sent data int packet '" + i + "' to server");
+        System.out.println("[Mekanism] Sent data int packet '" + type.id + ":" + i + "' to server");
 	}
 }

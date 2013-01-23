@@ -63,7 +63,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public TileEntityEnergyCube(String name, int maxEnergy, int i)
 	{
 		super(name, maxEnergy);
-		powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
+		
+		if(powerProvider != null)
+		{
+			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
+		}
+		
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[2];
 		output = i;

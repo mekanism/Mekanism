@@ -103,4 +103,10 @@ public class ItemPortableTeleporter extends ItemEnergized
 
 		itemstack.stackTagCompound.setInteger("digit"+index, digit);
 	}
+	
+	@Override
+	public boolean canProduceElectricity()
+	{
+		return false;
+	}
 }

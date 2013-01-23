@@ -66,8 +66,9 @@ public class CommonProxy
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
 	  	Mekanism.extrasEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ExtrasEnabled", true).getBoolean(true);
 	  	Mekanism.platinumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PlatinumGenerationEnabled", true).getBoolean(true);
-	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", true).getBoolean(true);
-	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", true).getBoolean(true);
+	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);
+	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(true);
+	  	Mekanism.notifyNewReleases = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "NotifyNewReleases", false).getBoolean(true);
 	  	Mekanism.configuration.save();
 	}
 	
@@ -145,6 +146,8 @@ public class CommonProxy
 				return new ContainerMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser)tileEntity);
 			case 13:
 				return new ContainerTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
+			case 15:
+				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 		}
 		return null;
 	}

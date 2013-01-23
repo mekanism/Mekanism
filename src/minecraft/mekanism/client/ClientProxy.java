@@ -12,6 +12,7 @@ import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityMetallurgicInfuser;
+import mekanism.common.TileEntityPurificationChamber;
 import mekanism.common.TileEntitySmeltingFactory;
 import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
@@ -77,6 +78,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerSide.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/HydrogenFront.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/HydrogenSide.png");
+		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/PurificationChamberFront.png");
 		
 		//Register animated TextureFX
 		try {
@@ -88,6 +90,7 @@ public class ClientProxy extends CommonProxy
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+6));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+7));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+8));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/PurificationChamberFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+9));
 		} catch (IOException e) {
 			System.err.println("[Mekanism] Error registering animation with FML: " + e.getMessage());
 		}
@@ -135,13 +138,13 @@ public class ClientProxy extends CommonProxy
 			case 2:
 				return new GuiWeatherOrb(player);
 			case 3:
-				return new GuiElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
+				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
-				return new GuiAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiPlatinumCompressor(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 5:
-				return new GuiAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiCombiner(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 6:
-				return new GuiElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
+				return new GuiCrusher(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:
 				return new GuiTheoreticalElementizer(player.inventory, (TileEntityTheoreticalElementizer)tileEntity);
 			case 8:
@@ -162,6 +165,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiPortableTeleporter(player, itemStack);
 				}
+			case 15:
+				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 		}
 		return null;
 	}

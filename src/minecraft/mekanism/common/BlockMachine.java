@@ -34,6 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 6: Advanced Smelting Factory
  * 7: Elite Smelting Factory
  * 8: Metallurgic Infuser
+ * 9: Purification Chamber
  * @author AidanBrady
  *
  */
@@ -130,7 +131,7 @@ public class BlockMachine extends BlockContainer
         		return 9;
         	}
         	else {
-        		return 2;
+        		return 26;
         	}
     	}
     	else if(meta == 1)
@@ -140,7 +141,7 @@ public class BlockMachine extends BlockContainer
         		return 14;
         	}
         	else {
-        		return 2;
+        		return 26;
         	}
     	}
     	else if(meta == 2)
@@ -183,6 +184,10 @@ public class BlockMachine extends BlockContainer
     		{
     			return 41;
     		}
+     		else if(side == 0 || side == 1)
+    		{
+    			return 47;
+    		}
     		else {
     			return 44;
     		}
@@ -193,6 +198,10 @@ public class BlockMachine extends BlockContainer
     		{
     			return 42;
     		}
+     		else if(side == 0 || side == 1)
+    		{
+    			return 48;
+    		}
     		else {
     			return 45;
     		}
@@ -202,6 +211,10 @@ public class BlockMachine extends BlockContainer
     		if(side == 3)
     		{
     			return 43;
+    		}
+     		else if(side == 0 || side == 1)
+    		{
+    			return 49;
     		}
     		else {
     			return 46;
@@ -215,6 +228,16 @@ public class BlockMachine extends BlockContainer
     		}
     		else {
     			return 32;
+    		}
+    	}
+    	else if(meta == 9)
+    	{
+    		if(side == 3)
+    		{
+    			return 12;
+    		}
+    		else {
+    			return 2;
     		}
     	}
     	else {
@@ -236,7 +259,7 @@ public class BlockMachine extends BlockContainer
 	        	return MekanismUtils.isActive(world, x, y, z) ? 8 : 9;
 	        }
 	        else {
-	        	return 2;
+	        	return 26;
 	        }
     	}
     	else if(metadata == 1)
@@ -246,7 +269,7 @@ public class BlockMachine extends BlockContainer
             	return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+2 : 14;
             }
             else {
-            	return 2;
+            	return 26;
             }
     	}
     	else if(metadata == 2)
@@ -295,6 +318,10 @@ public class BlockMachine extends BlockContainer
     		{
     			return 41;
     		}
+    		else if(side == 0 || side == 1)
+    		{
+    			return 47;
+    		}
     		else {
     			return 44;
     		}
@@ -305,6 +332,10 @@ public class BlockMachine extends BlockContainer
     		{
     			return 42;
     		}
+       		else if(side == 0 || side == 1)
+    		{
+    			return 48;
+    		}
     		else {
     			return 45;
     		}
@@ -314,6 +345,10 @@ public class BlockMachine extends BlockContainer
     		if(side == tileEntity.facing)
     		{
     			return 43;
+    		}
+       		else if(side == 0 || side == 1)
+    		{
+    			return 49;
     		}
     		else {
     			return 46;
@@ -327,6 +362,16 @@ public class BlockMachine extends BlockContainer
     		}
     		else {
     			return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+8 : 32;
+    		}
+    	}
+    	else if(metadata == 9)
+    	{
+    		if(side == tileEntity.facing)
+    		{
+    			return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+9 : 12;
+    		}
+    		else {
+    			return 2;
     		}
     	}
     	else {
@@ -358,6 +403,7 @@ public class BlockMachine extends BlockContainer
 		list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));
 		list.add(new ItemStack(i, 1, 8));
+		list.add(new ItemStack(i, 1, 9));
 	}
     
     @Override
@@ -504,7 +550,8 @@ public class BlockMachine extends BlockContainer
 		BASIC_SMELTING_FACTORY(5, 11, TileEntitySmeltingFactory.class, false),
 		ADVANCED_SMELTING_FACTORY(6, 11, TileEntityAdvancedSmeltingFactory.class, false),
 		ELITE_SMELTING_FACTORY(7, 11, TileEntityEliteSmeltingFactory.class, false),
-		METALLURGIC_INFUSER(8, 12, TileEntityMetallurgicInfuser.class, false);
+		METALLURGIC_INFUSER(8, 12, TileEntityMetallurgicInfuser.class, false),
+		PURIFICATION_CHAMBER(9, 15, TileEntityPurificationChamber.class, false);
 		
 		public int meta;
 		public int guiId;

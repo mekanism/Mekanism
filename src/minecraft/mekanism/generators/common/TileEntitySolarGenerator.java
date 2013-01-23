@@ -148,7 +148,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			isActive = dataStream.readBoolean();
 			seesSun = dataStream.readBoolean();
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 		} catch (Exception e)
 		{
 			System.out.println("[Mekanism] Error while handling tile entity packet.");

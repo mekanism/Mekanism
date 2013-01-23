@@ -36,21 +36,24 @@ public final class MekanismUtils
 	 */
 	public static void checkForUpdates(EntityPlayer entityplayer)
 	{
-		if(!Mekanism.latestVersionNumber.equals("Error retrieving data."))
+		if(Mekanism.notifyNewReleases)
 		{
-			if(!Mekanism.latestVersionNumber.contains(Mekanism.versionNumber.toString()))
+			if(!Mekanism.latestVersionNumber.equals("Error retrieving data."))
 			{
-				entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
-				entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version " + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + " for Minecraft 1.4.6/7.");
-				entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
-				entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
-				entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
+				if(!Mekanism.latestVersionNumber.contains(Mekanism.versionNumber.toString()))
+				{
+					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
+					entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version " + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + " for Minecraft 1.4.6/7.");
+					entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
+					entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
+					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
+					return;
+				}
+			}
+			else {
+				System.out.println("[Mekanism] Minecraft is in offline mode, could not check for updates.");
 				return;
 			}
-		}
-		else {
-			System.out.println("[Mekanism] Minecraft is in offline mode, could not check for updates.");
-			return;
 		}
 	}
 	

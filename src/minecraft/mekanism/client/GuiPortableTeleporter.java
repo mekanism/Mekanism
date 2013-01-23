@@ -65,8 +65,11 @@ public class GuiPortableTeleporter extends GuiScreen
         
         ItemPortableTeleporter item = (ItemPortableTeleporter)itemStack.getItem();
         
-        fontRenderer.drawString("Portable Teleporter", 160, 43, 0x404040);
-        fontRenderer.drawString(item.getStatusAsString(item.getStatus(itemStack)), 178, 56, 0x00CD00);
+        ((GuiButton)controlList.get(0)).xPosition = guiWidth+48;
+        ((GuiButton)controlList.get(0)).yPosition = guiHeight+68;
+        
+        fontRenderer.drawString("Portable Teleporter", guiWidth+39, guiHeight+6, 0x404040);
+        fontRenderer.drawString(item.getStatusAsString(item.getStatus(itemStack)), guiWidth+53, guiHeight+19, 0x00CD00);
         super.drawScreen(i, j, f);
     }
     

@@ -19,7 +19,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.1.1", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.2.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismGenerators
 {
@@ -93,13 +93,15 @@ public class MekanismGenerators
 		//BioFuel Crusher Recipes
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling), new ItemStack(BioFuel, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.tallGrass), new ItemStack(BioFuel, 2));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.reed), new ItemStack(BioFuel, 1));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.seeds), new ItemStack(BioFuel, 1));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.wheat), new ItemStack(BioFuel, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.pumpkinSeeds), new ItemStack(BioFuel, 1));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.melonSeeds), new ItemStack(BioFuel, 1));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.appleRed), new ItemStack(BioFuel, 3));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 3));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.appleRed), new ItemStack(BioFuel, 2));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 2));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.carrot), new ItemStack(BioFuel, 2));
         
         for(int i = 0; i < BlockLeaves.LEAF_TYPES.length; i++)
         {

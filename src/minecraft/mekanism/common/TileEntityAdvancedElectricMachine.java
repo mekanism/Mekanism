@@ -110,12 +110,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
 		
-		if(inventory[1] != null && secondaryEnergyStored == 0)
+		if(inventory[1] != null)
 		{
 			int fuelTicks = getFuelTicks(inventory[1]);
-			if(fuelTicks > 0)
+			int energyNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
+			if(fuelTicks > 0 && fuelTicks <= energyNeeded)
 			{
-				int energyNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
 				if(fuelTicks <= energyNeeded)
 				{
 					setSecondaryEnergy(secondaryEnergyStored + fuelTicks);
@@ -157,41 +157,24 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			currentMaxElectricity = MAX_ELECTRICITY;
 		}
 		
-		if(canOperate() && (operatingTicks+1) < currentTicksRequired && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+		if(electricityStored >= ENERGY_PER_TICK && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 		{
-			++operatingTicks;
-			secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-			electricityStored -= ENERGY_PER_TICK;
-		}
-		else if((operatingTicks+1) >= currentTicksRequired)
-		{
-			if(!worldObj.isRemote)
+			if(canOperate() && (operatingTicks+1) < currentTicksRequired && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 			{
-				operate();
+				++operatingTicks;
+				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
+				electricityStored -= ENERGY_PER_TICK;
 			}
-			operatingTicks = 0;
-			secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-			electricityStored -= ENERGY_PER_TICK;
-		}
-		
-		if(electricityStored < 0)
-		{
-			electricityStored = 0;
-		}
-		
-		if(secondaryEnergyStored < 0)
-		{
-			secondaryEnergyStored = 0;
-		}
-		
-		if(electricityStored > currentMaxElectricity)
-		{
-			electricityStored = currentMaxElectricity;
-		}
-		
-		if(secondaryEnergyStored > MAX_SECONDARY_ENERGY)
-		{
-			secondaryEnergyStored = MAX_SECONDARY_ENERGY;
+			else if((operatingTicks+1) >= currentTicksRequired)
+			{
+				if(!worldObj.isRemote)
+				{
+					operate();
+				}
+				operatingTicks = 0;
+				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
+				electricityStored -= ENERGY_PER_TICK;
+			}
 		}
 		
 		if(!canOperate())
@@ -201,16 +184,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		if(!worldObj.isRemote)
 		{
-			if(testActive != operatingTicks > 0)
+			if(canOperate() && electricityStored >= ENERGY_PER_TICK && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 			{
-				if(operatingTicks > 0)
-				{
-					setActive(true);
-				}
-				else if(!canOperate())
-				{
-					setActive(false);
-				}
+				setActive(true);
+			}
+			else {
+				setActive(false);
 			}
 		}
 	}
@@ -218,11 +197,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public void operate()
     {
-        if (!canOperate())
-        {
-            return;
-        }
-
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
 
         if (inventory[0].stackSize <= 0)
@@ -246,16 +220,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         if (inventory[0] == null)
         {
             return false;
-        }
-        
-        if(electricityStored < ENERGY_PER_TICK)
-        {
-        	return false;
-        }
-        
-        if(secondaryEnergyStored < SECONDARY_ENERGY_PER_TICK)
-        {
-        	return false;
         }
 
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
@@ -363,7 +327,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 */
 	public void setSecondaryEnergy(int energy)
 	{
-		secondaryEnergyStored = Math.max(Math.min(energy, getFuelTicks(inventory[1])), 0);
+		secondaryEnergyStored = Math.max(Math.min(energy, MAX_SECONDARY_ENERGY), 0);
 	}
 	
 	/**
