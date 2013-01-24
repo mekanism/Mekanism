@@ -4,6 +4,7 @@ package mekanism.common;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.IMachineUpgrade;
+import mekanism.api.SideData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,15 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	public TileEntityElectricMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
 	{
 		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
+		
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 0, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 2, 1));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 3, 1));
+		
+		sideConfig = new byte[] {2, 1, 0, 0, 4, 3};
+		
 		inventory = new ItemStack[4];
 	}
 	
@@ -213,31 +223,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			System.out.println("[Mekanism] Error while handling tile entity packet.");
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == ForgeDirection.getOrientation(1))
-		{
-			return 0;
-		}
-		else if(side == ForgeDirection.getOrientation(0))
-		{
-			return 1;
-		}
-		else if(side == MekanismUtils.getLeft(facing))
-		{
-			return 3;
-		}
-		
-		return 2;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
 	}
     
 	@Override

@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import mekanism.api.IActiveState;
+import mekanism.api.IConfigurable;
 import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -294,5 +295,52 @@ public final class MekanismUtils
     	}
     	
     	return hasResource;
+    }
+    
+    public static int getBaseOrientation(int side, int blockFacing)
+    {
+    	if(blockFacing == 3 || side == 1 || side == 0)
+    	{
+    		if(side == 2 || side == 3)
+    		{
+    			return ForgeDirection.getOrientation(side).getOpposite().ordinal();
+    		}
+    		
+    		return side;
+    	}
+    	else if(blockFacing == 2)
+    	{
+    		if(side == 2 || side == 3)
+    		{
+    			return side;
+    		}
+    		
+    		return ForgeDirection.getOrientation(side).getOpposite().ordinal();
+    	}
+    	else if(blockFacing == 4)
+    	{
+    		return getRight(side).ordinal();
+    	}
+    	else if(blockFacing == 5)
+    	{
+    		return getLeft(side).ordinal();
+    	}
+    	
+    	return side;
+    }
+    
+    public static void incrementOutput(IConfigurable config, int side)
+    {
+    	int max = config.getSideData().size()-1;
+    	int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
+    	
+    	if(current < max)
+    	{
+    		config.getConfiguration()[side] = (byte)(current+1);
+    	}
+    	else if(current == max)
+    	{
+    		config.getConfiguration()[side] = 0;
+    	}
     }
 }

@@ -6,6 +6,8 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
+
 public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer
 {
 	private ModelAdvancedSolarGenerator arrayModel;
@@ -36,7 +38,21 @@ public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer
 	    }
 	    
 	    GL11.glRotatef(180, 0f, 0f, 1f);
-	    arrayModel.render(0.0F, 0.0625F);
+	    
+	    /*long time = FMLClientHandler.instance().getClient().theWorld.getWorldTime();
+	    double timeMatrix = 180;
+	    
+	    if(time+1000 >= 24000)
+	    {
+	    	time = (time+1000)-24000;
+	    }
+	    
+	    if(time <= 14000)
+	    {
+		    timeMatrix = (time/38.8888)-180;
+	    }*/
+	    
+	    arrayModel.render(/*(float)timeMatrix/100*/ 0.0F, 0.0625F);
 	    GL11.glPopMatrix();
 	}
 }

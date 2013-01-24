@@ -123,33 +123,33 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 	{
 		BASE.render(size);
 		SUPPORT_1_ROTATES.render(size);
-		SUPPORT_1_ROTATES.rotateAngleY = rotation;
+		//SUPPORT_1_ROTATES.rotateAngleZ = rotation;
 		MECHANISM_ROTATES.render(size);
-		MECHANISM_ROTATES.rotateAngleY = rotation;
+		MECHANISM_ROTATES.rotateAngleX = rotation;
 		PANEL_1_ROTATES.render(size);
-		PANEL_1_ROTATES.rotateAngleY = rotation;
+		PANEL_1_ROTATES.rotateAngleX = rotation;
 		PANEL_2_ROTATES.render(size);
-		PANEL_2_ROTATES.rotateAngleY = rotation;
+		PANEL_2_ROTATES.rotateAngleX = rotation;
 		PANEL_2_SUPPORT_1_ROTATES.render(size);
-		PANEL_2_SUPPORT_1_ROTATES.rotateAngleY = rotation;
+		PANEL_2_SUPPORT_1_ROTATES.rotateAngleX = rotation;
 		PANEL_2_SUPPORT_2_ROTATES.render(size);
-		PANEL_2_SUPPORT_2_ROTATES.rotateAngleY = rotation;
+		PANEL_2_SUPPORT_2_ROTATES.rotateAngleX = rotation;
 		PANEL_2_SUPPORT_3_ROTATES.render(size);
-		PANEL_2_SUPPORT_3_ROTATES.rotateAngleY = rotation;
+		PANEL_2_SUPPORT_3_ROTATES.rotateAngleX = rotation;
 		PANEL_2_SUPPORT_4_ROTATES.render(size);
-		PANEL_2_SUPPORT_4_ROTATES.rotateAngleY = rotation;
+		PANEL_2_SUPPORT_4_ROTATES.rotateAngleX = rotation;
 		PANEL_1_SUPPORT_1_ROTATES.render(size);
-		PANEL_1_SUPPORT_1_ROTATES.rotateAngleY = rotation;
+		PANEL_1_SUPPORT_1_ROTATES.rotateAngleX = rotation;
 		PANEL_1_SUPPORT_2_ROTATES.render(size);
-		PANEL_1_SUPPORT_2_ROTATES.rotateAngleY = rotation;
+		PANEL_1_SUPPORT_2_ROTATES.rotateAngleX = rotation;
 		PANEL_1_SUPPORT_3_ROTATES.render(size);
-		PANEL_1_SUPPORT_3_ROTATES.rotateAngleY = rotation;
+		PANEL_1_SUPPORT_3_ROTATES.rotateAngleX = rotation;
 		PANEL_1_SUPPORT_4_ROTATES.render(size);
-		PANEL_1_SUPPORT_4_ROTATES.rotateAngleY = rotation;
+		PANEL_1_SUPPORT_4_ROTATES.rotateAngleX = rotation;
 		SUPPORT_2_ROTATES.render(size);
-		SUPPORT_2_ROTATES.rotateAngleY = rotation;
+		//SUPPORT_2_ROTATES.rotateAngleZ = rotation;
 		SUPPORT_3_ROTATES.render(size);
-		SUPPORT_3_ROTATES.rotateAngleY = rotation;
+		//SUPPORT_3_ROTATES.rotateAngleZ = rotation;
 	}
   
 	private void setRotation(ModelRenderer model, float x, float y, float z)

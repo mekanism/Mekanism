@@ -16,7 +16,7 @@ public class ItemElectricBow extends ItemEnergized
 {
     public ItemElectricBow(int id)
     {
-        super(id, 120000, 512, 1200);
+        super(id, 120000, 120, 1200);
     }
     
 	@Override
@@ -154,5 +154,11 @@ public class ItemElectricBow extends ItemEnergized
 		}
 		
 		return state;
+    }
+    
+    @Override
+    public boolean canProduceElectricity()
+    {
+    	return false;
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import ic2.api.Direction;
@@ -7,7 +8,9 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.IActiveState;
+import mekanism.api.IConfigurable;
 import mekanism.api.IMachineUpgrade;
+import mekanism.api.SideData;
 import mekanism.api.Tier.SmeltingFactoryTier;
 import mekanism.client.Sound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,10 +39,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntitySmeltingFactory extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
+public class TileEntitySmeltingFactory extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable
 {	
 	/** This Smelting Factory's tier. */
 	public SmeltingFactoryTier tier;
+	
+	public byte[] sideConfig;
+	
+	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -52,7 +59,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public int TICKS_REQUIRED = 200;
 	
 	/** How much energy each operation consumes per tick. */
-	public int ENERGY_PER_TICK = 5;
+	public int ENERGY_PER_TICK = 20;
 	
 	/** How many ticks it takes, currently, to run an operation. */
 	public int currentTicksRequired;
@@ -69,6 +76,14 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public TileEntitySmeltingFactory()
 	{
 		this(SmeltingFactoryTier.BASIC);
+		
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 3));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 5, 3));
+		
+		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}
 	
 	public TileEntitySmeltingFactory(SmeltingFactoryTier type)
@@ -394,47 +409,13 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
-		if(side == ForgeDirection.getOrientation(1) || side == MekanismUtils.getLeft(facing))
-		{
-			return 2;
-		}
-		else if(side == ForgeDirection.getOrientation(0) || side == MekanismUtils.getRight(facing))
-		{
-			return 2+tier.processes;
-		}
-		else if(side == ForgeDirection.getOrientation(facing))
-		{
-			return 0;
-		}
-		else if(side == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return 1;
-		}
-		
-		return 0;
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotStart;
 	}
 
 	@Override
 	public int getSizeInventorySide(ForgeDirection side)
 	{
-		if(side == ForgeDirection.getOrientation(1) || side == MekanismUtils.getLeft(facing))
-		{
-			return tier.processes;
-		}
-		else if(side == ForgeDirection.getOrientation(0) || side == MekanismUtils.getRight(facing))
-		{
-			return tier.processes;
-		}
-		else if(side == ForgeDirection.getOrientation(facing))
-		{
-			return 1;
-		}
-		else if(side == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return 1;
-		}
-		
-		return 0;
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotAmount;
 	}
 
 	@Override
@@ -474,6 +455,14 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         {
         	progress[i] = nbtTags.getInteger("progress" + i);
         }
+        
+        if(nbtTags.hasKey("sideDataStored"))
+        {
+        	for(int i = 0; i < 6; i++)
+        	{
+        		sideConfig[i] = nbtTags.getByte("config"+i);
+        	}
+        }
     }
 
 	@Override
@@ -488,6 +477,13 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         for(int i = 0; i < tier.processes; i++)
         {
         	nbtTags.setInteger("progress" + i, progress[i]);
+        }
+        
+        nbtTags.setBoolean("sideDataStored", true);
+        
+        for(int i = 0; i < 6; i++)
+        {
+        	nbtTags.setByte("config"+i, sideConfig[i]);
         }
     }
 
@@ -670,4 +666,22 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     	
     	return (int)(rejects*Mekanism.TO_IC2);
     }
+	
+	@Override
+	public ArrayList<SideData> getSideData()
+	{
+		return sideOutputs;
+	}
+	
+	@Override
+	public byte[] getConfiguration()
+	{
+		return sideConfig;
+	}
+	
+	@Override
+	public int getOrientation()
+	{
+		return facing;
+	}
 }

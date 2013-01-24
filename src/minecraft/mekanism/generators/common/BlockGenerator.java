@@ -6,6 +6,7 @@ import java.util.Random;
 
 import mekanism.api.IActiveState;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.client.GeneratorsClientProxy;
@@ -36,7 +37,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Hydro Generator
  * @author AidanBrady
  *
  */
@@ -278,6 +278,83 @@ public class BlockGenerator extends BlockContainer
 	}
 	
 	@Override
+    @SideOnly(Side.CLIENT)
+    public void randomDisplayTick(World world, int x, int y, int z, Random random)
+    {
+		int metadata = world.getBlockMetadata(x, y, z);
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+        if (MekanismUtils.isActive(world, x, y, z))
+        {
+            float xRandom = (float)x + 0.5F;
+            float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+            float zRandom = (float)z + 0.5F;
+            float iRandom = 0.52F;
+            float jRandom = random.nextFloat() * 0.6F - 0.3F;
+
+            if (tileEntity.facing == 4)
+            {
+            	switch(GeneratorType.values()[metadata])
+            	{
+            		case HEAT_GENERATOR:
+            			world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+            			break;
+            		case BIO_GENERATOR:
+            			world.spawnParticle("smoke", x+.8, y+1, z+.8, 0.0D, 0.0D, 0.0D);
+            			break;
+            		default:
+            			break;
+            	}
+            }
+            else if (tileEntity.facing == 5)
+            {
+            	switch(GeneratorType.values()[metadata])
+            	{
+	            	case HEAT_GENERATOR:
+	            		world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+	            		world.spawnParticle("flame", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+	        			break;
+            		case BIO_GENERATOR:
+            			world.spawnParticle("smoke", x+.2, y+1, z+.2, 0.0D, 0.0D, 0.0D);
+            			break;
+            		default:
+            			break;
+            	}
+            }
+            else if (tileEntity.facing == 2)
+            {
+            	switch(GeneratorType.values()[metadata])
+            	{
+	            	case HEAT_GENERATOR:
+	            		world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+	            		world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+	        			break;
+            		case BIO_GENERATOR:
+            			world.spawnParticle("smoke", x+.2, y+1, z+.8, 0.0D, 0.0D, 0.0D);
+            			break;
+            		default:
+            			break;
+            	}
+            }
+            else if (tileEntity.facing == 3)
+            {
+            	switch(GeneratorType.values()[metadata])
+            	{
+	            	case HEAT_GENERATOR:
+	            		world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+	            		world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+	        			break;
+            		case BIO_GENERATOR:
+            			world.spawnParticle("smoke", x+.8, y+1, z+.2, 0.0D, 0.0D, 0.0D);
+            			break;
+            		default:
+            			break;
+            	}
+            }
+        }
+    }
+	
+	@Override
 	public boolean canPlaceBlockAt(World world, int x, int y, int z)
     {
 		if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
@@ -367,14 +444,14 @@ public class BlockGenerator extends BlockContainer
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
-    {
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-    	int metadata = world.getBlockMetadata(x, y, z);
-    	
+    {    	
         if(world.isRemote)
         {
             return true;
         }
+        
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	int metadata = world.getBlockMetadata(x, y, z);
         
     	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
     	{

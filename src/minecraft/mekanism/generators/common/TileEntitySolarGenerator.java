@@ -28,7 +28,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public TileEntitySolarGenerator()
 	{
 		super("Solar Generator", 96000, 60);
-		GENERATION_RATE = 50;
+		GENERATION_RATE = 80;
 		inventory = new ItemStack[1];
 	}
 	

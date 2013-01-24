@@ -3,10 +3,13 @@ package mekanism.common;
 import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.IActiveState;
+import mekanism.api.IConfigurable;
 import mekanism.api.IElectricMachine;
+import mekanism.api.SideData;
 import mekanism.client.Sound;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -24,11 +27,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
+	
+	public byte[] sideConfig;
+	
+	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
 	/** The bundled URL of this machine's sound effect */
 	public String soundURL;
@@ -169,6 +176,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         isActive = nbtTags.getBoolean("isActive");
         currentTicksRequired = nbtTags.getInteger("currentTicksRequired");
         currentMaxElectricity = nbtTags.getDouble("currentMaxElectricity");
+        
+        if(nbtTags.hasKey("sideDataStored"))
+        {
+        	for(int i = 0; i < 6; i++)
+        	{
+        		sideConfig[i] = nbtTags.getByte("config"+i);
+        	}
+        }
     }
 
 	@Override
@@ -180,6 +195,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("currentTicksRequired", currentTicksRequired);
         nbtTags.setDouble("currentMaxElectricity", currentMaxElectricity);
+        
+        nbtTags.setBoolean("sideDataStored", true);
+        
+        for(int i = 0; i < 6; i++)
+        {
+        	nbtTags.setByte("config"+i, sideConfig[i]);
+        }
     }
 	
 	@Override
@@ -234,6 +256,18 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return true;
+	}
+	
+	@Override
+	public int getStartInventorySide(ForgeDirection side) 
+	{
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotStart;
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotAmount;
 	}
 	
 	/**
@@ -322,4 +356,22 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+	
+	@Override
+	public ArrayList<SideData> getSideData()
+	{
+		return sideOutputs;
+	}
+	
+	@Override
+	public byte[] getConfiguration()
+	{
+		return sideConfig;
+	}
+	
+	@Override
+	public int getOrientation()
+	{
+		return facing;
+	}
 }

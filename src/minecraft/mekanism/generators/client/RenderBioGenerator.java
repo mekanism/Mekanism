@@ -6,6 +6,8 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
+
 public class RenderBioGenerator extends TileEntitySpecialRenderer
 {
 	private ModelBioGenerator model = new ModelBioGenerator();
@@ -30,7 +32,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 	    }
 		
 		GL11.glRotatef(180, 0f, 0f, 1f);
-		model.render(0.0625F);
+		model.render(0.0625F, tileEntity.isActive ? tileEntity.getMatrix() : 0);
 		GL11.glPopMatrix();
 	}
 }

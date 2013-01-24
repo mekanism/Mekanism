@@ -124,11 +124,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 
 			if(outputNetwork != null)
 			{
-				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), getJoules());
 
 				if(getJoules() > 0 && outputWatts > 0)
 				{
-					outputNetwork.startProducing(this, (outputWatts / getVoltage()) / 20, getVoltage());
+					outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
 					setJoules(electricityStored - outputWatts);
 				}
 				else {
@@ -266,13 +266,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return MAX_ELECTRICITY*Mekanism.FROM_IC2;
+		return MAX_ELECTRICITY;
 	}
 	
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return electricityStored*Mekanism.FROM_IC2;
+		return electricityStored;
 	}
 	
 	@Override

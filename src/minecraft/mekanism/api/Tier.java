@@ -54,7 +54,7 @@ public final class Tier
 	{
 		BASIC("Basic", 3, "GuiBasicSmeltingFactory.png"),
 		ADVANCED("Advanced", 5, "GuiAdvancedSmeltingFactory.png"),
-		ELITE("Elite", 7, "GuiUltimateSmeltingFactory.png");
+		ELITE("Elite", 7, "GuiEliteSmeltingFactory.png");
 		
 		public int processes;
 		public String guiTexturePath;

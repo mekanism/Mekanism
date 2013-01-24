@@ -34,8 +34,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
 	
+	public float crushMatrix = 0;
+	
 	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 560;
+	public final int GENERATION = 100;
 	
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
@@ -46,10 +48,34 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 		inventory = new ItemStack[2];
 	}
 	
+	public float getMatrix()
+	{
+		float matrix = 0;
+		
+		if(crushMatrix <= 2)
+		{
+			return crushMatrix;
+		}
+		else {
+			return 2 - (crushMatrix-2);
+		}
+	}
+	
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(worldObj.isRemote)
+		{
+			if(crushMatrix < 4)
+			{
+				crushMatrix+=0.2F;
+			}
+			else {
+				crushMatrix = 0;
+			}
+		}
 		
 		if(inventory[1] != null && electricityStored > 0)
 		{
@@ -102,7 +128,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			{
 				setActive(true);
 			}
-			bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 10);
+			bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 1);
 			setJoules(electricityStored + GENERATION);
 		}
 		else {

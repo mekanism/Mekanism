@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
+import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IActiveState;
@@ -13,6 +14,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -460,46 +462,45 @@ public class BlockMachine extends BlockContainer
     	{
     		return true;
     	}
-    	else {
-        	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-        	int metadata = world.getBlockMetadata(x, y, z);
-        	
-        	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+    	
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+    	{
+    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+    		
+    		int change = 0;
+    		
+    		switch(tileEntity.facing)
+    		{
+    			case 3:
+    				change = 4;
+    				break;
+    			case 4:
+    				change = 5;
+    				break;
+    			case 5:
+    				change = 2;
+    				break;
+    			case 2:
+    				change = 3;
+    				break;
+    		}
+    		
+    		tileEntity.setFacing((short)change);
+    		return true;
+    	}
+    	
+        if (tileEntity != null)
+        {
+        	if(!entityplayer.isSneaking())
         	{
-        		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-        		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
-        		
-        		int change = 0;
-        		
-        		switch(tileEntity.facing)
-        		{
-        			case 3:
-        				change = 4;
-        				break;
-        			case 4:
-        				change = 5;
-        				break;
-        			case 5:
-        				change = 2;
-        				break;
-        			case 2:
-        				change = 3;
-        				break;
-        		}
-        		
-        		tileEntity.setFacing((short)change);
+        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
         		return true;
         	}
-        	
-            if (tileEntity != null)
-            {
-            	if(!entityplayer.isSneaking())
-            	{
-            		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
-            		return true;
-            	}
-            }
-    	}
+        }
     	return false;
     }
     

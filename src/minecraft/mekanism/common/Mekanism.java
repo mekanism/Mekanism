@@ -107,7 +107,6 @@ public class Mekanism
 	public static int nullRenderID = 3005;
 	public static int gasTankID = 3006;
 	
-	
 	//Extra Items
 	public static ItemElectricBow ElectricBow;
 	public static Item Stopwatch;
@@ -125,6 +124,7 @@ public class Mekanism
 	public static Item CompressedCarbon;
 	public static Item PortableTeleporter;
 	public static Item TeleportationCore;
+	public static Item Configurator;
 	
 	//Extra Blocks
 	public static Block BasicBlock;
@@ -293,6 +293,12 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 7), new Object[] {
 			"COC", "OTO", "COC", Character.valueOf('C'), "basicCircuit", Character.valueOf('O'), new ItemStack(BasicBlock, 1, 2), Character.valueOf('T'), TeleportationCore
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 9), new Object[] {
+			"CAC", "ERE", "CAC", Character.valueOf('C'), "basicCircuit", Character.valueOf('A'), AtomicCore, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('R'), new ItemStack(MachineBlock, 1, 0)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Configurator), new Object[] {
+			" L ", "AEA", " S ", Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('S'), Item.stick
+		}));
 		
 		if(extrasEnabled)
 		{
@@ -365,6 +371,7 @@ public class Mekanism
 		LanguageRegistry.addName(CompressedCarbon, "Compressed Carbon");
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
+		LanguageRegistry.addName(Configurator, "Configurator");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.PlatinumBlock.name", "Platinum Block");
@@ -456,6 +463,7 @@ public class Mekanism
 		CompressedCarbon.setIconIndex(221);
 		PortableTeleporter.setIconIndex(206);
 		TeleportationCore.setIconIndex(207);
+		Configurator.setIconIndex(205);
 	}
 	
 	/**
@@ -487,6 +495,7 @@ public class Mekanism
 		TeleportationCore = new ItemMekanism(configuration.getItem("TeleportationCore", 11218).getInt()).setItemName("TeleportationCore");
 		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
+		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setItemName("Configurator");
 		configuration.save();
 	}
 	

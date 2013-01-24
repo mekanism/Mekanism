@@ -12,8 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.src.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -169,6 +171,56 @@ public class BlockBasic extends Block
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 	}
+	
+    @Override
+    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
+    {
+        TileEntity tile = world.getBlockTileEntity(x, y, z);
+
+        if (tile instanceof TileEntityContainerBlock)
+        {
+        	Random random = new Random();
+        	TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)tile;
+        	
+            for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
+            {
+                ItemStack slotStack = tileEntity.getStackInSlot(i);
+
+                if (slotStack != null)
+                {
+                    float xRandom = random.nextFloat() * 0.8F + 0.1F;
+                    float yRandom = random.nextFloat() * 0.8F + 0.1F;
+                    float zRandom = random.nextFloat() * 0.8F + 0.1F;
+
+                    while (slotStack.stackSize > 0)
+                    {
+                        int j = random.nextInt(21) + 10;
+
+                        if (j > slotStack.stackSize)
+                        {
+                            j = slotStack.stackSize;
+                        }
+
+                        slotStack.stackSize -= j;
+                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
+
+                        if (slotStack.hasTagCompound())
+                        {
+                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+                        }
+
+                        float k = 0.05F;
+                        item.motionX = (double)((float)random.nextGaussian() * k);
+                        item.motionY = (double)((float)random.nextGaussian() * k + 0.2F);
+                        item.motionZ = (double)((float)random.nextGaussian() * k);
+                        world.spawnEntityInWorld(item);
+                    }
+                }
+            }
+        }
+	        
+    	super.breakBlock(world, x, y, z, i1, i2);
+    }
 	
 	@Override
 	public String getTextureFile()

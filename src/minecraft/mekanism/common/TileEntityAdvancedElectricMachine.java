@@ -3,6 +3,7 @@ package mekanism.common;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.IMachineUpgrade;
+import mekanism.api.SideData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,6 +45,16 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	public TileEntityAdvancedElectricMachine(String soundPath, String name, String path, int perTick, int secondaryPerTick, int ticksRequired, int maxEnergy, int maxSecondaryEnergy)
 	{
 		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
+		
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 0, 1));
+		sideOutputs.add(new SideData(EnumColor.PURPLE, 1, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 2, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 3, 1));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 4, 1));
+		
+		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
+		
 		inventory = new ItemStack[5];
 		SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
 		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
@@ -243,35 +254,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }
-    
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == ForgeDirection.getOrientation(1))
-		{
-			return 0;
-		}
-		else if(side == ForgeDirection.getOrientation(0))
-		{
-			return 1;
-		}
-		else if(side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return 2;
-		}
-		else if(side == MekanismUtils.getLeft(facing))
-		{
-			return 4;
-		}
-		
-		return 3;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
-	}
     
 	@Override
 	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)

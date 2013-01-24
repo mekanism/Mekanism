@@ -208,11 +208,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 
 			if(outputNetwork != null)
 			{
-				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), getJoules());
 
-				if(getJoules() > 0 && outputWatts > 0)
+				if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
 				{
-					outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
+					outputNetwork.startProducing(this, Math.min(outputWatts, getJoules()) / getVoltage(), getVoltage());
 					setJoules(electricityStored - outputWatts);
 				}
 				else {

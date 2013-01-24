@@ -7,29 +7,37 @@ package mekanism.common;
  */
 public enum EnumColor
 {
-	BLACK("\u00a70"),
-	DARK_BLUE("\u00a71"),
-	DARK_GREEN("\u00a72"),
-	DARK_AQUA("\u00a73"),
-	DARK_RED("\u00a74"),
-	PURPLE("\u00a75"),
-	ORANGE("\u00a76"),
-	GREY("\u00a77"),
-	DARK_GREY("\u00a78"),
-	INDIGO("\u00a79"),
-	BRIGHT_GREEN("\u00a7a"),
-	AQUA("\u00a7b"),
-	RED("\u00a7c"),
-	PINK("\u00a7d"),
-	YELLOW("\u00a7e"),
-	WHITE("\u00a7f");
+	BLACK("\u00a70", "Black"),
+	DARK_BLUE("\u00a71", "Dark Blue"),
+	DARK_GREEN("\u00a72", "Dark Green"),
+	DARK_AQUA("\u00a73", "Dark Aqua"),
+	DARK_RED("\u00a74", "Dark Red"),
+	PURPLE("\u00a75", "Purple"),
+	ORANGE("\u00a76", "Orange"),
+	GREY("\u00a77", "Grey"),
+	DARK_GREY("\u00a78", "Dark Grey"),
+	INDIGO("\u00a79", "Indigo"),
+	BRIGHT_GREEN("\u00a7a", "Bright Green"),
+	AQUA("\u00a7b", "Aqua"),
+	RED("\u00a7c", "Red"),
+	PINK("\u00a7d", "Pink"),
+	YELLOW("\u00a7e", "Yellow"),
+	WHITE("\u00a7f", "White");
 	
 	/** The color code that will be displayed */
 	public final String code;
 	
-	private EnumColor(String s)
+	public String friendlyName;
+	
+	private EnumColor(String s, String n)
 	{
 		code = s;
+		friendlyName = n;
+	}
+	
+	public String getName()
+	{
+		return code + friendlyName;
 	}
 	
 	@Override

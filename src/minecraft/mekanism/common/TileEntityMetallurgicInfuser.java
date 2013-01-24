@@ -5,15 +5,18 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.IActiveState;
+import mekanism.api.IConfigurable;
 import mekanism.api.IMachineUpgrade;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
+import mekanism.api.SideData;
 import mekanism.client.Sound;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,11 +44,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
+	
+	public byte[] sideConfig;
+	
+	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
 	/** The type of infuse this machine stores. */
 	public InfusionType type = InfusionType.NONE;
@@ -54,7 +61,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 	
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = 12;
+	public double ENERGY_PER_TICK = 16;
 	
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
@@ -80,6 +87,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public TileEntityMetallurgicInfuser()
 	{
 		super("Metallurgic Infuser", 10000);
+		
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
+		sideOutputs.add(new SideData(EnumColor.PURPLE, 1, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 3, 1));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 4, 1));
+		
+		sideConfig = new byte[] {0, 1, 0, 5, 3, 4};
 		
 		inventory = new ItemStack[5];
 		
@@ -409,35 +425,26 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
     	type = InfusionType.getFromName(nbtTags.getString("type"));
+    	
+        if(nbtTags.hasKey("sideDataStored"))
+        {
+        	for(int i = 0; i < 6; i++)
+        	{
+        		sideConfig[i] = nbtTags.getByte("config"+i);
+        	}
+        }
     }
     
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
-		if(side == ForgeDirection.getOrientation(1))
-		{
-			return 0;
-		}
-		else if(side == MekanismUtils.getLeft(facing))
-		{
-			return 1;
-		}
-		else if(side == MekanismUtils.getRight(facing))
-		{
-			return 4;
-		}
-		else if(side == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return 3;
-		}
-		
-		return 2;
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotStart;
 	}
 
 	@Override
 	public int getSizeInventorySide(ForgeDirection side)
 	{
-		return 1;
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotAmount;
 	}
 
     @Override
@@ -451,6 +458,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setInteger("infuseStored", infuseStored);
         nbtTags.setString("type", type.name);
+        
+        nbtTags.setBoolean("sideDataStored", true);
+        
+        for(int i = 0; i < 6; i++)
+        {
+        	nbtTags.setByte("config"+i, sideConfig[i]);
+        }
     }
 
 	@Override
@@ -629,4 +643,22 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	
     	return (int)(rejects*Mekanism.TO_IC2);
     }
+	
+	@Override
+	public ArrayList<SideData> getSideData()
+	{
+		return sideOutputs;
+	}
+	
+	@Override
+	public byte[] getConfiguration()
+	{
+		return sideConfig;
+	}
+	
+	@Override
+	public int getOrientation()
+	{
+		return facing;
+	}
 }
