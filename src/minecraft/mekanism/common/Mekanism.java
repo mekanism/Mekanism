@@ -566,9 +566,7 @@ public class Mekanism
 		OreDictionary.registerOre("clumpTin", new ItemStack(Clump, 1, 4));
 		
 		OreDictionary.registerOre("orePlatinum", new ItemStack(OreBlock, 1, 0));
-		
-		OreDictionary.registerOre("basicCircuit", new ItemStack(ControlCircuit));
-		
+				
 		if(hooks.IC2Loaded)
 		{
 			if(!hooks.RailcraftLoaded)
