@@ -129,12 +129,6 @@ public class ModelBioGenerator extends ModelBase
       	PLUG_PANEL.setTextureSize(128, 128);
       	PLUG_PANEL.mirror = true;
       	setRotation(PLUG_PANEL, 0F, 0F, 0F);
-      	/*PISTON_HEAD_MOVES = new ModelRenderer(this, 8, 50);
-      	PISTON_HEAD_MOVES.addBox(0F, 0F, 0F, 4, 2, 4);
-      	PISTON_HEAD_MOVES.setRotationPoint(-2F, 13F, -7F);
-      	PISTON_HEAD_MOVES.setTextureSize(128, 128);
-      	PISTON_HEAD_MOVES.mirror = true;
-      	setRotation(PISTON_HEAD_MOVES, 0F, 0F, 0F);*/
       	PISTON_ARM_MOVES = new ModelRenderer(this, 8, 57);
       	PISTON_ARM_MOVES.addBox(0F, 0F, 0F, 2, 2, 2);
       	PISTON_ARM_MOVES.setRotationPoint(-1F, 11F, -6F);

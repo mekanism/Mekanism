@@ -36,7 +36,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	public LiquidSlot fuelSlot = new LiquidSlot(24000, Mekanism.hooks.BuildCraftFuelID);
 	
 	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 100;
+	public final int GENERATION = 80;
 	
 	public TileEntityHeatGenerator()
 	{
@@ -85,16 +85,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				{
 					fuelSlot.liquidStored += fuel;
 					--inventory[0].stackSize;
+					
+					if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
+					{
+						inventory[0] = new ItemStack(Item.bucketEmpty);
+					}
 				}
 				
 				if(inventory[0].stackSize == 0)
 				{
 					inventory[0] = null;
-				}
-				
-				if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
-				{
-					inventory[0] = new ItemStack(Item.bucketEmpty);
 				}
 			}
 		}
@@ -146,17 +146,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		int boost = 0;
 		
 		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
-			boost+=10;
+			boost+=5;
 		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
-			boost+=10;
+			boost+=5;
 		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
-			boost+=10;
+			boost+=5;
 		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
-			boost+=10;
+			boost+=5;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
-			boost+=10;
+			boost+=5;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
-			boost+=10;
+			boost+=5;
 		
 		return boost;
 	}

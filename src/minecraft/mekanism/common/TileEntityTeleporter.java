@@ -332,7 +332,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 2;
+		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 8;
 	}
 	
 	public int getScaledEnergyLevel(int i)

@@ -32,6 +32,7 @@ import net.minecraftforge.common.ForgeChunkManager;
  * 5: Steel Block
  * 6: Control Panel
  * 7: Teleporter
+ * 8: Teleporter Frame
  * @author AidanBrady
  *
  */
@@ -67,6 +68,8 @@ public class BlockBasic extends Block
 				return 0;
 			case 7:
 				return 25;
+			case 8:
+				return 27;
 		}
 		return 0;
 	}
@@ -89,6 +92,7 @@ public class BlockBasic extends Block
 		list.add(new ItemStack(i, 1, 5));
 		//list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));
+		list.add(new ItemStack(i, 1, 8));
 	}
 	
 	@Override
@@ -142,6 +146,8 @@ public class BlockBasic extends Block
         		return 8;
         	case 4:
         		return 15;
+        	case 8:
+        		return 12;
         }
         return 0;
     }

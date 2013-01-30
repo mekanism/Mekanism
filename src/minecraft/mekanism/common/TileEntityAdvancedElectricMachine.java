@@ -121,28 +121,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
 		
-		if(inventory[1] != null)
-		{
-			int fuelTicks = getFuelTicks(inventory[1]);
-			int energyNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
-			if(fuelTicks > 0 && fuelTicks <= energyNeeded)
-			{
-				if(fuelTicks <= energyNeeded)
-				{
-					setSecondaryEnergy(secondaryEnergyStored + fuelTicks);
-				}
-				else if(fuelTicks > energyNeeded)
-				{
-					setSecondaryEnergy(secondaryEnergyStored + energyNeeded);
-				}
-				--inventory[1].stackSize;
-				
-				if(inventory[1].stackSize == 0)
-				{
-					inventory[1] = null;
-				}
-			}
-		}
+		handleSecondaryFuel();
 		
 		if(inventory[4] != null && inventory[4].getItem() instanceof IMachineUpgrade)
 		{
@@ -204,6 +183,32 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
 	}
+    
+    public void handleSecondaryFuel()
+    {
+		if(inventory[1] != null)
+		{
+			int fuelTicks = getFuelTicks(inventory[1]);
+			int energyNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
+			if(fuelTicks > 0 && fuelTicks <= energyNeeded)
+			{
+				if(fuelTicks <= energyNeeded)
+				{
+					setSecondaryEnergy(secondaryEnergyStored + fuelTicks);
+				}
+				else if(fuelTicks > energyNeeded)
+				{
+					setSecondaryEnergy(secondaryEnergyStored + energyNeeded);
+				}
+				--inventory[1].stackSize;
+				
+				if(inventory[1].stackSize == 0)
+				{
+					inventory[1] = null;
+				}
+			}
+		}
+    }
 
     @Override
     public void operate()

@@ -37,7 +37,7 @@ public final class MekanismUtils
 	 */
 	public static void checkForUpdates(EntityPlayer entityplayer)
 	{
-		if(Mekanism.notifyNewReleases)
+		if(Mekanism.updateNotifications)
 		{
 			if(!Mekanism.latestVersionNumber.equals("Error retrieving data."))
 			{

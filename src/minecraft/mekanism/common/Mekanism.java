@@ -49,7 +49,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.2.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.2.2")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -71,7 +71,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 2, 0);
+	public static Version versionNumber = new Version(5, 2, 2);
 	
 	/** Map of Teleporter info. */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -146,7 +146,7 @@ public class Mekanism
 	public static boolean platinumGenerationEnabled = true;
 	public static boolean disableBCBronzeCrafting = true;
 	public static boolean disableBCSteelCrafting = true;
-	public static boolean notifyNewReleases = true;
+	public static boolean updateNotifications = true;
 	
 	//Extra data
 	public static float ObsidianTNTBlastRadius = 12.0F;
@@ -291,13 +291,16 @@ public class Mekanism
 			" E ", "CTC", " E ", Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "basicCircuit", Character.valueOf('T'), TeleportationCore
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 7), new Object[] {
-			"COC", "OTO", "COC", Character.valueOf('C'), "basicCircuit", Character.valueOf('O'), new ItemStack(BasicBlock, 1, 2), Character.valueOf('T'), TeleportationCore
+			"COC", "OTO", "COC", Character.valueOf('C'), "basicCircuit", Character.valueOf('O'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('T'), TeleportationCore
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 9), new Object[] {
 			"CAC", "ERE", "CAC", Character.valueOf('C'), "basicCircuit", Character.valueOf('A'), AtomicCore, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('R'), new ItemStack(MachineBlock, 1, 0)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Configurator), new Object[] {
 			" L ", "AEA", " S ", Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('S'), Item.stick
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 4, 8), new Object[] {
+			"OOO", "OGO", "OOO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('G'), "ingotRefinedGlowstone"
 		}));
 		
 		if(extrasEnabled)
@@ -322,6 +325,10 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 4), new ItemStack(CompressedCarbon, 8));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreLapis), new ItemStack(Item.dyePowder, 12, 4));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 12));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreCoal), new ItemStack(Block.oreCoal));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreDiamond), new ItemStack(Item.diamond, 2));
 		
 		//Platinum Compressor Recipes
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.lightStoneDust), new ItemStack(Ingot, 1, 3));
@@ -330,10 +337,13 @@ public class Mekanism
 		RecipeHandler.addCrusherRecipe(new ItemStack(Item.diamond), new ItemStack(Dust, 1, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotIron), new ItemStack(Dust, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.ingotGold), new ItemStack(Dust, 1, 1));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.stone), new ItemStack(Block.cobblestone));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.cobblestone), new ItemStack(Block.sand));
         
         //Purification Chamber Recipes
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Clump, 1, 0));
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 1, 1));
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Clump, 3, 0));
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 3, 1));
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
@@ -382,6 +392,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.SteelBlock.name", "Steel Block");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.ControlPanel.name", "Control Panel");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.Teleporter.name", "Teleporter");
+		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.TeleporterFrame.name", "Teleporter Frame");
 		
 		//Localization for MachineBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnrichmentChamber.name", "Enrichment Chamber");
@@ -655,7 +666,7 @@ public class Mekanism
 			
 			for(ItemStack ore : OreDictionary.getOres("ingotLead"))
 			{
-				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustLead").get(0));
+				RecipeHandler.addCrusherRecipe(ore, MekanismUtils.getStackWithSize(OreDictionary.getOres("dustLead").get(0), 1));
 			}
 		} catch(Exception e) {}
 		
@@ -667,7 +678,7 @@ public class Mekanism
 			
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
 			{
-				RecipeHandler.addCrusherRecipe(ore, OreDictionary.getOres("dustSilver").get(0));
+				RecipeHandler.addCrusherRecipe(ore, MekanismUtils.getStackWithSize(OreDictionary.getOres("dustSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
 		
@@ -702,14 +713,14 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
-				RecipeHandler.addCrusherRecipe(ore, new ItemStack(Dust, 1, 6));
+				RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Dust, 1, 6));
 			}
 		} catch(Exception e) {}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotTin"))
 			{
-				RecipeHandler.addCrusherRecipe(ore, new ItemStack(Dust, 1, 7));
+				RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Dust, 1, 7));
 			}
 		} catch(Exception e) {}
 		

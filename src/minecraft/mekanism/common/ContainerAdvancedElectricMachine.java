@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
+import mekanism.api.IStorageTank;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -130,7 +131,7 @@ public class ContainerAdvancedElectricMachine extends Container
         			}
         		}
         	}
-            else if(tileEntity.getFuelTicks(slotStack) > 0)
+            else if(tileEntity.getFuelTicks(slotStack) > 0 || (tileEntity instanceof TileEntityPurificationChamber && slotStack.getItem() instanceof IStorageTank))
             {
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             	{

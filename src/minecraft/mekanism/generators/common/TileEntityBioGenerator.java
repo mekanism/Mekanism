@@ -44,7 +44,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 160000, 600);
+		super("Bio-Generator", 160000, 128);
 		inventory = new ItemStack[2];
 	}
 	

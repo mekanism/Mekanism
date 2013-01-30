@@ -68,7 +68,7 @@ public class CommonProxy
 	  	Mekanism.platinumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PlatinumGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);
 	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(true);
-	  	Mekanism.notifyNewReleases = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "NotifyNewReleases", false).getBoolean(true);
+	  	Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);
 	  	Mekanism.configuration.save();
 	}
 	

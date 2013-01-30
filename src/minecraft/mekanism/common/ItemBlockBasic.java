@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
  * 5: Steel Block
  * 6: Control Panel
  * 7: Teleporter
+ * 8: Teleporter Frame
  * @author AidanBrady
  *
  */
@@ -69,6 +70,9 @@ public class ItemBlockBasic extends ItemBlock
 				break;
 			case 7:
 				name = "Teleporter";
+				break;
+			case 8:
+				name = "TeleporterFrame";
 				break;
 			default:
 				name = "Unknown";

@@ -92,7 +92,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				setActive(true);
 			}
 			
-			hydrogenStored-=10;
+			hydrogenStored-=2;
 			setJoules(electricityStored + 1000);
 		}
 		else {
