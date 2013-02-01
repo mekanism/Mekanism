@@ -59,7 +59,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public int TICKS_REQUIRED = 200;
 	
 	/** How much energy each operation consumes per tick. */
-	public int ENERGY_PER_TICK = 20;
+	public int ENERGY_PER_TICK = 16;
 	
 	/** How many ticks it takes, currently, to run an operation. */
 	public int currentTicksRequired;
@@ -88,7 +88,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	
 	public TileEntitySmeltingFactory(SmeltingFactoryTier type)
 	{
-		super(type.name + " Smelting Factory", type.processes*1000);
+		super(type.name + " Smelting Factory", type.processes*3200);
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		tier = type;
 		currentTicksRequired = TICKS_REQUIRED;
@@ -115,7 +115,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*10);
+			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -188,7 +188,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 					}
 				}
 			}
-			if(inventory[1].itemID == Item.redstone.itemID && electricityStored <= (currentMaxElectricity-1000))
+			if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= currentMaxElectricity)
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
@@ -666,6 +666,12 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     	
     	return (int)(rejects*Mekanism.TO_IC2);
     }
+	
+	@Override
+	public int powerRequest() 
+	{
+		return (int)(currentMaxElectricity-electricityStored);
+	}
 	
 	@Override
 	public ArrayList<SideData> getSideData()

@@ -30,7 +30,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	 * @param name - full name of this block
 	 * @param maxEnergy - how much energy this block can store
 	 */
-	public TileEntityElectricBlock(String name, int maxEnergy)
+	public TileEntityElectricBlock(String name, double maxEnergy)
 	{
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
@@ -38,7 +38,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(PowerFramework.currentFramework != null)
 		{
 			powerProvider = PowerFramework.currentFramework.createPowerProvider();
-			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
+			powerProvider.configure(0, 0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
 		}
 	}
 	
@@ -117,7 +117,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int powerRequest() 
 	{
-		return getPowerProvider().getMaxEnergyReceived();
+		return (int)(MAX_ELECTRICITY-electricityStored);
 	}
 	
 	@Override

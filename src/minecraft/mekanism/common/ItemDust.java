@@ -9,7 +9,7 @@ public class ItemDust extends ItemMekanism
 {
 	public static String[] en_USNames = {"Iron", "Gold", "Platinum", 
 										"Obsidian", "Diamond", "Steel",
-										"Copper", "Tin"};
+										"Copper", "Tin", "Silver"};
 	
 	public ItemDust(int id)
 	{
@@ -31,6 +31,7 @@ public class ItemDust extends ItemMekanism
 			case 5: return 245;
 			case 6: return 243;
 			case 7: return 244;
+			case 8: return 246;
 			default: return 0;
 		}
 	}
@@ -38,7 +39,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for (int counter = 0; counter <= 7; ++counter)
+		for (int counter = 0; counter <= 8; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

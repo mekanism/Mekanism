@@ -166,7 +166,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 					}
 				}
 			}
-			if(inventory[0].itemID == Item.redstone.itemID && electricityStored <= (MAX_ELECTRICITY-1000))
+			if(inventory[0].itemID == Item.redstone.itemID && electricityStored+1000 <= MAX_ELECTRICITY)
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[0].stackSize;

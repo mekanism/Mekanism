@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import ic2.api.ICustomElectricItem;
+
 import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,7 +15,7 @@ import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import universalelectricity.core.implement.IItemElectric;
 
-public class ItemEnergized extends ItemMekanism implements IItemElectric
+public class ItemEnergized extends ItemMekanism implements IItemElectric, ICustomElectricItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
@@ -161,5 +163,80 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric
 	public boolean canProduceElectricity()
 	{
 		return true;
+	}
+	
+	@Override
+	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	{
+		double givenEnergy = amount*Mekanism.FROM_IC2;
+		double energyNeeded = MAX_ELECTRICITY-getJoules(itemStack);
+		double energyToStore = Math.min(Math.min(amount, MAX_ELECTRICITY*0.01), energyNeeded);
+		
+		if(!simulate)
+		{
+			setJoules(getJoules(itemStack) + energyToStore, itemStack);
+		}
+		return (int)(energyToStore*Mekanism.TO_IC2);
+	}
+	
+	@Override
+	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	{
+		double energyWanted = amount*Mekanism.FROM_IC2;
+		double energyToGive = Math.min(Math.min(energyWanted, MAX_ELECTRICITY*0.01), getJoules(itemStack));
+		
+		if(!simulate)
+		{
+			setJoules(getJoules(itemStack) - energyToGive, itemStack);
+		}
+		return (int)(energyToGive*Mekanism.TO_IC2);
+	}
+
+	@Override
+	public boolean canUse(ItemStack itemStack, int amount)
+	{
+		return getJoules(itemStack) >= amount*Mekanism.FROM_IC2;
+	}
+	
+	@Override
+	public boolean canShowChargeToolTip(ItemStack itemStack)
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean canProvideEnergy()
+	{
+		return canProduceElectricity();
+	}
+
+	@Override
+	public int getChargedItemId()
+	{
+		return itemID;
+	}
+
+	@Override
+	public int getEmptyItemId()
+	{
+		return itemID;
+	}
+
+	@Override
+	public int getMaxCharge()
+	{
+		return (int)(MAX_ELECTRICITY*Mekanism.TO_IC2);
+	}
+
+	@Override
+	public int getTier()
+	{
+		return 3;
+	}
+
+	@Override
+	public int getTransferLimit()
+	{
+		return (int)(getVoltage()*Mekanism.TO_IC2);
 	}
 }

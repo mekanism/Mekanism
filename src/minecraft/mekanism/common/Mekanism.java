@@ -49,7 +49,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.2.2")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.2.3")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -71,7 +71,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 2, 2);
+	public static Version versionNumber = new Version(5, 2, 3);
 	
 	/** Map of Teleporter info. */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -423,6 +423,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.steelDust.name", "Steel Dust");
 		LanguageRegistry.instance().addStringLocalization("item.copperDust.name", "Copper Dust");
 		LanguageRegistry.instance().addStringLocalization("item.tinDust.name", "Tin Dust");
+		LanguageRegistry.instance().addStringLocalization("item.silverDust.name", "Silver Dust");
 		
 		//Localization for Clump
 		LanguageRegistry.instance().addStringLocalization("item.ironClump.name", "Iron Clump");
@@ -430,6 +431,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.platinumClump.name", "Platinum Clump");
 		LanguageRegistry.instance().addStringLocalization("item.copperClump.name", "Copper Clump");
 		LanguageRegistry.instance().addStringLocalization("item.tinClump.name", "Tin Clump");
+		LanguageRegistry.instance().addStringLocalization("item.silverClump.name", "Silver Clump");
 		
 		//Localization for Dirty Dust
 		LanguageRegistry.instance().addStringLocalization("item.dirtyIronDust.name", "Dirty Iron Dust");
@@ -437,6 +439,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.dirtyPlatinumDust.name", "Dirty Platinum Dust");
 		LanguageRegistry.instance().addStringLocalization("item.dirtyCopperDust.name", "Dirty Copper Dust");
 		LanguageRegistry.instance().addStringLocalization("item.dirtyTinDust.name", "Dirty Tin Dust");
+		LanguageRegistry.instance().addStringLocalization("item.dirtySilverDust.name", "Dirty Silver Dust");
 		
 		//Localization for Ingot
 		LanguageRegistry.instance().addStringLocalization("item.obsidianIngot.name", "Obsidian Ingot");
@@ -550,6 +553,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustSteel", new ItemStack(Dust, 1, 5));
 		OreDictionary.registerOre("dustCopper", new ItemStack(Dust, 1, 6));
 		OreDictionary.registerOre("dustTin", new ItemStack(Dust, 1, 7));
+		OreDictionary.registerOre("dustSilver", new ItemStack(Dust, 1, 8));
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotPlatinum", new ItemStack(Ingot, 1, 1));
@@ -569,16 +573,19 @@ public class Mekanism
 		OreDictionary.registerOre("dirtyDustPlatinum", new ItemStack(DirtyDust, 1, 2));
 		OreDictionary.registerOre("dirtyDustCopper", new ItemStack(DirtyDust, 1, 3));
 		OreDictionary.registerOre("dirtyDustTin", new ItemStack(DirtyDust, 1, 4));
+		OreDictionary.registerOre("dirtyDustSilver", new ItemStack(DirtyDust, 1, 5));
 		
 		OreDictionary.registerOre("clumpIron", new ItemStack(Clump, 1, 0));
 		OreDictionary.registerOre("clumpGold", new ItemStack(Clump, 1, 1));
 		OreDictionary.registerOre("clumpPlatinum", new ItemStack(Clump, 1, 2));
 		OreDictionary.registerOre("clumpCopper", new ItemStack(Clump, 1, 3));
 		OreDictionary.registerOre("clumpTin", new ItemStack(Clump, 1, 4));
+		OreDictionary.registerOre("clumpSilver", new ItemStack(Clump, 1, 5));
 		
 		OreDictionary.registerOre("orePlatinum", new ItemStack(OreBlock, 1, 0));
 		
 		OreDictionary.registerOre("basicCircuit", new ItemStack(ControlCircuit));
+		OreDictionary.registerOre("compressedCarbon", new ItemStack(CompressedCarbon));
 		
 		if(hooks.IC2Loaded)
 		{
@@ -615,6 +622,11 @@ public class Mekanism
 			RecipeHandler.addCrusherRecipe(ore, new ItemStack(DirtyDust, 1, 4));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("clumpSilver"))
+		{
+			RecipeHandler.addCrusherRecipe(ore, new ItemStack(DirtyDust, 1, 5));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dirtyDustIron"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(ore, new ItemStack(Dust, 1, 0));
@@ -638,6 +650,11 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dirtyDustTin"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(ore, new ItemStack(Dust, 1, 7));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dirtyDustSilver"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(ore, new ItemStack(Dust, 1, 8));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreCopper"))
@@ -673,12 +690,13 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("oreSilver"))
 			{
-				RecipeHandler.addEnrichmentChamberRecipe(ore, MekanismUtils.getStackWithSize(OreDictionary.getOres("dustSilver").get(0), 2));
+				RecipeHandler.addEnrichmentChamberRecipe(ore, new ItemStack(Dust, 2, 8));
+				RecipeHandler.addPurificationChamberRecipe(ore, new ItemStack(Clump, 3, 5));
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
 			{
-				RecipeHandler.addCrusherRecipe(ore, MekanismUtils.getStackWithSize(OreDictionary.getOres("dustSilver").get(0), 1));
+				RecipeHandler.addCrusherRecipe(ore, new ItemStack(Dust, 1, 8));
 			}
 		} catch(Exception e) {}
 		

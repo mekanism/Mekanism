@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class ItemClump extends ItemMekanism
 {
 	public static String[] en_USNames = {"Iron", "Gold", "Platinum", 
-										"Copper", "Tin"};
+										"Copper", "Tin", "Silver"};
 	
 	public ItemClump(int id)
 	{
@@ -27,6 +27,7 @@ public class ItemClump extends ItemMekanism
 			case 2: return 210;
 			case 3: return 211;
 			case 4: return 212;
+			case 5: return 214;
 			default: return 0;
 		}
 	}
@@ -34,7 +35,7 @@ public class ItemClump extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for (int counter = 0; counter <= 4; ++counter)
+		for (int counter = 0; counter <= 5; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

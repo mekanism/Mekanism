@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import ic2.api.ICustomElectricItem;
+
 import java.util.List;
 
 import mekanism.api.IEnergyCube;
@@ -16,7 +18,7 @@ import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import universalelectricity.core.implement.IItemElectric;
 
-public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEnergyCube
+public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEnergyCube, ICustomElectricItem
 {
 	public Block metaBlock;
 	
@@ -164,6 +166,12 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
     		tileEntity.tier = ((IEnergyCube)stack.getItem()).getTier(stack);
     		tileEntity.electricityStored = getJoules(stack);
+    		tileEntity.output = tileEntity.tier.OUTPUT;
+    		
+    		if(tileEntity.powerProvider != null)
+    		{
+    			tileEntity.powerProvider.configure(0, 0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
+    		}
     	}
     	
     	return place;
@@ -194,5 +202,80 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 		}
 
 		itemstack.stackTagCompound.setString("tier", tier.name);
+	}
+	
+	@Override
+	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	{
+		double givenEnergy = amount*Mekanism.FROM_IC2;
+		double energyNeeded = getTier(itemStack).MAX_ELECTRICITY-getJoules(itemStack);
+		double energyToStore = Math.min(Math.min(amount, getTier(itemStack).MAX_ELECTRICITY*0.01), energyNeeded);
+		
+		if(!simulate)
+		{
+			setJoules(getJoules(itemStack) + energyToStore, itemStack);
+		}
+		return (int)(energyToStore*Mekanism.TO_IC2);
+	}
+	
+	@Override
+	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	{
+		double energyWanted = amount*Mekanism.FROM_IC2;
+		double energyToGive = Math.min(Math.min(energyWanted, getTier(itemStack).MAX_ELECTRICITY*0.01), getJoules(itemStack));
+		
+		if(!simulate)
+		{
+			setJoules(getJoules(itemStack) - energyToGive, itemStack);
+		}
+		return (int)(energyToGive*Mekanism.TO_IC2);
+	}
+
+	@Override
+	public boolean canUse(ItemStack itemStack, int amount)
+	{
+		return getJoules(itemStack) >= amount*Mekanism.FROM_IC2;
+	}
+	
+	@Override
+	public boolean canShowChargeToolTip(ItemStack itemStack)
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean canProvideEnergy()
+	{
+		return canProduceElectricity();
+	}
+
+	@Override
+	public int getChargedItemId()
+	{
+		return itemID;
+	}
+
+	@Override
+	public int getEmptyItemId()
+	{
+		return itemID;
+	}
+
+	@Override
+	public int getMaxCharge()
+	{
+		return 0;
+	}
+
+	@Override
+	public int getTier()
+	{
+		return 3;
+	}
+
+	@Override
+	public int getTransferLimit()
+	{
+		return (int)(getVoltage()*Mekanism.TO_IC2);
 	}
 }

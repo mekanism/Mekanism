@@ -95,7 +95,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*10);
+			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -356,6 +356,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+	
+	@Override
+	public int powerRequest() 
+	{
+		return (int)(currentMaxElectricity-electricityStored);
+	}
 	
 	@Override
 	public ArrayList<SideData> getSideData()

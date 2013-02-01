@@ -86,7 +86,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public TileEntityMetallurgicInfuser()
 	{
-		super("Metallurgic Infuser", 10000);
+		super("Metallurgic Infuser", 3200);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
@@ -122,7 +122,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*10);
+			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -187,7 +187,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 					}
 				}
 			}
-			if(inventory[4].itemID == Item.redstone.itemID && electricityStored <= (currentMaxElectricity-1000))
+			if(inventory[4].itemID == Item.redstone.itemID && electricityStored+1000 <= currentMaxElectricity)
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[4].stackSize;
@@ -643,6 +643,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	
     	return (int)(rejects*Mekanism.TO_IC2);
     }
+	
+	@Override
+	public int powerRequest() 
+	{
+		return (int)(currentMaxElectricity-electricityStored);
+	}
 	
 	@Override
 	public ArrayList<SideData> getSideData()

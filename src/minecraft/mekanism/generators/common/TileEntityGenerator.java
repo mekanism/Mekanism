@@ -29,6 +29,7 @@ import universalelectricity.core.implement.IVoltage;
 import universalelectricity.core.vector.Vector3;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerFramework;
 import buildcraft.api.power.PowerProvider;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
@@ -57,6 +58,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public TileEntityGenerator(String name, int maxEnergy, int out)
 	{
 		super(name, maxEnergy);
+		
+		if(powerProvider != null)
+		{
+			powerProvider.configure(0, 0, 0, 0, (int)(maxEnergy*Mekanism.TO_BC));
+		}
 		
 		output = out;
 		isActive = false;
@@ -107,10 +113,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				if(isPowerReceptor(tileEntity))
 				{
 					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	double electricityNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*Mekanism.FROM_BC;
-	            	float transferEnergy = (float)Math.max(Math.min(Math.min(electricityNeeded, electricityStored), 80000), 0);
+	            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+	            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
 	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-	            	setJoules(electricityStored - (int)transferEnergy);
+	            	setJoules(electricityStored - transferEnergy);
 				}
 			}
 		}
@@ -353,4 +359,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
         
         nbtTags.setBoolean("isActive", isActive);
     }
+	
+	@Override
+	public int powerRequest() 
+	{
+		return 0;
+	}
 }

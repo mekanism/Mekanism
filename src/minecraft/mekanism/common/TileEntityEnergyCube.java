@@ -49,29 +49,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	
 	/**
 	 * A block used to store and transfer electricity.
-	 */
-	public TileEntityEnergyCube()
-	{
-		this("Energy Cube", 0, 256);
-	}
-	
-	/**
-	 * A block used to store and transfer electricity.
 	 * @param energy - maximum energy this block can hold.
 	 * @param i - output per tick this block can handle.
 	 */
-	public TileEntityEnergyCube(String name, int maxEnergy, int i)
+	public TileEntityEnergyCube()
 	{
-		super(name, maxEnergy);
-		
-		if(powerProvider != null)
-		{
-			powerProvider.configure(5, 2, 10, 1, maxEnergy/10);
-		}
+		super("Energy Cube", 0);
 		
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[2];
-		output = i;
 	}
 	
 	@Override
@@ -81,7 +67,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((tier.MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*10);
+			int received = (int)(powerProvider.useEnergy(0, (float)((tier.MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -160,7 +146,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 					setJoules(electricityStored + gain);
 				}
 			}
-			else if(inventory[1].itemID == Item.redstone.itemID)
+			else if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= tier.MAX_ELECTRICITY)
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
@@ -191,10 +177,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				if(isPowerReceptor(tileEntity))
 				{
 					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	double electricityNeeded = Math.min(receptor.getPowerProvider().getMinEnergyReceived(), receptor.getPowerProvider().getMaxEnergyReceived())*Mekanism.FROM_BC;
-	            	float transferEnergy = (float)Math.max(Math.min(Math.min(electricityNeeded, electricityStored), 80000), 0);
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.FROM_BC), ForgeDirection.getOrientation(facing).getOpposite());
-	            	setJoules(electricityStored - (int)transferEnergy);
+	            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+	            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+	            	setJoules(electricityStored - transferEnergy);
 				}
 			}
 		}
@@ -405,6 +391,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
         super.readFromNBT(nbtTags);
 
         tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
+        output = tier.OUTPUT;
     }
 
 	@Override
@@ -450,6 +437,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public boolean isTeleporterCompatible(Direction side) 
 	{
 		return side.toForgeDirection() == ForgeDirection.getOrientation(facing);
+	}
+	
+	@Override
+	public int powerRequest() 
+	{
+		return (int)(tier.MAX_ELECTRICITY-electricityStored);
 	}
 	
 	@Override

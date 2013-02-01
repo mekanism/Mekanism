@@ -10,7 +10,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("Chamber.ogg", "Enrichment Chamber", "/resources/mekanism/gui/GuiChamber.png", 16, 200, 1000);
+		super("Chamber.ogg", "Enrichment Chamber", "/resources/mekanism/gui/GuiChamber.png", 16, 200, 3200);
 	}
 	
 	@Override
