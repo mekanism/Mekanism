@@ -7,6 +7,8 @@ import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IActiveState;
+import mekanism.api.IEnergyCube;
+import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -19,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -133,7 +136,7 @@ public class BlockMachine extends BlockContainer
         		return 9;
         	}
         	else {
-        		return 26;
+        		return 2;
         	}
     	}
     	else if(meta == 1)
@@ -143,7 +146,7 @@ public class BlockMachine extends BlockContainer
         		return 14;
         	}
         	else {
-        		return 26;
+        		return 2;
         	}
     	}
     	else if(meta == 2)
@@ -224,13 +227,17 @@ public class BlockMachine extends BlockContainer
     	}
     	else if(meta == 8)
     	{
-    		if(side == 3)
-    		{
-    			return 33;
-    		}
-    		else {
-    			return 32;
-    		}
+        	if(side == 0 || side == 1)
+        	{
+        		return 18;
+        	}
+        	else if(side == 3)
+        	{
+        		return 16;
+        	}
+        	else {
+        		return 19;
+        	}
     	}
     	else if(meta == 9)
     	{
@@ -261,7 +268,7 @@ public class BlockMachine extends BlockContainer
 	        	return MekanismUtils.isActive(world, x, y, z) ? 8 : 9;
 	        }
 	        else {
-	        	return 26;
+	        	return 2;
 	        }
     	}
     	else if(metadata == 1)
@@ -271,7 +278,7 @@ public class BlockMachine extends BlockContainer
             	return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+2 : 14;
             }
             else {
-            	return 26;
+            	return 2;
             }
     	}
     	else if(metadata == 2)
@@ -358,13 +365,23 @@ public class BlockMachine extends BlockContainer
     	}
     	else if(metadata == 8)
     	{
-    		if(side == tileEntity.facing)
-    		{
-    			return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+7 : 33;
-    		}
-    		else {
-    			return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+8 : 32;
-    		}
+            if(side == 0 || side == 1)
+            {
+            	return MekanismUtils.isActive(world, x, y, z) ? 20 : 18;
+            }
+            else {
+            	if(side == tileEntity.facing)
+            	{
+            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+4 : 16;
+            	}
+            	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
+            	{
+            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+5 : 17;
+            	}
+            	else {
+            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+6 : 19;
+            	}
+            }
     	}
     	else if(metadata == 9)
     	{
@@ -541,28 +558,73 @@ public class BlockMachine extends BlockContainer
 		return ClientProxy.RENDER_ID;
 	}
 	
+    @Override
+    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+    {
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+    	{
+	    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+	    	
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z)));
+	        
+	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
+	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
+	        
+	        IUpgradeManagement upgrade = (IUpgradeManagement)entityItem.getEntityItem().getItem();
+	        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), entityItem.getEntityItem());
+	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), entityItem.getEntityItem());
+	        
+	        world.spawnEntityInWorld(entityItem);
+    	}
+    	
+        return world.setBlockWithNotify(x, y, z, 0);
+    }
+	
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	{
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z));
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
+        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
+        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
+        
+        return itemStack;
+	}
+	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0, 3, TileEntityEnrichmentChamber.class, false),
-		PLATINUM_COMPRESSOR(1, 4, TileEntityPlatinumCompressor.class, false),
-		COMBINER(2, 5, TileEntityCombiner.class, false),
-		CRUSHER(3, 6, TileEntityCrusher.class, false),
-		THEORETICAL_ELEMENTIZER(4, 7, TileEntityTheoreticalElementizer.class, true),
-		BASIC_SMELTING_FACTORY(5, 11, TileEntitySmeltingFactory.class, false),
-		ADVANCED_SMELTING_FACTORY(6, 11, TileEntityAdvancedSmeltingFactory.class, false),
-		ELITE_SMELTING_FACTORY(7, 11, TileEntityEliteSmeltingFactory.class, false),
-		METALLURGIC_INFUSER(8, 12, TileEntityMetallurgicInfuser.class, false),
-		PURIFICATION_CHAMBER(9, 15, TileEntityPurificationChamber.class, false);
+		ENRICHMENT_CHAMBER(0, 3, 3200, TileEntityEnrichmentChamber.class, false),
+		PLATINUM_COMPRESSOR(1, 4, 3200, TileEntityPlatinumCompressor.class, false),
+		COMBINER(2, 5, 3200, TileEntityCombiner.class, false),
+		CRUSHER(3, 6, 3200, TileEntityCrusher.class, false),
+		THEORETICAL_ELEMENTIZER(4, 7, 4800, TileEntityTheoreticalElementizer.class, true),
+		BASIC_SMELTING_FACTORY(5, 11, 9600, TileEntitySmeltingFactory.class, false),
+		ADVANCED_SMELTING_FACTORY(6, 11, 16000, TileEntityAdvancedSmeltingFactory.class, false),
+		ELITE_SMELTING_FACTORY(7, 11, 22400, TileEntityEliteSmeltingFactory.class, false),
+		METALLURGIC_INFUSER(8, 12, 3200, TileEntityMetallurgicInfuser.class, false),
+		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false);
 		
 		public int meta;
 		public int guiId;
+		public double baseEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private MachineType(int i, int j, Class<? extends TileEntity> tileClass, boolean model)
+		private MachineType(int i, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
 			guiId = j;
+			baseEnergy = k;
 			tileEntityClass = tileClass;
 			hasModel = model;
 		}

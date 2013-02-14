@@ -9,6 +9,7 @@ import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.IEnergyCube;
@@ -103,9 +104,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
-				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				
+				if(electricItem.canReceiveElectricity())
+				{
+					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
+					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
+					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				}
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{
@@ -123,17 +128,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				if (electricItem.canProduceElectricity())
 				{
 					double joulesNeeded = tier.MAX_ELECTRICITY-electricityStored;
-					double joulesReceived = 0;
-					
-					if(electricItem.getVoltage(inventory[1]) <= joulesNeeded)
-					{
-						joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[1]), inventory[1]);
-					}
-					else if(electricItem.getVoltage(inventory[1]) > joulesNeeded)
-					{
-						joulesReceived = electricItem.onUse(joulesNeeded, inventory[1]);
-					}
-					
+					double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, joulesNeeded), inventory[1]);
 					setJoules(electricityStored + joulesReceived);
 				}
 			}
@@ -188,13 +183,27 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		if(!worldObj.isRemote)
 		{
 			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+			ArrayList<ElectricityNetwork> inputNetworks = new ArrayList<ElectricityNetwork>();
+			
+			for(ForgeDirection direction : ForgeDirection.values())
+			{
+				if(direction != outputDirection && direction != ForgeDirection.UNKNOWN)
+				{
+					ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
+					if(network != null)
+					{
+						inputNetworks.add(network);
+					}
+				}
+			}
+			
 			TileEntity outputTile = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 
 			ElectricityNetwork outputNetwork = ElectricityNetwork.getNetworkFromTileEntity(outputTile, outputDirection);
 
-			if(outputNetwork != null)
+			if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
 			{
-				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), getJoules());
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
 
 				if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
 				{

@@ -35,9 +35,9 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
 	public void drawExtras(GuiContainerManager guimanager, int i)
 	{
 		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
-		drawProgressBar(guimanager, 63, 34, 176, 0, 24, 7, f, 0);
+		drawProgressBar(guimanager, 63, 34, 176 + 26, 0, 24, 7, f, 0);
 		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(guimanager, 149, 12, 176, 7, 4, 52, f, 3);
+		drawProgressBar(guimanager, 149, 12, 176 + 26, 7, 4, 52, f, 3);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "Purification Chamber", "/resources/mekanism/gui/GuiPurificationChamber.png", 16, 1, 200, 12000, 1200);
+		super("PurificationChamber.ogg", "Purification Chamber", "/resources/mekanism/gui/GuiPurificationChamber.png", 30, 1, 200, 12000, 1200);
 	}
 	
 	@Override
@@ -99,7 +99,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 					if(item.canProvideGas(inventory[1], EnumGas.OXYGEN))
 					{
 						int received = 0;
-						int gasNeeded = (MAX_SECONDARY_ENERGY - secondaryEnergyStored)/2;
+						int gasNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
 						if(item.getRate() <= gasNeeded)
 						{
 							received = item.removeGas(inventory[1], EnumGas.OXYGEN, item.getRate());
@@ -109,7 +109,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 							received = item.removeGas(inventory[1], EnumGas.OXYGEN, gasNeeded);
 						}
 						
-						setGas(EnumGas.OXYGEN, secondaryEnergyStored + received*2);
+						setGas(EnumGas.OXYGEN, secondaryEnergyStored + received);
 					}
 				}
 			}

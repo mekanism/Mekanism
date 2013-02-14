@@ -11,7 +11,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 {
 	public ItemPortableTeleporter(int id)
 	{
-		super(id, 500000, 120, 5000);
+		super(id, 2000000, 120);
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 		
 		int distance = (int)entity.getDistanceSq(coords.xCoord, coords.yCoord, coords.zCoord);
 		
-		neededEnergy+=(distance*10);
+		neededEnergy+=(distance);
 		
 		return neededEnergy;
 	}

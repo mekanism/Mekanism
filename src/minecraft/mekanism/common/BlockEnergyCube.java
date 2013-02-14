@@ -17,14 +17,17 @@ import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.src.*;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -203,21 +206,6 @@ public class BlockEnergyCube extends BlockContainer
                     }
                 }
             }
-        	
-        	EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(Mekanism.EnergyCube));
-            
-            float motion = 0.05F;
-            entityItem.motionX = powerRand.nextGaussian() * motion;
-            entityItem.motionY = powerRand.nextGaussian() * motion + 0.2F;
-            entityItem.motionZ = powerRand.nextGaussian() * motion;
-            
-            IEnergyCube energyCube = (IEnergyCube)entityItem.getEntityItem().getItem();
-            energyCube.setTier(entityItem.getEntityItem(), tileEntity.tier);
-            
-            IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
-            electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
-            
-            world.spawnEntityInWorld(entityItem);
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);
@@ -225,6 +213,12 @@ public class BlockEnergyCube extends BlockContainer
     
     @Override
     public int quantityDropped(Random random)
+    {
+    	return 0;
+    }
+    
+    @Override
+    public int idDropped(int i, Random random, int j)
     {
     	return 0;
     }
@@ -245,28 +239,6 @@ public class BlockEnergyCube extends BlockContainer
 			list.add(charged);
 		};
 	}
-	
-    /*@Override
-    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
-    {
-        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-        
-        if(world.getBlockTileEntity(x, y, z) != null)
-        {
-	        ItemStack itemstack = new ItemStack(Mekanism.EnergyCube);
-	        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-	        
-	        IEnergyCube energyCube = (IEnergyCube)itemstack.getItem();
-	        energyCube.setTier(itemstack, tileEntity.tier);
-	        
-	        IItemElectric electricItem = (IItemElectric)itemstack.getItem();
-	        electricItem.setJoules(tileEntity.electricityStored, itemstack);
-	        
-	        ret.add(itemstack);
-        }
-        
-        return ret;
-    }*/
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
@@ -325,6 +297,32 @@ public class BlockEnergyCube extends BlockContainer
     }
     
     @Override
+    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+    {
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+    	{
+	    	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+	    	
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(Mekanism.EnergyCube));
+	        
+	        IEnergyCube energyCube = (IEnergyCube)entityItem.getEntityItem().getItem();
+	        energyCube.setTier(entityItem.getEntityItem(), tileEntity.tier);
+	        
+	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
+	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
+	        
+	        world.spawnEntityInWorld(entityItem);
+    	}
+    	
+        return world.setBlockWithNotify(x, y, z, 0);
+    }
+    
+    @Override
     public String getTextureFile()
     {
     	return "/resources/mekanism/textures/terrain.png";
@@ -334,5 +332,20 @@ public class BlockEnergyCube extends BlockContainer
 	public TileEntity createNewTileEntity(World world)
 	{
 		return new TileEntityEnergyCube();
+	}
+	
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	{
+    	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
+        
+        IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
+        energyCube.setTier(itemStack, tileEntity.tier);
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        return itemStack;
 	}
 }

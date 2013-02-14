@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
+import mekanism.api.InfuseObject;
 import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -41,7 +43,7 @@ public final class MekanismUtils
 		{
 			if(!Mekanism.latestVersionNumber.equals("Error retrieving data."))
 			{
-				if(!Mekanism.latestVersionNumber.contains(Mekanism.versionNumber.toString()))
+				if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
 				{
 					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
 					entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version " + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + " for Minecraft 1.4.6/7.");
@@ -49,6 +51,10 @@ public final class MekanismUtils
 					entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
 					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
 					return;
+				}
+				else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
+				{
+					entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Using developer build " + EnumColor.DARK_GREY + Mekanism.versionNumber);
 				}
 			}
 			else {
@@ -342,5 +348,31 @@ public final class MekanismUtils
     	{
     		config.getConfiguration()[side] = 0;
     	}
+    }
+    
+    public static InfuseObject getInfuseObject(ItemStack itemStack)
+    {
+    	if(itemStack != null)
+    	{
+	    	for(Map.Entry<ItemStack, InfuseObject> entry : Mekanism.infusions.entrySet())
+	    	{
+	    		if(itemStack.isItemEqual(entry.getKey()))
+	    		{
+	    			return entry.getValue();
+	    		}
+	    	}
+    	}
+    	
+    	return null;
+    }
+    
+    public static int getTicks(int multiplier)
+    {
+    	return 200/(multiplier+1);
+    }
+    
+    public static double getEnergy(int multiplier, double def)
+    {
+    	return def*(multiplier+1);
     }
 }

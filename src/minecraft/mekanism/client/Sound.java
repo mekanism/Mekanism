@@ -15,7 +15,7 @@ import paulscode.sound.SoundSystem;
  * @author AidanBrady
  *
  */
-public class Sound 
+public class Sound
 {
 	/** The bundled path where the sound is */
 	public String soundPath;
@@ -94,7 +94,7 @@ public class Sound
 	/** 
 	 * Stop looping the sound effect 
 	 */
-	public void stop()
+	public void stopLoop()
 	{
 		synchronized(Mekanism.audioHandler.sounds)
 		{
@@ -120,7 +120,7 @@ public class Sound
 		{
 			if(isPlaying)
 			{
-				stop();
+				stopLoop();
 			}
 			
 			Mekanism.audioHandler.sounds.remove(this);
@@ -132,11 +132,11 @@ public class Sound
 		}
 	}
 	
-	/** Updates the volume based on how far away the player is from the machine.
-	 * 
+	/**
+	 * Updates the volume based on how far away the player is from the machine.
 	 * @param entityplayer - player who is near the machine, always Minecraft.thePlayer
 	 */
-    public void updateVolume(EntityPlayer entityplayer)
+    public void distanceUpdate(EntityPlayer entityplayer)
     {
 		synchronized(Mekanism.audioHandler.sounds)
 		{

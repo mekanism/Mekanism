@@ -1,6 +1,7 @@
 package mekanism.client;
 
 import mekanism.common.EnumColor;
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -18,7 +19,7 @@ public class GuiTheoreticalElementizer extends GuiAdvancedElectricMachine
     	String displayText = "";
         if(tileEntity.isActive)
         {
-        	if(tileEntity.currentTicksRequired == 1000)
+        	if(MekanismUtils.getTicks(tileEntity.speedMultiplier) == 1000)
         	{
         		displayText = "Status: " + Double.toString(Math.round(tileEntity.operatingTicks/10)).replace(".0", "") + "%";
         	}

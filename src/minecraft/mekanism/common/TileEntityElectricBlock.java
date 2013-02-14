@@ -117,7 +117,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int powerRequest() 
 	{
-		return (int)(MAX_ELECTRICITY-electricityStored);
+		return (int)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC);
 	}
 	
 	@Override

@@ -1,12 +1,17 @@
 package mekanism.generators.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.client.Sound;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismHooks;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,6 +22,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.electricity.ElectricInfo;
@@ -38,10 +44,24 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	/** The amount of electricity this machine can produce with a unit of fuel. */
 	public final int GENERATION = 80;
 	
+	public static Map<Integer, Integer> fuels = new HashMap<Integer, Integer>();
+	
 	public TileEntityHeatGenerator()
 	{
 		super("Heat Generator", 160000, 128);
 		inventory = new ItemStack[2];
+		
+		fuels.put(Block.lavaStill.blockID, 1);
+		
+		if(Mekanism.hooks.BuildCraftLoaded)
+		{
+			fuels.put(Mekanism.hooks.BuildCraftFuelID, 16);
+			fuels.put(Mekanism.hooks.BuildCraftOilID, 4);
+		}
+		if(Mekanism.hooks.ForestryLoaded)
+		{
+			fuels.put(Mekanism.hooks.ForestryBiofuelID, 8);
+		}
 	}
 	
 	@Override
@@ -54,9 +74,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
-				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				
+				if(electricItem.canReceiveElectricity())
+				{
+					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
+					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
+					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				}
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -65,36 +89,55 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			}
 		}
 		
-		if(inventory[0] != null && fuelSlot.liquidStored < fuelSlot.MAX_LIQUID)
+		if(inventory[0] != null)
 		{
-			if(Mekanism.hooks.BuildCraftLoaded)
-			{
-				if(inventory[0].itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID)
-				{
-					fuelSlot.setLiquid(fuelSlot.liquidStored + 1000);
-					inventory[0] = new ItemStack(Item.bucketEmpty);
-				}
-			}
+			LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
 			
-			int fuel = getFuel(inventory[0]);
-			ItemStack prevStack = inventory[0].copy();
-			if(fuel > 0)
+			if(liquid != null)
 			{
-				int fuelNeeded = fuelSlot.MAX_LIQUID - fuelSlot.liquidStored;
-				if(fuel <= fuelNeeded)
+				if(fuels.containsKey(liquid.itemID))
 				{
-					fuelSlot.liquidStored += fuel;
-					--inventory[0].stackSize;
+					int liquidToAdd = liquid.amount*fuels.get(liquid.itemID);
 					
-					if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
+					if(fuelSlot.liquidStored+liquidToAdd <= fuelSlot.MAX_LIQUID)
 					{
-						inventory[0] = new ItemStack(Item.bucketEmpty);
+						fuelSlot.setLiquid(fuelSlot.liquidStored+liquidToAdd);
+						if(LiquidContainerRegistry.isBucket(inventory[0]))
+						{
+							inventory[0] = new ItemStack(Item.bucketEmpty);
+						}
+						else {
+							inventory[0].stackSize--;
+							
+							if(inventory[0].stackSize == 0)
+							{
+								inventory[0] = null;
+							}
+						}
 					}
 				}
-				
-				if(inventory[0].stackSize == 0)
+			}
+			else {
+				int fuel = getFuel(inventory[0]);
+				ItemStack prevStack = inventory[0].copy();
+				if(fuel > 0)
 				{
-					inventory[0] = null;
+					int fuelNeeded = fuelSlot.MAX_LIQUID - fuelSlot.liquidStored;
+					if(fuel <= fuelNeeded)
+					{
+						fuelSlot.liquidStored += fuel;
+						--inventory[0].stackSize;
+						
+						if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
+						{
+							inventory[0] = new ItemStack(Item.bucketEmpty);
+						}
+					}
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
 				}
 			}
 		}
@@ -163,6 +206,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 
 	public int getFuel(ItemStack itemstack)
 	{
+		if(itemstack.itemID == Item.bucketLava.itemID)
+		{
+			return 1000;
+		}
+		
 		return TileEntityFurnace.getItemBurnTime(itemstack);
 	}
 	
@@ -254,29 +302,26 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		if(from != ForgeDirection.getOrientation(facing))
+		if(fuels.containsKey(resource.itemID) && from != ForgeDirection.getOrientation(facing))
 		{
-			if(resource.itemID == Mekanism.hooks.BuildCraftFuelID)
+			int fuelTransfer = 0;
+			int fuelNeeded = fuelSlot.MAX_LIQUID - fuelSlot.liquidStored;
+			int attemptTransfer = resource.amount*fuels.get(resource.itemID);
+			
+			if(attemptTransfer <= fuelNeeded)
 			{
-				int fuelTransfer = 0;
-				int fuelNeeded = fuelSlot.MAX_LIQUID - fuelSlot.liquidStored;
-				int attemptTransfer = resource.amount;
-				
-				if(attemptTransfer <= fuelNeeded)
-				{
-					fuelTransfer = attemptTransfer;
-				}
-				else {
-					fuelTransfer = fuelNeeded;
-				}
-				
-				if(doFill)
-				{
-					fuelSlot.setLiquid(fuelSlot.liquidStored + fuelTransfer);
-				}
-				
-				return fuelTransfer;
+				fuelTransfer = attemptTransfer;
 			}
+			else {
+				fuelTransfer = fuelNeeded;
+			}
+			
+			if(doFill)
+			{
+				fuelSlot.setLiquid(fuelSlot.liquidStored + fuelTransfer);
+			}
+			
+			return fuelTransfer/fuels.get(resource.itemID);
 		}
 		
 		return 0;

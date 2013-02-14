@@ -67,9 +67,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(inventory[0].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
-				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				
+				if(electricItem.canReceiveElectricity())
+				{
+					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
+					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
+					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				}
 			}
 			else if(inventory[0].getItem() instanceof IElectricItem)
 			{

@@ -43,7 +43,7 @@ public class SoundHandler
 			{
 				if(FMLClientHandler.instance().getClient().thePlayer != null && FMLClientHandler.instance().getClient().theWorld != null)
 				{
-					sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+					sound.distanceUpdate(FMLClientHandler.instance().getClient().thePlayer);
 				}
 			}
 			

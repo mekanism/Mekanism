@@ -14,13 +14,12 @@ public final class Tier
 	 */
 	public static enum EnergyCubeTier
 	{
-		BASIC("Basic", 1000000, 10000, 128),
-		ADVANCED("Advanced", 2500000, 25000, 256),
-		ELITE("Elite", 5000000, 50000, 512);
+		BASIC("Basic", 1000000, 128),
+		ADVANCED("Advanced", 2500000, 256),
+		ELITE("Elite", 5000000, 512);
 		
 		public double MAX_ELECTRICITY;
 		public double VOLTAGE;
-		public int DIVIDER;
 		public int OUTPUT;
 		public String name;
 		
@@ -38,11 +37,10 @@ public final class Tier
 			return BASIC;
 		}
 		
-		private EnergyCubeTier(String s, double maxEnergy, int divider, int out)
+		private EnergyCubeTier(String s, double maxEnergy, int out)
 		{
 			name = s;
 			MAX_ELECTRICITY = maxEnergy;
-			DIVIDER = divider;
 			OUTPUT = out;
 		}
 	}

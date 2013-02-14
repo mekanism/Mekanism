@@ -45,9 +45,13 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
-				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				
+				if(electricItem.canReceiveElectricity())
+				{
+					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
+					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
+					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				}
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{

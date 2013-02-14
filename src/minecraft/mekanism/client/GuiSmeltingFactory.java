@@ -15,6 +15,7 @@ public class GuiSmeltingFactory extends GuiContainer
     public GuiSmeltingFactory(InventoryPlayer inventory, TileEntitySmeltingFactory tentity)
     {
         super(new ContainerSmeltingFactory(inventory, tentity));
+        xSize+=26;
         tileEntity = tentity;
     }
 
@@ -38,7 +39,10 @@ public class GuiSmeltingFactory extends GuiContainer
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
+        
+        displayInt = tileEntity.getScaledUpgradeProgress(14);
+        drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 72, 10, displayInt);
         
         if(tileEntity.tier == SmeltingFactoryTier.BASIC)
         {
@@ -47,7 +51,7 @@ public class GuiSmeltingFactory extends GuiContainer
         		int xAxis = 59 + (i*38);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == SmeltingFactoryTier.ADVANCED)
@@ -57,7 +61,7 @@ public class GuiSmeltingFactory extends GuiContainer
         		int xAxis = 39 + (i*26);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == SmeltingFactoryTier.ELITE)
@@ -67,7 +71,7 @@ public class GuiSmeltingFactory extends GuiContainer
         		int xAxis = 33 + (i*19);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
     }

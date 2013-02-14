@@ -22,7 +22,7 @@ public class ContainerAdvancedElectricMachine extends Container
         addSlotToContainer(new Slot(tentity, 1, 56, 53));
         addSlotToContainer(new SlotFurnace(inventory.player, tentity, 2, 116, 35));
         addSlotToContainer(new SlotEnergy(tentity, 3, 31, 35));
-        addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 7, 7));
+        addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 180, 11));
         int slotX;
 
         for (slotX = 0; slotX < 3; ++slotX)

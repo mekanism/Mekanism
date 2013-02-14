@@ -19,6 +19,7 @@ public class GuiMetallurgicInfuser extends GuiContainer
 	public GuiMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
     {
         super(new ContainerMetallurgicInfuser(inventory, tentity));
+        xSize+=26;
         tileEntity = tentity;
     }
 	
@@ -41,7 +42,7 @@ public class GuiMetallurgicInfuser extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 15, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
     }
 
 	@Override
@@ -57,12 +58,15 @@ public class GuiMetallurgicInfuser extends GuiContainer
         int displayInt;
         
         displayInt = tileEntity.getScaledInfuseLevel(52);
-        drawTexturedModalRect(guiWidth + 7, guiHeight + 27 + 52 - displayInt, 176 + (tileEntity.type == InfusionType.COAL ? 4 : 0), 52 + (tileEntity.type == InfusionType.TIN ? 52 : 0) - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176 + 26 + (tileEntity.type == InfusionType.COAL ? 4 : 0), 52 + (tileEntity.type == InfusionType.TIN ? 52 : 0) - displayInt, 4, displayInt);
         
         displayInt = tileEntity.getScaledProgress(32);
-        drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176, 52 + 52, displayInt + 1, 8);
+        drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176 + 26, 52 + 52, displayInt + 1, 8);
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
+        
+        displayInt = tileEntity.getScaledUpgradeProgress(14);
+        drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 112, 10, displayInt);
     }
 }

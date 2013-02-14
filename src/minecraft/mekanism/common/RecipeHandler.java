@@ -88,18 +88,21 @@ public final class RecipeHandler
 	 */
 	public static InfusionOutput getOutput(InfusionInput infusion, boolean stackDecrease, Map<InfusionInput, InfusionOutput> recipes)
 	{
-		for(Map.Entry entry : recipes.entrySet())
+		if(infusion != null && infusion.inputSlot != null)
 		{
-			if(((InfusionInput)entry.getKey()).inputSlot.isItemEqual(infusion.inputSlot) && infusion.inputSlot.stackSize >= ((InfusionInput)entry.getKey()).inputSlot.stackSize)
+			for(Map.Entry entry : recipes.entrySet())
 			{
-				if(infusion.infusionType == ((InfusionInput)entry.getKey()).infusionType)
+				if(((InfusionInput)entry.getKey()).inputSlot.isItemEqual(infusion.inputSlot) && infusion.inputSlot.stackSize >= ((InfusionInput)entry.getKey()).inputSlot.stackSize)
 				{
-					if(stackDecrease)
+					if(infusion.infusionType == ((InfusionInput)entry.getKey()).infusionType)
 					{
-						infusion.inputSlot.stackSize -= ((InfusionInput)entry.getKey()).inputSlot.stackSize;
+						if(stackDecrease)
+						{
+							infusion.inputSlot.stackSize -= ((InfusionInput)entry.getKey()).inputSlot.stackSize;
+						}
+						
+						return ((InfusionOutput)entry.getValue()).copy();
 					}
-					
-					return ((InfusionOutput)entry.getValue()).copy();
 				}
 			}
 		}
@@ -116,16 +119,19 @@ public final class RecipeHandler
 	 */
 	public static ItemStack getOutput(ItemStack itemstack, boolean stackDecrease, Map<ItemStack, ItemStack> recipes)
 	{
-		for(Map.Entry entry : recipes.entrySet())
+		if(itemstack != null)
 		{
-			if(((ItemStack)entry.getKey()).isItemEqual(itemstack) && itemstack.stackSize >= ((ItemStack)entry.getKey()).stackSize)
+			for(Map.Entry entry : recipes.entrySet())
 			{
-				if(stackDecrease)
+				if(((ItemStack)entry.getKey()).isItemEqual(itemstack) && itemstack.stackSize >= ((ItemStack)entry.getKey()).stackSize)
 				{
-					itemstack.stackSize -= ((ItemStack)entry.getKey()).stackSize;
+					if(stackDecrease)
+					{
+						itemstack.stackSize -= ((ItemStack)entry.getKey()).stackSize;
+					}
+					
+					return ((ItemStack)entry.getValue()).copy();
 				}
-				
-				return ((ItemStack)entry.getValue()).copy();
 			}
 		}
 		

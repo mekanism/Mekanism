@@ -24,14 +24,8 @@ public class CommandMekanism extends CommandBase
 	@Override
 	public List getCommandAliases()
 	{
-		return Arrays.asList(new String[] {"mekanism"});
+		return Arrays.asList(new String[] {"mekanism", "mek"});
 	}
-	
-	@Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
-    {
-        return !MinecraftServer.getServer().isSinglePlayer() && super.canCommandSenderUseCommand(sender);
-    }
 	
 	@Override
     public void processCommand(ICommandSender sender, String[] params)

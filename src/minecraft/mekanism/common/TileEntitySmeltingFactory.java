@@ -9,7 +9,7 @@ import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
-import mekanism.api.IMachineUpgrade;
+import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.api.Tier.SmeltingFactoryTier;
 import mekanism.client.Sound;
@@ -39,7 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntitySmeltingFactory extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable
+public class TileEntitySmeltingFactory extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
 {	
 	/** This Smelting Factory's tier. */
 	public SmeltingFactoryTier tier;
@@ -61,11 +61,13 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	/** How much energy each operation consumes per tick. */
 	public int ENERGY_PER_TICK = 16;
 	
-	/** How many ticks it takes, currently, to run an operation. */
-	public int currentTicksRequired;
+	public int speedMultiplier;
 	
-	/** The current electricity cap this machine can handle. */
-	public double currentMaxElectricity;
+	public int energyMultiplier;
+	
+	public int UPGRADE_TICKS_REQUIRED = 40;
+	
+	public int upgradeTicks;
 	
 	/** This machine's previous active state, used for calculating packets. */
 	public boolean prevActive;
@@ -91,8 +93,6 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		super(type.name + " Smelting Factory", type.processes*3200);
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		tier = type;
-		currentTicksRequired = TICKS_REQUIRED;
-		currentMaxElectricity = MAX_ELECTRICITY;
 		inventory = new ItemStack[2+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
@@ -106,16 +106,19 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		if(worldObj.isRemote)
 		{
 			try {
-				synchronized(Mekanism.audioHandler.sounds)
+				if(Mekanism.audioHandler != null)
 				{
-					handleSound();
+					synchronized(Mekanism.audioHandler.sounds)
+					{
+						handleSound();
+					}
 				}
 			} catch(NoSuchMethodError e) {}
 		}
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			int received = (int)(powerProvider.useEnergy(0, (float)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -130,13 +133,13 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 				{
 					if(tileEntity instanceof IConductor)
 					{
-						if(electricityStored < currentMaxElectricity)
+						if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 						{
-							double electricityNeeded = currentMaxElectricity - electricityStored;
+							double electricityNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored;
 							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
 							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
 						}
-						else if(electricityStored >= currentMaxElectricity)
+						else if(electricityStored >= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 						{
 							((IConductor)tileEntity).getNetwork().stopRequesting(this);
 						}
@@ -155,7 +158,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		
 		if(inventory[1] != null)
 		{
-			if(electricityStored < currentMaxElectricity)
+			if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				if(inventory[1].getItem() instanceof IItemElectric)
 				{
@@ -163,18 +166,8 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 
 					if (electricItem.canProduceElectricity())
 					{
-						double joulesNeeded = currentMaxElectricity-electricityStored;
-						double joulesReceived = 0;
-						
-						if(electricItem.getVoltage(inventory[1]) <= joulesNeeded)
-						{
-							joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[1]), inventory[1]);
-						}
-						else if(electricItem.getVoltage(inventory[1]) > joulesNeeded)
-						{
-							joulesReceived = electricItem.onUse(joulesNeeded, inventory[1]);
-						}
-						
+						double joulesNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, joulesNeeded), inventory[1]);
 						setJoules(electricityStored + joulesReceived);
 					}
 				}
@@ -188,7 +181,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 					}
 				}
 			}
-			if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= currentMaxElectricity)
+			if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[1].stackSize;
@@ -200,38 +193,62 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 			}
 		}
 		
-		if(inventory[0] != null && inventory[0].getItem() instanceof IMachineUpgrade)
+		if(inventory[0] != null)
 		{
-			int energyToAdd = 0;
-			int ticksToRemove = 0;
-			
-			if(currentMaxElectricity == MAX_ELECTRICITY)
+			if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && speedMultiplier < 8)
 			{
-				energyToAdd = ((IMachineUpgrade)inventory[0].getItem()).getEnergyBoost(inventory[0]);
+				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				{
+					upgradeTicks++;
+				}
+				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+				{
+					upgradeTicks = 0;
+					energyMultiplier+=1;
+					
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
+				}
 			}
-			
-			if(currentTicksRequired == TICKS_REQUIRED)
+			else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
 			{
-				ticksToRemove = ((IMachineUpgrade)inventory[0].getItem()).getTickReduction(inventory[0]);
+				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				{
+					upgradeTicks++;
+				}
+				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+				{
+					upgradeTicks = 0;
+					speedMultiplier+=1;
+					
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
+				}
 			}
-			
-			currentMaxElectricity += energyToAdd;
-			currentTicksRequired -= ticksToRemove;
+			else {
+				upgradeTicks = 0;
+			}
 		}
-		else if(inventory[0] == null)
-		{
-			currentTicksRequired = TICKS_REQUIRED;
-			currentMaxElectricity = MAX_ELECTRICITY;
+		else {
+			upgradeTicks = 0;
 		}
 		
 		for(int mainSlot = 0; mainSlot < tier.processes; mainSlot++)
 		{
-			if(canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)) && (progress[mainSlot]+1) < currentTicksRequired)
+			if(canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)) && (progress[mainSlot]+1) < MekanismUtils.getTicks(speedMultiplier))
 			{
 				++progress[mainSlot];
 				electricityStored -= ENERGY_PER_TICK;
 			}
-			else if(canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)) && (progress[mainSlot]+1) >= currentTicksRequired)
+			else if(canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)) && (progress[mainSlot]+1) >= MekanismUtils.getTicks(speedMultiplier))
 			{
 				if(!worldObj.isRemote)
 				{
@@ -239,16 +256,6 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 				}
 				progress[mainSlot] = 0;
 				electricityStored -= ENERGY_PER_TICK;
-			}
-			
-			if(electricityStored < 0)
-			{
-				electricityStored = 0;
-			}
-			
-			if(electricityStored > currentMaxElectricity)
-			{
-				electricityStored = currentMaxElectricity;
 			}
 			
 			if(!canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)))
@@ -296,25 +303,28 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	@SideOnly(Side.CLIENT)
 	public void handleSound()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.audioHandler != null)
 		{
-			if(audio == null && worldObj != null && worldObj.isRemote)
+			synchronized(Mekanism.audioHandler.sounds)
 			{
-				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				if(audio == null && worldObj != null && worldObj.isRemote)
 				{
-					audio = Mekanism.audioHandler.getSound("SmeltingFactory.ogg", worldObj, xCoord, yCoord, zCoord);
+					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+					{
+						audio = Mekanism.audioHandler.getSound("SmeltingFactory.ogg", worldObj, xCoord, yCoord, zCoord);
+					}
 				}
-			}
-			
-			if(worldObj != null && worldObj.isRemote && audio != null)
-			{
-				if(!audio.isPlaying && isActive == true)
+				
+				if(worldObj != null && worldObj.isRemote && audio != null)
 				{
-					audio.play();
-				}
-				else if(audio.isPlaying && isActive == false)
-				{
-					audio.stop();
+					if(!audio.isPlaying && isActive == true)
+					{
+						audio.play();
+					}
+					else if(audio.isPlaying && isActive == false)
+					{
+						audio.stopLoop();
+					}
 				}
 			}
 		}
@@ -333,7 +343,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	
 	public int getScaledProgress(int i, int process)
 	{
-		return progress[process]*i / currentTicksRequired;
+		return progress[process]*i / MekanismUtils.getTicks(speedMultiplier);
 	}
 	
 	/**
@@ -343,7 +353,12 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	 */
 	public int getScaledEnergyLevel(int i)
 	{
-		return (int)(electricityStored*i / currentMaxElectricity);
+		return (int)(electricityStored*i / MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY));
+	}
+	
+	public int getScaledUpgradeProgress(int i)
+	{
+		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
 	}
 	
 	public boolean canOperate(int inputSlot, int outputSlot)
@@ -424,8 +439,8 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		try {
 			facing = dataStream.readInt();
 			electricityStored = dataStream.readDouble();
-			currentTicksRequired = dataStream.readInt();
-			currentMaxElectricity = dataStream.readDouble();
+			speedMultiplier = dataStream.readInt();
+			energyMultiplier = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			
 			for(int i = 0; i < tier.processes; i++)
@@ -447,8 +462,8 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     {
         super.readFromNBT(nbtTags);
         
-        currentTicksRequired = nbtTags.getInteger("currentTicksRequired");
-        currentMaxElectricity = nbtTags.getDouble("currentMaxElectricity");
+        speedMultiplier = nbtTags.getInteger("speedMultiplier");
+        energyMultiplier = nbtTags.getInteger("energyMultiplier");
         isActive = nbtTags.getBoolean("isActive");
         
         for(int i = 0; i < tier.processes; i++)
@@ -470,8 +485,8 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setInteger("currentTicksRequired", currentTicksRequired);
-        nbtTags.setDouble("currentMaxElectricity", currentMaxElectricity);
+        nbtTags.setInteger("speedMultiplier", speedMultiplier);
+        nbtTags.setInteger("energyMultiplier", energyMultiplier);
         nbtTags.setBoolean("isActive", isActive);
         
         for(int i = 0; i < tier.processes; i++)
@@ -490,13 +505,13 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	@Override
 	public void sendPacket()
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, currentTicksRequired, currentMaxElectricity, isActive, progress);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, progress);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, currentTicksRequired, currentMaxElectricity, isActive, progress);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, progress);
 	}
 
 	@Override
@@ -571,9 +586,9 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 				
 				return new Object[] {canOperate(getInputSlot((Integer)arguments[0]), getOutputSlot((Integer)arguments[0]))};
 			case 4:
-				return new Object[] {currentMaxElectricity};
+				return new Object[] {MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)};
 			case 5:
-				return new Object[] {(currentMaxElectricity-electricityStored)};
+				return new Object[] {(MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
@@ -613,13 +628,13 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return currentMaxElectricity;
+		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
 	}
 
 	@Override
 	public int demandsEnergy() 
 	{
-		return (int)((currentMaxElectricity - electricityStored)*Mekanism.TO_IC2);
+		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2);
 	}
 	
 	@Override
@@ -652,7 +667,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     {
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = currentMaxElectricity-electricityStored;
+    	double neededEnergy = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
     	
     	if(givenEnergy < neededEnergy)
     	{
@@ -670,7 +685,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	@Override
 	public int powerRequest() 
 	{
-		return (int)(currentMaxElectricity-electricityStored);
+		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC);
 	}
 	
 	@Override
@@ -689,5 +704,29 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public int getOrientation()
 	{
 		return facing;
+	}
+	
+	@Override
+	public int getEnergyMultiplier(Object... data) 
+	{
+		return energyMultiplier;
+	}
+
+	@Override
+	public void setEnergyMultiplier(int multiplier, Object... data) 
+	{
+		energyMultiplier = multiplier;
+	}
+
+	@Override
+	public int getSpeedMultiplier(Object... data) 
+	{
+		return speedMultiplier;
+	}
+
+	@Override
+	public void setSpeedMultiplier(int multiplier, Object... data) 
+	{
+		speedMultiplier = multiplier;
 	}
 }

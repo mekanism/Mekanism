@@ -23,13 +23,9 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	/** How fast this item can transfer energy. */
 	public double VOLTAGE;
 	
-	/** The number that, when the max amount of energy is divided by, will make it equal 100. */
-	public int DIVIDER;
-	
-	public ItemEnergized(int id, double maxElectricity, double voltage, int divider)
+	public ItemEnergized(int id, double maxElectricity, double voltage)
 	{
 		super(id);
-		DIVIDER = divider;
 		MAX_ELECTRICITY = maxElectricity;
 		VOLTAGE = voltage;
 		setMaxStackSize(1);
@@ -100,7 +96,7 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 				electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 			}
 			
-			itemStack.setItemDamage((int)(MAX_ELECTRICITY - electricityStored)/DIVIDER);
+			itemStack.setItemDamage((int)(Math.abs(((electricityStored/MAX_ELECTRICITY)*100)-100)));
 			return electricityStored;
 		}
 
@@ -121,7 +117,7 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 
 			double electricityStored = Math.max(Math.min(wattHours, getMaxJoules()), 0);
 			itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-			itemStack.setItemDamage((int)(MAX_ELECTRICITY - electricityStored)/DIVIDER);
+			itemStack.setItemDamage((int)(Math.abs(((electricityStored/MAX_ELECTRICITY)*100)-100)));
 		}
 	}
 

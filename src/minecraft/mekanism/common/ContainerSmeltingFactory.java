@@ -21,7 +21,7 @@ public class ContainerSmeltingFactory extends Container
     {
         tileEntity = tentity;
         
-        addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 7, 7));
+        addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
         addSlotToContainer(new SlotEnergy(tentity, 1, 7, 35));
         
         if(tileEntity.tier == SmeltingFactoryTier.BASIC)

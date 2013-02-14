@@ -12,7 +12,8 @@ import java.util.Map;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
-import mekanism.api.IMachineUpgrade;
+import mekanism.api.IUpgradeManagement;
+import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
@@ -44,7 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -66,11 +67,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
 	
-	/** The current cap of electricity this machine can hold. */
-	public double currentMaxElectricity;
+	public int energyMultiplier;
 	
-	/** The current amount of ticks it takes this machine to run an operation. */
-	public int currentTicksRequired;
+	public int speedMultiplier;
+	
+	public int UPGRADE_TICKS_REQUIRED = 40;
+	
+	public int upgradeTicks;
 	
 	/** The amount of infuse this machine has stored. */
 	public int infuseStored;
@@ -99,9 +102,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		inventory = new ItemStack[5];
 		
-		currentTicksRequired = TICKS_REQUIRED;
-		currentMaxElectricity = MAX_ELECTRICITY;
-		
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 	}
 	
@@ -113,16 +113,19 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		if(worldObj.isRemote)
 		{
 			try {
-				synchronized(Mekanism.audioHandler.sounds)
+				if(Mekanism.audioHandler != null)
 				{
-					handleSound();
+					synchronized(Mekanism.audioHandler.sounds)
+					{
+						handleSound();
+					}
 				}
 			} catch(NoSuchMethodError e) {}
 		}
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			int received = (int)(powerProvider.useEnergy(0, (float)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -137,13 +140,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				{
 					if(tileEntity instanceof IConductor)
 					{
-						if(electricityStored < currentMaxElectricity)
+						if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 						{
-							double electricityNeeded = currentMaxElectricity - electricityStored;
+							double electricityNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored;
 							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
 							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
 						}
-						else if(electricityStored >= currentMaxElectricity)
+						else if(electricityStored >= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 						{
 							((IConductor)tileEntity).getNetwork().stopRequesting(this);
 						}
@@ -154,7 +157,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		if(inventory[4] != null)
 		{
-			if(electricityStored < currentMaxElectricity)
+			if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				if(inventory[4].getItem() instanceof IItemElectric)
 				{
@@ -162,18 +165,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 					if (electricItem.canProduceElectricity())
 					{
-						double joulesNeeded = currentMaxElectricity-electricityStored;
-						double joulesReceived = 0;
-						
-						if(electricItem.getVoltage(inventory[4]) <= joulesNeeded)
-						{
-							joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[4]), inventory[4]);
-						}
-						else if(electricItem.getVoltage(inventory[4]) > joulesNeeded)
-						{
-							joulesReceived = electricItem.onUse(joulesNeeded, inventory[4]);
-						}
-						
+						double joulesNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[4])*0.005, joulesNeeded), inventory[4]);
 						setJoules(electricityStored + joulesReceived);
 					}
 				}
@@ -187,7 +180,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 					}
 				}
 			}
-			if(inventory[4].itemID == Item.redstone.itemID && electricityStored+1000 <= currentMaxElectricity)
+			if(inventory[4].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				setJoules(electricityStored + 1000);
 				--inventory[4].stackSize;
@@ -199,68 +192,83 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			}
 		}
 		
-		if(inventory[0] != null && inventory[0].getItem() instanceof IMachineUpgrade)
+		if(inventory[0] != null)
 		{
-			int energyToAdd = 0;
-			int ticksToRemove = 0;
-			
-			if(currentMaxElectricity == MAX_ELECTRICITY)
+			if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && speedMultiplier < 8)
 			{
-				energyToAdd = ((IMachineUpgrade)inventory[0].getItem()).getEnergyBoost(inventory[0]);
-			}
-			
-			if(currentTicksRequired == TICKS_REQUIRED)
-			{
-				ticksToRemove = ((IMachineUpgrade)inventory[0].getItem()).getTickReduction(inventory[0]);
-			}
-			
-			currentMaxElectricity += energyToAdd;
-			currentTicksRequired -= ticksToRemove;
-		}
-		else if(inventory[0] == null)
-		{
-			currentTicksRequired = TICKS_REQUIRED;
-			currentMaxElectricity = MAX_ELECTRICITY;
-		}
-		
-		if(inventory[1] != null && infuseStored+100 <= MAX_INFUSE)
-		{
-			if(inventory[1].isItemEqual(new ItemStack(Mekanism.CompressedCarbon)))
-			{
-				if(type == InfusionType.NONE || type == InfusionType.COAL)
+				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 				{
-					infuseStored += 100;
-					inventory[1].stackSize--;
-					type = InfusionType.COAL;
+					upgradeTicks++;
+				}
+				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+				{
+					upgradeTicks = 0;
+					energyMultiplier+=1;
 					
-		            if (inventory[1].stackSize <= 0)
-		            {
-		                inventory[1] = null;
-		            }
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
 				}
 			}
-			else if(MekanismUtils.oreDictCheck(inventory[1], "dustTin"))
+			else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
 			{
-				if(type == InfusionType.NONE || type == InfusionType.TIN)
+				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 				{
-					infuseStored += 100;
-					inventory[1].stackSize--;
-					type = InfusionType.TIN;
+					upgradeTicks++;
+				}
+				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+				{
+					upgradeTicks = 0;
+					speedMultiplier+=1;
 					
-		            if (inventory[1].stackSize <= 0)
-		            {
-		                inventory[1] = null;
-		            }
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
+				}
+			}
+			else {
+				upgradeTicks = 0;
+			}
+		}
+		else {
+			upgradeTicks = 0;
+		}
+		
+		if(inventory[1] != null)
+		{
+			if(MekanismUtils.getInfuseObject(inventory[1]) != null)
+			{
+				InfuseObject infuse = MekanismUtils.getInfuseObject(inventory[1]);
+				
+				if(type == InfusionType.NONE || type == infuse.type)
+				{
+					if(infuseStored+infuse.stored <= MAX_INFUSE)
+					{
+						infuseStored+=infuse.stored;
+						type = infuse.type;
+						inventory[1].stackSize--;
+						
+			            if (inventory[1].stackSize <= 0)
+			            {
+			                inventory[1] = null;
+			            }
+					}
 				}
 			}
 		}
 		
-		if(canOperate() && (operatingTicks+1) < currentTicksRequired)
+		if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier))
 		{
 			++operatingTicks;
 			electricityStored -= ENERGY_PER_TICK;
 		}
-		else if(canOperate() && (operatingTicks+1) >= currentTicksRequired)
+		else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
 		{
 			if(!worldObj.isRemote)
 			{
@@ -300,25 +308,28 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@SideOnly(Side.CLIENT)
 	public void handleSound()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.audioHandler != null)
 		{
-			if(audio == null && worldObj != null && worldObj.isRemote)
+			synchronized(Mekanism.audioHandler.sounds)
 			{
-				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				if(audio == null && worldObj != null && worldObj.isRemote)
 				{
-					audio = Mekanism.audioHandler.getSound("MetallurgicInfuser.ogg", worldObj, xCoord, yCoord, zCoord);
+					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+					{
+						audio = Mekanism.audioHandler.getSound("MetallurgicInfuser.ogg", worldObj, xCoord, yCoord, zCoord);
+					}
 				}
-			}
-			
-			if(worldObj != null && worldObj.isRemote && audio != null)
-			{
-				if(!audio.isPlaying && isActive == true)
+				
+				if(worldObj != null && worldObj.isRemote && audio != null)
 				{
-					audio.play();
-				}
-				else if(audio.isPlaying && isActive == false)
-				{
-					audio.stop();
+					if(!audio.isPlaying && isActive == true)
+					{
+						audio.play();
+					}
+					else if(audio.isPlaying && isActive == false)
+					{
+						audio.stopLoop();
+					}
 				}
 			}
 		}
@@ -395,12 +406,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public int getScaledEnergyLevel(int i)
 	{
-		return (int)(electricityStored*i / currentMaxElectricity);
+		return (int)(electricityStored*i / MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY));
 	}
 	
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / currentTicksRequired;
+		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier);
+	}
+	
+	public int getScaledUpgradeProgress(int i)
+	{
+		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
 	}
 	
 	@Override
@@ -419,8 +435,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
     	super.readFromNBT(nbtTags);
     	
-    	currentTicksRequired = nbtTags.getInteger("currentTicksRequired");
-    	currentMaxElectricity = nbtTags.getDouble("currentMaxElectricity");
+    	speedMultiplier = nbtTags.getInteger("speedMultiplier");
+    	energyMultiplier = nbtTags.getInteger("energyMultiplier");
     	isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
@@ -452,8 +468,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setInteger("currentTicksRequired", currentTicksRequired);
-        nbtTags.setDouble("currentMaxElectricity", currentMaxElectricity);
+        nbtTags.setInteger("speedMultiplier", speedMultiplier);
+        nbtTags.setInteger("energyMultiplier", energyMultiplier);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setInteger("infuseStored", infuseStored);
@@ -485,8 +501,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		try {
 			facing = dataStream.readInt();
 			electricityStored = dataStream.readDouble();
-			currentTicksRequired = dataStream.readInt();
-			currentMaxElectricity = dataStream.readDouble();
+			speedMultiplier = dataStream.readInt();
+			energyMultiplier = dataStream.readInt();
 			isActive = dataStream.readBoolean();
 			operatingTicks = dataStream.readInt();
 			infuseStored = dataStream.readInt();
@@ -503,13 +519,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public void sendPacket() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, currentTicksRequired, currentMaxElectricity, isActive, operatingTicks, infuseStored, type.name);
+		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, operatingTicks, infuseStored, type.name);
 	}
 
 	@Override
 	public void sendPacketWithRange() 
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, currentTicksRequired, currentMaxElectricity, isActive, operatingTicks, infuseStored, type.name);
+		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, operatingTicks, infuseStored, type.name);
 	}
 
 	@Override
@@ -538,9 +554,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			case 3:
 				return new Object[] {canOperate()};
 			case 4:
-				return new Object[] {currentMaxElectricity};
+				return new Object[] {MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)};
 			case 5:
-				return new Object[] {(currentMaxElectricity-electricityStored)};
+				return new Object[] {(MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)};
 			case 6:
 				return new Object[] {infuseStored};
 			case 7:
@@ -584,13 +600,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return currentMaxElectricity;
+		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
 	}
 
 	@Override
 	public int demandsEnergy() 
 	{
-		return (int)((currentMaxElectricity - electricityStored)*Mekanism.TO_IC2);
+		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2);
 	}
 	
 	@Override
@@ -629,7 +645,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = currentMaxElectricity-electricityStored;
+    	double neededEnergy = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
     	
     	if(givenEnergy < neededEnergy)
     	{
@@ -647,7 +663,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public int powerRequest() 
 	{
-		return (int)(currentMaxElectricity-electricityStored);
+		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC);
 	}
 	
 	@Override
@@ -666,5 +682,29 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int getOrientation()
 	{
 		return facing;
+	}
+	
+	@Override
+	public int getEnergyMultiplier(Object... data) 
+	{
+		return energyMultiplier;
+	}
+
+	@Override
+	public void setEnergyMultiplier(int multiplier, Object... data) 
+	{
+		energyMultiplier = multiplier;
+	}
+
+	@Override
+	public int getSpeedMultiplier(Object... data) 
+	{
+		return speedMultiplier;
+	}
+
+	@Override
+	public void setSpeedMultiplier(int multiplier, Object... data) 
+	{
+		speedMultiplier = multiplier;
 	}
 }

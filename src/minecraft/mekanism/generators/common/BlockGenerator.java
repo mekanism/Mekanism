@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.IActiveState;
+import mekanism.api.IEnergyCube;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
 import mekanism.common.TileEntityElectricBlock;
+import mekanism.common.TileEntityEnergyCube;
 import mekanism.generators.client.GeneratorsClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,9 +22,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.implement.IToolConfigurator;
 import universalelectricity.prefab.multiblock.IMultiBlock;
@@ -424,12 +428,13 @@ public class BlockGenerator extends BlockContainer
             
             if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
             {
-	            EntityItem entityItem = new EntityItem(world, x, y, z, new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z)));
-	            
-	            float motion = 0.05F;
-	            entityItem.motionX = machineRand.nextGaussian() * motion;
-	            entityItem.motionY = machineRand.nextGaussian() * motion + 0.2F;
-	            entityItem.motionZ = machineRand.nextGaussian() * motion;
+            	float motion = 0.7F;
+                double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+                double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+                double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+                
+                EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(MekanismGenerators.Generator, 1, 5));
+    	        
 	            world.spawnEntityInWorld(entityItem);
             }
             
@@ -569,25 +574,62 @@ public class BlockGenerator extends BlockContainer
     		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     	}
     }
+    
+    @Override
+    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+    {
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+    	{
+	    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+	    	
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z)));
+	        
+	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
+	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
+	        
+	        world.spawnEntityInWorld(entityItem);
+    	}
+    	
+        return world.setBlockWithNotify(x, y, z, 0);
+    }
+    
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	{
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z));
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        return itemStack;
+	}
 	
 	public static enum GeneratorType
 	{
-		HEAT_GENERATOR(0, 0, TileEntityHeatGenerator.class, true),
-		SOLAR_GENERATOR(1, 1, TileEntitySolarGenerator.class, false),
-		ELECTROLYTIC_SEPARATOR(2, 2, TileEntityElectrolyticSeparator.class, true),
-		HYDROGEN_GENERATOR(3, 3, TileEntityHydrogenGenerator.class, true),
-		BIO_GENERATOR(4, 4, TileEntityBioGenerator.class, true),
-		ADVANCED_SOLAR_GENERATOR(5, 1, TileEntityAdvancedSolarGenerator.class, true);
+		HEAT_GENERATOR(0, 0, 160000, TileEntityHeatGenerator.class, true),
+		SOLAR_GENERATOR(1, 1, 96000, TileEntitySolarGenerator.class, false),
+		ELECTROLYTIC_SEPARATOR(2, 2, 9600, TileEntityElectrolyticSeparator.class, true),
+		HYDROGEN_GENERATOR(3, 3, 400000, TileEntityHydrogenGenerator.class, true),
+		BIO_GENERATOR(4, 4, 160000, TileEntityBioGenerator.class, true),
+		ADVANCED_SOLAR_GENERATOR(5, 1, 200000, TileEntityAdvancedSolarGenerator.class, true);
 		
 		public int meta;
 		public int guiId;
+		public double maxEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private GeneratorType(int i, int j, Class<? extends TileEntity> tileClass, boolean model)
+		private GeneratorType(int i, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
 			guiId = j;
+			maxEnergy = k;
 			tileEntityClass = tileClass;
 			hasModel = model;
 		}

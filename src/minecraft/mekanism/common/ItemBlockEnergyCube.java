@@ -79,7 +79,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 				electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 			}
 			
-			itemStack.setItemDamage((int)(getTier(itemStack).MAX_ELECTRICITY - electricityStored)/getTier(itemStack).DIVIDER);
+			itemStack.setItemDamage((int)(Math.abs(((electricityStored/getTier(itemStack).MAX_ELECTRICITY)*100)-100)));
 			return electricityStored;
 		}
 
@@ -100,7 +100,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 
 			double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
 			itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-			itemStack.setItemDamage((int)(getTier(itemStack).MAX_ELECTRICITY - electricityStored)/getTier(itemStack).DIVIDER);
+			itemStack.setItemDamage((int)(Math.abs(((electricityStored/getTier(itemStack).MAX_ELECTRICITY)*100)-100)));
 		}
 	}
 
@@ -113,6 +113,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 			
 			return getTier(itemstack).MAX_ELECTRICITY;
 		}
+		
 		return EnergyCubeTier.BASIC.MAX_ELECTRICITY;
 	}
 

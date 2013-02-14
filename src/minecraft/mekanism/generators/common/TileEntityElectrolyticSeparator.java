@@ -28,6 +28,8 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidContainerData;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.electricity.ElectricityConnections;
@@ -130,17 +132,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if (electricItem.canProduceElectricity())
 				{
 					double joulesNeeded = MAX_ELECTRICITY-electricityStored;
-					double joulesReceived = 0;
-					
-					if(electricItem.getVoltage(inventory[3]) <= joulesNeeded)
-					{
-						joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[3]), inventory[3]);
-					}
-					else if(electricItem.getVoltage(inventory[3]) > joulesNeeded)
-					{
-						joulesReceived = electricItem.onUse(joulesNeeded, inventory[3]);
-					}
-					
+					double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[3])*0.005, joulesNeeded), inventory[3]);
 					setJoules(electricityStored + joulesReceived);
 				}
 			}
@@ -155,12 +147,29 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			}
 		}
 		
-		if(inventory[0] != null && waterSlot.liquidStored < waterSlot.MAX_LIQUID)
+		if(inventory[0] != null)
 		{
-			if(inventory[0].itemID == Item.bucketWater.itemID)
+			LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
+			
+			if(liquid != null)
 			{
-				inventory[0] = new ItemStack(Item.bucketEmpty, 1);
-				waterSlot.setLiquid(waterSlot.liquidStored + 1000);
+				if(waterSlot.liquidStored+liquid.amount <= waterSlot.MAX_LIQUID)
+				{
+					waterSlot.setLiquid(waterSlot.liquidStored + liquid.amount);
+					
+					if(inventory[0].isItemEqual(new ItemStack(Item.bucketWater)))
+					{
+						inventory[0] = new ItemStack(Item.bucketEmpty);
+					}
+					else {
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
+						}
+					}
+				}
 			}
 		}
 		

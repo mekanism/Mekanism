@@ -77,17 +77,17 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	public void drawExtras(GuiContainerManager guimanager, int i)
 	{
 		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
-		drawProgressBar(guimanager, 67, 42, 176, 104, 32, 8, f, 0);
+		drawProgressBar(guimanager, 67, 42, 176 + 26, 104, 32, 8, f, 0);
 		
 		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
-		int infuseX = 176 + (getOtherStacks(i).get(0).item.isItemEqual(new ItemStack(Mekanism.CompressedCarbon)) ? 4 : 0);
+		int infuseX = 176 + 26 + (getOtherStacks(i).get(0).item.isItemEqual(new ItemStack(Mekanism.CompressedCarbon)) ? 4 : 0);
 		int infuseY = getOtherStacks(i).get(0).item.isItemEqual(new ItemStack(Mekanism.CompressedCarbon)) ? 0 : 52;
 		
-		drawProgressBar(guimanager, 2, 22, infuseX, infuseY, 4, 52, f, 3);
+		drawProgressBar(guimanager, 2, 12, infuseX, infuseY, 4, 52, f, 3);
 		
 		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(guimanager, 160, 12, 176, 0, 4, 52, f, 3);
+		drawProgressBar(guimanager, 160, 12, 176 + 26, 0, 4, 52, f, 3);
 	}
 
 	@Override

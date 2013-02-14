@@ -39,6 +39,78 @@ public class Version
 		build = 0;
 	}
 	
+	/**
+	 * 1: greater than
+	 * 0: equal to
+	 * -1: less than
+	 * @param version
+	 * @return
+	 */
+	public byte comparedState(Version version)
+	{
+		if(version.major > major)
+		{
+			return -1;
+		}
+		else if(version.major == major)
+		{
+			if(version.minor > minor)
+			{
+				return -1;
+			}
+			else if(version.minor == minor)
+			{
+				if(version.build > build)
+				{
+					return -1;
+				}
+				else if(version.build == build)
+				{
+					return 0;
+				}
+				else {
+					return 1;
+				}
+			}
+			else {
+				return 1;
+			}
+		}
+		else {
+			return 1;
+		}
+	}
+	
+	public static Version get(String s)
+	{
+		String[] split = s.replace('.', ':').split(":");
+		if(split.length != 3)
+		{
+			System.out.println(split.length);
+			return null;
+		}
+		
+		for(String i : split)
+		{
+			for(Character c : i.toCharArray())
+			{
+				if(!Character.isDigit(c))
+				{
+					return null;
+				}
+			}
+		}
+		
+		int[] digits = new int[3];
+		
+		for(int i = 0; i < 3; i++)
+		{
+			digits[i] = Integer.parseInt(split[i]);
+		}
+		
+		return new Version(digits[0], digits[1], digits[2]);
+	}
+	
 	@Override
 	public String toString()
 	{

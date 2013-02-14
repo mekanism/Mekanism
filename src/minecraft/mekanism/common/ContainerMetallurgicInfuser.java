@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.Map;
+
 import ic2.api.IElectricItem;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
@@ -21,7 +23,7 @@ public class ContainerMetallurgicInfuser extends Container
     public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 7, 7));
+        addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
         addSlotToContainer(new Slot(tentity, 1, 17, 35));
         addSlotToContainer(new Slot(tentity, 2, 51, 43));
         addSlotToContainer(new SlotFurnace(inventory.player, tentity, 3, 109, 43));
@@ -70,7 +72,7 @@ public class ContainerMetallurgicInfuser extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
             {
-            	if(MekanismUtils.oreDictCheck(slotStack, "dustTin") && (tileEntity.type == InfusionType.TIN || tileEntity.type == InfusionType.NONE))
+            	if(MekanismUtils.getInfuseObject(slotStack) != null && (tileEntity.type == InfusionType.NONE || tileEntity.type == MekanismUtils.getInfuseObject(slotStack).type))
             	{
             		if(!mergeItemStack(slotStack, 1, 2, false))
             		{
@@ -84,13 +86,6 @@ public class ContainerMetallurgicInfuser extends Container
             			return null;
             		}
             	}
-            	else if(slotStack.isItemEqual(new ItemStack(Mekanism.CompressedCarbon)) && (tileEntity.type == InfusionType.COAL || tileEntity.type == InfusionType.NONE))
-            	{
-            		if(!mergeItemStack(slotStack, 1, 2, false))
-            		{
-            			return null;
-            		}
-            	}
             	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
             	{
             		if(!mergeItemStack(slotStack, 4, 5, false))
@@ -98,7 +93,7 @@ public class ContainerMetallurgicInfuser extends Container
             			return null;
             		}
             	}
-            	else if(RecipeHandler.getOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, slotStack), false, Recipe.METALLURGIC_INFUSER.get()) != null)
+            	else if(isInputItem(slotStack))
             	{
             		if(!mergeItemStack(slotStack, 2, 3, false))
             		{
@@ -153,5 +148,28 @@ public class ContainerMetallurgicInfuser extends Container
         }
 
         return stack;
+    }
+    
+    public boolean isInputItem(ItemStack itemStack)
+    {
+    	if(tileEntity.type != InfusionType.NONE)
+    	{
+    		if(RecipeHandler.getOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, itemStack), false, Recipe.METALLURGIC_INFUSER.get()) != null)
+    		{
+    			return true;
+    		}
+    	}
+    	else {
+    		for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
+    		{
+    			InfusionInput input = (InfusionInput)obj;
+    			if(input.inputSlot.isItemEqual(itemStack))
+    			{
+    				return true;
+    			}
+    		}
+    	}
+    	
+    	return false;
     }
 }

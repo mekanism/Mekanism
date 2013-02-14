@@ -1,5 +1,8 @@
 package mekanism.generators.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.client.Sound;
@@ -16,6 +19,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.electricity.ElectricInfo;
@@ -41,11 +45,18 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
+	
+	public static Map<Integer, Integer> fuels = new HashMap<Integer, Integer>();
 
 	public TileEntityBioGenerator()
 	{
 		super("Bio-Generator", 160000, 128);
 		inventory = new ItemStack[2];
+		
+		if(Mekanism.hooks.ForestryLoaded)
+		{
+			fuels.put(Mekanism.hooks.ForestryBiofuelID, 16);
+		}
 	}
 	
 	public float getMatrix()
@@ -82,9 +93,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			if(inventory[1].getItem() instanceof IItemElectric)
 			{
 				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
-				double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-				setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				
+				if(electricItem.canReceiveElectricity())
+				{
+					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
+					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
+					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
+				}
 			}
 			else if(inventory[1].getItem() instanceof IElectricItem)
 			{
@@ -93,31 +108,55 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			}
 		}
 		
-		if(inventory[0] != null && bioFuelSlot.liquidStored < bioFuelSlot.MAX_LIQUID)
+		if(inventory[0] != null)
 		{
-			if(Mekanism.hooks.ForestryLoaded)
+			LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
+			
+			if(liquid != null)
 			{
-				if(inventory[0].itemID == Mekanism.hooks.ForestryBiofuelBucket.itemID)
+				if(fuels.containsKey(liquid.itemID))
 				{
-					bioFuelSlot.setLiquid(bioFuelSlot.liquidStored + 1000);
-					inventory[0] = new ItemStack(Item.bucketEmpty);
+					int liquidToAdd = liquid.amount*fuels.get(liquid.itemID);
+					
+					if(bioFuelSlot.liquidStored+liquidToAdd <= bioFuelSlot.MAX_LIQUID)
+					{
+						bioFuelSlot.setLiquid(bioFuelSlot.liquidStored+liquidToAdd);
+						if(LiquidContainerRegistry.isBucket(inventory[0]))
+						{
+							inventory[0] = new ItemStack(Item.bucketEmpty);
+						}
+						else {
+							inventory[0].stackSize--;
+							
+							if(inventory[0].stackSize == 0)
+							{
+								inventory[0] = null;
+							}
+						}
+					}
 				}
 			}
-			
-			int fuel = getFuel(inventory[0]);
-			ItemStack prevStack = inventory[0].copy();
-			if(fuel > 0)
-			{
-				int fuelNeeded = bioFuelSlot.MAX_LIQUID - bioFuelSlot.liquidStored;
-				if(fuel <= fuelNeeded)
+			else {
+				int fuel = getFuel(inventory[0]);
+				ItemStack prevStack = inventory[0].copy();
+				if(fuel > 0)
 				{
-					bioFuelSlot.liquidStored += fuel;
-					--inventory[0].stackSize;
-				}
-				
-				if(inventory[0].stackSize == 0)
-				{
-					inventory[0] = null;
+					int fuelNeeded = bioFuelSlot.MAX_LIQUID - bioFuelSlot.liquidStored;
+					if(fuel <= fuelNeeded)
+					{
+						bioFuelSlot.liquidStored += fuel;
+						--inventory[0].stackSize;
+						
+						if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
+						{
+							inventory[0] = new ItemStack(Item.bucketEmpty);
+						}
+					}
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
 				}
 			}
 		}

@@ -13,7 +13,7 @@ public class ItemConfigurator extends ItemEnergized
 	
     public ItemConfigurator(int id)
     {
-        super(id, 60000, 120, 600);
+        super(id, 60000, 120);
     }
     
     @Override

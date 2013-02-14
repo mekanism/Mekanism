@@ -46,7 +46,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	
 	public TileEntityTeleporter()
 	{
-		super("Teleporter", 3000000);
+		super("Teleporter", 4000000);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
 		
@@ -142,17 +142,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 					if (electricItem.canProduceElectricity())
 					{
 						double joulesNeeded = MAX_ELECTRICITY-electricityStored;
-						double joulesReceived = 0;
-						
-						if(electricItem.getVoltage(inventory[0]) <= joulesNeeded)
-						{
-							joulesReceived = electricItem.onUse(electricItem.getVoltage(inventory[0]), inventory[0]);
-						}
-						else if(electricItem.getVoltage(inventory[0]) > joulesNeeded)
-						{
-							joulesReceived = electricItem.onUse(joulesNeeded, inventory[0]);
-						}
-						
+						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, joulesNeeded), inventory[0]);
 						setJoules(electricityStored + joulesReceived);
 					}
 				}
@@ -310,7 +300,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		
 		int distance = (int)entity.getDistanceSq(coords.xCoord, coords.yCoord, coords.zCoord);
 		
-		energyCost+=(distance*10);
+		energyCost+=(distance);
 		
 		return energyCost;
 	}

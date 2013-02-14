@@ -14,6 +14,7 @@ public class GuiAdvancedElectricMachine extends GuiContainer
     public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
     {
         super(new ContainerAdvancedElectricMachine(inventory, tentity));
+        xSize+=26;
         tileEntity = tentity;
     }
 
@@ -36,12 +37,15 @@ public class GuiAdvancedElectricMachine extends GuiContainer
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 19 + 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 19 + 52 - displayInt, 4, displayInt);
 
         displayInt = tileEntity.getScaledSecondaryEnergyLevel(12);
-        drawTexturedModalRect(guiWidth + 61, guiHeight + 37 + 12 - displayInt, 176, 7 + 12 - displayInt, 5, displayInt);
+        drawTexturedModalRect(guiWidth + 61, guiHeight + 37 + 12 - displayInt, 176 + 26, 7 + 12 - displayInt, 5, displayInt);
 
         displayInt = tileEntity.getScaledProgress(24);
-        drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
+        drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176 + 26, 0, displayInt + 1, 7);
+        
+        displayInt = tileEntity.getScaledUpgradeProgress(14);
+        drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 71, 10, displayInt);
     }
 }

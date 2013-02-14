@@ -8,6 +8,7 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -19,7 +20,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.2.3", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.3.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismGenerators
 {
@@ -150,5 +151,7 @@ public class MekanismGenerators
 		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", 11301).getInt()).setItemName("BioFuel");
 		ElectrolyticCore = new ItemMekanism(Mekanism.configuration.getItem("ElectrolyticCore", 11302).getInt()).setItemName("ElectrolyticCore");
 		Mekanism.configuration.save();
+		
+		OreDictionary.registerOre("bioFuel", new ItemStack(BioFuel));
 	}
 }

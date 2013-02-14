@@ -76,9 +76,12 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		if(worldObj.isRemote)
 		{
 			try {
-				synchronized(Mekanism.audioHandler.sounds)
+				if(Mekanism.audioHandler != null)
 				{
-					handleSound();
+					synchronized(Mekanism.audioHandler.sounds)
+					{
+						handleSound();
+					}
 				}
 			} catch(NoSuchMethodError e) {}
 		}
@@ -130,7 +133,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 
 			if(outputNetwork != null)
 			{
-				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), getJoules());
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
 
 				if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
 				{
@@ -147,25 +150,28 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@SideOnly(Side.CLIENT)
 	public void handleSound()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.audioHandler != null)
 		{
-			if(audio == null && worldObj != null && worldObj.isRemote)
+			synchronized(Mekanism.audioHandler.sounds)
 			{
-				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				if(audio == null && worldObj != null && worldObj.isRemote)
 				{
-					audio = Mekanism.audioHandler.getSound(fullName.replace(" ", "").replace("-","") + ".ogg", worldObj, xCoord, yCoord, zCoord);
+					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+					{
+						audio = Mekanism.audioHandler.getSound(fullName.replace(" ", "").replace("-","") + ".ogg", worldObj, xCoord, yCoord, zCoord);
+					}
 				}
-			}
-			
-			if(worldObj != null && worldObj.isRemote && audio != null)
-			{
-				if(!audio.isPlaying && isActive == true)
+				
+				if(worldObj != null && worldObj.isRemote && audio != null)
 				{
-					audio.play();
-				}
-				else if(audio.isPlaying && isActive == false)
-				{
-					audio.stop();
+					if(!audio.isPlaying && isActive == true)
+					{
+						audio.play();
+					}
+					else if(audio.isPlaying && isActive == false)
+					{
+						audio.stopLoop();
+					}
 				}
 			}
 		}

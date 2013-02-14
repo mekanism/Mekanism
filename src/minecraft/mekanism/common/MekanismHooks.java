@@ -4,6 +4,7 @@ import universalelectricity.prefab.RecipeHelper;
 import cpw.mods.fml.common.Loader;
 import ic2.api.Ic2Recipes;
 import ic2.api.Items;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.*;
@@ -36,8 +37,11 @@ public final class MekanismHooks
 	public ItemStack IC2TinDust;
 	public ItemStack IC2CoalDust;
 	
-	public int BuildCraftFuelID = 3808;
+	public int BuildCraftFuelID = 19108;
 	public ItemStack BuildCraftFuelBucket;
+	
+	public int BuildCraftOilID = 1521;
+	public ItemStack BuildCraftOilBucket;
 	
 	public int ForestryBiofuelID = 5013;
 	public ItemStack ForestryBiofuelBucket;
@@ -98,6 +102,8 @@ public final class MekanismHooks
 		{
 			BuildCraftFuelID = getBuildCraftItem("fuel").itemID;
 			BuildCraftFuelBucket = getBuildCraftItem("bucketFuel");
+			BuildCraftOilID = getBuildCraftItem("oilStill").itemID;
+			BuildCraftOilBucket = getBuildCraftItem("bucketOil");
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
 		if(ForestryLoaded)
@@ -124,6 +130,10 @@ public final class MekanismHooks
 			{
 				return (ItemStack)ret;
 			}
+			else if(ret instanceof Block)
+			{
+				return new ItemStack((Block)ret);
+			}
 			else {
 				throw new Exception("not instanceof ItemStack");
 			}
@@ -143,6 +153,10 @@ public final class MekanismHooks
 			if(ret instanceof Item)
 			{
 				return new ItemStack((Item)ret);
+			}
+			else if(ret instanceof Block)
+			{
+				return new ItemStack((Block)ret);
 			}
 			else {
 				throw new Exception("not instanceof ItemStack");
@@ -164,6 +178,10 @@ public final class MekanismHooks
 			{
 				return new ItemStack((Item)ret);
 			}
+			else if(ret instanceof Block)
+			{
+				return new ItemStack((Block)ret);
+			}
 			else {
 				throw new Exception("not instanceof ItemStack");
 			}
@@ -183,6 +201,10 @@ public final class MekanismHooks
 			if(ret instanceof Item)
 			{
 				return new ItemStack((Item)ret);
+			}
+			else if(ret instanceof Block)
+			{
+				return new ItemStack((Block)ret);
 			}
 			else {
 				throw new Exception("not instanceof ItemStack");

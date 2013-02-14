@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.TextureFXManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -49,6 +50,15 @@ import cpw.mods.fml.relauncher.Side;
 public class ClientProxy extends CommonProxy
 {
 	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	
+	@Override
+	public void loadConfiguration()
+	{
+		super.loadConfiguration();
+		
+		Mekanism.configuration.load();
+		Mekanism.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
+	}
 	
 	@Override
 	public int getArmorIndex(String string)
@@ -73,11 +83,9 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/CrusherFront.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/CompressorFront.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/CombinerFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerBack.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/ElementizerSide.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/HydrogenFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/HydrogenSide.png");
+		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/InfuserFront.png");
+		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/InfuserBack.png");
+		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/InfuserSide.png");
 		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/PurificationChamberFront.png");
 		
 		//Register animated TextureFX
@@ -85,11 +93,9 @@ public class ClientProxy extends CommonProxy
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CrusherFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+1));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CompressorFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+2));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CombinerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+3));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+4));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerBack.png", Mekanism.ANIMATED_TEXTURE_INDEX+5));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/ElementizerSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+6));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+7));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+8));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+4));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserBack.png", Mekanism.ANIMATED_TEXTURE_INDEX+5));
+			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+6));
 			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/PurificationChamberFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+9));
 		} catch (IOException e) {
 			System.err.println("[Mekanism] Error registering animation with FML: " + e.getMessage());
@@ -182,21 +188,27 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void loadSoundHandler()
 	{
-		Mekanism.audioHandler = new SoundHandler();
+		if(Mekanism.enableSounds)
+		{
+			Mekanism.audioHandler = new SoundHandler();
+		}
 	}
 	
 	@Override
 	public void unloadSoundHandler()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.audioHandler != null)
 		{
-			for(Sound sound : Mekanism.audioHandler.sounds)
+			synchronized(Mekanism.audioHandler.sounds)
 			{
-				sound.stop();
-				Mekanism.audioHandler.soundSystem.removeSource(sound.identifier);
+				for(Sound sound : Mekanism.audioHandler.sounds)
+				{
+					sound.stopLoop();
+					Mekanism.audioHandler.soundSystem.removeSource(sound.identifier);
+				}
+				
+				Mekanism.audioHandler.sounds.clear();
 			}
-			
-			Mekanism.audioHandler.sounds.clear();
 		}
 	}
 }

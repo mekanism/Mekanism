@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
@@ -29,11 +30,13 @@ import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.Mod.ServerStarting;
 import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -49,7 +52,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.2.3")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.3.0")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -71,10 +74,13 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 2, 3);
+	public static Version versionNumber = new Version(5, 3, 0);
 	
 	/** Map of Teleporter info. */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
+	
+	/** Map of infuse objects */
+	public static Map<ItemStack, InfuseObject> infusions = new HashMap<ItemStack, InfuseObject>();
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -147,6 +153,8 @@ public class Mekanism
 	public static boolean disableBCBronzeCrafting = true;
 	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
+	public static boolean enableSounds = true;
+	public static boolean controlCircuitOreDict = true;
 	
 	//Extra data
 	public static float ObsidianTNTBlastRadius = 12.0F;
@@ -200,6 +208,9 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 5), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), "ingotSteel"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Ingot, 9, 4), new Object[] {
+			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 5)
 		}));
 		
 		//Extra
@@ -316,7 +327,6 @@ public class Mekanism
 		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 0, new ItemStack(Item.ingotIron), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 1, new ItemStack(Item.ingotGold), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 5, new ItemStack(Ingot, 1, 4), 1.0F);
-		GameRegistry.addSmelting(Item.coal.itemID, new ItemStack(CompressedCarbon), 1.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Dust, 1, 4), new ItemStack(Item.diamond));
@@ -324,7 +334,7 @@ public class Mekanism
         RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 4), new ItemStack(CompressedCarbon, 8));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 2), new ItemStack(CompressedCarbon));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreLapis), new ItemStack(Item.dyePowder, 12, 4));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 12));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreCoal), new ItemStack(Block.oreCoal));
@@ -347,6 +357,10 @@ public class Mekanism
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+        
+        infusions.put(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfusionType.COAL, 10));
+        infusions.put(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfusionType.COAL, 20));
+        infusions.put(new ItemStack(CompressedCarbon), new InfuseObject(InfusionType.COAL, 100));
 	}
 	
 	/**
@@ -362,9 +376,9 @@ public class Mekanism
 		{
 			LanguageRegistry.addName(Stopwatch, "Steve's Stopwatch");
 			LanguageRegistry.addName(WeatherOrb, "Weather Orb");
-			LanguageRegistry.addName(EnrichedAlloy, "Enriched Alloy");
 		}
 		
+		LanguageRegistry.addName(EnrichedAlloy, "Enriched Alloy");
 		LanguageRegistry.addName(EnergyTablet, "Energy Tablet");
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
@@ -461,9 +475,9 @@ public class Mekanism
 		{
 			Stopwatch.setIconIndex(224);
 			WeatherOrb.setIconIndex(226);
-			EnrichedAlloy.setIconIndex(227);
 		}
 		
+		EnrichedAlloy.setIconIndex(227);
 		EnergyTablet.setIconIndex(228);
 		SpeedUpgrade.setIconIndex(232);
 		EnergyUpgrade.setIconIndex(231);
@@ -494,7 +508,7 @@ public class Mekanism
 		}
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 250000, 800, 2500).setItemName("EnergyTablet");
+		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 600000, 800).setItemName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt(), 0, 150).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt(), 1000, 0).setItemName("EnergyUpgrade");
 		UltimateUpgrade = new ItemMachineUpgrade(configuration.getItem("UltimateUpgrade", 11209).getInt(), 2500, 180).setItemName("UltimateUpgrade");
@@ -584,8 +598,13 @@ public class Mekanism
 		
 		OreDictionary.registerOre("orePlatinum", new ItemStack(OreBlock, 1, 0));
 		
-		OreDictionary.registerOre("basicCircuit", new ItemStack(ControlCircuit));
+		if(controlCircuitOreDict)
+		{
+			OreDictionary.registerOre("basicCircuit", new ItemStack(ControlCircuit));
+		}
+		
 		OreDictionary.registerOre("compressedCarbon", new ItemStack(CompressedCarbon));
+		OreDictionary.registerOre("enrichedAlloy", new ItemStack(EnrichedAlloy));
 		
 		if(hooks.IC2Loaded)
 		{
@@ -729,6 +748,10 @@ public class Mekanism
 		} catch(Exception e) {}
 		
 		try {
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 8, OreDictionary.getOres("ingotSilver").get(0), 1.0F);
+		} catch(Exception e) {}
+		
+		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
 				RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Dust, 1, 6));
@@ -739,6 +762,13 @@ public class Mekanism
 			for(ItemStack ore : OreDictionary.getOres("ingotTin"))
 			{
 				RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Dust, 1, 7));
+			}
+		} catch(Exception e) {}
+		
+		try {
+			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
+			{
+				RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Dust, 1, 8));
 			}
 		} catch(Exception e) {}
 		
@@ -781,6 +811,7 @@ public class Mekanism
 			for(ItemStack ore : OreDictionary.getOres("dustTin"))
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), OreDictionary.getOres("oreTin").get(0));
+				infusions.put(ore, new InfuseObject(InfusionType.TIN, 100));
 			}
 		} catch(Exception e) {}
 		
@@ -830,13 +861,10 @@ public class Mekanism
 		proxy.registerSpecialTileEntities();
 	}
 	
-	/**
-	 * Registers the server command handler.
-	 */
-	@SideOnly(Side.SERVER)
-	public void registerServerCommands()
+	@ServerStarting
+	public void serverStarting(FMLServerStartingEvent event)
 	{
-		ServerCommandHandler.initialize();
+		event.registerServerCommand(new CommandMekanism());
 	}
 	
 	@ServerStopping
@@ -891,11 +919,6 @@ public class Mekanism
 		
 		//Register to recieve subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
-		
-		//Attempt to load server commands
-		try {
-			registerServerCommands();
-		} catch(NoSuchMethodError e) {}
 
 		//Load this module
 		addItems();

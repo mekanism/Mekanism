@@ -9,8 +9,10 @@ import java.util.EnumSet;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IElectricMachine;
+import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.Sound;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -27,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -49,11 +51,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
 	
-	/** The current tick requirement for this machine. */
-	public int currentTicksRequired;
+	public int energyMultiplier = 0;
 	
-	/** The current energy capacity for this machine. */
-	public double currentMaxElectricity;
+	public int speedMultiplier = 0;
+	
+	public int UPGRADE_TICKS_REQUIRED = 40;
+	
+	public int upgradeTicks;
 	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
@@ -80,9 +84,8 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		super(name, maxEnergy);
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
-		currentMaxElectricity = MAX_ELECTRICITY;
 		ENERGY_PER_TICK = perTick;
-		TICKS_REQUIRED = currentTicksRequired = ticksRequired;
+		TICKS_REQUIRED = ticksRequired;
 		soundURL = soundPath;
 		guiTexturePath = path;
 		isActive = false;
@@ -95,7 +98,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		
 		if(powerProvider != null)
 		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((currentMaxElectricity-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			int received = (int)(powerProvider.useEnergy(0, (float)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
 		}
 		
@@ -114,13 +117,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 				{
 					if(tileEntity instanceof IConductor)
 					{
-						if(electricityStored < currentMaxElectricity)
+						if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 						{
-							double electricityNeeded = currentMaxElectricity - electricityStored;
+							double electricityNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored;
 							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
 							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
 						}
-						else if(electricityStored >= currentMaxElectricity)
+						else if(electricityStored >= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 						{
 							((IConductor)tileEntity).getNetwork().stopRequesting(this);
 						}
@@ -132,9 +135,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		if(worldObj.isRemote)
 		{
 			try {
-				synchronized(Mekanism.audioHandler.sounds)
+				if(Mekanism.audioHandler != null)
 				{
-					handleSound();
+					synchronized(Mekanism.audioHandler.sounds)
+					{
+						handleSound();
+					}
 				}
 			} catch(NoSuchMethodError e) {}
 		}
@@ -143,25 +149,28 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@SideOnly(Side.CLIENT)
 	public void handleSound()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.audioHandler != null)
 		{
-			if(audio == null && worldObj != null && worldObj.isRemote)
+			synchronized(Mekanism.audioHandler.sounds)
 			{
-				if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+				if(audio == null && worldObj != null && worldObj.isRemote)
 				{
-					audio = Mekanism.audioHandler.getSound(soundURL, worldObj, xCoord, yCoord, zCoord);
+					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+					{
+						audio = Mekanism.audioHandler.getSound(soundURL, worldObj, xCoord, yCoord, zCoord);
+					}
 				}
-			}
-			
-			if(worldObj != null && worldObj.isRemote && audio != null)
-			{
-				if(!audio.isPlaying && isActive == true)
+				
+				if(worldObj != null && worldObj.isRemote && audio != null)
 				{
-					audio.play();
-				}
-				else if(audio.isPlaying && isActive == false)
-				{
-					audio.stop();
+					if(!audio.isPlaying && isActive == true)
+					{
+						audio.play();
+					}
+					else if(audio.isPlaying && isActive == false)
+					{
+						audio.stopLoop();
+					}
 				}
 			}
 		}
@@ -174,8 +183,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
         isActive = nbtTags.getBoolean("isActive");
-        currentTicksRequired = nbtTags.getInteger("currentTicksRequired");
-        currentMaxElectricity = nbtTags.getDouble("currentMaxElectricity");
+        speedMultiplier = nbtTags.getInteger("speedMultiplier");
+        energyMultiplier = nbtTags.getInteger("energyMultiplier");
+        upgradeTicks = nbtTags.getInteger("upgradeTicks");
         
         if(nbtTags.hasKey("sideDataStored"))
         {
@@ -193,8 +203,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("currentTicksRequired", currentTicksRequired);
-        nbtTags.setDouble("currentMaxElectricity", currentMaxElectricity);
+        nbtTags.setInteger("speedMultiplier", speedMultiplier);
+        nbtTags.setInteger("energyMultiplier", energyMultiplier);
+        nbtTags.setInteger("upgradeTicks", upgradeTicks);
         
         nbtTags.setBoolean("sideDataStored", true);
         
@@ -229,7 +240,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public int demandsEnergy() 
 	{
-		return (int)((currentMaxElectricity - electricityStored)*Mekanism.TO_IC2);
+		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2);
 	}
 
 	@Override
@@ -237,7 +248,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     {
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = currentMaxElectricity-electricityStored;
+    	double neededEnergy = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
     	
     	if(givenEnergy <= neededEnergy)
     	{
@@ -277,7 +288,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public int getScaledEnergyLevel(int i)
 	{
-		return (int)(electricityStored*i / currentMaxElectricity);
+		return (int)(electricityStored*i / MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY));
 	}
 
 	/**
@@ -287,13 +298,18 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / currentTicksRequired;
+		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier);
+	}
+	
+	public int getScaledUpgradeProgress(int i)
+	{
+		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
 	}
 	
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return currentMaxElectricity;
+		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
 	}
 	
 	@Override
@@ -360,7 +376,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public int powerRequest() 
 	{
-		return (int)(currentMaxElectricity-electricityStored);
+		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC);
 	}
 	
 	@Override
@@ -379,5 +395,29 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int getOrientation()
 	{
 		return facing;
+	}
+	
+	@Override
+	public int getEnergyMultiplier(Object... data) 
+	{
+		return energyMultiplier;
+	}
+
+	@Override
+	public void setEnergyMultiplier(int multiplier, Object... data) 
+	{
+		energyMultiplier = multiplier;
+	}
+
+	@Override
+	public int getSpeedMultiplier(Object... data) 
+	{
+		return speedMultiplier;
+	}
+
+	@Override
+	public void setSpeedMultiplier(int multiplier, Object... data) 
+	{
+		speedMultiplier = multiplier;
 	}
 }
