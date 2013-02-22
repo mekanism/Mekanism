@@ -51,8 +51,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
 	
+	/** This machine's side configuration. */
 	public byte[] sideConfig;
 	
+	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
 	/** The type of infuse this machine stores. */
@@ -67,12 +69,16 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
 	
-	public int energyMultiplier;
-	
+	/** This machine's speed multiplier. */
 	public int speedMultiplier;
 	
+	/** This machine's energy multiplier. */
+	public int energyMultiplier;
+	
+	/** How long it takes this machine to install an upgrade. */
 	public int UPGRADE_TICKS_REQUIRED = 40;
 	
+	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
 	
 	/** The amount of infuse this machine has stored. */
@@ -263,19 +269,22 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			}
 		}
 		
-		if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier))
+		if(electricityStored >= ENERGY_PER_TICK)
 		{
-			++operatingTicks;
-			electricityStored -= ENERGY_PER_TICK;
-		}
-		else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
-		{
-			if(!worldObj.isRemote)
+			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier))
 			{
-				operate();
+				++operatingTicks;
+				electricityStored -= ENERGY_PER_TICK;
 			}
-			operatingTicks = 0;
-			electricityStored -= ENERGY_PER_TICK;
+			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
+			{
+				if(!worldObj.isRemote)
+				{
+					operate();
+				}
+				operatingTicks = 0;
+				electricityStored -= ENERGY_PER_TICK;
+			}
 		}
 		
 		if(!canOperate())
@@ -291,14 +300,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		if(!worldObj.isRemote)
 		{
-			if(testActive != operatingTicks > 0)
+			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
 			{
 				if(operatingTicks > 0)
 				{
 					setActive(true);
 				}
-				else if(!canOperate())
-				{
+				else {
 					setActive(false);
 				}
 			}
@@ -365,11 +373,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         if (inventory[2] == null)
         {
             return false;
-        }
-        
-        if(electricityStored < ENERGY_PER_TICK)
-        {
-        	return false;
         }
 
         InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false, Recipe.METALLURGIC_INFUSER.get());

@@ -95,6 +95,16 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 				return 23;
 			}
 		}
+		else if(meta == 3)
+		{
+			if(side == 3)
+			{
+				return 33;
+			}
+			else {
+				return 32;
+			}
+		}
 		return 0;
 	}
 	

@@ -14,9 +14,10 @@ public final class Tier
 	 */
 	public static enum EnergyCubeTier
 	{
-		BASIC("Basic", 1000000, 128),
-		ADVANCED("Advanced", 2500000, 256),
-		ELITE("Elite", 5000000, 512);
+		BASIC("Basic", 5000000, 128),
+		ADVANCED("Advanced", 10000000, 256),
+		ELITE("Elite", 20000000, 512),
+		ULTIMATE("Ultimate", 50000000, 1024);
 		
 		public double MAX_ELECTRICITY;
 		public double VOLTAGE;
