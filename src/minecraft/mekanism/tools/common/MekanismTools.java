@@ -26,7 +26,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.3.0", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.4.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismTools 
 {
@@ -207,31 +207,31 @@ public class MekanismTools
 			"XYZ", " T ", " T ", Character.valueOf('X'), GlowstoneAxe, Character.valueOf('Y'), GlowstonePickaxe, Character.valueOf('Z'), GlowstoneSpade, Character.valueOf('T'), Item.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstonePickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotGlowstone", Character.valueOf('T'), Item.stick
+			"XXX", " T ", " T ", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Item.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotGlowstone", Character.valueOf('T'), Item.stick
+			"XX", "XT", " T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Item.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotGlowstone", Character.valueOf('T'), Item.stick
+			"X", "T", "T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Item.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotGlowstone", Character.valueOf('T'), Item.stick
+			"XX", " T", " T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Item.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotGlowstone", Character.valueOf('T'), Item.stick
+			"X", "X", "T", Character.valueOf('X'), "ingotRefinedGlowstone", Character.valueOf('T'), Item.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotGlowstone"
+			"***", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotGlowstone"
+			"* *", "***", "***", Character.valueOf('*'), "ingotRefinedGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotGlowstone"
+			"***", "* *", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(GlowstoneBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotGlowstone"
+			"* *", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
 		}));
 		
 		//Lazuli

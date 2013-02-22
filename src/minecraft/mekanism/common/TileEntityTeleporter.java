@@ -41,7 +41,10 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral
 {
+	/** This teleporter's frequency. */
 	public Teleporter.Code code;
+	
+	/** This teleporter's current status. */
 	public String status = (EnumColor.DARK_RED + "Not ready.");
 	
 	public TileEntityTeleporter()

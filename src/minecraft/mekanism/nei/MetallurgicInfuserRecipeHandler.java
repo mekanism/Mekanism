@@ -11,8 +11,11 @@ import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.client.GuiMetallurgicInfuser;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -55,9 +58,67 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		return "mekanism.infuser";
 	}
 	
+	public int getInfuseX(InfusionType type)
+	{
+		switch(type)
+		{
+			case COAL:
+				return 4;
+			case TIN:
+				return 0;
+			case DIAMOND:
+				return 4;
+			case BIO:
+				return 8;
+			default:
+				return 0;
+		}
+	}
+	
+	public int getInfuseY(InfusionType type)
+	{
+		switch(type)
+		{
+			case COAL:
+				return 0;
+			case TIN:
+				return 52;
+			case DIAMOND:
+				return 52;
+			case BIO:
+				return 0;
+			default:
+				return 0;
+		}
+	}
+	
+	public InfusionType getFromFuel(ItemStack itemStack)
+	{
+		if(MekanismUtils.getInfuseObject(itemStack) != null)
+		{
+			return MekanismUtils.getInfuseObject(itemStack).type;
+		}
+		
+		return null;
+	}
+	
 	public ItemStack getInfuseStack(InfusionType type)
 	{
-		return type == InfusionType.COAL ? new ItemStack(Mekanism.CompressedCarbon) : new ItemStack(Mekanism.Dust, 1, 7);
+		switch(type)
+		{
+			case COAL:
+				return new ItemStack(Mekanism.CompressedCarbon);
+			case TIN:
+				return new ItemStack(Mekanism.Dust, 1, 7);
+			case DIAMOND:
+				return new ItemStack(Mekanism.Dust, 1, 4);
+			case BIO:
+				try {
+					return new ItemStack(MekanismGenerators.BioFuel);
+				} catch(Throwable t) {}
+			default:
+				return null;
+		}
 	}
 
 	public Set<Entry<InfusionInput, InfusionOutput>> getRecipes()
@@ -70,24 +131,24 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		guimanager.bindTextureByName(getGuiTexture());
-		guimanager.drawTexturedModalRect(0, 0, 5, 5, 166, 78);
+		guimanager.drawTexturedModalRect(0, 0, 5, 15, 166, 56);
 	}
 
 	@Override
 	public void drawExtras(GuiContainerManager guimanager, int i)
 	{
 		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
-		drawProgressBar(guimanager, 67, 42, 176 + 26, 104, 32, 8, f, 0);
+		drawProgressBar(guimanager, 67, 32, 176 + 26, 104, 32, 8, f, 0);
 		
 		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
-		int infuseX = 176 + 26 + (getOtherStacks(i).get(0).item.isItemEqual(new ItemStack(Mekanism.CompressedCarbon)) ? 4 : 0);
-		int infuseY = getOtherStacks(i).get(0).item.isItemEqual(new ItemStack(Mekanism.CompressedCarbon)) ? 0 : 52;
+		int infuseX = 176 + 26 + getInfuseX(getFromFuel(getOtherStacks(i).get(0).item));
+		int infuseY = getInfuseY(getFromFuel(getOtherStacks(i).get(0).item));
 		
-		drawProgressBar(guimanager, 2, 12, infuseX, infuseY, 4, 52, f, 3);
+		drawProgressBar(guimanager, 2, 2, infuseX, infuseY, 4, 52, f, 3);
 		
 		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(guimanager, 160, 12, 176 + 26, 0, 4, 52, f, 3);
+		drawProgressBar(guimanager, 160, 2, 176 + 26, 0, 4, 52, f, 3);
 	}
 
 	@Override
@@ -100,7 +161,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(67, 42, 32, 8), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(67, 32, 32, 8), getRecipeId(), new Object[0]));
 	}
 
 	@Override
@@ -121,7 +182,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public int recipiesPerPage()
 	{
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -175,9 +236,9 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		public CachedIORecipe(ItemStack input, ItemStack output, ItemStack infuse)
 		{
 			super();
-			inputStack = new PositionedStack(input, 46, 38);
-			outputStack = new PositionedStack(output, 104, 38);
-			infuseStack = new PositionedStack(infuse, 12, 30);
+			inputStack = new PositionedStack(input, 46, 28);
+			outputStack = new PositionedStack(output, 104, 28);
+			infuseStack = new PositionedStack(infuse, 12, 20);
 		}
 
 		public CachedIORecipe(Map.Entry recipe, ItemStack infuse)

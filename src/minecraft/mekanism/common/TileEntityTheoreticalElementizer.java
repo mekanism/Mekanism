@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectricMachine
 {
@@ -82,4 +86,11 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
     	if(random == 1) return Mekanism.WeatherOrb;
     	return Mekanism.EnrichedAlloy;
     }
+    
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
+	}
 }

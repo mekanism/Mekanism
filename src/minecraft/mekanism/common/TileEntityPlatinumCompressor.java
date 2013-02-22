@@ -15,7 +15,7 @@ public class TileEntityPlatinumCompressor extends TileEntityAdvancedElectricMach
 	}
 	
 	@Override
-	public HashMap getRecipes()
+	public Map getRecipes()
 	{
 		return Recipe.PLATINUM_COMPRESSOR.get();
 	}

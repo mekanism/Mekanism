@@ -16,7 +16,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 	}
 	
 	@Override
-	public HashMap getRecipes()
+	public Map getRecipes()
 	{
 		return Recipe.COMBINER.get();
 	}

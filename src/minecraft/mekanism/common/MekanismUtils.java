@@ -5,10 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
+import universalelectricity.core.vector.Vector3;
+
+import mekanism.api.EnumGas;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
+import mekanism.api.IGasAcceptor;
+import mekanism.api.IPressurizedTube;
+import mekanism.api.ITubeConnection;
 import mekanism.api.InfuseObject;
 import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -303,6 +311,12 @@ public final class MekanismUtils
     	return hasResource;
     }
     
+    /**
+     * Returns an integer facing that converts a world-based orientation to a machine-based oriention.
+     * @param side - world based
+     * @param blockFacing - what orientation the block is facing
+     * @return machine orientation
+     */
     public static int getBaseOrientation(int side, int blockFacing)
     {
     	if(blockFacing == 3 || side == 1 || side == 0)
@@ -335,6 +349,11 @@ public final class MekanismUtils
     	return side;
     }
     
+    /**
+     * Increments the output type of a machine's side.
+     * @param config - configurable machine
+     * @param side - side to increment output of
+     */
     public static void incrementOutput(IConfigurable config, int side)
     {
     	int max = config.getSideData().size()-1;
@@ -350,6 +369,11 @@ public final class MekanismUtils
     	}
     }
     
+    /**
+     * Gets the infuse object from an ItemStack.
+     * @param itemStack - itemstack to check
+     * @return infuse object
+     */
     public static InfuseObject getInfuseObject(ItemStack itemStack)
     {
     	if(itemStack != null)
@@ -366,13 +390,120 @@ public final class MekanismUtils
     	return null;
     }
     
+    /**
+     * Gets the operating ticks required for a machine via it's upgrades.
+     * @param multiplier - speed multiplier
+     * @return max operating ticks
+     */
     public static int getTicks(int multiplier)
     {
     	return 200/(multiplier+1);
     }
     
+    /**
+     * Gets the maximum energy for a machine via it's upgrades.
+     * @param multiplier - energy multiplier
+     * @param def - original, definitive max energy
+     * @return max energy
+     */
     public static double getEnergy(int multiplier, double def)
     {
     	return def*(multiplier+1);
+    }
+    
+    /**
+     * Gets all the tubes around a tile entity.
+     * @param tileEntity - center tile entity
+     * @return array of TileEntities
+     */
+    public static TileEntity[] getConnectedTubes(TileEntity tileEntity)
+    {
+    	TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
+    	
+    	for(ForgeDirection orientation : ForgeDirection.values())
+    	{
+    		if(orientation != ForgeDirection.UNKNOWN)
+    		{
+    			TileEntity tube = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+    			
+    			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
+    			{
+    				tubes[orientation.ordinal()] = tube;
+    			}
+    		}
+    	}
+    	
+    	return tubes;
+    }
+    
+    /**
+     * Gets all the acceptors around a tile entity.
+     * @param tileEntity - center tile entity
+     * @return array of IGasAcceptors
+     */
+    public static IGasAcceptor[] getConnectedAcceptors(TileEntity tileEntity)
+    {
+    	IGasAcceptor[] acceptors = new IGasAcceptor[] {null, null, null, null, null, null};
+    	
+    	for(ForgeDirection orientation : ForgeDirection.values())
+    	{
+    		if(orientation != ForgeDirection.UNKNOWN)
+    		{
+    			TileEntity acceptor = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+    			
+    			if(acceptor instanceof IGasAcceptor)
+    			{
+    				acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
+    			}
+    		}
+    	}
+    	
+    	return acceptors;
+    }
+    
+    /**
+     * Gets all the tube connections around a tile entity.
+     * @param tileEntity - center tile entity
+     * @return array of ITubeConnections
+     */
+    public static ITubeConnection[] getConnections(TileEntity tileEntity)
+    {
+    	ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
+    	
+    	for(ForgeDirection orientation : ForgeDirection.values())
+    	{
+    		if(orientation != ForgeDirection.UNKNOWN)
+    		{
+    			TileEntity connection = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+    			
+    			if(connection instanceof ITubeConnection)
+    			{
+    				connections[orientation.ordinal()] = (ITubeConnection)connection;
+    			}
+    		}
+    	}
+    	
+    	return connections;
+    }
+    
+    /**
+     * Emits a defined gas to the network.
+     * @param type - gas type to send
+     * @param amount - amount of gas to send
+     * @param sender - the sender of the gas
+     * @param facing - side the sender is outputting from
+     * @return rejected gas
+     */
+    public static int emitGasToNetwork(EnumGas type, int amount, TileEntity sender, ForgeDirection facing)
+    {
+    	TileEntity pointer = Vector3.getTileEntityFromSide(sender.worldObj, new Vector3(sender.xCoord, sender.yCoord, sender.zCoord), facing);
+    	
+    	if(pointer != null)
+    	{
+	    	GasTransferProtocol calculation = new GasTransferProtocol(pointer, type, amount);
+	    	return calculation.calculate();
+    	}
+    	
+    	return amount;
     }
 }

@@ -14,7 +14,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	}
 	
 	@Override
-	public HashMap getRecipes()
+	public Map getRecipes()
 	{
 		return Recipe.CRUSHER.get();
 	}

@@ -80,7 +80,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {
-		if(!world.isRemote)
+		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			incrementEfficiency(itemstack);
     		entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Efficiency bumped to " + getEfficiency(itemstack));

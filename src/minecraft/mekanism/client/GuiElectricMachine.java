@@ -23,6 +23,8 @@ public class GuiElectricMachine extends GuiContainer
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString("S:" + (tileEntity.speedMultiplier+1) + "x", 179, 47, 0x404040);
+        fontRenderer.drawString("E:" + (tileEntity.energyMultiplier+1) + "x", 179, 57, 0x404040);
     }
 
     @Override

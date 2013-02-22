@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.IActiveState;
 import mekanism.common.TileEntityBasicMachine;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import paulscode.sound.SoundSystem;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -39,11 +41,28 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
+			ArrayList<Sound> soundsToRemove = new ArrayList<Sound>();
 			for(Sound sound : sounds)
 			{
 				if(FMLClientHandler.instance().getClient().thePlayer != null && FMLClientHandler.instance().getClient().theWorld != null)
 				{
 					sound.distanceUpdate(FMLClientHandler.instance().getClient().thePlayer);
+					
+					TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
+					
+					if(tileEntity != null && tileEntity instanceof IActiveState)
+					{
+						if(((IActiveState)tileEntity).getActive() != sound.isPlaying)
+						{
+							if(((IActiveState)tileEntity).getActive())
+							{
+								sound.play();
+							}
+							else {
+								sound.stopLoop();
+							}
+						}
+					}
 				}
 			}
 			

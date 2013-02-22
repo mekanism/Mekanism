@@ -43,6 +43,8 @@ public class GuiMetallurgicInfuser extends GuiContainer
     {
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString("S:" + (tileEntity.speedMultiplier+1) + "x", 179, 47, 0x404040);
+        fontRenderer.drawString("E:" + (tileEntity.energyMultiplier+1) + "x", 179, 57, 0x404040);
     }
 
 	@Override
@@ -55,10 +57,13 @@ public class GuiMetallurgicInfuser extends GuiContainer
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
+        int infuseX = 176 + 26 + (tileEntity.type == InfusionType.TIN ? 0 : (tileEntity.type == InfusionType.BIO ? 8 : 4));
+        int infuseY = 52 + (tileEntity.type == InfusionType.COAL ? 0 : (tileEntity.type == InfusionType.BIO ? 0 : 52));
+        
         int displayInt;
         
         displayInt = tileEntity.getScaledInfuseLevel(52);
-        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176 + 26 + (tileEntity.type == InfusionType.COAL ? 4 : 0), 52 + (tileEntity.type == InfusionType.TIN ? 52 : 0) - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, infuseX, infuseY - displayInt, 4, displayInt);
         
         displayInt = tileEntity.getScaledProgress(32);
         drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176 + 26, 52 + 52, displayInt + 1, 8);

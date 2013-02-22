@@ -27,6 +27,7 @@ public enum EnumColor
 	/** The color code that will be displayed */
 	public final String code;
 	
+	/** A friendly name of the color. */
 	public String friendlyName;
 	
 	private EnumColor(String s, String n)

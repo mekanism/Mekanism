@@ -4,6 +4,7 @@ import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+import mekanism.api.ITubeConnection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +16,7 @@ import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor, ITubeConnection
 {
 	/** The type of gas stored in this tank. */
 	public EnumGas gasType;
@@ -107,6 +108,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		
 		if(gasStored > 0 && !worldObj.isRemote)
 		{
+			setGas(gasType, gasStored - (Math.min(gasStored, output) - MekanismUtils.emitGasToNetwork(gasType, Math.min(gasStored, output), this, ForgeDirection.getOrientation(facing))));
+			
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
 			if(tileEntity instanceof IGasAcceptor)
@@ -196,7 +199,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, EnumGas type) 
 	{
-		return (type == gasType || gasType == EnumGas.NONE) && (side != ForgeDirection.getOrientation(facing) && side != ForgeDirection.getOrientation(0) && side != ForgeDirection.getOrientation(1));
+		return (type == gasType || gasType == EnumGas.NONE) && side != ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
@@ -242,5 +245,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	public void sendPacketWithRange() 
 	{
 		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, gasStored, gasType.name);
+	}
+
+	@Override
+	public boolean canTubeConnect(ForgeDirection side) 
+	{
+		return true;
 	}
 }

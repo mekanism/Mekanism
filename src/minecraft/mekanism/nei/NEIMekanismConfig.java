@@ -1,5 +1,6 @@
 package mekanism.nei;
 
+import mekanism.common.Mekanism;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 
@@ -20,6 +21,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerUsageHandler(new MetallurgicInfuserRecipeHandler());
 		API.registerRecipeHandler(new PurificationChamberRecipeHandler());
 		API.registerUsageHandler(new PurificationChamberRecipeHandler());
+		
+		API.hideItem(Mekanism.nullRenderID);
 	}
 
 	@Override
@@ -31,6 +34,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 	@Override
 	public String getVersion()
 	{
-		return "1.0.1";
+		return "1.0.2";
 	}
 }

@@ -2,6 +2,12 @@ package mekanism.common;
 
 import java.util.Random;
 
+import thermalexpansion.api.core.IDismantleable;
+import universalelectricity.prefab.implement.IToolConfigurator;
+import buildcraft.api.tools.IToolWrench;
+
+import mekanism.api.IUpgradeManagement;
+import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLiving;
@@ -16,7 +22,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockGasTank extends BlockContainer
+public class BlockGasTank extends BlockContainer implements IDismantleable
 {
 	public Random machineRand = new Random();
 	
@@ -135,12 +141,75 @@ public class BlockGasTank extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
-        if(world.isRemote)
-        {
-            return true;
-        }
-        
-    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+    	if(world.isRemote)
+    	{
+    		return true;
+    	}
+    	
+    	TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(entityplayer.getCurrentEquippedItem() != null)
+    	{
+	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+	    	{
+	    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+	    		
+	    		int change = 0;
+	    		
+	    		switch(tileEntity.facing)
+	    		{
+	    			case 3:
+	    				change = 5;
+	    				break;
+	    			case 5:
+	    				change = 2;
+	    				break;
+	    			case 2:
+	    				change = 4;
+	    				break;
+	    			case 4:
+	    				change = 3;
+	    				break;
+	    		}
+	    		
+	    		tileEntity.setFacing((short)change);
+	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+	    		return true;
+	    	}
+	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench)
+	    	{
+	    		if(entityplayer.isSneaking())
+	    		{
+	    			dismantleBlock(world, x, y, z, false);
+	    			return true;
+	    		}
+	    		
+	    		((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+	    		
+	    		int change = 0;
+	    		
+	    		switch(tileEntity.facing)
+	    		{
+	    			case 3:
+	    				change = 5;
+	    				break;
+	    			case 5:
+	    				change = 2;
+	    				break;
+	    			case 2:
+	    				change = 4;
+	    				break;
+	    			case 4:
+	    				change = 3;
+	    				break;
+	    		}
+	    		
+	    		tileEntity.setFacing((short)change);
+	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+	    		return true;
+	    	}
+    	}
     	
         if (tileEntity != null)
         {
@@ -150,8 +219,37 @@ public class BlockGasTank extends BlockContainer
         		return true;
         	}
         }
-        return false;
+    	return false;
     }
+    
+	@Override
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
+	{
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
+        
+        world.setBlockWithNotify(x, y, z, 0);
+        
+        if(!returnBlock)
+        {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+	        
+            world.spawnEntityInWorld(entityItem);
+        }
+        
+        return itemStack;
+	}
+	
+	@Override
+	public boolean canDismantle(World world, int x, int y, int z) 
+	{
+		return true;
+	}
 	
 	@Override
 	public String getTextureFile()

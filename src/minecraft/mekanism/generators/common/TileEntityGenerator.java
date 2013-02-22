@@ -18,6 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.electricity.ElectricInfo;
@@ -370,5 +371,12 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public int powerRequest() 
 	{
 		return 0;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }

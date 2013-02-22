@@ -147,7 +147,7 @@ public final class RecipeHandler
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>());
 		
-		private HashMap recipes;
+		private Map recipes;
 		
 		private Recipe(HashMap map)
 		{
@@ -159,7 +159,7 @@ public final class RecipeHandler
 			recipes.put(input, output);
 		}
 		
-		public HashMap get()
+		public Map get()
 		{
 			return recipes;
 		}

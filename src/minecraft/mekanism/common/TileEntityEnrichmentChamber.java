@@ -14,7 +14,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 	}
 	
 	@Override
-	public HashMap getRecipes()
+	public Map getRecipes()
 	{
 		return Recipe.ENRICHMENT_CHAMBER.get();
 	}

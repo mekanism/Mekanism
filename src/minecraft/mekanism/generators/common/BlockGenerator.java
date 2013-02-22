@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import buildcraft.api.tools.IToolWrench;
+
 import mekanism.api.IActiveState;
 import mekanism.api.IEnergyCube;
 import mekanism.common.Mekanism;
@@ -26,6 +28,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.implement.IToolConfigurator;
@@ -44,7 +47,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockGenerator extends BlockContainer
+public class BlockGenerator extends BlockContainer implements IDismantleable
 {
 	public Random machineRand = new Random();
 	
@@ -434,6 +437,9 @@ public class BlockGenerator extends BlockContainer
                 double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
                 
                 EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(MekanismGenerators.Generator, 1, 5));
+                
+    	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
+    	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
     	        
 	            world.spawnEntityInWorld(entityItem);
             }
@@ -458,31 +464,66 @@ public class BlockGenerator extends BlockContainer
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	int metadata = world.getBlockMetadata(x, y, z);
         
-    	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+    	if(entityplayer.getCurrentEquippedItem() != null)
     	{
-    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
-    		
-    		int change = 0;
-    		
-    		switch(tileEntity.facing)
-    		{
-    			case 3:
-    				change = 4;
-    				break;
-    			case 4:
-    				change = 5;
-    				break;
-    			case 5:
-    				change = 2;
-    				break;
-    			case 2:
-    				change = 3;
-    				break;
-    		}
-    		
-    		tileEntity.setFacing((short)change);
-    		return true;
+	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+	    	{
+	    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+	    		
+	    		int change = 0;
+	    		
+	    		switch(tileEntity.facing)
+	    		{
+	    			case 3:
+	    				change = 5;
+	    				break;
+	    			case 5:
+	    				change = 2;
+	    				break;
+	    			case 2:
+	    				change = 4;
+	    				break;
+	    			case 4:
+	    				change = 3;
+	    				break;
+	    		}
+	    		
+	    		tileEntity.setFacing((short)change);
+	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+	    		return true;
+	    	}
+	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench)
+	    	{
+	    		if(entityplayer.isSneaking())
+	    		{
+	    			dismantleBlock(world, x, y, z, false);
+	    			return true;
+	    		}
+	    		
+	    		((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+	    		
+	    		int change = 0;
+	    		
+	    		switch(tileEntity.facing)
+	    		{
+	    			case 3:
+	    				change = 5;
+	    				break;
+	    			case 5:
+	    				change = 2;
+	    				break;
+	    			case 2:
+	    				change = 4;
+	    				break;
+	    			case 4:
+	    				change = 3;
+	    				break;
+	    		}
+	    		
+	    		tileEntity.setFacing((short)change);
+	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+	    		return true;
+	    	}
     	}
         
         if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(MekanismGenerators.Generator, 1, 2)))
@@ -523,16 +564,9 @@ public class BlockGenerator extends BlockContainer
     }
     
     @Override
-    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+    public int idDropped(int i, Random random, int j)
     {
-        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-        
-        if(metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
-        {
-        	ret.add(new ItemStack(blockID, 1, metadata));
-        }
-        
-        return ret;
+    	return 0;
     }
     
 	@Override
@@ -578,7 +612,7 @@ public class BlockGenerator extends BlockContainer
     @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
     {
-    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)) && world.getBlockMetadata(x, y, z) != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
     	{
 	    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
 	    	
@@ -608,6 +642,38 @@ public class BlockGenerator extends BlockContainer
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
         return itemStack;
+	}
+	
+	@Override
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
+	{
+    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z));
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        world.setBlockWithNotify(x, y, z, 0);
+        
+        if(!returnBlock)
+        {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+	        
+            world.spawnEntityInWorld(entityItem);
+        }
+        
+        return itemStack;
+	}
+
+	@Override
+	public boolean canDismantle(World world, int x, int y, int z) 
+	{
+		return true;
 	}
 	
 	public static enum GeneratorType

@@ -96,13 +96,6 @@ public class ContainerHeatGenerator extends Container
 	            	}
             	}
         	}
-        	else if(slotStack.itemID == Item.bucketEmpty.itemID)
-        	{
-        		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
-        		{
-        			return null;
-        		}
-        	}
             else {
 	        	if(slotID >= 2 && slotID <= 28)
 	        	{

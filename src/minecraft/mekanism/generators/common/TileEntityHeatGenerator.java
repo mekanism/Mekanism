@@ -44,6 +44,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	/** The amount of electricity this machine can produce with a unit of fuel. */
 	public final int GENERATION = 80;
 	
+	/** All the liquid fuels this generator runs on. */
 	public static Map<Integer, Integer> fuels = new HashMap<Integer, Integer>();
 	
 	public TileEntityHeatGenerator()

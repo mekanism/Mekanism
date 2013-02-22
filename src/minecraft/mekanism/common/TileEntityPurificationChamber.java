@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -12,19 +13,18 @@ import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+import mekanism.api.ITubeConnection;
 import mekanism.common.RecipeHandler.Recipe;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasAcceptor, IGasStorage
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasAcceptor, IGasStorage, ITubeConnection
 {
-	public int oxygenStored;
-	
 	public TileEntityPurificationChamber()
 	{
 		super("PurificationChamber.ogg", "Purification Chamber", "/resources/mekanism/gui/GuiPurificationChamber.png", 30, 1, 200, 12000, 1200);
 	}
 	
 	@Override
-	public HashMap getRecipes()
+	public Map getRecipes()
 	{
 		return Recipe.PURIFICATION_CHAMBER.get();
 	}
@@ -116,5 +116,11 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 		}
 		
 		super.handleSecondaryFuel();
+	}
+
+	@Override
+	public boolean canTubeConnect(ForgeDirection side)
+	{
+		return true;
 	}
 }

@@ -23,9 +23,9 @@ public class EntityObsidianTNT extends Entity
     {
         this(par1World);
         setPosition(par2, par4, par6);
-        float var8 = (float)(Math.random() * Math.PI * 2.0D);
+        float var8 = (float)(Math.random() * Math.PI * 2);
         motionX = (double)(-((float)Math.sin((double)var8)) * 0.02F);
-        motionY = 0.20000000298023224D;
+        motionY = 0.2;
         motionZ = (double)(-((float)Math.cos((double)var8)) * 0.02F);
         fuse = Mekanism.ObsidianTNTDelay;
         prevPosX = par2;
@@ -54,17 +54,17 @@ public class EntityObsidianTNT extends Entity
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
-        motionY -= 0.03999999910593033D;
+        motionY -= 0.04;
         moveEntity(motionX, motionY, motionZ);
-        motionX *= 0.9800000190734863D;
-        motionY *= 0.9800000190734863D;
-        motionZ *= 0.9800000190734863D;
+        motionX *= 0.98;
+        motionY *= 0.98;
+        motionZ *= 0.98;
 
         if (onGround)
         {
-            motionX *= 0.699999988079071D;
-            motionZ *= 0.699999988079071D;
-            motionY *= -0.5D;
+            motionX *= 0.7;
+            motionZ *= 0.7;
+            motionY *= -0.5;
         }
 
         if (fuse-- <= 0)

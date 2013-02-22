@@ -23,6 +23,17 @@ public class Teleporter
 		}
 		
 		@Override
+		public int hashCode() 
+		{
+			int code = 1;
+			code = 31 * code + xCoord;
+			code = 31 * code + yCoord;
+			code = 31 * code + zCoord;
+			code = 31 * code + dimensionId;
+			return code;
+		}
+		
+		@Override
 		public boolean equals(Object coords)
 		{
 			return coords instanceof Coords && ((Coords)coords).xCoord == xCoord && ((Coords)coords).yCoord == yCoord && ((Coords)coords).zCoord == zCoord && ((Coords)coords).dimensionId == dimensionId;
@@ -43,11 +54,16 @@ public class Teleporter
 			digitThree = three;
 			digitFour = four;
 		}
-		
+
 		@Override
-		public int hashCode()
+		public int hashCode() 
 		{
-			return Integer.parseInt(1 + "" + digitOne + "" + digitTwo + "" + digitThree + "" + digitFour);
+			int code = 1;
+			code = 31 * code + digitOne;
+			code = 31 * code + digitTwo;
+			code = 31 * code + digitThree;
+			code = 31 * code + digitFour;
+			return code;
 		}
 		
 		@Override

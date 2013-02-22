@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import buildcraft.api.tools.IToolWrench;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
@@ -40,7 +43,7 @@ import net.minecraftforge.common.ForgeDirection;
  * @author AidanBrady
  *
  */
-public class BlockEnergyCube extends BlockContainer
+public class BlockEnergyCube extends BlockContainer implements IDismantleable
 {
 	private Random powerRand = new Random();
 	
@@ -251,37 +254,78 @@ public class BlockEnergyCube extends BlockContainer
         	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
         	int metadata = world.getBlockMetadata(x, y, z);
         	
-        	if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+        	if(entityplayer.getCurrentEquippedItem() != null)
         	{
-        		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-        		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
-        		
-        		int change = 0;
-        		
-        		switch(tileEntity.facing)
-        		{
-        			case 3:
-        				change = 4;
-        				break;
-        			case 4:
-        				change = 5;
-        				break;
-        			case 5:
-        				change = 2;
-        				break;
-        			case 2:
-        				change = 1;
-        				break;
-        			case 1:
-        				change = 0;
-        				break;
-        			case 0:
-        				change = 3;
-        				break;
-        		}
-        		
-        		tileEntity.setFacing((short)change);
-        		return true;
+    	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+    	    	{
+    	    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+    	    		
+    	    		int change = 0;
+    	    		
+    	    		switch(tileEntity.facing)
+    	    		{
+    	    			case 3:
+    	    				change = 5;
+    	    				break;
+    	    			case 5:
+    	    				change = 2;
+    	    				break;
+    	    			case 2:
+    	    				change = 4;
+    	    				break;
+    	    			case 4:
+    	    				change = 1;
+    	    				break;
+    	    			case 1:
+    	    				change = 0;
+    	    				break;
+    	    			case 0:
+    	    				change = 3;
+    	    				break;
+    	    		}
+    	    		
+    	    		tileEntity.setFacing((short)change);
+    	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+    	    		return true;
+    	    	}
+    	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench)
+    	    	{
+    	    		if(entityplayer.isSneaking())
+    	    		{
+    	    			dismantleBlock(world, x, y, z, false);
+    	    			return true;
+    	    		}
+    	    		
+    	    		((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+    	    		
+    	    		int change = 0;
+    	    		
+    	    		switch(tileEntity.facing)
+    	    		{
+    	    			case 3:
+    	    				change = 5;
+    	    				break;
+    	    			case 5:
+    	    				change = 2;
+    	    				break;
+    	    			case 2:
+    	    				change = 4;
+    	    				break;
+    	    			case 4:
+    	    				change = 1;
+    	    				break;
+    	    			case 1:
+    	    				change = 0;
+    	    				break;
+    	    			case 0:
+    	    				change = 3;
+    	    				break;
+    	    		}
+    	    		
+    	    		tileEntity.setFacing((short)change);
+    	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+    	    		return true;
+    	    	}
         	}
         	
             if (tileEntity != null)
@@ -347,5 +391,40 @@ public class BlockEnergyCube extends BlockContainer
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
         return itemStack;
+	}
+
+	@Override
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
+	{
+    	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
+        
+        IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
+        energyCube.setTier(itemStack, tileEntity.tier);
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        world.setBlockWithNotify(x, y, z, 0);
+        
+        if(!returnBlock)
+        {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+	        
+            world.spawnEntityInWorld(entityItem);
+        }
+        
+        return itemStack;
+	}
+
+	@Override
+	public boolean canDismantle(World world, int x, int y, int z) 
+	{
+		return true;
 	}
 }

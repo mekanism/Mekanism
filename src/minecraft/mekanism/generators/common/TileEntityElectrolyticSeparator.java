@@ -11,6 +11,7 @@ import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+import mekanism.api.ITubeConnection;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -44,7 +45,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IVoltage, ITankContainer, IPeripheral
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IVoltage, ITankContainer, IPeripheral, ITubeConnection
 {
 	public LiquidSlot waterSlot = new LiquidSlot(24000, 9);
 	
@@ -242,6 +243,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		if(outputType != EnumGas.NONE && getGas(outputType) > 0 && !worldObj.isRemote)
 		{
+			setGas(outputType, getGas(outputType) - (Math.min(getGas(outputType), output) - MekanismUtils.emitGasToNetwork(outputType, Math.min(getGas(outputType), output), this, ForgeDirection.getOrientation(facing))));
+			
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
 			if(tileEntity instanceof IGasAcceptor)
@@ -626,5 +629,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public double getVoltage(Object... data) 
 	{
 		return 120;
+	}
+
+	@Override
+	public boolean canTubeConnect(ForgeDirection side)
+	{
+		return side == ForgeDirection.getOrientation(facing);
 	}
 }

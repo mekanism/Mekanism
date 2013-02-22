@@ -52,7 +52,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.3.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.4.0")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -74,7 +74,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 3, 0);
+	public static Version versionNumber = new Version(5, 4, 0);
 	
 	/** Map of Teleporter info. */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -112,6 +112,7 @@ public class Mekanism
 	public static int energyCubeID = 3004;
 	public static int nullRenderID = 3005;
 	public static int gasTankID = 3006;
+	public static int pressurizedTubeID = 3007;
 	
 	//Extra Items
 	public static ItemElectricBow ElectricBow;
@@ -121,7 +122,6 @@ public class Mekanism
 	public static ItemEnergized EnergyTablet;
 	public static Item SpeedUpgrade;
 	public static Item EnergyUpgrade;
-	public static Item UltimateUpgrade;
 	public static ItemAtomicDisassembler AtomicDisassembler;
 	public static Item AtomicCore;
 	public static ItemStorageTank StorageTank;
@@ -140,6 +140,7 @@ public class Mekanism
 	public static Block EnergyCube;
 	public static BlockMulti NullRender;
 	public static Block GasTank;
+	public static Block PressurizedTube;
 	
 	//MultiID Items
 	public static Item Dust;
@@ -236,13 +237,10 @@ public class Mekanism
 			"RLR", "CIC", "RLR", Character.valueOf('R'), Item.redstone, Character.valueOf('L'), Item.bucketLava, Character.valueOf('C'), "basicCircuit", Character.valueOf('I'), "blockSteel"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SpeedUpgrade), new Object[] {
-			"PAP", "AEA", "PAP", Character.valueOf('P'), "dustPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), Item.emerald
+			" G ", "APA", " G ", Character.valueOf('P'), "dustPlatinum", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('G'), Block.glass
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(EnergyUpgrade), new Object[] {
-			"RAR", "AEA", "RAR", Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem()
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(UltimateUpgrade), new Object[] {
-			"ERA", "RDR", "ARS", Character.valueOf('E'), EnergyUpgrade, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), Item.diamond, Character.valueOf('S'), SpeedUpgrade
+			" G ", "ADA", " G ", Character.valueOf('G'), Block.glass, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('D'), "dustGold"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(AtomicCore), new Object[] {
 			"AOA", "PDP", "AOA", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('O'), "dustObsidian", Character.valueOf('P'), "dustPlatinum", Character.valueOf('D'), Item.diamond
@@ -260,7 +258,7 @@ public class Mekanism
 			"PPP", "PDP", "PPP", Character.valueOf('P'), "ingotPlatinum", Character.valueOf('D'), "dustIron"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.BASIC), new Object[] {
-			"ELE", "TIT", "ELE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), new ItemStack(BasicBlock, 1, 5)
+			"ELE", "TIT", "ELE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), "blockSteel"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.ADVANCED), new Object[] {
 			"EGE", "TBT", "EGE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('G'), Item.ingotGold, Character.valueOf('T'), EnergyTablet.getUnchargedItem(), Character.valueOf('B'), MekanismUtils.getEnergyCubeWithTier(EnergyCubeTier.BASIC)
@@ -313,6 +311,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 4, 8), new Object[] {
 			"OOO", "OGO", "OOO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('G'), "ingotRefinedGlowstone"
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PressurizedTube, 8), new Object[] {
+			"IAI", "PPP", "IAI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), "dustPlatinum"
+		}));
 		
 		if(extrasEnabled)
 		{
@@ -329,16 +330,20 @@ public class Mekanism
 		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 5, new ItemStack(Ingot, 1, 4), 1.0F);
 		
 		//Enrichment Chamber Recipes
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Dust, 1, 4), new ItemStack(Item.diamond));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 2));
-        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Dust, 1, 3));
+        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Dust, 2, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 2), new ItemStack(CompressedCarbon));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 2), new ItemStack(CompressedCarbon, 4));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreLapis), new ItemStack(Item.dyePowder, 12, 4));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 12));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreCoal), new ItemStack(Block.oreCoal));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreDiamond), new ItemStack(Item.diamond, 2));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.cobblestoneMossy), new ItemStack(Block.cobblestone));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stone), new ItemStack(Block.stoneBrick, 1, 2));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 2), new ItemStack(Block.stoneBrick, 1, 0));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 3));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 1), new ItemStack(Block.stoneBrick, 1, 0));
 		
 		//Platinum Compressor Recipes
 		RecipeHandler.addPlatinumCompressorRecipe(new ItemStack(Item.lightStoneDust), new ItemStack(Ingot, 1, 3));
@@ -350,6 +355,9 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stone), new ItemStack(Block.cobblestone));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.cobblestone), new ItemStack(Block.sand));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 2), new ItemStack(Block.stone));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 2));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         
         //Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Clump, 3, 0));
@@ -357,6 +365,8 @@ public class Mekanism
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.BIO, 10, new ItemStack(Block.cobblestone)), new ItemStack(Block.cobblestoneMossy));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.BIO, 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
         
         infusions.put(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfusionType.COAL, 10));
         infusions.put(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfusionType.COAL, 20));
@@ -382,7 +392,6 @@ public class Mekanism
 		LanguageRegistry.addName(EnergyTablet, "Energy Tablet");
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
-		LanguageRegistry.addName(UltimateUpgrade, "Ultimate Upgrade");
 		LanguageRegistry.addName(AtomicDisassembler, "Atomic Disassembler");
 		LanguageRegistry.addName(AtomicCore, "Atomic Core");
 		LanguageRegistry.addName(ElectricBow, "Electric Bow");
@@ -396,6 +405,7 @@ public class Mekanism
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
+		LanguageRegistry.addName(PressurizedTube, "Pressurized Tube");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.PlatinumBlock.name", "Platinum Block");
@@ -432,7 +442,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.ironDust.name", "Iron Dust");
 		LanguageRegistry.instance().addStringLocalization("item.goldDust.name", "Gold Dust");
 		LanguageRegistry.instance().addStringLocalization("item.platinumDust.name", "Platinum Dust");
-		LanguageRegistry.instance().addStringLocalization("item.obsidianDust.name", "Obsidian Dust");
+		LanguageRegistry.instance().addStringLocalization("item.obsidianDust.name", "Refined Obsidian Dust");
 		LanguageRegistry.instance().addStringLocalization("item.diamondDust.name", "Diamond Dust");
 		LanguageRegistry.instance().addStringLocalization("item.steelDust.name", "Steel Dust");
 		LanguageRegistry.instance().addStringLocalization("item.copperDust.name", "Copper Dust");
@@ -454,6 +464,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.dirtyCopperDust.name", "Dirty Copper Dust");
 		LanguageRegistry.instance().addStringLocalization("item.dirtyTinDust.name", "Dirty Tin Dust");
 		LanguageRegistry.instance().addStringLocalization("item.dirtySilverDust.name", "Dirty Silver Dust");
+		LanguageRegistry.instance().addStringLocalization("item.dirtyObsidianDust.name", "Dirty Obsidian Dust");
 		
 		//Localization for Ingot
 		LanguageRegistry.instance().addStringLocalization("item.obsidianIngot.name", "Obsidian Ingot");
@@ -481,7 +492,6 @@ public class Mekanism
 		EnergyTablet.setIconIndex(228);
 		SpeedUpgrade.setIconIndex(232);
 		EnergyUpgrade.setIconIndex(231);
-		UltimateUpgrade.setIconIndex(233);	
 		AtomicDisassembler.setIconIndex(253);
 		AtomicCore.setIconIndex(254);
 		ElectricBow.setIconIndex(252);
@@ -511,11 +521,11 @@ public class Mekanism
 		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 600000, 800).setItemName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt(), 0, 150).setItemName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt(), 1000, 0).setItemName("EnergyUpgrade");
-		UltimateUpgrade = new ItemMachineUpgrade(configuration.getItem("UltimateUpgrade", 11209).getInt(), 2500, 180).setItemName("UltimateUpgrade");
+		//FREE ID 11209
 		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setItemName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setItemName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setItemName("EnrichedAlloy");
-		StorageTank = (ItemStorageTank) new ItemStorageTank(configuration.getItem("StorageTank", 11213).getInt(), 1600, 16, 16).setItemName("StorageTank");
+		StorageTank = (ItemStorageTank) new ItemStorageTank(configuration.getItem("StorageTank", 11213).getInt(), 1600, 16).setItemName("StorageTank");
 		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", 11214).getInt()).setItemName("ControlCircuit");
 		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", 11215).getInt()).setItemName("EnrichedIron");
 		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", 11216).getInt()).setItemName("CompressedCarbon");
@@ -540,11 +550,13 @@ public class Mekanism
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(tabMekanism);
 		NullRender = (BlockMulti) new BlockMulti(nullRenderID).setBlockName("NullRender");
 		GasTank = new BlockGasTank(gasTankID).setBlockName("GasTank");
+		PressurizedTube = new BlockPressurizedTube(pressurizedTubeID).setBlockName("PressurizedTube");
 		
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(NullRender, "NullRender");
 		GameRegistry.registerBlock(GasTank, "GasTank");
+		GameRegistry.registerBlock(PressurizedTube, "PressurizedTube");
 		
 		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setItemName("BasicBlock");
@@ -562,7 +574,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
 		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));
 		OreDictionary.registerOre("dustPlatinum", new ItemStack(Dust, 1, 2));
-		OreDictionary.registerOre("dustObsidian", new ItemStack(Dust, 1, 3));
+		OreDictionary.registerOre("dustRefinedObsidian", new ItemStack(Dust, 1, 3));
 		OreDictionary.registerOre("dustDiamond", new ItemStack(Dust, 1, 4));
 		OreDictionary.registerOre("dustSteel", new ItemStack(Dust, 1, 5));
 		OreDictionary.registerOre("dustCopper", new ItemStack(Dust, 1, 6));
@@ -588,6 +600,10 @@ public class Mekanism
 		OreDictionary.registerOre("dirtyDustCopper", new ItemStack(DirtyDust, 1, 3));
 		OreDictionary.registerOre("dirtyDustTin", new ItemStack(DirtyDust, 1, 4));
 		OreDictionary.registerOre("dirtyDustSilver", new ItemStack(DirtyDust, 1, 5));
+		OreDictionary.registerOre("dirtyDustObsidian", new ItemStack(DirtyDust, 1, 6));
+		
+		//for railcraft
+		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
 		
 		OreDictionary.registerOre("clumpIron", new ItemStack(Clump, 1, 0));
 		OreDictionary.registerOre("clumpGold", new ItemStack(Clump, 1, 1));
@@ -614,6 +630,12 @@ public class Mekanism
 			}
 			
 			RecipeHandler.addCrusherRecipe(new ItemStack(Item.coal), hooks.IC2CoalDust);
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
+		{
+			RecipeHandler.addPlatinumCompressorRecipe(ore, new ItemStack(Ingot, 1, 0));
+			RecipeHandler.addCrusherRecipe(ore, new ItemStack(DirtyDust, 1, 6));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("clumpIron"))
@@ -785,12 +807,18 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
 			RecipeHandler.addCombinerRecipe(ore, new ItemStack(Block.obsidian));
-			RecipeHandler.addPlatinumCompressorRecipe(ore, new ItemStack(Ingot, 1, 0));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.DIAMOND, 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Dust, 1, 3));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustPlatinum"))
 		{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), new ItemStack(OreBlock, 1, 0));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustDiamond"))
+		{
+			infusions.put(ore, new InfuseObject(InfusionType.DIAMOND, 80));
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Item.diamond));
 		}
 		
 		try {

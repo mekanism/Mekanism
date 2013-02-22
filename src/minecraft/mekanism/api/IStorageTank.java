@@ -55,12 +55,6 @@ public interface IStorageTank
 	public int removeGas(ItemStack itemstack, EnumGas type, int amount);
 	
 	/**
-	 * Gets the divider that gets that returns the max damage as 100.
-	 * @return divider
-	 */
-	public int getDivider();
-	
-	/**
 	 * Whether or not this storage tank be given a specific gas.
 	 * @param itemstack - the itemstack to check
 	 * @param type - the type of gas the tank can possibly receive

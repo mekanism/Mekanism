@@ -19,13 +19,9 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	/** How fast this tank can transfer gas. */
 	public int TRANSFER_RATE;
 	
-	/** The number that, when the max amount of gas is divided by, will make it equal 100. */
-	public int DIVIDER;
-	
-	public ItemStorageTank(int id, int maxGas, int transferRate, int divide)
+	public ItemStorageTank(int id, int maxGas, int transferRate)
 	{
 		super(id);
-		DIVIDER = divide;
 		MAX_GAS = maxGas;
 		TRANSFER_RATE = transferRate;
 		setMaxStackSize(1);
@@ -82,12 +78,12 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 			stored = itemstack.stackTagCompound.getInteger("gas");
 		}
 		
-		itemstack.setItemDamage((MAX_GAS - stored)/DIVIDER);
+		itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
 		return stored;
 	}
 	
 	@Override
-	public void setGas(ItemStack itemstack, EnumGas type, int hydrogen)
+	public void setGas(ItemStack itemstack, EnumGas type, int amount)
 	{
 		if(itemstack.stackTagCompound == null)
 		{
@@ -101,9 +97,9 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 		
 		if(getGasType(itemstack) == type)
 		{
-			int stored = Math.max(Math.min(hydrogen, MAX_GAS), 0);
+			int stored = Math.max(Math.min(amount, MAX_GAS), 0);
 			itemstack.stackTagCompound.setInteger("gas", stored);
-	        itemstack.setItemDamage((MAX_GAS - stored)/DIVIDER);
+			itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
 		}
 		
 		if(getGas(itemstack) == 0)
@@ -169,18 +165,12 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	{
 		if(getGasType(itemstack) == type)
 		{
-			int hydrogenToUse = Math.min(getGas(itemstack), amount);
-			setGas(itemstack, type, getGas(itemstack) - hydrogenToUse);
-			return hydrogenToUse;
+			int gasToUse = Math.min(getGas(itemstack), amount);
+			setGas(itemstack, type, getGas(itemstack) - gasToUse);
+			return gasToUse;
 		}
 		
 		return 0;
-	}
-	
-	@Override
-	public int getDivider()
-	{
-		return DIVIDER;
 	}
 	
 	@Override

@@ -29,5 +29,5 @@ public interface IElectricMachine
 	/**
 	 * Gets this machine's recipes.
 	 */
-	public HashMap getRecipes();
+	public Map getRecipes();
 }

@@ -202,7 +202,7 @@ public class PacketHandler implements IPacketHandler
 			    					
 			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord, coords.zCoord+0.5, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
 			    					
-			    					entityplayer.worldObj.playSound(coords.xCoord, coords.yCoord, coords.zCoord, "mob.endermen.portal", 1.0F, 1.0F, true);
+			    					entityplayer.worldObj.playSoundAtEntity(entityplayer, "mob.endermen.portal", 1.0F, 1.0F);
 			    					PacketHandler.sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
 			    				}
 			    			}
@@ -395,6 +395,13 @@ public class PacketHandler implements IPacketHandler
         System.out.println("[Mekanism] Sent control panel packet to server.");
 	}
 	
+	/**
+	 * Sends a portal effect packet to all clients in a radius around a teleporter.
+	 * @param x - x coordinate of teleporter
+	 * @param y - y coordinate of teleporter
+	 * @param z - z coordinate of teleporter
+	 * @param id - dimension ID of teleporter
+	 */
 	public static void sendPortalFX(int x, int y, int z, int id)
 	{
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -418,6 +425,11 @@ public class PacketHandler implements IPacketHandler
         System.out.println("[Mekanism] Sent portal FX packet to server.");
 	}
 	
+	/**
+	 * Sends a digit update for a portable teleporter to the server as an integer.
+	 * @param index - digit index
+	 * @param digit - digit to send
+	 */
 	public static void sendDigitUpdate(int index, int digit)
 	{
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -439,6 +451,11 @@ public class PacketHandler implements IPacketHandler
         PacketDispatcher.sendPacketToServer(packet);
 	}
 	
+	/**
+	 * Sends a status update for a portable teleporter to the client as a string.
+	 * @param entityplayer - player who is using the teleporter
+	 * @param status - status to send
+	 */
 	public static void sendStatusUpdate(EntityPlayer entityplayer, int status)
 	{
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

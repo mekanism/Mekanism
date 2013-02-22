@@ -28,10 +28,10 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     		if(metadata == MachineType.THEORETICAL_ELEMENTIZER.meta)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
+    			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+    	    	GL11.glTranslated(0.0F, -0.8F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/TheoreticalElementizer.png"));
-    	    	theoreticalElementizer.render(0.0625F);
+    	    	theoreticalElementizer.render(0.0560F);
     		}
     		else {
     	        ForgeHooksClient.bindTexture(block.getTextureFile(), 0);

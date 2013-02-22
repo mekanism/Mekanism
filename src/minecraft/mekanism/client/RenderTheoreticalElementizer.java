@@ -10,6 +10,7 @@ public class RenderTheoreticalElementizer extends TileEntitySpecialRenderer
 {
 	private ModelTheoreticalElementizer model = new ModelTheoreticalElementizer();
 	
+	@Override
 	public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8)
 	{
 		renderAModelAt((TileEntityTheoreticalElementizer) var1, var2, var4, var6, 1F);
@@ -31,7 +32,7 @@ public class RenderTheoreticalElementizer extends TileEntitySpecialRenderer
 		
 		GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
 		GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
-		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(270F, 0.0F, 1.0F, 0.0F);
 		model.render(0.0625F);
 		GL11.glPopMatrix();
 	}

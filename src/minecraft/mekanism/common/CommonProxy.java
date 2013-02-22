@@ -25,6 +25,7 @@ public class CommonProxy
 	public void registerSpecialTileEntities() 
 	{
 		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
+		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
 	}
 	
 	/**
@@ -64,6 +65,7 @@ public class CommonProxy
 	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
 	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3005).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
+	  	Mekanism.pressurizedTubeID = Mekanism.configuration.getBlock("PressurizedTube", 3007).getInt();
 	  	Mekanism.extrasEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ExtrasEnabled", true).getBoolean(true);
 	  	Mekanism.platinumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PlatinumGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);

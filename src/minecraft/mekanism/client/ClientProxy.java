@@ -12,6 +12,7 @@ import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityMetallurgicInfuser;
+import mekanism.common.TileEntityPressurizedTube;
 import mekanism.common.TileEntityPurificationChamber;
 import mekanism.common.TileEntitySmeltingFactory;
 import mekanism.common.TileEntityTeleporter;
@@ -50,6 +51,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ClientProxy extends CommonProxy
 {
 	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int TUBE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	@Override
 	public void loadConfiguration()
@@ -70,6 +72,7 @@ public class ClientProxy extends CommonProxy
 	public void registerSpecialTileEntities() 
 	{
 		ClientRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer", new RenderTheoreticalElementizer());
+		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
 	}
 	
 	@Override
@@ -107,8 +110,9 @@ public class ClientProxy extends CommonProxy
 		//Register item handler
 		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, new ItemRenderingHandler());
 		
-		//Register block handler
+		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
+		RenderingRegistry.registerBlockHandler(new PressurizedTubeRenderer());
 		
 		System.out.println("[Mekanism] Render registrations complete.");
 	}

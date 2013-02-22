@@ -4,6 +4,8 @@ public enum InfusionType
 {
 	COAL("COAL"),
 	TIN("TIN"),
+	DIAMOND("DIAMOND"),
+	BIO("BIO"),
 	NONE("NONE");
 	
 	public String name;
