@@ -38,15 +38,8 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 		double energy = getJoules(itemstack);
 		
 		list.add("Stored Energy: " + ElectricInfo.getDisplayShort(energy, ElectricUnit.JOULES));
+		list.add("Voltage: " + getVoltage(itemstack) + "v");
 	}
-	
-	@Override
-    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
-    {
-    	ItemBlockEnergyCube item = ((ItemBlockEnergyCube)itemstack.getItem());
-    	item.setJoules(item.getJoules(itemstack), itemstack);
-    	item.setTier(itemstack, item.getTier(itemstack));
-    }
 	
 	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
@@ -120,7 +113,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	@Override
 	public double getVoltage(Object... data) 
 	{
-		return 120;
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemstack = (ItemStack)data[0];
+			
+			return getTier(itemstack).VOLTAGE;
+		}
+		
+		return EnergyCubeTier.BASIC.VOLTAGE;
 	}
 
 	@Override

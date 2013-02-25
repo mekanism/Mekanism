@@ -46,7 +46,10 @@ public class SoundHandler
 			{
 				if(FMLClientHandler.instance().getClient().thePlayer != null && FMLClientHandler.instance().getClient().theWorld != null)
 				{
-					sound.distanceUpdate(FMLClientHandler.instance().getClient().thePlayer);
+					if(sound.isPlaying)
+					{
+						sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+					}
 					
 					TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
 					

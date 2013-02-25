@@ -2,6 +2,8 @@ package mekanism.client;
 
 import java.net.URL;
 
+import cpw.mods.fml.client.FMLClientHandler;
+
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -61,13 +63,14 @@ public class Sound
 				System.out.println("[Mekanism] Invalid sound file: " + sound);
 			}
 			
-			Mekanism.audioHandler.sounds.add(this);
-			
 			if(Mekanism.audioHandler.soundSystem != null)
 			{
 				Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
+				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.activate(id);
 			}
+			
+			Mekanism.audioHandler.sounds.add(this);
 		}
 	}
 	
@@ -85,6 +88,7 @@ public class Sound
 			
 			if(Mekanism.audioHandler.soundSystem != null)
 			{
+				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.play(identifier);
 			}
 			isPlaying = true;
@@ -105,6 +109,7 @@ public class Sound
 			
 			if(Mekanism.audioHandler.soundSystem != null)
 			{
+				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.stop(identifier);
 			}
 			isPlaying = false;
@@ -127,6 +132,7 @@ public class Sound
 			
 			if(Mekanism.audioHandler.soundSystem != null)
 			{
+				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.removeSource(identifier);
 			}
 		}
@@ -136,19 +142,14 @@ public class Sound
 	 * Updates the volume based on how far away the player is from the machine.
 	 * @param entityplayer - player who is near the machine, always Minecraft.thePlayer
 	 */
-    public void distanceUpdate(EntityPlayer entityplayer)
+    public void updateVolume(EntityPlayer entityplayer)
     {
 		synchronized(Mekanism.audioHandler.sounds)
 		{
 	    	float volume = 0;
 	    	
-	        if (!isPlaying)
-	        {
-	            return;
-	        }
-	        
-	        double distanceVolume = entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.01;
-	        volume = (float)Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0);
+	        double distanceVolume = (entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.008);
+	        volume = (float)(Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0))*0.05F;
 	
 	        if(Mekanism.audioHandler.soundSystem != null)
 	        {

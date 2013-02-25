@@ -48,13 +48,6 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 		itemstack = getUnchargedItem();
 	}
 	
-	@Override
-    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
-    {
-    	ItemEnergized item = ((ItemEnergized)itemstack.getItem());
-    	item.setJoules(item.getJoules(itemstack), itemstack);
-    }
-	
 	public ItemStack getUnchargedItem()
 	{
 		ItemStack charged = new ItemStack(this);

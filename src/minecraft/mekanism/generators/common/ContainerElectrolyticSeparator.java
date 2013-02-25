@@ -5,12 +5,15 @@ import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
 import mekanism.common.SlotEnergy;
 import mekanism.common.SlotStorageTank;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidStack;
 import universalelectricity.core.implement.IItemElectric;
 
 public class ContainerElectrolyticSeparator extends Container
@@ -68,7 +71,7 @@ public class ContainerElectrolyticSeparator extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             {
-            	if(slotStack.itemID == Item.bucketWater.itemID)
+            	if(isWater(slotStack))
             	{
             		if(!mergeItemStack(slotStack, 0, 1, false))
             		{
@@ -157,5 +160,20 @@ public class ContainerElectrolyticSeparator extends Container
         }
 
         return stack;
+    }
+    
+    public boolean isWater(ItemStack itemStack)
+    {
+    	LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(itemStack);
+    	
+    	if(liquid != null)
+    	{
+    		if(liquid.itemID == Block.waterStill.blockID)
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
     }
 }

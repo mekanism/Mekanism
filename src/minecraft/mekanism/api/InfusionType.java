@@ -8,6 +8,7 @@ public enum InfusionType
 	BIO("BIO"),
 	NONE("NONE");
 	
+	/** The name of this infusion */
 	public String name;
 	
 	public static InfusionType getFromName(String infusionName)

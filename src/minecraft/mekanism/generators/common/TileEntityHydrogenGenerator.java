@@ -6,6 +6,7 @@ import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+import mekanism.api.ITubeConnection;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +23,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 
-public class TileEntityHydrogenGenerator extends TileEntityGenerator implements IGasAcceptor, IGasStorage
+public class TileEntityHydrogenGenerator extends TileEntityGenerator implements IGasAcceptor, IGasStorage, ITubeConnection
 {
 	/** The maximum amount of hydrogen this block can store. */
 	public int MAX_HYDROGEN = 18000;
@@ -97,7 +98,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			}
 			
 			hydrogenStored-=2;
-			setJoules(electricityStored + 1000);
+			setJoules(electricityStored + 600);
 		}
 		else {
 			if(!worldObj.isRemote)
@@ -286,5 +287,11 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	public boolean canReceiveGas(ForgeDirection side, EnumGas type) 
 	{
 		return type == EnumGas.HYDROGEN && side != ForgeDirection.getOrientation(facing);
+	}
+
+	@Override
+	public boolean canTubeConnect(ForgeDirection side) 
+	{
+		return side != ForgeDirection.getOrientation(facing);
 	}
 }

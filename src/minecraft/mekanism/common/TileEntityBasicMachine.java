@@ -35,8 +35,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
 	
+	/** This machine's side configuration. */
 	public byte[] sideConfig;
 	
+	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
 	/** The bundled URL of this machine's sound effect */
@@ -51,12 +53,16 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
 	
-	public int energyMultiplier = 0;
+	/** This machine's speed multiplier. */
+	public int speedMultiplier;
 	
-	public int speedMultiplier = 0;
+	/** This machine's energy multiplier. */
+	public int energyMultiplier;
 	
+	/** How long it takes this machine to install an upgrade. */
 	public int UPGRADE_TICKS_REQUIRED = 40;
 	
+	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
 	
 	/** Whether or not this block is in it's active state. */

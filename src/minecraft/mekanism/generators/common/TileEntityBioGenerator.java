@@ -38,6 +38,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
 	
+	/** Where the crush piston should be on the model. */
 	public float crushMatrix = 0;
 	
 	/** The amount of electricity this machine can produce with a unit of fuel. */
@@ -46,6 +47,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
 	
+	/** Which fuels work on this generator. */
 	public static Map<Integer, Integer> fuels = new HashMap<Integer, Integer>();
 
 	public TileEntityBioGenerator()

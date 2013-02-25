@@ -23,7 +23,7 @@ public class GasTransferProtocol
 	/** Type of gas to distribute */
 	public EnumGas transferType;
 	
-	/** Amount of gas to distribute */
+	/** Amount of gas to distribute  */
 	public int gasToSend;
 	
 	/**

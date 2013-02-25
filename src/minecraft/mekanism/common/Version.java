@@ -81,6 +81,11 @@ public class Version
 		}
 	}
 	
+	/**
+	 * Gets a version object from a string.
+	 * @param s - string object
+	 * @return version if applicable, otherwise null
+	 */
 	public static Version get(String s)
 	{
 		String[] split = s.replace('.', ':').split(":");

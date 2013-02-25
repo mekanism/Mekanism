@@ -95,13 +95,6 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 		
 		list.add("Stored Energy: " + ElectricInfo.getDisplayShort(energy, ElectricUnit.JOULES));
 	}
-	
-	@Override
-    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
-    {
-    	ItemBlockGenerator item = ((ItemBlockGenerator)itemstack.getItem());
-    	item.setJoules(item.getJoules(itemstack), itemstack);
-    }
 
 	@Override
 	public double getJoules(Object... data)

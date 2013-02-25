@@ -31,6 +31,7 @@ import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.electricity.ElectricityConnections;
@@ -47,6 +48,7 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IVoltage, ITankContainer, IPeripheral, ITubeConnection
 {
+	/** This separator's water slot. */
 	public LiquidSlot waterSlot = new LiquidSlot(24000, 9);
 	
 	/** The maximum amount of gas this block can store. */
@@ -152,7 +154,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
 			
-			if(liquid != null)
+			if(liquid != null && liquid.itemID == Block.waterStill.blockID)
 			{
 				if(waterSlot.liquidStored+liquid.amount <= waterSlot.MAX_LIQUID)
 				{
@@ -236,7 +238,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterSlot.liquidStored-2 >= 0 && electricityStored-4 > 0)
 		{
 			waterSlot.setLiquid(waterSlot.liquidStored - 2);
-			setJoules(electricityStored - 16);
+			setJoules(electricityStored - 10);
 			setGas(EnumGas.OXYGEN, oxygenStored + 1);
 			setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 		}
@@ -271,6 +273,26 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(dumpType != EnumGas.NONE  && getGas(dumpType) > 0)
 		{
 			setGas(dumpType, (getGas(dumpType) - 8));
+			spawnParticle();
+		}
+	}
+	
+	public void spawnParticle()
+	{
+		switch(facing)
+		{
+			case 3:
+				worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
+				break;
+			case 4:
+				worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
+				break;
+			case 2:
+				worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
+				break;
+			case 5:
+				worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
+				break;
 		}
 	}
 	
@@ -394,15 +416,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name, dumpType.name);
 	}
 	
-	/**
-	 * Set this block's energy to a new amount.
-	 * @param energy - new amount of energy
-	 */
-	public void setEnergy(int energy)
-	{
-		electricityStored = Math.max(Math.min(energy, MAX_ELECTRICITY), 0);
-	}
-	
 	@Override
 	public void setGas(EnumGas type, int amount)
 	{
@@ -434,19 +447,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxJoules(Object... data) 
 	{
-		return MAX_ELECTRICITY*Mekanism.FROM_IC2;
+		return MAX_ELECTRICITY;
 	}
 	
 	@Override
 	public double getJoules(Object... data) 
 	{
-		return electricityStored*Mekanism.FROM_IC2;
+		return electricityStored;
 	}
 
 	@Override
 	public void setJoules(double joules, Object... data) 
 	{
-		setEnergy((int)(joules*Mekanism.TO_IC2));
+		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
 	}
 	
 	@Override

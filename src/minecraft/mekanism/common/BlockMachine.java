@@ -683,15 +683,15 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0, 3, 3200, TileEntityEnrichmentChamber.class, false),
-		PLATINUM_COMPRESSOR(1, 4, 3200, TileEntityPlatinumCompressor.class, false),
-		COMBINER(2, 5, 3200, TileEntityCombiner.class, false),
-		CRUSHER(3, 6, 3200, TileEntityCrusher.class, false),
+		ENRICHMENT_CHAMBER(0, 3, 2000, TileEntityEnrichmentChamber.class, false),
+		PLATINUM_COMPRESSOR(1, 4, 2000, TileEntityPlatinumCompressor.class, false),
+		COMBINER(2, 5, 2000, TileEntityCombiner.class, false),
+		CRUSHER(3, 6, 2000, TileEntityCrusher.class, false),
 		THEORETICAL_ELEMENTIZER(4, 7, 4800, TileEntityTheoreticalElementizer.class, true),
-		BASIC_SMELTING_FACTORY(5, 11, 9600, TileEntitySmeltingFactory.class, false),
-		ADVANCED_SMELTING_FACTORY(6, 11, 16000, TileEntityAdvancedSmeltingFactory.class, false),
-		ELITE_SMELTING_FACTORY(7, 11, 22400, TileEntityEliteSmeltingFactory.class, false),
-		METALLURGIC_INFUSER(8, 12, 3200, TileEntityMetallurgicInfuser.class, false),
+		BASIC_SMELTING_FACTORY(5, 11, 6000, TileEntitySmeltingFactory.class, false),
+		ADVANCED_SMELTING_FACTORY(6, 11, 10000, TileEntityAdvancedSmeltingFactory.class, false),
+		ELITE_SMELTING_FACTORY(7, 11, 14000, TileEntityEliteSmeltingFactory.class, false),
+		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false);
 		
 		public int meta;

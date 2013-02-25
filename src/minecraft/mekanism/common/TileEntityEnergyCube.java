@@ -317,7 +317,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public double getVoltage(Object... data) 
 	{
-		return 120;
+		return tier.VOLTAGE;
 	}
 	
 	/**
@@ -445,7 +445,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public boolean isTeleporterCompatible(Direction side) 
 	{
-		return side.toForgeDirection() == ForgeDirection.getOrientation(facing);
+		return true;
 	}
 	
 	@Override

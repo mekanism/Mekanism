@@ -103,13 +103,6 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		list.add("Energy: x" + (getEnergyMultiplier(itemstack)+1));
 		list.add("Speed: x" + (getSpeedMultiplier(itemstack)+1));
 	}
-	
-	@Override
-    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
-    {
-    	ItemBlockMachine item = ((ItemBlockMachine)itemstack.getItem());
-    	item.setJoules(item.getJoules(itemstack), itemstack);
-    }
 
 	@Override
 	public double getJoules(Object... data)

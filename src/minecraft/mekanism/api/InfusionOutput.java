@@ -4,7 +4,10 @@ import net.minecraft.item.ItemStack;
 
 public class InfusionOutput 
 {
+	/** The input infusion */
 	public InfusionInput infusionInput;
+	
+	/** The output resource of this infusion */
 	public ItemStack resource;
 	
 	public InfusionOutput(InfusionInput input, ItemStack itemstack)

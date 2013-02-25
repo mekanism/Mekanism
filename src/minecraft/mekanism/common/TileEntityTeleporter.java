@@ -49,7 +49,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	
 	public TileEntityTeleporter()
 	{
-		super("Teleporter", 4000000);
+		super("Teleporter", 10000000);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
 		
@@ -301,9 +301,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			energyCost+=10000;
 		}
 		
-		int distance = (int)entity.getDistanceSq(coords.xCoord, coords.yCoord, coords.zCoord);
-		
-		energyCost+=(distance);
+		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+		System.out.println(distance);
+		energyCost+=distance;
 		
 		return energyCost;
 	}

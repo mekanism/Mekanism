@@ -64,7 +64,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 	
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = 16;
+	public double ENERGY_PER_TICK = 10;
 	
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
@@ -95,7 +95,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public TileEntityMetallurgicInfuser()
 	{
-		super("Metallurgic Infuser", 3200);
+		super("Metallurgic Infuser", 2000);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
@@ -302,13 +302,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		{
 			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
 			{
-				if(operatingTicks > 0)
-				{
-					setActive(true);
-				}
-				else {
-					setActive(false);
-				}
+				setActive(true);
+			}
+			else {
+				setActive(false);
 			}
 		}
 	}

@@ -61,7 +61,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	public int TICKS_REQUIRED = 200;
 	
 	/** How much energy each operation consumes per tick. */
-	public int ENERGY_PER_TICK = 16;
+	public int ENERGY_PER_TICK = 10;
 	
 	/** This machine's speed multiplier. */
 	public int speedMultiplier;
@@ -96,7 +96,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	
 	public TileEntitySmeltingFactory(SmeltingFactoryTier type)
 	{
-		super(type.name + " Smelting Factory", type.processes*3200);
+		super(type.name + " Smelting Factory", type.processes*2000);
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		tier = type;
 		inventory = new ItemStack[2+type.processes*2];

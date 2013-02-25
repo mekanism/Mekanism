@@ -2,6 +2,11 @@ package mekanism.common;
 
 public class Teleporter
 {
+	/**
+	 * Coords -- a set of coordinates as well as a dimension ID that is used by teleporters.
+	 * @author aidancbrady
+	 *
+	 */
 	public static final class Coords
 	{
 		public int xCoord;
@@ -17,6 +22,11 @@ public class Teleporter
 			dimensionId = id;
 		}
 		
+		/**
+		 * Gets the Coords from a tile entity.
+		 * @param tileEntity
+		 * @return coords
+		 */
 		public static Coords get(TileEntityTeleporter tileEntity)
 		{
 			return new Coords(tileEntity.xCoord, tileEntity.yCoord+1, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
@@ -40,6 +50,11 @@ public class Teleporter
 		}
 	}
 	
+	/**
+	 * Code -- a way for teleporters to manage frequencies.
+	 * @author aidancbrady
+	 *
+	 */
 	public static final class Code
 	{
 		public int digitOne;
