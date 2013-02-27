@@ -217,38 +217,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }
-	
-	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try {
-			facing = dataStream.readInt();
-			isActive = dataStream.readBoolean();
-			operatingTicks = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			energyMultiplier = dataStream.readInt();
-			speedMultiplier = dataStream.readInt();
-			upgradeTicks = dataStream.readInt();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
-	}
-    
-	@Override
-    public void sendPacket()
-    {
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, electricityStored, energyMultiplier, speedMultiplier, upgradeTicks);
-    }
-    
-	@Override
-    public void sendPacketWithRange()
-    {
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, electricityStored, energyMultiplier, speedMultiplier, upgradeTicks);
-    }
 
 	@Override
 	public String[] getMethodNames() 

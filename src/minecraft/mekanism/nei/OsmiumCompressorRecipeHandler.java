@@ -5,17 +5,17 @@ import java.util.Set;
 import net.minecraft.item.ItemStack;
 
 import mekanism.client.GuiAdvancedElectricMachine;
-import mekanism.client.GuiPlatinumCompressor;
+import mekanism.client.GuiOsmiumCompressor;
 import mekanism.common.Mekanism;
-import mekanism.common.TileEntityPlatinumCompressor;
+import mekanism.common.TileEntityOsmiumCompressor;
 import mekanism.common.RecipeHandler.Recipe;
 
-public class PlatinumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
+public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return "Platinum Compressor";
+		return "Osmium Compressor";
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class PlatinumCompressorRecipeHandler extends AdvancedMachineRecipeHandle
 	@Override
 	public Set getRecipes()
 	{
-		return Recipe.PLATINUM_COMPRESSOR.get().entrySet();
+		return Recipe.OSMIUM_COMPRESSOR.get().entrySet();
 	}
 
 	@Override
@@ -51,6 +51,6 @@ public class PlatinumCompressorRecipeHandler extends AdvancedMachineRecipeHandle
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiPlatinumCompressor.class;
+		return GuiOsmiumCompressor.class;
 	}
 }

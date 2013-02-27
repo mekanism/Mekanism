@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 /**
  * Item class for handling multiple machine block IDs.
  * 0: Enrichment Chamber
- * 1: Platinum Compressor
+ * 1: Osmium Compressor
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
@@ -61,7 +61,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 				name = "EnrichmentChamber";
 				break;
 			case 1:
-				name = "PlatinumCompressor";
+				name = "OsmiumCompressor";
 				break;
 			case 2:
 				name = "Combiner";

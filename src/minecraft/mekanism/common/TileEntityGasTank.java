@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.ArrayList;
+
 import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
@@ -193,7 +195,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	    	
 	    	return rejects;
 		}
-		return 0;
+		return amount;
 	}
 
 	@Override
@@ -201,20 +203,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	{
 		return (type == gasType || gasType == EnumGas.NONE) && side != ForgeDirection.getOrientation(facing);
 	}
-
+	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			gasStored = dataStream.readInt();
-			gasType = EnumGas.getFromName(dataStream.readUTF());
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		gasStored = dataStream.readInt();
+		gasType = EnumGas.getFromName(dataStream.readUTF());
 	}
 	
 	@Override
@@ -234,17 +229,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
         nbtTags.setInteger("gasStored", gasStored);
         nbtTags.setString("gasType", gasType.name);
     }
-
+	
 	@Override
-	public void sendPacket() 
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, gasStored, gasType.name);
-	}
-
-	@Override
-	public void sendPacketWithRange() 
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, gasStored, gasType.name);
+		super.getNetworkedData(data);
+		data.add(gasStored);
+		data.add(gasType.name);
+		return data;
 	}
 
 	@Override

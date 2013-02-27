@@ -2,6 +2,7 @@ package mekanism.common;
 
 import ic2.api.ICustomElectricItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.IEnergyCube;
@@ -172,6 +173,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     		if(tileEntity.powerProvider != null)
     		{
     			tileEntity.powerProvider.configure(0, 0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
+    		}
+    		
+    		if(!world.isRemote)
+    		{
+    			PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
     		}
     	}
     	

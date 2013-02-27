@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.ArrayList;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.SideData;
@@ -274,36 +276,19 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     }
     
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			isActive = dataStream.readBoolean();
-			operatingTicks = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			secondaryEnergyStored = dataStream.readInt();
-			energyMultiplier = dataStream.readInt();
-			speedMultiplier = dataStream.readInt();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		secondaryEnergyStored = dataStream.readInt();
 	}
-    
-    @Override
-    public void sendPacket()
-    {
-    	PacketHandler.sendTileEntityPacketToClients(this, 0, facing, isActive, operatingTicks, electricityStored, secondaryEnergyStored, energyMultiplier, speedMultiplier);
-    }
-    
-    @Override
-    public void sendPacketWithRange()
-    {
-    	PacketHandler.sendTileEntityPacketToClients(this, 50, facing, isActive, operatingTicks, electricityStored, secondaryEnergyStored, energyMultiplier, speedMultiplier);
-    }
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(secondaryEnergyStored);
+		return data;
+	}
 	
     @Override
     public void readFromNBT(NBTTagCompound nbtTags)

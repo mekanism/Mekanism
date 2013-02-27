@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemIngot extends ItemMekanism
 {
-	public static String[] en_USNames = {"Obsidian", "Platinum", "Bronze", "Glowstone", "Steel"};
+	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", "Glowstone", "Steel"};
 	
 	public ItemIngot(int id)
 	{

@@ -11,8 +11,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 	{
 		API.registerRecipeHandler(new EnrichmentChamberRecipeHandler());
 		API.registerUsageHandler(new EnrichmentChamberRecipeHandler());
-		API.registerRecipeHandler(new PlatinumCompressorRecipeHandler());
-		API.registerUsageHandler(new PlatinumCompressorRecipeHandler());
+		API.registerRecipeHandler(new OsmiumCompressorRecipeHandler());
+		API.registerUsageHandler(new OsmiumCompressorRecipeHandler());
 		API.registerRecipeHandler(new CrusherRecipeHandler());
 		API.registerUsageHandler(new CrusherRecipeHandler());
 		API.registerRecipeHandler(new CombinerRecipeHandler());

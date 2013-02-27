@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 /**
  * Block class for handling multiple machine block IDs.
  * 0: Enrichment Chamber
- * 1: Platinum Compressor
+ * 1: Osmium Compressor
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
@@ -514,7 +514,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
 	    		return true;
 	    	}
-	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench)
+	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
 	    	{
 	    		if(entityplayer.isSneaking())
 	    		{
@@ -684,7 +684,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	public static enum MachineType
 	{
 		ENRICHMENT_CHAMBER(0, 3, 2000, TileEntityEnrichmentChamber.class, false),
-		PLATINUM_COMPRESSOR(1, 4, 2000, TileEntityPlatinumCompressor.class, false),
+		OSMIUM_COMPRESSOR(1, 4, 2000, TileEntityOsmiumCompressor.class, false),
 		COMBINER(2, 5, 2000, TileEntityCombiner.class, false),
 		CRUSHER(3, 6, 2000, TileEntityCrusher.class, false),
 		THEORETICAL_ELEMENTIZER(4, 7, 4800, TileEntityTheoreticalElementizer.class, true),

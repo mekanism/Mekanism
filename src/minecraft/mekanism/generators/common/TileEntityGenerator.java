@@ -6,7 +6,10 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergySource;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+
+import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -15,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.IActiveState;
 import mekanism.client.Sound;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -240,7 +244,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     	
     	if(prevActive != active)
     	{
-    		sendPacket();
+    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
     	}
     	
     	prevActive = active;
@@ -349,6 +353,21 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void setStored(int energy)
 	{
 		setJoules(energy*Mekanism.FROM_IC2);
+	}
+	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		super.handlePacketData(dataStream);
+		isActive = dataStream.readBoolean();
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(isActive);
+		return data;
 	}
 	
 	@Override

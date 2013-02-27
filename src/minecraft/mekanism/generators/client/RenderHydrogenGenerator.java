@@ -10,6 +10,7 @@ public class RenderHydrogenGenerator extends TileEntitySpecialRenderer
 {
 	private ModelHydrogenGenerator model = new ModelHydrogenGenerator();
 	
+	@Override
 	public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8)
 	{
 		renderAModelAt((TileEntityHydrogenGenerator) var1, var2, var4, var6, 1F);

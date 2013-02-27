@@ -73,10 +73,9 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	    		secondaryEnergyStored += neededGas;
 	    		rejects = amount-neededGas;
 	    	}
-	    	
 	    	return rejects;
 		}
-		return 0;
+		return amount;
 	}
 
 	@Override

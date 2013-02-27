@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	public float crushMatrix = 0;
 	
 	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 100;
+	public final int GENERATION = 50;
 	
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
@@ -247,32 +248,18 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			isActive = dataStream.readBoolean();
-			bioFuelSlot.liquidStored = dataStream.readInt();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		bioFuelSlot.liquidStored = dataStream.readInt();
 	}
 	
 	@Override
-	public void sendPacket()
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, isActive, bioFuelSlot.liquidStored);
-	}
-	
-	@Override
-	public void sendPacketWithRange()
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, isActive, bioFuelSlot.liquidStored);
+		super.getNetworkedData(data);
+		data.add(bioFuelSlot.liquidStored);
+		return data;
 	}
 	
 	@Override

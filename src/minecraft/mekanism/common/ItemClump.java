@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemClump extends ItemMekanism
 {
-	public static String[] en_USNames = {"Iron", "Gold", "Platinum", 
+	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
 										"Copper", "Tin", "Silver"};
 	
 	public ItemClump(int id)

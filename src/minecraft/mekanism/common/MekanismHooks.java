@@ -31,9 +31,6 @@ public final class MekanismHooks
 	private Class ForestryItem;
 	private Class Forestry;
 	
-	public ItemStack IC2IronDust;
-	public ItemStack IC2GoldDust;
-	public ItemStack IC2CopperDust;
 	public ItemStack IC2TinDust;
 	public ItemStack IC2CoalDust;
 	
@@ -62,9 +59,6 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
-			IC2IronDust = getIC2Item("ironDust");
-			IC2GoldDust = getIC2Item("goldDust");
-			IC2CopperDust = getIC2Item("copperDust");
 			IC2TinDust = getIC2Item("tinDust");
 			IC2CoalDust = getIC2Item("coalDust");
 			

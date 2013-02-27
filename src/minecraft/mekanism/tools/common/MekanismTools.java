@@ -38,8 +38,8 @@ public class MekanismTools
     public static EnumToolMaterial toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2", 3, 3000, 25F, 10, 100);
     public static EnumToolMaterial toolLAZULI = EnumHelper.addToolMaterial("LAZULI", 2, 200, 5F, 2, 22);
     public static EnumToolMaterial toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2", 2, 250, 6F, 4, 50);
-    public static EnumToolMaterial toolPLATINUM = EnumHelper.addToolMaterial("PLATINUM", 2, 500, 10F, 4, 30);
-    public static EnumToolMaterial toolPLATINUM2 = EnumHelper.addToolMaterial("PLATINUM2", 3, 700, 12F, 5, 40);
+    public static EnumToolMaterial toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM", 2, 500, 10F, 4, 30);
+    public static EnumToolMaterial toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2", 3, 700, 12F, 5, 40);
     public static EnumToolMaterial toolBRONZE = EnumHelper.addToolMaterial("BRONZE", 2, 800, 14F, 6, 100);
     public static EnumToolMaterial toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2", 3, 1100, 16F, 10, 100);
     public static EnumToolMaterial toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE", 2, 300, 14F, 5, 80);
@@ -50,7 +50,7 @@ public class MekanismTools
     //Enums: Armor
     public static EnumArmorMaterial armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", 50, new int[]{5, 12, 8, 5}, 50);
     public static EnumArmorMaterial armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", 13, new int[]{2, 5, 4, 2}, 50);
-    public static EnumArmorMaterial armorPLATINUM = EnumHelper.addArmorMaterial("PLATINUM", 30, new int[]{3, 9, 7, 3}, 50);
+    public static EnumArmorMaterial armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", 30, new int[]{3, 9, 7, 3}, 50);
     public static EnumArmorMaterial armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", 35, new int[]{3, 8, 6, 2}, 50);
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
     public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {4, 10, 8, 4}, 50);
@@ -86,17 +86,17 @@ public class MekanismTools
 	public static Item BronzeLegs;
 	public static Item BronzeBoots;
 	
-	//Platinum Items
-	public static Item PlatinumPaxel;
-	public static Item PlatinumPickaxe;
-	public static Item PlatinumAxe;
-	public static Item PlatinumSpade;
-	public static Item PlatinumHoe;
-	public static Item PlatinumSword;
-	public static Item PlatinumHelmet;
-	public static Item PlatinumBody;
-	public static Item PlatinumLegs;
-	public static Item PlatinumBoots;
+	//Osmium Items
+	public static Item OsmiumPaxel;
+	public static Item OsmiumPickaxe;
+	public static Item OsmiumAxe;
+	public static Item OsmiumSpade;
+	public static Item OsmiumHoe;
+	public static Item OsmiumSword;
+	public static Item OsmiumHelmet;
+	public static Item OsmiumBody;
+	public static Item OsmiumLegs;
+	public static Item OsmiumBoots;
 	
 	//Obsidian Items
 	public static Item ObsidianHelmet;
@@ -266,36 +266,36 @@ public class MekanismTools
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		}));
 		
-		//Platinum
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPaxel, 1), new Object[] {
-			"XYZ", " T ", " T ", Character.valueOf('X'), PlatinumAxe, Character.valueOf('Y'), PlatinumPickaxe, Character.valueOf('Z'), PlatinumSpade, Character.valueOf('T'), Item.stick
+		//Osmium
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumPaxel, 1), new Object[] {
+			"XYZ", " T ", " T ", Character.valueOf('X'), OsmiumAxe, Character.valueOf('Y'), OsmiumPickaxe, Character.valueOf('Z'), OsmiumSpade, Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumPickaxe, 1), new Object[] {
-			"XXX", " T ", " T ", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumPickaxe, 1), new Object[] {
+			"XXX", " T ", " T ", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumAxe, 1), new Object[] {
-			"XX", "XT", " T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumAxe, 1), new Object[] {
+			"XX", "XT", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumSpade, 1), new Object[] {
-			"X", "T", "T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumSpade, 1), new Object[] {
+			"X", "T", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumHoe, 1), new Object[] {
-			"XX", " T", " T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumHoe, 1), new Object[] {
+			"XX", " T", " T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumSword, 1), new Object[] {
-			"X", "X", "T", Character.valueOf('X'), "ingotPlatinum", Character.valueOf('T'), Item.stick
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumSword, 1), new Object[] {
+			"X", "X", "T", Character.valueOf('X'), "ingotOsmium", Character.valueOf('T'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumHelmet, 1), new Object[] {
-			"***", "* *", Character.valueOf('*'), "ingotPlatinum"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumHelmet, 1), new Object[] {
+			"***", "* *", Character.valueOf('*'), "ingotOsmium"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBody, 1), new Object[] {
-			"* *", "***", "***", Character.valueOf('*'), "ingotPlatinum"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumBody, 1), new Object[] {
+			"* *", "***", "***", Character.valueOf('*'), "ingotOsmium"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumLegs, 1), new Object[] {
-			"***", "* *", "* *", Character.valueOf('*'), "ingotPlatinum"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumLegs, 1), new Object[] {
+			"***", "* *", "* *", Character.valueOf('*'), "ingotOsmium"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PlatinumBoots, 1), new Object[] {
-			"* *", "* *", Character.valueOf('*'), "ingotPlatinum"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OsmiumBoots, 1), new Object[] {
+			"* *", "* *", Character.valueOf('*'), "ingotOsmium"
 		}));
 		
 		//Bronze
@@ -396,17 +396,17 @@ public class MekanismTools
 		LanguageRegistry.addName(LazuliHoe, "Lapis Lazuli Hoe");
 		LanguageRegistry.addName(LazuliSword, "Lapis Lazuli Sword");
 		
-		//Platinum
-		LanguageRegistry.addName(PlatinumHelmet, "Platinum Helmet");
-		LanguageRegistry.addName(PlatinumBody, "Platinum Chestplate");
-		LanguageRegistry.addName(PlatinumLegs, "Platinum Leggings");
-		LanguageRegistry.addName(PlatinumBoots, "Platinum Boots");
-		LanguageRegistry.addName(PlatinumPaxel, "Platinum Paxel");
-		LanguageRegistry.addName(PlatinumPickaxe, "Platinum Pickaxe");
-		LanguageRegistry.addName(PlatinumAxe, "Platinum Axe");
-		LanguageRegistry.addName(PlatinumSpade, "Platinum Shovel");
-		LanguageRegistry.addName(PlatinumHoe, "Platinum Hoe");
-		LanguageRegistry.addName(PlatinumSword, "Platinum Sword");
+		//Osmium
+		LanguageRegistry.addName(OsmiumHelmet, "Osmium Helmet");
+		LanguageRegistry.addName(OsmiumBody, "Osmium Chestplate");
+		LanguageRegistry.addName(OsmiumLegs, "Osmium Leggings");
+		LanguageRegistry.addName(OsmiumBoots, "Osmium Boots");
+		LanguageRegistry.addName(OsmiumPaxel, "Osmium Paxel");
+		LanguageRegistry.addName(OsmiumPickaxe, "Osmium Pickaxe");
+		LanguageRegistry.addName(OsmiumAxe, "Osmium Axe");
+		LanguageRegistry.addName(OsmiumSpade, "Osmium Shovel");
+		LanguageRegistry.addName(OsmiumHoe, "Osmium Hoe");
+		LanguageRegistry.addName(OsmiumSword, "Osmium Sword");
 		
 		//Redstone
 		LanguageRegistry.addName(BronzeHelmet, "Bronze Helmet");
@@ -478,17 +478,17 @@ public class MekanismTools
 		BronzeHoe.setIconIndex(115);
 		BronzeSword.setIconIndex(131);
 		
-		//Platinum
-		PlatinumHelmet.setIconIndex(2);
-		PlatinumBody.setIconIndex(18);
-		PlatinumLegs.setIconIndex(34);
-		PlatinumBoots.setIconIndex(50);
-		PlatinumPaxel.setIconIndex(146);
-		PlatinumPickaxe.setIconIndex(66);
-		PlatinumAxe.setIconIndex(82);
-		PlatinumSpade.setIconIndex(98);
-		PlatinumHoe.setIconIndex(114);
-		PlatinumSword.setIconIndex(130);
+		//Osmium
+		OsmiumHelmet.setIconIndex(2);
+		OsmiumBody.setIconIndex(18);
+		OsmiumLegs.setIconIndex(34);
+		OsmiumBoots.setIconIndex(50);
+		OsmiumPaxel.setIconIndex(146);
+		OsmiumPickaxe.setIconIndex(66);
+		OsmiumAxe.setIconIndex(82);
+		OsmiumSpade.setIconIndex(98);
+		OsmiumHoe.setIconIndex(114);
+		OsmiumSword.setIconIndex(130);
 		
 		//Obsidian
 		ObsidianHelmet.setIconIndex(1);
@@ -542,17 +542,17 @@ public class MekanismTools
 		BronzeHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("BronzeHoe", 11408).getInt(), toolBRONZE).setItemName("BronzeHoe");
 		BronzeSword = new ItemMekanismSword(Mekanism.configuration.getItem("BronzeSword", 11409).getInt(), toolBRONZE).setItemName("BronzeSword");
 		
-		//Platinum
-		PlatinumHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("PlatinumHelmet", 11410).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 0)).setItemName("PlatinumHelmet");
-		PlatinumBody = (new ItemMekanismArmor(Mekanism.configuration.getItem("PlatinumBody", 11411).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 1)).setItemName("PlatinumBody");
-		PlatinumLegs = (new ItemMekanismArmor(Mekanism.configuration.getItem("PlatinumLegs", 11412).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 2)).setItemName("PlatinumLegs");
-		PlatinumBoots = (new ItemMekanismArmor(Mekanism.configuration.getItem("PlatinumBoots", 11413).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("platinum"), 3)).setItemName("PlatinumBoots");
-		PlatinumPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("PlatinumPaxel", 11414).getInt(), toolPLATINUM2).setItemName("PlatinumPaxel");
-		PlatinumPickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("PlatinumPickaxe", 11415).getInt(), toolPLATINUM).setItemName("PlatinumPickaxe");
-		PlatinumAxe = new ItemMekanismAxe(Mekanism.configuration.getItem("PlatinumAxe", 11416).getInt(), toolPLATINUM).setItemName("PlatinumAxe");
-		PlatinumSpade = new ItemMekanismSpade(Mekanism.configuration.getItem("PlatinumSpade", 11417).getInt(), toolPLATINUM).setItemName("PlatinumSpade");
-		PlatinumHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("PlatinumHoe", 11418).getInt(), toolPLATINUM).setItemName("PlatinumHoe");
-		PlatinumSword = new ItemMekanismSword(Mekanism.configuration.getItem("PlatinumSword", 11419).getInt(), toolPLATINUM).setItemName("PlatinumSword");
+		//Osmium
+		OsmiumHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumHelmet", 11410).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 0)).setItemName("OsmiumHelmet");
+		OsmiumBody = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumBody", 11411).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 1)).setItemName("OsmiumBody");
+		OsmiumLegs = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumLegs", 11412).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 2)).setItemName("OsmiumLegs");
+		OsmiumBoots = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumBoots", 11413).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 3)).setItemName("OsmiumBoots");
+		OsmiumPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("OsmiumPaxel", 11414).getInt(), toolOSMIUM2).setItemName("OsmiumPaxel");
+		OsmiumPickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("OsmiumPickaxe", 11415).getInt(), toolOSMIUM).setItemName("OsmiumPickaxe");
+		OsmiumAxe = new ItemMekanismAxe(Mekanism.configuration.getItem("OsmiumAxe", 11416).getInt(), toolOSMIUM).setItemName("OsmiumAxe");
+		OsmiumSpade = new ItemMekanismSpade(Mekanism.configuration.getItem("OsmiumSpade", 11417).getInt(), toolOSMIUM).setItemName("OsmiumSpade");
+		OsmiumHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("OsmiumHoe", 11418).getInt(), toolOSMIUM).setItemName("OsmiumHoe");
+		OsmiumSword = new ItemMekanismSword(Mekanism.configuration.getItem("OsmiumSword", 11419).getInt(), toolOSMIUM).setItemName("OsmiumSword");
 		
 		//Obsidian
 		ObsidianHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("ObsidianHelmet", 11420).getInt(), armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setItemName("ObsidianHelmet");
@@ -641,11 +641,11 @@ public class MekanismTools
 				}
 				else if(secondChance == 2)
 				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(PlatinumSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(PlatinumHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(PlatinumBody));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(PlatinumLegs));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(PlatinumBoots));
+					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(OsmiumSword));
+					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(OsmiumHelmet));
+					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(OsmiumBody));
+					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(OsmiumLegs));
+					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(OsmiumBoots));
 				}
 			}
 		}

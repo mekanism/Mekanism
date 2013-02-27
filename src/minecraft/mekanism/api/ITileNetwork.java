@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -20,15 +22,12 @@ public interface ITileNetwork
 	 * @param player
 	 * @param dataStream
 	 */
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream);
+	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception;
 	
 	/**
-	 * Sends a tile entity packet to the server.
+	 * Gets an ArrayList of data this machine keeps synchronized with the client.
+	 * @param data - list of data
+	 * @return ArrayList
 	 */
-	public void sendPacket();
-	
-	/**
-	 * Sends a tile entity packet to the server with a defined range.
-	 */
-	public void sendPacketWithRange();
+	public ArrayList getNetworkedData(ArrayList data);
 }

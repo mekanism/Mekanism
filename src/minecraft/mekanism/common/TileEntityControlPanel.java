@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.ArrayList;
+
 import mekanism.api.ITileNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,13 +29,14 @@ public class TileEntityControlPanel extends TileEntity implements ITileNetwork
 	public void updateEntity()
 	{
 		packetTick++;
+		
 		if(packetTick == 5 && !worldObj.isRemote)
 		{
-			PacketHandler.sendTileEntityPacketToClients(this, 0, xCached, yCached, zCached);
+			PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
 		}
 		if(packetTick % 20 == 0 && worldObj.isRemote)
 		{
-			PacketHandler.sendTileEntityPacketToServer(this, xCached, yCached, zCached);
+			PacketHandler.sendTileEntityPacketToServer(this, getNetworkedData(new ArrayList()));
 		}
 	}
 	
@@ -58,25 +61,19 @@ public class TileEntityControlPanel extends TileEntity implements ITileNetwork
     }
 
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			xCached = dataStream.readInt();
-			yCached = dataStream.readInt();
-			zCached = dataStream.readInt();
-			
-			if(!worldObj.isRemote) System.out.println("YASDF adsf a");
-			if(worldObj.isRemote) System.out.println("Client");
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		xCached = dataStream.readInt();
+		yCached = dataStream.readInt();
+		zCached = dataStream.readInt();
 	}
-
+	
 	@Override
-	public void sendPacket() {}
-
-	@Override
-	public void sendPacketWithRange() {}
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		data.add(xCached);
+		data.add(yCached);
+		data.add(zCached);
+		return data;
+	}
 }

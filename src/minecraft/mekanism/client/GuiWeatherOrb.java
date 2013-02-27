@@ -10,8 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-public class GuiWeatherOrb extends GuiScreen {
-	
+public class GuiWeatherOrb extends GuiScreen 
+{
 	private static EntityPlayer player;
 	private int xSize = 176;
 	private int ySize = 166;
@@ -68,28 +68,24 @@ public class GuiWeatherOrb extends GuiScreen {
 	{
 		if(guibutton.id == 0)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.CLEAR.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.STORM.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.HAZE.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.RAIN.id);
 			mc.displayGuiScreen(null);

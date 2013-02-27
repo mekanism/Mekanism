@@ -30,13 +30,13 @@ public final class RecipeHandler
 	}
 	
 	/**
-	 * Add a Platinum Compressor recipe.
+	 * Add an Osmium Compressor recipe.
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
-	public static void addPlatinumCompressorRecipe(ItemStack input, ItemStack output)
+	public static void addOsmiumCompressorRecipe(ItemStack input, ItemStack output)
 	{
-		Recipe.PLATINUM_COMPRESSOR.put(input, output);
+		Recipe.OSMIUM_COMPRESSOR.put(input, output);
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public final class RecipeHandler
 	public static enum Recipe
 	{
 		ENRICHMENT_CHAMBER(new HashMap<ItemStack, ItemStack>()),
-		PLATINUM_COMPRESSOR(new HashMap<ItemStack, ItemStack>()),
+		OSMIUM_COMPRESSOR(new HashMap<ItemStack, ItemStack>()),
 		COMBINER(new HashMap<ItemStack, ItemStack>()),
 		CRUSHER(new HashMap<ItemStack, ItemStack>()),
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),

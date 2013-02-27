@@ -24,7 +24,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 
 /**
  * Block class for handling multiple metal block IDs.
- * 0: Platinum Block
+ * 0: Osmium Block
  * 1: Bronze Block
  * 2: Refined Obsidian
  * 3: Coal Block
@@ -38,9 +38,9 @@ import net.minecraftforge.common.ForgeChunkManager;
  */
 public class BlockBasic extends Block
 {
-	public BlockBasic(int i)
+	public BlockBasic(int id)
 	{
-		super(i, Material.iron);
+		super(id, Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);

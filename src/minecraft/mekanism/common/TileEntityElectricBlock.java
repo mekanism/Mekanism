@@ -1,5 +1,9 @@
 package mekanism.common;
 
+import java.util.ArrayList;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import ic2.api.IWrenchable;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -54,6 +58,21 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			
 			initialized = true;
 		}
+	}
+	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		super.handlePacketData(dataStream);
+		electricityStored = dataStream.readDouble();
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(electricityStored);
+		return data;
 	}
 	
 	@Override

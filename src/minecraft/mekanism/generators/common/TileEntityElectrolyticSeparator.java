@@ -5,6 +5,7 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.EnumGas;
@@ -362,58 +363,41 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
-			try {
-				byte type = dataStream.readByte();
-				
-				if(type == 0)
-				{
-					outputType = EnumGas.getFromName(dataStream.readUTF());
-					return;
-				}
-				else if(type == 1)
-				{
-					dumpType = EnumGas.getFromName(dataStream.readUTF());
-					return;
-				}
-				
-			} catch (Exception e)
+			byte type = dataStream.readByte();
+			
+			if(type == 0)
 			{
-				System.out.println("[Mekanism] Error while handling tile entity packet.");
-				e.printStackTrace();
+				outputType = EnumGas.getFromName(dataStream.readUTF());
+				return;
+			}
+			else if(type == 1)
+			{
+				dumpType = EnumGas.getFromName(dataStream.readUTF());
 				return;
 			}
 		}
 		
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			waterSlot.liquidStored = dataStream.readInt();
-			oxygenStored = dataStream.readInt();
-			hydrogenStored = dataStream.readInt();
-			outputType = EnumGas.getFromName(dataStream.readUTF());
-			dumpType = EnumGas.getFromName(dataStream.readUTF());
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		waterSlot.liquidStored = dataStream.readInt();
+		oxygenStored = dataStream.readInt();
+		hydrogenStored = dataStream.readInt();
+		outputType = EnumGas.getFromName(dataStream.readUTF());
 	}
-
+	
 	@Override
-	public void sendPacket() 
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name, dumpType.name);
-	}
-
-	@Override
-	public void sendPacketWithRange() 
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, waterSlot.liquidStored, oxygenStored, hydrogenStored, outputType.name, dumpType.name);
+		super.getNetworkedData(data);
+		data.add(waterSlot.liquidStored);
+		data.add(oxygenStored);
+		data.add(hydrogenStored);
+		data.add(outputType.name);
+		data.add(dumpType.name);
+		return data;
 	}
 	
 	@Override

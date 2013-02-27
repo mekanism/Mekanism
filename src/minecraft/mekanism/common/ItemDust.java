@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemDust extends ItemMekanism
 {
-	public static String[] en_USNames = {"Iron", "Gold", "Platinum", 
+	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
 										"Obsidian", "Diamond", "Steel",
 										"Copper", "Tin", "Silver"};
 	

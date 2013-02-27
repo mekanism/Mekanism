@@ -12,25 +12,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple ore block IDs. 
- * 0: Platinum Ore
+ * 0: Osmium Ore
  * @author AidanBrady
  *
  */
 public class BlockOre extends Block
 {
-	public BlockOre(int i)
+	public BlockOre(int id)
 	{
-		super(i, Material.rock);
+		super(id, Material.rock);
 		setHardness(3F);
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
 		setRequiresSelfNotify();
-	}
-	
-	@Override
-	public boolean canDragonDestroy(World world, int x, int y, int z)
-	{
-		return world.getBlockMetadata(x, y, z) != 1;
 	}
 	
 	@Override

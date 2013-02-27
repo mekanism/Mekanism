@@ -438,28 +438,18 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	{
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotAmount;
 	}
-
+	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			speedMultiplier = dataStream.readInt();
-			energyMultiplier = dataStream.readInt();
-			isActive = dataStream.readBoolean();
-			
-			for(int i = 0; i < tier.processes; i++)
-			{
-				progress[i] = dataStream.readInt();
-			}
-			
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
+		super.handlePacketData(dataStream);
+		speedMultiplier = dataStream.readInt();
+		energyMultiplier = dataStream.readInt();
+		isActive = dataStream.readBoolean();
+		
+		for(int i = 0; i < tier.processes; i++)
 		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
+			progress[i] = dataStream.readInt();
 		}
 	}
 	
@@ -507,17 +497,16 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         	nbtTags.setByte("config"+i, sideConfig[i]);
         }
     }
-
+	
 	@Override
-	public void sendPacket()
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, progress);
-	}
-
-	@Override
-	public void sendPacketWithRange() 
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, progress);
+		super.getNetworkedData(data);
+		data.add(speedMultiplier);
+		data.add(energyMultiplier);
+		data.add(isActive);
+		data.add(progress);
+		return data;
 	}
 
 	@Override
@@ -650,7 +639,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
     	
     	if(prevActive != active)
     	{
-    		sendPacket();
+    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
     	}
     	
     	prevActive = active;

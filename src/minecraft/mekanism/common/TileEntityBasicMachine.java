@@ -6,12 +6,16 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IElectricMachine;
+import mekanism.api.IEnergyCube;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.Sound;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +24,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.implement.IConductor;
+import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.implement.IJouleStorage;
 import universalelectricity.core.implement.IVoltage;
 import universalelectricity.core.vector.Vector3;
@@ -222,6 +227,29 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     }
 	
 	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		super.handlePacketData(dataStream);
+		operatingTicks = dataStream.readInt();
+		isActive = dataStream.readBoolean();
+		speedMultiplier = dataStream.readInt();
+		energyMultiplier = dataStream.readInt();
+		upgradeTicks = dataStream.readInt();
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(operatingTicks);
+		data.add(isActive);
+		data.add(speedMultiplier);
+		data.add(energyMultiplier);
+		data.add(upgradeTicks);
+		return data;
+	}
+	
+	@Override
 	public void invalidate()
 	{
 		super.invalidate();
@@ -349,7 +377,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	
     	if(prevActive != active)
     	{
-    		sendPacket();
+    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
     	}
     	
     	prevActive = active;
@@ -425,5 +453,16 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		speedMultiplier = multiplier;
+	}
+	
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+	{
+		ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
+        
+        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
+        electricItem.setJoules(electricityStored, itemStack);
+        
+        return itemStack;
 	}
 }

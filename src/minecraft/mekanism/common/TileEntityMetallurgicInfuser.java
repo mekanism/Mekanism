@@ -482,50 +482,36 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	nbtTags.setByte("config"+i, sideConfig[i]);
         }
     }
-
+	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
-			try {
-				infuseStored = dataStream.readInt();
-			} catch (Exception e)
-			{
-				System.out.println("[Mekanism] Error while handling tile entity packet.");
-				e.printStackTrace();
-			}
+			infuseStored = dataStream.readInt();
 			return;
 		}
 		
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			speedMultiplier = dataStream.readInt();
-			energyMultiplier = dataStream.readInt();
-			isActive = dataStream.readBoolean();
-			operatingTicks = dataStream.readInt();
-			infuseStored = dataStream.readInt();
-			type = InfusionType.getFromName(dataStream.readUTF());
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		speedMultiplier = dataStream.readInt();
+		energyMultiplier = dataStream.readInt();
+		isActive = dataStream.readBoolean();
+		operatingTicks = dataStream.readInt();
+		infuseStored = dataStream.readInt();
+		type = InfusionType.getFromName(dataStream.readUTF());
 	}
-
+	
 	@Override
-	public void sendPacket() 
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, operatingTicks, infuseStored, type.name);
-	}
-
-	@Override
-	public void sendPacketWithRange() 
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, speedMultiplier, energyMultiplier, isActive, operatingTicks, infuseStored, type.name);
+		super.getNetworkedData(data);
+		data.add(speedMultiplier);
+		data.add(energyMultiplier);
+		data.add(isActive);
+		data.add(operatingTicks);
+		data.add(infuseStored);
+		data.add(type.name);
+		return data;
 	}
 
 	@Override
@@ -616,7 +602,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	
     	if(prevActive != active)
     	{
-    		sendPacket();
+    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
     	}
     	
     	prevActive = active;

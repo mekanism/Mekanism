@@ -23,7 +23,7 @@ public class BlockPressurizedTube extends Block
 {
 	public BlockPressurizedTube(int id)
 	{
-		super(id, Material.iron);
+		super(id, Material.wood);
 		setHardness(2.0F);
 		setResistance(5.0F);
 		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);

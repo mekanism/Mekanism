@@ -380,18 +380,18 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			tier = EnergyCubeTier.getFromName(dataStream.readUTF());
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(tier.name);
+		return data;
 	}
 	
 	@Override
@@ -409,18 +409,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
         super.writeToNBT(nbtTags);
         
         nbtTags.setString("tier", tier.name);
-    }
-	
-	@Override
-    public void sendPacket()
-    {
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, tier.name);
-    }
-    
-	@Override
-    public void sendPacketWithRange()
-    {
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, tier.name);
     }
 	
 	@Override

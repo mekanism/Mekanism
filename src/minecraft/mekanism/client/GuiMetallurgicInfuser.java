@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import java.util.ArrayList;
+
 import mekanism.api.InfusionType;
 import mekanism.common.ContainerMetallurgicInfuser;
 import mekanism.common.PacketHandler;
@@ -33,7 +35,10 @@ public class GuiMetallurgicInfuser extends GuiContainer
 		
 		if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
 		{
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, 0);
+			ArrayList data = new ArrayList();
+			data.add(0);
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

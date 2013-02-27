@@ -123,7 +123,6 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 	{
 		BASE.render(size);
 		SUPPORT_1_ROTATES.render(size);
-		//SUPPORT_1_ROTATES.rotateAngleZ = rotation;
 		MECHANISM_ROTATES.render(size);
 		MECHANISM_ROTATES.rotateAngleX = rotation;
 		PANEL_1_ROTATES.render(size);
@@ -147,9 +146,7 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 		PANEL_1_SUPPORT_4_ROTATES.render(size);
 		PANEL_1_SUPPORT_4_ROTATES.rotateAngleX = rotation;
 		SUPPORT_2_ROTATES.render(size);
-		//SUPPORT_2_ROTATES.rotateAngleZ = rotation;
 		SUPPORT_3_ROTATES.render(size);
-		//SUPPORT_3_ROTATES.rotateAngleZ = rotation;
 	}
   
 	private void setRotation(ModelRenderer model, float x, float y, float z)
@@ -159,6 +156,7 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 		model.rotateAngleZ = z;
 	}
   
+	@Override
 	public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
 	{
 		super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);

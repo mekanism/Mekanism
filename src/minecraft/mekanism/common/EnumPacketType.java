@@ -25,8 +25,10 @@ public enum EnumPacketType
 	DIGIT_UPDATE(6),
 	/** Used to send a status update packet from a portable teleporter to the client. */
 	STATUS_UPDATE(7),
+	/** Used to request data from the server by tile entities. */
+	DATA_REQUEST(8),
 	/** A custom packet type. Handled in PacketHandler. */
-	CUSTOM(8);
+	CUSTOM(9);
 	
 	/** The ID of the packet type */
 	public final int id;

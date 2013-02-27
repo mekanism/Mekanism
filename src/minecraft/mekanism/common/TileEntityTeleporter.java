@@ -354,76 +354,61 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
         nbtTags.setInteger("digitThree", code.digitThree);
         nbtTags.setInteger("digitFour", code.digitFour);
     }
-
+	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
-			try {
-				if(Mekanism.teleporters.containsKey(code))
-				{
-					if(Mekanism.teleporters.get(code).contains(Teleporter.Coords.get(this)))
-					{
-						Mekanism.teleporters.get(code).remove(Teleporter.Coords.get(this));
-					}
-					
-					if(Mekanism.teleporters.get(code).isEmpty()) Mekanism.teleporters.remove(code);
-				}
-				
-				int type = dataStream.readInt();
-				
-				if(type == 0)
-				{
-					code.digitOne = dataStream.readInt();
-				}
-				else if(type == 1)
-				{
-					code.digitTwo = dataStream.readInt();
-				}
-				else if(type == 2)
-				{
-					code.digitThree = dataStream.readInt();
-				}
-				else if(type == 3)
-				{
-					code.digitFour = dataStream.readInt();
-				}
-			} catch (Exception e)
+			if(Mekanism.teleporters.containsKey(code))
 			{
-				System.out.println("[Mekanism] Error while handling tile entity packet.");
-				e.printStackTrace();
+				if(Mekanism.teleporters.get(code).contains(Teleporter.Coords.get(this)))
+				{
+					Mekanism.teleporters.get(code).remove(Teleporter.Coords.get(this));
+				}
+				
+				if(Mekanism.teleporters.get(code).isEmpty()) Mekanism.teleporters.remove(code);
+			}
+			
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				code.digitOne = dataStream.readInt();
+			}
+			else if(type == 1)
+			{
+				code.digitTwo = dataStream.readInt();
+			}
+			else if(type == 2)
+			{
+				code.digitThree = dataStream.readInt();
+			}
+			else if(type == 3)
+			{
+				code.digitFour = dataStream.readInt();
 			}
 			return;
 		}
 		
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			status = dataStream.readUTF().trim();
-			code.digitOne = dataStream.readInt();
-			code.digitTwo = dataStream.readInt();
-			code.digitThree = dataStream.readInt();
-			code.digitFour = dataStream.readInt();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		status = dataStream.readUTF().trim();
+		code.digitOne = dataStream.readInt();
+		code.digitTwo = dataStream.readInt();
+		code.digitThree = dataStream.readInt();
+		code.digitFour = dataStream.readInt();
 	}
-
+	
 	@Override
-	public void sendPacket()
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, status, code.digitOne, code.digitTwo, code.digitThree, code.digitFour);
-	}
-
-	@Override
-	public void sendPacketWithRange()
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, status, code.digitOne, code.digitTwo, code.digitThree, code.digitFour);
+		super.getNetworkedData(data);
+		data.add(status);
+		data.add(code.digitOne);
+		data.add(code.digitTwo);
+		data.add(code.digitThree);
+		data.add(code.digitFour);
+		return data;
 	}
 
 	@Override

@@ -1,11 +1,17 @@
 package mekanism.common;
 
+import java.util.ArrayList;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import ic2.api.IWrenchable;
 import ic2.api.energy.EnergyNet;
 import mekanism.api.ITileNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import universalelectricity.prefab.tile.TileEntityDisableable;
 
 public abstract class TileEntityBasicBlock extends TileEntityDisableable implements IWrenchable, ITileNetwork
@@ -35,16 +41,36 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 			{
 				if(packetTick % 3 == 0)
 				{
-					sendPacketWithRange();
-				}
-			}
-			else {
-				if(packetTick % 20 == 0)
-				{
-					sendPacketWithRange();
+					PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 				}
 			}
 			packetTick++;
+		}
+	}
+	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		facing = dataStream.readInt();
+		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+		worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		data.add(facing);
+		return data;
+	}
+	
+	@Override
+	public void validate()
+	{
+		super.validate();
+		
+		if(worldObj.isRemote)
+		{
+			PacketHandler.sendDataRequest(this);
 		}
 	}
 	
@@ -87,7 +113,7 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 			facing = direction;
 		}
 		
-		sendPacket();
+		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
 	}
 	
 	/**

@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Item class for handling multiple ore block IDs.
- * 0: Platinum Ore
+ * 0: Osmium Ore
  * @author AidanBrady
  *
  */
@@ -40,7 +40,7 @@ public class ItemBlockOre extends ItemBlock
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
-				name = "PlatinumOre";
+				name = "OsmiumOre";
 				break;
 			default:
 				name = "Unknown";

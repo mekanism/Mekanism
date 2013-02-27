@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import java.util.ArrayList;
+
 import mekanism.common.ContainerTeleporter;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityTeleporter;
@@ -34,27 +36,41 @@ public class GuiTeleporter extends GuiContainer
 		int xAxis = (x - (width - xSize) / 2);
 		int yAxis = (y - (height - ySize) / 2);
 		
+		ArrayList data = new ArrayList();
+		
 		if(xAxis > 23 && xAxis < 37 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, 0, getIncrementedNumber(tileEntity.code.digitOne));
+			data.add(0);
+			data.add(getIncrementedNumber(tileEntity.code.digitOne));
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			tileEntity.code.digitOne = getIncrementedNumber(tileEntity.code.digitOne);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 62 && xAxis < 76 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, 1, getIncrementedNumber(tileEntity.code.digitTwo));
+			data.add(1);
+			data.add(getIncrementedNumber(tileEntity.code.digitTwo));
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			tileEntity.code.digitTwo = getIncrementedNumber(tileEntity.code.digitTwo);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 101 && xAxis < 115 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, 2, getIncrementedNumber(tileEntity.code.digitThree));
+			data.add(2);
+			data.add(getIncrementedNumber(tileEntity.code.digitThree));
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			tileEntity.code.digitThree = getIncrementedNumber(tileEntity.code.digitThree);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 140 && xAxis < 154 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, 3, getIncrementedNumber(tileEntity.code.digitFour));
+			data.add(3);
+			data.add(getIncrementedNumber(tileEntity.code.digitFour));
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			tileEntity.code.digitFour = getIncrementedNumber(tileEntity.code.digitFour);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}

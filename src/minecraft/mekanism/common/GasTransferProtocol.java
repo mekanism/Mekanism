@@ -99,8 +99,8 @@ public class GasTransferProtocol
 					remaining--;
 				}
 				
-				acceptor.transferGasToAcceptor(currentSending, transferType);
-				gasToSend -= currentSending;
+				int rejects = acceptor.transferGasToAcceptor(currentSending, transferType);
+				gasToSend -= (currentSending - rejects);
 			}
 		}
 		

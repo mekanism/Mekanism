@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -243,32 +244,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	}
 	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			isActive = dataStream.readBoolean();
-			fuelSlot.liquidStored = dataStream.readInt();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		fuelSlot.liquidStored = dataStream.readInt();
 	}
 	
 	@Override
-	public void sendPacket()
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, isActive, fuelSlot.liquidStored);
-	}
-	
-	@Override
-	public void sendPacketWithRange()
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, isActive, fuelSlot.liquidStored);
+		super.getNetworkedData(data);
+		data.add(fuelSlot.liquidStored);
+		return data;
 	}
 	
 	@Override

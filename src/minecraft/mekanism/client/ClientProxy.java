@@ -150,7 +150,7 @@ public class ClientProxy extends CommonProxy
 			case 3:
 				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
-				return new GuiPlatinumCompressor(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 5:
 				return new GuiCombiner(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 6:

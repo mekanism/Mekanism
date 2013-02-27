@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-public class GuiStopwatch extends GuiScreen {
-	
+public class GuiStopwatch extends GuiScreen
+{
 	private static EntityPlayer player;
 	private int xSize = 176;
 	private int ySize = 166;
@@ -67,28 +67,24 @@ public class GuiStopwatch extends GuiScreen {
 	{
 		if(guibutton.id == 0)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 0);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 6);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 12);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
-			player.inventory.getCurrentItem().damageItem(4999, player);
 			MekanismUtils.doFakeEntityExplosion(player);
 			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 18);
 			mc.displayGuiScreen(null);

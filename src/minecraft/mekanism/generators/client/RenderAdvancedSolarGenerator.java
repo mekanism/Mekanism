@@ -39,20 +39,7 @@ public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer
 	    
 	    GL11.glRotatef(180, 0f, 0f, 1f);
 	    
-	    /*long time = FMLClientHandler.instance().getClient().theWorld.getWorldTime();
-	    double timeMatrix = 180;
-	    
-	    if(time+1000 >= 24000)
-	    {
-	    	time = (time+1000)-24000;
-	    }
-	    
-	    if(time <= 14000)
-	    {
-		    timeMatrix = (time/38.8888)-180;
-	    }*/
-	    
-	    arrayModel.render(/*(float)timeMatrix/100*/ 0.0F, 0.0625F);
+	    arrayModel.render(0.0F, 0.06F);
 	    GL11.glPopMatrix();
 	}
 }

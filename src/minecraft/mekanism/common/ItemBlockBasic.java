@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Item class for handling multiple metal block IDs.
- * 0: Platinum Block
+ * 0: Osmium Block
  * 1: Bronze Block
  * 2: Refined Obsidian
  * 3: Coal Block
@@ -48,7 +48,7 @@ public class ItemBlockBasic extends ItemBlock
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
-				name = "PlatinumBlock";
+				name = "OsmiumBlock";
 				break;
 			case 1:
 				name = "BronzeBlock";

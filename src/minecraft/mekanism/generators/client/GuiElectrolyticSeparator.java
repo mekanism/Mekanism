@@ -1,5 +1,7 @@
 package mekanism.generators.client;
 
+import java.util.ArrayList;
+
 import mekanism.api.EnumGas;
 import mekanism.common.PacketHandler;
 import mekanism.generators.common.ContainerElectrolyticSeparator;
@@ -47,7 +49,11 @@ public class GuiElectrolyticSeparator extends GuiContainer
 				nameToSet = EnumGas.HYDROGEN.name;
 			}
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, (byte)0, nameToSet);
+			ArrayList data = new ArrayList();
+			data.add((byte)0);
+			data.add(nameToSet);
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
@@ -67,7 +73,11 @@ public class GuiElectrolyticSeparator extends GuiContainer
 				nameToSet = EnumGas.NONE.name;
 			}
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, (byte)1, nameToSet);
+			ArrayList data = new ArrayList();
+			data.add((byte)1);
+			data.add(nameToSet);
+			
+			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

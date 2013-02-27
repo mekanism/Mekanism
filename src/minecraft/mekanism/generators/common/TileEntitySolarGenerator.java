@@ -1,5 +1,7 @@
 package mekanism.generators.common;
 
+import java.util.ArrayList;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.common.Mekanism;
@@ -28,7 +30,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public TileEntitySolarGenerator()
 	{
 		super("Solar Generator", 96000, 60);
-		GENERATION_RATE = 80;
+		GENERATION_RATE = 40;
 		inventory = new ItemStack[1];
 	}
 	
@@ -40,10 +42,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public void handleSound()
-	{
-		//Overridden to prevent sound effects
-	}
+	public void handleSound() {}
 	
 	@Override
 	public int getSizeInventorySide(ForgeDirection side)
@@ -142,32 +141,19 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				return null;
 		}
 	}
-
+	
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			isActive = dataStream.readBoolean();
-			seesSun = dataStream.readBoolean();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		seesSun = dataStream.readBoolean();
 	}
-
+	
 	@Override
-	public void sendPacket()
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, isActive, seesSun);
-	}
-
-	@Override
-	public void sendPacketWithRange() 
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, isActive, seesSun);
+		super.getNetworkedData(data);
+		data.add(seesSun);
+		return data;
 	}
 }

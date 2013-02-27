@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemStopwatch extends ItemMekanism {
-	
+public class ItemStopwatch extends ItemMekanism 
+{
 	public ItemStopwatch(int i)
 	{
 		super(i);

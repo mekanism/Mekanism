@@ -174,6 +174,16 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 				return 23;
 			}
 		}
+		else if(tileEntity.tier == EnergyCubeTier.ULTIMATE)
+		{
+			if(side == tileEntity.facing)
+			{
+				return 33;
+			}
+			else {
+				return 32;
+			}
+		}
 		return 0;
     }
 	
@@ -298,7 +308,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
     	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
     	    		return true;
     	    	}
-    	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench)
+    	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
     	    	{
     	    		if(entityplayer.isSneaking())
     	    		{

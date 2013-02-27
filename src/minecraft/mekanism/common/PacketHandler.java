@@ -3,6 +3,7 @@ package mekanism.common;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import mekanism.api.ITileNetwork;
@@ -17,9 +18,11 @@ import net.minecraft.world.World;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.server.FMLServerHandler;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -42,11 +45,13 @@ public class PacketHandler implements IPacketHandler
 			    if(packetType == EnumPacketType.TIME.id)
 			    {
 			        System.out.println("[Mekanism] Received time update packet from " + entityplayer.username + ".");
+			        entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
 			        MekanismUtils.setHourForward(entityplayer.worldObj, dataStream.readInt());
 			    }
 			    if(packetType == EnumPacketType.WEATHER.id)
 			    {
 			    	System.out.println("[Mekanism] Received weather update packet from " + entityplayer.username + ".");
+			    	entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
 			    	int weatherType = dataStream.readInt();
 			    	if(weatherType == EnumWeatherType.CLEAR.id)
 			    	{
@@ -78,7 +83,7 @@ public class PacketHandler implements IPacketHandler
 						TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 						if(tileEntity instanceof ITileNetwork)
 						{
-							((ITileNetwork)tileEntity).handlePacketData(manager, packet, ((EntityPlayer)player), dataStream);
+							((ITileNetwork)tileEntity).handlePacketData(dataStream);
 						}
 					} catch (Exception e)
 					{
@@ -213,6 +218,26 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
+			    if(packetType == EnumPacketType.DATA_REQUEST.id)
+			    {
+			    	try {
+			    		int x = dataStream.readInt();
+			    		int y = dataStream.readInt();
+			    		int z = dataStream.readInt();
+			    		int id = dataStream.readInt();
+			    		
+			    		World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(id);
+			    		
+			    		if(world != null && world.getBlockTileEntity(x, y, z) instanceof ITileNetwork)
+			    		{
+			    			sendTileEntityPacketToClients(world.getBlockTileEntity(x, y, z), 0, ((ITileNetwork)world.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList()));
+			    		}
+			    	} catch (Exception e)
+			    	{
+			    		System.err.println("[Mekanism] Error while handling data request packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
 			}
 			catch (Exception e)
 			{
@@ -230,7 +255,7 @@ public class PacketHandler implements IPacketHandler
 	 * @param distance - distance to send the packet, 0 if infinite range
 	 * @param dataValues - data to send
 	 */
-	public static void sendTileEntityPacketToServer(TileEntity sender, Object... dataValues)
+	public static void sendTileEntityPacketToServer(TileEntity sender, ArrayList dataValues)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
@@ -296,7 +321,7 @@ public class PacketHandler implements IPacketHandler
 	 * @param distance - distance to send the packet, 0 if infinite range
 	 * @param dataValues - data to send
 	 */
-	public static void sendTileEntityPacketToClients(TileEntity sender, double distance, Object... dataValues)
+	public static void sendTileEntityPacketToClients(TileEntity sender, double distance, ArrayList dataValues)
 	{
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
@@ -500,5 +525,33 @@ public class PacketHandler implements IPacketHandler
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
         System.out.println("[Mekanism] Sent data int packet '" + type.id + ":" + i + "' to server");
+	}
+	
+	/**
+	 * This method is used to request a data update from the server in order to update a client-sided tile entity.
+	 * The server will receive this request, and then send a packet to the client with all the needed information.
+	 * @param tileEntity
+	 */
+	public static void sendDataRequest(TileEntity tileEntity)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.DATA_REQUEST.id);
+        	data.writeInt(tileEntity.xCoord);
+        	data.writeInt(tileEntity.yCoord);
+        	data.writeInt(tileEntity.zCoord);
+        	data.writeInt(tileEntity.worldObj.provider.dimensionId);
+        } catch (IOException e) {
+        	System.out.println("[Mekanism] An error occured while writing packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
 	}
 }

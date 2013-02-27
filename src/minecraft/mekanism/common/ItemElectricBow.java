@@ -90,7 +90,7 @@ public class ItemElectricBow extends ItemEnergized
     @Override
     public int getMaxItemUseDuration(ItemStack itemstack)
     {
-        return 0x11940;
+        return 72000;
     }
 
     @Override

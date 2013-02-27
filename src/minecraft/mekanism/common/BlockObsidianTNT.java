@@ -11,9 +11,9 @@ import net.minecraft.world.World;
 
 public class BlockObsidianTNT extends Block
 {
-    public BlockObsidianTNT(int par1)
+    public BlockObsidianTNT(int id)
     {
-        super(par1, Material.tnt);
+        super(id, Material.tnt);
         setStepSound(Block.soundGrassFootstep);
         setHardness(0.0F);
         setResistance(0.0F);

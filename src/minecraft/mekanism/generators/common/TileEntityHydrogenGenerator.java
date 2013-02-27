@@ -1,5 +1,7 @@
 package mekanism.generators.common;
 
+import java.util.ArrayList;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.EnumGas;
@@ -191,32 +193,18 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public void handlePacketData(INetworkManager network, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try {
-			facing = dataStream.readInt();
-			electricityStored = dataStream.readDouble();
-			hydrogenStored = dataStream.readInt();
-			isActive = dataStream.readBoolean();
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		} catch (Exception e)
-		{
-			System.out.println("[Mekanism] Error while handling tile entity packet.");
-			e.printStackTrace();
-		}
+		super.handlePacketData(dataStream);
+		hydrogenStored = dataStream.readInt();
 	}
-
+	
 	@Override
-	public void sendPacket() 
+	public ArrayList getNetworkedData(ArrayList data)
 	{
-		PacketHandler.sendTileEntityPacketToClients(this, 0, facing, electricityStored, hydrogenStored, isActive);
-	}
-
-	@Override
-	public void sendPacketWithRange() 
-	{
-		PacketHandler.sendTileEntityPacketToClients(this, 50, facing, electricityStored, hydrogenStored, isActive);
+		super.getNetworkedData(data);
+		data.add(hydrogenStored);
+		return data;
 	}
 
 	@Override
