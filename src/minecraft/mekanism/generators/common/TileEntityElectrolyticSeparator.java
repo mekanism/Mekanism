@@ -386,6 +386,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		oxygenStored = dataStream.readInt();
 		hydrogenStored = dataStream.readInt();
 		outputType = EnumGas.getFromName(dataStream.readUTF());
+		dumpType = EnumGas.getFromName(dataStream.readUTF());
 	}
 	
 	@Override
