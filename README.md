@@ -6,37 +6,19 @@ Source code.  More information can be found on the mod's forum post.
 
 Mekanism is a Minecraft add-on featuring special machinery that can be used to create powerful tools, armor and weapons.  It also includes an gas network that can be implemented by different mods.
 
-**Mod Terms and Conditions:**
+# License #
 
-This is my mod.  All code, textures and ideas are due to my hard work.  You may modify the source code for your own personal use, but you may not release it unless your purpose meets one of the following conditions:
+Licenses are not really my friend -- strict closed source software really drives me nuts.  Even more, with a derivative work coded in a language such as Java, nothing can really prevent people from looking through my source with JD-GUI.
+However, I welcome people wanting to learn how to mod, and because of this, I have licensed Mekanism under the MIT License, which doesn't include many guidelines.  This basically means you have the right to use my mod's source code, learn
+from it, and even use it in your own mod.  You even have the right to distribute this mod to the public and make money off of it, although this is something I wouldn't necessarily encourage! :)
 
-* The mod has not been updated for over 8 months by me and only me, aidancbrady.
+Copyright © 2013 Aidan Brady
 
-* The mod has not been updated for two full Minecraft releases (e.g. 1.4 -> 1.6)
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-* You have my sole permission and credit me in your post.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-Using my source code in your own mod is also strictly prohibited unless I have said otherwise.
-
-**API Terms and Conditions:**
-
-If you end up using my API and bundle it in your own mod, you will have to follow a few guidelines.
-
-* You will credit me in your post.
-
-* I have the right to put your mod in the 'add-ons' section of the mod's post.
-
-* You will not release the raw source code of the API, or distribute the compiled build in any way.
-
-**Mod Pack Terms and Conditions:**
-
-So you want to use Mekanism in your mod pack?  Still a few rules for you.
-
-* You will credit me AND include a link to Mekanism's official post on MinecraftForum.
-
-* I have the right to put your mod pack in the 'mod packs' section of the mod's post.
-
-* You will not distribute the mod anywhere other than in the pack itself.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Developers & Credits #
 
