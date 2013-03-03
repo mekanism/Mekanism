@@ -6,6 +6,11 @@ Source code.  More information can be found on the mod's forum post.
 
 Mekanism is a Minecraft add-on featuring special machinery that can be used to create powerful tools, armor and weapons.  It also includes an gas network that can be implemented by different mods.
 
+# Modpacks, websites, reviews, or anything else #
+
+Some people really don't like others to review or distribute their mods, something which I honestly don't understand.  You are the ones who help get this mod into the Minecraft community's hands, which seems like a good thing from my perspective.
+So go ahead, do whatever you like.  I honestly just don't want you messaging me on IRC or on the forums, asking my permission.  If you need proof, provide a link to this page, or give them information on the MIT license.
+
 # License #
 
 Licenses are not really my friend -- strict closed source software really drives me nuts.  Even more, with a derivative work coded in a language such as Java, nothing can really prevent people from looking through my source with JD-GUI.
