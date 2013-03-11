@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.EnumColor;
 import mekanism.api.SideData;
 import mekanism.api.Tier.SmeltingFactoryTier;
 

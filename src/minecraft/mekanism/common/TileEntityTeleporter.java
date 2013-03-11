@@ -25,6 +25,7 @@ import cpw.mods.fml.server.FMLServerHandler;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
+import mekanism.api.EnumColor;
 import mekanism.common.Teleporter.Coords;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

@@ -70,7 +70,7 @@ public final class RecipeHandler
 	}
 	
 	/**
-	 * Adds a Metallurgic Infuser recipe.
+	 * Add a Metallurgic Infuser recipe.
 	 * @param input - input Infusion
 	 * @param output - output ItemStack
 	 */
@@ -147,7 +147,7 @@ public final class RecipeHandler
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>());
 		
-		private Map recipes;
+		private HashMap recipes;
 		
 		private Recipe(HashMap map)
 		{
@@ -159,7 +159,7 @@ public final class RecipeHandler
 			recipes.put(input, output);
 		}
 		
-		public Map get()
+		public HashMap get()
 		{
 			return recipes;
 		}

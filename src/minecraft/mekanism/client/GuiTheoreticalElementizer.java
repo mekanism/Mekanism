@@ -1,6 +1,6 @@
 package mekanism.client;
 
-import mekanism.common.EnumColor;
+import mekanism.api.EnumColor;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import net.minecraft.entity.player.InventoryPlayer;

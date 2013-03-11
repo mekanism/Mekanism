@@ -2,6 +2,7 @@ package mekanism.common;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import mekanism.api.EnumColor;
 import mekanism.api.SideData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -87,7 +88,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		
 		if(inventory[3] != null)
 		{
-			if(inventory[3].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && speedMultiplier < 8)
+			if(inventory[3].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
 			{
 				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 				{

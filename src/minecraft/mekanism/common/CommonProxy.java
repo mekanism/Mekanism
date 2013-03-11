@@ -63,7 +63,7 @@ public class CommonProxy
 		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", 3002).getInt();
 	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", 3003).getInt();
 	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
-	  	Mekanism.nullRenderID = Mekanism.configuration.getBlock("NullRender", 3005).getInt();
+	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", 3005).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
 	  	Mekanism.pressurizedTubeID = Mekanism.configuration.getBlock("PressurizedTube", 3007).getInt();
 	  	Mekanism.extrasEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ExtrasEnabled", true).getBoolean(true);

@@ -1,7 +1,7 @@
 package mekanism.client;
 
+import mekanism.api.EnumColor;
 import mekanism.api.IAccessibleGui;
-import mekanism.common.EnumColor;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityControlPanel;
 import net.minecraft.client.gui.GuiButton;

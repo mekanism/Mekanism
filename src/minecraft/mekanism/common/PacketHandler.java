@@ -53,6 +53,7 @@ public class PacketHandler implements IPacketHandler
 			    	System.out.println("[Mekanism] Received weather update packet from " + entityplayer.username + ".");
 			    	entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
 			    	int weatherType = dataStream.readInt();
+			    	
 			    	if(weatherType == EnumWeatherType.CLEAR.id)
 			    	{
 			    		entityplayer.worldObj.getWorldInfo().setRaining(false);
@@ -447,7 +448,7 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToAllAround(x, y, z, 40, id, packet);
-        System.out.println("[Mekanism] Sent portal FX packet to server.");
+        System.out.println("[Mekanism] Sent portal FX packet to clients.");
 	}
 	
 	/**

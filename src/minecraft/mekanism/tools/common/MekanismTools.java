@@ -26,7 +26,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.4.0", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.4.1", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismTools 
 {
@@ -619,7 +619,7 @@ public class MekanismTools
 		int chance = random.nextInt(100);
 		int secondChance = random.nextInt(3);
 		
-		if(chance < 4)
+		if(chance < 3)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
 			{

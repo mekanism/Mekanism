@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +44,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	else {
     		hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 4);
     	}
+    	
         return false;
     }
     
@@ -54,7 +56,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     @Override
     public boolean onBlockDestroyed(ItemStack itemstack, World world, int id, int x, int y, int z, EntityLiving entityliving)
     {
-        if ((double)Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
+        if(Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
         {
             onUse(getEfficiency(itemstack), itemstack);
         }
@@ -93,10 +95,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     {
 		if(itemStack.stackTagCompound == null)
 		{
-			return 5;
+			return 2;
 		}
 		
-		int efficiency = 5;
+		int efficiency = 2;
 		
 		if(itemStack.stackTagCompound.getTag("efficiency") != null)
 		{
@@ -119,26 +121,31 @@ public class ItemAtomicDisassembler extends ItemEnergized
     
     public int getIncremented(int previous)
     {
-    	if(previous == 5)
+    	if(previous == 0)
     	{
-    		return 10;
+    		return 2;
     	}
-    	else if(previous == 10)
+    	else if(previous == 2)
     	{
-    		return 25;
+    		return 8;
     	}
-    	else if(previous == 25)
+    	else if(previous == 8)
     	{
-    		return 50;
+    		return 24;
     	}
-    	else if(previous == 50)
+    	else if(previous == 24)
+    	{
+    		return 64;
+    	}
+    	else if(previous == 64)
     	{
     		return 100;
     	}
     	else if(previous == 100)
     	{
-    		return 5;
+    		return 0;
     	}
+    	
     	return 0;
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 
 public class ItemConfigurator extends ItemEnergized

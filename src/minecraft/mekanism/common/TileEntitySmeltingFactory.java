@@ -7,6 +7,7 @@ import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
+import mekanism.api.EnumColor;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
@@ -201,7 +202,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		
 		if(inventory[0] != null)
 		{
-			if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && speedMultiplier < 8)
+			if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
 			{
 				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 				{

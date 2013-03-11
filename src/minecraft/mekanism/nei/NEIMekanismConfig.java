@@ -22,7 +22,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new PurificationChamberRecipeHandler());
 		API.registerUsageHandler(new PurificationChamberRecipeHandler());
 		
-		API.hideItem(Mekanism.nullRenderID);
+		API.hideItem(Mekanism.boundingBlockID);
 	}
 
 	@Override

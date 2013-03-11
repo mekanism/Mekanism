@@ -2,10 +2,6 @@ package mekanism.api;
 
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-
 import com.google.common.io.ByteArrayDataInput;
 
 /**

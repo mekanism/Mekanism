@@ -16,13 +16,15 @@ import net.minecraft.client.Minecraft;
  */
 public class ThreadClientUpdate extends Thread
 {
+	private int downloadType;
 	private int bytesDownloaded;
 	private int lastBytesDownloaded;
 	private byte[] buffer = new byte[10240];
 	private URL url;
 	
-	public ThreadClientUpdate(String location)
+	public ThreadClientUpdate(String location, int type)
 	{
+		downloadType = type;
 		try {
 			url = new URL(location);
 			setDaemon(true);
@@ -35,7 +37,8 @@ public class ThreadClientUpdate extends Thread
 	@Override
 	public void run()
 	{
-		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods/Mekanism.jar").toString());
+		String downloadName = downloadType == 0 ? "" : (downloadType == 1 ? "Generators" : "Tools");
+		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods/Mekanism" + downloadName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
 		try {
 			prepareForDownload();
 			download.createNewFile();
@@ -51,10 +54,14 @@ public class ThreadClientUpdate extends Thread
 			
 			outputStream.close();
 			stream.close();
-			GuiCredits.onFinishedDownloading();
-			System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
-			finalize();
 			
+			if(downloadType == 2)
+			{
+				GuiCredits.onFinishedDownloading();
+				System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
+			}
+			
+			finalize();
 		} catch(Throwable e)
 		{
 			GuiCredits.onErrorDownloading();
@@ -72,17 +79,16 @@ public class ThreadClientUpdate extends Thread
 	 */
 	public void prepareForDownload()
 	{
-		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods/Mekanism.jar").toString());
-		File config = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/config/Mekanism.cfg").toString());
+		File[] modsList = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods").toString()).listFiles();
 		
-		if(download.exists())
+		for(File file : modsList)
 		{
-			download.delete();
+			if(file.getName().startsWith("Mekanism") && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
+			{
+				file.delete();
+			}
 		}
-		if(config.exists())
-		{
-			config.delete();
-		}
+		
 		System.out.println("[Mekanism] Preparing to update...");
 	}
 }

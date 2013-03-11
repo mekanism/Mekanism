@@ -8,29 +8,31 @@ public class EntityObsidianTNT extends Entity
 {
     /** How long the fuse is */
     public int fuse;
+    
+    /** Whether or not the TNT has exploded */
     private boolean hasExploded = false;
 
-    public EntityObsidianTNT(World par1World)
+    public EntityObsidianTNT(World world)
     {
-        super(par1World);
+        super(world);
         fuse = 0;
         preventEntitySpawning = true;
         setSize(0.98F, 0.98F);
         yOffset = height / 2.0F;
     }
 
-    public EntityObsidianTNT(World par1World, double par2, double par4, double par6)
+    public EntityObsidianTNT(World world, double x, double y, double z)
     {
-        this(par1World);
-        setPosition(par2, par4, par6);
-        float var8 = (float)(Math.random() * Math.PI * 2);
-        motionX = (double)(-((float)Math.sin((double)var8)) * 0.02F);
+        this(world);
+        setPosition(x, y, z);
+        float randPi = (float)(Math.random()*Math.PI*2);
+        motionX = -(Math.sin(randPi))*0.02F;
         motionY = 0.2;
-        motionZ = (double)(-((float)Math.cos((double)var8)) * 0.02F);
+        motionZ = -(Math.cos(randPi))*0.02F;
         fuse = Mekanism.ObsidianTNTDelay;
-        prevPosX = par2;
-        prevPosY = par4;
-        prevPosZ = par6;
+        prevPosX = x;
+        prevPosY = y;
+        prevPosZ = z;
     }
 
     @Override
@@ -60,22 +62,21 @@ public class EntityObsidianTNT extends Entity
         motionY *= 0.98;
         motionZ *= 0.98;
 
-        if (onGround)
+        if(onGround)
         {
             motionX *= 0.7;
             motionZ *= 0.7;
             motionY *= -0.5;
         }
 
-        if (fuse-- <= 0)
+        if(fuse-- <= 0)
         {
-            if (!worldObj.isRemote)
+            if(!worldObj.isRemote)
             {
                 setDead();
                 explode();
             }
-            else
-            {
+            else {
             	if(hasExploded)
             	{
             		setDead();
@@ -85,8 +86,7 @@ public class EntityObsidianTNT extends Entity
             	}
             }
         }
-        else
-        {
+        else {
         	worldObj.spawnParticle("lava", posX, posY + 0.5D, posZ, 0.0D, 0.0D, 0.0D);
         }
     }

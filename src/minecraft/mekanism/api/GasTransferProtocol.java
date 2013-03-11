@@ -1,11 +1,9 @@
-package mekanism.common;
+package mekanism.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import mekanism.api.EnumGas;
-import mekanism.api.IGasAcceptor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -45,7 +43,7 @@ public class GasTransferProtocol
 	 */
 	public void loopThrough(TileEntity tile)
 	{
-		IGasAcceptor[] acceptors = MekanismUtils.getConnectedAcceptors(tile);
+		IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors(tile);
 		
 		for(IGasAcceptor acceptor : acceptors)
 		{
@@ -60,7 +58,7 @@ public class GasTransferProtocol
 		
 		iteratedTubes.add(tile);
 		
-		TileEntity[] tubes = MekanismUtils.getConnectedTubes(tile);
+		TileEntity[] tubes = GasTransmission.getConnectedTubes(tile);
 		
 		for(TileEntity tube : tubes)
 		{
@@ -84,7 +82,6 @@ public class GasTransferProtocol
 		
 		if(!availableAcceptors.isEmpty())
 		{
-			boolean sentRemaining = false;
 			int divider = availableAcceptors.size();
 			int remaining = gasToSend % divider;
 			int sending = (gasToSend-remaining)/divider;

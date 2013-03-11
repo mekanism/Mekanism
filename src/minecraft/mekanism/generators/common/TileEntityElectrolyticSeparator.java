@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.EnumGas;
+import mekanism.api.GasTransmission;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
@@ -72,7 +73,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("Electrolytic Seperator", 9600);
+		super("Electrolytic Separator", 9600);
 		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[4];
 		outputType = EnumGas.HYDROGEN;
@@ -88,16 +89,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			int received = (int)(powerProvider.useEnergy(0, (float)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			setJoules(electricityStored + received);
-		}
-		
-		if(hydrogenStored > MAX_GAS)
-		{
-			hydrogenStored = MAX_GAS;
-		}
-		
-		if(oxygenStored > MAX_GAS)
-		{
-			oxygenStored = MAX_GAS;
 		}
 		
 		if(!worldObj.isRemote)
@@ -246,7 +237,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		if(outputType != EnumGas.NONE && getGas(outputType) > 0 && !worldObj.isRemote)
 		{
-			setGas(outputType, getGas(outputType) - (Math.min(getGas(outputType), output) - MekanismUtils.emitGasToNetwork(outputType, Math.min(getGas(outputType), output), this, ForgeDirection.getOrientation(facing))));
+			setGas(outputType, getGas(outputType) - (Math.min(getGas(outputType), output) - GasTransmission.emitGasToNetwork(outputType, Math.min(getGas(outputType), output), this, ForgeDirection.getOrientation(facing))));
 			
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			

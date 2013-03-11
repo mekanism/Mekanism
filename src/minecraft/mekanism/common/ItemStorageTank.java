@@ -54,10 +54,8 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
     public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
     {
     	ItemStorageTank item = ((ItemStorageTank)itemstack.getItem());
-    	item.setGas(itemstack, item.getGasType(itemstack), item.getGas(itemstack));
-    	item.setGasType(itemstack, item.getGasType(itemstack));
     	
-    	if(item.getGas(itemstack) == 0)
+    	if(item.getGas(itemstack) == 0 && item.getGasType(itemstack) != EnumGas.NONE)
     	{
     		item.setGasType(itemstack, EnumGas.NONE);
     	}

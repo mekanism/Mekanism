@@ -73,14 +73,14 @@ public class SoundHandler
 		}
 	}
 	
-	/** Create and return an instance of a Sound.
-	 * 
+	/**
+	 * Create and return an instance of a Sound.
 	 * @param name - unique identifier for this sound
 	 * @param path - bundled path to the sound effect
 	 * @param world - world to play sound in
-	 * @param x - x coord
-	 * @param y - y coord
-	 * @param z - z coord
+	 * @param x - x coordinate
+	 * @param y - y coordinate
+	 * @param z - z coordinate
 	 * @return Sound instance
 	 */
 	public Sound getSound(String path, World world, int x, int y, int z)

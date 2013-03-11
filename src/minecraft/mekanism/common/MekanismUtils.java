@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.prefab.multiblock.TileEntityMulti;
 
+import mekanism.api.EnumColor;
 import mekanism.api.EnumGas;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
@@ -49,7 +51,7 @@ public final class MekanismUtils
 	{
 		if(Mekanism.updateNotifications)
 		{
-			if(!Mekanism.latestVersionNumber.equals("Error retrieving data."))
+			if(!Mekanism.latestVersionNumber.equals("null"))
 			{
 				if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
 				{
@@ -79,8 +81,8 @@ public final class MekanismUtils
 	public static String getLatestVersion()
 	{
 		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt").split(":");
-		if(!text[0].contains("UTF-8") && !text[0].contains("HTML")) return text[0];
-		return "Error retrieving data.";
+		if(!text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("http")) return text[0];
+		return "null";
 	}
 	
 	/**
@@ -90,8 +92,8 @@ public final class MekanismUtils
 	public static String getRecentNews()
 	{
 		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt").split(":");
-		if(text.length > 1 && !text[1].contains("UTF-8") && !text[1].contains("HTML")) return text[1];
-		return "There is no news to show.";
+		if(text.length > 1 && !text[1].contains("UTF-8") && !text[1].contains("HTML") && !text[1].contains("http")) return text[1];
+		return "null";
 	}
 	
 	/**
@@ -119,7 +121,7 @@ public final class MekanismUtils
 			}
 			rd.close();
 		} catch (Exception e) {
-			result = "Error retrieving data.";
+			result = "null";
 			System.err.println("[Mekanism] An error occured while connecting to URL '" + urlToRead + ".'");
 		}
 		return result;
@@ -140,6 +142,10 @@ public final class MekanismUtils
 		}
 	}
 	
+	/**
+	 * Sends the defined message to all players.
+	 * @param msg - message to send
+	 */
 	public static void sendChatMessageToAllPlayers(String msg)
 	{
 		PacketDispatcher.sendPacketToAllPlayers(new Packet3Chat(msg));
@@ -149,9 +155,9 @@ public final class MekanismUtils
 	 * Checks if the mod is running on the latest version.
 	 * @return if mod is latest version
 	 */
-	public static boolean isLatestVersion()
+	public static boolean isNotOutdated()
 	{
-		return Mekanism.versionNumber.toString().equals(Mekanism.latestVersionNumber);
+		return Mekanism.latestVersionNumber.contains("null") || Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) != -1;
 	}
 	
 	/**
@@ -412,98 +418,15 @@ public final class MekanismUtils
     }
     
     /**
-     * Gets all the tubes around a tile entity.
-     * @param tileEntity - center tile entity
-     * @return array of TileEntities
+     * Places a fake bounding block at the defined location.
+     * @param world - world to place block in
+     * @param x - x coordinate
+     * @param y - y coordinate
+     * @param z - z coordinate
      */
-    public static TileEntity[] getConnectedTubes(TileEntity tileEntity)
+    public static void makeBoundingBlock(World world, int x, int y, int z, int origX, int origY, int origZ)
     {
-    	TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
-    	
-    	for(ForgeDirection orientation : ForgeDirection.values())
-    	{
-    		if(orientation != ForgeDirection.UNKNOWN)
-    		{
-    			TileEntity tube = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
-    			
-    			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
-    			{
-    				tubes[orientation.ordinal()] = tube;
-    			}
-    		}
-    	}
-    	
-    	return tubes;
-    }
-    
-    /**
-     * Gets all the acceptors around a tile entity.
-     * @param tileEntity - center tile entity
-     * @return array of IGasAcceptors
-     */
-    public static IGasAcceptor[] getConnectedAcceptors(TileEntity tileEntity)
-    {
-    	IGasAcceptor[] acceptors = new IGasAcceptor[] {null, null, null, null, null, null};
-    	
-    	for(ForgeDirection orientation : ForgeDirection.values())
-    	{
-    		if(orientation != ForgeDirection.UNKNOWN)
-    		{
-    			TileEntity acceptor = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
-    			
-    			if(acceptor instanceof IGasAcceptor)
-    			{
-    				acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
-    			}
-    		}
-    	}
-    	
-    	return acceptors;
-    }
-    
-    /**
-     * Gets all the tube connections around a tile entity.
-     * @param tileEntity - center tile entity
-     * @return array of ITubeConnections
-     */
-    public static ITubeConnection[] getConnections(TileEntity tileEntity)
-    {
-    	ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
-    	
-    	for(ForgeDirection orientation : ForgeDirection.values())
-    	{
-    		if(orientation != ForgeDirection.UNKNOWN)
-    		{
-    			TileEntity connection = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
-    			
-    			if(connection instanceof ITubeConnection)
-    			{
-    				connections[orientation.ordinal()] = (ITubeConnection)connection;
-    			}
-    		}
-    	}
-    	
-    	return connections;
-    }
-    
-    /**
-     * Emits a defined gas to the network.
-     * @param type - gas type to send
-     * @param amount - amount of gas to send
-     * @param sender - the sender of the gas
-     * @param facing - side the sender is outputting from
-     * @return rejected gas
-     */
-    public static int emitGasToNetwork(EnumGas type, int amount, TileEntity sender, ForgeDirection facing)
-    {
-    	TileEntity pointer = Vector3.getTileEntityFromSide(sender.worldObj, new Vector3(sender.xCoord, sender.yCoord, sender.zCoord), facing);
-    	
-    	if(pointer != null)
-    	{
-	    	GasTransferProtocol calculation = new GasTransferProtocol(pointer, type, amount);
-	    	return calculation.calculate();
-    	}
-    	
-    	return amount;
+		world.setBlockWithNotify(x, y, z, Mekanism.BoundingBlock.blockID);
+		((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(origX, origY, origZ);
     }
 }

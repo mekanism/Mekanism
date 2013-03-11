@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraftforge.common.ForgeDirection;
 
+import mekanism.api.GasTransmission;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.ITubeConnection;
 import mekanism.common.MekanismUtils;
@@ -29,11 +30,11 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 		
-		ITubeConnection[] connections = MekanismUtils.getConnections(tileEntity);
+		ITubeConnection[] connections = GasTransmission.getConnections(tileEntity);
 		
 		for(ITubeConnection connection : connections)
 		{
-			if(connection !=  null)
+			if(connection != null)
 			{
 				int side = Arrays.asList(connections).indexOf(connection);
 				

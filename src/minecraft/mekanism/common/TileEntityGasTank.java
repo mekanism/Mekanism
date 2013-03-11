@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 
 import mekanism.api.EnumGas;
+import mekanism.api.GasTransmission;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
@@ -110,7 +111,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		
 		if(gasStored > 0 && !worldObj.isRemote)
 		{
-			setGas(gasType, gasStored - (Math.min(gasStored, output) - MekanismUtils.emitGasToNetwork(gasType, Math.min(gasStored, output), this, ForgeDirection.getOrientation(facing))));
+			setGas(gasType, gasStored - (Math.min(gasStored, output) - GasTransmission.emitGasToNetwork(gasType, Math.min(gasStored, output), this, ForgeDirection.getOrientation(facing))));
 			
 			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			

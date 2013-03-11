@@ -11,6 +11,7 @@ import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
+import mekanism.api.RecipeHelper;
 import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.client.SoundHandler;
 import net.minecraft.block.Block;
@@ -23,8 +24,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.prefab.multiblock.BlockMulti;
-import universalelectricity.prefab.multiblock.TileEntityMulti;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -52,7 +51,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.4.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.4.1")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -74,7 +73,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 4, 0);
+	public static Version versionNumber = new Version(5, 4, 1);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -110,7 +109,7 @@ public class Mekanism
     public static int oreBlockID = 3002;
 	public static int obsidianTNTID = 3003;
 	public static int energyCubeID = 3004;
-	public static int nullRenderID = 3005;
+	public static int boundingBlockID = 3005;
 	public static int gasTankID = 3006;
 	public static int pressurizedTubeID = 3007;
 	
@@ -132,17 +131,17 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	
-	//Extra Blocks
+	//Blocks
 	public static Block BasicBlock;
 	public static Block MachineBlock;
 	public static Block OreBlock;
 	public static Block ObsidianTNT;
 	public static Block EnergyCube;
-	public static BlockMulti NullRender;
+	public static Block BoundingBlock;
 	public static Block GasTank;
 	public static Block PressurizedTube;
 	
-	//MultiID Items
+	//Multi-ID Items
 	public static Item Dust;
 	public static Item Ingot;
 	public static Item Clump;
@@ -399,7 +398,7 @@ public class Mekanism
 		LanguageRegistry.addName(AtomicCore, "Atomic Core");
 		LanguageRegistry.addName(ElectricBow, "Electric Bow");
 		LanguageRegistry.addName(StorageTank, "Hydrogen Tank");
-		LanguageRegistry.addName(NullRender, "Null Render");
+		LanguageRegistry.addName(BoundingBlock, "Bounding Block");
 		LanguageRegistry.addName(GasTank, "Gas Tank");
 		LanguageRegistry.addName(StorageTank, "Storage Tank");
 		LanguageRegistry.addName(ControlCircuit, "Control Circuit");
@@ -552,13 +551,13 @@ public class Mekanism
 		OreBlock = new BlockOre(oreBlockID).setBlockName("OreBlock");
 		EnergyCube = new BlockEnergyCube(energyCubeID).setBlockName("EnergyCube");
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setBlockName("ObsidianTNT").setCreativeTab(tabMekanism);
-		NullRender = (BlockMulti) new BlockMulti(nullRenderID).setBlockName("NullRender");
+		BoundingBlock = (BlockBounding) new BlockBounding(boundingBlockID).setBlockName("BoundingBlock");
 		GasTank = new BlockGasTank(gasTankID).setBlockName("GasTank");
 		PressurizedTube = new BlockPressurizedTube(pressurizedTubeID).setBlockName("PressurizedTube");
 		
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
-		GameRegistry.registerBlock(NullRender, "NullRender");
+		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
 		GameRegistry.registerBlock(GasTank, "GasTank");
 		GameRegistry.registerBlock(PressurizedTube, "PressurizedTube");
 		
@@ -879,7 +878,7 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner");
 		GameRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
-		GameRegistry.registerTileEntity(TileEntityMulti.class, "MekanismMulti");
+		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityControlPanel.class, "ControlPanel");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntitySmeltingFactory.class, "SmeltingFactory");

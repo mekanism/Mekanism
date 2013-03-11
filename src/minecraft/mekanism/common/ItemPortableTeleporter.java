@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.EnumColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

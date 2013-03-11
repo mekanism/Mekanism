@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import mekanism.common.EnumColor;
 
 public class SideData 
 {

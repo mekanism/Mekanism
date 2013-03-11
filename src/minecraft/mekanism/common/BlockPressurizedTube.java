@@ -6,6 +6,7 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import mekanism.api.GasTransmission;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.ITubeConnection;
 import mekanism.client.ClientProxy;
@@ -46,7 +47,7 @@ public class BlockPressurizedTube extends Block
 		if(tileEntity != null)
 		{
 			boolean[] connectable = new boolean[] {false, false, false, false, false, false};
-			ITubeConnection[] connections = MekanismUtils.getConnections(tileEntity);
+			ITubeConnection[] connections = GasTransmission.getConnections(tileEntity);
 			
 			for(ITubeConnection connection : connections)
 			{

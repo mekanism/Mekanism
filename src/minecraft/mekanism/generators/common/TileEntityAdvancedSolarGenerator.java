@@ -1,12 +1,12 @@
 package mekanism.generators.common;
 
+import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.prefab.multiblock.IMultiBlock;
 
-public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IMultiBlock
+public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
@@ -14,21 +14,21 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 
 	@Override
-	public void onCreate(Vector3 position) 
+	public void onPlace() 
 	{
-		Mekanism.NullRender.makeFakeBlock(worldObj, new Vector3(xCoord, yCoord+1, zCoord), new Vector3(xCoord, yCoord, zCoord));
+		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, xCoord, yCoord, zCoord);
 		
 		for(int x=-1;x<=1;x++)
 		{
 			for(int z=-1;z<=1;z++)
 			{
-				Mekanism.NullRender.makeFakeBlock(worldObj, new Vector3(xCoord+x, yCoord+2, zCoord+z), position);
+				MekanismUtils.makeBoundingBlock(worldObj, xCoord+x, yCoord+2, zCoord+z, xCoord, yCoord, zCoord);
 			}
 		}
 	}
 
 	@Override
-	public void onDestroy(TileEntity tileEntity) 
+	public void onBreak() 
 	{
 		worldObj.setBlock(xCoord, yCoord+1, zCoord, 0);
 		
@@ -41,17 +41,5 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 		}
 		
 		worldObj.setBlock(xCoord, yCoord, zCoord, 0);
-		invalidate();
-	}
-
-	@Override
-	public boolean onActivated(EntityPlayer entityplayer) 
-	{
-    	if(!entityplayer.isSneaking())
-    	{
-    		entityplayer.openGui(MekanismGenerators.instance, 1, worldObj, xCoord, yCoord, zCoord);
-    		return true;
-    	}
-        return false;
 	}
 }

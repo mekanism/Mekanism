@@ -75,6 +75,11 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         }
         
         tileEntity.setFacing((short)change);
+        
+        if(tileEntity instanceof IBoundingBlock)
+        {
+        	((IBoundingBlock)tileEntity).onPlace();
+        }
     }
 	
 	@Override

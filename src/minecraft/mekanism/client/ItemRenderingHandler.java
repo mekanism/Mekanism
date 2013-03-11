@@ -40,7 +40,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	        	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	        }
 	        
-	        renderItem((RenderBlocks)data[0], tier == EnergyCubeTier.BASIC ? 0 : (tier == EnergyCubeTier.ADVANCED ? 1 : (tier == EnergyCubeTier.ELITE ? 2 : 0)));
+	        renderItem((RenderBlocks)data[0], tier == EnergyCubeTier.BASIC ? 0 : (tier == EnergyCubeTier.ADVANCED ? 1 : (tier == EnergyCubeTier.ELITE ? 2 : 3)));
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		renderer.setRenderBoundsFromBlock(block);
 		block.setBlockBoundsForItemRender();
 
-        if (renderer.useInventoryTint)
+        if(renderer.useInventoryTint)
         {
             int renderColor = block.getRenderColor(metadata);
             float red = (float)(renderColor >> 16 & 255) / 255.0F;

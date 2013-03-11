@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.api;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.

@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -54,6 +55,10 @@ public final class ItemRetriever
 			if(ret instanceof Item)
 			{
 				return new ItemStack((Item)ret, 1);
+			}
+			else if(ret instanceof Block)
+			{
+				return new ItemStack((Block)ret, 1);
 			}
 			else {
 				return null;

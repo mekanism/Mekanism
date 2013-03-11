@@ -8,6 +8,7 @@ import buildcraft.api.tools.IToolWrench;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IEnergyCube;
+import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
@@ -30,9 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.implement.IToolConfigurator;
-import universalelectricity.prefab.multiblock.IMultiBlock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -97,7 +96,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         int height = Math.round(entityliving.rotationPitch);
         int change = 3;
         
-        if(!GeneratorType.getFromMetadata(world.getBlockMetadata(x, y, z)).hasModel && world.getBlockMetadata(x, y, z) != 1)
+        if(!GeneratorType.getFromMetadata(world.getBlockMetadata(x, y, z)).hasModel && tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
         {
 	        if(height >= 65)
 	        {
@@ -120,9 +119,9 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         
         tileEntity.setFacing((short)change);
         
-        if(tileEntity instanceof IMultiBlock)
+        if(tileEntity instanceof IBoundingBlock)
         {
-        	((IMultiBlock)tileEntity).onCreate(new Vector3(x, y, z));
+        	((IBoundingBlock)tileEntity).onPlace();
         }
     }
 	
@@ -429,24 +428,9 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
                 }
         	}
             
-            if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+            if(tileEntity instanceof IBoundingBlock)
             {
-            	float motion = 0.7F;
-                double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                
-                EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(MekanismGenerators.Generator, 1, 5));
-                
-    	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
-    	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
-    	        
-	            world.spawnEntityInWorld(entityItem);
-            }
-            
-            if(tileEntity instanceof IMultiBlock)
-            {
-            	((IMultiBlock)tileEntity).onDestroy(tileEntity);
+            	((IBoundingBlock)tileEntity).onBreak();
             }
         }
 	        
@@ -612,7 +596,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
     @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
     {
-    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)) && world.getBlockMetadata(x, y, z) != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
     	{
 	    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
 	    	
