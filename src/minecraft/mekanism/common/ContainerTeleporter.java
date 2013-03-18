@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -8,7 +9,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.implement.IItemElectric;
 
 public class ContainerTeleporter extends Container
 {

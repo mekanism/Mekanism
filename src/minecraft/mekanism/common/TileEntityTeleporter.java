@@ -10,11 +10,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import universalelectricity.core.electricity.ElectricityConnections;
-import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.core.implement.IJouleStorage;
-import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -40,7 +36,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IPeripheral
 {
 	/** This teleporter's frequency. */
 	public Teleporter.Code code;
@@ -53,8 +49,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		super("Teleporter", 10000000);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
-		
-		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 	}
 	
 	@Override
@@ -111,46 +105,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			setJoules(electricityStored + received);
 		}
 		
-		if(!worldObj.isRemote)
-		{
-			for(ForgeDirection direction : ForgeDirection.values())
-			{
-				TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
-				if(tileEntity != null)
-				{
-					if(tileEntity instanceof IConductor)
-					{
-						if(electricityStored < MAX_ELECTRICITY)
-						{
-							double electricityNeeded = MAX_ELECTRICITY - electricityStored;
-							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
-						}
-						else if(electricityStored >= MAX_ELECTRICITY)
-						{
-							((IConductor)tileEntity).getNetwork().stopRequesting(this);
-						}
-					}
-				}
-			}
-		}
-		
 		if(inventory[0] != null)
 		{
 			if(electricityStored < MAX_ELECTRICITY)
 			{
-				if(inventory[0].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-
-					if (electricItem.canProduceElectricity())
-					{
-						double joulesNeeded = MAX_ELECTRICITY-electricityStored;
-						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, joulesNeeded), inventory[0]);
-						setJoules(electricityStored + joulesReceived);
-					}
-				}
-				else if(inventory[0].getItem() instanceof IElectricItem)
+				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[0], getMaxJoules() - getJoules(), getVoltage()));
+				
+				if(Mekanism.hooks.IC2Loaded && inventory[0].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[0].getItem();
 					if(item.canProvideEnergy())
@@ -489,30 +450,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-
-	@Override
-	public double getVoltage(Object... data)
-	{
-		return 120;
-	}
-
-	@Override
-	public double getJoules(Object... data)
-	{
-		return electricityStored;
-	}
-
-	@Override
-	public void setJoules(double joules, Object... data)
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
-	}
-
-	@Override
-	public double getMaxJoules(Object... data)
-	{
-		return MAX_ELECTRICITY;
-	}
 
 	@Override
 	public int demandsEnergy()

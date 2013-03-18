@@ -57,7 +57,7 @@ public class Sound
 			yCoord = y;
 			zCoord = z;
 			
-			URL url = getClass().getClassLoader().getResource("resources/mekanism/sound/" + sound);
+			URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + sound);
 			if(url == null)
 			{
 				System.out.println("[Mekanism] Invalid sound file: " + sound);

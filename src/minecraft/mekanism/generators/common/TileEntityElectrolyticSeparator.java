@@ -36,19 +36,16 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
-import universalelectricity.core.electricity.ElectricityConnections;
-import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.core.implement.IJouleStorage;
-import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IJouleStorage, IVoltage, ITankContainer, IPeripheral, ITubeConnection
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection
 {
 	/** This separator's water slot. */
 	public LiquidSlot waterSlot = new LiquidSlot(24000, 9);
@@ -74,7 +71,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public TileEntityElectrolyticSeparator()
 	{
 		super("Electrolytic Separator", 9600);
-		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[4];
 		outputType = EnumGas.HYDROGEN;
 		dumpType = EnumGas.NONE;
@@ -91,47 +87,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			setJoules(electricityStored + received);
 		}
 		
-		if(!worldObj.isRemote)
-		{
-			for(ForgeDirection direction : ForgeDirection.values())
-			{
-				if(direction != ForgeDirection.getOrientation(facing))
-				{
-					TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
-					if(tileEntity != null)
-					{
-						if(tileEntity instanceof IConductor)
-						{
-							if(electricityStored < MAX_ELECTRICITY)
-							{
-								double electricityNeeded = MAX_ELECTRICITY - electricityStored;
-								((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-								setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
-							}
-							else if(electricityStored >= MAX_ELECTRICITY)
-							{
-								((IConductor)tileEntity).getNetwork().stopRequesting(this);
-							}
-						}
-					}
-				}
-			}
-		}
-		
 		if(inventory[3] != null && electricityStored < MAX_ELECTRICITY)
 		{
-			if(inventory[3].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
-
-				if (electricItem.canProduceElectricity())
-				{
-					double joulesNeeded = MAX_ELECTRICITY-electricityStored;
-					double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[3])*0.005, joulesNeeded), inventory[3]);
-					setJoules(electricityStored + joulesReceived);
-				}
-			}
-			else if(inventory[3].getItem() instanceof IElectricItem)
+			setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[3], getMaxJoules() - getJoules(), getVoltage()));
+			
+			if(Mekanism.hooks.IC2Loaded && inventory[3].getItem() instanceof IElectricItem)
 			{
 				IElectricItem item = (IElectricItem)inventory[3].getItem();
 				if(item.canProvideEnergy())
@@ -239,7 +199,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			setGas(outputType, getGas(outputType) - (Math.min(getGas(outputType), output) - GasTransmission.emitGasToNetwork(outputType, Math.min(getGas(outputType), output), this, ForgeDirection.getOrientation(facing))));
 			
-			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
 			if(tileEntity instanceof IGasAcceptor)
 			{
@@ -421,24 +381,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public double getMaxJoules(Object... data) 
-	{
-		return MAX_ELECTRICITY;
-	}
-	
-	@Override
-	public double getJoules(Object... data) 
-	{
-		return electricityStored;
-	}
-
-	@Override
-	public void setJoules(double joules, Object... data) 
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
-	}
-	
-	@Override
 	public int demandsEnergy() 
 	{
 		return (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
@@ -613,12 +555,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-
-	@Override
-	public double getVoltage(Object... data) 
-	{
-		return 120;
-	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)

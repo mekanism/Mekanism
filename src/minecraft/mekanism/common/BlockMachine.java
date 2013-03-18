@@ -6,7 +6,7 @@ import java.util.Random;
 import buildcraft.api.tools.IToolWrench;
 
 import thermalexpansion.api.core.IDismantleable;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IActiveState;
@@ -15,6 +15,7 @@ import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -23,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -48,6 +50,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockMachine extends BlockContainer implements IDismantleable
 {
+	public Icon[][] icons = new Icon[256][256];
 	public Random machineRand = new Random();
 	
 	public BlockMachine(int id)
@@ -56,11 +59,47 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
-		setRequiresSelfNotify();
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
+	public void func_94332_a(IconRegister register)
+	{
+		icons[0][0] = register.func_94245_a("mekanism:EnrichmentChamberFrontOff");
+		icons[0][1] = register.func_94245_a("mekanism:EnrichmentChamberFrontOn");
+		icons[0][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[1][0] = register.func_94245_a("mekanism:OsmiumCompressorFrontOff");
+		icons[1][1] = register.func_94245_a("mekanism:OsmiumCompressorFrontOn");
+		icons[1][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[2][0] = register.func_94245_a("mekanism:CombinerFrontOff");
+		icons[2][1] = register.func_94245_a("mekanism:CombinerFrontOn");
+		icons[2][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[3][0] = register.func_94245_a("mekanism:CrusherFrontOff");
+		icons[3][1] = register.func_94245_a("mekanism:CrusherFrontOn");
+		icons[3][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[5][0] = register.func_94245_a("mekanism:BasicSmeltingFactoryFront");
+		icons[5][1] = register.func_94245_a("mekanism:BasicSmeltingFactorySide");
+		icons[5][2] = register.func_94245_a("mekanism:BasicSmeltingFactoryTop");
+		icons[6][0] = register.func_94245_a("mekanism:AdvancedSmeltingFactoryFront");
+		icons[6][1] = register.func_94245_a("mekanism:AdvancedSmeltingFactorySide");
+		icons[6][2] = register.func_94245_a("mekanism:AdvancedSmeltingFactoryTop");
+		icons[7][0] = register.func_94245_a("mekanism:EliteSmeltingFactoryFront");
+		icons[7][1] = register.func_94245_a("mekanism:EliteSmeltingFactorySide");
+		icons[7][2] = register.func_94245_a("mekanism:EliteSmeltingFactoryTop");
+		icons[8][0] = register.func_94245_a("mekanism:MetallurgicInfuserFrontOff");
+		icons[8][1] = register.func_94245_a("mekanism:MetallurgicInfuserFrontOn");
+		icons[8][2] = register.func_94245_a("mekanism:MetallurgicInfuserSideOff");
+		icons[8][3] = register.func_94245_a("mekanism:MetallurgicInfuserSideOn");
+		icons[8][4] = register.func_94245_a("mekanism:MetallurgicInfuserTopOff");
+		icons[8][5] = register.func_94245_a("mekanism:MetallurgicInfuserTopOn");
+		icons[8][6] = register.func_94245_a("mekanism:MetallurgicInfuserBackOff");
+		icons[8][7] = register.func_94245_a("mekanism:MetallurgicInfuserBackOn");
+		icons[9][0] = register.func_94245_a("mekanism:PurificationChamberFrontOff");
+		icons[9][1] = register.func_94245_a("mekanism:PurificationChamberFrontOn");
+		icons[9][2] = register.func_94245_a("mekanism:OsmiumBlock");
+	}
+	
+	@Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
     {
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -135,136 +174,125 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	}
     
 	@Override
-    public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
     {
     	if(meta == 0)
     	{
         	if(side == 3)
         	{
-        		return 9;
+        		return icons[0][0];
         	}
         	else {
-        		return 2;
+        		return icons[0][2];
         	}
     	}
     	else if(meta == 1)
     	{
         	if(side == 3)
         	{
-        		return 14;
+        		return icons[1][0];
         	}
         	else {
-        		return 2;
+        		return icons[1][2];
         	}
     	}
     	else if(meta == 2)
     	{
         	if(side == 3)
         	{
-        		return 15;
+        		return icons[2][0];
         	}
         	else {
-        		return 2;
+        		return icons[2][2];
         	}
     	}
     	else if(meta == 3)
     	{
         	if(side == 3)
         	{
-        		return 13;
+        		return icons[3][0];
         	}
         	else {
-        		return 2;
-        	}
-    	}
-    	else if(meta == 4)
-    	{
-        	if(side == 0 || side == 1)
-        	{
-        		return 18;
-        	}
-        	else if(side == 3)
-        	{
-        		return 16;
-        	}
-        	else {
-        		return 19;
+        		return icons[3][2];
         	}
     	}
     	else if(meta == 5)
     	{
     		if(side == 3)
     		{
-    			return 41;
+    			return icons[5][0];
     		}
      		else if(side == 0 || side == 1)
     		{
-    			return 47;
+    			return icons[5][2];
     		}
     		else {
-    			return 44;
+    			return icons[5][1];
     		}
     	}
     	else if(meta == 6)
     	{
     		if(side == 3)
     		{
-    			return 42;
+    			return icons[6][0];
     		}
      		else if(side == 0 || side == 1)
     		{
-    			return 48;
+    			return icons[6][2];
     		}
     		else {
-    			return 45;
+    			return icons[6][1];
     		}
     	}
     	else if(meta == 7)
     	{
     		if(side == 3)
     		{
-    			return 43;
+    			return icons[7][0];
     		}
      		else if(side == 0 || side == 1)
     		{
-    			return 49;
+    			return icons[7][2];
     		}
     		else {
-    			return 46;
+    			return icons[7][1];
     		}
     	}
     	else if(meta == 8)
     	{
         	if(side == 0 || side == 1)
         	{
-        		return 18;
+        		return icons[8][4];
         	}
         	else if(side == 3)
         	{
-        		return 16;
+        		return icons[8][0];
+        	}
+        	else if(side == 2)
+        	{
+        		return icons[8][6];
         	}
         	else {
-        		return 19;
+        		return icons[8][2];
         	}
     	}
     	else if(meta == 9)
     	{
     		if(side == 3)
     		{
-    			return 12;
+    			return icons[9][0];
     		}
     		else {
-    			return 2;
+    			return icons[9][2];
     		}
     	}
-    	else {
-    		return 0;
-    	}
+    	
+    	return null;
     }
     
 	@Override
     @SideOnly(Side.CLIENT)
-    public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
@@ -273,121 +301,101 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	{
 	        if(side == tileEntity.facing)
 	        {
-	        	return MekanismUtils.isActive(world, x, y, z) ? 8 : 9;
+	        	return MekanismUtils.isActive(world, x, y, z) ? icons[0][1] : icons[0][0];
 	        }
 	        else {
-	        	return 2;
+	        	return icons[0][2];
 	        }
     	}
     	else if(metadata == 1)
     	{
             if(side == tileEntity.facing)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+2 : 14;
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[1][1] : icons[1][0];
             }
             else {
-            	return 2;
+            	return icons[1][2];
             }
     	}
     	else if(metadata == 2)
     	{
             if(side == tileEntity.facing)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+3 : 15;
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[2][1] : icons[2][0];
             }
             else {
-            	return 2;
+            	return icons[2][2];
             }
     	}
     	else if(metadata == 3)
     	{
             if(side == tileEntity.facing)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+1 : 13;
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[3][1] : icons[3][0];
             }
             else {
-            	return 2;
-            }
-    	}
-    	else if(metadata == 4)
-    	{
-            if(side == 0 || side == 1)
-            {
-            	return MekanismUtils.isActive(world, x, y, z) ? 20 : 18;
-            }
-            else {
-            	if(side == tileEntity.facing)
-            	{
-            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+4 : 16;
-            	}
-            	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
-            	{
-            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+5 : 17;
-            	}
-            	else {
-            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+6 : 19;
-            	}
+            	return icons[3][2];
             }
     	}
     	else if(metadata == 5)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 41;
+    			return icons[5][0];
     		}
     		else if(side == 0 || side == 1)
     		{
-    			return 47;
+    			return icons[5][2];
     		}
     		else {
-    			return 44;
+    			return icons[5][1];
     		}
     	}
     	else if(metadata == 6)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 42;
+    			return icons[6][0];
     		}
        		else if(side == 0 || side == 1)
     		{
-    			return 48;
+    			return icons[6][2];
     		}
     		else {
-    			return 45;
+    			return icons[6][1];
     		}
     	}
     	else if(metadata == 7)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 43;
+    			return icons[7][0];
     		}
        		else if(side == 0 || side == 1)
     		{
-    			return 49;
+    			return icons[7][2];
     		}
     		else {
-    			return 46;
+    			return icons[7][1];
     		}
     	}
     	else if(metadata == 8)
     	{
             if(side == 0 || side == 1)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? 20 : 18;
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[8][5] : icons[8][4];
             }
             else {
             	if(side == tileEntity.facing)
             	{
-            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+4 : 16;
+            		return MekanismUtils.isActive(world, x, y, z) ? icons[8][1] : icons[8][0];
             	}
             	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
             	{
-            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+5 : 17;
+            		return MekanismUtils.isActive(world, x, y, z) ? icons[8][7] : icons[8][6];
             	}
             	else {
-            		return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+6 : 19;
+            		return MekanismUtils.isActive(world, x, y, z) ? icons[8][3] : icons[8][2];
             	}
             }
     	}
@@ -395,15 +403,14 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	{
     		if(side == tileEntity.facing)
     		{
-    			return MekanismUtils.isActive(world, x, y, z) ? Mekanism.ANIMATED_TEXTURE_INDEX+9 : 12;
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[9][1] : icons[9][0];
     		}
     		else {
-    			return 2;
+    			return icons[9][2];
     		}
     	}
-    	else {
-    		return 0;
-    	}
+    	
+    	return null;
     }
     
 	@Override
@@ -565,13 +572,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     }
     
     @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/terrain.png";
-    }
-    
-    @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
+    public TileEntity createTileEntity(World world, int metadata)
     {
     	return MachineType.getFromMetadata(metadata).create();
     }
@@ -625,7 +626,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
-        return world.setBlockWithNotify(x, y, z, 0);
+        return world.func_94571_i(x, y, z);
     }
     
     @Override
@@ -663,7 +664,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
-        world.setBlockWithNotify(x, y, z, 0);
+        world.func_94571_i(x, y, z);
         
         if(!returnBlock)
         {

@@ -29,7 +29,6 @@ public class BlockPressurizedTube extends Block
 		setResistance(5.0F);
 		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
 		setCreativeTab(Mekanism.tabMekanism);
-		blockIndexInTexture = 204;
 	}
 	
 	@Override
@@ -120,11 +119,5 @@ public class BlockPressurizedTube extends Block
 	public TileEntity createTileEntity(World world, int metadata)
 	{
 		return new TileEntityPressurizedTube();
-	}
-	
-	@Override
-	public String getTextureFile()
-	{
-		return "/resources/mekanism/textures/items.png";
 	}
 }

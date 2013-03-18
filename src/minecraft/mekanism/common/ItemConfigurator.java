@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.electricity.ElectricityPack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,7 +34,7 @@ public class ItemConfigurator extends ItemEnergized
     			else {
     				if(getJoules(stack) >= ENERGY_PER_USE)
     				{
-    					onUse(ENERGY_PER_USE, stack);
+    					onProvide(new ElectricityPack(ENERGY_PER_USE/120, 120), stack);
 	    				MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
 	    				player.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName());
 	    				return true;
@@ -45,9 +45,9 @@ public class ItemConfigurator extends ItemEnergized
         return false;
     }
     
-    @Override
-    public boolean canProduceElectricity()
-    {
-    	return false;
-    }
+	@Override
+	public ElectricityPack getProvideRequest(ItemStack itemStack)
+	{
+		return new ElectricityPack();
+	}
 }

@@ -3,6 +3,7 @@ package mekanism.api;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 
 public class GasTransmission 
 {
@@ -19,7 +20,7 @@ public class GasTransmission
     	{
     		if(orientation != ForgeDirection.UNKNOWN)
     		{
-    			TileEntity tube = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+    			TileEntity tube = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
     			
     			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
     			{
@@ -44,7 +45,7 @@ public class GasTransmission
     	{
     		if(orientation != ForgeDirection.UNKNOWN)
     		{
-    			TileEntity acceptor = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+    			TileEntity acceptor = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
     			
     			if(acceptor instanceof IGasAcceptor)
     			{
@@ -69,7 +70,7 @@ public class GasTransmission
     	{
     		if(orientation != ForgeDirection.UNKNOWN)
     		{
-    			TileEntity connection = Vector3.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+    			TileEntity connection = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
     			
     			if(connection instanceof ITubeConnection)
     			{
@@ -91,7 +92,7 @@ public class GasTransmission
      */
     public static int emitGasToNetwork(EnumGas type, int amount, TileEntity sender, ForgeDirection facing)
     {
-    	TileEntity pointer = Vector3.getTileEntityFromSide(sender.worldObj, new Vector3(sender.xCoord, sender.yCoord, sender.zCoord), facing);
+    	TileEntity pointer = VectorHelper.getTileEntityFromSide(sender.worldObj, new Vector3(sender.xCoord, sender.yCoord, sender.zCoord), facing);
     	
     	if(pointer != null)
     	{

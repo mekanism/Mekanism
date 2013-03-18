@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.client.GuiControlPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.src.*;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -38,40 +40,33 @@ import net.minecraftforge.common.ForgeChunkManager;
  */
 public class BlockBasic extends Block
 {
+	public Icon[] icons = new Icon[256];
 	public BlockBasic(int id)
 	{
 		super(id, Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		setRequiresSelfNotify();
 	}
 	
 	@Override
-	public int getBlockTextureFromSideAndMetadata(int side, int meta)
+	public void func_94332_a(IconRegister register)
 	{
-		switch(meta)
-		{
-			case 0:
-				return 2;
-			case 1:
-				return 1;
-			case 2:
-				return 0;
-			case 3:
-				return 10;
-			case 4:
-				return 11;
-			case 5:
-				return 29;
-			case 6:
-				return 0;
-			case 7:
-				return 25;
-			case 8:
-				return 27;
-		}
-		return 0;
+		icons[0] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[1] = register.func_94245_a("mekanism:BronzeBlock");
+		icons[2] = register.func_94245_a("mekanism:RefinedObsidian");
+		icons[3] = register.func_94245_a("mekanism:CoalBlock");
+		icons[4] = register.func_94245_a("mekanism:RefinedGlowstone");
+		icons[5] = register.func_94245_a("mekanism:SteelBlock");
+		icons[6] = register.func_94245_a("mekanism:ControlPanel");
+		icons[7] = register.func_94245_a("mekanism:Teleporter");
+		icons[8] = register.func_94245_a("mekanism:TeleporterFrame");
+	}
+	
+	@Override
+	public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+	{
+		return icons[meta];
 	}
 	
 	@Override
@@ -172,7 +167,7 @@ public class BlockBasic extends Block
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
 	{
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
@@ -227,10 +222,4 @@ public class BlockBasic extends Block
 	        
     	super.breakBlock(world, x, y, z, i1, i2);
     }
-	
-	@Override
-	public String getTextureFile()
-	{
-		return "/resources/mekanism/textures/terrain.png";
-	}
 }

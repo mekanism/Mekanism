@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import universalelectricity.core.electricity.ElectricityPack;
 import mekanism.api.EnumColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -106,8 +107,8 @@ public class ItemPortableTeleporter extends ItemEnergized
 	}
 	
 	@Override
-	public boolean canProduceElectricity()
+	public ElectricityPack getProvideRequest(ItemStack itemStack)
 	{
-		return false;
+		return new ElectricityPack();
 	}
 }

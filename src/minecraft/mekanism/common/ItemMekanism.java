@@ -1,6 +1,8 @@
 package mekanism.common;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
+import net.minecraft.util.Icon;
 
 public class ItemMekanism extends Item 
 {
@@ -9,10 +11,10 @@ public class ItemMekanism extends Item
 		super(i);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
+	
 	@Override
-	public String getTextureFile() 
+	public void func_94581_a(IconRegister register)
 	{
-		return "/resources/mekanism/textures/items.png";
+		iconIndex = register.func_94245_a("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
 }

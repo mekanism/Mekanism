@@ -25,13 +25,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricityConnections;
-import universalelectricity.core.electricity.ElectricityNetwork;
-import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IJouleStorage;
-import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.electricity.IElectricityNetwork;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -39,7 +36,7 @@ import buildcraft.api.power.PowerProvider;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral, IActiveState
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState
 {
 	/** The Sound instance for this generator. */
 	@SideOnly(Side.CLIENT)
@@ -91,20 +88,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			} catch(NoSuchMethodError e) {}
 		}
 		
-		if(packetTick == 20)
-		{
-			if(ElectricityConnections.isConnector(this))
-			{
-				ElectricityConnections.unregisterConnector(this);
-			}
-			
-			ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(facing)));
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
-		}
-		
 		if(electricityStored > 0)
 		{
-			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
 			if(Mekanism.hooks.IC2Loaded)
 			{
@@ -132,9 +118,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		if(!worldObj.isRemote)
 		{
 			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-			TileEntity outputTile = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
+			TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 
-			ElectricityNetwork outputNetwork = ElectricityNetwork.getNetworkFromTileEntity(outputTile, outputDirection);
+			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
 
 			if(outputNetwork != null)
 			{
@@ -180,6 +166,18 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				}
 			}
 		}
+	}
+	
+	@Override
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.noneOf(ForgeDirection.class);
+	}
+	
+	@Override
+	public boolean canConnect(ForgeDirection direction)
+	{
+		return direction == ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override
@@ -251,18 +249,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     }
 	
 	@Override
-	public double getVoltage(Object... data)
-	{
-		return 120;
-	}
-	
-	@Override
-	public void setJoules(double joules, Object... data)
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
-	}
-	
-	@Override
 	public String getType() 
 	{
 		return getInvName();
@@ -281,18 +267,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
-	public double getMaxJoules(Object... data) 
-	{
-		return MAX_ELECTRICITY;
-	}
-	
-	@Override
-	public double getJoules(Object... data) 
-	{
-		return electricityStored;
-	}
-	
-	@Override
 	public int getMaxEnergyOutput()
 	{
 		return output;
@@ -303,12 +277,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super.setFacing(orientation);
 		
-		if(ElectricityConnections.isConnector(this))
-		{
-			ElectricityConnections.unregisterConnector(this);
-		}
-		
-		ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(orientation)));
 		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 	}
 	

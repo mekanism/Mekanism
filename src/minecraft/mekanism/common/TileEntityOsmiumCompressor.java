@@ -11,7 +11,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 {
 	public TileEntityOsmiumCompressor()
 	{
-		super("Compressor.ogg", "Osmium Compressor", "/resources/mekanism/gui/GuiCompressor.png", 10, 1, 200, 2000, 200);
+		super("Compressor.ogg", "Osmium Compressor", "/mods/mekanism/gui/GuiCompressor.png", 10, 1, 200, 2000, 200);
 	}
 	
 	@Override

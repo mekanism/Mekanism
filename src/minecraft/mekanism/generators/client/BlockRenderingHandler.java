@@ -34,7 +34,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/BioGenerator.png"));
+    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/BioGenerator.png"));
     	    	bioGenerator.render(0.0625F, 0.0F);
     		}
     		else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
@@ -42,7 +42,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
-    	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/AdvancedSolarGenerator.png"));
+    	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/AdvancedSolarGenerator.png"));
     	        advancedSolarGenerator.render(0.0F, 0.022F);
     		}
     		else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
@@ -50,7 +50,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/HeatGenerator.png"));
+    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/HeatGenerator.png"));
     	    	heatGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
@@ -58,18 +58,17 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
     			GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/HydrogenGenerator.png"));
+    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/HydrogenGenerator.png"));
     	    	hydrogenGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.ELECTROLYTIC_SEPARATOR.meta)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/resources/mekanism/render/ElectrolyticSeparatorHydrogen.png"));
+    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectrolyticSeparatorHydrogen.png"));
     	    	electrolyticSeparator.render(0.0625F);
     		}
     		else {
-    	        ForgeHooksClient.bindTexture(block.getTextureFile(), 0);
     	        renderItem(renderer, metadata, block);
     		}
 	    }

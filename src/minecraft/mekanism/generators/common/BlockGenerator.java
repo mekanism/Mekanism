@@ -17,6 +17,7 @@ import mekanism.common.TileEntityEnergyCube;
 import mekanism.generators.client.GeneratorsClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -24,13 +25,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import thermalexpansion.api.core.IDismantleable;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -48,6 +50,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockGenerator extends BlockContainer implements IDismantleable
 {
+	public Icon[] solarSprites = new Icon[256];
 	public Random machineRand = new Random();
 	
 	public BlockGenerator(int id)
@@ -56,11 +59,19 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
-		setRequiresSelfNotify();
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
+	public void func_94332_a(IconRegister register)
+	{
+		solarSprites[0] = register.func_94245_a("mekanism:SteelBlock");
+		solarSprites[1] = register.func_94245_a("mekanism:SolarGeneratorTop");
+		solarSprites[2] = register.func_94245_a("mekanism:SolarGeneratorSide");
+		solarSprites[3] = register.func_94245_a("mekanism:SolarGeneratorFront");
+	}
+	
+	@Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	
@@ -142,127 +153,57 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 	}
     
 	@Override
-    public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
     {
-    	if(meta == 0)
+    	if(meta == 1)
     	{
     		if(side == 3)
     		{
-    			return 27;
-    		}
-    		else if(side != 0 && side != 1)
-        	{
-        		return 25;
-        	}
-        	else {
-        		return 26;
-        	}
-    	}
-    	else if(meta == 1)
-    	{
-    		if(side == 3)
-    		{
-    			return 39;
+    			return solarSprites[3];
     		}
     		else if(side == 1)
     		{
-    			return 28;
+    			return solarSprites[1];
     		}
     		else if(side == 0)
     		{
-    			return 29;
+    			return solarSprites[0];
     		}
     		else {
-    			return 40;
+    			return solarSprites[2];
     		}
     	}
-    	else if(meta == 2)
-    	{
-    		if(side == 3)
-    		{
-    			return 34;
-    		}
-    		else {
-    			return 35;
-    		}
-    	}
-    	else if(meta == 3)
-    	{
-    		if(side == 3)
-    		{
-    			return 33;
-    		}
-    		else {
-    			return 32;
-    		}
-    	}
-    	else {
-    		return 0;
-    	}
+    	
+    	return null;
     }
     
 	@Override
     @SideOnly(Side.CLIENT)
-    public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         
-    	if(metadata == 0)
-    	{
-	        if(side == tileEntity.facing)
-	        {
-	        	return 27;
-	        }
-	        else if(side != 0 && side != 1)
-	        {
-	        	return 25;
-	        }
-	        else {
-	        	return 26;
-	        }
-    	}
-    	else if(metadata == 1)
+    	if(metadata == 1)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return 39;
+    			return solarSprites[3];
     		}
     		else if(side == 1)
     		{
-    			return 28;
+    			return solarSprites[1];
     		}
     		else if(side == 0)
     		{
-    			return 29;
+    			return solarSprites[0];
     		}
     		else {
-    			return 40;
+    			return solarSprites[2];
     		}
     	}
-    	else if(metadata == 2)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return 34;
-    		}
-    		else {
-    			return 35;
-    		}
-    	}
-    	else if(metadata == 3)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return 33;
-    		}
-    		else {
-    			return 32;
-    		}
-    	}
-    	else {
-    		return 0;
-    	}
+    	
+    	return null;
     }
     
 	@Override
@@ -530,19 +471,13 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
     }
     
     @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/terrain.png";
-    }
-    
-    @Override
     public int quantityDropped(Random random)
     {
     	return 0;
     }
     
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
+    public TileEntity createTileEntity(World world, int metadata)
     {
     	return GeneratorType.getFromMetadata(metadata).create();
     }
@@ -613,7 +548,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
-        return world.setBlockWithNotify(x, y, z, 0);
+        return world.func_94571_i(x, y, z);
     }
     
 	@Override
@@ -637,7 +572,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
-        world.setBlockWithNotify(x, y, z, 0);
+        world.func_94571_i(x, y, z);
         
         if(!returnBlock)
         {

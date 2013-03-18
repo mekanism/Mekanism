@@ -3,6 +3,7 @@ package mekanism.common;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 /**
  * Item class for handling multiple ore block IDs.
@@ -28,13 +29,13 @@ public class ItemBlockOre extends ItemBlock
 	}
 	
 	@Override
-	public int getIconFromDamage(int i)
+	public Icon getIconFromDamage(int i)
 	{
 		return metaBlock.getBlockTextureFromSideAndMetadata(2, i);
 	}
 	
 	@Override
-	public String getItemNameIS(ItemStack itemstack)
+	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
 		switch(itemstack.getItemDamage())
@@ -46,6 +47,6 @@ public class ItemBlockOre extends ItemBlock
 				name = "Unknown";
 				break;
 		}
-		return getItemName() + "." + name;
+		return getUnlocalizedName() + "." + name;
 	}
 }

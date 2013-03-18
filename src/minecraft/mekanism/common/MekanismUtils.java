@@ -426,7 +426,7 @@ public final class MekanismUtils
      */
     public static void makeBoundingBlock(World world, int x, int y, int z, int origX, int origY, int origZ)
     {
-		world.setBlockWithNotify(x, y, z, Mekanism.BoundingBlock.blockID);
+		world.setBlockAndMetadataWithNotify(x, y, z, Mekanism.BoundingBlock.blockID, 0, 2);
 		((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(origX, origY, origZ);
     }
 }

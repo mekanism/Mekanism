@@ -13,7 +13,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public boolean canTransferGas()
 	{
-		return !worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord);
+		return worldObj.func_94577_B(xCoord, yCoord, zCoord) == 0;
 	}
 	
 	@Override

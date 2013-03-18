@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.List;
 
+import universalelectricity.core.electricity.ElectricityPack;
+
 import mekanism.api.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
@@ -39,7 +41,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	if(getJoules(itemstack) > 0)
     	{
 			hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 20);
-			onUse(2000, itemstack);
+			onProvide(new ElectricityPack(2000/120, 120), itemstack);
     	}
     	else {
     		hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 4);
@@ -58,10 +60,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     {
         if(Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
         {
-            onUse(getEfficiency(itemstack), itemstack);
+            onProvide(new ElectricityPack(getEfficiency(itemstack), 120), itemstack);
         }
         else {
-        	onUse(getEfficiency(itemstack)/2, itemstack);
+        	onProvide(new ElectricityPack((getEfficiency(itemstack)/2)/120, 120), itemstack);
         }
 
         return true;
@@ -73,11 +75,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
         return true;
     }
     
-    @Override
-    public boolean canProduceElectricity()
-    {
-    	return false;
-    }
+	@Override
+	public ElectricityPack getProvideRequest(ItemStack itemStack)
+	{
+		return new ElectricityPack();
+	}
     
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)

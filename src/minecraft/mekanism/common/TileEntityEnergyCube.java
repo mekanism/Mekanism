@@ -11,6 +11,7 @@ import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 
 import mekanism.api.IEnergyCube;
 import mekanism.api.Tier.EnergyCubeTier;
@@ -23,14 +24,14 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricityConnections;
-import universalelectricity.core.electricity.ElectricityNetwork;
-import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.core.implement.IJouleStorage;
-import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.block.IElectricityStorage;
+import universalelectricity.core.block.IVoltage;
+import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.electricity.IElectricityNetwork;
+import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -41,7 +42,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IJouleStorage, IVoltage, IPeripheral
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IVoltage, IPeripheral
 {
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
 	
@@ -57,7 +58,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		super("Energy Cube", 0);
 		
-		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 		inventory = new ItemStack[2];
 	}
 	
@@ -72,47 +72,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			setJoules(electricityStored + received);
 		}
 		
-		if(!worldObj.isRemote)
-		{
-			for(ForgeDirection direction : ForgeDirection.values())
-			{
-				if(direction != ForgeDirection.getOrientation(facing))
-				{
-					TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
-					if(tileEntity != null)
-					{
-						if(tileEntity instanceof IConductor)
-						{
-							if(electricityStored < tier.MAX_ELECTRICITY)
-							{
-								double electricityNeeded = tier.MAX_ELECTRICITY - electricityStored;
-								((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-								setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
-							}
-							else if(electricityStored >= tier.MAX_ELECTRICITY)
-							{
-								((IConductor)tileEntity).getNetwork().stopRequesting(this);
-							}
-						}
-					}
-				}
-			}
-		}
-		
 		if(inventory[0] != null && electricityStored > 0)
 		{
-			if(inventory[0].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				
-				if(electricItem.canReceiveElectricity())
-				{
-					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
-					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
-				}
-			}
-			else if(inventory[0].getItem() instanceof IElectricItem)
+			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[0], getJoules(), getVoltage()));
+			
+			if(Mekanism.hooks.IC2Loaded && inventory[0].getItem() instanceof IElectricItem)
 			{
 				double sent = ElectricItem.charge(inventory[0], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setJoules(electricityStored - sent);
@@ -121,18 +85,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		
 		if(inventory[1] != null && electricityStored < tier.MAX_ELECTRICITY)
 		{
-			if(inventory[1].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-
-				if (electricItem.canProduceElectricity())
-				{
-					double joulesNeeded = tier.MAX_ELECTRICITY-electricityStored;
-					double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, joulesNeeded), inventory[1]);
-					setJoules(electricityStored + joulesReceived);
-				}
-			}
-			else if(inventory[1].getItem() instanceof IElectricItem)
+			setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[1], getMaxJoules() - getJoules(), getVoltage()));
+			
+			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
 			{
 				IElectricItem item = (IElectricItem)inventory[1].getItem();
 				if(item.canProvideEnergy())
@@ -155,7 +110,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		
 		if(electricityStored > 0)
 		{
-			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
 			if(Mekanism.hooks.IC2Loaded)
 			{
@@ -183,13 +138,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		if(!worldObj.isRemote)
 		{
 			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-			ArrayList<ElectricityNetwork> inputNetworks = new ArrayList<ElectricityNetwork>();
+			ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
 			
-			for(ForgeDirection direction : ForgeDirection.values())
+			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 			{
-				if(direction != outputDirection && direction != ForgeDirection.UNKNOWN)
+				if(direction != outputDirection)
 				{
-					ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
+					IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
 					if(network != null)
 					{
 						inputNetworks.add(network);
@@ -197,9 +152,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				}
 			}
 			
-			TileEntity outputTile = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
+			TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 
-			ElectricityNetwork outputNetwork = ElectricityNetwork.getNetworkFromTileEntity(outputTile, outputDirection);
+			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
 
 			if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
 			{
@@ -215,6 +170,22 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				}
 			}
 		}
+	}
+	
+	@Override
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		HashSet<ForgeDirection> set = new HashSet<ForgeDirection>();
+		
+		for(ForgeDirection dir : ForgeDirection.values())
+		{
+			if(dir != ForgeDirection.getOrientation(facing))
+			{
+				set.add(dir);
+			}
+		}
+		
+		return EnumSet.copyOf(set);
 	}
 
 	@Override
@@ -280,19 +251,19 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public double getJoules(Object... data) 
+	public double getJoules() 
 	{
 		return electricityStored;
 	}
 
 	@Override
-	public void setJoules(double joules, Object... data)
+	public void setJoules(double joules)
 	{
 		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
 	}
 
 	@Override
-	public double getMaxJoules(Object... data) 
+	public double getMaxJoules() 
 	{
 		return tier.MAX_ELECTRICITY;
 	}
@@ -315,7 +286,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public double getVoltage(Object... data) 
+	public double getVoltage() 
 	{
 		return tier.VOLTAGE;
 	}

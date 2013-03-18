@@ -130,7 +130,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	public void drawBackground(GuiContainerManager guimanager, int i)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		guimanager.bindTextureByName(getGuiTexture());
+		guimanager.bindTexture(getGuiTexture());
 		guimanager.drawTexturedModalRect(0, 0, 5, 15, 166, 56);
 	}
 

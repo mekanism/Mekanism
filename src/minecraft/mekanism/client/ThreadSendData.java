@@ -33,6 +33,7 @@ public class ThreadSendData extends Thread
 			writer.println("USER:" + FMLClientHandler.instance().getClient().session.username);
 			writer.println("VERSION:" + Mekanism.versionNumber);
 			writer.println("OS:" + System.getProperty("os.name") + "-" + System.getProperty("os.version"));
+			writer.println("PACK:" + Mekanism.modPack);
 			writer.println("DONE");
 			writer.close();
 			socket.close();

@@ -2,6 +2,8 @@ package mekanism.generators.common;
 
 import java.util.ArrayList;
 
+import universalelectricity.core.item.ElectricItemHelper;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.common.Mekanism;
@@ -12,8 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -63,18 +63,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		
 		if(inventory[0] != null && electricityStored > 0)
 		{
-			if(inventory[0].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric)inventory[0].getItem();
-				
-				if(electricItem.canReceiveElectricity())
-				{
-					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[0])*0.005, electricityStored), getVoltage()), electricityStored);
-					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[0]);
-					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
-				}
-			}
-			else if(inventory[0].getItem() instanceof IElectricItem)
+			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[0], getJoules(), getVoltage()));
+			
+			if(Mekanism.hooks.IC2Loaded && inventory[0].getItem() instanceof IElectricItem)
 			{
 				double sent = ElectricItem.charge(inventory[0], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setJoules(electricityStored - sent);

@@ -16,6 +16,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -113,7 +114,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		{
 			setGas(gasType, gasStored - (Math.min(gasStored, output) - GasTransmission.emitGasToNetwork(gasType, Math.min(gasStored, output), this, ForgeDirection.getOrientation(facing))));
 			
-			TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
 			if(tileEntity instanceof IGasAcceptor)
 			{

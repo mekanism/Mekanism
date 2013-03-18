@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
 import mekanism.api.Tier;
 import mekanism.api.Tier.SmeltingFactoryTier;
@@ -11,7 +12,6 @@ import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import universalelectricity.core.implement.IItemElectric;
 
 public class ContainerSmeltingFactory extends Container
 {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import universalelectricity.core.item.ElectricItemHelper;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.client.Sound;
@@ -23,8 +25,6 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -93,18 +93,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 		
 		if(inventory[1] != null && electricityStored > 0)
 		{
-			if(inventory[1].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				
-				if(electricItem.canReceiveElectricity())
-				{
-					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
-					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
-				}
-			}
-			else if(inventory[1].getItem() instanceof IElectricItem)
+			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[1], getJoules(), getVoltage()));
+			
+			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
 			{
 				double sent = ElectricItem.charge(inventory[1], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setJoules(electricityStored - sent);

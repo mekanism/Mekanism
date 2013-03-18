@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.List;
 
+import universalelectricity.core.electricity.ElectricityPack;
+
 import mekanism.api.EnumColor;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -59,7 +61,7 @@ public class ItemElectricBow extends ItemEnergized
 	            
 	            if(!player.capabilities.isCreativeMode)
 	            {
-	            	onUse((getFireState(itemstack) ? 1200 : 120), itemstack);
+	            	onProvide(new ElectricityPack((getFireState(itemstack) ? 1200 : 120)/120, 120), itemstack);
 	            }
 	            
 	            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
@@ -83,7 +85,7 @@ public class ItemElectricBow extends ItemEnergized
     }
 
     @Override
-    public ItemStack onFoodEaten(ItemStack itemstack, World world, EntityPlayer entityplayer)
+    public ItemStack onEaten(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {
         return itemstack;
     }
@@ -157,9 +159,9 @@ public class ItemElectricBow extends ItemEnergized
 		return state;
     }
     
-    @Override
-    public boolean canProduceElectricity()
-    {
-    	return false;
-    }
+	@Override
+	public ElectricityPack getProvideRequest(ItemStack itemStack)
+	{
+		return new ElectricityPack();
+	}
 }

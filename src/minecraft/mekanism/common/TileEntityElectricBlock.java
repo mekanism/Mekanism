@@ -1,6 +1,13 @@
 package mekanism.common;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+
+import universalelectricity.core.block.IConnector;
+import universalelectricity.core.block.IElectricityStorage;
+import universalelectricity.core.block.IVoltage;
+import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.electricity.ElectricityPack;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -11,13 +18,14 @@ import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.ITileNetwork;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor, IEnergyTile
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -58,6 +66,52 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			
 			initialized = true;
 		}
+		
+		if(!worldObj.isRemote)
+		{
+			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
+			setJoules(getJoules()+electricityPack.getWatts());
+		}
+	}
+
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.allOf(ForgeDirection.class);
+	}
+	
+	@Override
+	public boolean canConnect(ForgeDirection direction)
+	{
+		return true;
+	}
+	
+	public ElectricityPack getRequest()
+	{
+		return new ElectricityPack((getMaxJoules() - getJoules()) / getVoltage(), getVoltage());
+	}
+	
+	@Override
+	public double getMaxJoules() 
+	{
+		return MAX_ELECTRICITY;
+	}
+	
+	@Override
+	public double getJoules() 
+	{
+		return electricityStored;
+	}
+
+	@Override
+	public void setJoules(double joules)
+	{
+		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
+	}
+	
+	@Override
+	public double getVoltage()
+	{
+		return 120;
 	}
 	
 	@Override
@@ -78,7 +132,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void invalidate()
 	{
-		super.invalidate();
+		ElectricityNetworkHelper.invalidate(this);
 		
 		if(initialized)
 		{
@@ -87,6 +141,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 			}
 		}
+		
+		super.invalidate();
 	}
     
 	@Override

@@ -4,34 +4,48 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 public class BlockObsidianTNT extends Block
 {
+	public Icon[] icons = new Icon[256];
+	
     public BlockObsidianTNT(int id)
     {
         super(id, Material.tnt);
-        setStepSound(Block.soundGrassFootstep);
-        setHardness(0.0F);
-        setResistance(0.0F);
+        setCreativeTab(Mekanism.tabMekanism);
     }
+    
+	@Override
+	public void func_94332_a(IconRegister register)
+	{
+		icons[0] = register.func_94245_a("mekanism:ObsidianTNTBottom");
+		icons[1] = register.func_94245_a("mekanism:ObsidianTNTTop");
+		icons[2] = register.func_94245_a("mekanism:ObsidianTNTSide");
+	}
 
     @Override
-    public int getBlockTextureFromSide(int side)
+    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
     {
         if(side == 1)
         {
-        	return 5;
+        	return icons[1];
         }
         if(side == 0)
         {
-        	return 7;
+        	return icons[0];
         }
         else {
-        	return 6;
+        	return icons[2];
         }
     }
 
@@ -40,33 +54,33 @@ public class BlockObsidianTNT extends Block
     {
         super.onBlockAdded(world, x, y, z);
 
-        if (world.isBlockIndirectlyGettingPowered(x, y, z))
+        if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
-            world.setBlockWithNotify(x, y, z, 0);
+            world.func_94571_i(x, y, z);
         }
     }
 
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
     {
-        if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && world.isBlockIndirectlyGettingPowered(x, y, z))
+        if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
-            world.setBlockWithNotify(x, y, z, 0);
+            world.func_94571_i(x, y, z);
         }
     }
 
     @Override
     public int quantityDropped(Random random)
     {
-        return 0;
+        return 1;
     }
 
     @Override
-    public void onBlockDestroyedByExplosion(World world, int x, int y, int z)
+    public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
     {
-        if (!world.isRemote)
+        if(!world.isRemote)
         {
             EntityObsidianTNT entity = new EntityObsidianTNT(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F));
             entity.fuse = world.rand.nextInt(entity.fuse / 4) + entity.fuse / 8;
@@ -77,14 +91,13 @@ public class BlockObsidianTNT extends Block
     @Override
     public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
     {
-        if (!world.isRemote)
+        if(!world.isRemote)
         {
-            if ((meta & 1) == 0)
+            if((meta & 1) == 0)
             {
                 dropBlockAsItem_do(world, x, y, z, new ItemStack(Mekanism.ObsidianTNT, 1, 0));
             }
-            else
-            {
+            else {
                 EntityObsidianTNT entity = new EntityObsidianTNT(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F));
                 world.spawnEntityInWorld(entity);
                 world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
@@ -101,10 +114,10 @@ public class BlockObsidianTNT extends Block
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-        if (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
+        if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
-            world.setBlockWithNotify(x, y, z, 0);
+            world.func_94571_i(x, y, z);
             return true;
         }
         else
@@ -112,16 +125,31 @@ public class BlockObsidianTNT extends Block
             return super.onBlockActivated(world, x, y, z, entityplayer, i1, f1, f2, f3);
         }
     }
+    
+    @Override
+    public boolean canDropFromExplosion(Explosion explosion)
+    {
+        return false;
+    }
+    
+    @Override
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
+    {
+        if(entity instanceof EntityArrow && !world.isRemote)
+        {
+            EntityArrow entityarrow = (EntityArrow)entity;
+
+            if(entityarrow.isBurning())
+            {
+                onBlockDestroyedByPlayer(world, x, y, z, 1);
+                world.func_94571_i(x, y, z);
+            }
+        }
+    }
 
     @Override
     protected ItemStack createStackedBlock(int i)
     {
         return null;
-    }
-    
-    @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/terrain.png";
     }
 }

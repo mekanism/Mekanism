@@ -29,7 +29,7 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 	public void drawBackground(GuiContainerManager guimanager, int i)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		guimanager.bindTextureByName(getGuiTexture());
+		guimanager.bindTexture(getGuiTexture());
 		guimanager.drawTexturedModalRect(12, 0, 28, 5, 144, 68);
 	}
 

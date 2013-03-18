@@ -8,7 +8,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.implement.IItemElectric;
+
+import universalelectricity.core.item.IItemElectric;
 
 public class ContainerElectricMachine extends Container
 {

@@ -2,11 +2,14 @@ package mekanism.common;
 
 import java.util.List;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 public class ItemDust extends ItemMekanism
 {
+	public Icon[] icons = new Icon[256];
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
 										"Obsidian", "Diamond", "Steel",
 										"Copper", "Tin", "Silver"};
@@ -17,23 +20,20 @@ public class ItemDust extends ItemMekanism
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
+	
+	@Override
+	public void func_94581_a(IconRegister register)
+	{
+		for(int i = 0; i <= 8; i++)
+		{
+			icons[i] = register.func_94245_a("mekanism:" + en_USNames[i] + "Dust");
+		}
+	}
 
 	@Override
-	public int getIconFromDamage(int meta)
+	public Icon getIconFromDamage(int meta)
 	{
-		switch (meta)
-		{
-			case 0: return 248;
-			case 1: return 250;
-			case 2: return 242;
-			case 3: return 241;
-			case 4: return 249;
-			case 5: return 245;
-			case 6: return 243;
-			case 7: return 244;
-			case 8: return 246;
-			default: return 0;
-		}
+		return icons[meta];
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ItemDust extends ItemMekanism
 	}
 
 	@Override
-	public String getItemNameIS(ItemStack item)
+	public String getUnlocalizedName(ItemStack item)
 	{
 		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Dust";
 	}

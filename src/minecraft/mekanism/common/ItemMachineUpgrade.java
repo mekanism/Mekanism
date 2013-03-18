@@ -10,19 +10,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class ItemMachineUpgrade extends Item implements IModifier
+public class ItemMachineUpgrade extends ItemMekanism implements IModifier
 {
 	public ItemMachineUpgrade(int id, int energyBoost, int tickReduction)
 	{
 		super(id);
 		setMaxStackSize(8);
 		setCreativeTab(Mekanism.tabMekanism);
-	}
-	
-	@Override
-	public String getTextureFile()
-	{
-		return "/resources/mekanism/textures/items.png";
 	}
 
 	@Override

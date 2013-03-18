@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.Map;
 
+import universalelectricity.core.item.IItemElectric;
+
 import ic2.api.IElectricItem;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
@@ -12,9 +14,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import universalelectricity.core.implement.IItemElectric;
 
 public class ContainerMetallurgicInfuser extends Container
 {
@@ -86,7 +88,7 @@ public class ContainerMetallurgicInfuser extends Container
             			return null;
             		}
             	}
-            	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
+            	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
             	{
             		if(!mergeItemStack(slotStack, 4, 5, false))
             		{

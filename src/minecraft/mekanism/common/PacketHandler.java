@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import universalelectricity.core.electricity.ElectricityPack;
+
 import mekanism.api.ITileNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -199,7 +201,7 @@ public class PacketHandler implements IPacketHandler
 			    				{
 			    					Teleporter.Coords coords = Mekanism.teleporters.get(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3))).get(0);
 			    					
-			    					item.onUse(item.calculateEnergyCost(entityPlayerMP, coords), itemstack);
+			    					item.onProvide(new ElectricityPack(item.calculateEnergyCost(entityPlayerMP, coords)/120, 120), itemstack);
 			    					
 			    					if(entityPlayerMP.worldObj.provider.dimensionId != coords.dimensionId)
 			    					{

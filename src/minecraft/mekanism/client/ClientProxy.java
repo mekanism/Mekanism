@@ -78,32 +78,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
-		//Preload block/item textures
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/items.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/terrain.png");
-		
-		//Preload animated textures
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/CrusherFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/CompressorFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/CombinerFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/InfuserFront.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/InfuserBack.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/InfuserSide.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/animate/PurificationChamberFront.png");
-		
-		//Register animated TextureFX
-		try {
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CrusherFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+1));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CompressorFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+2));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/CombinerFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+3));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+4));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserBack.png", Mekanism.ANIMATED_TEXTURE_INDEX+5));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/InfuserSide.png", Mekanism.ANIMATED_TEXTURE_INDEX+6));
-			TextureFXManager.instance().addAnimation(new TextureAnimatedFX("/resources/mekanism/animate/PurificationChamberFront.png", Mekanism.ANIMATED_TEXTURE_INDEX+9));
-		} catch (IOException e) {
-			System.err.println("[Mekanism] Error registering animation with FML: " + e.getMessage());
-		}
-		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
 		

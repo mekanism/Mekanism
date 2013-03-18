@@ -33,12 +33,12 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         NBTTagList tagList = nbtTags.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
 
-        for (int slots = 0; slots < tagList.tagCount(); ++slots)
+        for(int slots = 0; slots < tagList.tagCount(); slots++)
         {
             NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(slots);
             byte slotID = tagCompound.getByte("Slot");
 
-            if (slotID >= 0 && slotID < inventory.length)
+            if(slotID >= 0 && slotID < inventory.length)
             {
                 inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
             }
@@ -52,9 +52,9 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         
         NBTTagList tagList = new NBTTagList();
 
-        for (int slots = 0; slots < inventory.length; ++slots)
+        for(int slots = 0; slots < inventory.length; slots++)
         {
-            if (inventory[slots] != null)
+            if(inventory[slots] != null)
             {
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 tagCompound.setByte("Slot", (byte)slots);
@@ -85,49 +85,47 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int par1) 
+	public ItemStack getStackInSlot(int slotID) 
 	{
-		return inventory[par1];
+		return inventory[slotID];
 	}
 
 	@Override
-    public ItemStack decrStackSize(int par1, int par2)
+    public ItemStack decrStackSize(int slotID, int amount)
     {
-        if (inventory[par1] != null)
+        if(inventory[slotID] != null)
         {
-            ItemStack var3;
+            ItemStack tempStack;
 
-            if (inventory[par1].stackSize <= par2)
+            if(inventory[slotID].stackSize <= amount)
             {
-                var3 = inventory[par1];
-                inventory[par1] = null;
-                return var3;
+                tempStack = inventory[slotID];
+                inventory[slotID] = null;
+                return tempStack;
             }
-            else
-            {
-                var3 = inventory[par1].splitStack(par2);
+            else {
+                tempStack = inventory[slotID].splitStack(amount);
 
-                if (inventory[par1].stackSize == 0)
+                if(inventory[slotID].stackSize == 0)
                 {
-                    inventory[par1] = null;
+                    inventory[slotID] = null;
                 }
 
-                return var3;
+                return tempStack;
             }
         }
-        else
-        {
+        else {
             return null;
         }
     }
 
 	@Override
-    public ItemStack getStackInSlotOnClosing(int par1)
+    public ItemStack getStackInSlotOnClosing(int slotID)
     {
-        if (inventory[par1] != null)
+        if (inventory[slotID] != null)
         {
-            ItemStack var2 = inventory[par1];
-            inventory[par1] = null;
+            ItemStack var2 = inventory[slotID];
+            inventory[slotID] = null;
             return var2;
         }
         else
@@ -137,20 +135,20 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     }
 
 	@Override
-    public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
+    public void setInventorySlotContents(int slotID, ItemStack itemstack)
     {
-        inventory[par1] = par2ItemStack;
+        inventory[slotID] = itemstack;
 
-        if (par2ItemStack != null && par2ItemStack.stackSize > getInventoryStackLimit())
+        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
         {
-            par2ItemStack.stackSize = getInventoryStackLimit();
+            itemstack.stackSize = getInventoryStackLimit();
         }
     }
 	
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64.0D;
+		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this ? false : entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64.0D;
 	}
 	
 	@Override
@@ -175,5 +173,17 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	public void closeChest()
 	{
 		playersUsing--;
+	}
+	
+	@Override
+	public boolean func_94042_c()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean func_94041_b(int i, ItemStack itemstack)
+	{
+		return false;
 	}
 }

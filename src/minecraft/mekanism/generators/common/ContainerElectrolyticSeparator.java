@@ -14,7 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.IItemElectric;
 
 public class ContainerElectrolyticSeparator extends Container
 {

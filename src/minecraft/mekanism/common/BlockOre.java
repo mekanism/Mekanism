@@ -4,8 +4,10 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,24 +20,31 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockOre extends Block
 {
+	public Icon[] icons = new Icon[256];
+	
 	public BlockOre(int id)
 	{
 		super(id, Material.rock);
 		setHardness(3F);
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
-		setRequiresSelfNotify();
 	}
 	
 	@Override
-	public int getBlockTextureFromSideAndMetadata(int side, int meta)
+	public void func_94332_a(IconRegister register)
+	{
+		icons[0] = register.func_94245_a("mekanism:OsmiumOre");
+	}
+	
+	@Override
+	public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		switch(meta)
 		{
 			case 0:
-				return 3;
+				return icons[0];
 		}
-		return 0;
+		return null;
 	}
 	
 	@Override
@@ -49,11 +58,5 @@ public class BlockOre extends Block
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
 		list.add(new ItemStack(i, 1, 0));
-	}
-	
-	@Override
-	public String getTextureFile()
-	{
-		return "/resources/mekanism/textures/terrain.png";
 	}
 }

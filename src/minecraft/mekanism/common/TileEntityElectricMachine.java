@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.ElectricItemHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -53,18 +53,9 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
-				if(inventory[1].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-
-					if (electricItem.canProduceElectricity())
-					{
-						double joulesNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
-						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, joulesNeeded), inventory[1]);
-						setJoules(electricityStored + joulesReceived);
-					}
-				}
-				else if(inventory[1].getItem() instanceof IElectricItem)
+				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[1], getMaxJoules() - getJoules(), getVoltage()));
+				
+				if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[1].getItem();
 					if(item.canProvideEnergy())

@@ -10,12 +10,14 @@ import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -24,6 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockGasTank extends BlockContainer implements IDismantleable
 {
+	public Icon[] icons = new Icon[256];
 	public Random machineRand = new Random();
 	
 	public BlockGasTank(int id)
@@ -36,7 +39,15 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
+	public void func_94332_a(IconRegister register)
+	{
+		icons[0] = register.func_94245_a("mekanism:GasTankTop");
+		icons[1] = register.func_94245_a("mekanism:GasTankSide");
+		icons[2] = register.func_94245_a("mekanism:GasTankFront");
+	}
+	
+	@Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	
@@ -55,37 +66,37 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
     }
 	
 	@Override
-    public int getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		if(side == 3)
 		{
-			return 37;
+			return icons[2];
 		}
 		else if(side == 0 || side == 1)
 		{
-			return 31;
+			return icons[0];
 		}
 		else {
-			return 36;
+			return icons[1];
 		}
 	}
 	
 	@Override
     @SideOnly(Side.CLIENT)
-    public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
 		
 		if(side == tileEntity.facing)
 		{
-			return 37;
+			return icons[2];
 		}
 		else if(side == 0 || side == 1)
 		{
-			return 31;
+			return icons[0];
 		}
 		else {
-			return 36;
+			return icons[1];
 		}
 	}
     
@@ -228,7 +239,7 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
         
-        world.setBlockWithNotify(x, y, z, 0);
+        world.func_94571_i(x, y, z);
         
         if(!returnBlock)
         {
@@ -249,12 +260,6 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
 	public boolean canDismantle(World world, int x, int y, int z) 
 	{
 		return true;
-	}
-	
-	@Override
-	public String getTextureFile()
-	{
-		return "/resources/mekanism/textures/terrain.png";
 	}
 	
 	@Override

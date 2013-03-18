@@ -8,8 +8,8 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 
 public class GuiEnergyCube extends GuiContainer
 {
@@ -27,7 +27,7 @@ public class GuiEnergyCube extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String capacityInfo = ElectricInfo.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricInfo.getDisplayShort(tileEntity.tier.MAX_ELECTRICITY, ElectricUnit.JOULES);
+		String capacityInfo = ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort(tileEntity.tier.MAX_ELECTRICITY, ElectricUnit.JOULES);
 		String outputInfo = "Voltage: " + tileEntity.getVoltage() + "v";
 		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
@@ -38,9 +38,8 @@ public class GuiEnergyCube extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        int texture = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiEnergyCube.png");
+		mc.renderEngine.func_98187_b("/mods/mekanism/gui/GuiEnergyCube.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
         
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;

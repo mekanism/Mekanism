@@ -32,15 +32,13 @@ public class ItemRenderingHandler implements IItemRenderer
 		if(item.getItem() instanceof IEnergyCube)
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getTier(item);
-			
-	        ForgeHooksClient.bindTexture(item.getItem().getTextureFile(), 0);
 	        
 	        if(type == ItemRenderType.EQUIPPED)
 	        {
 	        	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	        }
 	        
-	        renderItem((RenderBlocks)data[0], tier == EnergyCubeTier.BASIC ? 0 : (tier == EnergyCubeTier.ADVANCED ? 1 : (tier == EnergyCubeTier.ELITE ? 2 : 3)));
+	        renderItem((RenderBlocks)data[0], tier.ordinal());
 		}
 	}
 	
@@ -70,27 +68,27 @@ public class ItemRenderingHandler implements IItemRenderer
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        renderer.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(0, metadata));
+        renderer.renderBottomFace(block, 0.0D, 0.0D, 0.0D, renderer.func_94165_a(block, 0, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderer.renderTopFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(1, metadata));
+        renderer.renderTopFace(block, 0.0D, 0.0D, 0.0D, renderer.func_94165_a(block, 1, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        renderer.renderEastFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(2, metadata));
+        renderer.renderEastFace(block, 0.0D, 0.0D, 0.0D, renderer.func_94165_a(block, 2, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderer.renderWestFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(3, metadata));
+        renderer.renderWestFace(block, 0.0D, 0.0D, 0.0D, renderer.func_94165_a(block, 5, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        renderer.renderNorthFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(4, metadata));
+        renderer.renderNorthFace(block, 0.0D, 0.0D, 0.0D, renderer.func_94165_a(block, 4, metadata));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderer.renderSouthFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSideAndMetadata(5, metadata));
+        renderer.renderSouthFace(block, 0.0D, 0.0D, 0.0D, renderer.func_94165_a(block, 3, metadata));
         tessellator.draw();
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}

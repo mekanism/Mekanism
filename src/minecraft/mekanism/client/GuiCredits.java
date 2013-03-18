@@ -3,20 +3,21 @@ package mekanism.client;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
-public class GuiCredits extends GuiScreen {
-	
+public class GuiCredits extends GuiScreen 
+{
 	private static String updateProgress = "";
 	
 	@Override
 	public void initGui()
 	{
-		controlList.clear();
-		controlList.add(new GuiButton(0, width / 2 - 100, height / 4 + 72 + 12, "Update"));
-        controlList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
-        ((GuiButton)controlList.get(0)).enabled = !MekanismUtils.isNotOutdated();
+		buttonList.clear();
+		buttonList.add(new GuiButton(0, width / 2 - 100, height / 4 + 72 + 12, "Update"));
+		buttonList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
+        ((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.isNotOutdated();
 	}
 	
 	@Override

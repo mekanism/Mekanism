@@ -48,6 +48,7 @@ public final class MekanismHooks
 	public boolean BasicComponentsLoaded = false;
 	public boolean BuildCraftLoaded = false;
 	public boolean ForestryLoaded = false;
+	public boolean TELoaded = false;
 	
 	public void hook()
 	{
@@ -56,6 +57,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
 		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("Forestry")) ForestryLoaded = true;
+		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		
 		if(IC2Loaded)
 		{
@@ -66,10 +68,18 @@ public final class MekanismHooks
 			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.Dust, 1, 2));
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 0), new ItemStack(Mekanism.Dust, 1, 3));
-			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 2), new ItemStack(Item.redstone));
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 4), new ItemStack(Mekanism.Dust, 1, 5));
-			Ic2Recipes.addMatterAmplifier(Mekanism.EnrichedAlloy, 100000);
+			
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Clump, 1, 0), new ItemStack(Mekanism.DirtyDust, 1, 0));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Clump, 1, 1), new ItemStack(Mekanism.DirtyDust, 1, 1));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Clump, 1, 2), new ItemStack(Mekanism.DirtyDust, 1, 2));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Clump, 1, 3), new ItemStack(Mekanism.DirtyDust, 1, 3));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Clump, 1, 4), new ItemStack(Mekanism.DirtyDust, 1, 4));
+			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Clump, 1, 5), new ItemStack(Mekanism.DirtyDust, 1, 5));
+			
+			Ic2Recipes.addMatterAmplifier(Mekanism.EnrichedAlloy, 50000);
+			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
 		}
 		if(RailcraftLoaded)
@@ -207,10 +217,5 @@ public final class MekanismHooks
 			System.out.println("[Mekanism] Unable to retrieve Basic Components item " + name + ".");
 			return null;
 		}
-	}
-	
-	public LiquidStack getLiquid(String name)
-	{
-		return LiquidDictionary.getLiquid(name, 1);
 	}
 }

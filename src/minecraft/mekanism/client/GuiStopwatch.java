@@ -23,21 +23,20 @@ public class GuiStopwatch extends GuiScreen
 	@Override
 	public void initGui()
 	{
-		controlList.clear();
-        controlList.add(new GuiButton(0, width / 2 - 80, height / 2 - 65, 50, 20, "Sunrise"));
-        controlList.add(new GuiButton(1, width / 2 - 80, height / 2 - 35, 50, 20, "Noon"));
-        controlList.add(new GuiButton(2, width / 2 + 5, height / 2 - 65, 50, 20, "Sunset"));
-        controlList.add(new GuiButton(3, width / 2 + 5, height / 2 - 35, 50, 20, "Midnight"));
-        controlList.add(new GuiButton(4, width / 2 - 94, height / 2 + 30, 80, 20, "Credits"));
-        controlList.add(new GuiButton(5, width / 2 - 10, height / 2 + 30, 80, 20, "Close"));
+		buttonList.clear();
+		buttonList.add(new GuiButton(0, width / 2 - 80, height / 2 - 65, 50, 20, "Sunrise"));
+		buttonList.add(new GuiButton(1, width / 2 - 80, height / 2 - 35, 50, 20, "Noon"));
+		buttonList.add(new GuiButton(2, width / 2 + 5, height / 2 - 65, 50, 20, "Sunset"));
+		buttonList.add(new GuiButton(3, width / 2 + 5, height / 2 - 35, 50, 20, "Midnight"));
+        buttonList.add(new GuiButton(4, width / 2 - 94, height / 2 + 30, 80, 20, "Credits"));
+        buttonList.add(new GuiButton(5, width / 2 - 10, height / 2 + 30, 80, 20, "Close"));
 	}
 	
 	@Override
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int k = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiStopwatch.png");
-        mc.renderEngine.bindTexture(k);
+        mc.renderEngine.func_98187_b("/mods/mekanism/gui/GuiStopwatch.png");
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
         drawString(fontRenderer, "Steve's Stopwatch", width / 2 - 60, height / 2 - 95, 0xffffff);
         super.drawScreen(i, j, f);

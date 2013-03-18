@@ -3,6 +3,7 @@ package mekanism.tools.common;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
@@ -22,9 +23,9 @@ public class ItemMekanismArmor extends ItemArmor
 		list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
     
-    @Override
-	public String getTextureFile() 
+	@Override
+	public void func_94581_a(IconRegister register)
 	{
-		return "/resources/mekanism/textures/items.png";
+		iconIndex = register.func_94245_a("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
 }

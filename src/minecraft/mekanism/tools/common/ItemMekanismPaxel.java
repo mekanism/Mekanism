@@ -7,11 +7,15 @@ import net.minecraft.item.ItemStack;
 
 public class ItemMekanismPaxel extends ItemMekanismTool
 {
-    private static Block blocksEffectiveAgainst[];
-
     public ItemMekanismPaxel(int i, EnumToolMaterial enumtoolmaterial)
     {
-        super(i, 3, enumtoolmaterial, blocksEffectiveAgainst);
+        super(i, 3, enumtoolmaterial, new Block[256]);
+    }
+    
+    @Override
+    public float getStrVsBlock(ItemStack itemstack, Block block)
+    {
+    	return block.blockID != Block.bedrock.blockID ? efficiencyOnProperMaterial : 1.0F;
     }
 
     @Override
@@ -49,31 +53,5 @@ public class ItemMekanismPaxel extends ItemMekanismTool
         {
             return block.blockMaterial == Material.iron;
         }
-    }
-
-    @Override
-    public float getStrVsBlock(ItemStack itemstack, Block block)
-    {
-        if (block != null && (block.blockMaterial == Material.iron || block.blockMaterial == Material.rock))
-        {
-            return efficiencyOnProperMaterial;
-        }
-        else
-        {
-            return super.getStrVsBlock(itemstack, block);
-        }
-    }
-
-    static
-    {
-        blocksEffectiveAgainst = (new Block[]
-                {
-	                Block.cobblestone, Block.woodSingleSlab, Block.woodDoubleSlab, Block.stone, Block.sandStone, Block.cobblestoneMossy, Block.oreIron, Block.blockSteel, Block.oreCoal, Block.blockGold,
-	                Block.oreGold, Block.oreDiamond, Block.blockDiamond, Block.ice, Block.netherrack, Block.oreLapis, Block.blockLapis, Block.oreRedstone, Block.oreRedstoneGlowing, Block.rail,
-	                Block.railDetector, Block.railPowered, Block.leaves, Block.grass, Block.dirt, Block.sand,
-	                Block.gravel, Block.snow, Block.blockSnow, Block.blockClay, Block.tilledField, Block.slowSand, Block.mycelium, Block.planks, Block.bookShelf, Block.wood,
-	                Block.chest, Block.stoneDoubleSlab, Block.stoneSingleSlab, Block.pumpkin, Block.pumpkinLantern, Block.snow, Block.pistonBase, Block.pistonStickyBase, Block.workbench, 
-	                Block.stoneOvenActive, Block.stoneOvenIdle, Block.music, Block.trapdoor, Block.silverfish, Block.stoneBrick, Block.glowStone, Block.thinGlass
-                });
     }
 }

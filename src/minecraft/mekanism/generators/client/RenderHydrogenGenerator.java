@@ -20,7 +20,7 @@ public class RenderHydrogenGenerator extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
-		bindTextureByName("/resources/mekanism/render/HydrogenGenerator.png");
+		bindTextureByName("/mods/mekanism/render/HydrogenGenerator.png");
 		
 	    switch(tileEntity.facing)
 	    {

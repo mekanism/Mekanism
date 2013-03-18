@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
+import universalelectricity.core.item.ElectricItemHelper;
+
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.EnumColor;
@@ -13,7 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.implement.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -80,18 +81,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		{
 			if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
-				if(inventory[3].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric)inventory[3].getItem();
-
-					if (electricItem.canProduceElectricity())
-					{
-						double joulesNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
-						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[3])*0.005, joulesNeeded), inventory[3]);
-						setJoules(electricityStored + joulesReceived);
-					}
-				}
-				else if(inventory[3].getItem() instanceof IElectricItem)
+				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[3], getMaxJoules() - getJoules(), getVoltage()));
+				
+				if(Mekanism.hooks.IC2Loaded && inventory[3].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[3].getItem();
 					if(item.canProvideEnergy())

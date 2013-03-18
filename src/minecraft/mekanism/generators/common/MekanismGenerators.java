@@ -22,7 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.4.1", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.4.2", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismGenerators
 {
@@ -57,7 +57,6 @@ public class MekanismGenerators
 		//Load this module
 		addBlocks();
 		addItems();
-		addTextures();
 		addNames();
 		addRecipes();
 		addEntities();
@@ -129,13 +128,6 @@ public class MekanismGenerators
 		LanguageRegistry.instance().addStringLocalization("tile.Generator.AdvancedSolarGenerator.name", "Advanced Solar Generator");
 	}
 	
-	public void addTextures()
-	{
-		SolarPanel.setIconIndex(239);
-		BioFuel.setIconIndex(237);
-		ElectrolyticCore.setIconIndex(238);
-	}
-	
 	public void addEntities()
 	{
 		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
@@ -143,17 +135,17 @@ public class MekanismGenerators
 	
 	public void addBlocks()
 	{
-		Generator = new BlockGenerator(generatorID).setBlockName("Generator");
+		Generator = new BlockGenerator(generatorID).setUnlocalizedName("Generator");
 		
-		Item.itemsList[generatorID] = new ItemBlockGenerator(generatorID - 256, Generator).setItemName("Generator");
+		Item.itemsList[generatorID] = new ItemBlockGenerator(generatorID - 256, Generator).setUnlocalizedName("Generator");
 	}
 	
 	public void addItems()
 	{
 		Mekanism.configuration.load();
-		SolarPanel = new ItemMekanism(Mekanism.configuration.getItem("SolarPanel", 11300).getInt()).setItemName("SolarPanel");
-		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", 11301).getInt()).setItemName("BioFuel");
-		ElectrolyticCore = new ItemMekanism(Mekanism.configuration.getItem("ElectrolyticCore", 11302).getInt()).setItemName("ElectrolyticCore");
+		SolarPanel = new ItemMekanism(Mekanism.configuration.getItem("SolarPanel", 11300).getInt()).setUnlocalizedName("SolarPanel");
+		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", 11301).getInt()).setUnlocalizedName("BioFuel");
+		ElectrolyticCore = new ItemMekanism(Mekanism.configuration.getItem("ElectrolyticCore", 11302).getInt()).setUnlocalizedName("ElectrolyticCore");
 		Mekanism.configuration.save();
 		
 		OreDictionary.registerOre("itemBioFuel", new ItemStack(BioFuel));

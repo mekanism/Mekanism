@@ -3,9 +3,10 @@ package mekanism.generators.common;
 import java.util.List;
 
 import ic2.api.ICustomElectricItem;
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.item.IItemElectric;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 
 /**
@@ -49,13 +51,13 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	}
 	
 	@Override
-	public int getIconFromDamage(int i)
+	public Icon getIconFromDamage(int i)
 	{
 		return metaBlock.getBlockTextureFromSideAndMetadata(2, i);
 	}
 	
 	@Override
-	public String getItemNameIS(ItemStack itemstack)
+	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
 		switch(itemstack.getItemDamage())
@@ -85,7 +87,7 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 				name = "Unknown";
 				break;
 		}
-		return getItemName() + "." + name;
+		return getUnlocalizedName() + "." + name;
 	}
 	
 	@Override
@@ -93,101 +95,86 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	{
 		double energy = getJoules(itemstack);
 		
-		list.add("Stored Energy: " + ElectricInfo.getDisplayShort(energy, ElectricUnit.JOULES));
+		list.add("Stored Energy: " + ElectricityDisplay.getDisplayShort(energy, ElectricUnit.JOULES));
 	}
 
 	@Override
-	public double getJoules(Object... data)
+	public double getJoules(ItemStack itemStack)
 	{
-		if (data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack) data[0];
-
-			if (itemStack.stackTagCompound == null) 
-			{ 
-				return 0; 
-			}
-			
-			double electricityStored = 0;
-			
-			if (itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
-			{
-				electricityStored = itemStack.stackTagCompound.getFloat("electricity");
-			}
-			else
-			{
-				electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-			}
-			
-			return electricityStored;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public void setJoules(double wattHours, Object... data)
-	{
-		if (data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if (itemStack.stackTagCompound == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
-			itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		}
-	}
-
-	@Override
-	public double getMaxJoules(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			return GeneratorType.getFromMetadata(itemstack.getItemDamage()).maxEnergy;
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0; 
 		}
 		
-		return 3200;
+		double electricityStored = 0;
+		
+		if(itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
+		{
+			electricityStored = itemStack.stackTagCompound.getFloat("electricity");
+		}
+		else {
+			electricityStored = itemStack.stackTagCompound.getDouble("electricity");
+		}
+		
+		return electricityStored;
 	}
 
 	@Override
-	public double getVoltage(Object... data) 
+	public void setJoules(double wattHours, ItemStack itemStack)
+	{
+		if (itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
+		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+	}
+
+	@Override
+	public double getMaxJoules(ItemStack itemStack)
+	{
+		return GeneratorType.getFromMetadata(itemStack.getItemDamage()).maxEnergy;
+	}
+
+	@Override
+	public double getVoltage(ItemStack itemStack) 
 	{
 		return 120;
 	}
 
 	@Override
-	public double onReceive(double amps, double voltage, ItemStack itemStack)
+	public ElectricityPack onReceive(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		double rejectedElectricity = Math.max((getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1)) - getMaxJoules(itemStack), 0);
-		setJoules(getJoules(itemStack) + ElectricInfo.getJoules(amps, voltage, 1) - rejectedElectricity, itemStack);
-		return rejectedElectricity;
+		double rejectedElectricity = Math.max((getJoules(itemStack) + electricityPack.getWatts()) - getMaxJoules(itemStack), 0);
+		double joulesToStore = electricityPack.getWatts() - rejectedElectricity;
+		this.setJoules(getJoules(itemStack) + joulesToStore, itemStack);
+		return ElectricityPack.getFromWatts(joulesToStore, getVoltage(itemStack));
 	}
 
 	@Override
-	public double onUse(double joulesNeeded, ItemStack itemStack)
+	public ElectricityPack onProvide(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		double electricityToUse = Math.min(getJoules(itemStack), joulesNeeded);
+		double electricityToUse = Math.min(getJoules(itemStack), electricityPack.getWatts());
 		setJoules(getJoules(itemStack) - electricityToUse, itemStack);
-		return electricityToUse;
+		return ElectricityPack.getFromWatts(electricityToUse, getVoltage(itemStack));
 	}
 
 	@Override
-	public boolean canReceiveElectricity()
+	public ElectricityPack getReceiveRequest(ItemStack itemStack)
 	{
-		//TODO
-		return false;
+		return ElectricityPack.getFromWatts(Math.min(getMaxJoules(itemStack) - getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack));
 	}
 
 	@Override
-	public boolean canProduceElectricity()
+	public ElectricityPack getProvideRequest(ItemStack itemStack)
 	{
-		return true;
+		return ElectricityPack.getFromWatts(Math.min(getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack));
+	}
+	
+	public double getTransferRate(ItemStack itemStack)
+	{
+		return getMaxJoules(itemStack)*0.01;
 	}
 	
 	@Override
@@ -268,7 +255,7 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public boolean canProvideEnergy()
 	{
-		return canProduceElectricity();
+		return true;
 	}
 
 	@Override
@@ -298,6 +285,6 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public int getTransferLimit()
 	{
-		return (int)(getVoltage()*Mekanism.TO_IC2);
+		return 0;
 	}
 }

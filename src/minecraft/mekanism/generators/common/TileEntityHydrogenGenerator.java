@@ -9,6 +9,7 @@ import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,8 +19,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.ElectricItemHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -45,18 +45,9 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		
 		if(inventory[1] != null && electricityStored > 0)
 		{
-			if(inventory[1].getItem() instanceof IItemElectric)
-			{
-				IItemElectric electricItem = (IItemElectric)inventory[1].getItem();
-				
-				if(electricItem.canReceiveElectricity())
-				{
-					double ampsToGive = Math.min(ElectricInfo.getAmps(Math.min(electricItem.getMaxJoules(inventory[1])*0.005, electricityStored), getVoltage()), electricityStored);
-					double rejects = electricItem.onReceive(ampsToGive, getVoltage(), inventory[1]);
-					setJoules(electricityStored - (ElectricInfo.getJoules(ampsToGive, getVoltage(), 1) - rejects));
-				}
-			}
-			else if(inventory[1].getItem() instanceof IElectricItem)
+			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[1], getJoules(), getVoltage()));
+			
+			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
 			{
 				double sent = ElectricItem.charge(inventory[1], (int)(electricityStored*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
 				setJoules(electricityStored - sent);
@@ -228,7 +219,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 	
 	@Override
-	public double getVoltage(Object... data)
+	public double getVoltage()
 	{
 		return 240;
 	}

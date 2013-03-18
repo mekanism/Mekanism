@@ -32,10 +32,6 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
-		//Preload block/item textures
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/generators/items.png");
-		MinecraftForgeClient.preloadTexture("/resources/mekanism/textures/generators/terrain.png");
-		
 		//Register block handler
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
 		

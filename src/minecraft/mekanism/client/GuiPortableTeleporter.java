@@ -30,8 +30,8 @@ public class GuiPortableTeleporter extends GuiScreen
     @Override
     public void initGui()
     {
-    	controlList.clear();
-    	controlList.add(new GuiButton(0, 173, 105, 80, 20, "Teleport"));
+    	buttonList.clear();
+    	buttonList.add(new GuiButton(0, 173, 105, 80, 20, "Teleport"));
     }
 
     @Override
@@ -42,9 +42,8 @@ public class GuiPortableTeleporter extends GuiScreen
     		itemStack = mc.thePlayer.getCurrentEquippedItem();
     	}
         
-        int texture = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiPortableTeleporter.png");
+    	mc.renderEngine.func_98187_b("/mods/mekanism/gui/GuiPortableTeleporter.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(texture);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
@@ -65,8 +64,8 @@ public class GuiPortableTeleporter extends GuiScreen
         
         ItemPortableTeleporter item = (ItemPortableTeleporter)itemStack.getItem();
         
-        ((GuiButton)controlList.get(0)).xPosition = guiWidth+48;
-        ((GuiButton)controlList.get(0)).yPosition = guiHeight+68;
+        ((GuiButton)buttonList.get(0)).xPosition = guiWidth+48;
+        ((GuiButton)buttonList.get(0)).yPosition = guiHeight+68;
         
         fontRenderer.drawString("Portable Teleporter", guiWidth+39, guiHeight+6, 0x404040);
         fontRenderer.drawString(item.getStatusAsString(item.getStatus(itemStack)), guiWidth+53, guiHeight+19, 0x00CD00);

@@ -35,8 +35,8 @@ public class GuiControlPanel extends GuiScreen
 	public void initGui()
 	{
 		super.initGui();
-		controlList.clear();
-		controlList.add(new GuiButton(0, width / 2 - 80, height / 4 + 72 + 12, 60, 20, "Access"));
+		buttonList.clear();
+		buttonList.add(new GuiButton(0, width / 2 - 80, height / 4 + 72 + 12, 60, 20, "Access"));
 		
 		xField = new GuiTextField(fontRenderer, width / 2 - 80, 53, 35, 12);
 		xField.setMaxStringLength(4);
@@ -56,8 +56,7 @@ public class GuiControlPanel extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int k = mc.renderEngine.getTexture("/resources/mekanism/gui/GuiControlPanel.png");
-        mc.renderEngine.bindTexture(k);
+        mc.renderEngine.func_98187_b("/mods/mekanism/gui/GuiControlPanel.png");
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
         xField.drawTextBox();
         yField.drawTextBox();

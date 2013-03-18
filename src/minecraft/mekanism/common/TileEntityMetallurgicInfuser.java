@@ -30,11 +30,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
-import universalelectricity.core.electricity.ElectricityConnections;
-import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.core.implement.IJouleStorage;
-import universalelectricity.core.implement.IVoltage;
+import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -46,7 +42,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IJouleStorage, IVoltage, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -108,8 +104,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		sideConfig = new byte[] {0, 1, 0, 5, 3, 4};
 		
 		inventory = new ItemStack[5];
-		
-		ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
 	}
 	
 	@Override
@@ -138,46 +132,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		boolean testActive = operatingTicks > 0;
 		
-		if(!worldObj.isRemote)
-		{
-			for(ForgeDirection direction : ForgeDirection.values())
-			{
-				TileEntity tileEntity = Vector3.getTileEntityFromSide(worldObj, new Vector3(this), direction);
-				if(tileEntity != null)
-				{
-					if(tileEntity instanceof IConductor)
-					{
-						if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
-						{
-							double electricityNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored;
-							((IConductor)tileEntity).getNetwork().startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-							setJoules(electricityStored + ((IConductor)tileEntity).getNetwork().consumeElectricity(this).getWatts());
-						}
-						else if(electricityStored >= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
-						{
-							((IConductor)tileEntity).getNetwork().stopRequesting(this);
-						}
-					}
-				}
-			}
-		}
-		
 		if(inventory[4] != null)
 		{
 			if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
-				if(inventory[4].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric)inventory[4].getItem();
-
-					if (electricItem.canProduceElectricity())
-					{
-						double joulesNeeded = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
-						double joulesReceived = electricItem.onUse(Math.min(electricItem.getMaxJoules(inventory[4])*0.005, joulesNeeded), inventory[4]);
-						setJoules(electricityStored + joulesReceived);
-					}
-				}
-				else if(inventory[4].getItem() instanceof IElectricItem)
+				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[4], getMaxJoules() - getJoules(), getVoltage()));
+				
+				if(Mekanism.hooks.IC2Loaded && inventory[4].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[4].getItem();
 					if(item.canProvideEnergy())
@@ -567,25 +528,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public double getVoltage(Object... data) 
-	{
-		return 120;
-	}
-
-	@Override
-	public double getJoules(Object... data) 
-	{
-		return electricityStored;
-	}
-
-	@Override
-	public void setJoules(double joules, Object... data) 
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
-	}
-
-	@Override
-	public double getMaxJoules(Object... data) 
+	public double getMaxJoules() 
 	{
 		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
 	}

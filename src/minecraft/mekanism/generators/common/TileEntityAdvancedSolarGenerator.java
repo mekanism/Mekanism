@@ -30,16 +30,16 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlock(xCoord, yCoord+1, zCoord, 0);
+		worldObj.func_94571_i(xCoord, yCoord+1, zCoord);
 		
 		for(int x=-1;x<=1;x++)
 		{
 			for(int z=-1;z<=1;z++)
 			{
-				worldObj.setBlock(xCoord+x, yCoord+2, zCoord+z, 0);
+				worldObj.func_94571_i(xCoord+x, yCoord+2, zCoord+z);
 			}
 		}
 		
-		worldObj.setBlock(xCoord, yCoord, zCoord, 0);
+		worldObj.func_94571_i(xCoord, yCoord, zCoord);
 	}
 }

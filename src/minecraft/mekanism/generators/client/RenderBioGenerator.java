@@ -22,7 +22,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
-		bindTextureByName("/resources/mekanism/render/BioGenerator.png");
+		bindTextureByName("/mods/mekanism/render/BioGenerator.png");
 		
 	    switch(tileEntity.facing)
 	    {

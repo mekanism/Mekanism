@@ -65,7 +65,7 @@ public class ItemMekanismHoe extends ItemMekanism
                     return true;
                 }
                 else {
-                    world.setBlockWithNotify(x, y, z, block.blockID);
+                    world.func_94575_c(x, y, z, block.blockID);
                     itemstack.damageItem(1, entityplayer);
                     return true;
                 }

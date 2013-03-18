@@ -4,6 +4,7 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
@@ -23,9 +24,9 @@ public class ItemMekanismTool extends ItemTool
     	list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
     
-    @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/items.png";
-    }
+	@Override
+	public void func_94581_a(IconRegister register)
+	{
+		iconIndex = register.func_94245_a("mekanism:" + getUnlocalizedName().replace("item.", ""));
+	}
 }

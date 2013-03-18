@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import thermalexpansion.api.core.IDismantleable;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IEnergyCube;
@@ -19,6 +19,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
@@ -29,6 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.src.*;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -45,6 +47,7 @@ import net.minecraftforge.common.ForgeDirection;
  */
 public class BlockEnergyCube extends BlockContainer implements IDismantleable
 {
+	public Icon[][] icons = new Icon[256][256];
 	private Random powerRand = new Random();
 	
 	public BlockEnergyCube(int id)
@@ -57,59 +60,38 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
+	public void func_94332_a(IconRegister register)
+	{
+		icons[0][0] = register.func_94245_a("mekanism:BasicEnergyCubeFront");
+		icons[0][1] = register.func_94245_a("mekanism:BasicEnergyCubeSide");
+		icons[1][0] = register.func_94245_a("mekanism:AdvancedEnergyCubeFront");
+		icons[1][1] = register.func_94245_a("mekanism:AdvancedEnergyCubeSide");
+		icons[2][0] = register.func_94245_a("mekanism:EliteEnergyCubeFront");
+		icons[2][1] = register.func_94245_a("mekanism:EliteEnergyCubeSide");
+		icons[3][0] = register.func_94245_a("mekanism:UltimateEnergyCubeFront");
+		icons[3][1] = register.func_94245_a("mekanism:UltimateEnergyCubeSide");
+	}
+	
+	@Override
 	public void setBlockBoundsForItemRender()
 	{
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	@Override
-	public int getBlockTextureFromSideAndMetadata(int side, int meta)
+	public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
-		if(meta == 0)
+		if(side == 3)
 		{
-			if(side == 3)
-			{
-				return 4;
-			}
-			else {
-				return 21;
-			}
+			return icons[meta][0];
 		}
-		else if(meta == 1)
-		{
-			if(side == 3)
-			{
-				return 38;
-			}
-			else {
-				return 22;
-			}
+		else {
+			return icons[meta][1];
 		}
-		else if(meta == 2)
-		{
-			if(side == 3)
-			{
-				return 24;
-			}
-			else {
-				return 23;
-			}
-		}
-		else if(meta == 3)
-		{
-			if(side == 3)
-			{
-				return 33;
-			}
-			else {
-				return 32;
-			}
-		}
-		return 0;
 	}
 	
 	@Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving)
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -139,52 +121,18 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	
 	@Override
     @SideOnly(Side.CLIENT)
-    public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
     	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-        
-		if(tileEntity.tier == EnergyCubeTier.BASIC)
-		{
-			if(side == tileEntity.facing)
-			{
-				return 4;
-			}
-			else {
-				return 21;
-			}
-		}
-		else if(tileEntity.tier == EnergyCubeTier.ADVANCED)
-		{
-			if(side == tileEntity.facing)
-			{
-				return 38;
-			}
-			else {
-				return 22;
-			}
-		}
-		else if(tileEntity.tier == EnergyCubeTier.ELITE)
-		{
-			if(side == tileEntity.facing)
-			{
-				return 24;
-			}
-			else {
-				return 23;
-			}
-		}
-		else if(tileEntity.tier == EnergyCubeTier.ULTIMATE)
-		{
-			if(side == tileEntity.facing)
-			{
-				return 33;
-			}
-			else {
-				return 32;
-			}
-		}
-		return 0;
+    	
+    	if(side == tileEntity.facing)
+    	{
+    		return icons[tileEntity.tier.ordinal()][0];
+    	}
+    	else {
+    		return icons[tileEntity.tier.ordinal()][1];
+    	}
     }
 	
     @Override
@@ -383,13 +331,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
-        return world.setBlockWithNotify(x, y, z, 0);
-    }
-    
-    @Override
-    public String getTextureFile()
-    {
-    	return "/resources/mekanism/textures/terrain.png";
+        return world.func_94571_i(x, y, z);
     }
 	
 	@Override
@@ -425,7 +367,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
-        world.setBlockWithNotify(x, y, z, 0);
+        world.func_94571_i(x, y, z);
         
         if(!returnBlock)
         {
