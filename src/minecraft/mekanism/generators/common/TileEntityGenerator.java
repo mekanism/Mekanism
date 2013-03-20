@@ -16,6 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import mekanism.api.IActiveState;
+import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -37,7 +38,7 @@ import buildcraft.api.power.PowerProvider;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound
 {
 	/** The Sound instance for this generator. */
 	@SideOnly(Side.CLIENT)
@@ -367,5 +368,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+	
+	@Override
+	public Sound getSound()
+	{
+		return audio;
 	}
 }

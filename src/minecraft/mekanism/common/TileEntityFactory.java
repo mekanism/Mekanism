@@ -14,6 +14,7 @@ import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.api.IFactory.RecipeType;
 import mekanism.api.Tier.FactoryTier;
+import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -37,7 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
+public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -274,7 +275,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				{
 					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
 					{
-						audio = Mekanism.audioHandler.getSound("Factory.ogg", worldObj, xCoord, yCoord, zCoord);
+						audio = Mekanism.audioHandler.getSound(RecipeType.values()[recipeType].getSound(), worldObj, xCoord, yCoord, zCoord);
 					}
 				}
 				
@@ -659,5 +660,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		speedMultiplier = multiplier;
+	}
+	
+	@Override
+	public Sound getSound()
+	{
+		return audio;
 	}
 }

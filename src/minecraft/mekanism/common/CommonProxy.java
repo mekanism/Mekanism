@@ -153,6 +153,8 @@ public class CommonProxy
 				return new ContainerTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
 			case 15:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+			case 16:
+				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 		}
 		return null;
 	}

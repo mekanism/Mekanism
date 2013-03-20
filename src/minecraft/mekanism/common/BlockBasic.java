@@ -35,6 +35,7 @@ import net.minecraftforge.common.ForgeChunkManager;
  * 6: Control Panel
  * 7: Teleporter
  * 8: Teleporter Frame
+ * 9: Steel Casing
  * @author AidanBrady
  *
  */
@@ -61,6 +62,7 @@ public class BlockBasic extends Block
 		icons[6] = register.func_94245_a("mekanism:ControlPanel");
 		icons[7] = register.func_94245_a("mekanism:Teleporter");
 		icons[8] = register.func_94245_a("mekanism:TeleporterFrame");
+		icons[9] = register.func_94245_a("mekanism:SteelCasing");
 	}
 	
 	@Override
@@ -88,6 +90,7 @@ public class BlockBasic extends Block
 		//list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));
 		list.add(new ItemStack(i, 1, 8));
+		list.add(new ItemStack(i, 1, 9));
 	}
 	
 	@Override

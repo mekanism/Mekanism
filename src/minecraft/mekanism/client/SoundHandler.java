@@ -53,8 +53,13 @@ public class SoundHandler
 					
 					TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
 					
-					if(tileEntity != null && tileEntity instanceof IActiveState)
+					if(tileEntity != null && tileEntity instanceof IActiveState && tileEntity instanceof IHasSound)
 					{
+						if(((IHasSound)tileEntity).getSound() != sound)
+						{
+							soundsToRemove.add(sound);
+							continue;
+						}
 						if(((IActiveState)tileEntity).getActive() != sound.isPlaying)
 						{
 							if(((IActiveState)tileEntity).getActive())
@@ -66,7 +71,17 @@ public class SoundHandler
 							}
 						}
 					}
+					else if(tileEntity == null)
+					{
+						soundsToRemove.add(sound);
+					}
 				}
+			}
+			
+			for(Sound sound : soundsToRemove)
+			{
+				System.out.println("[Mekanism] Removed dead sound '" + sound.identifier + ".'");
+				sound.remove();
 			}
 			
 			masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;

@@ -48,6 +48,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 7: Elite Factory
  * 8: Metallurgic Infuser
  * 9: Purification Chamber
+ * 10: Energized Smelter
  * @author AidanBrady
  *
  */
@@ -69,16 +70,16 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	{
 		icons[0][0] = register.func_94245_a("mekanism:EnrichmentChamberFrontOff");
 		icons[0][1] = register.func_94245_a("mekanism:EnrichmentChamberFrontOn");
-		icons[0][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[0][2] = register.func_94245_a("mekanism:SteelCasing");
 		icons[1][0] = register.func_94245_a("mekanism:OsmiumCompressorFrontOff");
 		icons[1][1] = register.func_94245_a("mekanism:OsmiumCompressorFrontOn");
-		icons[1][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[1][2] = register.func_94245_a("mekanism:SteelCasing");
 		icons[2][0] = register.func_94245_a("mekanism:CombinerFrontOff");
 		icons[2][1] = register.func_94245_a("mekanism:CombinerFrontOn");
-		icons[2][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[2][2] = register.func_94245_a("mekanism:SteelCasing");
 		icons[3][0] = register.func_94245_a("mekanism:CrusherFrontOff");
 		icons[3][1] = register.func_94245_a("mekanism:CrusherFrontOn");
-		icons[3][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[3][2] = register.func_94245_a("mekanism:SteelCasing");
 		icons[5][0] = register.func_94245_a("mekanism:BasicSmeltingFactoryFront");
 		icons[5][1] = register.func_94245_a("mekanism:BasicSmeltingFactorySide");
 		icons[5][2] = register.func_94245_a("mekanism:BasicSmeltingFactoryTop");
@@ -98,7 +99,10 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		icons[8][7] = register.func_94245_a("mekanism:MetallurgicInfuserBackOn");
 		icons[9][0] = register.func_94245_a("mekanism:PurificationChamberFrontOff");
 		icons[9][1] = register.func_94245_a("mekanism:PurificationChamberFrontOn");
-		icons[9][2] = register.func_94245_a("mekanism:OsmiumBlock");
+		icons[9][2] = register.func_94245_a("mekanism:SteelCasing");
+		icons[10][0] = register.func_94245_a("mekanism:EnergizedSmelterFrontOff");
+		icons[10][1] = register.func_94245_a("mekanism:EnergizedSmelterFrontOn");
+		icons[10][2] = register.func_94245_a("mekanism:SteelCasing");
 	}
 	
 	@Override
@@ -289,6 +293,16 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     			return icons[9][2];
     		}
     	}
+    	else if(meta == 10)
+    	{
+    		if(side == 3)
+    		{
+    			return icons[10][0];
+    		}
+    		else {
+    			return icons[10][2];
+    		}
+    	}
     	
     	return null;
     }
@@ -412,6 +426,16 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     			return icons[9][2];
     		}
     	}
+    	else if(metadata == 10)
+    	{
+    		if(side == tileEntity.facing)
+    		{
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[10][1] : icons[10][0];
+    		}
+    		else {
+    			return icons[10][2];
+    		}
+    	}
     	
     	return null;
     }
@@ -448,6 +472,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		
 		list.add(new ItemStack(i, 1, 8));
 		list.add(new ItemStack(i, 1, 9));
+		list.add(new ItemStack(i, 1, 10));
 	}
     
     @Override
@@ -726,7 +751,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		ADVANCED_FACTORY(6, 11, 10000, TileEntityAdvancedFactory.class, false),
 		ELITE_FACTORY(7, 11, 14000, TileEntityEliteFactory.class, false),
 		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
-		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false);
+		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
+		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false);
 		
 		public int meta;
 		public int guiId;

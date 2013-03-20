@@ -32,6 +32,7 @@ import net.minecraft.world.World;
  * 7: Elite Factory
  * 8: Metallurgic Infuser
  * 9: Purification Chamber
+ * 10: Energized Smelter
  * @author AidanBrady
  *
  */
@@ -89,6 +90,9 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 				break;
 			case 9:
 				name = "PurificationChamber";
+				break;
+			case 10:
+				name = "EnergizedSmelter";
 				break;
 			default:
 				name = "Unknown";

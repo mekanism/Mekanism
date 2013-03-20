@@ -30,11 +30,12 @@ public interface IFactory
 	
 	public static enum RecipeType
 	{
-		SMELTING("Smelting"),
-		ENRICHING("Enriching"),
-		CRUSHING("Crushing");
+		SMELTING("Smelting", "Smelter.ogg"),
+		ENRICHING("Enriching", "Chamber.ogg"),
+		CRUSHING("Crushing", "Crusher.ogg");
 		
 		private String name;
+		private String sound;
 		
 		public ItemStack getCopiedOutput(ItemStack input, boolean stackDecrease)
 		{
@@ -66,9 +67,15 @@ public interface IFactory
 			return name;
 		}
 		
-		private RecipeType(String s)
+		public String getSound()
+		{
+			return sound;
+		}
+		
+		private RecipeType(String s, String s1)
 		{
 			name = s;
+			sound = s1;
 		}
 	}
 }

@@ -151,6 +151,8 @@ public class ClientProxy extends CommonProxy
 				}
 			case 15:
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+			case 16:
+				return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine)tileEntity);
 		}
 		return null;
 	}

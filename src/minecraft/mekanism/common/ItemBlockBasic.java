@@ -16,6 +16,7 @@ import net.minecraft.util.Icon;
  * 6: Control Panel
  * 7: Teleporter
  * 8: Teleporter Frame
+ * 9: Steel Casing
  * @author AidanBrady
  *
  */
@@ -74,6 +75,9 @@ public class ItemBlockBasic extends ItemBlock
 				break;
 			case 8:
 				name = "TeleporterFrame";
+				break;
+			case 9:
+				name = "SteelCasing";
 				break;
 			default:
 				name = "Unknown";

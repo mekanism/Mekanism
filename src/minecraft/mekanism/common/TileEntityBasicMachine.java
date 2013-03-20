@@ -15,6 +15,7 @@ import mekanism.api.IEnergyCube;
 import mekanism.api.IFactory;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
+import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -409,5 +410,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		speedMultiplier = multiplier;
+	}
+	
+	@Override
+	public Sound getSound()
+	{
+		return audio;
 	}
 }
