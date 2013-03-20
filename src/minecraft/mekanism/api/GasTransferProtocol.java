@@ -15,8 +15,11 @@ public class GasTransferProtocol
 	/** List of IGasAcceptors that can take in the type of gas requested. */
 	public ArrayList<IGasAcceptor> availableAcceptors = new ArrayList<IGasAcceptor>();
 	
-	/** Pointer of this calculation */
+	/** Pointer tube of this calculation */
 	public TileEntity pointer;
+	
+	/** Original outputter Tile Entity. */
+	public TileEntity original;
 	
 	/** Type of gas to distribute */
 	public EnumGas transferType;
@@ -30,15 +33,17 @@ public class GasTransferProtocol
 	 * @param type - type of gas to distribute
 	 * @param amount - amount of gas to distribute
 	 */
-	public GasTransferProtocol(TileEntity head, EnumGas type, int amount)
+	public GasTransferProtocol(TileEntity head, TileEntity orig, EnumGas type, int amount)
 	{
 		pointer = head;
 		transferType = type;
 		gasToSend = amount;
+		original = orig;
 	}
 	
 	/**
-	 * Recursive loop that iterates through connected tubes and adds connected acceptors to an ArrayList.
+	 * Recursive loop that iterates through connected tubes and adds connected acceptors to an ArrayList.  Note that it will NOT add
+	 * the original outputting tile into the availableAcceptors list, to prevent loops.
 	 * @param tile - pointer tile entity
 	 */
 	public void loopThrough(TileEntity tile)
@@ -49,7 +54,7 @@ public class GasTransferProtocol
 		{
 			if(acceptor != null)
 			{
-				if(acceptor.canReceiveGas(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite(), transferType))
+				if(acceptor != original && acceptor.canReceiveGas(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite(), transferType))
 				{
 					availableAcceptors.add(acceptor);
 				}

@@ -208,6 +208,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		speedMultiplier = dataStream.readInt();
 		energyMultiplier = dataStream.readInt();
 		upgradeTicks = dataStream.readInt();
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override

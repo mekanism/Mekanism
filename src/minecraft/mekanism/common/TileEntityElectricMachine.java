@@ -129,8 +129,8 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier))
 			{
-					operatingTicks++;
-					electricityStored -= ENERGY_PER_TICK;
+				operatingTicks++;
+				electricityStored -= ENERGY_PER_TICK;
 			}
 			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
 			{

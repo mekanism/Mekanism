@@ -48,15 +48,15 @@ public final class Tier
 	}
 	
 	/**
-	 * The tiers used by the Smelting Factory and their corresponding values.
+	 * The tiers used by the Factory and their corresponding values.
 	 * @author aidancbrady
 	 *
 	 */
 	public static enum FactoryTier
 	{
-		BASIC("Basic", 3, "GuiBasicSmeltingFactory.png"),
-		ADVANCED("Advanced", 5, "GuiAdvancedSmeltingFactory.png"),
-		ELITE("Elite", 7, "GuiEliteSmeltingFactory.png");
+		BASIC("Basic", 3, "GuiBasicFactory.png"),
+		ADVANCED("Advanced", 5, "GuiAdvancedFactory.png"),
+		ELITE("Elite", 7, "GuiEliteFactory.png");
 		
 		public int processes;
 		public String guiTexturePath;

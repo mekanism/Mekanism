@@ -16,7 +16,8 @@ public class BlockBounding extends Block
 	public BlockBounding(int id)
 	{
 		super(id, Material.iron);
-		setHardness(0.8F);
+		setHardness(3.5F);
+		setResistance(8F);
 	}
 
 	@Override

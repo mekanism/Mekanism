@@ -2,7 +2,7 @@ package mekanism.client;
 
 import mekanism.api.IFactory.RecipeType;
 import mekanism.api.Tier.FactoryTier;
-import mekanism.common.ContainerSmeltingFactory;
+import mekanism.common.ContainerFactory;
 import mekanism.common.TileEntityFactory;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,7 +15,7 @@ public class GuiFactory extends GuiContainer
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
-        super(new ContainerSmeltingFactory(inventory, tentity));
+        super(new ContainerFactory(inventory, tentity));
         xSize+=26;
         tileEntity = tentity;
     }
@@ -33,7 +33,7 @@ public class GuiFactory extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-    	mc.renderEngine.func_98187_b("/mods/mekanism/gui/smelting/" + tileEntity.tier.guiTexturePath);
+    	mc.renderEngine.func_98187_b("/mods/mekanism/gui/factory/" + tileEntity.tier.guiTexturePath);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

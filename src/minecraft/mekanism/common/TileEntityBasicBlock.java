@@ -53,8 +53,6 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		facing = dataStream.readInt();
-		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-		worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 	}
 	
 	@Override

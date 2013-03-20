@@ -461,6 +461,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
 		type = InfusionType.getFromName(dataStream.readUTF());
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override

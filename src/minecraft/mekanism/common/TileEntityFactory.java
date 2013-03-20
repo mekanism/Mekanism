@@ -39,7 +39,7 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
 {	
-	/** This Smelting Factory's tier. */
+	/** This Factory's tier. */
 	public FactoryTier tier;
 	
 	/** This machine's side configuration. */
@@ -214,32 +214,34 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			upgradeTicks = 0;
 		}
 		
-		for(int mainSlot = 0; mainSlot < tier.processes; mainSlot++)
+		for(int process = 0; process < tier.processes; process++)
 		{
-			if(canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)) && (progress[mainSlot]+1) < MekanismUtils.getTicks(speedMultiplier))
+			if(electricityStored >= ENERGY_PER_TICK)
 			{
-				++progress[mainSlot];
-				electricityStored -= ENERGY_PER_TICK;
-			}
-			else if(canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)) && (progress[mainSlot]+1) >= MekanismUtils.getTicks(speedMultiplier))
-			{
-				if(!worldObj.isRemote)
+				if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier))
 				{
-					operate(getInputSlot(mainSlot), getOutputSlot(mainSlot));
+					++progress[process];
+					electricityStored -= ENERGY_PER_TICK;
 				}
-				progress[mainSlot] = 0;
-				electricityStored -= ENERGY_PER_TICK;
+				else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier))
+				{
+					if(!worldObj.isRemote)
+					{
+						operate(getInputSlot(process), getOutputSlot(process));
+					}
+					progress[process] = 0;
+					electricityStored -= ENERGY_PER_TICK;
+				}
 			}
 			
-			if(!canOperate(getInputSlot(mainSlot), getOutputSlot(mainSlot)))
+			if(!canOperate(getInputSlot(process), getOutputSlot(process)))
 			{
-				progress[mainSlot] = 0;
+				progress[process] = 0;
 			}
 		}
 		
 		if(!worldObj.isRemote)
 		{
-			boolean newActive = false;
 			boolean hasOperation = false;
 			
 			for(int i = 0; i < tier.processes; i++)
@@ -247,28 +249,16 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				if(canOperate(getInputSlot(i), getOutputSlot(i)))
 				{
 					hasOperation = true;
+					break;
 				}
 			}
 			
-			for(int i : progress)
+			if(hasOperation && electricityStored >= ENERGY_PER_TICK)
 			{
-				if(i > 0)
-				{
-					newActive = true;
-				}
+				setActive(true);
 			}
-			
-			if(testActive != newActive)
-			{
-				if(newActive)
-				{
-					setActive(true);
-				}
-				
-				else if(!hasOperation)
-				{
-					setActive(false);
-				}
+			else {
+				setActive(false);
 			}
 		}
 	}
@@ -340,11 +330,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         {
             return false;
         }
-        
-        if(electricityStored < ENERGY_PER_TICK)
-        {
-        	return false;
-        }
 
         ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], false);
 
@@ -415,6 +400,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		{
 			progress[i] = dataStream.readInt();
 		}
+		
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override

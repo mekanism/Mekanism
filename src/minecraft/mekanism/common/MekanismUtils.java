@@ -248,6 +248,12 @@ public final class MekanismUtils
 		return itemstack;
 	}
 	
+	/**
+	 * Retrieves a Factory with a defined tier and recipe type.
+	 * @param tier - tier to add to the Factory
+	 * @param type - recipe type to add to the Factory
+	 * @return factory with defined tier and recipe type
+	 */
 	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
 	{
 		ItemStack itemstack = new ItemStack(Mekanism.MachineBlock, 1, 5+tier.ordinal());
@@ -438,5 +444,18 @@ public final class MekanismUtils
     {
 		world.setBlockAndMetadataWithNotify(x, y, z, Mekanism.BoundingBlock.blockID, 0, 2);
 		((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(origX, origY, origZ);
+    }
+    
+    /**
+     * Updates a block's light value and marks it for a render update.
+     * @param world - world the block is in
+     * @param x - x coord
+     * @param y - y coord
+     * @param z - z coord
+     */
+    public static void updateBlock(World world, int x, int y, int z)
+    {
+		world.markBlockForRenderUpdate(x, y, z);
+		world.updateAllLightTypes(x, y, z);
     }
 }

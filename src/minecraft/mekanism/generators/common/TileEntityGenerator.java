@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.IActiveState;
 import mekanism.client.Sound;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.nbt.NBTTagCompound;
@@ -328,6 +329,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super.handlePacketData(dataStream);
 		isActive = dataStream.readBoolean();
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override

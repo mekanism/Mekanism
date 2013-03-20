@@ -96,7 +96,7 @@ public class GasTransmission
     	
     	if(pointer != null)
     	{
-	    	GasTransferProtocol calculation = new GasTransferProtocol(pointer, type, amount);
+	    	GasTransferProtocol calculation = new GasTransferProtocol(pointer, sender, type, amount);
 	    	return calculation.calculate();
     	}
     	

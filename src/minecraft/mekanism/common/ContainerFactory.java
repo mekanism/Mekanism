@@ -14,11 +14,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
-public class ContainerSmeltingFactory extends Container
+public class ContainerFactory extends Container
 {
     private TileEntityFactory tileEntity;
 
-    public ContainerSmeltingFactory(InventoryPlayer inventory, TileEntityFactory tentity)
+    public ContainerFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
         tileEntity = tentity;
         
