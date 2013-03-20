@@ -7,6 +7,7 @@ import com.google.common.io.ByteArrayDataInput;
 import ic2.api.IWrenchable;
 import ic2.api.energy.EnergyNet;
 import mekanism.api.ITileNetwork;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -141,6 +142,6 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-		return new ItemStack(worldObj.getBlockId(xCoord, yCoord, zCoord), 1, worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+        return Block.blocksList[getBlockType().blockID].getPickBlock(null, worldObj, xCoord, yCoord, zCoord);
 	}
 }

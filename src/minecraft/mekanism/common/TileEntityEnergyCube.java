@@ -412,18 +412,4 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		return (int)(tier.MAX_ELECTRICITY-electricityStored);
 	}
-	
-	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
-	{
-		ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
-		
-        IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
-        energyCube.setTier(itemStack, tier);
-        
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(electricityStored, itemStack);
-        
-        return itemStack;
-	}
 }

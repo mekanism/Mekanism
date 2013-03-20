@@ -12,7 +12,8 @@ import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
-import mekanism.api.Tier.SmeltingFactoryTier;
+import mekanism.api.IFactory.RecipeType;
+import mekanism.api.Tier.FactoryTier;
 import mekanism.client.Sound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -36,10 +37,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntitySmeltingFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
+public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement
 {	
 	/** This Smelting Factory's tier. */
-	public SmeltingFactoryTier tier;
+	public FactoryTier tier;
 	
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
@@ -78,9 +79,12 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 	/** This machine's active state. */
 	public boolean isActive;
 	
-	public TileEntitySmeltingFactory()
+	/** This machine's recipe type. */
+	public int recipeType;
+	
+	public TileEntityFactory()
 	{
-		this(SmeltingFactoryTier.BASIC);
+		this(FactoryTier.BASIC);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
@@ -91,9 +95,9 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}
 	
-	public TileEntitySmeltingFactory(SmeltingFactoryTier type)
+	public TileEntityFactory(FactoryTier type)
 	{
-		super(type.name + " Smelting Factory", type.processes*2000);
+		super(type.name + " Factory", type.processes*2000);
 		tier = type;
 		inventory = new ItemStack[2+type.processes*2];
 		progress = new int[type.processes];
@@ -280,7 +284,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 				{
 					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
 					{
-						audio = Mekanism.audioHandler.getSound("SmeltingFactory.ogg", worldObj, xCoord, yCoord, zCoord);
+						audio = Mekanism.audioHandler.getSound("Factory.ogg", worldObj, xCoord, yCoord, zCoord);
 					}
 				}
 				
@@ -342,7 +346,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         	return false;
         }
 
-        ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[inputSlot]);
+        ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], false);
 
         if (itemstack == null)
         {
@@ -358,8 +362,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         {
             return false;
         }
-        else
-        {
+        else {
             return inventory[outputSlot].stackSize + itemstack.stackSize <= inventory[outputSlot].getMaxStackSize();
         }
 	}
@@ -371,9 +374,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
             return;
         }
 
-        ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[inputSlot]).copy();
-        
-        inventory[inputSlot].stackSize--;
+        ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], true);
 
         if (inventory[inputSlot].stackSize <= 0)
         {
@@ -384,8 +385,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         {
             inventory[outputSlot] = itemstack;
         }
-        else
-        {
+        else {
             inventory[outputSlot].stackSize += itemstack.stackSize;
         }
 	}
@@ -409,6 +409,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		speedMultiplier = dataStream.readInt();
 		energyMultiplier = dataStream.readInt();
 		isActive = dataStream.readBoolean();
+		recipeType = dataStream.readInt();
 		
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -424,6 +425,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         speedMultiplier = nbtTags.getInteger("speedMultiplier");
         energyMultiplier = nbtTags.getInteger("energyMultiplier");
         isActive = nbtTags.getBoolean("isActive");
+        recipeType = nbtTags.getInteger("recipeType");
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -447,6 +449,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
         nbtTags.setInteger("speedMultiplier", speedMultiplier);
         nbtTags.setInteger("energyMultiplier", energyMultiplier);
         nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("recipeType", recipeType);
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -468,6 +471,7 @@ public class TileEntitySmeltingFactory extends TileEntityElectricBlock implement
 		data.add(speedMultiplier);
 		data.add(energyMultiplier);
 		data.add(isActive);
+		data.add(recipeType);
 		data.add(progress);
 		return data;
 	}

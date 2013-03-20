@@ -1,18 +1,19 @@
 package mekanism.client;
 
-import mekanism.api.Tier.SmeltingFactoryTier;
+import mekanism.api.IFactory.RecipeType;
+import mekanism.api.Tier.FactoryTier;
 import mekanism.common.ContainerSmeltingFactory;
-import mekanism.common.TileEntitySmeltingFactory;
+import mekanism.common.TileEntityFactory;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-public class GuiSmeltingFactory extends GuiContainer
+public class GuiFactory extends GuiContainer
 {
-    public TileEntitySmeltingFactory tileEntity;
+    public TileEntityFactory tileEntity;
 
-    public GuiSmeltingFactory(InventoryPlayer inventory, TileEntitySmeltingFactory tentity)
+    public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
         super(new ContainerSmeltingFactory(inventory, tentity));
         xSize+=26;
@@ -22,8 +23,9 @@ public class GuiSmeltingFactory extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2)
     {
-        fontRenderer.drawString(tileEntity.fullName, 34, 4, 0x404040);
+        fontRenderer.drawString(tileEntity.fullName, 48, 4, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 93) + 2, 0x404040);
+        fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 124, (ySize - 93) + 2, 0x404040);
         fontRenderer.drawString("S:" + (tileEntity.speedMultiplier+1) + "x", 179, 47, 0x404040);
         fontRenderer.drawString("E:" + (tileEntity.energyMultiplier+1) + "x", 179, 57, 0x404040);
     }
@@ -45,7 +47,7 @@ public class GuiSmeltingFactory extends GuiContainer
         displayInt = tileEntity.getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 72, 10, displayInt);
         
-        if(tileEntity.tier == SmeltingFactoryTier.BASIC)
+        if(tileEntity.tier == FactoryTier.BASIC)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -55,7 +57,7 @@ public class GuiSmeltingFactory extends GuiContainer
 	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
-        else if(tileEntity.tier == SmeltingFactoryTier.ADVANCED)
+        else if(tileEntity.tier == FactoryTier.ADVANCED)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -65,7 +67,7 @@ public class GuiSmeltingFactory extends GuiContainer
 	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
-        else if(tileEntity.tier == SmeltingFactoryTier.ELITE)
+        else if(tileEntity.tier == FactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{

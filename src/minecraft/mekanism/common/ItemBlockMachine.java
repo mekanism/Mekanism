@@ -8,6 +8,7 @@ import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ICustomElectricItem;
+import mekanism.api.IFactory;
 import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.Block;
@@ -26,15 +27,15 @@ import net.minecraft.world.World;
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
- * 5: Basic Smelting Factory
- * 6: Advanced Smelting Factory
- * 7: Elite Smelting Factory
+ * 5: Basic Factory
+ * 6: Advanced Factory
+ * 7: Elite Factory
  * 8: Metallurgic Infuser
  * 9: Purification Chamber
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement
+public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory
 {
 	public Block metaBlock;
 	
@@ -75,13 +76,13 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 				name = "TheoreticalElementizer";
 				break;
 			case 5:
-				name = "BasicSmeltingFactory";
+				name = "BasicFactory";
 				break;
 			case 6:
-				name = "AdvancedSmeltingFactory";
+				name = "AdvancedFactory";
 				break;
 			case 7:
-				name = "EliteSmeltingFactory";
+				name = "EliteFactory";
 				break;
 			case 8:
 				name = "MetallurgicInfuser";
@@ -100,6 +101,11 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		double energy = getJoules(itemstack);
+		
+		if(isFactory(itemstack))
+		{
+			list.add("Recipe Type: " + RecipeType.values()[getRecipeType(itemstack)].getName());
+		}
 		
 		list.add("Stored Energy: " + ElectricityDisplay.getDisplayShort(energy, ElectricUnit.JOULES));
 		list.add("Energy: x" + (getEnergyMultiplier(itemstack)+1));
@@ -190,7 +196,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
     {
     	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
     	
-    	if (place)
+    	if(place)
     	{
     		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     		
@@ -198,6 +204,11 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
     		{
     			((IUpgradeManagement)tileEntity).setEnergyMultiplier(getEnergyMultiplier(stack));
     			((IUpgradeManagement)tileEntity).setSpeedMultiplier(getSpeedMultiplier(stack));
+    		}
+    		
+    		if(tileEntity instanceof TileEntityFactory)
+    		{
+    			((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
     		}
     		
     		tileEntity.electricityStored = getJoules(stack);
@@ -322,7 +333,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		{
 			ItemStack itemStack = (ItemStack) data[0];
 
-			if (itemStack.stackTagCompound == null) 
+			if(itemStack.stackTagCompound == null) 
 			{ 
 				return 0; 
 			}
@@ -340,12 +351,40 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if (itemStack.stackTagCompound == null)
+			if(itemStack.stackTagCompound == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
 			itemStack.stackTagCompound.setInteger("speedMultiplier", multiplier);
 		}
+	}
+
+	@Override
+	public int getRecipeType(ItemStack itemStack)
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0; 
+		}
+		
+		return itemStack.stackTagCompound.getInteger("recipeType");
+	}
+
+	@Override
+	public void setRecipeType(int type, ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setInteger("recipeType", type);
+	}
+	
+	@Override
+	public boolean isFactory(ItemStack itemStack)
+	{
+		return itemStack.getItem() instanceof ItemBlockMachine && itemStack.getItemDamage() >= 5 && itemStack.getItemDamage() <= 7;
 	}
 }

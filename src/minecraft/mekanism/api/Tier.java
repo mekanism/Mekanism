@@ -52,7 +52,7 @@ public final class Tier
 	 * @author aidancbrady
 	 *
 	 */
-	public static enum SmeltingFactoryTier
+	public static enum FactoryTier
 	{
 		BASIC("Basic", 3, "GuiBasicSmeltingFactory.png"),
 		ADVANCED("Advanced", 5, "GuiAdvancedSmeltingFactory.png"),
@@ -62,9 +62,9 @@ public final class Tier
 		public String guiTexturePath;
 		public String name;
 		
-		public static SmeltingFactoryTier getFromName(String tierName)
+		public static FactoryTier getFromName(String tierName)
 		{
-			for(SmeltingFactoryTier tier : values())
+			for(FactoryTier tier : values())
 			{
 				if(tierName.contains(tier.name))
 				{
@@ -76,7 +76,7 @@ public final class Tier
 			return BASIC;
 		}
 		
-		private SmeltingFactoryTier(String s, int process, String gui)
+		private FactoryTier(String s, int process, String gui)
 		{
 			name = s;
 			processes = process;

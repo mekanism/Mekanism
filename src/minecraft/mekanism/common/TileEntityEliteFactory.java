@@ -2,13 +2,13 @@ package mekanism.common;
 
 import mekanism.api.EnumColor;
 import mekanism.api.SideData;
-import mekanism.api.Tier.SmeltingFactoryTier;
+import mekanism.api.Tier.FactoryTier;
 
-public class TileEntityEliteSmeltingFactory extends TileEntitySmeltingFactory
+public class TileEntityEliteFactory extends TileEntityFactory
 {
-	public TileEntityEliteSmeltingFactory()
+	public TileEntityEliteFactory()
 	{
-		super(SmeltingFactoryTier.ELITE);
+		super(FactoryTier.ELITE);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));

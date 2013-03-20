@@ -21,6 +21,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerUsageHandler(new MetallurgicInfuserRecipeHandler());
 		API.registerRecipeHandler(new PurificationChamberRecipeHandler());
 		API.registerUsageHandler(new PurificationChamberRecipeHandler());
+		API.registerRecipeHandler(new FactoryRecipeHandler());
+		API.registerUsageHandler(new FactoryRecipeHandler());
 		
 		API.hideItem(Mekanism.boundingBlockID);
 	}

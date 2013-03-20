@@ -37,7 +37,7 @@ public class GeneratorsCommonProxy
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-	  	MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3005).getInt();
+	  	MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3010).getInt();
 		Mekanism.configuration.save();
 	}
 	

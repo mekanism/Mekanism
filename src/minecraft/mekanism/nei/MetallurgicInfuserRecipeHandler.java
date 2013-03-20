@@ -44,7 +44,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return "/resources/mekanism/gui/GuiMetallurgicInfuser.png";
+		return "/mods/mekanism/gui/GuiMetallurgicInfuser.png";
 	}
 	
 	@Override

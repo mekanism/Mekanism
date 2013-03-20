@@ -3,7 +3,8 @@ package mekanism.common;
 import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
 import mekanism.api.Tier;
-import mekanism.api.Tier.SmeltingFactoryTier;
+import mekanism.api.IFactory.RecipeType;
+import mekanism.api.Tier.FactoryTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -15,16 +16,16 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 
 public class ContainerSmeltingFactory extends Container
 {
-    private TileEntitySmeltingFactory tileEntity;
+    private TileEntityFactory tileEntity;
 
-    public ContainerSmeltingFactory(InventoryPlayer inventory, TileEntitySmeltingFactory tentity)
+    public ContainerSmeltingFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
         tileEntity = tentity;
         
         addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
         addSlotToContainer(new SlotEnergy(tentity, 1, 7, 35));
         
-        if(tileEntity.tier == SmeltingFactoryTier.BASIC)
+        if(tileEntity.tier == FactoryTier.BASIC)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -40,7 +41,7 @@ public class ContainerSmeltingFactory extends Container
 		        addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
-        else if(tileEntity.tier == SmeltingFactoryTier.ADVANCED)
+        else if(tileEntity.tier == FactoryTier.ADVANCED)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -56,7 +57,7 @@ public class ContainerSmeltingFactory extends Container
 	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
-        else if(tileEntity.tier == SmeltingFactoryTier.ELITE)
+        else if(tileEntity.tier == FactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
@@ -139,7 +140,7 @@ public class ContainerSmeltingFactory extends Container
 	            	}
 	            }
             }
-            else if(FurnaceRecipes.smelting().getSmeltingResult(slotStack) != null)
+            else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, false) != null)
     		{
             	if(!isInputSlot(slotID))
             	{
@@ -218,11 +219,11 @@ public class ContainerSmeltingFactory extends Container
     
     public boolean isInputSlot(int slot)
     {
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.BASIC)
+    	if(tileEntity.tier == Tier.FactoryTier.BASIC)
     		return slot >= 2 && slot <= 4;
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
+    	if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
     		return slot >= 2 && slot <= 6;
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ELITE)
+    	if(tileEntity.tier == Tier.FactoryTier.ELITE)
     		return slot >= 2 && slot <= 8;
     	
     	return false;
@@ -230,11 +231,11 @@ public class ContainerSmeltingFactory extends Container
     
     public boolean isOutputSlot(int slot)
     {
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.BASIC)
+    	if(tileEntity.tier == Tier.FactoryTier.BASIC)
     		return slot >= 5 && slot <= 7;
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ADVANCED)
+    	if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
     		return slot >= 7 && slot <= 11;
-    	if(tileEntity.tier == Tier.SmeltingFactoryTier.ELITE)
+    	if(tileEntity.tier == Tier.FactoryTier.ELITE)
     		return slot >= 9 && slot <= 15;
     	
     	return false;

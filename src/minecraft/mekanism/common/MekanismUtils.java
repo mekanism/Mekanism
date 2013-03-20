@@ -16,11 +16,14 @@ import mekanism.api.EnumColor;
 import mekanism.api.EnumGas;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
+import mekanism.api.IFactory;
+import mekanism.api.IFactory.RecipeType;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IPressurizedTube;
 import mekanism.api.ITubeConnection;
 import mekanism.api.InfuseObject;
 import mekanism.api.Tier.EnergyCubeTier;
+import mekanism.api.Tier.FactoryTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -239,9 +242,16 @@ public final class MekanismUtils
 	 * @param tier - tier to add to the Energy Cube
 	 * @return empty energy cube with defined tier
 	 */
-	public static ItemStack getEnergyCubeWithTier(EnergyCubeTier tier)
+	public static ItemStack getEnergyCube(EnergyCubeTier tier)
 	{
 		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(Mekanism.EnergyCube).getItem()).getUnchargedItem(tier);
+		return itemstack;
+	}
+	
+	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
+	{
+		ItemStack itemstack = new ItemStack(Mekanism.MachineBlock, 1, 5+tier.ordinal());
+		((IFactory)itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
 		return itemstack;
 	}
 	

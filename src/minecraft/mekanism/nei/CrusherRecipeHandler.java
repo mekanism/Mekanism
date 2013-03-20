@@ -36,7 +36,7 @@ public class CrusherRecipeHandler extends MachineRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return "/resources/mekanism/gui/GuiCrusher.png";
+		return "/mods/mekanism/gui/GuiCrusher.png";
 	}
 	
 	@Override

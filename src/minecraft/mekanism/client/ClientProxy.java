@@ -14,7 +14,7 @@ import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.TileEntityPressurizedTube;
 import mekanism.common.TileEntityPurificationChamber;
-import mekanism.common.TileEntitySmeltingFactory;
+import mekanism.common.TileEntityFactory;
 import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import mekanism.generators.client.ModelAdvancedSolarGenerator;
@@ -138,7 +138,7 @@ public class ClientProxy extends CommonProxy
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:
-				return new GuiSmeltingFactory(player.inventory, (TileEntitySmeltingFactory)tileEntity);
+				return new GuiFactory(player.inventory, (TileEntityFactory)tileEntity);
 			case 12:
 				return new GuiMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser)tileEntity);
 			case 13:

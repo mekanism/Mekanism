@@ -39,7 +39,7 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return "/resources/mekanism/gui/GuiCompressor.png";
+		return "/mods/mekanism/gui/GuiCompressor.png";
 	}
 	
 	@Override

@@ -38,7 +38,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	@Override
 	public String getGuiTexture()
 	{
-		return "/resources/mekanism/gui/GuiPurificationChamber.png";
+		return "/mods/mekanism/gui/GuiPurificationChamber.png";
 	}
 	
 	@Override

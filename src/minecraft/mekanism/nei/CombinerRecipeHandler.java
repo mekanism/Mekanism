@@ -40,7 +40,7 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return "/resources/mekanism/gui/GuiCombiner.png";
+		return "/mods/mekanism/gui/GuiCombiner.png";
 	}
 	
 	@Override

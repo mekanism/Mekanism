@@ -12,9 +12,11 @@ import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IElectricMachine;
 import mekanism.api.IEnergyCube;
+import mekanism.api.IFactory;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.Sound;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -406,16 +408,5 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		speedMultiplier = multiplier;
-	}
-	
-	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
-	{
-		ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
-        
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(electricityStored, itemStack);
-        
-        return itemStack;
 	}
 }

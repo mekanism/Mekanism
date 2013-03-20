@@ -174,8 +174,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         {
             inventory[2] = itemstack;
         }
-        else
-        {
+        else {
             inventory[2].stackSize += itemstack.stackSize;
         }
     }
@@ -204,8 +203,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         {
             return false;
         }
-        else
-        {
+        else {
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }

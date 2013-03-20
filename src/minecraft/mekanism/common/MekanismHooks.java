@@ -31,7 +31,6 @@ public final class MekanismHooks
 	private Class ForestryItem;
 	private Class Forestry;
 	
-	public ItemStack IC2TinDust;
 	public ItemStack IC2CoalDust;
 	
 	public int BuildCraftFuelID = 19108;
@@ -61,7 +60,6 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
-			IC2TinDust = getIC2Item("tinDust");
 			IC2CoalDust = getIC2Item("coalDust");
 			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.OreBlock, 1, 0), new ItemStack(Mekanism.Dust, 2, 2));

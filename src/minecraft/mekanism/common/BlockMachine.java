@@ -11,6 +11,9 @@ import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IEnergyCube;
+import mekanism.api.IFactory;
+import mekanism.api.Tier;
+import mekanism.api.IFactory.RecipeType;
 import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.BlockContainer;
@@ -40,9 +43,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 2: Combiner
  * 3: Crusher
  * 4: Theoretical Elementizer
- * 5: Basic Smelting Factory
- * 6: Advanced Smelting Factory
- * 7: Elite Smelting Factory
+ * 5: Basic Factory
+ * 6: Advanced Factory
+ * 7: Elite Factory
  * 8: Metallurgic Infuser
  * 9: Purification Chamber
  * @author AidanBrady
@@ -79,12 +82,12 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		icons[5][0] = register.func_94245_a("mekanism:BasicSmeltingFactoryFront");
 		icons[5][1] = register.func_94245_a("mekanism:BasicSmeltingFactorySide");
 		icons[5][2] = register.func_94245_a("mekanism:BasicSmeltingFactoryTop");
-		icons[6][0] = register.func_94245_a("mekanism:AdvancedSmeltingFactoryFront");
-		icons[6][1] = register.func_94245_a("mekanism:AdvancedSmeltingFactorySide");
-		icons[6][2] = register.func_94245_a("mekanism:AdvancedSmeltingFactoryTop");
-		icons[7][0] = register.func_94245_a("mekanism:EliteSmeltingFactoryFront");
-		icons[7][1] = register.func_94245_a("mekanism:EliteSmeltingFactorySide");
-		icons[7][2] = register.func_94245_a("mekanism:EliteSmeltingFactoryTop");
+		icons[6][0] = register.func_94245_a("mekanism:AdvancedFactoryFront");
+		icons[6][1] = register.func_94245_a("mekanism:AdvancedFactorySide");
+		icons[6][2] = register.func_94245_a("mekanism:AdvancedFactoryTop");
+		icons[7][0] = register.func_94245_a("mekanism:EliteFactoryFront");
+		icons[7][1] = register.func_94245_a("mekanism:EliteFactorySide");
+		icons[7][2] = register.func_94245_a("mekanism:EliteFactoryTop");
 		icons[8][0] = register.func_94245_a("mekanism:MetallurgicInfuserFrontOff");
 		icons[8][1] = register.func_94245_a("mekanism:MetallurgicInfuserFrontOn");
 		icons[8][2] = register.func_94245_a("mekanism:MetallurgicInfuserSideOff");
@@ -433,9 +436,16 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 			list.add(new ItemStack(i, 1, 4));
 		}
 		
-		list.add(new ItemStack(i, 1, 5));
-		list.add(new ItemStack(i, 1, 6));
-		list.add(new ItemStack(i, 1, 7));
+		for(RecipeType type : RecipeType.values())
+		{
+			for(Tier.FactoryTier tier : Tier.FactoryTier.values())
+			{
+				ItemStack stack = new ItemStack(i, 1, 5+tier.ordinal());
+				((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
+				list.add(stack);
+			}
+		}
+		
 		list.add(new ItemStack(i, 1, 8));
 		list.add(new ItemStack(i, 1, 9));
 	}
@@ -623,6 +633,12 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
 	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
 	        
+	        if(tileEntity instanceof TileEntityFactory)
+	        {
+	        	IFactory factoryItem = (IFactory)entityItem.getEntityItem().getItem();
+	        	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, entityItem.getEntityItem());
+	        }
+	        
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
@@ -648,6 +664,12 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
+        if(tileEntity instanceof TileEntityFactory)
+        {
+        	IFactory factoryItem = (IFactory)itemStack.getItem();
+        	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
+        }
+        
         return itemStack;
 	}
 	
@@ -663,6 +685,12 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        if(tileEntity instanceof TileEntityFactory)
+        {
+        	IFactory factoryItem = (IFactory)itemStack.getItem();
+        	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
+        }
         
         world.func_94571_i(x, y, z);
         
@@ -694,9 +722,9 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		COMBINER(2, 5, 2000, TileEntityCombiner.class, false),
 		CRUSHER(3, 6, 2000, TileEntityCrusher.class, false),
 		THEORETICAL_ELEMENTIZER(4, 7, 4800, TileEntityTheoreticalElementizer.class, true),
-		BASIC_SMELTING_FACTORY(5, 11, 6000, TileEntitySmeltingFactory.class, false),
-		ADVANCED_SMELTING_FACTORY(6, 11, 10000, TileEntityAdvancedSmeltingFactory.class, false),
-		ELITE_SMELTING_FACTORY(7, 11, 14000, TileEntityEliteSmeltingFactory.class, false),
+		BASIC_FACTORY(5, 11, 6000, TileEntityFactory.class, false),
+		ADVANCED_FACTORY(6, 11, 10000, TileEntityAdvancedFactory.class, false),
+		ELITE_FACTORY(7, 11, 14000, TileEntityEliteFactory.class, false),
 		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false);
 		
