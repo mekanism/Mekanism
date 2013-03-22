@@ -23,8 +23,10 @@ public class SoundHandler
 	/** The PaulsCode SoundSystem */
 	public SoundSystem soundSystem;
 	
+	/** All the sound references in the Minecraft game. */
 	public List<Sound> sounds = Collections.synchronizedList(new ArrayList<Sound>());
 	
+	/** The current base volume Minecraft is using. */
 	public float masterVolume = 0;
 	
 	/** SoundHandler -- a class that handles all Sounds used by Mekanism. */
@@ -37,6 +39,9 @@ public class SoundHandler
 		}
 	}
 	
+	/**
+	 * Ticks the sound handler.  Should be called every Minecraft tick, or 20 times per second.
+	 */
 	public void onTick()
 	{
 		synchronized(sounds)
@@ -53,9 +58,9 @@ public class SoundHandler
 					
 					TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
 					
-					if(tileEntity != null && tileEntity instanceof IActiveState && tileEntity instanceof IHasSound)
+					if(tileEntity instanceof IActiveState && tileEntity instanceof IHasSound)
 					{
-						if(((IHasSound)tileEntity).getSound() != sound)
+						if(((IHasSound)tileEntity).getSound().soundPath != sound.soundPath)
 						{
 							soundsToRemove.add(sound);
 							continue;
@@ -82,6 +87,13 @@ public class SoundHandler
 			{
 				System.out.println("[Mekanism] Removed dead sound '" + sound.identifier + ".'");
 				sound.remove();
+				
+				TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
+				
+				if(tileEntity instanceof IHasSound)
+				{
+					((IHasSound)tileEntity).removeSound();
+				}
 			}
 			
 			masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;
@@ -116,7 +128,7 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
-			return "Mekanism_" + sounds.size()+1 + "_" + new Random().nextInt(10000);
+			return "Mekanism_" + sounds.size() + "_" + new Random().nextInt(10000);
 		}
 	}
 }

@@ -617,6 +617,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 	
 	@Override
+	public void removeSound()
+	{
+		audio = null;
+	}
+	
+	@Override
 	public int getOrientation()
 	{
 		return facing;

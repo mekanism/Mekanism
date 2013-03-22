@@ -417,4 +417,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		return audio;
 	}
+	
+	@Override
+	public void removeSound()
+	{
+		audio = null;
+	}
 }

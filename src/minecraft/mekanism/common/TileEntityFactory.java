@@ -667,4 +667,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		return audio;
 	}
+	
+	@Override
+	public void removeSound()
+	{
+		audio = null;
+	}
 }

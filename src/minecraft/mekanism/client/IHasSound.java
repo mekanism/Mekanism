@@ -7,4 +7,9 @@ public interface IHasSound
 	 * @return sound
 	 */
 	public Sound getSound();
+	
+	/**
+	 * Removes the sound;
+	 */
+	public void removeSound();
 }

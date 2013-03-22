@@ -375,4 +375,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		return audio;
 	}
+	
+	@Override
+	public void removeSound()
+	{
+		audio = null;
+	}
 }

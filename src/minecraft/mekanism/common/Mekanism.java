@@ -307,10 +307,7 @@ public class Mekanism
 			"IAI", "PPP", "IAI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), "dustOsmium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 9), new Object[] {
-			"SRS", "RPR", "SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Item.redstone, Character.valueOf('P'), "ingotOsmium"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 9), new Object[] {
-			"RSR", "SPS", "RSR", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Item.redstone, Character.valueOf('P'), "ingotOsmium"
+			" S ", "SPS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('P'), "ingotOsmium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 10), new Object[] {
 			"SCS", "GIG", "SCS", Character.valueOf('S'), Block.cobblestone, Character.valueOf('C'), ControlCircuit, Character.valueOf('G'), Block.glass, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 9)
