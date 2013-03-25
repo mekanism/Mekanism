@@ -2,6 +2,7 @@ package mekanism.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import net.minecraft.tileentity.TileEntity;
@@ -85,6 +86,8 @@ public class GasTransferProtocol
 	{
 		loopThrough(pointer);
 		
+		Collections.shuffle(availableAcceptors);
+		
 		if(!availableAcceptors.isEmpty())
 		{
 			int divider = availableAcceptors.size();
@@ -101,8 +104,7 @@ public class GasTransferProtocol
 					remaining--;
 				}
 				
-				int rejects = acceptor.transferGasToAcceptor(currentSending, transferType);
-				gasToSend -= (currentSending - rejects);
+				gasToSend -= (currentSending - acceptor.transferGasToAcceptor(currentSending, transferType));
 			}
 		}
 		

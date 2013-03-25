@@ -31,9 +31,9 @@ public class BlockOre extends Block
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		icons[0] = register.func_94245_a("mekanism:OsmiumOre");
+		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 	}
 	
 	@Override

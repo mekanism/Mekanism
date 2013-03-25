@@ -17,6 +17,7 @@ import mekanism.common.TileEntityPurificationChamber;
 import mekanism.common.TileEntityFactory;
 import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
+import mekanism.common.TileEntityUniversalCable;
 import mekanism.generators.client.ModelAdvancedSolarGenerator;
 import mekanism.generators.client.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.RenderBioGenerator;
@@ -51,7 +52,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ClientProxy extends CommonProxy
 {
 	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int TUBE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int TRANSMITTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	@Override
 	public void loadConfiguration()
@@ -73,6 +74,7 @@ public class ClientProxy extends CommonProxy
 	{
 		ClientRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer", new RenderTheoreticalElementizer());
 		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
+		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
 	}
 	
 	@Override
@@ -86,7 +88,7 @@ public class ClientProxy extends CommonProxy
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new PressurizedTubeRenderer());
+		RenderingRegistry.registerBlockHandler(new TransmitterRenderer());
 		
 		System.out.println("[Mekanism] Render registrations complete.");
 	}

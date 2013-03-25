@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import ic2.api.Direction;
+import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.IEnergyStorage;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileSourceEvent;
@@ -16,6 +17,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import mekanism.api.IActiveState;
+import mekanism.api.ICableOutputter;
+import mekanism.api.IUniversalCable;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import mekanism.common.Mekanism;
@@ -38,7 +41,7 @@ import buildcraft.api.power.PowerProvider;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter
 {
 	/** The Sound instance for this generator. */
 	@SideOnly(Side.CLIENT)
@@ -94,7 +97,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		{
 			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
-			if(Mekanism.hooks.IC2Loaded)
+			if(tileEntity instanceof IUniversalCable)
+			{
+				setJoules(electricityStored - (Math.min(electricityStored, output) - MekanismUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
+			}
+			else if(tileEntity instanceof IEnergyConductor && Mekanism.hooks.IC2Loaded)
 			{
 				if(electricityStored >= output)
 				{
@@ -103,17 +110,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 					setJoules(electricityStored - (output - event.amount));
 				}
 			}
-			
-			if(tileEntity != null)
+			else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
 			{
-				if(isPowerReceptor(tileEntity))
-				{
-					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-	            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-	            	setJoules(electricityStored - transferEnergy);
-				}
+				IPowerReceptor receptor = (IPowerReceptor)tileEntity;
+            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
+            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+            	setJoules(electricityStored - transferEnergy);
 			}
 		}
 		
@@ -380,5 +383,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void removeSound()
 	{
 		audio = null;
+	}
+	
+	@Override
+	public boolean canOutputTo(ForgeDirection side)
+	{
+		return side == ForgeDirection.getOrientation(facing);
 	}
 }

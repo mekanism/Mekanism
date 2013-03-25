@@ -11,11 +11,10 @@ import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IEnergyCube;
-import mekanism.api.IFactory;
 import mekanism.api.Tier;
-import mekanism.api.IFactory.RecipeType;
 import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
+import mekanism.common.IFactory.RecipeType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -66,43 +65,43 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		icons[0][0] = register.func_94245_a("mekanism:EnrichmentChamberFrontOff");
-		icons[0][1] = register.func_94245_a("mekanism:EnrichmentChamberFrontOn");
-		icons[0][2] = register.func_94245_a("mekanism:SteelCasing");
-		icons[1][0] = register.func_94245_a("mekanism:OsmiumCompressorFrontOff");
-		icons[1][1] = register.func_94245_a("mekanism:OsmiumCompressorFrontOn");
-		icons[1][2] = register.func_94245_a("mekanism:SteelCasing");
-		icons[2][0] = register.func_94245_a("mekanism:CombinerFrontOff");
-		icons[2][1] = register.func_94245_a("mekanism:CombinerFrontOn");
-		icons[2][2] = register.func_94245_a("mekanism:SteelCasing");
-		icons[3][0] = register.func_94245_a("mekanism:CrusherFrontOff");
-		icons[3][1] = register.func_94245_a("mekanism:CrusherFrontOn");
-		icons[3][2] = register.func_94245_a("mekanism:SteelCasing");
-		icons[5][0] = register.func_94245_a("mekanism:BasicSmeltingFactoryFront");
-		icons[5][1] = register.func_94245_a("mekanism:BasicSmeltingFactorySide");
-		icons[5][2] = register.func_94245_a("mekanism:BasicSmeltingFactoryTop");
-		icons[6][0] = register.func_94245_a("mekanism:AdvancedFactoryFront");
-		icons[6][1] = register.func_94245_a("mekanism:AdvancedFactorySide");
-		icons[6][2] = register.func_94245_a("mekanism:AdvancedFactoryTop");
-		icons[7][0] = register.func_94245_a("mekanism:EliteFactoryFront");
-		icons[7][1] = register.func_94245_a("mekanism:EliteFactorySide");
-		icons[7][2] = register.func_94245_a("mekanism:EliteFactoryTop");
-		icons[8][0] = register.func_94245_a("mekanism:MetallurgicInfuserFrontOff");
-		icons[8][1] = register.func_94245_a("mekanism:MetallurgicInfuserFrontOn");
-		icons[8][2] = register.func_94245_a("mekanism:MetallurgicInfuserSideOff");
-		icons[8][3] = register.func_94245_a("mekanism:MetallurgicInfuserSideOn");
-		icons[8][4] = register.func_94245_a("mekanism:MetallurgicInfuserTopOff");
-		icons[8][5] = register.func_94245_a("mekanism:MetallurgicInfuserTopOn");
-		icons[8][6] = register.func_94245_a("mekanism:MetallurgicInfuserBackOff");
-		icons[8][7] = register.func_94245_a("mekanism:MetallurgicInfuserBackOn");
-		icons[9][0] = register.func_94245_a("mekanism:PurificationChamberFrontOff");
-		icons[9][1] = register.func_94245_a("mekanism:PurificationChamberFrontOn");
-		icons[9][2] = register.func_94245_a("mekanism:SteelCasing");
-		icons[10][0] = register.func_94245_a("mekanism:EnergizedSmelterFrontOff");
-		icons[10][1] = register.func_94245_a("mekanism:EnergizedSmelterFrontOn");
-		icons[10][2] = register.func_94245_a("mekanism:SteelCasing");
+		icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
+		icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
+		icons[0][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
+		icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
+		icons[1][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
+		icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
+		icons[2][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
+		icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
+		icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
+		icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
+		icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
+		icons[6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
+		icons[6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
+		icons[6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
+		icons[7][0] = register.registerIcon("mekanism:EliteFactoryFront");
+		icons[7][1] = register.registerIcon("mekanism:EliteFactorySide");
+		icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
+		icons[8][0] = register.registerIcon("mekanism:MetallurgicInfuserFrontOff");
+		icons[8][1] = register.registerIcon("mekanism:MetallurgicInfuserFrontOn");
+		icons[8][2] = register.registerIcon("mekanism:MetallurgicInfuserSideOff");
+		icons[8][3] = register.registerIcon("mekanism:MetallurgicInfuserSideOn");
+		icons[8][4] = register.registerIcon("mekanism:MetallurgicInfuserTopOff");
+		icons[8][5] = register.registerIcon("mekanism:MetallurgicInfuserTopOn");
+		icons[8][6] = register.registerIcon("mekanism:MetallurgicInfuserBackOff");
+		icons[8][7] = register.registerIcon("mekanism:MetallurgicInfuserBackOn");
+		icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
+		icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
+		icons[9][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
+		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
+		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 	}
 	
 	@Override
@@ -667,7 +666,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
-        return world.func_94571_i(x, y, z);
+        return world.setBlockToAir(x, y, z);
     }
     
     @Override
@@ -717,7 +716,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
         }
         
-        world.func_94571_i(x, y, z);
+        world.setBlockToAir(x, y, z);
         
         if(!returnBlock)
         {

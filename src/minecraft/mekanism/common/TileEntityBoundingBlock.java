@@ -22,20 +22,14 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 
 	public void setMainLocation(int x, int y, int z)
 	{
-		mainX = x;
-		mainY = y;
-		mainZ = z;
-
 		if(!worldObj.isRemote)
 		{
+			mainX = x;
+			mainY = y;
+			mainZ = z;
+			
 			PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
 		}
-	}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
 	}
 	
 	@Override
@@ -47,6 +41,12 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		{
 			PacketHandler.sendDataRequest(this);
 		}
+	}
+	
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
         super.readFromNBT(nbtTags);
 
         mainX = nbtTags.getInteger("mainX");
-        mainY = nbtTags.getInteger("mainX");
-        mainZ = nbtTags.getInteger("mainX");
+        mainY = nbtTags.getInteger("mainY");
+        mainZ = nbtTags.getInteger("mainZ");
     }
 
 	@Override

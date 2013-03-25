@@ -5,7 +5,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class ModelPressurizedTube extends ModelBase {
+public class ModelTransmitter extends ModelBase {
 	ModelRenderer Center;
 	ModelRenderer Up;
 	ModelRenderer Down;
@@ -14,7 +14,7 @@ public class ModelPressurizedTube extends ModelBase {
 	ModelRenderer Left;
 	ModelRenderer Right;
 
-	public ModelPressurizedTube() 
+	public ModelTransmitter() 
 	{
 		textureWidth = 64;
 		textureHeight = 64;

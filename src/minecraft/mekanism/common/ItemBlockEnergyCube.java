@@ -151,7 +151,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
     		tileEntity.tier = ((IEnergyCube)stack.getItem()).getTier(stack);
     		tileEntity.electricityStored = getJoules(stack);
-    		tileEntity.output = tileEntity.tier.OUTPUT;
     		
     		if(tileEntity.powerProvider != null)
     		{

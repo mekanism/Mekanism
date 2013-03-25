@@ -22,11 +22,11 @@ public class ItemDust extends ItemMekanism
 	}
 	
 	@Override
-	public void func_94581_a(IconRegister register)
+	public void updateIcons(IconRegister register)
 	{
 		for(int i = 0; i <= 8; i++)
 		{
-			icons[i] = register.func_94245_a("mekanism:" + en_USNames[i] + "Dust");
+			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Dust");
 		}
 	}
 

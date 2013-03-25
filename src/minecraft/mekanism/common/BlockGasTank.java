@@ -39,11 +39,11 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		icons[0] = register.func_94245_a("mekanism:GasTankTop");
-		icons[1] = register.func_94245_a("mekanism:GasTankSide");
-		icons[2] = register.func_94245_a("mekanism:GasTankFront");
+		icons[0] = register.registerIcon("mekanism:GasTankTop");
+		icons[1] = register.registerIcon("mekanism:GasTankSide");
+		icons[2] = register.registerIcon("mekanism:GasTankFront");
 	}
 	
 	@Override
@@ -239,7 +239,7 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
         
-        world.func_94571_i(x, y, z);
+        world.setBlockToAir(x, y, z);
         
         if(!returnBlock)
         {

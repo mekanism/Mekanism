@@ -13,13 +13,19 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public boolean canTransferGas()
 	{
-		return worldObj.func_94577_B(xCoord, yCoord, zCoord) == 0;
+		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
 	
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
 	}
 	
 	@Override

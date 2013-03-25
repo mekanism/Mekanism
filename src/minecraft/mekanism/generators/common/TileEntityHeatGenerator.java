@@ -49,7 +49,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	
 	public TileEntityHeatGenerator()
 	{
-		super("Heat Generator", 160000, 128);
+		super("Heat Generator", 160000, 160);
 		inventory = new ItemStack[2];
 		
 		fuels.put(Block.lavaStill.blockID, 1);

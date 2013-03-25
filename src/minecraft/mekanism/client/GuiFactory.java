@@ -1,9 +1,9 @@
 package mekanism.client;
 
-import mekanism.api.IFactory.RecipeType;
 import mekanism.api.Tier.FactoryTier;
 import mekanism.common.ContainerFactory;
 import mekanism.common.TileEntityFactory;
+import mekanism.common.IFactory.RecipeType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -33,7 +33,7 @@ public class GuiFactory extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-    	mc.renderEngine.func_98187_b("/mods/mekanism/gui/factory/" + tileEntity.tier.guiTexturePath);
+    	mc.renderEngine.bindTexture("/mods/mekanism/gui/factory/" + tileEntity.tier.guiTexturePath);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

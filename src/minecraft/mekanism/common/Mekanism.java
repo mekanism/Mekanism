@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import mekanism.api.IFactory.RecipeType;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
@@ -17,6 +16,7 @@ import mekanism.api.RecipeHelper;
 import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.api.Tier.FactoryTier;
 import mekanism.client.SoundHandler;
+import mekanism.common.IFactory.RecipeType;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -55,7 +55,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.4.2")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.0")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -77,7 +77,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 4, 2);
+	public static Version versionNumber = new Version(5, 5, 0);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -118,7 +118,7 @@ public class Mekanism
 	public static int energyCubeID = 3004;
 	public static int boundingBlockID = 3005;
 	public static int gasTankID = 3006;
-	public static int pressurizedTubeID = 3007;
+	public static int transmitterID = 3007;
 	
 	//Items
 	public static ItemElectricBow ElectricBow;
@@ -146,7 +146,7 @@ public class Mekanism
 	public static Block EnergyCube;
 	public static Block BoundingBlock;
 	public static Block GasTank;
-	public static Block PressurizedTube;
+	public static Block Transmitter;
 	
 	//Multi-ID Items
 	public static Item Dust;
@@ -303,14 +303,17 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 9, 8), new Object[] {
 			"OOO", "OGO", "OOO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('G'), "ingotRefinedGlowstone"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PressurizedTube, 8), new Object[] {
-			"IAI", "PPP", "IAI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('P'), "dustOsmium"
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Transmitter, 8, 0), new Object[] {
+			"OOO", "GGG", "OOO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 9), new Object[] {
 			" S ", "SPS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('P'), "ingotOsmium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 10), new Object[] {
 			"SCS", "GIG", "SCS", Character.valueOf('S'), Block.cobblestone, Character.valueOf('C'), ControlCircuit, Character.valueOf('G'), Block.glass, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 9)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Transmitter, 8, 1), new Object[] {
+			"OOO", "RRR", "OOO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('R'), Item.redstone
 		}));
 		
 		//Factory Recipes
@@ -429,7 +432,6 @@ public class Mekanism
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
-		LanguageRegistry.addName(PressurizedTube, "Pressurized Tube");
 		
 		//Localization for MultiBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
@@ -458,6 +460,10 @@ public class Mekanism
 		
 		//Localization for OreBlock
 		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.OsmiumOre.name", "Osmium Ore");
+		
+		//Localization for Transmitter
+		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.PressurizedTube.name", "Pressurized Tube");
+		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.UniversalCable.name", "Universal Cable");
 		
 		//Localization for EnergyCube
 		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Basic.name", "Basic Energy Cube");
@@ -550,19 +556,19 @@ public class Mekanism
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setUnlocalizedName("ObsidianTNT").setCreativeTab(tabMekanism);
 		BoundingBlock = (BlockBounding) new BlockBounding(boundingBlockID).setUnlocalizedName("BoundingBlock");
 		GasTank = new BlockGasTank(gasTankID).setUnlocalizedName("GasTank");
-		PressurizedTube = new BlockPressurizedTube(pressurizedTubeID).setUnlocalizedName("PressurizedTube");
+		Transmitter = new BlockTransmitter(transmitterID).setUnlocalizedName("Transmitter");
 		
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
 		GameRegistry.registerBlock(GasTank, "GasTank");
-		GameRegistry.registerBlock(PressurizedTube, "PressurizedTube");
 		
 		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setUnlocalizedName("BasicBlock");
 		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setUnlocalizedName("MachineBlock");
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setUnlocalizedName("OreBlock");
 		Item.itemsList[energyCubeID] = new ItemBlockEnergyCube(energyCubeID - 256, EnergyCube).setUnlocalizedName("EnergyCube");
+		Item.itemsList[transmitterID] = new ItemBlockTransmitter(transmitterID - 256, Transmitter).setUnlocalizedName("Transmitter");
 	}
 	
 	/**
@@ -988,8 +994,9 @@ public class Mekanism
 		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
-		//Register to recieve subscribed events
+		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
 
 		//Load this module
 		addItems();

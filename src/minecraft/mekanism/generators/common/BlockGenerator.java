@@ -62,12 +62,12 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		solarSprites[0] = register.func_94245_a("mekanism:SteelBlock");
-		solarSprites[1] = register.func_94245_a("mekanism:SolarGeneratorTop");
-		solarSprites[2] = register.func_94245_a("mekanism:SolarGeneratorSide");
-		solarSprites[3] = register.func_94245_a("mekanism:SolarGeneratorFront");
+		solarSprites[0] = register.registerIcon("mekanism:SteelBlock");
+		solarSprites[1] = register.registerIcon("mekanism:SolarGeneratorTop");
+		solarSprites[2] = register.registerIcon("mekanism:SolarGeneratorSide");
+		solarSprites[3] = register.registerIcon("mekanism:SolarGeneratorFront");
 	}
 	
 	@Override
@@ -548,7 +548,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
-        return world.func_94571_i(x, y, z);
+        return world.setBlockToAir(x, y, z);
     }
     
 	@Override
@@ -572,7 +572,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
-        world.func_94571_i(x, y, z);
+        world.setBlockToAir(x, y, z);
         
         if(!returnBlock)
         {

@@ -22,6 +22,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
 import mekanism.api.EnumColor;
+import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.common.Teleporter.Coords;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -36,7 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IPeripheral
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IStrictEnergyAcceptor
 {
 	/** This teleporter's frequency. */
 	public Teleporter.Code code;
@@ -375,6 +376,30 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+	{
+		return true;
+	}
+	
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededGas = MAX_ELECTRICITY-electricityStored;
+    	
+    	if(amount <= neededGas)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededGas;
+    		rejects = amount-neededGas;
+    	}
+    	
+    	return rejects;
+	}
+	
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
 	{
 		return true;
 	}

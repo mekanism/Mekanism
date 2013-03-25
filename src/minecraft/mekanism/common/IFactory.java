@@ -1,6 +1,5 @@
-package mekanism.api;
+package mekanism.common;
 
-import mekanism.common.RecipeHandler;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;

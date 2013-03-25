@@ -87,7 +87,7 @@ public class MachineryManager
 			{
 				MekanismUtils.doFakeBlockExplosion(machine.worldObj, machine.xCoord, machine.yCoord, machine.zCoord);
 			}
-			machine.worldObj.func_94571_i(machine.xCoord, machine.yCoord, machine.zCoord);
+			machine.worldObj.setBlockToAir(machine.xCoord, machine.yCoord, machine.zCoord);
 			machine.worldObj.removeBlockTileEntity(machine.xCoord, machine.yCoord, machine.zCoord);
 			remove(machine);
 		}

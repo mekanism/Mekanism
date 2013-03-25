@@ -10,7 +10,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
-		super("Advanced Solar Generator", 200000, 512, 240);
+		super("Advanced Solar Generator", 200000, 480, 240);
 	}
 
 	@Override
@@ -30,16 +30,16 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onBreak() 
 	{
-		worldObj.func_94571_i(xCoord, yCoord+1, zCoord);
+		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
 		
 		for(int x=-1;x<=1;x++)
 		{
 			for(int z=-1;z<=1;z++)
 			{
-				worldObj.func_94571_i(xCoord+x, yCoord+2, zCoord+z);
+				worldObj.setBlockToAir(xCoord+x, yCoord+2, zCoord+z);
 			}
 		}
 		
-		worldObj.func_94571_i(xCoord, yCoord, zCoord);
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
 }

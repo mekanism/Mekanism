@@ -176,13 +176,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 	
 	@Override
-	public boolean func_94042_c()
+	public boolean isInvNameLocalized()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
-	public boolean func_94041_b(int i, ItemStack itemstack)
+	public boolean isStackValidForSlot(int i, ItemStack itemstack)
 	{
 		return false;
 	}

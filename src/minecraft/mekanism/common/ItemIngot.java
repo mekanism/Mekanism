@@ -20,11 +20,11 @@ public class ItemIngot extends ItemMekanism
 	}
 	
 	@Override
-	public void func_94581_a(IconRegister register)
+	public void updateIcons(IconRegister register)
 	{
 		for(int i = 0; i <= 4; i++)
 		{
-			icons[i] = register.func_94245_a("mekanism:" + en_USNames[i] + "Ingot");
+			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Ingot");
 		}
 	}
 

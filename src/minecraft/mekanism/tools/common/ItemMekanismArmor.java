@@ -24,8 +24,8 @@ public class ItemMekanismArmor extends ItemArmor
 	}
     
 	@Override
-	public void func_94581_a(IconRegister register)
+	public void updateIcons(IconRegister register)
 	{
-		iconIndex = register.func_94245_a("mekanism:" + getUnlocalizedName().replace("item.", ""));
+		iconIndex = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
 }

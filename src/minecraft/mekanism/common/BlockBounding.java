@@ -23,28 +23,34 @@ public class BlockBounding extends Block
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
 	{
-		TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
-		return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
+			return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
+		} catch(Exception e) {
+			return false;
+		}
 	}
 	
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
-		return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
+			return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 	
 	@Override
 	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
-		TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
-		
-		if(Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)] != null)
-		{
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
 			return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].removeBlockByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+		} catch(Exception e) {
+			return false;
 		}
-		
-		return false;
 	}
 
 	@Override

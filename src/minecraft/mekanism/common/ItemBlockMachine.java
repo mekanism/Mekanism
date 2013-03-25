@@ -8,7 +8,6 @@ import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ICustomElectricItem;
-import mekanism.api.IFactory;
 import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.Block;

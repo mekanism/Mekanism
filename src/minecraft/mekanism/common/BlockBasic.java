@@ -51,18 +51,18 @@ public class BlockBasic extends Block
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		icons[0] = register.func_94245_a("mekanism:OsmiumBlock");
-		icons[1] = register.func_94245_a("mekanism:BronzeBlock");
-		icons[2] = register.func_94245_a("mekanism:RefinedObsidian");
-		icons[3] = register.func_94245_a("mekanism:CoalBlock");
-		icons[4] = register.func_94245_a("mekanism:RefinedGlowstone");
-		icons[5] = register.func_94245_a("mekanism:SteelBlock");
-		icons[6] = register.func_94245_a("mekanism:ControlPanel");
-		icons[7] = register.func_94245_a("mekanism:Teleporter");
-		icons[8] = register.func_94245_a("mekanism:TeleporterFrame");
-		icons[9] = register.func_94245_a("mekanism:SteelCasing");
+		icons[0] = register.registerIcon("mekanism:OsmiumBlock");
+		icons[1] = register.registerIcon("mekanism:BronzeBlock");
+		icons[2] = register.registerIcon("mekanism:RefinedObsidian");
+		icons[3] = register.registerIcon("mekanism:CoalBlock");
+		icons[4] = register.registerIcon("mekanism:RefinedGlowstone");
+		icons[5] = register.registerIcon("mekanism:SteelBlock");
+		icons[6] = register.registerIcon("mekanism:ControlPanel");
+		icons[7] = register.registerIcon("mekanism:Teleporter");
+		icons[8] = register.registerIcon("mekanism:TeleporterFrame");
+		icons[9] = register.registerIcon("mekanism:SteelCasing");
 	}
 	
 	@Override

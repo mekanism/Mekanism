@@ -16,17 +16,14 @@ public class GasTransmission
     {
     	TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
     	
-    	for(ForgeDirection orientation : ForgeDirection.values())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-    		if(orientation != ForgeDirection.UNKNOWN)
-    		{
-    			TileEntity tube = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
-    			
-    			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
-    			{
-    				tubes[orientation.ordinal()] = tube;
-    			}
-    		}
+			TileEntity tube = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			
+			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
+			{
+				tubes[orientation.ordinal()] = tube;
+			}
     	}
     	
     	return tubes;
@@ -41,17 +38,14 @@ public class GasTransmission
     {
     	IGasAcceptor[] acceptors = new IGasAcceptor[] {null, null, null, null, null, null};
     	
-    	for(ForgeDirection orientation : ForgeDirection.values())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-    		if(orientation != ForgeDirection.UNKNOWN)
-    		{
-    			TileEntity acceptor = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
-    			
-    			if(acceptor instanceof IGasAcceptor)
-    			{
-    				acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
-    			}
-    		}
+			TileEntity acceptor = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			
+			if(acceptor instanceof IGasAcceptor)
+			{
+				acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
+			}
     	}
     	
     	return acceptors;
@@ -66,17 +60,14 @@ public class GasTransmission
     {
     	ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
     	
-    	for(ForgeDirection orientation : ForgeDirection.values())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-    		if(orientation != ForgeDirection.UNKNOWN)
-    		{
-    			TileEntity connection = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
-    			
-    			if(connection instanceof ITubeConnection)
-    			{
-    				connections[orientation.ordinal()] = (ITubeConnection)connection;
-    			}
-    		}
+			TileEntity connection = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			
+			if(connection instanceof ITubeConnection)
+			{
+				connections[orientation.ordinal()] = (ITubeConnection)connection;
+			}
     	}
     	
     	return connections;
@@ -94,10 +85,26 @@ public class GasTransmission
     {
     	TileEntity pointer = VectorHelper.getTileEntityFromSide(sender.worldObj, new Vector3(sender.xCoord, sender.yCoord, sender.zCoord), facing);
     	
+    	if(pointer instanceof IPressurizedTube)
+    	{
+	    	return new GasTransferProtocol(pointer, sender, type, amount).calculate();
+    	}
+    	
+    	return amount;
+    }
+    
+    /**
+     * Emits gas from all sides of a TileEntity.
+     * @param type - gas type to send
+     * @param amount - amount of gas to send
+     * @param pointer - sending TileEntity
+     * @return rejected gas
+     */
+    public static int emitGasFromAllSides(EnumGas type, int amount, TileEntity pointer)
+    {
     	if(pointer != null)
     	{
-	    	GasTransferProtocol calculation = new GasTransferProtocol(pointer, sender, type, amount);
-	    	return calculation.calculate();
+    		return new GasTransferProtocol(pointer, pointer, type, amount).calculate();
     	}
     	
     	return amount;

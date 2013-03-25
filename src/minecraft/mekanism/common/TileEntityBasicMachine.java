@@ -12,7 +12,7 @@ import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IElectricMachine;
 import mekanism.api.IEnergyCube;
-import mekanism.api.IFactory;
+import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -339,6 +339,30 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	
     	prevActive = active;
     }
+	
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+	
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return true;
+	}
     
 	@Override
     public String getType()

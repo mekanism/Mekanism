@@ -3,6 +3,7 @@ package mekanism.common;
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.IEnergyStorage;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileSourceEvent;
@@ -13,7 +14,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 
+import mekanism.api.EnumGas;
+import mekanism.api.GasTransmission;
+import mekanism.api.ICableOutputter;
+import mekanism.api.IUniversalCable;
 import mekanism.api.IEnergyCube;
+import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -42,12 +48,10 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IVoltage, IPeripheral
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IVoltage, IPeripheral, ICableOutputter, IStrictEnergyAcceptor
 {
+	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
-	
-	/** Output per tick this machine can transfer. */
-	public int output;
 	
 	/**
 	 * A block used to store and transfer electricity.
@@ -112,26 +116,26 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		{
 			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
-			if(Mekanism.hooks.IC2Loaded)
+			if(tileEntity instanceof IUniversalCable)
 			{
-				if(electricityStored >= output)
+				setJoules(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - MekanismUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
+			}
+			else if(tileEntity instanceof IEnergyConductor && Mekanism.hooks.IC2Loaded)
+			{
+				if(electricityStored >= tier.OUTPUT)
 				{
-					EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, output);
+					EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, (int)(tier.OUTPUT*Mekanism.TO_IC2));
 					MinecraftForge.EVENT_BUS.post(event);
-					setJoules(electricityStored - (output - event.amount));
+					setJoules(electricityStored - (tier.OUTPUT - (event.amount*Mekanism.FROM_IC2)));
 				}
 			}
-			
-			if(tileEntity != null)
+			else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
 			{
-				if(isPowerReceptor(tileEntity))
-				{
-					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-	            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-	            	setJoules(electricityStored - transferEnergy);
-				}
+				IPowerReceptor receptor = (IPowerReceptor)tileEntity;
+            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
+            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+            	setJoules(electricityStored - transferEnergy);
 			}
 		}
 		
@@ -209,7 +213,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int getOutput() 
 	{
-		return output;
+		return tier.OUTPUT;
 	}
 
 	@Override
@@ -237,6 +241,30 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
     	
     	return (int)(rejects*Mekanism.TO_IC2);
     }
+	
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = tier.MAX_ELECTRICITY-electricityStored;
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+	
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return side != ForgeDirection.getOrientation(facing);
+	}
 
 	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
@@ -247,7 +275,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int getMaxEnergyOutput()
 	{
-		return output;
+		return tier.OUTPUT;
 	}
 
 	@Override
@@ -327,7 +355,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			case 0:
 				return new Object[] {electricityStored};
 			case 1:
-				return new Object[] {output};
+				return new Object[] {tier.OUTPUT};
 			case 2:
 				return new Object[] {tier.MAX_ELECTRICITY};
 			case 3:
@@ -355,6 +383,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		super.handlePacketData(dataStream);
 		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override
@@ -371,7 +400,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
         super.readFromNBT(nbtTags);
 
         tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
-        output = tier.OUTPUT;
     }
 
 	@Override
@@ -411,5 +439,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public int powerRequest() 
 	{
 		return (int)(tier.MAX_ELECTRICITY-electricityStored);
+	}
+	
+	@Override
+	public boolean canOutputTo(ForgeDirection side)
+	{
+		return side == ForgeDirection.getOrientation(facing);
 	}
 }

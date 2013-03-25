@@ -13,6 +13,7 @@ import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
+import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
@@ -43,7 +44,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -413,6 +414,30 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	}
         }
     }
+    
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+	
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return true;
+	}
     
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 

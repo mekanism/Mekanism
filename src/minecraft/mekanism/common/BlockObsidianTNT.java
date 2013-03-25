@@ -26,11 +26,11 @@ public class BlockObsidianTNT extends Block
     }
     
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		icons[0] = register.func_94245_a("mekanism:ObsidianTNTBottom");
-		icons[1] = register.func_94245_a("mekanism:ObsidianTNTTop");
-		icons[2] = register.func_94245_a("mekanism:ObsidianTNTSide");
+		icons[0] = register.registerIcon("mekanism:ObsidianTNTBottom");
+		icons[1] = register.registerIcon("mekanism:ObsidianTNTTop");
+		icons[2] = register.registerIcon("mekanism:ObsidianTNTSide");
 	}
 
     @Override
@@ -57,7 +57,7 @@ public class BlockObsidianTNT extends Block
         if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
-            world.func_94571_i(x, y, z);
+            world.setBlockToAir(x, y, z);
         }
     }
 
@@ -67,7 +67,7 @@ public class BlockObsidianTNT extends Block
         if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
-            world.func_94571_i(x, y, z);
+            world.setBlockToAir(x, y, z);
         }
     }
 
@@ -117,7 +117,7 @@ public class BlockObsidianTNT extends Block
         if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
         {
             onBlockDestroyedByPlayer(world, x, y, z, 1);
-            world.func_94571_i(x, y, z);
+            world.setBlockToAir(x, y, z);
             return true;
         }
         else
@@ -142,7 +142,7 @@ public class BlockObsidianTNT extends Block
             if(entityarrow.isBurning())
             {
                 onBlockDestroyedByPlayer(world, x, y, z, 1);
-                world.func_94571_i(x, y, z);
+                world.setBlockToAir(x, y, z);
             }
         }
     }

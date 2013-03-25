@@ -10,12 +10,13 @@ import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.EnumColor;
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
+import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
-import mekanism.api.IFactory.RecipeType;
 import mekanism.api.Tier.FactoryTier;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
+import mekanism.common.IFactory.RecipeType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound
+public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -478,6 +479,30 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int getOutputSlot(int operation)
 	{
 		return tier.processes+2+operation;
+	}
+	
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+	
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return true;
 	}
 
 	@Override

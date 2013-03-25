@@ -60,16 +60,16 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		icons[0][0] = register.func_94245_a("mekanism:BasicEnergyCubeFront");
-		icons[0][1] = register.func_94245_a("mekanism:BasicEnergyCubeSide");
-		icons[1][0] = register.func_94245_a("mekanism:AdvancedEnergyCubeFront");
-		icons[1][1] = register.func_94245_a("mekanism:AdvancedEnergyCubeSide");
-		icons[2][0] = register.func_94245_a("mekanism:EliteEnergyCubeFront");
-		icons[2][1] = register.func_94245_a("mekanism:EliteEnergyCubeSide");
-		icons[3][0] = register.func_94245_a("mekanism:UltimateEnergyCubeFront");
-		icons[3][1] = register.func_94245_a("mekanism:UltimateEnergyCubeSide");
+		icons[0][0] = register.registerIcon("mekanism:BasicEnergyCubeFront");
+		icons[0][1] = register.registerIcon("mekanism:BasicEnergyCubeSide");
+		icons[1][0] = register.registerIcon("mekanism:AdvancedEnergyCubeFront");
+		icons[1][1] = register.registerIcon("mekanism:AdvancedEnergyCubeSide");
+		icons[2][0] = register.registerIcon("mekanism:EliteEnergyCubeFront");
+		icons[2][1] = register.registerIcon("mekanism:EliteEnergyCubeSide");
+		icons[3][0] = register.registerIcon("mekanism:UltimateEnergyCubeFront");
+		icons[3][1] = register.registerIcon("mekanism:UltimateEnergyCubeSide");
 	}
 	
 	@Override
@@ -331,7 +331,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	        world.spawnEntityInWorld(entityItem);
     	}
     	
-        return world.func_94571_i(x, y, z);
+        return world.setBlockToAir(x, y, z);
     }
 	
 	@Override
@@ -367,7 +367,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
-        world.func_94571_i(x, y, z);
+        world.setBlockToAir(x, y, z);
         
         if(!returnBlock)
         {

@@ -16,11 +16,11 @@ import net.minecraft.tileentity.TileEntity;
 
 public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
-	private ModelPressurizedTube model;
+	private ModelTransmitter model;
 
 	public RenderPressurizedTube()
 	{
-		model = new ModelPressurizedTube();
+		model = new ModelTransmitter();
 	}
 
 	public void renderAModelAt(TileEntityPressurizedTube tileEntity, double d, double d1, double d2, float f)

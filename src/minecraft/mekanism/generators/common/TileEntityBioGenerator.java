@@ -53,7 +53,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 160000, 128);
+		super("Bio-Generator", 160000, 100);
 		inventory = new ItemStack[2];
 		
 		if(Mekanism.hooks.ForestryLoaded)

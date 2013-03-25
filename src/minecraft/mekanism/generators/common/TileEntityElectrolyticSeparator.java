@@ -13,6 +13,7 @@ import mekanism.api.GasTransmission;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
+import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITubeConnection;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
@@ -45,7 +46,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection, IStrictEnergyAcceptor
 {
 	/** This separator's water slot. */
 	public LiquidSlot waterSlot = new LiquidSlot(24000, 9);
@@ -271,6 +272,30 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			return 2;
 		}
 		return 1;
+	}
+	
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = MAX_ELECTRICITY-electricityStored;
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+	
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return true;
 	}
 	
 	/**
