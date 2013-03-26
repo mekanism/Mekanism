@@ -164,16 +164,15 @@ public class Mekanism
 	public static boolean controlCircuitOreDict = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
+	public static double TO_IC2 = .4;
+	public static double TO_BC = .16;
+	public static double FROM_IC2 = 2.5;
+	public static double FROM_BC = 6.25;
 	
 	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;
 	
 	public static int ANIMATED_TEXTURE_INDEX = 240;
-	
-	public static double TO_IC2 = .4;
-	public static double TO_BC = .16;
-	public static double FROM_IC2 = 2.5;
-	public static double FROM_BC = 6.25;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.

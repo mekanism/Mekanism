@@ -2,6 +2,9 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -10,6 +13,7 @@ import buildcraft.api.transport.IPipeConnection;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import mekanism.api.IUniversalCable;
 
@@ -63,6 +67,13 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	public boolean isPipeConnected(ForgeDirection with)
 	{
 		return false;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }
 
