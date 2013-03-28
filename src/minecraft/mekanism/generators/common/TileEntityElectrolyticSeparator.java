@@ -6,7 +6,6 @@ import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
@@ -18,23 +17,16 @@ import mekanism.api.ITubeConnection;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.item.ElectricItemHelper;
@@ -369,6 +361,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		data.add(outputType.name);
 		data.add(dumpType.name);
 		return data;
+	}
+	
+	@Override
+	public int getMaxGas(EnumGas type)
+	{
+		return MAX_GAS;
 	}
 	
 	@Override

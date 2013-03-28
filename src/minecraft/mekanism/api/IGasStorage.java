@@ -20,4 +20,11 @@ public interface IGasStorage
 	 * @param amount - amount to store
 	 */
 	public void setGas(EnumGas type, int amount);
+	
+	/**
+	 * Gets the maximum amount of gas this tile entity can store.
+	 * @param type - type of gas
+	 * @return maximum gas
+	 */
+	public int getMaxGas(EnumGas type);
 }

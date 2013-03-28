@@ -1,28 +1,19 @@
 package mekanism.common;
 
-import ic2.api.Direction;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyTile;
-
 import java.util.Arrays;
 import java.util.List;
-
-import buildcraft.api.power.IPowerReceptor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import mekanism.api.GasTransmission;
-import mekanism.api.IGasAcceptor;
 import mekanism.api.ITubeConnection;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 

@@ -3,8 +3,6 @@ package mekanism.nei;
 import java.util.Set;
 
 import mekanism.client.GuiCrusher;
-import mekanism.client.GuiElectricMachine;
-import mekanism.common.TileEntityCrusher;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class CrusherRecipeHandler extends MachineRecipeHandler

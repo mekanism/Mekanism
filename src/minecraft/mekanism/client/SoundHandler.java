@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.IActiveState;
-import mekanism.common.TileEntityBasicMachine;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import paulscode.sound.SoundSystem;

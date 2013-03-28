@@ -3,7 +3,6 @@ package mekanism.api;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -57,7 +56,10 @@ public class GasTransferProtocol
 			{
 				if(acceptor != original && acceptor.canReceiveGas(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite(), transferType))
 				{
-					availableAcceptors.add(acceptor);
+					if(!(acceptor instanceof IGasStorage) || (acceptor instanceof IGasStorage && (((IGasStorage)acceptor).getMaxGas(transferType) - ((IGasStorage)acceptor).getGas(transferType)) > 0))
+					{
+						availableAcceptors.add(acceptor);
+					}
 				}
 			}
 		}

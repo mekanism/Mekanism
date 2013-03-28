@@ -3,14 +3,9 @@ package mekanism.common;
 import universalelectricity.prefab.RecipeHelper;
 import cpw.mods.fml.common.Loader;
 import ic2.api.Ic2Recipes;
-import ic2.api.Items;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.src.*;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.

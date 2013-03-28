@@ -1,7 +1,6 @@
 package mekanism.nei;
 
 import java.awt.Rectangle;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -12,10 +11,8 @@ import mekanism.api.InfusionType;
 import mekanism.client.GuiMetallurgicInfuser;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;

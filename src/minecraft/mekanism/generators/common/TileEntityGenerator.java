@@ -3,7 +3,6 @@ package mekanism.generators.common;
 import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.IEnergyStorage;
-import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergySource;
 
@@ -37,7 +36,6 @@ import universalelectricity.core.vector.VectorHelper;
 import universalelectricity.core.block.IConductor;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerFramework;
 import buildcraft.api.power.PowerProvider;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;

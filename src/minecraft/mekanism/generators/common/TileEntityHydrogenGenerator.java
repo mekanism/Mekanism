@@ -11,12 +11,8 @@ import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import mekanism.common.PacketHandler;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.item.ElectricItemHelper;
@@ -243,7 +239,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	    	
 	    	return rejects;
 		}
-		return 0;
+		
+		return amount;
 	}
 	
 	@Override
@@ -272,5 +269,16 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	public boolean canTubeConnect(ForgeDirection side) 
 	{
 		return side != ForgeDirection.getOrientation(facing);
+	}
+
+	@Override
+	public int getMaxGas(EnumGas type) 
+	{
+		if(type == EnumGas.HYDROGEN)
+		{
+			return MAX_HYDROGEN;
+		}
+		
+		return 0;
 	}
 }

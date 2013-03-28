@@ -3,7 +3,6 @@ package mekanism.client;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 

@@ -8,8 +8,6 @@ import java.net.Socket;
 import cpw.mods.fml.client.FMLClientHandler;
 
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
-import net.minecraft.src.ModLoader;
 
 /**
  * Sends information about this mod to the Mekanism server.

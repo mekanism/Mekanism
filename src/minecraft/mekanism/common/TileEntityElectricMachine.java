@@ -4,15 +4,9 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.EnumColor;
 import mekanism.api.SideData;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.item.ElectricItemHelper;
-
-import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 

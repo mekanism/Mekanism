@@ -10,7 +10,6 @@ import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IActiveState;
-import mekanism.api.IEnergyCube;
 import mekanism.api.Tier;
 import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
@@ -22,7 +21,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

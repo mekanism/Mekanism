@@ -3,10 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 
 import mekanism.api.ITileNetwork;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 
 import com.google.common.io.ByteArrayDataInput;

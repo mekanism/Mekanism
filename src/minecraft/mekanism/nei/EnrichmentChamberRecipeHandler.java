@@ -2,9 +2,7 @@ package mekanism.nei;
 
 import java.util.Set;
 
-import mekanism.client.GuiElectricMachine;
 import mekanism.client.GuiEnrichmentChamber;
-import mekanism.common.TileEntityEnrichmentChamber;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler

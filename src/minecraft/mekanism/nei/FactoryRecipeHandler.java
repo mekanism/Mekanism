@@ -9,14 +9,8 @@ import mekanism.common.IFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import codechicken.core.ReflectionManager;
-import codechicken.nei.NEICompatibility;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
-import codechicken.nei.recipe.weakDependancy_Forge;
-import codechicken.nei.recipe.ShapedRecipeHandler.CachedShapedRecipe;
-import codechicken.nei.recipe.TemplateRecipeHandler.CachedRecipe;
 
 public class FactoryRecipeHandler extends ShapedRecipeHandler 
 {

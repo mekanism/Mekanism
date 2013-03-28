@@ -7,8 +7,6 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
-import mekanism.common.RecipeHandler.Recipe;
-
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 {
 	public TileEntityEnergizedSmelter()

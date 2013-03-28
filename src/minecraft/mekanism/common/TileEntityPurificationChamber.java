@@ -1,12 +1,9 @@
 package mekanism.common;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 
 import mekanism.api.EnumGas;
@@ -56,6 +53,17 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 			setSecondaryEnergy(amount);
 		}
 	}
+	
+	@Override
+	public int getMaxGas(EnumGas type)
+	{
+		if(type == EnumGas.OXYGEN)
+		{
+			return MAX_SECONDARY_ENERGY;
+		}
+		
+		return 0;
+	}
 
 	@Override
 	public int transferGasToAcceptor(int amount, EnumGas type) 
@@ -75,6 +83,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	    	}
 	    	return rejects;
 		}
+		
 		return amount;
 	}
 

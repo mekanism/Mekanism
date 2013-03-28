@@ -1,10 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.common.IBoundingBlock;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock
 {

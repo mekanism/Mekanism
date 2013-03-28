@@ -4,29 +4,20 @@ import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IElectricMachine;
-import mekanism.api.IEnergyCube;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

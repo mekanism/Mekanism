@@ -7,9 +7,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraftforge.common.ForgeDirection;
 
 import mekanism.api.GasTransmission;
-import mekanism.api.IGasAcceptor;
 import mekanism.api.ITubeConnection;
-import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;

@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.Map;
 
 import universalelectricity.core.block.IElectricityStorage;
 
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 
 import mekanism.api.IStrictEnergyAcceptor;
@@ -146,21 +144,21 @@ public class EnergyTransferProtocol
 		{
 			int divider = availableAcceptors.size();
 			double remaining = energyToSend % divider;
+			double currentRemaining = remaining;
 			double sending = (energyToSend-remaining)/divider;
 			
 			for(TileEntity acceptor : availableAcceptors)
 			{
 				double currentSending = sending;
 				
-				if(remaining > 0)
+				if(currentRemaining > 0)
 				{
-					currentSending++;
-					remaining--;
+					currentSending += (currentRemaining/divider);
+					currentRemaining -= (currentRemaining/divider);
 				}
 				
 				if(acceptor instanceof IStrictEnergyAcceptor)
 				{
-					double before = energyToSend;
 					energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
 				}
 				else if(acceptor instanceof IEnergySink)

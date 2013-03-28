@@ -1,11 +1,7 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;
 

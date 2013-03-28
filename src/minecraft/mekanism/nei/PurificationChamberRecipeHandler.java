@@ -2,9 +2,7 @@ package mekanism.nei;
 
 import java.util.Set;
 
-import mekanism.client.GuiAdvancedElectricMachine;
 import mekanism.client.GuiPurificationChamber;
-import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

@@ -10,9 +10,7 @@ import java.util.logging.Logger;
 
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
-import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
-import mekanism.api.RecipeHelper;
 import mekanism.api.Tier.EnergyCubeTier;
 import mekanism.api.Tier.FactoryTier;
 import mekanism.client.SoundHandler;
@@ -48,7 +46,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import cpw.mods.fml.server.FMLServerHandler;
 
 /**
  * Mekanism mod -- adds in Tools, Armor, Weapons, Machines, and Magic. Universal source.

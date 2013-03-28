@@ -6,9 +6,6 @@ import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IActiveState;
@@ -23,17 +20,12 @@ import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import mekanism.common.RecipeHandler.Recipe;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 

@@ -4,10 +4,8 @@ import java.util.Set;
 
 import net.minecraft.item.ItemStack;
 
-import mekanism.client.GuiAdvancedElectricMachine;
 import mekanism.client.GuiOsmiumCompressor;
 import mekanism.common.Mekanism;
-import mekanism.common.TileEntityOsmiumCompressor;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler

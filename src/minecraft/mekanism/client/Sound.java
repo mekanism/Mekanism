@@ -7,7 +7,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import paulscode.sound.SoundSystem;
 
 /**
  * Sound -- an object that is created in SoundHandler. A 'Sound' object runs off of

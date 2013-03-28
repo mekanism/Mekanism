@@ -11,7 +11,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

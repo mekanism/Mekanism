@@ -1,10 +1,8 @@
 package mekanism.common;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.common.RecipeHandler.Recipe;
-import net.minecraft.item.ItemStack;
 
 public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 {

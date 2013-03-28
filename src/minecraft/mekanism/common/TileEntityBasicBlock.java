@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import com.google.common.io.ByteArrayDataInput;
 
 import ic2.api.IWrenchable;
-import ic2.api.energy.EnergyNet;
 import mekanism.api.ITileNetwork;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import universalelectricity.prefab.tile.TileEntityDisableable;
 
 public abstract class TileEntityBasicBlock extends TileEntityDisableable implements IWrenchable, ITileNetwork

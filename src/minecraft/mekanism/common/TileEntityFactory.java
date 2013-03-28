@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
@@ -17,18 +16,12 @@ import mekanism.api.Tier.FactoryTier;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import mekanism.common.IFactory.RecipeType;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 

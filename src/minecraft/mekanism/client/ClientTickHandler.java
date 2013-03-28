@@ -2,12 +2,8 @@ package mekanism.client;
 
 import java.util.EnumSet;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import net.minecraft.src.ModLoader;
-import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;

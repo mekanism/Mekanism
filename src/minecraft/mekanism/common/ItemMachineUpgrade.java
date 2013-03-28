@@ -1,13 +1,7 @@
 package mekanism.common;
 
-import java.util.List;
-
 import universalelectricity.prefab.modifier.IModifier;
 
-import mekanism.api.TabProxy;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemMachineUpgrade extends ItemMekanism implements IModifier

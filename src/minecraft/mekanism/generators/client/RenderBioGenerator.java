@@ -6,8 +6,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.FMLClientHandler;
-
 public class RenderBioGenerator extends TileEntitySpecialRenderer
 {
 	private ModelBioGenerator model = new ModelBioGenerator();

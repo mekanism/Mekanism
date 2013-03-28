@@ -8,11 +8,8 @@ import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.vector.Vector3;
@@ -173,6 +170,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		{
 			gasStored = Math.max(Math.min(amount, MAX_GAS), 0);
 		}
+	}
+	
+	@Override
+	public int getMaxGas(EnumGas type)
+	{
+		return MAX_GAS;
 	}
 
 	@Override

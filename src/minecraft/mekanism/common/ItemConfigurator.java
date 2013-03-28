@@ -2,7 +2,6 @@ package mekanism.common;
 
 import universalelectricity.core.electricity.ElectricityPack;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import mekanism.api.EnumColor;

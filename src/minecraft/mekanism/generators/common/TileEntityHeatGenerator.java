@@ -6,19 +6,13 @@ import java.util.Map;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
-import mekanism.client.Sound;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismHooks;
 import mekanism.common.MekanismUtils;
-import mekanism.common.PacketHandler;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
@@ -29,10 +23,6 @@ import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.item.ElectricItemHelper;
 
 import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import dan200.computer.api.IComputerAccess;
 

@@ -1,14 +1,11 @@
 package mekanism.client;
 
-import mekanism.common.ContainerTeleporter;
 import mekanism.common.EnumPacketType;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.PacketHandler;
-import mekanism.common.TileEntityTeleporter;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;

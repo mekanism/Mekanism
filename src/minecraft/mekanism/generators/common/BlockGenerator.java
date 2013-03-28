@@ -1,19 +1,16 @@
 package mekanism.generators.common;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import buildcraft.api.tools.IToolWrench;
 
 import mekanism.api.IActiveState;
-import mekanism.api.IEnergyCube;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
 import mekanism.common.TileEntityElectricBlock;
-import mekanism.common.TileEntityEnergyCube;
 import mekanism.generators.client.GeneratorsClientProxy;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;

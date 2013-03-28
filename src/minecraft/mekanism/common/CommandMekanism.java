@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 
 public class CommandMekanism extends CommandBase
 {

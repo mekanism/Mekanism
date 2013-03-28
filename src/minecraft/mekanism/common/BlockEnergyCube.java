@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -15,27 +14,21 @@ import universalelectricity.prefab.implement.IToolConfigurator;
 
 import mekanism.api.IEnergyCube;
 import mekanism.api.Tier.EnergyCubeTier;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.src.*;
-import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 
 /**
  * Block class for handling multiple energy cube block IDs. 

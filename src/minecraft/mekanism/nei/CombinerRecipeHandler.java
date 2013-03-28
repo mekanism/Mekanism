@@ -1,14 +1,11 @@
 package mekanism.nei;
 
-import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-import mekanism.client.GuiAdvancedElectricMachine;
 import mekanism.client.GuiCombiner;
-import mekanism.common.TileEntityCombiner;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler

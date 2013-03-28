@@ -11,20 +11,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.transport.IPipeTile;
 
 import universalelectricity.core.block.IConnectionProvider;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
-import universalelectricity.prefab.multiblock.TileEntityMulti;
 
 import mekanism.api.EnumColor;
-import mekanism.api.EnumGas;
-import mekanism.api.GasTransferProtocol;
 import mekanism.api.IActiveState;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IConfigurable;
@@ -36,7 +31,6 @@ import mekanism.api.Tier.FactoryTier;
 import mekanism.common.IFactory.RecipeType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.packet.Packet3Chat;
@@ -44,7 +38,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.network.PacketDispatcher;

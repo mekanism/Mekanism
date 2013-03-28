@@ -6,8 +6,6 @@ import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.prefab.implement.IToolConfigurator;
 import buildcraft.api.tools.IToolWrench;
 
-import mekanism.api.IUpgradeManagement;
-import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;

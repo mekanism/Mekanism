@@ -1,13 +1,7 @@
 package mekanism.client;
 
-import ic2.api.Direction;
-import ic2.api.energy.tile.IEnergyAcceptor;
-
 import java.util.Arrays;
 
-import mekanism.api.GasTransmission;
-import mekanism.api.ICableOutputter;
-import mekanism.api.ITubeConnection;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityUniversalCable;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -15,10 +9,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
-
-import universalelectricity.core.block.IConnectionProvider;
-
-import buildcraft.api.power.IPowerReceptor;
 
 public class RenderUniversalCable extends TileEntitySpecialRenderer
 {

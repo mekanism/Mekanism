@@ -7,12 +7,8 @@ import universalelectricity.core.item.ElectricItemHelper;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
