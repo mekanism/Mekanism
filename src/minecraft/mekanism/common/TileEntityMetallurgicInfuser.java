@@ -126,12 +126,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			} catch(NoSuchMethodError e) {}
 		}
 		
-		if(powerProvider != null)
-		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
-			setJoules(electricityStored + received);
-		}
-		
 		boolean testActive = operatingTicks > 0;
 		
 		if(inventory[4] != null)
@@ -618,9 +612,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     }
 	
 	@Override
-	public int powerRequest() 
+	public int powerRequest(ForgeDirection side) 
 	{
-		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC);
+		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
 	}
 	
 	@Override

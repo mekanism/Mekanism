@@ -49,7 +49,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		
 		if(PowerFramework.currentFramework != null)
 		{
-			powerProvider = PowerFramework.currentFramework.createPowerProvider();
+			powerProvider = new LinkedPowerProvider(this);
 			powerProvider.configure(0, 0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
 		}
 	}
@@ -69,6 +69,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		
 		if(!worldObj.isRemote)
 		{
+			powerProvider.update(this);
 			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
 			setJoules(getJoules()+electricityPack.getWatts());
 		}
@@ -149,11 +150,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.loadPowerProvider(this, nbtTags);
-        }
 
         electricityStored = nbtTags.getDouble("electricityStored");
     }
@@ -162,11 +158,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        if(PowerFramework.currentFramework != null)
-        {
-        	PowerFramework.currentFramework.savePowerProvider(this, nbtTags);
-        }
         
         nbtTags.setDouble("electricityStored", electricityStored);
     }
@@ -178,10 +169,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public void setPowerProvider(IPowerProvider provider)
-	{
-		powerProvider = provider;
-	}
+	public void setPowerProvider(IPowerProvider provider) {}
 	
 	@Override
 	public IPowerProvider getPowerProvider() 
@@ -190,9 +178,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public int powerRequest() 
+	public int powerRequest(ForgeDirection side) 
 	{
-		return (int)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC);
+		return (int)Math.min(((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), 100);
 	}
 	
 	@Override

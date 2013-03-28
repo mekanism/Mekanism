@@ -1,6 +1,10 @@
 package mekanism.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,14 +16,17 @@ import buildcraft.api.power.PowerProvider;
 import buildcraft.api.transport.IPipeConnection;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
+import universalelectricity.core.block.IConnectionProvider;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.electricity.IElectricityNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import mekanism.api.IUniversalCable;
 
-public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor, IPipeConnection
+public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
 {
-	public IPowerProvider powerProvider;
+	public CablePowerProvider powerProvider;
 	
 	public TileEntityUniversalCable()
 	{
@@ -43,10 +50,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 
 	@Override
-	public void setPowerProvider(IPowerProvider provider) 
-	{
-		powerProvider = provider;
-	}
+	public void setPowerProvider(IPowerProvider provider) {}
 
 	@Override
 	public IPowerProvider getPowerProvider() 
@@ -58,15 +62,11 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	public void doWork() {}
 
 	@Override
-	public int powerRequest()
+	public int powerRequest(ForgeDirection from)
 	{
-		return canTransferEnergy() ? (int)Math.min(50, new EnergyTransferProtocol(this, this, new ArrayList()).neededEnergy()) : 0;
-	}
-	
-	@Override
-	public boolean isPipeConnected(ForgeDirection with)
-	{
-		return false;
+		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
+		ignored.add(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), from));
+		return canTransferEnergy() ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()) : 0;
 	}
 	
 	@Override
@@ -83,7 +83,6 @@ class CablePowerProvider extends PowerProvider
 	
 	public CablePowerProvider(TileEntity tile)
 	{
-		super();
 		tileEntity = tile;
 	}
 	

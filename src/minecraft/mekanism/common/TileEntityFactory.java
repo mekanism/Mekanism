@@ -124,12 +124,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			} catch(NoSuchMethodError e) {}
 		}
 		
-		if(powerProvider != null)
-		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
-			setJoules(electricityStored + received);
-		}
-		
 		boolean testActive = false;
 		
 		for(int i : progress)
@@ -640,9 +634,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     }
 	
 	@Override
-	public int powerRequest() 
+	public int powerRequest(ForgeDirection side) 
 	{
-		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC);
+		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
 	}
 	
 	@Override

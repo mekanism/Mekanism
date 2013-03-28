@@ -100,12 +100,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			}
 		}
 		
-		if(powerProvider != null)
-		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*10);
-			setJoules(electricityStored + received);
-		}
-		
 		if(inventory[0] != null)
 		{
 			if(electricityStored < MAX_ELECTRICITY)

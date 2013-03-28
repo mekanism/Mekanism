@@ -27,7 +27,7 @@ public class ItemWeatherOrb extends ItemMekanism
 	{
 		if(itemstack.getItemDamage() == 0)
 		{
-			entityplayer.openGui(Mekanism.instance, 2, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
+			entityplayer.openGui(Mekanism.instance, 2, world, 0, 0, 0);
 		}
 		return itemstack;
 	}

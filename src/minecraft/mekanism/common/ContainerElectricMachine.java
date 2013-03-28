@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -20,7 +19,7 @@ public class ContainerElectricMachine extends Container
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 56, 17));
         addSlotToContainer(new SlotEnergy(tentity, 1, 56, 53));
-        addSlotToContainer(new SlotFurnace(inventory.player, tentity, 2, 116, 35));
+        addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
         addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 180, 11));
         int slotX;
 

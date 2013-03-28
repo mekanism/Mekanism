@@ -78,6 +78,7 @@ public class GuiPortableTeleporter extends GuiScreen
 		if(guibutton.id == 0)
 		{
 			PacketHandler.sendPacketDataInt(EnumPacketType.PORTABLE_TELEPORT, 0);
+			mc.setIngameFocus();
 		}
 	}
     

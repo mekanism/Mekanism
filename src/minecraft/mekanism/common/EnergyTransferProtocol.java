@@ -21,7 +21,7 @@ import net.minecraftforge.common.ForgeDirection;
 public class EnergyTransferProtocol
 {
 	/** List of iterated cables, to prevent infinite loops. */
-	public ArrayList<TileEntity> iteratedTubes = new ArrayList<TileEntity>();
+	public ArrayList<TileEntity> iteratedCables = new ArrayList<TileEntity>();
 	
 	/** List of TileEntities that can take in the energy requested. */
 	public ArrayList<TileEntity> availableAcceptors = new ArrayList<TileEntity>();
@@ -85,29 +85,38 @@ public class EnergyTransferProtocol
 				{
 					if(((IStrictEnergyAcceptor)acceptor).canReceiveEnergy(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite()))
 					{
-						availableAcceptors.add(acceptor);
+						if((((IElectricityStorage)acceptor).getMaxJoules() - ((IElectricityStorage)acceptor).getJoules()) > 0)
+						{
+							availableAcceptors.add(acceptor);
+						}
 					}
 				}
 				else if(acceptor instanceof IEnergySink)
 				{
 					if(((IEnergySink)acceptor).acceptsEnergyFrom(original, MekanismUtils.toIC2Direction(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor))).getInverse()))
 					{
-						availableAcceptors.add(acceptor);
-						acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+						if(Math.min((((IEnergySink)acceptor).demandsEnergy()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
+						{
+							availableAcceptors.add(acceptor);
+							acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+						}
 					}
 				}
 				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
 					if(((IPowerReceptor)acceptor).getPowerProvider() != null)
 					{
-						availableAcceptors.add(acceptor);
-						acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+						if((((IPowerReceptor)acceptor).powerRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_BC) > 0)
+						{
+							availableAcceptors.add(acceptor);
+							acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+						}
 					}
 				}
 			}
 		}
 		
-		iteratedTubes.add(tile);
+		iteratedCables.add(tile);
 		
 		TileEntity[] tubes = MekanismUtils.getConnectedCables(tile);
 		
@@ -115,7 +124,7 @@ public class EnergyTransferProtocol
 		{
 			if(tube != null)
 			{
-				if(!iteratedTubes.contains(tube))
+				if(!iteratedCables.contains(tube))
 				{
 					loopThrough(tube);
 				}
@@ -151,6 +160,7 @@ public class EnergyTransferProtocol
 				
 				if(acceptor instanceof IStrictEnergyAcceptor)
 				{
+					double before = energyToSend;
 					energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
 				}
 				else if(acceptor instanceof IEnergySink)
@@ -161,7 +171,7 @@ public class EnergyTransferProtocol
 				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
 					IPowerReceptor receptor = (IPowerReceptor)acceptor;
-	            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+	            	double electricityNeeded = Math.min(receptor.powerRequest(acceptorDirections.get(acceptor).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
 	            	float transferEnergy = (float)Math.min(electricityNeeded, currentSending);
 	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
 					energyToSend -= transferEnergy;
@@ -196,7 +206,7 @@ public class EnergyTransferProtocol
 				}
 				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
-					totalNeeded += (((IPowerReceptor)acceptor).powerRequest()*Mekanism.FROM_BC);
+					totalNeeded += (((IPowerReceptor)acceptor).powerRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_BC);
 				}
 			}
 		}

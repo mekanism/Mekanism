@@ -486,7 +486,7 @@ public final class MekanismUtils
     	{
 			TileEntity acceptor = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
 			
-			if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || (acceptor instanceof IPowerReceptor && !(acceptor instanceof IPipeTile) && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded))
+			if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || (acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded))
 			{
 				acceptors[orientation.ordinal()] = acceptor;
 			}
@@ -569,7 +569,7 @@ public final class MekanismUtils
     		return true;
     	}
     	
-    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof IPipeTile) && !(tileEntity instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded)
+    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded)
     	{
     		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, toIC2Direction(side).getInverse()))
     		{

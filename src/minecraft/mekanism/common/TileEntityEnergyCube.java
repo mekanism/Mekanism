@@ -38,6 +38,7 @@ import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
+import universalelectricity.core.block.IConductor;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -69,12 +70,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
-		if(powerProvider != null)
-		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((tier.MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
-			setJoules(electricityStored + received);
-		}
 		
 		if(inventory[0] != null && electricityStored > 0)
 		{
@@ -112,7 +107,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			}
 		}
 		
-		if(electricityStored > 0)
+		if(electricityStored > 0 && !worldObj.isRemote)
 		{
 			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
@@ -132,45 +127,44 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
 			{
 				IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-            	double electricityNeeded = Math.min(receptor.powerRequest(), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+            	double electricityNeeded = Math.min(receptor.powerRequest(ForgeDirection.getOrientation(facing).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
             	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
             	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
             	setJoules(electricityStored - transferEnergy);
 			}
-		}
-		
-		if(!worldObj.isRemote)
-		{
-			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-			ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
-			
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+			else if(tileEntity instanceof IConductor)
 			{
-				if(direction != outputDirection)
+				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+				ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
+				
+				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 				{
-					IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
-					if(network != null)
+					if(direction != outputDirection)
 					{
-						inputNetworks.add(network);
+						IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
+						if(network != null)
+						{
+							inputNetworks.add(network);
+						}
 					}
 				}
-			}
-			
-			TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
+				
+				TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 
-			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
 
-			if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
-			{
-				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
-
-				if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
+				if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
 				{
-					outputNetwork.startProducing(this, Math.min(outputWatts, getJoules()) / getVoltage(), getVoltage());
-					setJoules(electricityStored - outputWatts);
-				}
-				else {
-					outputNetwork.stopProducing(this);
+					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
+
+					if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
+					{
+						outputNetwork.startProducing(this, Math.min(outputWatts, getJoules()) / getVoltage(), getVoltage());
+						setJoules(electricityStored - outputWatts);
+					}
+					else {
+						outputNetwork.stopProducing(this);
+					}
 				}
 			}
 		}
@@ -436,9 +430,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
-	public int powerRequest() 
+	public int powerRequest(ForgeDirection side) 
 	{
-		return (int)(tier.MAX_ELECTRICITY-electricityStored);
+		return side != ForgeDirection.getOrientation(facing) ? Math.min(100, (int)(tier.MAX_ELECTRICITY-electricityStored)) : 0;
 	}
 	
 	@Override

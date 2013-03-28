@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -28,7 +27,7 @@ public class ContainerMetallurgicInfuser extends Container
         addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
         addSlotToContainer(new Slot(tentity, 1, 17, 35));
         addSlotToContainer(new Slot(tentity, 2, 51, 43));
-        addSlotToContainer(new SlotFurnace(inventory.player, tentity, 3, 109, 43));
+        addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
         addSlotToContainer(new SlotEnergy(tentity, 4, 143, 35));
         int slotX;
 

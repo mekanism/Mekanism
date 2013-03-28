@@ -105,12 +105,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 		
-		if(powerProvider != null)
-		{
-			int received = (int)(powerProvider.useEnergy(0, (float)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
-			setJoules(electricityStored + received);
-		}
-		
 		if(!registered && worldObj != null && !worldObj.isRemote)
 		{
 			Mekanism.manager.register(this);
@@ -389,9 +383,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
-	public int powerRequest() 
+	public int powerRequest(ForgeDirection side) 
 	{
-		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC);
+		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
 	}
 	
 	@Override

@@ -164,10 +164,10 @@ public class Mekanism
 	public static boolean controlCircuitOreDict = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
-	public static double TO_IC2 = .4;
-	public static double TO_BC = .16;
-	public static double FROM_IC2 = 2.5;
-	public static double FROM_BC = 6.25;
+	public static double TO_IC2 = .1;
+	public static double TO_BC = .04;
+	public static double FROM_IC2 = 10;
+	public static double FROM_BC = 25;
 	
 	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;
@@ -358,7 +358,6 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 2), new ItemStack(CompressedCarbon, 4));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreLapis), new ItemStack(Item.dyePowder, 12, 4));
-		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 12));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreCoal), new ItemStack(Block.oreCoal));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreDiamond), new ItemStack(Item.diamond, 2));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.cobblestoneMossy), new ItemStack(Block.cobblestone));

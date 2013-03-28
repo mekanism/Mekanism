@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -38,7 +37,7 @@ public class ContainerFactory extends Container
         	{
         		int xAxis = 55 + (i*38);
         		
-		        addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
+		        addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
         else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -54,7 +53,7 @@ public class ContainerFactory extends Container
         	{
 	        	int xAxis = 35 + (i*26);
 	        	
-	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
+	        	addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
         else if(tileEntity.tier == FactoryTier.ELITE)
@@ -70,7 +69,7 @@ public class ContainerFactory extends Container
         	{
 	        	int xAxis = 29 + (i*19);
 	        	
-	        	addSlotToContainer(new SlotFurnace(inventory.player, tentity, tileEntity.tier.processes+2+i, xAxis, 57));
+	        	addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+2+i, xAxis, 57));
         	}
         }
         
