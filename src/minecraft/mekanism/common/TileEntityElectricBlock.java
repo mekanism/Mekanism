@@ -69,7 +69,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		
 		if(!worldObj.isRemote)
 		{
-			powerProvider.update(this);
+			if(powerProvider != null)
+			{
+				powerProvider.update(this);
+			}
+			
 			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
 			setJoules(getJoules()+electricityPack.getWatts());
 		}

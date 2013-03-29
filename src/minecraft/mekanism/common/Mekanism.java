@@ -52,7 +52,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.1")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -74,7 +74,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 5, 0);
+	public static Version versionNumber = new Version(5, 5, 1);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -161,10 +161,10 @@ public class Mekanism
 	public static boolean controlCircuitOreDict = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
-	public static double TO_IC2 = .1;
-	public static double TO_BC = .04;
-	public static double FROM_IC2 = 10;
-	public static double FROM_BC = 25;
+	public static double TO_IC2;
+	public static double TO_BC;
+	public static double FROM_IC2;
+	public static double FROM_BC;
 	
 	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;

@@ -39,6 +39,6 @@ public class IC2EnergyHandler
 			}
 		}
 		
-		event.amount = (int)(MekanismUtils.emitEnergyFromAllSidesIgnore(event.amount*Mekanism.FROM_IC2, tileEntity, ignoredTiles)*Mekanism.TO_IC2);
+		event.amount = (int)(CableUtils.emitEnergyFromAllSidesIgnore(event.amount*Mekanism.FROM_IC2, tileEntity, ignoredTiles)*Mekanism.TO_IC2);
 	}
 }

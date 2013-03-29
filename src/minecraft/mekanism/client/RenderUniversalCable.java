@@ -2,7 +2,7 @@ package mekanism.client;
 
 import java.util.Arrays;
 
-import mekanism.common.MekanismUtils;
+import mekanism.common.CableUtils;
 import mekanism.common.TileEntityUniversalCable;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -28,15 +28,15 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 
-		TileEntity[] connectedAcceptors = MekanismUtils.getConnectedEnergyAcceptors(tileEntity);
-		TileEntity[] connectedCables = MekanismUtils.getConnectedCables(tileEntity);
-		TileEntity[] connectedOutputters = MekanismUtils.getConnectedOutputters(tileEntity);
+		TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tileEntity);
+		TileEntity[] connectedCables = CableUtils.getConnectedCables(tileEntity);
+		TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tileEntity);
 		
 		for(TileEntity tile : connectedAcceptors)
 		{
 			int side = Arrays.asList(connectedAcceptors).indexOf(tile);
 			
-			if(MekanismUtils.canCableConnect(ForgeDirection.getOrientation(side), tileEntity))
+			if(CableUtils.canConnectToAcceptor(ForgeDirection.getOrientation(side), tileEntity))
 			{
 				connectable[side] = true;
 			}

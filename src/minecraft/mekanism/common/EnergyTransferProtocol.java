@@ -73,7 +73,7 @@ public class EnergyTransferProtocol
 	 */
 	public void loopThrough(TileEntity tile)
 	{
-		TileEntity[] acceptors = MekanismUtils.getConnectedEnergyAcceptors(tile);
+		TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors(tile);
 		
 		for(TileEntity acceptor : acceptors)
 		{
@@ -116,7 +116,7 @@ public class EnergyTransferProtocol
 		
 		iteratedCables.add(tile);
 		
-		TileEntity[] tubes = MekanismUtils.getConnectedCables(tile);
+		TileEntity[] tubes = CableUtils.getConnectedCables(tile);
 		
 		for(TileEntity tube : tubes)
 		{

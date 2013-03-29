@@ -20,6 +20,7 @@ import mekanism.api.ICableOutputter;
 import mekanism.api.IUniversalCable;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
+import mekanism.common.CableUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
@@ -98,7 +99,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			
 			if(tileEntity instanceof IUniversalCable)
 			{
-				setJoules(electricityStored - (Math.min(electricityStored, output) - MekanismUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
+				setJoules(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
 			}
 			else if(tileEntity instanceof IEnergyConductor && Mekanism.hooks.IC2Loaded)
 			{

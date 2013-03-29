@@ -83,6 +83,6 @@ class CablePowerProvider extends PowerProvider
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
 		ignored.add(VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), from));
-		MekanismUtils.emitEnergyFromAllSidesIgnore(quantity*Mekanism.FROM_BC, tileEntity, ignored);
+		CableUtils.emitEnergyFromAllSidesIgnore(quantity*Mekanism.FROM_BC, tileEntity, ignored);
 	}
 }
