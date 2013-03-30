@@ -29,9 +29,8 @@ import net.minecraft.world.World;
  * 4: Refined Glowstone
  * 5: Steel Block
  * 6: Control Panel
- * 7: Teleporter
- * 8: Teleporter Frame
- * 9: Steel Casing
+ * 7: Teleporter Frame
+ * 8: Steel Casing
  * @author AidanBrady
  *
  */
@@ -56,9 +55,8 @@ public class BlockBasic extends Block
 		icons[4] = register.registerIcon("mekanism:RefinedGlowstone");
 		icons[5] = register.registerIcon("mekanism:SteelBlock");
 		icons[6] = register.registerIcon("mekanism:ControlPanel");
-		icons[7] = register.registerIcon("mekanism:Teleporter");
-		icons[8] = register.registerIcon("mekanism:TeleporterFrame");
-		icons[9] = register.registerIcon("mekanism:SteelCasing");
+		icons[7] = register.registerIcon("mekanism:TeleporterFrame");
+		icons[8] = register.registerIcon("mekanism:SteelCasing");
 	}
 	
 	@Override
@@ -86,7 +84,6 @@ public class BlockBasic extends Block
 		//list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));
 		list.add(new ItemStack(i, 1, 8));
-		list.add(new ItemStack(i, 1, 9));
 	}
 	
 	@Override
@@ -110,23 +107,6 @@ public class BlockBasic extends Block
     			return true;
     		}
     	}
-    	else if(metadata == 7)
-    	{
-    		if(entityplayer.isSneaking())
-    		{
-    			entityplayer.openGui(Mekanism.instance, 13, world, x, y, z);
-    			return true;
-    		}
-    		if(!world.isRemote)
-    		{
-    			TileEntityTeleporter tileEntity = (TileEntityTeleporter)world.getBlockTileEntity(x, y, z);
-    			
-    			if(tileEntity.canTeleport() == 1)
-    			{
-    				tileEntity.teleport();
-    			}
-    		}
-    	}
         return false;
     }
     
@@ -140,7 +120,7 @@ public class BlockBasic extends Block
         		return 8;
         	case 4:
         		return 15;
-        	case 8:
+        	case 7:
         		return 12;
         }
         return 0;
@@ -149,7 +129,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		return metadata == 6 || metadata == 7;
+		return metadata == 6;
 	}
 	
 	@Override
@@ -159,8 +139,6 @@ public class BlockBasic extends Block
 		{
 		     case 6:
 		    	 return new TileEntityControlPanel();
-		     case 7:
-		    	 return new TileEntityTeleporter();
 		}
 		return null;
 	}
@@ -171,54 +149,4 @@ public class BlockBasic extends Block
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 	}
-	
-    @Override
-    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
-    {
-        TileEntity tile = world.getBlockTileEntity(x, y, z);
-
-        if (tile instanceof TileEntityContainerBlock)
-        {
-        	Random random = new Random();
-        	TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)tile;
-        	
-            for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
-            {
-                ItemStack slotStack = tileEntity.getStackInSlot(i);
-
-                if (slotStack != null)
-                {
-                    float xRandom = random.nextFloat() * 0.8F + 0.1F;
-                    float yRandom = random.nextFloat() * 0.8F + 0.1F;
-                    float zRandom = random.nextFloat() * 0.8F + 0.1F;
-
-                    while (slotStack.stackSize > 0)
-                    {
-                        int j = random.nextInt(21) + 10;
-
-                        if (j > slotStack.stackSize)
-                        {
-                            j = slotStack.stackSize;
-                        }
-
-                        slotStack.stackSize -= j;
-                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
-
-                        if (slotStack.hasTagCompound())
-                        {
-                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-                        }
-
-                        float k = 0.05F;
-                        item.motionX = (double)((float)random.nextGaussian() * k);
-                        item.motionY = (double)((float)random.nextGaussian() * k + 0.2F);
-                        item.motionZ = (double)((float)random.nextGaussian() * k);
-                        world.spawnEntityInWorld(item);
-                    }
-                }
-            }
-        }
-	        
-    	super.breakBlock(world, x, y, z, i1, i2);
-    }
 }

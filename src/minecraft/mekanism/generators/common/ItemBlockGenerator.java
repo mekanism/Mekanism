@@ -2,11 +2,18 @@ package mekanism.generators.common;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import ic2.api.ICustomElectricItem;
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
+import mekanism.api.EnumColor;
+import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
@@ -16,6 +23,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 
@@ -27,11 +35,10 @@ import net.minecraft.world.World;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Hydro Generator
  * @author AidanBrady
  *
  */
-public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICustomElectricItem
+public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICustomElectricItem, ISustainedInventory
 {
 	public Block metaBlock;
 	
@@ -79,9 +86,6 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 			case 5:
 				name = "AdvancedSolarGenerator";
 				break;
-			case 6:
-				name = "HydroGenerator";
-				break;
 			default:
 				name = "Unknown";
 				break;
@@ -90,11 +94,18 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		double energy = getJoules(itemstack);
-		
-		list.add("Stored Energy: " + ElectricityDisplay.getDisplayShort(energy, ElectricUnit.JOULES));
+		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
+		}
+		else {
+			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
+			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagList != null && !getInventory(itemstack).tagList.isEmpty()));
+		}
 	}
 
 	@Override
@@ -139,30 +150,40 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public double getVoltage(ItemStack itemStack) 
 	{
-		return 120;
+		return itemStack.getItemDamage() == 3 ? 240 : 120;
 	}
 
 	@Override
 	public ElectricityPack onReceive(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		double rejectedElectricity = Math.max((getJoules(itemStack) + electricityPack.getWatts()) - getMaxJoules(itemStack), 0);
-		double joulesToStore = electricityPack.getWatts() - rejectedElectricity;
-		this.setJoules(getJoules(itemStack) + joulesToStore, itemStack);
-		return ElectricityPack.getFromWatts(joulesToStore, getVoltage(itemStack));
+		if(itemStack.getItemDamage() == 2)
+		{
+			double rejectedElectricity = Math.max((getJoules(itemStack) + electricityPack.getWatts()) - getMaxJoules(itemStack), 0);
+			double joulesToStore = electricityPack.getWatts() - rejectedElectricity;
+			this.setJoules(getJoules(itemStack) + joulesToStore, itemStack);
+			return ElectricityPack.getFromWatts(joulesToStore, getVoltage(itemStack));
+		}
+		
+		return new ElectricityPack();
 	}
 
 	@Override
 	public ElectricityPack onProvide(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		double electricityToUse = Math.min(getJoules(itemStack), electricityPack.getWatts());
-		setJoules(getJoules(itemStack) - electricityToUse, itemStack);
-		return ElectricityPack.getFromWatts(electricityToUse, getVoltage(itemStack));
+		if(itemStack.getItemDamage() != 2)
+		{
+			double electricityToUse = Math.min(getJoules(itemStack), electricityPack.getWatts());
+			setJoules(getJoules(itemStack) - electricityToUse, itemStack);
+			return ElectricityPack.getFromWatts(electricityToUse, getVoltage(itemStack));
+		}
+		
+		return new ElectricityPack();
 	}
 
 	@Override
 	public ElectricityPack getReceiveRequest(ItemStack itemStack)
 	{
-		return ElectricityPack.getFromWatts(Math.min(getMaxJoules(itemStack) - getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack));
+		return itemStack.getItemDamage() == 2 ? ElectricityPack.getFromWatts(Math.min(getMaxJoules(itemStack) - getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack)) : new ElectricityPack();
 	}
 
 	@Override
@@ -206,6 +227,7 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 		{
     		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     		tileEntity.electricityStored = getJoules(stack);
+    		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		return true;
 		}
 		
@@ -215,28 +237,50 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		double givenEnergy = amount*Mekanism.FROM_IC2;
-		double energyNeeded = getMaxJoules(itemStack)-getJoules(itemStack);
-		double energyToStore = Math.min(Math.min(amount, getMaxJoules(itemStack)*0.01), energyNeeded);
-		
-		if(!simulate)
+		if(itemStack.getItemDamage() == 2)
 		{
-			setJoules(getJoules(itemStack) + energyToStore, itemStack);
+			double givenEnergy = amount*Mekanism.FROM_IC2;
+			double energyNeeded = getMaxJoules(itemStack)-getJoules(itemStack);
+			double energyToStore = Math.min(Math.min(amount, getMaxJoules(itemStack)*0.01), energyNeeded);
+			
+			if(!simulate)
+			{
+				setJoules(getJoules(itemStack) + energyToStore, itemStack);
+			}
+			
+			if(energyToStore < 1)
+			{
+				return 1;
+			}
+			
+			return (int)(energyToStore*Mekanism.TO_IC2);
 		}
-		return (int)(energyToStore*Mekanism.TO_IC2);
+		
+		return 0;
 	}
 	
 	@Override
 	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		double energyWanted = amount*Mekanism.FROM_IC2;
-		double energyToGive = Math.min(Math.min(energyWanted, getMaxJoules(itemStack)*0.01), getJoules(itemStack));
-		
-		if(!simulate)
+		if(itemStack.getItemDamage() != 2)
 		{
-			setJoules(getJoules(itemStack) - energyToGive, itemStack);
+			double energyWanted = amount*Mekanism.FROM_IC2;
+			double energyToGive = Math.min(Math.min(energyWanted, getMaxJoules(itemStack)*0.01), getJoules(itemStack));
+			
+			if(!simulate)
+			{
+				setJoules(getJoules(itemStack) - energyToGive, itemStack);
+			}
+			
+			if(energyWanted < 1)
+			{
+				return 1;
+			}
+			
+			return (int)(energyToGive*Mekanism.TO_IC2);
 		}
-		return (int)(energyToGive*Mekanism.TO_IC2);
+		
+		return 0;
 	}
 
 	@Override
@@ -252,38 +296,72 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	}
 	
 	@Override
-	public boolean canProvideEnergy()
+	public boolean canProvideEnergy(ItemStack itemStack)
 	{
-		return true;
+		return itemStack.getItemDamage() != 2;
 	}
 
 	@Override
-	public int getChargedItemId()
-	{
-		return itemID;
-	}
-
-	@Override
-	public int getEmptyItemId()
+	public int getChargedItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getMaxCharge()
+	public int getEmptyItemId(ItemStack itemStack)
+	{
+		return itemID;
+	}
+
+	@Override
+	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
-	public int getTier()
+	public int getTier(ItemStack itemStack)
 	{
 		return 3;
 	}
 
 	@Override
-	public int getTransferLimit()
+	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
+	}
+	
+	@Override
+	public void setInventory(NBTTagList nbtTags, Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+	
+			itemStack.stackTagCompound.setTag("Items", nbtTags);
+		}
+	}
+
+	@Override
+	public NBTTagList getInventory(Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null) 
+			{ 
+				return null; 
+			}
+			
+			return itemStack.stackTagCompound.getTagList("Items");
+		}
+		
+		return null;
 	}
 }

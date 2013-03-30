@@ -129,7 +129,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				if(Mekanism.hooks.IC2Loaded && inventory[4].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[4].getItem();
-					if(item.canProvideEnergy())
+					if(item.canProvideEnergy(inventory[4]))
 					{
 						double gain = ElectricItem.discharge(inventory[4], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 						setJoules(electricityStored + gain);
@@ -661,5 +661,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		speedMultiplier = multiplier;
+	}
+	
+	@Override
+	public boolean supportsUpgrades(Object... data)
+	{
+		return true;
 	}
 }

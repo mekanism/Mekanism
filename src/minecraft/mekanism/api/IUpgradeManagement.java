@@ -29,4 +29,11 @@ public interface IUpgradeManagement
 	 * @param data - ItemStack parameter if getting from an item
 	 */
 	public void setSpeedMultiplier(int multiplier, Object... data);
+	
+	/**
+	 * Whether or not this item or block supports upgrades.
+	 * @param data - ItemStack parameter if getting from an item
+	 * @return if the item or block supports upgrades
+	 */
+	public boolean supportsUpgrades(Object... data);
 }

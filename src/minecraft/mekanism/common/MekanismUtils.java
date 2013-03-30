@@ -55,7 +55,7 @@ public final class MekanismUtils
 	 */
 	public static void checkForUpdates(EntityPlayer entityplayer)
 	{
-		if(Mekanism.updateNotifications)
+		if(Mekanism.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 		{
 			if(!Mekanism.latestVersionNumber.equals("null"))
 			{

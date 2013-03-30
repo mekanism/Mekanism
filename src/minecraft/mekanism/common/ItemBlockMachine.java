@@ -2,12 +2,18 @@ package mekanism.common;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ICustomElectricItem;
+import mekanism.api.EnumColor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.Block;
@@ -16,6 +22,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
 /**
@@ -31,10 +38,11 @@ import net.minecraft.world.World;
  * 8: Metallurgic Infuser
  * 9: Purification Chamber
  * 10: Energized Smelter
+ * 11: Teleporter
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory
+public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory
 {
 	public Block metaBlock;
 	
@@ -92,6 +100,9 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 			case 10:
 				name = "EnergizedSmelter";
 				break;
+			case 11:
+				name = "Teleporter";
+				break;
 			default:
 				name = "Unknown";
 				break;
@@ -100,18 +111,30 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		double energy = getJoules(itemstack);
-		
-		if(isFactory(itemstack))
+		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add("Recipe Type: " + RecipeType.values()[getRecipeType(itemstack)].getName());
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
 		}
-		
-		list.add("Stored Energy: " + ElectricityDisplay.getDisplayShort(energy, ElectricUnit.JOULES));
-		list.add("Energy: x" + (getEnergyMultiplier(itemstack)+1));
-		list.add("Speed: x" + (getSpeedMultiplier(itemstack)+1));
+		else {
+			if(isFactory(itemstack))
+			{
+				list.add(EnumColor.INDIGO + "Recipe Type: " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
+			}
+			
+			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
+			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			
+			if(supportsUpgrades(itemstack))
+			{
+				list.add(EnumColor.PURPLE + "Energy: " + EnumColor.GREY + "x" + (getEnergyMultiplier(itemstack)+1));
+				list.add(EnumColor.PURPLE + "Speed: " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
+			}
+			
+			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagList != null && !getInventory(itemstack).tagList.isEmpty()));
+		}
 	}
 
 	@Override
@@ -171,9 +194,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	@Override
 	public ElectricityPack onProvide(ElectricityPack electricityPack, ItemStack itemStack)
 	{
-		double electricityToUse = Math.min(getJoules(itemStack), electricityPack.getWatts());
-		setJoules(getJoules(itemStack) - electricityToUse, itemStack);
-		return ElectricityPack.getFromWatts(electricityToUse, getVoltage(itemStack));
+		return new ElectricityPack();
 	}
 
 	@Override
@@ -185,7 +206,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	@Override
 	public ElectricityPack getProvideRequest(ItemStack itemStack)
 	{
-		return ElectricityPack.getFromWatts(Math.min(getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack));
+		return new ElectricityPack();
 	}
 	
 	public double getTransferRate(ItemStack itemStack)
@@ -213,6 +234,8 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
     			((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
     		}
     		
+    		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+    		
     		tileEntity.electricityStored = getJoules(stack);
     	}
     	
@@ -230,20 +253,19 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		{
 			setJoules(getJoules(itemStack) + energyToStore, itemStack);
 		}
+		
+		if(energyToStore < 1)
+		{
+			return 1;
+		}
+		
 		return (int)(energyToStore*Mekanism.TO_IC2);
 	}
 	
 	@Override
 	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		double energyWanted = amount*Mekanism.FROM_IC2;
-		double energyToGive = Math.min(Math.min(energyWanted, getMaxJoules(itemStack)*0.01), getJoules(itemStack));
-		
-		if(!simulate)
-		{
-			setJoules(getJoules(itemStack) - energyToGive, itemStack);
-		}
-		return (int)(energyToGive*Mekanism.TO_IC2);
+		return amount;
 	}
 
 	@Override
@@ -259,37 +281,37 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	}
 	
 	@Override
-	public boolean canProvideEnergy()
+	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return false;
 	}
 
 	@Override
-	public int getChargedItemId()
+	public int getChargedItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getEmptyItemId()
+	public int getEmptyItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getMaxCharge()
+	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
-	public int getTier()
+	public int getTier(ItemStack itemStack)
 	{
 		return 3;
 	}
 
 	@Override
-	public int getTransferLimit()
+	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
 	}
@@ -301,7 +323,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		{
 			ItemStack itemStack = (ItemStack) data[0];
 
-			if (itemStack.stackTagCompound == null) 
+			if(itemStack.stackTagCompound == null) 
 			{ 
 				return 0; 
 			}
@@ -319,7 +341,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if (itemStack.stackTagCompound == null)
+			if(itemStack.stackTagCompound == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
@@ -361,6 +383,20 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 			itemStack.stackTagCompound.setInteger("speedMultiplier", multiplier);
 		}
 	}
+	
+	@Override
+	public boolean supportsUpgrades(Object... data)
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			if(((ItemStack)data[0]).getItemDamage() != 11)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	@Override
 	public int getRecipeType(ItemStack itemStack)
@@ -388,5 +424,39 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	public boolean isFactory(ItemStack itemStack)
 	{
 		return itemStack.getItem() instanceof ItemBlockMachine && itemStack.getItemDamage() >= 5 && itemStack.getItemDamage() <= 7;
+	}
+
+	@Override
+	public void setInventory(NBTTagList nbtTags, Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+	
+			itemStack.stackTagCompound.setTag("Items", nbtTags);
+		}
+	}
+
+	@Override
+	public NBTTagList getInventory(Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null) 
+			{ 
+				return null; 
+			}
+			
+			return itemStack.stackTagCompound.getTagList("Items");
+		}
+		
+		return null;
 	}
 }

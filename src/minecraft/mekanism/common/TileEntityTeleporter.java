@@ -99,7 +99,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 				if(Mekanism.hooks.IC2Loaded && inventory[0].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[0].getItem();
-					if(item.canProvideEnergy())
+					if(item.canProvideEnergy(inventory[0]))
 					{
 						double gain = ElectricItem.discharge(inventory[0], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 						setJoules(electricityStored + gain);
@@ -272,7 +272,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 8;
+		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
 	
 	public int getScaledEnergyLevel(int i)

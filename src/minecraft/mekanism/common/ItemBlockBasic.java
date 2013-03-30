@@ -71,12 +71,9 @@ public class ItemBlockBasic extends ItemBlock
 				name = "ControlPanel";
 				break;
 			case 7:
-				name = "Teleporter";
-				break;
-			case 8:
 				name = "TeleporterFrame";
 				break;
-			case 9:
+			case 8:
 				name = "SteelCasing";
 				break;
 			default:

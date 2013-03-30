@@ -127,53 +127,6 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
     		return icons[tileEntity.tier.ordinal()][1];
     	}
     }
-	
-    @Override
-    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
-    {
-        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-
-        if (tileEntity != null)
-        {
-        	for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
-            {
-                ItemStack slotStack = tileEntity.getStackInSlot(i);
-
-                if (slotStack != null)
-                {
-                    float xRandom = powerRand.nextFloat() * 0.8F + 0.1F;
-                    float yRandom = powerRand.nextFloat() * 0.8F + 0.1F;
-                    float zRandom = powerRand.nextFloat() * 0.8F + 0.1F;
-
-                    while (slotStack.stackSize > 0)
-                    {
-                        int j = powerRand.nextInt(21) + 10;
-
-                        if (j > slotStack.stackSize)
-                        {
-                            j = slotStack.stackSize;
-                        }
-
-                        slotStack.stackSize -= j;
-                        EntityItem entityItem = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
-
-                        if (slotStack.hasTagCompound())
-                        {
-                            entityItem.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-                        }
-
-                        float motion = 0.05F;
-                        entityItem.motionX = powerRand.nextGaussian() * motion;
-                        entityItem.motionY = powerRand.nextGaussian() * motion + 0.2F;
-                        entityItem.motionZ = powerRand.nextGaussian() * motion;
-                        world.spawnEntityInWorld(entityItem);
-                    }
-                }
-            }
-        }
-	        
-    	super.breakBlock(world, x, y, z, i1, i2);
-    }
     
     @Override
     public int quantityDropped(Random random)
@@ -195,10 +148,10 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 		{
 			ItemStack discharged = new ItemStack(this);
 			discharged.setItemDamage(100);
-			((ItemBlockEnergyCube)discharged.getItem()).setTier(discharged, tier);
+			((ItemBlockEnergyCube)discharged.getItem()).setEnergyCubeTier(discharged, tier);
 			list.add(discharged);
 			ItemStack charged = new ItemStack(this);
-			((ItemBlockEnergyCube)charged.getItem()).setTier(charged, tier);
+			((ItemBlockEnergyCube)charged.getItem()).setEnergyCubeTier(charged, tier);
 			((ItemBlockEnergyCube)charged.getItem()).setJoules(tier.MAX_ELECTRICITY, charged);
 			list.add(charged);
 		};
@@ -313,13 +266,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
             double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             
-            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(Mekanism.EnergyCube));
-	        
-	        IEnergyCube energyCube = (IEnergyCube)entityItem.getEntityItem().getItem();
-	        energyCube.setTier(entityItem.getEntityItem(), tileEntity.tier);
-	        
-	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
-	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
 	        
 	        world.spawnEntityInWorld(entityItem);
     	}
@@ -340,10 +287,13 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
     	ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
         
         IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
-        energyCube.setTier(itemStack, tileEntity.tier);
+        energyCube.setEnergyCubeTier(itemStack, tileEntity.tier);
         
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+        inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
         
         return itemStack;
 	}
@@ -351,14 +301,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
-    	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-    	ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
-        
-        IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
-        energyCube.setTier(itemStack, tileEntity.tier);
-        
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z);
         
         world.setBlockToAir(x, y, z);
         

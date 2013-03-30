@@ -7,6 +7,7 @@ import buildcraft.api.tools.IToolWrench;
 
 import mekanism.api.IActiveState;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
@@ -328,48 +329,9 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
     {
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
 
-        if (tileEntity != null)
+        if(tileEntity instanceof IBoundingBlock)
         {
-            for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
-            {
-                ItemStack slotStack = tileEntity.getStackInSlot(i);
-
-                if (slotStack != null)
-                {
-                    float xRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float yRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float zRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-
-                    while (slotStack.stackSize > 0)
-                    {
-                        int j = machineRand.nextInt(21) + 10;
-
-                        if (j > slotStack.stackSize)
-                        {
-                            j = slotStack.stackSize;
-                        }
-
-                        slotStack.stackSize -= j;
-                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
-
-                        if (slotStack.hasTagCompound())
-                        {
-                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-                        }
-
-                        float k = 0.05F;
-                        item.motionX = (double)((float)machineRand.nextGaussian() * k);
-                        item.motionY = (double)((float)machineRand.nextGaussian() * k + 0.2F);
-                        item.motionZ = (double)((float)machineRand.nextGaussian() * k);
-                        world.spawnEntityInWorld(item);
-                    }
-                }
-        	}
-            
-            if(tileEntity instanceof IBoundingBlock)
-            {
-            	((IBoundingBlock)tileEntity).onBreak();
-            }
+        	((IBoundingBlock)tileEntity).onBreak();
         }
 	        
     	super.breakBlock(world, x, y, z, i1, i2);
@@ -537,10 +499,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
             double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             
-            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z)));
-	        
-	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
-	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
 	        
 	        world.spawnEntityInWorld(entityItem);
     	}
@@ -557,17 +516,16 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
         
+        ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+        inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+        
         return itemStack;
 	}
 	
 	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-    	ItemStack itemStack = new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z));
-        
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z);
         
         world.setBlockToAir(x, y, z);
         

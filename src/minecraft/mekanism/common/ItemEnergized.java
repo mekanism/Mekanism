@@ -9,6 +9,7 @@ import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
+import mekanism.api.EnumColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -38,9 +39,8 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		double energy = getJoules(itemstack);
-		
-		list.add("Stored Energy: " + ElectricityDisplay.getDisplayShort(energy, ElectricUnit.JOULES));
+		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
+		list.add(EnumColor.AQUA + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 	}
 	
 	@Override
@@ -160,6 +160,12 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 		{
 			setJoules(getJoules(itemStack) + energyToStore, itemStack);
 		}
+		
+		if(energyToStore < 1)
+		{
+			return 1;
+		}
+		
 		return (int)(energyToStore*Mekanism.TO_IC2);
 	}
 	
@@ -173,6 +179,12 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 		{
 			setJoules(getJoules(itemStack) - energyToGive, itemStack);
 		}
+		
+		if(energyWanted < 1)
+		{
+			return 1;
+		}
+		
 		return (int)(energyToGive*Mekanism.TO_IC2);
 	}
 
@@ -189,37 +201,37 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	}
 	
 	@Override
-	public boolean canProvideEnergy()
+	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return true;
 	}
 
 	@Override
-	public int getChargedItemId()
+	public int getChargedItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getEmptyItemId()
+	public int getEmptyItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getMaxCharge()
+	public int getMaxCharge(ItemStack itemStack)
 	{
-		return (int)(MAX_ELECTRICITY*Mekanism.TO_IC2);
+		return 0;
 	}
 
 	@Override
-	public int getTier()
+	public int getTier(ItemStack itemStack)
 	{
 		return 3;
 	}
 
 	@Override
-	public int getTransferLimit()
+	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
 	}

@@ -26,7 +26,7 @@ public class ItemElectricBow extends ItemEnergized
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add("Fire Mode: " + (getFireState(itemstack) ? "ON" : "OFF"));
+		list.add(EnumColor.PINK + "Fire Mode: " + EnumColor.GREY + (getFireState(itemstack) ? "ON" : "OFF"));
 	}
 
     @Override
@@ -36,13 +36,13 @@ public class ItemElectricBow extends ItemEnergized
     	{
 	        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
 	
-	        if (flag || player.inventory.hasItem(Item.arrow.itemID))
+	        if(flag || player.inventory.hasItem(Item.arrow.itemID))
 	        {
 	            int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
-	            float f = (float)maxItemUse / 20F;
+	            float f = maxItemUse / 20F;
 	            f = (f * f + f * 2.0F) / 3F;
 	
-	            if ((double)f < 0.1D)
+	            if(f < 0.1D)
 	            {
 	                return;
 	            }
@@ -54,7 +54,7 @@ public class ItemElectricBow extends ItemEnergized
 	
 	            EntityArrow entityarrow = new EntityArrow(world, player, f * 2.0F);
 	
-	            if (f == 1.0F)
+	            if(f == 1.0F)
 	            {
 	            	entityarrow.setIsCritical(true);
 	            }
@@ -66,16 +66,15 @@ public class ItemElectricBow extends ItemEnergized
 	            
 	            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 	
-	            if (flag)
+	            if(flag)
 	            {
 	            	entityarrow.canBePickedUp = 2;
 	            }
-	            else
-	            {
+	            else {
 	            	player.inventory.consumeInventoryItem(Item.arrow.itemID);
 	            }
 	
-	            if (!world.isRemote)
+	            if(!world.isRemote)
 	            {
 	                world.spawnEntityInWorld(entityarrow);
 	                entityarrow.setFire(getFireState(itemstack) ? 60 : 0);
@@ -105,20 +104,11 @@ public class ItemElectricBow extends ItemEnergized
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {
-    	if(!entityplayer.isSneaking())
-    	{
-	        if (entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Item.arrow.itemID))
-	        {
-	            entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
-	        }
-    	}
-    	else {
-    		if(!world.isRemote)
-    		{
-    			setFireState(itemstack, !getFireState(itemstack));
-	    		entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (getFireState(itemstack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF")));
-    		}
-    	}
+        if(entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Item.arrow.itemID))
+        {
+            entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
+        }
+    	
         return itemstack;
     }
     

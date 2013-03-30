@@ -422,6 +422,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
+	public boolean supportsUpgrades(Object... data)
+	{
+		return true;
+	}
+	
+	@Override
 	public Sound getSound()
 	{
 		return audio;

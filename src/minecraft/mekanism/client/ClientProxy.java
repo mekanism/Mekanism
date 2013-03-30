@@ -150,6 +150,7 @@ public class ClientProxy extends CommonProxy
 		super.loadTickHandler();
 		
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(new ClientPlayerTickHandler(), Side.CLIENT);
 	}
 	
 	@Override

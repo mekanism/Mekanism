@@ -87,8 +87,7 @@ public class PacketHandler implements IPacketHandler
 						{
 							((ITileNetwork)tileEntity).handlePacketData(dataStream);
 						}
-					} catch (Exception e)
-					{
+					} catch(Exception e) {
 						System.err.println("[Mekanism] Error while handling tile entity packet.");
 						e.printStackTrace();
 					}
@@ -124,8 +123,7 @@ public class PacketHandler implements IPacketHandler
 			    		}
 			    		
 			    		entityplayer.openGui(instance, guiId, entityplayer.worldObj, x, y, z);
-			    	} catch (Exception e)
-			    	{
+			    	} catch(Exception e) {
 			    		System.err.println("[Mekanism] Error while handling control panel packet.");
 			    		e.printStackTrace();
 			    	}
@@ -143,8 +141,7 @@ public class PacketHandler implements IPacketHandler
 							entityplayer.worldObj.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 							entityplayer.worldObj.spawnParticle("portal", x + random.nextFloat(), y + 1 + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 						}
-			    	} catch (Exception e)
-			    	{
+			    	} catch(Exception e) {
 			    		System.err.println("[Mekanism] Error while handling portal FX packet.");
 			    		e.printStackTrace();
 			    	}
@@ -162,8 +159,7 @@ public class PacketHandler implements IPacketHandler
 			    			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
 			    			item.setDigit(currentStack, index, digit);
 			    		}
-			    	} catch (Exception e)
-			    	{
+			    	} catch(Exception e) {
 			    		System.err.println("[Mekanism] Error while handling digit update packet.");
 			    		e.printStackTrace();
 			    	}
@@ -178,8 +174,7 @@ public class PacketHandler implements IPacketHandler
 			    			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
 			    			item.setStatus(currentStack, dataStream.readInt());
 			    		}
-			    	} catch (Exception e)
-			    	{
+			    	} catch(Exception e) {
 			    		System.err.println("[Mekanism] Error while handling status update packet.");
 			    		e.printStackTrace();
 			    	}
@@ -210,12 +205,11 @@ public class PacketHandler implements IPacketHandler
 			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord, coords.zCoord+0.5, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
 			    					
 			    					entityplayer.worldObj.playSoundAtEntity(entityplayer, "mob.endermen.portal", 1.0F, 1.0F);
-			    					PacketHandler.sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
+			    					sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
 			    				}
 			    			}
 			    		}
-			    	} catch (Exception e)
-			    	{
+			    	} catch(Exception e) {
 			    		System.err.println("[Mekanism] Error while handling portable teleport packet.");
 			    		e.printStackTrace();
 			    	}
@@ -234,15 +228,46 @@ public class PacketHandler implements IPacketHandler
 			    		{
 			    			sendTileEntityPacketToClients(world.getBlockTileEntity(x, y, z), 0, ((ITileNetwork)world.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList()));
 			    		}
-			    	} catch (Exception e)
-			    	{
+			    	} catch (Exception e) {
 			    		System.err.println("[Mekanism] Error while handling data request packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
-			}
-			catch (Exception e)
-			{
+			    if(packetType == EnumPacketType.CONFIGURATOR_STATE.id)
+			    {
+			    	try {
+			    		int state = dataStream.readInt();
+			    		
+			    		EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityplayer;
+			    		ItemStack itemstack = entityPlayerMP.getCurrentEquippedItem();
+			    		
+			    		if(itemstack != null && itemstack.getItem() instanceof ItemConfigurator)
+			    		{
+			    			((ItemConfigurator)itemstack.getItem()).setState(itemstack, (byte)state);
+			    		}
+			    	} catch(Exception e) {
+			    		System.err.println("[Mekanism] Error while handling configurator state packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    if(packetType == EnumPacketType.ELECTRIC_BOW_STATE.id)
+			    {
+			    	try {
+			    		boolean state = dataStream.readInt() == 1;
+			    		
+			    		EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityplayer;
+			    		ItemStack itemstack = entityPlayerMP.getCurrentEquippedItem();
+			    		
+			    		if(itemstack != null && itemstack.getItem() instanceof ItemElectricBow)
+			    		{
+			    			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, state);
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling configurator state packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");
 				e.printStackTrace();
 			}
@@ -419,7 +444,11 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
-        System.out.println("[Mekanism] Sent control panel packet to server.");
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent control panel packet to server.");
+        }
 	}
 	
 	/**
@@ -449,7 +478,11 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToAllAround(x, y, z, 40, id, packet);
-        System.out.println("[Mekanism] Sent portal FX packet to clients.");
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent portal FX packet to clients.");
+        }
 	}
 	
 	/**
@@ -476,6 +509,11 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent digit update packet to server.");
+        }
 	}
 	
 	/**
@@ -501,6 +539,11 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToPlayer(packet, (Player)entityplayer);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent status update packet to " + entityplayer.username);
+        }
 	}
 	
 	/**
@@ -526,7 +569,11 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
-        System.out.println("[Mekanism] Sent data int packet '" + type.id + ":" + i + "' to server");
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent data int packet '" + type.id + ":" + i + "' to server");
+        }
 	}
 	
 	/**
@@ -555,5 +602,10 @@ public class PacketHandler implements IPacketHandler
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent data request packet to server.");
+        }
 	}
 }

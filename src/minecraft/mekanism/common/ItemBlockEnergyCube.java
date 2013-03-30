@@ -5,11 +5,17 @@ import ic2.api.ICustomElectricItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
+import mekanism.api.EnumColor;
 import mekanism.api.IEnergyCube;
 import mekanism.api.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
@@ -18,9 +24,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
-public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEnergyCube, ICustomElectricItem
+public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEnergyCube, ICustomElectricItem, ISustainedInventory
 {
 	public Block metaBlock;
 	
@@ -35,18 +42,24 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		double energy = getJoules(itemstack);
-		
-		list.add("Stored Energy: " + ElectricityDisplay.getDisplayShort(energy, ElectricUnit.JOULES));
-		list.add("Voltage: " + getVoltage(itemstack) + "v");
+		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+		}
+		else {
+			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
+			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagList != null && !getInventory(itemstack).tagList.isEmpty()));
+		}
 	}
 	
 	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
 		ItemStack charged = new ItemStack(this);
-		setTier(charged, tier);
+		setEnergyCubeTier(charged, tier);
 		charged.setItemDamage(100);
 		return charged;
 	}
@@ -54,23 +67,22 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	@Override
 	public double getJoules(ItemStack itemStack)
 	{
-		if (itemStack.stackTagCompound == null) 
+		if(itemStack.stackTagCompound == null) 
 		{ 
 			return 0; 
 		}
 		
 		double electricityStored = 0;
 		
-		if (itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
+		if(itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
 		{
 			electricityStored = itemStack.stackTagCompound.getFloat("electricity");
 		}
-		else
-		{
+		else {
 			electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 		}
 		
-		itemStack.setItemDamage((int)(Math.abs(((electricityStored/getTier(itemStack).MAX_ELECTRICITY)*100)-100)));
+		itemStack.setItemDamage((int)(Math.abs(((electricityStored/getEnergyCubeTier(itemStack).MAX_ELECTRICITY)*100)-100)));
 		return electricityStored;
 	}
 
@@ -84,19 +96,19 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 
 		double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
 		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)(Math.abs(((electricityStored/getTier(itemStack).MAX_ELECTRICITY)*100)-100)));
+		itemStack.setItemDamage((int)(Math.abs(((electricityStored/getEnergyCubeTier(itemStack).MAX_ELECTRICITY)*100)-100)));
 	}
 
 	@Override
 	public double getMaxJoules(ItemStack itemStack)
 	{
-		return getTier(itemStack).MAX_ELECTRICITY;
+		return getEnergyCubeTier(itemStack).MAX_ELECTRICITY;
 	}
 
 	@Override
 	public double getVoltage(ItemStack itemStack) 
 	{
-		return getTier(itemStack).VOLTAGE;
+		return getEnergyCubeTier(itemStack).VOLTAGE;
 	}
 
 	@Override
@@ -104,7 +116,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	{
 		double rejectedElectricity = Math.max((getJoules(itemStack) + electricityPack.getWatts()) - getMaxJoules(itemStack), 0);
 		double joulesToStore = electricityPack.getWatts() - rejectedElectricity;
-		this.setJoules(getJoules(itemStack) + joulesToStore, itemStack);
+		setJoules(getJoules(itemStack) + joulesToStore, itemStack);
 		return ElectricityPack.getFromWatts(joulesToStore, getVoltage(itemStack));
 	}
 
@@ -136,7 +148,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + getTier(itemstack).name;
+		return getUnlocalizedName() + "." + getEnergyCubeTier(itemstack).name;
 	}
 	
 	@Override
@@ -147,8 +159,10 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     	if(place)
     	{
     		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-    		tileEntity.tier = ((IEnergyCube)stack.getItem()).getTier(stack);
+    		tileEntity.tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
     		tileEntity.electricityStored = getJoules(stack);
+    		
+    		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
     		if(tileEntity.powerProvider != null)
     		{
@@ -165,7 +179,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
     }
 
 	@Override
-	public EnergyCubeTier getTier(ItemStack itemstack)
+	public EnergyCubeTier getEnergyCubeTier(ItemStack itemstack)
 	{
 		if(itemstack.stackTagCompound == null)
 		{ 
@@ -181,9 +195,9 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	}
 
 	@Override
-	public void setTier(ItemStack itemstack, EnergyCubeTier tier) 
+	public void setEnergyCubeTier(ItemStack itemstack, EnergyCubeTier tier) 
 	{
-		if (itemstack.stackTagCompound == null)
+		if(itemstack.stackTagCompound == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -195,13 +209,19 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
 		double givenEnergy = amount*Mekanism.FROM_IC2;
-		double energyNeeded = getTier(itemStack).MAX_ELECTRICITY-getJoules(itemStack);
-		double energyToStore = Math.min(Math.min(amount, getTier(itemStack).MAX_ELECTRICITY*0.01), energyNeeded);
+		double energyNeeded = getEnergyCubeTier(itemStack).MAX_ELECTRICITY-getJoules(itemStack);
+		double energyToStore = Math.min(Math.min(amount, getEnergyCubeTier(itemStack).MAX_ELECTRICITY*0.01), energyNeeded);
 		
 		if(!simulate)
 		{
 			setJoules(getJoules(itemStack) + energyToStore, itemStack);
 		}
+		
+		if(energyToStore < 1)
+		{
+			return 1;
+		}
+		
 		return (int)(energyToStore*Mekanism.TO_IC2);
 	}
 	
@@ -209,12 +229,18 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
 		double energyWanted = amount*Mekanism.FROM_IC2;
-		double energyToGive = Math.min(Math.min(energyWanted, getTier(itemStack).MAX_ELECTRICITY*0.01), getJoules(itemStack));
+		double energyToGive = Math.min(Math.min(energyWanted, getEnergyCubeTier(itemStack).MAX_ELECTRICITY*0.01), getJoules(itemStack));
 		
 		if(!simulate)
 		{
 			setJoules(getJoules(itemStack) - energyToGive, itemStack);
 		}
+		
+		if(energyWanted < 1)
+		{
+			return 1;
+		}
+		
 		return (int)(energyToGive*Mekanism.TO_IC2);
 	}
 
@@ -231,38 +257,72 @@ public class ItemBlockEnergyCube extends ItemBlock implements IItemElectric, IEn
 	}
 	
 	@Override
-	public boolean canProvideEnergy()
+	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return true;
 	}
 
 	@Override
-	public int getChargedItemId()
+	public int getChargedItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getEmptyItemId()
+	public int getEmptyItemId(ItemStack itemStack)
 	{
 		return itemID;
 	}
 
 	@Override
-	public int getMaxCharge()
+	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
-	public int getTier()
+	public int getTier(ItemStack itemStack)
 	{
 		return 3;
 	}
 
 	@Override
-	public int getTransferLimit()
+	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
+	}
+	
+	@Override
+	public void setInventory(NBTTagList nbtTags, Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+	
+			itemStack.stackTagCompound.setTag("Items", nbtTags);
+		}
+	}
+
+	@Override
+	public NBTTagList getInventory(Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null) 
+			{ 
+				return null; 
+			}
+			
+			return itemStack.stackTagCompound.getTagList("Items");
+		}
+		
+		return null;
 	}
 }

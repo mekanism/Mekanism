@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import ic2.api.Direction;
+import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.IEnergyStorage;
 import ic2.api.energy.event.EnergyTileSourceEvent;
@@ -101,7 +102,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			{
 				setJoules(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
 			}
-			else if(tileEntity instanceof IEnergyConductor && Mekanism.hooks.IC2Loaded)
+			else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
 			{
 				if(electricityStored >= output)
 				{

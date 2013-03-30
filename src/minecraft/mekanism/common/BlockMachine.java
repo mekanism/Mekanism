@@ -46,6 +46,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 8: Metallurgic Infuser
  * 9: Purification Chamber
  * 10: Energized Smelter
+ * 11: Teleporter
  * @author AidanBrady
  *
  */
@@ -100,6 +101,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
 		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[11][0] = register.registerIcon("mekanism:Teleporter");
 	}
 	
 	@Override
@@ -130,7 +132,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-        if (MekanismUtils.isActive(world, x, y, z))
+        if(MekanismUtils.isActive(world, x, y, z))
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -300,6 +302,10 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     			return icons[10][2];
     		}
     	}
+    	else if(meta == 11)
+    	{
+    		return icons[11][0];
+    	}
     	
     	return null;
     }
@@ -433,6 +439,10 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     			return icons[10][2];
     		}
     	}
+    	else if(metadata == 11)
+    	{
+    		return icons[11][0];
+    	}
     	
     	return null;
     }
@@ -470,54 +480,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		list.add(new ItemStack(i, 1, 8));
 		list.add(new ItemStack(i, 1, 9));
 		list.add(new ItemStack(i, 1, 10));
+		list.add(new ItemStack(i, 1, 11));
 	}
-    
-    @Override
-    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
-    {
-        TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
-
-        if (tileEntity != null)
-        {
-            for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
-            {
-                ItemStack slotStack = tileEntity.getStackInSlot(i);
-
-                if (slotStack != null)
-                {
-                    float xRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float yRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float zRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-
-                    while (slotStack.stackSize > 0)
-                    {
-                        int j = machineRand.nextInt(21) + 10;
-
-                        if (j > slotStack.stackSize)
-                        {
-                            j = slotStack.stackSize;
-                        }
-
-                        slotStack.stackSize -= j;
-                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
-
-                        if (slotStack.hasTagCompound())
-                        {
-                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-                        }
-
-                        float k = 0.05F;
-                        item.motionX = (double)((float)machineRand.nextGaussian() * k);
-                        item.motionY = (double)((float)machineRand.nextGaussian() * k + 0.2F);
-                        item.motionZ = (double)((float)machineRand.nextGaussian() * k);
-                        world.spawnEntityInWorld(item);
-                    }
-                }
-            }
-        }
-	        
-    	super.breakBlock(world, x, y, z, i1, i2);
-    }
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
@@ -594,10 +558,28 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	
         if (tileEntity != null)
         {
-        	if(!entityplayer.isSneaking())
+        	if(metadata != MachineType.TELEPORTER.meta)
         	{
-        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
-        		return true;
+	        	if(!entityplayer.isSneaking())
+	        	{
+	        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
+	        		return true;
+	        	}
+        	}
+        	else {
+        		if(entityplayer.isSneaking())
+        		{
+        			entityplayer.openGui(Mekanism.instance, 13, world, x, y, z);
+        			return true;
+        		}
+        		
+    			TileEntityTeleporter teleporter = (TileEntityTeleporter)world.getBlockTileEntity(x, y, z);
+    			
+    			if(teleporter.canTeleport() == 1)
+    			{
+    				teleporter.teleport();
+    				return true;
+    			}
         	}
         }
     	return false;
@@ -646,20 +628,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
             double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             
-            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z)));
-	        
-	        IUpgradeManagement upgrade = (IUpgradeManagement)entityItem.getEntityItem().getItem();
-	        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), entityItem.getEntityItem());
-	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), entityItem.getEntityItem());
-	        
-	        IItemElectric electricItem = (IItemElectric)entityItem.getEntityItem().getItem();
-	        electricItem.setJoules(tileEntity.electricityStored, entityItem.getEntityItem());
-	        
-	        if(tileEntity instanceof TileEntityFactory)
-	        {
-	        	IFactory factoryItem = (IFactory)entityItem.getEntityItem().getItem();
-	        	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, entityItem.getEntityItem());
-	        }
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
 	        
 	        world.spawnEntityInWorld(entityItem);
     	}
@@ -679,12 +648,18 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z));
         
-        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
-        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
-        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
+    	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
+    	{
+	        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
+	        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
+	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
+    	}
         
         IItemElectric electricItem = (IItemElectric)itemStack.getItem();
         electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        
+        ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+        inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
         
         if(tileEntity instanceof TileEntityFactory)
         {
@@ -698,21 +673,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-    	ItemStack itemStack = new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z));
-        
-        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
-        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
-        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
-        
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(tileEntity.electricityStored, itemStack);
-        
-        if(tileEntity instanceof TileEntityFactory)
-        {
-        	IFactory factoryItem = (IFactory)itemStack.getItem();
-        	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
-        }
+		ItemStack itemStack = getPickBlock(null, world, x, y, z);
         
         world.setBlockToAir(x, y, z);
         
@@ -749,7 +710,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		ELITE_FACTORY(7, 11, 14000, TileEntityEliteFactory.class, false),
 		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
-		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false);
+		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
+		TELEPORTER(11, 13, 10000000, TileEntityTeleporter.class, false);
 		
 		public int meta;
 		public int guiId;

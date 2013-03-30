@@ -52,7 +52,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.1")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.2")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -74,7 +74,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 5, 1);
+	public static Version versionNumber = new Version(5, 5, 2);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -159,6 +159,7 @@ public class Mekanism
 	public static boolean updateNotifications = true;
 	public static boolean enableSounds = true;
 	public static boolean controlCircuitOreDict = true;
+	public static boolean logPackets = false;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
 	public static double TO_IC2;
@@ -287,7 +288,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(PortableTeleporter), new Object[] {
 			" E ", "CTC", " E ", Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "basicCircuit", Character.valueOf('T'), TeleportationCore
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 7), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 11), new Object[] {
 			"COC", "OTO", "COC", Character.valueOf('C'), "basicCircuit", Character.valueOf('O'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('T'), TeleportationCore
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 9), new Object[] {
@@ -296,13 +297,13 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Configurator), new Object[] {
 			" L ", "AEA", " S ", Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('S'), Item.stick
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 9, 8), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 9, 7), new Object[] {
 			"OOO", "OGO", "OOO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('G'), "ingotRefinedGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Transmitter, 8, 0), new Object[] {
 			"OOO", "GGG", "OOO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 9), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 8), new Object[] {
 			" S ", "SPS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('P'), "ingotOsmium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 10), new Object[] {
@@ -428,7 +429,7 @@ public class Mekanism
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
 		
-		//Localization for MultiBlock
+		//Localization for BasicBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.BronzeBlock.name", "Bronze Block");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RefinedObsidian.name", "Refined Obsidian");
@@ -436,7 +437,6 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RefinedGlowstone.name", "Refined Glowstone");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.SteelBlock.name", "Steel Block");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.ControlPanel.name", "Control Panel");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.Teleporter.name", "Teleporter");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.TeleporterFrame.name", "Teleporter Frame");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.SteelCasing.name", "Steel Casing");
 		
@@ -452,6 +452,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.MetallurgicInfuser.name", "Metallurgic Infuser");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.PurificationChamber.name", "Purification Chamber");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnergizedSmelter.name", "Energized Smelter");
+		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Teleporter.name", "Teleporter");
 		
 		//Localization for OreBlock
 		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.OsmiumOre.name", "Osmium Ore");

@@ -23,11 +23,6 @@ public class IC2EnergyHandler
 		{
 			TileEntity tile = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
 			
-			if(tile instanceof IEnergyConductor)
-			{
-				return;
-			}
-			
 			if(tile != null && tileEntity instanceof IEnergySource)
 			{
 				IEnergySource source = (IEnergySource)tileEntity;

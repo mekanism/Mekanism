@@ -38,16 +38,24 @@ public interface IFactory
 		
 		public ItemStack getCopiedOutput(ItemStack input, boolean stackDecrease)
 		{
+			if(input == null)
+			{
+				return null;
+			}
+			
 			if(this == SMELTING)
 			{
-				ItemStack toReturn = FurnaceRecipes.smelting().getSmeltingResult(input).copy();
-				
-				if(stackDecrease)
+				if(FurnaceRecipes.smelting().getSmeltingResult(input) != null)
 				{
-					input.stackSize--;
+					ItemStack toReturn = FurnaceRecipes.smelting().getSmeltingResult(input).copy();
+					
+					if(stackDecrease)
+					{
+						input.stackSize--;
+					}
+					
+					return toReturn;
 				}
-				
-				return toReturn;
 			}
 			else if(this == ENRICHING)
 			{

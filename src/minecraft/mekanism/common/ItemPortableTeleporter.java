@@ -16,14 +16,6 @@ public class ItemPortableTeleporter extends ItemEnergized
 	}
 	
 	@Override
-    public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
-    {
-		super.onUpdate(itemstack, world, entity, i, flag);
-		
-    	setStatus(itemstack, getStatus(itemstack));
-    }
-	
-	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
 		entityplayer.openGui(Mekanism.instance, 14, world, 0, 0, 0);

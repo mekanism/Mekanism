@@ -30,7 +30,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	{
 		if(item.getItem() instanceof IEnergyCube)
 		{
-			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getTier(item);
+			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 	        
 	        if(type == ItemRenderType.EQUIPPED)
 	        {

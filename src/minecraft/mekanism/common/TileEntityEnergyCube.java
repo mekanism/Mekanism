@@ -3,6 +3,7 @@ package mekanism.common;
 import ic2.api.Direction;
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.IEnergyStorage;
 import ic2.api.energy.event.EnergyTileSourceEvent;
@@ -80,7 +81,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
 			{
 				IElectricItem item = (IElectricItem)inventory[1].getItem();
-				if(item.canProvideEnergy())
+				if(item.canProvideEnergy(inventory[1]))
 				{
 					double gain = ElectricItem.discharge(inventory[1], (int)((tier.MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 					setJoules(electricityStored + gain);
@@ -106,7 +107,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			{
 				setJoules(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
 			}
-			else if(tileEntity instanceof IEnergyConductor && Mekanism.hooks.IC2Loaded)
+			else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
 			{
 				if(electricityStored >= tier.OUTPUT)
 				{

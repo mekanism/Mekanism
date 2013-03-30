@@ -36,7 +36,7 @@ public class ItemBlockOre extends ItemBlock
 	{
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more information.");
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
 		}
 		else {
 			if(itemstack.getItemDamage() == 0)

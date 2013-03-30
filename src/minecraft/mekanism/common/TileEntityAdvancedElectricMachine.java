@@ -82,7 +82,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				if(Mekanism.hooks.IC2Loaded && inventory[3].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[3].getItem();
-					if(item.canProvideEnergy())
+					if(item.canProvideEnergy(inventory[3]))
 					{
 						double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 						setJoules(electricityStored + gain);

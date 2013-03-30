@@ -27,8 +27,12 @@ public enum EnumPacketType
 	STATUS_UPDATE(7),
 	/** Used to request data from the server by tile entities. */
 	DATA_REQUEST(8),
+	/** Used to change a Configurator's state on the server side. */
+	CONFIGURATOR_STATE(9),
+	/** Used to change an Electric Bow's state on the server side. */
+	ELECTRIC_BOW_STATE(10),
 	/** A custom packet type. Handled in PacketHandler. */
-	CUSTOM(9);
+	CUSTOM(11);
 	
 	/** The ID of the packet type */
 	public final int id;

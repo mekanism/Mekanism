@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, IInventory
+public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, IInventory, ISustainedInventory
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
@@ -184,6 +184,47 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public boolean isStackValidForSlot(int i, ItemStack itemstack)
 	{
-		return false;
+		return true;
+	}
+
+	@Override
+	public void setInventory(NBTTagList nbtTags, Object... data) 
+	{
+		if(nbtTags == null || nbtTags.tagList == null || nbtTags.tagList.isEmpty())
+		{
+			return;
+		}
+		
+        inventory = new ItemStack[getSizeInventory()];
+
+        for(int slots = 0; slots < nbtTags.tagCount(); slots++)
+        {
+            NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.tagAt(slots);
+            byte slotID = tagCompound.getByte("Slot");
+
+            if(slotID >= 0 && slotID < inventory.length)
+            {
+                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+            }
+        }
+	}
+
+	@Override
+	public NBTTagList getInventory(Object... data)
+	{
+        NBTTagList tagList = new NBTTagList();
+
+        for(int slots = 0; slots < inventory.length; slots++)
+        {
+            if(inventory[slots] != null)
+            {
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte)slots);
+                inventory[slots].writeToNBT(tagCompound);
+                tagList.appendTag(tagCompound);
+            }
+        }
+
+        return tagList;
 	}
 }
