@@ -1,8 +1,13 @@
-package mekanism.api;
+package mekanism.common;
 
-import mekanism.api.Tier.EnergyCubeTier;
+import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Internal interface used when dealing with Energy Cubes and their tiers.
+ * @author AidanBrady
+ *
+ */
 public interface IEnergyCube 
 {
 	/**

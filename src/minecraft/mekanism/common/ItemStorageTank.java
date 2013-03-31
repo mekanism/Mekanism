@@ -33,7 +33,7 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		int gas = getGas(itemstack);
+		int gas = getGas(getGasType(itemstack), itemstack);
 		
 		if(getGasType(itemstack) == EnumGas.NONE)
 		{
@@ -55,54 +55,69 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
     {
     	ItemStorageTank item = ((ItemStorageTank)itemstack.getItem());
     	
-    	if(item.getGas(itemstack) == 0 && item.getGasType(itemstack) != EnumGas.NONE)
+    	if(getGasType(itemstack) != EnumGas.NONE && getGas(getGasType(itemstack), itemstack) == 0)
     	{
-    		item.setGasType(itemstack, EnumGas.NONE);
+    		setGasType(itemstack, EnumGas.NONE);
     	}
     }
 	
 	@Override
-	public int getGas(ItemStack itemstack)
+	public int getGas(EnumGas type, Object... data)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(data[0] instanceof ItemStack)
 		{
-			return 0;
+			ItemStack itemstack = (ItemStack)data[0];
+			
+			if(getGasType(itemstack) == type)
+			{
+				if(itemstack.stackTagCompound == null)
+				{
+					return 0;
+				}
+				
+				int stored = 0;
+				
+				if(itemstack.stackTagCompound.getTag("gas") != null)
+				{
+					stored = itemstack.stackTagCompound.getInteger("gas");
+				}
+				
+				itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
+				return stored;
+			}
 		}
 		
-		int stored = 0;
-		
-		if(itemstack.stackTagCompound.getTag("gas") != null)
-		{
-			stored = itemstack.stackTagCompound.getInteger("gas");
-		}
-		
-		itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
-		return stored;
+		return 0;
 	}
 	
 	@Override
-	public void setGas(ItemStack itemstack, EnumGas type, int amount)
+	public void setGas(EnumGas type, int amount, Object... data)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(data[0] instanceof ItemStack)
 		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-		
-		if(getGasType(itemstack) == EnumGas.NONE)
-		{
-			setGasType(itemstack, type);
-		}
-		
-		if(getGasType(itemstack) == type)
-		{
-			int stored = Math.max(Math.min(amount, MAX_GAS), 0);
-			itemstack.stackTagCompound.setInteger("gas", stored);
-			itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
-		}
-		
-		if(getGas(itemstack) == 0)
-		{
-			setGasType(itemstack, EnumGas.NONE);
+			ItemStack itemstack = (ItemStack)data[0];
+			
+			if(itemstack.stackTagCompound == null)
+			{
+				itemstack.setTagCompound(new NBTTagCompound());
+			}
+			
+			if(getGasType(itemstack) == EnumGas.NONE)
+			{
+				setGasType(itemstack, type);
+			}
+			
+			if(getGasType(itemstack) == type)
+			{
+				int stored = Math.max(Math.min(amount, MAX_GAS), 0);
+				itemstack.stackTagCompound.setInteger("gas", stored);
+				itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
+			}
+			
+			if(getGas(getGasType(itemstack), itemstack) == 0)
+			{
+				setGasType(itemstack, EnumGas.NONE);
+			}
 		}
 	}
 	
@@ -126,18 +141,29 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 		{
 			if(type != EnumGas.NONE)
 			{
-				ItemStack charged = new ItemStack(this);
-				setGasType(charged, type);
-				setGas(charged, type, ((IStorageTank)charged.getItem()).getMaxGas());
-				list.add(charged);
+				ItemStack filled = new ItemStack(this);
+				setGasType(filled, type);
+				setGas(type, ((IStorageTank)filled.getItem()).getMaxGas(type, filled), filled);
+				list.add(filled);
 			}
 		}
 	}
 	
 	@Override
-	public int getMaxGas()
+	public int getMaxGas(EnumGas type, Object... data)
 	{
-		return MAX_GAS;
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			IStorageTank tank = (IStorageTank)itemStack.getItem();
+			
+			if(getGasType(itemStack) == EnumGas.NONE || getGasType(itemStack) == type)
+			{
+				return MAX_GAS;
+			}
+		}
+		
+		return 0;
 	}
 
 	@Override
@@ -151,10 +177,11 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	{
 		if(getGasType(itemstack) == type || getGasType(itemstack) == EnumGas.NONE)
 		{
-			int rejects = Math.max((getGas(itemstack) + amount) - MAX_GAS, 0);
-			setGas(itemstack, type, getGas(itemstack) + amount - rejects);
+			int rejects = Math.max((getGas(getGasType(itemstack), itemstack) + amount) - MAX_GAS, 0);
+			setGas(type, getGas(type, itemstack) + amount - rejects, itemstack);
 			return rejects;
 		}
+		
 		return amount;
 	}
 
@@ -163,8 +190,8 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 	{
 		if(getGasType(itemstack) == type)
 		{
-			int gasToUse = Math.min(getGas(itemstack), amount);
-			setGas(itemstack, type, getGas(itemstack) - gasToUse);
+			int gasToUse = Math.min(getGas(type, itemstack), amount);
+			setGas(type, getGas(type, itemstack) - gasToUse, itemstack);
 			return gasToUse;
 		}
 		

@@ -1,5 +1,11 @@
 package mekanism.common;
 
+/**
+ * Internal interface.  A bounding block is not actually a 'bounding' block, it is really just a fake block that is
+ * used to mimic actual block bounds.
+ * @author AidanBrady
+ *
+ */
 public interface IBoundingBlock 
 {
 	/**

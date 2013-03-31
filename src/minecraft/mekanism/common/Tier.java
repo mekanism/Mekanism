@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.common;
 
 /**
  * Tier information for Mekanism.  This currently includes tiers for Energy Cubes and Smelting Factories.

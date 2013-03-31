@@ -1,7 +1,7 @@
 package mekanism.api;
 
 /**
- * 
+ * The gasses currently available in Mekanism.
  * @author AidanBrady
  *
  */

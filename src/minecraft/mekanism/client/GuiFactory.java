@@ -1,9 +1,9 @@
 package mekanism.client;
 
-import mekanism.api.Tier.FactoryTier;
 import mekanism.common.ContainerFactory;
 import mekanism.common.TileEntityFactory;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.Tier.FactoryTier;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 

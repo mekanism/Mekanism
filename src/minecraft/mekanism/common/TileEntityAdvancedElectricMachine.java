@@ -92,9 +92,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			if(inventory[3].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				setJoules(electricityStored + 1000);
-				--inventory[3].stackSize;
+				inventory[3].stackSize--;
 				
-	            if (inventory[3].stackSize <= 0)
+	            if(inventory[3].stackSize <= 0)
 	            {
 	                inventory[3] = null;
 	            }
@@ -112,7 +112,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					energyMultiplier+=1;
+					energyMultiplier++;
 					
 					inventory[4].stackSize--;
 					
@@ -131,7 +131,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					speedMultiplier+=1;
+					speedMultiplier++;
 					
 					inventory[4].stackSize--;
 					
@@ -153,18 +153,19 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		if(electricityStored >= ENERGY_PER_TICK && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 		{
-			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier) && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED) && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 			{
-				++operatingTicks;
+				operatingTicks++;
 				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
 				electricityStored -= ENERGY_PER_TICK;
 			}
-			else if((operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
+			else if((operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 			{
 				if(!worldObj.isRemote)
 				{
 					operate();
 				}
+				
 				operatingTicks = 0;
 				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
 				electricityStored -= ENERGY_PER_TICK;
@@ -219,17 +220,16 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     {
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
 
-        if (inventory[0].stackSize <= 0)
+        if(inventory[0].stackSize <= 0)
         {
             inventory[0] = null;
         }
 
-        if (inventory[2] == null)
+        if(inventory[2] == null)
         {
             inventory[2] = itemstack;
         }
-        else
-        {
+        else {
             inventory[2].stackSize += itemstack.stackSize;
         }
     }
@@ -237,29 +237,28 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public boolean canOperate()
     {
-        if (inventory[0] == null)
+        if(inventory[0] == null)
         {
             return false;
         }
 
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
 
-        if (itemstack == null)
+        if(itemstack == null)
         {
             return false;
         }
 
-        if (inventory[2] == null)
+        if(inventory[2] == null)
         {
             return true;
         }
 
-        if (!inventory[2].isItemEqual(itemstack))
+        if(!inventory[2].isItemEqual(itemstack))
         {
             return false;
         }
-        else
-        {
+        else {
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }

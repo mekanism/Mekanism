@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
-import mekanism.api.IElectricMachine;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
@@ -109,15 +107,16 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 				{
 					synchronized(Mekanism.audioHandler.sounds)
 					{
-						handleSound();
+						updateSound();
 					}
 				}
 			} catch(NoSuchMethodError e) {}
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
-	public void handleSound()
+	@Override
+	public void updateSound()
 	{
 		if(Mekanism.audioHandler != null)
 		{
@@ -292,7 +291,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier);
+		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
 	}
 	
 	public int getScaledUpgradeProgress(int i)

@@ -11,6 +11,12 @@ import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySource;
 
+/**
+ * This here is the core implementation of IC2 into Universal Cable.  Thanks to Player's hard work at making the EnergyNet
+ * an event-based system, this is possible.
+ * @author AidanBrady
+ *
+ */
 public class IC2EnergyHandler 
 {
 	@ForgeSubscribe

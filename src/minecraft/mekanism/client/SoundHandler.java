@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.IActiveState;
+import mekanism.common.IActiveState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import paulscode.sound.SoundSystem;

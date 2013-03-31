@@ -1,8 +1,8 @@
 package mekanism.client;
 
-import mekanism.api.IEnergyCube;
-import mekanism.api.Tier.EnergyCubeTier;
+import mekanism.common.IEnergyCube;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;

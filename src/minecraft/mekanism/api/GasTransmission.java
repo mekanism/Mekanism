@@ -5,6 +5,11 @@ import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 
+/**
+ * A handy class containing several utilities for efficient gas transfer.
+ * @author AidanBrady
+ *
+ */
 public class GasTransmission 
 {
     /**

@@ -1,5 +1,10 @@
 package mekanism.api;
 
+/**
+ * The types of infuse currently available in Mekanism.
+ * @author AidanBrady
+ *
+ */
 public enum InfusionType 
 {
 	COAL("COAL"),

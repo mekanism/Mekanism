@@ -89,6 +89,7 @@ public class Version
 	public static Version get(String s)
 	{
 		String[] split = s.replace('.', ':').split(":");
+		
 		if(split.length != 3)
 		{
 			System.out.println(split.length);

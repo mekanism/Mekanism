@@ -12,8 +12,7 @@ import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
-import mekanism.api.IEnergyCube;
-import mekanism.api.Tier.EnergyCubeTier;
+import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;

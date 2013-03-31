@@ -62,9 +62,9 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				setJoules(electricityStored + 1000);
-				--inventory[1].stackSize;
+				inventory[1].stackSize--;
 				
-	            if (inventory[1].stackSize <= 0)
+	            if(inventory[1].stackSize <= 0)
 	            {
 	                inventory[1] = null;
 	            }
@@ -82,7 +82,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					energyMultiplier+=1;
+					energyMultiplier++;
 					
 					inventory[3].stackSize--;
 					
@@ -101,7 +101,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					speedMultiplier+=1;
+					speedMultiplier++;
 					
 					inventory[3].stackSize--;
 					
@@ -121,17 +121,18 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		
 		if(electricityStored >= ENERGY_PER_TICK)
 		{
-			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier))
+			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 			{
 				operatingTicks++;
 				electricityStored -= ENERGY_PER_TICK;
 			}
-			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
+			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 			{
 				if(!worldObj.isRemote)
 				{
 					operate();
 				}
+				
 				operatingTicks = 0;
 				electricityStored -= ENERGY_PER_TICK;
 			}
@@ -159,12 +160,12 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
     {
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
 
-        if (inventory[0].stackSize <= 0)
+        if(inventory[0].stackSize <= 0)
         {
             inventory[0] = null;
         }
 
-        if (inventory[2] == null)
+        if(inventory[2] == null)
         {
             inventory[2] = itemstack;
         }
@@ -176,24 +177,24 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	@Override
     public boolean canOperate()
     {
-        if (inventory[0] == null)
+        if(inventory[0] == null)
         {
             return false;
         }
 
         ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
 
-        if (itemstack == null)
+        if(itemstack == null)
         {
             return false;
         }
 
-        if (inventory[2] == null)
+        if(inventory[2] == null)
         {
             return true;
         }
 
-        if (!inventory[2].isItemEqual(itemstack))
+        if(!inventory[2].isItemEqual(itemstack))
         {
             return false;
         }

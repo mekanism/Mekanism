@@ -26,7 +26,7 @@ public class ThreadClientUpdate extends Thread
 		downloadType = type;
 		try {
 			url = new URL(location);
-			setDaemon(true);
+			setDaemon(false);
 			start();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -54,7 +54,7 @@ public class ThreadClientUpdate extends Thread
 			outputStream.close();
 			stream.close();
 			
-			if(downloadType == 2)
+			if(downloadType == 0)
 			{
 				GuiCredits.onFinishedDownloading();
 				System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");

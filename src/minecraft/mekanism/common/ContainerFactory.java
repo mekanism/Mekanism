@@ -2,9 +2,8 @@ package mekanism.common;
 
 import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
-import mekanism.api.Tier;
-import mekanism.api.Tier.FactoryTier;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.Tier.FactoryTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

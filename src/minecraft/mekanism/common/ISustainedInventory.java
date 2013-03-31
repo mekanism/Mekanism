@@ -3,6 +3,11 @@ package mekanism.common;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+/**
+ * Internal interface used in blocks and items that are capable of storing sustained inventories.
+ * @author AidanBrady
+ *
+ */
 public interface ISustainedInventory 
 {
 	/**

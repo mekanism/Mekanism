@@ -2,6 +2,11 @@ package mekanism.api;
 
 import net.minecraft.item.ItemStack;
 
+/**
+ * An infusion output, containing a reference to it's input as well as the output resource.
+ * @author AidanBrady
+ *
+ */
 public class InfusionOutput 
 {
 	/** The input infusion */

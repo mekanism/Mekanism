@@ -4,7 +4,12 @@ import java.lang.reflect.Method;
 
 import net.minecraft.item.ItemStack;
 
-public class RecipeHelper 
+/**
+ * Use this handy class to add recipes to Mekanism machinery.
+ * @author AidanBrady
+ *
+ */
+public final class RecipeHelper 
 {
 	/**
 	 * Add an Enrichment Chamber recipe.

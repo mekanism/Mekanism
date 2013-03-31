@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
-import mekanism.api.ITileNetwork;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 

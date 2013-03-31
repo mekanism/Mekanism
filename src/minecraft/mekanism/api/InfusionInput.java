@@ -2,6 +2,11 @@ package mekanism.api;
 
 import net.minecraft.item.ItemStack;
 
+/**
+ * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.
+ * @author AidanBrady
+ *
+ */
 public class InfusionInput
 {
 	/** The type of this infusion */

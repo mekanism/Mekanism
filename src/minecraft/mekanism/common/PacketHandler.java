@@ -8,7 +8,6 @@ import java.util.Random;
 
 import universalelectricity.core.electricity.ElectricityPack;
 
-import mekanism.api.ITileNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

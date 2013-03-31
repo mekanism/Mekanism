@@ -5,6 +5,11 @@ import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
 
+/**
+ * Use this class to add a new object that registers as an infuse object.
+ * @author AidanBrady
+ *
+ */
 public class InfuseRegistry 
 {
 	/**

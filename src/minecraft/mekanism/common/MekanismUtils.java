@@ -20,15 +20,14 @@ import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IActiveState;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IConfigurable;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUniversalCable;
 import mekanism.api.InfuseObject;
-import mekanism.api.Tier.EnergyCubeTier;
-import mekanism.api.Tier.FactoryTier;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.FactoryTier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -418,17 +417,18 @@ public final class MekanismUtils
     /**
      * Gets the operating ticks required for a machine via it's upgrades.
      * @param multiplier - speed multiplier
+     * @param def - the original, default ticks required
      * @return max operating ticks
      */
-    public static int getTicks(int multiplier)
+    public static int getTicks(int multiplier, int def)
     {
-    	return 200/(multiplier+1);
+    	return def/(multiplier+1);
     }
     
     /**
      * Gets the maximum energy for a machine via it's upgrades.
      * @param multiplier - energy multiplier
-     * @param def - original, definitive max energy
+     * @param def - original, default max energy
      * @return max energy
      */
     public static double getEnergy(int multiplier, double def)

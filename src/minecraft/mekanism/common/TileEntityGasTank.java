@@ -153,7 +153,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 
 	@Override
-	public int getGas(EnumGas type) 
+	public int getGas(EnumGas type, Object... data) 
 	{
 		if(type == gasType)
 		{
@@ -164,7 +164,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 
 	@Override
-	public void setGas(EnumGas type, int amount) 
+	public void setGas(EnumGas type, int amount, Object... data) 
 	{
 		if(type == gasType)
 		{
@@ -173,7 +173,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 	
 	@Override
-	public int getMaxGas(EnumGas type)
+	public int getMaxGas(EnumGas type, Object... data)
 	{
 		return MAX_GAS;
 	}

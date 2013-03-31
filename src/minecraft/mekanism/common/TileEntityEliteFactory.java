@@ -2,7 +2,7 @@ package mekanism.common;
 
 import mekanism.api.EnumColor;
 import mekanism.api.SideData;
-import mekanism.api.Tier.FactoryTier;
+import mekanism.common.Tier.FactoryTier;
 
 public class TileEntityEliteFactory extends TileEntityFactory
 {

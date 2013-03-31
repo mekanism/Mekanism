@@ -2,6 +2,11 @@ package mekanism.api;
 
 import net.minecraftforge.common.ForgeDirection;
 
+/**
+ * Implement this if your TileEntity can accept energy at a floating-point double value from Universal Cables.
+ * @author AidanBrady
+ *
+ */
 public interface IStrictEnergyAcceptor 
 {
 	/**

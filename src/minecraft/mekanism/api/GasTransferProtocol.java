@@ -7,6 +7,11 @@ import java.util.Collections;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
+/**
+ * The actual protocol gas goes through when it is transferred via Pressurized Tubes.
+ * @author AidanBrady
+ *
+ */
 public class GasTransferProtocol 
 {
 	/** List of iterated tubes, to prevent infinite loops. */

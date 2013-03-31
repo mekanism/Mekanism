@@ -16,8 +16,7 @@ import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IEnergyCube;
-import mekanism.api.Tier.EnergyCubeTier;
+import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;

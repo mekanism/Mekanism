@@ -7,29 +7,8 @@ import net.minecraft.item.ItemStack;
  * @author AidanBrady
  *
  */
-public interface IStorageTank
+public interface IStorageTank extends IGasStorage
 {
-	/**
-	 * Gets the amount of gas the item has from NBT storage.
-	 * @param itemstack
-	 * @return amount of gas
-	 */
-	public int getGas(ItemStack itemstack);
-	
-	/**
-	 * Sets the gas the item has stored in it's NBTTagCompound.
-	 * @param itemstack - itemstack of a Storage Tank to set the gas of
-	 * @param type - the type of gas to set
-	 * @param amount - the amount of gas to set
-	 */
-	public void setGas(ItemStack itemstack, EnumGas type, int amount);
-	
-	/**
-	 * Gets the maximum amount of hydrogen this item can hold.
-	 * @return maximum hydrogen
-	 */
-	public int getMaxGas();
-	
 	/**
 	 * Gets the rate of transfer this item can handle.
 	 * @return

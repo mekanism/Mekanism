@@ -17,7 +17,7 @@ import java.util.HashSet;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IUniversalCable;
 import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.Tier.EnergyCubeTier;
+import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

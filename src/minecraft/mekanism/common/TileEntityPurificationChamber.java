@@ -35,7 +35,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 
 	@Override
-	public int getGas(EnumGas type) 
+	public int getGas(EnumGas type, Object... data) 
 	{
 		if(type == EnumGas.OXYGEN)
 		{
@@ -46,7 +46,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 
 	@Override
-	public void setGas(EnumGas type, int amount) 
+	public void setGas(EnumGas type, int amount, Object... data) 
 	{
 		if(type == EnumGas.OXYGEN)
 		{
@@ -55,7 +55,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 	
 	@Override
-	public int getMaxGas(EnumGas type)
+	public int getMaxGas(EnumGas type, Object... data)
 	{
 		if(type == EnumGas.OXYGEN)
 		{

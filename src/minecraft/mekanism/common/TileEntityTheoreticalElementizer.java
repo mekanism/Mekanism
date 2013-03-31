@@ -21,13 +21,13 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 	@Override
 	public HashMap getRecipes()
 	{
-		return (HashMap)Collections.synchronizedMap(new HashMap<ItemStack, ItemStack>());
+		return new HashMap<ItemStack, ItemStack>();
 	}
 	
     @Override
     public void operate()
     {
-        if (!canOperate())
+        if(!canOperate())
         {
             return;
         }
@@ -36,7 +36,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
         
         inventory[0].stackSize--;
 
-        if (inventory[0].stackSize <= 0)
+        if(inventory[0].stackSize <= 0)
         {
             inventory[0] = null;
         }
@@ -47,22 +47,12 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
     @Override
     public boolean canOperate()
     {
-        if (inventory[0] == null)
+        if(inventory[0] == null)
         {
             return false;
         }
-        
-        if(electricityStored < ENERGY_PER_TICK)
-        {
-        	return false;
-        }
-        
-        if(secondaryEnergyStored < SECONDARY_ENERGY_PER_TICK)
-        {
-        	return false;
-        }
 
-        if (inventory[2] != null)
+        if(inventory[2] != null)
         {
             return false;
         }
@@ -73,7 +63,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
-		if (itemstack.itemID == Item.diamond.itemID) return 1000;
+		if(itemstack.itemID == Item.diamond.itemID) return 1000;
 		return 0;
 	}
 	

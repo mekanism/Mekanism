@@ -8,7 +8,6 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
@@ -112,7 +111,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				{
 					synchronized(Mekanism.audioHandler.sounds)
 					{
-						handleSound();
+						updateSound();
 					}
 				}
 			} catch(NoSuchMethodError e) {}
@@ -139,9 +138,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			if(inventory[4].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				setJoules(electricityStored + 1000);
-				--inventory[4].stackSize;
+				inventory[4].stackSize--;
 				
-	            if (inventory[4].stackSize <= 0)
+	            if(inventory[4].stackSize <= 0)
 	            {
 	                inventory[4] = null;
 	            }
@@ -159,7 +158,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					energyMultiplier+=1;
+					energyMultiplier++;
 					
 					inventory[0].stackSize--;
 					
@@ -178,7 +177,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					speedMultiplier+=1;
+					speedMultiplier++;
 					
 					inventory[0].stackSize--;
 					
@@ -210,7 +209,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 						type = infuse.type;
 						inventory[1].stackSize--;
 						
-			            if (inventory[1].stackSize <= 0)
+			            if(inventory[1].stackSize <= 0)
 			            {
 			                inventory[1] = null;
 			            }
@@ -221,17 +220,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		if(electricityStored >= ENERGY_PER_TICK)
 		{
-			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier))
+			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 			{
-				++operatingTicks;
+				operatingTicks++;
 				electricityStored -= ENERGY_PER_TICK;
 			}
-			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier))
+			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 			{
 				if(!worldObj.isRemote)
 				{
 					operate();
 				}
+				
 				operatingTicks = 0;
 				electricityStored -= ENERGY_PER_TICK;
 			}
@@ -261,7 +261,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void handleSound()
+	@Override
+	public void updateSound()
 	{
 		if(Mekanism.audioHandler != null)
 		{
@@ -292,7 +293,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public void operate()
 	{
-        if (!canOperate())
+        if(!canOperate())
         {
             return;
         }
@@ -301,12 +302,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         
         infuseStored -= output.getInfuseRequired();
 
-        if (inventory[2].stackSize <= 0)
+        if(inventory[2].stackSize <= 0)
         {
             inventory[2] = null;
         }
 
-        if (inventory[3] == null)
+        if(inventory[3] == null)
         {
             inventory[3] = output.resource.copy();
         }
@@ -317,14 +318,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public boolean canOperate()
 	{
-        if (inventory[2] == null)
+        if(inventory[2] == null)
         {
             return false;
         }
 
         InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false, Recipe.METALLURGIC_INFUSER.get());
 
-        if (output == null)
+        if(output == null)
         {
             return false;
         }
@@ -334,17 +335,16 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	return false;
         }
 
-        if (inventory[3] == null)
+        if(inventory[3] == null)
         {
             return true;
         }
 
-        if (!inventory[3].isItemEqual(output.resource))
+        if(!inventory[3].isItemEqual(output.resource))
         {
             return false;
         }
-        else
-        {
+        else {
             return inventory[3].stackSize + output.resource.stackSize <= inventory[3].getMaxStackSize();
         }
 	}
@@ -361,7 +361,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier);
+		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
 	}
 	
 	public int getScaledUpgradeProgress(int i)

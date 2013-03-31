@@ -364,13 +364,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public int getMaxGas(EnumGas type)
+	public int getMaxGas(EnumGas type, Object... data)
 	{
 		return MAX_GAS;
 	}
 	
 	@Override
-	public void setGas(EnumGas type, int amount)
+	public void setGas(EnumGas type, int amount, Object... data)
 	{
 		if(type == EnumGas.HYDROGEN)
 		{
@@ -383,7 +383,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public int getGas(EnumGas type)
+	public int getGas(EnumGas type, Object... data)
 	{
 		if(type == EnumGas.HYDROGEN)
 		{

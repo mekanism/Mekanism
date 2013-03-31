@@ -5,7 +5,7 @@ import java.util.Random;
 
 import buildcraft.api.tools.IToolWrench;
 
-import mekanism.api.IActiveState;
+import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;

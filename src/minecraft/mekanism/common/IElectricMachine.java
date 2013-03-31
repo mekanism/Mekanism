@@ -1,9 +1,10 @@
-package mekanism.api;
+package mekanism.common;
 
 import java.util.Map;
 
 /**
- * A group of common methods used by all Mekanism machines.
+ * Internal interface containing methods that are shared by many core Mekanism machines.  TODO: remove next minor MC
+ * version.
  * @author AidanBrady
  *
  */

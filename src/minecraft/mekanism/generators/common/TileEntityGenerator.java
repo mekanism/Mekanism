@@ -16,12 +16,12 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import mekanism.api.IActiveState;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IUniversalCable;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import mekanism.common.CableUtils;
+import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
@@ -88,7 +88,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				{
 					synchronized(Mekanism.audioHandler.sounds)
 					{
-						handleSound();
+						updateSound();
 					}
 				}
 			} catch(NoSuchMethodError e) {}
@@ -144,7 +144,8 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void handleSound()
+	@Override
+	public void updateSound()
 	{
 		if(Mekanism.audioHandler != null)
 		{

@@ -7,15 +7,14 @@ import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.EnumColor;
-import mekanism.api.IActiveState;
 import mekanism.api.IConfigurable;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
-import mekanism.api.Tier.FactoryTier;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.Tier.FactoryTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -111,7 +110,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				{
 					synchronized(Mekanism.audioHandler.sounds)
 					{
-						handleSound();
+						updateSound();
 					}
 				}
 			} catch(NoSuchMethodError e) {}
@@ -146,9 +145,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
 			{
 				setJoules(electricityStored + 1000);
-				--inventory[1].stackSize;
+				inventory[1].stackSize--;
 				
-	            if (inventory[1].stackSize <= 0)
+	            if(inventory[1].stackSize <= 0)
 	            {
 	                inventory[1] = null;
 	            }
@@ -166,7 +165,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					energyMultiplier+=1;
+					energyMultiplier++;
 					
 					inventory[0].stackSize--;
 					
@@ -185,7 +184,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 				{
 					upgradeTicks = 0;
-					speedMultiplier+=1;
+					speedMultiplier++;
 					
 					inventory[0].stackSize--;
 					
@@ -207,17 +206,18 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		{
 			if(electricityStored >= ENERGY_PER_TICK)
 			{
-				if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier))
+				if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
-					++progress[process];
+					progress[process]++;
 					electricityStored -= ENERGY_PER_TICK;
 				}
-				else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier))
+				else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					if(!worldObj.isRemote)
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
 					}
+					
 					progress[process] = 0;
 					electricityStored -= ENERGY_PER_TICK;
 				}
@@ -253,7 +253,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void handleSound()
+	@Override
+	public void updateSound()
 	{
 		if(Mekanism.audioHandler != null)
 		{
@@ -295,7 +296,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	public int getScaledProgress(int i, int process)
 	{
-		return progress[process]*i / MekanismUtils.getTicks(speedMultiplier);
+		return progress[process]*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
 	}
 	
 	/**
@@ -315,24 +316,24 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	public boolean canOperate(int inputSlot, int outputSlot)
 	{
-        if (inventory[inputSlot] == null)
+        if(inventory[inputSlot] == null)
         {
             return false;
         }
 
         ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], false);
 
-        if (itemstack == null)
+        if(itemstack == null)
         {
             return false;
         }
 
-        if (inventory[outputSlot] == null)
+        if(inventory[outputSlot] == null)
         {
             return true;
         }
 
-        if (!inventory[outputSlot].isItemEqual(itemstack))
+        if(!inventory[outputSlot].isItemEqual(itemstack))
         {
             return false;
         }
@@ -343,19 +344,19 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	public void operate(int inputSlot, int outputSlot)
 	{
-        if (!canOperate(inputSlot, outputSlot))
+        if(!canOperate(inputSlot, outputSlot))
         {
             return;
         }
 
         ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], true);
 
-        if (inventory[inputSlot].stackSize <= 0)
+        if(inventory[inputSlot].stackSize <= 0)
         {
             inventory[inputSlot] = null;
         }
 
-        if (inventory[outputSlot] == null)
+        if(inventory[outputSlot] == null)
         {
             inventory[outputSlot] = itemstack;
         }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.google.common.io.ByteArrayDataInput;
 
 import ic2.api.IWrenchable;
-import mekanism.api.ITileNetwork;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

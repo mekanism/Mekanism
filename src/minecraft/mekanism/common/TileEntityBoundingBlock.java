@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import mekanism.api.ITileNetwork;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 

@@ -2,6 +2,11 @@ package mekanism.api;
 
 import java.util.ArrayList;
 
+/**
+ * Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.
+ * @author AidanBrady
+ *
+ */
 public interface IConfigurable 
 {
 	/**

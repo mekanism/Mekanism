@@ -1,18 +1,18 @@
-package mekanism.api;
+package mekanism.common;
 
 import java.util.ArrayList;
 
 import com.google.common.io.ByteArrayDataInput;
 
 /**
- * Implement this in your TileEntity class if you plan to have your machine send and receive packets. Send packets sparingly!
+ * Internal interface used for blocks that send data between clients and the server
  * @author AidanBrady
  *
  */
 public interface ITileNetwork 
 {
 	/**
-	 * Called when a networked machine receives a packet.
+	 * Receive and manage a data input.
 	 * @param network
 	 * @param packet
 	 * @param player
@@ -21,7 +21,7 @@ public interface ITileNetwork
 	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception;
 	
 	/**
-	 * Gets an ArrayList of data this machine keeps synchronized with the client.
+	 * Gets an ArrayList of data this tile entity keeps synchronized with the client.
 	 * @param data - list of data
 	 * @return ArrayList
 	 */

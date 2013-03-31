@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.common;
 
 /**
  * Implement this if your machine/generator has some form of active state.

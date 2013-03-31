@@ -4,6 +4,11 @@ import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
+/**
+ * Internal interface for managing various Factory types.
+ * @author AidanBrady
+ *
+ */
 public interface IFactory 
 {
 	/**

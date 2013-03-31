@@ -17,12 +17,12 @@ public class OreHandler implements IWorldGenerator
 	{
 		if(!(chunkGenerator instanceof ChunkProviderHell) && !(chunkGenerator instanceof ChunkProviderEnd))
 		{
-			for(int i=0;i<8;i++)
+			for(int i = 0; i < 8; i++)
 			{
 				int randPosX = (chunkX*16) + random.nextInt(16);
 				int randPosY = random.nextInt(60);
 				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				(new WorldGenMinable(new ItemStack(Mekanism.OreBlock, 1, 0).itemID, 8)).generate(world, random, randPosX, randPosY, randPosZ);
+				new WorldGenMinable(new ItemStack(Mekanism.OreBlock, 1, 0).itemID, 8).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 		}
 	}

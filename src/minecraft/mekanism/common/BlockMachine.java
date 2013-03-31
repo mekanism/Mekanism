@@ -9,8 +9,6 @@ import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
-import mekanism.api.IActiveState;
-import mekanism.api.Tier;
 import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
 import mekanism.common.IFactory.RecipeType;

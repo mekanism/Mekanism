@@ -1,5 +1,10 @@
 package mekanism.api;
 
+/**
+ * Implement this if your block or item can store Mekanism-based upgrades.
+ * @author AidanBrady
+ *
+ */
 public interface IUpgradeManagement 
 {
 	/**
