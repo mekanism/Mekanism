@@ -49,7 +49,7 @@ public class MekanismTools
     public static EnumArmorMaterial armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", 30, new int[]{3, 9, 7, 3}, 50);
     public static EnumArmorMaterial armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", 35, new int[]{3, 8, 6, 2}, 50);
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
-    public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {4, 10, 8, 4}, 50);
+    public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {3, 7, 6, 3}, 50);
     
 	//Base Items
 	public static Item WoodPaxel;
@@ -530,35 +530,57 @@ public class MekanismTools
 		Random random = new Random();
 		
 		int chance = random.nextInt(100);
-		int secondChance = random.nextInt(3);
+		int secondChance = random.nextInt(4);
 		
-		if(chance < 3)
+		if(chance < 80)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
 			{
+				int sword = random.nextInt(100);
+				int helmet = random.nextInt(100);
+				int chestplate = random.nextInt(100);
+				int leggings = random.nextInt(100);
+				int boots = random.nextInt(100);
+				
 				if(secondChance == 0)
 				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(GlowstoneSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(GlowstoneHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(GlowstoneChestplate));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(GlowstoneLeggings));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(GlowstoneBoots));
+					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(GlowstoneSword));
+					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(GlowstoneHelmet));
+					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(GlowstoneChestplate));
+					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(GlowstoneLeggings));
+					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(GlowstoneBoots));
 				}
 				else if(secondChance == 1)
 				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(LazuliSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(LazuliHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(LazuliChestplate));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(LazuliLeggings));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(LazuliBoots));
+					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(LazuliSword));
+					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(LazuliHelmet));
+					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(LazuliChestplate));
+					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(LazuliLeggings));
+					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(LazuliBoots));
 				}
 				else if(secondChance == 2)
 				{
-					if(event.entityLiving instanceof EntityZombie) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(OsmiumSword));
-					event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(OsmiumHelmet));
-					event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(OsmiumChestplate));
-					event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(OsmiumLeggings));
-					event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(OsmiumBoots));
+					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(OsmiumSword));
+					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(OsmiumHelmet));
+					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(OsmiumChestplate));
+					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(OsmiumLeggings));
+					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(OsmiumBoots));
+				}
+				else if(secondChance == 3)
+				{
+					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(SteelSword));
+					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(SteelHelmet));
+					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(SteelChestplate));
+					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(SteelLeggings));
+					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(SteelBoots));
+				}
+				else if(secondChance == 4)
+				{
+					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(BronzeSword));
+					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(BronzeHelmet));
+					if(chestplate < 50) event.entityLiving.setCurrentItemOrArmor(2, new ItemStack(BronzeChestplate));
+					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(BronzeLeggings));
+					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(BronzeBoots));
 				}
 			}
 		}
