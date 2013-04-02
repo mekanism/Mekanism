@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -109,7 +110,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			if(inventory[0].itemID == Item.redstone.itemID && electricityStored+1000 <= MAX_ELECTRICITY)
 			{
 				setJoules(electricityStored + 1000);
-				--inventory[0].stackSize;
+				inventory[0].stackSize--;
 				
 	            if (inventory[0].stackSize <= 0)
 	            {
@@ -117,6 +118,19 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	            }
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		
+		return true;
 	}
 	
 	/**

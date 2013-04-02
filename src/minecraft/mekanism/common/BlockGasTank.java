@@ -220,7 +220,7 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
 	    	}
     	}
     	
-        if (tileEntity != null)
+        if(tileEntity != null)
         {
         	if(!entityplayer.isSneaking())
         	{
