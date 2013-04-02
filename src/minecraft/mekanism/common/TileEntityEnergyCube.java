@@ -90,7 +90,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			else if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= tier.MAX_ELECTRICITY)
 			{
 				setJoules(electricityStored + 1000);
-				--inventory[1].stackSize;
+				inventory[1].stackSize--;
 				
                 if (inventory[1].stackSize <= 0)
                 {

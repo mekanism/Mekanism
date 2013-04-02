@@ -2,6 +2,7 @@ package mekanism.common;
 
 import ic2.api.IElectricItem;
 import mekanism.api.IStorageTank;
+import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -20,19 +21,19 @@ public class ContainerAdvancedElectricMachine extends Container
         addSlotToContainer(new Slot(tentity, 0, 56, 17));
         addSlotToContainer(new Slot(tentity, 1, 56, 53));
         addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
-        addSlotToContainer(new SlotEnergy(tentity, 3, 31, 35));
+        addSlotToContainer(new SlotDischarge(tentity, 3, 31, 35));
         addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 180, 11));
         int slotX;
 
-        for (slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for (int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (slotX = 0; slotX < 9; ++slotX)
+        for(slotX = 0; slotX < 9; ++slotX)
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
@@ -87,7 +88,7 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
             	}
             }
-            else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem)
+            else if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 	            {
@@ -103,33 +104,6 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
 	            }
             }
-        	else if(slotStack.itemID == Item.redstone.itemID)
-        	{
-        		if(slotID != 3 && slotID != 0)
-        		{
-        			if(!mergeItemStack(slotStack, 3, 4, false))
-        			{
-        				if(!mergeItemStack(slotStack, 0, 1, false))
-        				{
-        					return null;
-        				}
-        			}
-        		}
-        		else if(slotID == 0)
-        		{
-        			if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
-        			{
-        				return null;
-        			}
-        		}
-        		else if(slotID == 3)
-        		{
-        			if(!mergeItemStack(slotStack, 0, 1, false))
-        			{
-        				return null;
-        			}
-        		}
-        	}
             else if(tileEntity.getFuelTicks(slotStack) > 0 || (tileEntity instanceof TileEntityPurificationChamber && slotStack.getItem() instanceof IStorageTank))
             {
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
@@ -201,16 +175,15 @@ public class ContainerAdvancedElectricMachine extends Container
             	}
             }
             
-            if (slotStack.stackSize == 0)
+            if(slotStack.stackSize == 0)
             {
                 currentSlot.putStack((ItemStack)null);
             }
-            else
-            {
+            else {
                 currentSlot.onSlotChanged();
             }
 
-            if (slotStack.stackSize == stack.stackSize)
+            if(slotStack.stackSize == stack.stackSize)
             {
                 return null;
             }

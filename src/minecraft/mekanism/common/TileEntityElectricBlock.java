@@ -24,7 +24,7 @@ import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ISidedInventory, IInventory, ITileNetwork, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;

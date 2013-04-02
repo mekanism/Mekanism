@@ -4,6 +4,7 @@ import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -20,7 +21,7 @@ public class ContainerFactory extends Container
         tileEntity = tentity;
         
         addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
-        addSlotToContainer(new SlotEnergy(tentity, 1, 7, 35));
+        addSlotToContainer(new SlotDischarge(tentity, 1, 7, 35));
         
         if(tileEntity.tier == FactoryTier.BASIC)
         {
@@ -73,15 +74,15 @@ public class ContainerFactory extends Container
         
         int slotX;
 
-        for (slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for (int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (slotX = 0; slotX < 9; ++slotX)
+        for(slotX = 0; slotX < 9; ++slotX)
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
@@ -120,7 +121,7 @@ public class ContainerFactory extends Container
             		return null;
             	}
             }
-        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
+        	else if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 1)
 	            {
@@ -194,16 +195,15 @@ public class ContainerFactory extends Container
             	}
             }
             
-            if (slotStack.stackSize == 0)
+            if(slotStack.stackSize == 0)
             {
                 currentSlot.putStack((ItemStack)null);
             }
-            else
-            {
+            else {
                 currentSlot.onSlotChanged();
             }
 
-            if (slotStack.stackSize == stack.stackSize)
+            if(slotStack.stackSize == stack.stackSize)
             {
                 return null;
             }

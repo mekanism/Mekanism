@@ -17,6 +17,7 @@ import mekanism.api.ITubeConnection;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
+import mekanism.common.RecipeHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -30,6 +31,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 
@@ -86,6 +88,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 					setJoules(electricityStored + gain);
 				}
+			}
+			if(inventory[3].itemID == Item.redstone.itemID && electricityStored+1000 <= MAX_ELECTRICITY)
+			{
+				setJoules(electricityStored + 1000);
+				inventory[3].stackSize--;
+				
+	            if(inventory[3].stackSize <= 0)
+	            {
+	                inventory[3] = null;
+	            }
 			}
 		}
 		
@@ -236,6 +248,30 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return LiquidContainerRegistry.getLiquidForFilledItem(itemstack) != null && LiquidContainerRegistry.getLiquidForFilledItem(itemstack).itemID == Block.waterStill.blockID;
+		}
+		else if(slotID == 1)
+		{
+			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.HYDROGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE;
+		}
+		else if(slotID == 2)
+		{
+			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE;
+		}
+		else if(slotID == 3)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		return true;
+	}
+	
+	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
 		if(side == MekanismUtils.getLeft(facing))
@@ -257,6 +293,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return 2;
 		}
+		
 		return 1;
 	}
 	

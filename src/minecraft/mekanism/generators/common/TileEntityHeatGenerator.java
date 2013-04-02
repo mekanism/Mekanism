@@ -21,6 +21,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -48,10 +49,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		{
 			fuels.put(Mekanism.hooks.BuildCraftFuelID, 16);
 			fuels.put(Mekanism.hooks.BuildCraftOilID, 4);
-		}
-		if(Mekanism.hooks.ForestryLoaded)
-		{
-			fuels.put(Mekanism.hooks.ForestryBiofuelID, 8);
 		}
 	}
 	
@@ -108,7 +105,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					if(fuel <= fuelNeeded)
 					{
 						fuelSlot.liquidStored += fuel;
-						--inventory[0].stackSize;
+						inventory[0].stackSize--;
 						
 						if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
 						{
@@ -141,6 +138,22 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				setActive(false);
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return getFuel(itemstack) > 0 || (LiquidContainerRegistry.getLiquidForFilledItem(itemstack) != null && fuels.containsKey(LiquidContainerRegistry.getLiquidForFilledItem(itemstack).itemID));
+		}
+		else if(slotID == 1)
+		{
+			return itemstack.getItem() instanceof IElectricItem || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+		}
+		
+		return true;
 	}
 	
 	@Override

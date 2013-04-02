@@ -2,6 +2,7 @@ package mekanism.common;
 
 import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
+import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -16,18 +17,18 @@ public class ContainerTeleporter extends Container
     public ContainerTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new SlotEnergy(tentity, 0, 27, 14));
+        addSlotToContainer(new SlotDischarge(tentity, 0, 27, 14));
         int slotX;
 
-        for (slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for (int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (slotX = 0; slotX < 9; ++slotX)
+        for(slotX = 0; slotX < 9; ++slotX)
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
@@ -59,7 +60,7 @@ public class ContainerTeleporter extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
+            if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 0)
 	            {
@@ -99,16 +100,15 @@ public class ContainerTeleporter extends Container
             	}
             }
             
-            if (slotStack.stackSize == 0)
+            if(slotStack.stackSize == 0)
             {
                 currentSlot.putStack((ItemStack)null);
             }
-            else
-            {
+            else {
                 currentSlot.onSlotChanged();
             }
 
-            if (slotStack.stackSize == stack.stackSize)
+            if(slotStack.stackSize == stack.stackSize)
             {
                 return null;
             }

@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import java.util.ArrayList;
 
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
@@ -88,6 +89,18 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			setJoules(electricityStored + getEnvironmentBoost());
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return itemstack.getItem() instanceof IElectricItem || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+		}
+		
+		return true;
 	}
 	
 	@Override

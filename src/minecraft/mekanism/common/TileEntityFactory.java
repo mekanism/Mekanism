@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -250,6 +251,56 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				setActive(false);
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(tier == FactoryTier.BASIC)
+		{
+			if(slotID >= 5 && slotID <= 7)
+			{
+				return false;
+			}
+			else if(slotID >= 2 && slotID <= 4)
+			{
+				return RecipeType.values()[recipeType].getCopiedOutput(inventory[slotID], false) != null;
+			}
+		}
+		else if(tier == FactoryTier.ADVANCED)
+		{
+			if(slotID >= 7 && slotID <= 11)
+			{
+				return false;
+			}
+			else if(slotID >= 2 && slotID <= 6)
+			{
+				return RecipeType.values()[recipeType].getCopiedOutput(inventory[slotID], false) != null;
+			}
+		}
+		else if(tier == FactoryTier.ELITE)
+		{
+			if(slotID >= 9 && slotID <= 15)
+			{
+				return false;
+			}
+			else if(slotID >= 2 && slotID <= 8)
+			{
+				return RecipeType.values()[recipeType].getCopiedOutput(inventory[slotID], false) != null;
+			}
+		}
+		
+		if(slotID == 0)
+		{
+			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+		}
+		else if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		return true;
 	}
 	
 	@SideOnly(Side.CLIENT)

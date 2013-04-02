@@ -12,7 +12,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 {
 	public ItemPortableTeleporter(int id)
 	{
-		super(id, 5000000, 120);
+		super(id, 1000000, 120);
 	}
 	
 	@Override
@@ -24,6 +24,11 @@ public class ItemPortableTeleporter extends ItemEnergized
 	
 	public int calculateEnergyCost(Entity entity, Teleporter.Coords coords)
 	{
+		if(coords == null)
+		{
+			return 0;
+		}
+		
 		int neededEnergy = 1000;
 		
 		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
@@ -33,7 +38,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 		
 		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
 		
-		neededEnergy+=(distance);
+		neededEnergy+=(distance*10);
 		
 		return neededEnergy;
 	}
@@ -49,7 +54,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 			case 2:
 				return EnumColor.DARK_RED + "Needs energy.";
 			case 3:
-				return EnumColor.DARK_RED + "Links > 1.";
+				return EnumColor.DARK_RED + "Links > 2.";
 			case 4:
 				return EnumColor.DARK_RED + "No link found.";
 			default:

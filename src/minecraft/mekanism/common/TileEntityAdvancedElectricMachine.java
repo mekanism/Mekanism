@@ -3,10 +3,13 @@ package mekanism.common;
 import java.util.ArrayList;
 
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.EnumColor;
+import mekanism.api.EnumGas;
+import mekanism.api.IStorageTank;
 import mekanism.api.SideData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -205,7 +208,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				{
 					setSecondaryEnergy(secondaryEnergyStored + energyNeeded);
 				}
-				--inventory[1].stackSize;
+				inventory[1].stackSize--;
 				
 				if(inventory[1].stackSize == 0)
 				{
@@ -214,6 +217,36 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			}
 		}
     }
+    
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 2)
+		{
+			return false;
+		}
+		else if(slotID == 4)
+		{
+			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+		}
+		else if(slotID == 0)
+		{
+			return RecipeHandler.getOutput(inventory[0], false, getRecipes()) != null;
+		}
+		else if(slotID == 3)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		else if(slotID == 1)
+		{
+			return getFuelTicks(itemstack) > 0 || 
+					(this instanceof TileEntityPurificationChamber && itemstack.getItem() instanceof IStorageTank && 
+							((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN);
+		}
+		return true;
+	}
 
     @Override
     public void operate()

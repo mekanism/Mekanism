@@ -192,7 +192,7 @@ public class PacketHandler implements IPacketHandler
 			    				
 			    				if(item.getStatus(itemstack) == 1)
 			    				{
-			    					Teleporter.Coords coords = Mekanism.teleporters.get(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3))).get(0);
+			    					Teleporter.Coords coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), entityPlayerMP);
 			    					
 			    					item.onProvide(new ElectricityPack(item.calculateEnergyCost(entityPlayerMP, coords)/120, 120), itemstack);
 			    					

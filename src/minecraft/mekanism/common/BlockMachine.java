@@ -709,7 +709,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
 		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
-		TELEPORTER(11, 13, 10000000, TileEntityTeleporter.class, false);
+		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false);
 		
 		public int meta;
 		public int guiId;

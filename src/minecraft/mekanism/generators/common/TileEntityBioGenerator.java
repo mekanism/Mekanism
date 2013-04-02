@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
@@ -12,6 +13,7 @@ import mekanism.client.Sound;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
+import mekanism.common.RecipeHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -135,7 +137,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 					if(fuel <= fuelNeeded)
 					{
 						bioFuelSlot.liquidStored += fuel;
-						--inventory[0].stackSize;
+						inventory[0].stackSize--;
 						
 						if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
 						{
@@ -166,6 +168,22 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 				setActive(false);
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return getFuel(itemstack) > 0 || (LiquidContainerRegistry.getLiquidForFilledItem(itemstack) != null && fuels.containsKey(LiquidContainerRegistry.getLiquidForFilledItem(itemstack).itemID));
+		}
+		else if(slotID == 1)
+		{
+			return itemstack.getItem() instanceof IElectricItem || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+		}
+		
+		return true;
 	}
 	
 	@Override

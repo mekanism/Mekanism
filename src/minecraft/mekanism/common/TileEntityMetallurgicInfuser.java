@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -289,6 +290,50 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 3)
+		{
+			return false;
+		}
+		else if(slotID == 1)
+		{
+			return MekanismUtils.getInfuseObject(itemstack) != null && (type == InfusionType.NONE || type == MekanismUtils.getInfuseObject(itemstack).type);
+		}
+		else if(slotID == 0)
+		{
+			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+		}
+		else if(slotID == 2)
+		{
+	    	if(type != InfusionType.NONE)
+	    	{
+	    		if(RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, itemstack), false, Recipe.METALLURGIC_INFUSER.get()) != null)
+	    		{
+	    			return true;
+	    		}
+	    	}
+	    	else {
+	    		for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
+	    		{
+	    			InfusionInput input = (InfusionInput)obj;
+	    			if(input.inputSlot.isItemEqual(itemstack))
+	    			{
+	    				return true;
+	    			}
+	    		}
+	    	}
+		}
+		else if(slotID == 4)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		return true;
 	}
 	
 	public void operate()

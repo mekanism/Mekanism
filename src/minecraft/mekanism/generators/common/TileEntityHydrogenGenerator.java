@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -95,6 +96,22 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				setActive(false);
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.HYDROGEN;
+		}
+		else if(slotID == 1)
+		{
+			return itemstack.getItem() instanceof IElectricItem || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+		}
+		
+		return true;
 	}
 	
 	@Override

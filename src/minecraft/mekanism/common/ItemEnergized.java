@@ -203,7 +203,7 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
-		return true;
+		return getProvideRequest(itemStack).amperes != 0;
 	}
 
 	@Override

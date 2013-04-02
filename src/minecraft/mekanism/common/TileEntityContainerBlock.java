@@ -182,7 +182,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack)
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		return true;
 	}

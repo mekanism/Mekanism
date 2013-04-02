@@ -7,6 +7,7 @@ import mekanism.api.SideData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import dan200.computer.api.IComputerAccess;
 
@@ -153,6 +154,30 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				setActive(false);
 			}
 		}
+	}
+	
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 2)
+		{
+			return false;
+		}
+		else if(slotID == 3)
+		{
+			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+		}
+		else if(slotID == 0)
+		{
+			return RecipeHandler.getOutput(inventory[0], false, getRecipes()) != null;
+		}
+		else if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		return true;
 	}
 
 	@Override

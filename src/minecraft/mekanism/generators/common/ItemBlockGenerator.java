@@ -189,7 +189,7 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public ElectricityPack getProvideRequest(ItemStack itemStack)
 	{
-		return ElectricityPack.getFromWatts(Math.min(getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack));
+		return itemStack.getItemDamage() != 2 ? ElectricityPack.getFromWatts(Math.min(getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack)) : new ElectricityPack();
 	}
 	
 	public double getTransferRate(ItemStack itemStack)

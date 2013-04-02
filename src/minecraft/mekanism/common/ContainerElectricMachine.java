@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import ic2.api.IElectricItem;
+import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -18,20 +19,20 @@ public class ContainerElectricMachine extends Container
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 56, 17));
-        addSlotToContainer(new SlotEnergy(tentity, 1, 56, 53));
+        addSlotToContainer(new SlotDischarge(tentity, 1, 56, 53));
         addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
         addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 180, 11));
         int slotX;
 
-        for (slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for (int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (slotX = 0; slotX < 9; ++slotX)
+        for(slotX = 0; slotX < 9; ++slotX)
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
@@ -70,11 +71,11 @@ public class ContainerElectricMachine extends Container
             		return null;
             	}
             }
-        	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
+        	else if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 1)
 	            {
-	                if (!mergeItemStack(slotStack, 1, 2, false))
+	                if(!mergeItemStack(slotStack, 1, 2, false))
 	                {
 	                	return null;
 	                }
@@ -142,16 +143,15 @@ public class ContainerElectricMachine extends Container
             	}
             }
             
-            if (slotStack.stackSize == 0)
+            if(slotStack.stackSize == 0)
             {
                 currentSlot.putStack((ItemStack)null);
             }
-            else
-            {
+            else {
                 currentSlot.onSlotChanged();
             }
 
-            if (slotStack.stackSize == stack.stackSize)
+            if(slotStack.stackSize == stack.stackSize)
             {
                 return null;
             }

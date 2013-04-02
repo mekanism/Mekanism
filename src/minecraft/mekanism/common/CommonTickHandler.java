@@ -31,9 +31,9 @@ public class CommonTickHandler implements ITickHandler
 	    		
 	    		if(Mekanism.teleporters.containsKey(teleCode))
 	    		{
-	    			if(Mekanism.teleporters.get(teleCode).size() == 1)
+	    			if(Mekanism.teleporters.get(teleCode).size() > 0 && Mekanism.teleporters.get(teleCode).size() <= 2)
 	    			{
-	    				int energyNeeded = item.calculateEnergyCost(player, Mekanism.teleporters.get(teleCode).get(0));
+	    				int energyNeeded = item.calculateEnergyCost(player, MekanismUtils.getClosestCoords(teleCode, player));
 	    				
 	    				if(item.getJoules(itemstack) < energyNeeded)
 	    				{
@@ -52,7 +52,7 @@ public class CommonTickHandler implements ITickHandler
 	    				}
 	    				return;
 	    			}
-	    			else if(Mekanism.teleporters.get(teleCode).size() > 1)
+	    			else if(Mekanism.teleporters.get(teleCode).size() > 2)
 	    			{
 	    				if(item.getStatus(itemstack) != 3)
 	    				{

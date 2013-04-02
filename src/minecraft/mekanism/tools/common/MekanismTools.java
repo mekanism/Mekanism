@@ -532,7 +532,7 @@ public class MekanismTools
 		int chance = random.nextInt(100);
 		int secondChance = random.nextInt(4);
 		
-		if(chance < 80)
+		if(chance < 3)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
 			{

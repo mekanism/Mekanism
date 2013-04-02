@@ -20,15 +20,15 @@ public class ContainerGasTank extends Container
 		
 		int slotX;
 		
-        for (slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for (int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (slotX = 0; slotX < 9; ++slotX)
+        for(slotX = 0; slotX < 9; ++slotX)
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
@@ -64,9 +64,9 @@ public class ContainerGasTank extends Container
             {
 	            if(slotID != 0 && slotID != 1)
 	            {
-	                if (!mergeItemStack(slotStack, 1, 2, false))
+	                if(!mergeItemStack(slotStack, 1, 2, false))
 	                {
-		                if (!mergeItemStack(slotStack, 0, 1, false))
+		                if(!mergeItemStack(slotStack, 0, 1, false))
 		                {
 		                    return null;
 		                }
@@ -113,16 +113,15 @@ public class ContainerGasTank extends Container
             	}
             }
             
-            if (slotStack.stackSize == 0)
+            if(slotStack.stackSize == 0)
             {
                 currentSlot.putStack((ItemStack)null);
             }
-            else
-            {
+            else {
                 currentSlot.onSlotChanged();
             }
 
-            if (slotStack.stackSize == stack.stackSize)
+            if(slotStack.stackSize == stack.stackSize)
             {
                 return null;
             }

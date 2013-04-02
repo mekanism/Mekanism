@@ -6,6 +6,7 @@ import ic2.api.IElectricItem;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionType;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -24,18 +25,18 @@ public class ContainerMetallurgicInfuser extends Container
         addSlotToContainer(new Slot(tentity, 1, 17, 35));
         addSlotToContainer(new Slot(tentity, 2, 51, 43));
         addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
-        addSlotToContainer(new SlotEnergy(tentity, 4, 143, 35));
+        addSlotToContainer(new SlotDischarge(tentity, 4, 143, 35));
         int slotX;
 
-        for (slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for (int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
         }
 
-        for (slotX = 0; slotX < 9; ++slotX)
+        for(slotX = 0; slotX < 9; ++slotX)
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
@@ -83,7 +84,7 @@ public class ContainerMetallurgicInfuser extends Container
             			return null;
             		}
             	}
-            	else if(slotStack.getItem() instanceof IItemElectric || slotStack.getItem() instanceof IElectricItem || slotStack.itemID == Item.redstone.itemID)
+            	else if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             	{
             		if(!mergeItemStack(slotStack, 4, 5, false))
             		{
@@ -127,16 +128,15 @@ public class ContainerMetallurgicInfuser extends Container
             	}
             }
             
-            if (slotStack.stackSize == 0)
+            if(slotStack.stackSize == 0)
             {
                 currentSlot.putStack((ItemStack)null);
             }
-            else
-            {
+            else {
                 currentSlot.onSlotChanged();
             }
 
-            if (slotStack.stackSize == stack.stackSize)
+            if(slotStack.stackSize == stack.stackSize)
             {
                 return null;
             }

@@ -7,16 +7,36 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class SlotEnergy extends Slot
+public class SlotEnergy
 {
-	public SlotEnergy(IInventory inventory, int index, int x, int y)
+	public static class SlotCharge extends Slot
 	{
-		super(inventory, index, x, y);
+		public SlotCharge(IInventory inventory, int index, int x, int y)
+		{
+			super(inventory, index, x, y);
+		}
+		
+		@Override
+		public boolean isItemValid(ItemStack itemstack)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0) || 
+					itemstack.getItem() instanceof IElectricItem;
+		}
 	}
 	
-	@Override
-	public boolean isItemValid(ItemStack itemstack)
+	public static class SlotDischarge extends Slot
 	{
-		return itemstack.getItem() instanceof IElectricItem || itemstack.getItem() instanceof IItemElectric || itemstack.itemID == Item.redstone.itemID;
+		public SlotDischarge(IInventory inventory, int index, int x, int y)
+		{
+			super(inventory, index, x, y);
+		}
+		
+		@Override
+		public boolean isItemValid(ItemStack itemstack)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
 	}
 }

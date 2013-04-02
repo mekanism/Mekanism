@@ -148,6 +148,59 @@ public final class MekanismUtils
 	}
 	
 	/**
+	 * Returns the closest teleporter between a selection of one or two.
+	 */
+	public static Teleporter.Coords getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
+	{
+		if(Mekanism.teleporters.get(teleCode).size() == 1)
+		{
+			return Mekanism.teleporters.get(teleCode).get(0);
+		}
+		else {
+			int dimensionId = player.worldObj.provider.dimensionId;
+			
+			Teleporter.Coords coords0 = Mekanism.teleporters.get(teleCode).get(0);
+			Teleporter.Coords coords1 = Mekanism.teleporters.get(teleCode).get(1);
+			
+			int distance0 = (int)player.getDistance(coords0.xCoord, coords0.yCoord, coords0.zCoord);
+			int distance1 = (int)player.getDistance(coords1.xCoord, coords1.yCoord, coords1.zCoord);
+			
+			if(dimensionId == coords0.dimensionId && dimensionId != coords1.dimensionId)
+			{
+				return coords0;
+			}
+			else if(dimensionId == coords1.dimensionId && dimensionId != coords0.dimensionId)
+			{
+				return coords1;
+			}
+			else if(dimensionId == coords0.dimensionId && dimensionId == coords1.dimensionId)
+			{
+				if(distance0 < distance1)
+				{
+					return coords0;
+				}
+				else if(distance0 > distance1)
+				{
+					return coords1;
+				}
+			}
+			else if(dimensionId != coords0.dimensionId && dimensionId != coords1.dimensionId)
+			{
+				if(distance0 < distance1)
+				{
+					return coords0;
+				}
+				else if(distance0 > distance1)
+				{
+					return coords1;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Sends the defined message to all players.
 	 * @param msg - message to send
 	 */
