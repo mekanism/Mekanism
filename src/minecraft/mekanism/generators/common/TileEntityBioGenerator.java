@@ -171,6 +171,23 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	}
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 0)
+		{
+			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -227,6 +244,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	public int getScaledFuelLevel(int i)
 	{
 		return bioFuelSlot.liquidStored*i / bioFuelSlot.MAX_LIQUID;
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 	
 	@Override

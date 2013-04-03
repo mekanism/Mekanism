@@ -45,6 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 9: Purification Chamber
  * 10: Energized Smelter
  * 11: Teleporter
+ * 12: Electric Pump
  * @author AidanBrady
  *
  */
@@ -100,6 +101,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 		icons[11][0] = register.registerIcon("mekanism:Teleporter");
+		icons[12][0] = register.registerIcon("mekanism:ElectricPumpFront");
+		icons[12][1] = register.registerIcon("mekanism:ElectricPumpSide");
 	}
 	
 	@Override
@@ -304,6 +307,16 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	{
     		return icons[11][0];
     	}
+    	else if(meta == 12)
+    	{
+    		if(side == 1)
+    		{
+    			return icons[12][0];
+    		}
+    		else {
+    			return icons[12][1];
+    		}
+    	}
     	
     	return null;
     }
@@ -441,6 +454,16 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	{
     		return icons[11][0];
     	}
+    	else if(metadata == 12)
+    	{
+    		if(side == 1)
+    		{
+    			return icons[12][0];
+    		}
+    		else {
+    			return icons[12][1];
+    		}
+    	}
     	
     	return null;
     }
@@ -479,6 +502,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		list.add(new ItemStack(i, 1, 9));
 		list.add(new ItemStack(i, 1, 10));
 		list.add(new ItemStack(i, 1, 11));
+		list.add(new ItemStack(i, 1, 12));
 	}
     
     @Override
@@ -709,7 +733,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
 		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
-		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false);
+		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
+		ELECTRIC_PUMP(12, 17, 16000, TileEntityElectricPump.class, false);
 		
 		public int meta;
 		public int guiId;

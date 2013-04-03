@@ -179,6 +179,23 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
     }
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 0)
+		{
+			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public int getEnvironmentBoost()
 	{
 		int boost = 0;
@@ -207,6 +224,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		}
 		
 		return TileEntityFurnace.getItemBurnTime(itemstack);
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 	
 	@Override

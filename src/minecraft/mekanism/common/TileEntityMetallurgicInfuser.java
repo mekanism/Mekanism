@@ -88,12 +88,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		super("Metallurgic Infuser", 2000);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, 1, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 3, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 4, 1));
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));
+		sideOutputs.add(new SideData(EnumColor.PURPLE, 1, 1, new int[] {1}));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 1, new int[] {2}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 3, 1, new int[] {3}));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 4, 1, new int[] {4}));
 		
 		sideConfig = new byte[] {0, 1, 0, 5, 3, 4};
 		
@@ -290,6 +290,24 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 4)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 3)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -584,6 +602,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+	}
 
 	@Override
 	public double getMaxJoules() 

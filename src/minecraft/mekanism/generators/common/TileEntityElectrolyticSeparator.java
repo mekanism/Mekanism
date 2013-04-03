@@ -248,6 +248,32 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 3)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() > 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() > 0));
+		}
+		else if(slotID == 0)
+		{
+			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+		}
+		else if(slotID == 1)
+		{
+			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.HYDROGEN, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.HYDROGEN, itemstack);
+		}
+		else if(slotID == 2)
+		{
+			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.OXYGEN, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.HYDROGEN, itemstack);
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -269,6 +295,21 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					itemstack.itemID == Item.redstone.itemID;
 		}
 		return true;
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		if(ForgeDirection.getOrientation(side) == MekanismUtils.getLeft(facing))
+		{
+			return new int[] {3};
+		}
+		else if(side == facing || ForgeDirection.getOrientation(side) == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return new int[] {1, 2};
+		}
+		
+		return new int[] {0};
 	}
 	
 	@Override

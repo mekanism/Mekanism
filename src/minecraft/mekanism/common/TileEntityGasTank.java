@@ -140,6 +140,22 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.NONE, itemstack) == 0);
+		}
+		else if(slotID == 0)
+		{
+			return (itemstack.getItem() instanceof IStorageTank && 
+					((IStorageTank)itemstack.getItem()).getGas(EnumGas.NONE, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.NONE, itemstack));
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -151,6 +167,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 			return itemstack.getItem() instanceof IStorageTank && (gasType == EnumGas.NONE || ((IStorageTank)itemstack.getItem()).canProvideGas(itemstack, gasType));
 		}
 		return true;
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return side == 1 ? new int[] {0} : new int[] {1};
 	}
 	
 	@Override

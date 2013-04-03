@@ -39,6 +39,7 @@ import net.minecraft.world.World;
  * 9: Purification Chamber
  * 10: Energized Smelter
  * 11: Teleporter
+ * 12: Electric Pump
  * @author AidanBrady
  *
  */
@@ -102,6 +103,9 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 				break;
 			case 11:
 				name = "Teleporter";
+				break;
+			case 12:
+				name = "ElectricPump";
 				break;
 			default:
 				name = "Unknown";

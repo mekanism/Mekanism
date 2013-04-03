@@ -12,10 +12,14 @@ public class SideData
 	/** How many slots this side contains */
 	public int slotAmount;
 	
-	public SideData(EnumColor colour, int start, int amount)
+	/** Int[] of available side slots */
+	public int[] availableSlots;
+	
+	public SideData(EnumColor colour, int start, int amount, int[] slots)
 	{
 		color = colour;
 		slotStart = start;
 		slotAmount = amount;
+		availableSlots = slots;
 	}
 }

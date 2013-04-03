@@ -14,6 +14,7 @@ import mekanism.common.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
@@ -99,6 +100,23 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 0)
+		{
+			return (itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.NONE, itemstack) == 0);
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -112,6 +130,12 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 	
 	@Override

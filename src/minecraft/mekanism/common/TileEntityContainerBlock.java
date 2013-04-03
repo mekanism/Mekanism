@@ -2,13 +2,13 @@ package mekanism.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, IInventory, ISustainedInventory
+public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements net.minecraftforge.common.ISidedInventory, ISidedInventory, IInventory, ISustainedInventory
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
@@ -122,14 +122,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
     public ItemStack getStackInSlotOnClosing(int slotID)
     {
-        if (inventory[slotID] != null)
+        if(inventory[slotID] != null)
         {
             ItemStack var2 = inventory[slotID];
             inventory[slotID] = null;
             return var2;
         }
-        else
-        {
+        else {
             return null;
         }
     }
@@ -139,7 +138,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     {
         inventory[slotID] = itemstack;
 
-        if (itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+        if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
         {
             itemstack.stackSize = getInventoryStackLimit();
         }
@@ -183,6 +182,24 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean func_102007_a(int slotID, ItemStack itemstack, int side)
+	{
+		return isStackValidForSlot(slotID, itemstack);
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side) 
+	{
+		return new int[0];
+	}
+
+	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
 	{
 		return true;
 	}

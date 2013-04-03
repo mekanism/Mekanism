@@ -301,6 +301,32 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return side == 1 ? new int[] {0} : new int[] {1};
+	}
+	
+	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 0)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public int getStartInventorySide(ForgeDirection side) 
 	{
 		if(side == ForgeDirection.getOrientation(1))

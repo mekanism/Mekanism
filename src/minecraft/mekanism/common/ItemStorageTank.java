@@ -68,7 +68,7 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 		{
 			ItemStack itemstack = (ItemStack)data[0];
 			
-			if(getGasType(itemstack) == type)
+			if(getGasType(itemstack) == type || type == EnumGas.NONE)
 			{
 				if(itemstack.stackTagCompound == null)
 				{
@@ -157,7 +157,7 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 			ItemStack itemStack = (ItemStack)data[0];
 			IStorageTank tank = (IStorageTank)itemStack.getItem();
 			
-			if(getGasType(itemStack) == EnumGas.NONE || getGasType(itemStack) == type)
+			if(getGasType(itemStack) == EnumGas.NONE || getGasType(itemStack) == type || type == EnumGas.NONE)
 			{
 				return MAX_GAS;
 			}

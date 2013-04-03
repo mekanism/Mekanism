@@ -7,8 +7,12 @@ import universalelectricity.core.item.IItemElectric;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import mekanism.api.EnumGas;
+import mekanism.api.IStorageTank;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
+import micdoodle8.mods.galacticraft.API.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -40,6 +44,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	
 	@Override
 	public void updateSound() {/* No super - prevent sound updating */}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return new int[] {0};
+	}
 	
 	@Override
 	public int getSizeInventorySide(ForgeDirection side)
@@ -92,6 +102,19 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 0)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -112,7 +135,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public int getEnvironmentBoost()
 	{
-		return seesSun ? GENERATION_RATE : 0;
+		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolorEnergyMultiplier() : 1)) : 0;
 	}
 
 	@Override

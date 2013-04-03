@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import mekanism.common.TileEntityControlPanel;
 import mekanism.common.TileEntityElectricMachine;
+import mekanism.common.TileEntityElectricPump;
 import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityMetallurgicInfuser;
@@ -140,6 +141,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:
 				return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine)tileEntity);
+			case 17:
+				return new GuiElectricPump(player.inventory, (TileEntityElectricPump)tileEntity);
 		}
 		return null;
 	}

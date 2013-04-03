@@ -104,7 +104,7 @@ public class EnergyTransferProtocol
 				{
 					if(((IPowerReceptor)acceptor).getPowerProvider() != null)
 					{
-						if((((IPowerReceptor)acceptor).powerRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_BC) > 0)
+						if((((IPowerReceptor)acceptor).powerRequest(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite())*Mekanism.FROM_BC) > 0)
 						{
 							availableAcceptors.add(acceptor);
 							acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));

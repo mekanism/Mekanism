@@ -121,6 +121,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return new int[] {0};
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -232,6 +238,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 				PacketHandler.sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
 			}
 		}
+	}
+
+	@Override
+	public int getSizeInventorySide(ForgeDirection side)
+	{
+		return 1;
 	}
 	
 	@Override
@@ -378,6 +390,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
+				(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+						((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
 	}
 	
 	@Override

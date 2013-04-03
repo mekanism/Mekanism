@@ -373,6 +373,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+	}
+	
+	@Override
 	public int powerRequest(ForgeDirection side) 
 	{
 		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);

@@ -28,11 +28,11 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 0, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 2, 1));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, 3, 1));
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 0, 1, new int[] {0}));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1, new int[] {1}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 2, 1, new int[] {2}));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 3, 1, new int[] {3}));
 		
 		sideConfig = new byte[] {2, 1, 0, 0, 4, 3};
 		
@@ -169,7 +169,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 		else if(slotID == 0)
 		{
-			return RecipeHandler.getOutput(inventory[0], false, getRecipes()) != null;
+			return RecipeHandler.getOutput(itemstack, false, getRecipes()) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -227,6 +227,24 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
             return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
         }
     }
+	
+	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 2)
+		{
+			return true;
+		}
+		
+		return false;
+	}
 
 	@Override
 	public String[] getMethodNames() 

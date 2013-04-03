@@ -81,11 +81,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		this(FactoryTier.BASIC);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 3));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 5, 3));
+		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1, new int[] {1}));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 3, new int[] {2, 3, 4}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 5, 3, new int[] {5, 6, 7}));
 		
 		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}
@@ -254,6 +254,32 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 	
 	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
+		}
+		else if(tier == FactoryTier.BASIC && slotID >= 5 && slotID <= 7)
+		{
+			return true;
+		}
+		else if(tier == FactoryTier.ADVANCED && slotID >= 7 && slotID <= 11)
+		{
+			return true;
+		}
+		else if(tier == FactoryTier.ELITE && slotID >= 9 && slotID <= 15)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(tier == FactoryTier.BASIC)
@@ -264,7 +290,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			}
 			else if(slotID >= 2 && slotID <= 4)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(inventory[slotID], false) != null;
+				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
 			}
 		}
 		else if(tier == FactoryTier.ADVANCED)
@@ -275,7 +301,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			}
 			else if(slotID >= 2 && slotID <= 6)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(inventory[slotID], false) != null;
+				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
 			}
 		}
 		else if(tier == FactoryTier.ELITE)
@@ -286,7 +312,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			}
 			else if(slotID >= 2 && slotID <= 8)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(inventory[slotID], false) != null;
+				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
 			}
 		}
 		
@@ -682,6 +708,12 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int powerRequest(ForgeDirection side) 
 	{
 		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
 	}
 	
 	@Override
