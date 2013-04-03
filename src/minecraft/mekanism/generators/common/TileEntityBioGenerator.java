@@ -44,7 +44,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	public final int GENERATION = 50;
 	
 	/** The LiquidSlot biofuel instance for this generator. */
-	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
+	public LiquidTank bioFuelTank = new LiquidTank(24000);
 	
 	/** Which fuels work on this generator. */
 	public static Map<Integer, Integer> fuels = new HashMap<Integer, Integer>();
@@ -56,7 +56,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 		
 		if(Mekanism.hooks.ForestryLoaded)
 		{
-			fuels.put(Mekanism.hooks.ForestryBiofuelID, 16);
+			fuels.put(Mekanism.hooks.ForestryBiofuelID, GENERATION);
 		}
 	}
 	
@@ -108,11 +108,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			{
 				if(fuels.containsKey(liquid.itemID))
 				{
-					int liquidToAdd = liquid.amount*fuels.get(liquid.itemID);
-					
-					if(bioFuelSlot.liquidStored+liquidToAdd <= bioFuelSlot.MAX_LIQUID)
+					if(bioFuelTank.getLiquid() == null || bioFuelTank.getLiquid().amount+liquid.amount <= bioFuelTank.getCapacity())
 					{
-						bioFuelSlot.setLiquid(bioFuelSlot.liquidStored+liquidToAdd);
+						bioFuelTank.fill(liquid, true);
+						
 						if(LiquidContainerRegistry.isBucket(inventory[0]))
 						{
 							inventory[0] = new ItemStack(Item.bucketEmpty);
@@ -133,10 +132,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 				ItemStack prevStack = inventory[0].copy();
 				if(fuel > 0)
 				{
-					int fuelNeeded = bioFuelSlot.MAX_LIQUID - bioFuelSlot.liquidStored;
+					int fuelNeeded = bioFuelTank.getLiquid() != null ? bioFuelTank.getCapacity() - bioFuelTank.getLiquid().amount : bioFuelTank.getCapacity();
 					if(fuel <= fuelNeeded)
 					{
-						bioFuelSlot.liquidStored += fuel;
+						bioFuelTank.fill(new LiquidStack(Mekanism.hooks.ForestryBiofuelID, fuel), true);
 						inventory[0].stackSize--;
 						
 						if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
@@ -159,8 +158,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			{
 				setActive(true);
 			}
-			bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 1);
-			setJoules(electricityStored + GENERATION);
+			
+			setJoules(electricityStored + fuels.get(bioFuelTank.getLiquid().itemID));
+			bioFuelTank.drain(1, true);
 		}
 		else {
 			if(!worldObj.isRemote)
@@ -206,7 +206,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && bioFuelSlot.liquidStored > 0;
+		return electricityStored < MAX_ELECTRICITY && bioFuelTank.getLiquid() != null && bioFuelTank.getLiquid().amount > 0;
 	}
 	
 	@Override
@@ -214,7 +214,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
     {
         super.readFromNBT(nbtTags);
         
-        bioFuelSlot.liquidStored = nbtTags.getInteger("bioFuelStored");
+        if(nbtTags.hasKey("bioFuelTank"))
+        {
+        	bioFuelTank.readFromNBT(nbtTags.getCompoundTag("bioFuelTank"));
+        }
     }
 
 	@Override
@@ -222,7 +225,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setInteger("bioFuelStored", bioFuelSlot.liquidStored);
+        if(bioFuelTank.getLiquid() != null)
+        {
+        	nbtTags.setTag("bioFuelTank", bioFuelTank.writeToNBT(new NBTTagCompound()));
+        }
     }
 	
 	@Override
@@ -243,7 +249,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	 */
 	public int getScaledFuelLevel(int i)
 	{
-		return bioFuelSlot.liquidStored*i / bioFuelSlot.MAX_LIQUID;
+		return bioFuelTank.getLiquid() != null ? bioFuelTank.getLiquid().amount*i / bioFuelTank.getCapacity() : 0;
 	}
 	
 	@Override
@@ -279,14 +285,28 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		bioFuelSlot.liquidStored = dataStream.readInt();
+		
+		int amount = dataStream.readInt();
+		
+		if(amount != 0)
+		{
+			bioFuelTank.setLiquid(new LiquidStack(Mekanism.hooks.ForestryBiofuelID, amount));
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		data.add(bioFuelSlot.liquidStored);
+		
+		if(bioFuelTank.getLiquid() != null)
+		{
+			data.add(bioFuelTank.getLiquid().amount);
+		}
+		else {
+			data.add(0);
+		}
+		
 		return data;
 	}
 	
@@ -310,9 +330,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 			case 3:
 				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
 			case 4:
-				return new Object[] {bioFuelSlot.liquidStored};
+				return new Object[] {bioFuelTank.getLiquid() != null ? bioFuelTank.getLiquid().amount : 0};
 			case 5:
-				return new Object[] {bioFuelSlot.MAX_LIQUID-bioFuelSlot.liquidStored};
+				return new Object[] {bioFuelTank.getLiquid() != null ? bioFuelTank.getCapacity()-bioFuelTank.getLiquid().amount : 0};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
@@ -322,37 +342,17 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		if(from != ForgeDirection.getOrientation(facing))
-		{
-			if(resource.itemID == Mekanism.hooks.ForestryBiofuelID)
-			{
-				int fuelTransfer = 0;
-				int fuelNeeded = bioFuelSlot.MAX_LIQUID - bioFuelSlot.liquidStored;
-				int attemptTransfer = resource.amount;
-				
-				if(attemptTransfer <= fuelNeeded)
-				{
-					fuelTransfer = attemptTransfer;
-				}
-				else {
-					fuelTransfer = fuelNeeded;
-				}
-				
-				if(doFill)
-				{
-					bioFuelSlot.setLiquid(bioFuelSlot.liquidStored + fuelTransfer);
-				}
-				
-				return fuelTransfer;
-			}
-		}
-		
-		return 0;
+		return fill(0, resource, doFill);
 	}
 
 	@Override
 	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
 	{
+		if(resource.itemID == Mekanism.hooks.ForestryBiofuelID && tankIndex == 0)
+		{
+			return bioFuelTank.fill(resource, doFill);
+		}
+		
 		return 0;
 	}
 
@@ -371,12 +371,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	@Override
 	public ILiquidTank[] getTanks(ForgeDirection direction) 
 	{
-		return new ILiquidTank[] {new LiquidTank(bioFuelSlot.liquidID, bioFuelSlot.liquidStored, bioFuelSlot.MAX_LIQUID)};
+		return new ILiquidTank[] {bioFuelTank};
 	}
 	
 	@Override
 	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
 	{
-		return null;
+		return bioFuelTank;
 	}
 }

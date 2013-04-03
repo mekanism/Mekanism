@@ -28,15 +28,21 @@ import mekanism.api.InfuseObject;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquid;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -49,6 +55,8 @@ import cpw.mods.fml.server.FMLServerHandler;
  */
 public final class MekanismUtils
 {
+	  public static int[][] ADJACENT_COORDS = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
+	
 	/**
 	 * Checks for a new version of Mekanism.
 	 */
@@ -542,5 +550,90 @@ public final class MekanismUtils
     		default:
     			return Direction.XP;
     	}
+    }
+    
+    /**
+     * Gets the coordinates at the side of a certain block as an int array.
+     * @param wrapper - original block
+     * @param dir - side
+     * @return coords of the block at a certain side
+     */
+    public static int[] getCoords(BlockWrapper wrapper, ForgeDirection dir)
+    {
+        return new int[] {wrapper.x + ADJACENT_COORDS[dir.ordinal()][0], wrapper.y + ADJACENT_COORDS[dir.ordinal()][1], wrapper.z + ADJACENT_COORDS[dir.ordinal()][2]};
+    }
+    
+    /**
+     * Whether or not a certain block is considered a liquid.
+     * @param world - world the block is in
+     * @param x - x coordinate
+     * @param y - y coordinate
+     * @param z - z coordinate
+     * @return if the block is a liquid
+     */
+    public static boolean isLiquid(World world, int x, int y, int z)
+    {
+    	return getLiquidAndCleanup(world, x, y, z) != null;
+    }
+    
+    /**
+     * Gets a liquid from a certain location, or removes it if it's a dead lava block.
+     * @param world - world the block is in
+     * @param x - x coordinate
+     * @param y - y coordinate
+     * @param z - z coordinate
+     * @return the liquid at the certain location, null if it doesn't exist
+     */
+    public static LiquidStack getLiquidAndCleanup(World world, int x, int y, int z)
+    {
+    	int id = world.getBlockId(x, y, z);
+    	int meta = world.getBlockMetadata(x, y, z);
+    	
+    	if(id == 0)
+    	{
+    		return null;
+    	}
+    	
+    	if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta == 0)
+    	{
+    		return new LiquidStack(Block.waterStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    	}
+    	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta == 0)
+    	{
+    		return new LiquidStack(Block.lavaStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    	}
+    	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta != 0)
+    	{
+    		world.setBlockToAir(x, y, z);
+    		return null;
+    	}
+    	else if(Block.blocksList[id] instanceof ILiquid)
+    	{
+    		ILiquid liquid = (ILiquid)Block.blocksList[id];
+    	
+    		if(liquid.isMetaSensitive())
+    		{
+    			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, liquid.stillLiquidMeta());
+    		}
+    		else {
+    			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    /**
+     * Gets the distance between one block and another.
+     * @param blockOne - first block
+     * @param blockTwo - second block
+     * @return distance between the two blocks
+     */
+    public static int getDistance(BlockWrapper blockOne, BlockWrapper blockTwo)
+    {
+	    int subX = blockOne.x - blockTwo.x;
+	    int subY = blockOne.y - blockTwo.y;
+	    int subZ = blockOne.z - blockTwo.z;
+	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
     }
 }

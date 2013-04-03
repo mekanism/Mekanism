@@ -734,7 +734,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
 		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
 		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(12, 17, 16000, TileEntityElectricPump.class, false);
+		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, false);
 		
 		public int meta;
 		public int guiId;

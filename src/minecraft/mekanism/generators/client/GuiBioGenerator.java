@@ -29,7 +29,7 @@ public class GuiBioGenerator extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
-        fontRenderer.drawString("BioFuel: " + tileEntity.bioFuelSlot.liquidStored, 51, 35, 0x00CD00);
+        fontRenderer.drawString("BioFuel: " + (tileEntity.bioFuelTank.getLiquid() != null ? tileEntity.bioFuelTank.getLiquid().amount : 0), 51, 35, 0x00CD00);
         fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
     }
 

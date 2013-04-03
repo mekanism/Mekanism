@@ -43,7 +43,7 @@ import dan200.computer.api.IPeripheral;
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection, IStrictEnergyAcceptor
 {
 	/** This separator's water slot. */
-	public LiquidSlot waterSlot = new LiquidSlot(24000, 9);
+	public LiquidTank waterTank = new LiquidTank(24000);
 	
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 2400;
@@ -107,9 +107,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			
 			if(liquid != null && liquid.itemID == Block.waterStill.blockID)
 			{
-				if(waterSlot.liquidStored+liquid.amount <= waterSlot.MAX_LIQUID)
+				if(waterTank.getLiquid() == null || waterTank.getLiquid().amount+liquid.amount <= waterTank.getCapacity())
 				{
-					waterSlot.setLiquid(waterSlot.liquidStored + liquid.amount);
+					waterTank.fill(liquid, true);
 					
 					if(inventory[0].isItemEqual(new ItemStack(Item.bucketWater)))
 					{
@@ -186,9 +186,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			}
 		}
 		
-		if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterSlot.liquidStored-2 >= 0 && electricityStored-4 > 0)
+		if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getLiquid() != null && waterTank.getLiquid().amount-2 >= 0 && electricityStored-4 > 0)
 		{
-			waterSlot.setLiquid(waterSlot.liquidStored - 2);
+			waterTank.drain(2, true);
 			setJoules(electricityStored - 10);
 			setGas(EnumGas.OXYGEN, oxygenStored + 1);
 			setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
@@ -389,7 +389,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	 */
 	public int getScaledWaterLevel(int i)
 	{
-		return waterSlot.liquidStored*i / waterSlot.MAX_LIQUID;
+		return waterTank.getLiquid() != null ? waterTank.getLiquid().amount*i / waterTank.getCapacity() : 0;
 	}
 	
 	/**
@@ -422,7 +422,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		
 		super.handlePacketData(dataStream);
-		waterSlot.liquidStored = dataStream.readInt();
+		
+		int amount = dataStream.readInt();
+		if(amount != 0)
+		{
+			waterTank.setLiquid(new LiquidStack(Block.waterStill.blockID, dataStream.readInt(), 0));
+		}
+		
 		oxygenStored = dataStream.readInt();
 		hydrogenStored = dataStream.readInt();
 		outputType = EnumGas.getFromName(dataStream.readUTF());
@@ -433,7 +439,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		data.add(waterSlot.liquidStored);
+		
+		if(waterTank.getLiquid() != null)
+		{
+			data.add(waterTank.getLiquid().amount);
+		}
+		else {
+			data.add(0);
+		}
+		
 		data.add(oxygenStored);
 		data.add(hydrogenStored);
 		data.add(outputType.name);
@@ -514,37 +528,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		if(from != ForgeDirection.getOrientation(facing))
-		{
-			if(resource.itemID == Block.waterStill.blockID)
-			{
-				int waterTransfer = 0;
-				int waterNeeded = waterSlot.MAX_LIQUID - waterSlot.liquidStored;
-				int attemptTransfer = resource.amount;
-				
-				if(attemptTransfer <= waterNeeded)
-				{
-					waterTransfer = attemptTransfer;
-				}
-				else {
-					waterTransfer = waterNeeded;
-				}
-				
-				if(doFill)
-				{
-					waterSlot.setLiquid(waterSlot.liquidStored + waterTransfer);
-				}
-				
-				return waterTransfer;
-			}
-		}
-		
-		return 0;
+		return fill(0, resource, doFill);
 	}
 
 	@Override
 	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
 	{
+		if(resource.itemID == Block.waterStill.blockID && tankIndex == 0)
+		{
+			return waterTank.fill(resource, doFill);
+		}
+		
 		return 0;
 	}
 
@@ -563,13 +557,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public ILiquidTank[] getTanks(ForgeDirection direction) 
 	{
-		return new ILiquidTank[] {new LiquidTank(waterSlot.liquidID, waterSlot.liquidStored, waterSlot.MAX_LIQUID)};
+		return new ILiquidTank[] {waterTank};
 	}
 	
 	@Override
 	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
 	{
-		return null;
+		return waterTank;
 	}
 	
 	@Override
@@ -579,7 +573,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
         hydrogenStored = nbtTags.getInteger("hydrogenStored");
         oxygenStored = nbtTags.getInteger("oxygenStored");
-        waterSlot.liquidStored = nbtTags.getInteger("waterStored");
+        
+        if(nbtTags.hasKey("waterTank"))
+        {
+        	waterTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
+        }
+        
         outputType = EnumGas.getFromName(nbtTags.getString("outputType"));
         dumpType = EnumGas.getFromName(nbtTags.getString("dumpType"));
     }
@@ -591,7 +590,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         
         nbtTags.setInteger("hydrogenStored", hydrogenStored);
         nbtTags.setInteger("oxygenStored", oxygenStored);
-        nbtTags.setInteger("waterStored", waterSlot.liquidStored);
+        
+        if(waterTank.getLiquid() != null)
+        {
+        	nbtTags.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
+        }
+        
         nbtTags.setString("outputType", outputType.name);
         nbtTags.setString("dumpType", dumpType.name);
     }
@@ -622,9 +626,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			case 3:
 				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
 			case 4:
-				return new Object[] {waterSlot.liquidStored};
+				return new Object[] {waterTank.getLiquid() != null ? waterTank.getLiquid().amount : 0};
 			case 5:
-				return new Object[] {(waterSlot.MAX_LIQUID-waterSlot.liquidStored)};
+				return new Object[] {waterTank.getLiquid() != null ? (waterTank.getCapacity()-waterTank.getLiquid().amount) : 0};
 			case 6:
 				return new Object[] {hydrogenStored};
 			case 7:

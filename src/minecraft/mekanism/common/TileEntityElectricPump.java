@@ -1,31 +1,50 @@
 package mekanism.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import buildcraft.api.core.Position;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 import mekanism.api.InfusionType;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock
+public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer
 {
 	public LiquidTank liquidTank;
 	
+	public Set<BlockWrapper> recurringNodes = new HashSet<BlockWrapper>();
+	
+	public Random random = new Random();
+	
 	public TileEntityElectricPump()
 	{
-		super("Electric Pump", 16000);
-		liquidTank = new LiquidTank(16000);
+		super("Electric Pump", 10000);
+		liquidTank = new LiquidTank(10000);
 		inventory = new ItemStack[3];
-		liquidTank.setLiquid(new LiquidStack(Block.waterStill.blockID, 8000, 0));
 	}
 	
 	@Override
@@ -61,7 +80,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
 		
 		if(inventory[0] != null)
 		{
-			if(liquidTank.getLiquid() != null && liquidTank.getLiquid().amount >= 1000)
+			if(liquidTank.getLiquid() != null && liquidTank.getLiquid().amount >= LiquidContainerRegistry.BUCKET_VOLUME)
 			{
 				if(LiquidContainerRegistry.isEmptyContainer(inventory[0]))
 				{
@@ -71,7 +90,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
 					{
 						if(inventory[1] == null)
 						{
-							liquidTank.drain(1000, true);
+							liquidTank.drain(LiquidContainerRegistry.BUCKET_VOLUME, true);
 							
 							inventory[1] = tempStack;
 							inventory[0].stackSize--;
@@ -83,7 +102,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
 						}
 						else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
 						{
-							liquidTank.drain(1000, true);
+							liquidTank.drain(LiquidContainerRegistry.BUCKET_VOLUME, true);
 							
 							inventory[1].stackSize++;
 							inventory[0].stackSize--;
@@ -93,6 +112,93 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
 								inventory[0] = null;
 							}
 						}
+					}
+				}
+			}
+		}
+		
+		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
+		{			
+			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
+			{
+				List<BlockWrapper> tempPumpList = Arrays.asList(recurringNodes.toArray(new BlockWrapper[recurringNodes.size()]));
+				Collections.shuffle(tempPumpList);
+				
+				for(BlockWrapper wrapper : tempPumpList)
+				{
+					if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+					{
+						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquidAndCleanup(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+						{
+							setJoules(electricityStored - 100);
+							liquidTank.fill(MekanismUtils.getLiquidAndCleanup(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
+							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							return;
+						}
+					}
+					
+					for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+					{
+						int x = MekanismUtils.getCoords(wrapper, orientation)[0];
+						int y = MekanismUtils.getCoords(wrapper, orientation)[1];
+						int z = MekanismUtils.getCoords(wrapper, orientation)[2];
+						
+						if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 60)
+						{
+							if(MekanismUtils.isLiquid(worldObj, x, y, z))
+							{
+								if(liquidTank.getLiquid() == null || MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
+								{
+									setJoules(electricityStored - 100);
+									recurringNodes.add(new BlockWrapper(x, y, z));
+									liquidTank.fill(MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z), true);
+									worldObj.setBlockToAir(x, y, z);
+									return;
+								}
+							}
+						}
+					}
+					
+					recurringNodes.remove(wrapper);
+				}
+				
+				for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+				{
+					if(orientation != ForgeDirection.UP)
+					{
+						int x = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[0];
+						int y = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[1];
+						int z = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[2];
+						
+						if(MekanismUtils.isLiquid(worldObj, x, y, z))
+						{
+							if(liquidTank.getLiquid() == null || MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
+							{
+								setJoules(electricityStored - 100);
+								recurringNodes.add(new BlockWrapper(x, y, z));
+								liquidTank.fill(MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z), true);
+								worldObj.setBlockToAir(x, y, z);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if(liquidTank.getLiquid() != null) 
+		{
+			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
+			{
+				TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), orientation);
+
+				if(tileEntity instanceof ITankContainer) 
+				{
+					liquidTank.drain(((ITankContainer)tileEntity).fill(orientation.getOpposite(), liquidTank.getLiquid(), true), true);
+					
+					if(liquidTank.getLiquid() == null || liquidTank.getLiquid().amount <= 0) 
+					{
+						break;
 					}
 				}
 			}
@@ -110,6 +216,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
 			int itemMeta = dataStream.readInt();
 			
 			liquidTank.setLiquid(new LiquidStack(itemID, amount, itemMeta));
+			
 		} catch(Exception e) {}
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
@@ -137,7 +244,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
 	
 	public int getScaledLiquidLevel(int i)
 	{
-		return liquidTank.getLiquid() != null ? liquidTank.getLiquid().amount*i / 16000 : 0;
+		return liquidTank.getLiquid() != null ? liquidTank.getLiquid().amount*i / 10000 : 0;
 	}
 	
     @Override
@@ -147,7 +254,21 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
         
         if(liquidTank.getLiquid() != null)
         {
-        	nbtTags.setTag("liquidTank", liquidTank.getLiquid().writeToNBT(new NBTTagCompound()));
+        	nbtTags.setTag("liquidTank", liquidTank.writeToNBT(new NBTTagCompound()));
+        }
+        
+        NBTTagList tagList = new NBTTagList();
+        
+        for(BlockWrapper wrapper : recurringNodes)
+        {
+        	NBTTagCompound tagCompound = new NBTTagCompound();
+        	wrapper.write(tagCompound);
+        	tagList.appendTag(tagCompound);
+        }
+        
+        if(!tagList.tagList.isEmpty())
+        {
+        	nbtTags.setTag("recurringNodes", tagList);
         }
     }
     
@@ -158,9 +279,112 @@ public class TileEntityElectricPump extends TileEntityElectricBlock
     	
     	if(nbtTags.hasKey("liquidTank"))
     	{
-    		//liquidTank.setLiquid(LiquidStack.loadLiquidStackFromNBT(nbtTags));
+    		liquidTank.readFromNBT(nbtTags.getCompoundTag("liquidTank"));
     	}
     	
-    	liquidTank.setLiquid(new LiquidStack(Block.waterStill.blockID, 8000, 0));
+    	if(nbtTags.hasKey("recurringNodes"))
+    	{
+    		NBTTagList tagList = nbtTags.getTagList("recurringNodes");
+    		
+    		for(int i = 0; i < tagList.tagCount(); i++)
+    		{
+    			recurringNodes.add(BlockWrapper.read((NBTTagCompound)tagList.tagAt(i)));
+    		}
+    	}
     }
+    
+	@Override
+	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 1)
+		{
+			return false;
+		}
+		else if(slotID == 0)
+		{
+			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+		}
+		else if(slotID == 2)
+		{
+			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
+					itemstack.itemID == Item.redstone.itemID;
+		}
+		return true;
+	}
+    
+	@Override
+	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 2)
+		{
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
+		}
+		else if(slotID == 1)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
+	{
+		return 0;
+	}
+
+	@Override
+	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
+	{
+		return 0;
+	}
+
+	@Override
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	{
+		return drain(0, maxDrain, doDrain);
+	}
+	
+	@Override
+	public int[] getSizeInventorySide(int side)
+	{
+		if(side == 1)
+		{
+			return new int[] {0};
+		}
+		else if(side == 0)
+		{
+			return new int[] {1};
+		}
+		else {
+			return new int[] {2};
+		}
+	}
+
+	@Override
+	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	{
+		if(tankIndex == 0)
+		{
+			return liquidTank.drain(maxDrain, doDrain);
+		}
+		
+		return null;
+	}
+
+	@Override
+	public ILiquidTank[] getTanks(ForgeDirection direction) 
+	{
+		return new ILiquidTank[] {liquidTank};
+	}
+
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
+	{
+		return liquidTank;
+	}
 }

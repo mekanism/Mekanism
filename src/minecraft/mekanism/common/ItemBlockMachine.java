@@ -393,7 +393,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			if(((ItemStack)data[0]).getItemDamage() != 11)
+			if(((ItemStack)data[0]).getItemDamage() != 11 && ((ItemStack)data[0]).getItemDamage() != 12)
 			{
 				return true;
 			}

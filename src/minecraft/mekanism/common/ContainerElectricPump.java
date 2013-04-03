@@ -8,6 +8,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import universalelectricity.core.item.IItemElectric;
 
 public class ContainerElectricPump extends Container
@@ -18,7 +19,7 @@ public class ContainerElectricPump extends Container
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 28, 20));
-        addSlotToContainer(new Slot(tentity, 1, 28, 51));
+        addSlotToContainer(new SlotOutput(tentity, 1, 28, 51));
         addSlotToContainer(new SlotDischarge(tentity, 2, 143, 35));
         int slotX;
 
@@ -64,20 +65,66 @@ public class ContainerElectricPump extends Container
             
             if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             {
-	            if(slotID != 1)
+	            if(slotID != 2)
 	            {
-	                if (!mergeItemStack(slotStack, 1, 2, false))
+	                if (!mergeItemStack(slotStack, 2, 3, false))
 	                {
 	                	return null;
 	                }
 	            }
-	            else if(slotID == 1)
+	            else if(slotID == 2)
 	            {
-	            	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
+	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
 	            }
+            }
+            else if(LiquidContainerRegistry.isEmptyContainer(slotStack))
+            {
+            	if(slotID != 0)
+            	{
+            		if(!mergeItemStack(slotStack, 0, 1, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(slotID == 0)
+            	{
+            	 	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+	            	{
+	            		return null;
+	            	}
+            	}
+            }
+            else if(slotID == 1)
+            {
+              	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            	{
+            		return null;
+            	}
+            }
+            else {
+	        	if(slotID >= 3 && slotID <= 29)
+	        	{
+	        		if(!mergeItemStack(slotStack, 30, inventorySlots.size(), false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+	        	else if(slotID > 28)
+	        	{
+	        		if(!mergeItemStack(slotStack, 3, 29, false))
+	        		{
+	        			return null;
+	        		}
+	        	}
+	        	else {
+            		if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
             }
             
             if(slotStack.stackSize == 0)

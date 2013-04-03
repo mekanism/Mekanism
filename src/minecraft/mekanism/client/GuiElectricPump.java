@@ -83,7 +83,7 @@ public class GuiElectricPump extends GuiContainer
 			drawTexturedModelRectFromIcon(width + yPos, height + xPos + 58 - renderRemaining - start, liquid.canonical().getRenderingIcon(), 16, 16 - (16 - renderRemaining));
 			start = start + 16;
 
-			if (renderRemaining == 0 || scale == 0)
+			if(renderRemaining == 0 || scale == 0)
 			{
 				break;
 			}
