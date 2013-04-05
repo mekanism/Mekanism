@@ -46,6 +46,9 @@ public class MekanismGenerators
 	@Init
 	public void init(FMLInitializationEvent event)
 	{
+		//Add this module to the core list
+		Mekanism.modulesLoaded.add(this);
+		
 		//Set up the GUI handler
 		NetworkRegistry.instance().registerGuiHandler(this, new GeneratorsGuiHandler());
 		

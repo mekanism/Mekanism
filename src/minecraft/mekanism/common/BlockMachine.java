@@ -101,8 +101,6 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 		icons[11][0] = register.registerIcon("mekanism:Teleporter");
-		icons[12][0] = register.registerIcon("mekanism:ElectricPumpFront");
-		icons[12][1] = register.registerIcon("mekanism:ElectricPumpSide");
 	}
 	
 	@Override
@@ -307,16 +305,6 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	{
     		return icons[11][0];
     	}
-    	else if(meta == 12)
-    	{
-    		if(side == 1)
-    		{
-    			return icons[12][0];
-    		}
-    		else {
-    			return icons[12][1];
-    		}
-    	}
     	
     	return null;
     }
@@ -453,16 +441,6 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	else if(metadata == 11)
     	{
     		return icons[11][0];
-    	}
-    	else if(metadata == 12)
-    	{
-    		if(side == 1)
-    		{
-    			return icons[12][0];
-    		}
-    		else {
-    			return icons[12][1];
-    		}
     	}
     	
     	return null;
@@ -683,6 +661,17 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
         
+        if(((ISustainedTank)itemStack.getItem()).hasTank(itemStack))
+        {
+        	if(tileEntity instanceof ISustainedTank)
+        	{
+        		if(((ISustainedTank)tileEntity).getLiquidStack() != null)
+        		{
+        			((ISustainedTank)itemStack.getItem()).setLiquidStack(((ISustainedTank)tileEntity).getLiquidStack(), itemStack);
+        		}
+        	}
+        }
+        
         if(tileEntity instanceof TileEntityFactory)
         {
         	IFactory factoryItem = (IFactory)itemStack.getItem();
@@ -730,11 +719,11 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		BASIC_FACTORY(5, 11, 6000, TileEntityFactory.class, false),
 		ADVANCED_FACTORY(6, 11, 10000, TileEntityAdvancedFactory.class, false),
 		ELITE_FACTORY(7, 11, 14000, TileEntityEliteFactory.class, false),
-		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, false),
+		METALLURGIC_INFUSER(8, 12, 2000, TileEntityMetallurgicInfuser.class, true),
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
 		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
 		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, false);
+		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true);
 		
 		public int meta;
 		public int guiId;

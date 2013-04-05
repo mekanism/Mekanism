@@ -22,8 +22,10 @@ public class CommonProxy
 	public void registerSpecialTileEntities() 
 	{
 		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
+		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
 		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
+		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
 	}
 	
 	/**

@@ -8,6 +8,7 @@ import buildcraft.api.tools.IToolWrench;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ISustainedInventory;
+import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
@@ -519,6 +520,17 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
         
+        if(((ISustainedTank)itemStack.getItem()).hasTank(itemStack))
+        {
+        	if(tileEntity instanceof ISustainedTank)
+        	{
+        		if(((ISustainedTank)tileEntity).getLiquidStack() != null)
+        		{
+        			((ISustainedTank)itemStack.getItem()).setLiquidStack(((ISustainedTank)tileEntity).getLiquidStack(), itemStack);
+        		}
+        	}
+        }
+        
         return itemStack;
 	}
 	
@@ -554,8 +566,8 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 	{
 		HEAT_GENERATOR(0, 0, 160000, TileEntityHeatGenerator.class, true),
 		SOLAR_GENERATOR(1, 1, 96000, TileEntitySolarGenerator.class, false),
-		ELECTROLYTIC_SEPARATOR(2, 2, 9600, TileEntityElectrolyticSeparator.class, true),
-		HYDROGEN_GENERATOR(3, 3, 400000, TileEntityHydrogenGenerator.class, true),
+		ELECTROLYTIC_SEPARATOR(2, 2, 20000, TileEntityElectrolyticSeparator.class, true),
+		HYDROGEN_GENERATOR(3, 3, 40000, TileEntityHydrogenGenerator.class, true),
 		BIO_GENERATOR(4, 4, 160000, TileEntityBioGenerator.class, true),
 		ADVANCED_SOLAR_GENERATOR(5, 1, 200000, TileEntityAdvancedSolarGenerator.class, true);
 		

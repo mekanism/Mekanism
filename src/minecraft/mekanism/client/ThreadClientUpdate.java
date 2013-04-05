@@ -8,6 +8,7 @@ import java.net.URL;
 
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+
 /**
  * Thread that downloads the latest release of Mekanism. The older file is deleted and the newly downloaded file takes it's place.
  * @author AidanBrady
@@ -21,8 +22,12 @@ public class ThreadClientUpdate extends Thread
 	private byte[] buffer = new byte[10240];
 	private URL url;
 	
+	public static int modulesBeingDownloaded;
+	public static boolean hasUpdated;
+	
 	public ThreadClientUpdate(String location, int type)
 	{
+		modulesBeingDownloaded++;
 		downloadType = type;
 		try {
 			url = new URL(location);
@@ -37,7 +42,7 @@ public class ThreadClientUpdate extends Thread
 	public void run()
 	{
 		String downloadName = downloadType == 0 ? "" : (downloadType == 1 ? "Generators" : "Tools");
-		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods/Mekanism" + downloadName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
+		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append(File.separator + "mods" + File.separator + "Mekanism" + downloadName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
 		try {
 			prepareForDownload();
 			download.createNewFile();
@@ -54,18 +59,14 @@ public class ThreadClientUpdate extends Thread
 			outputStream.close();
 			stream.close();
 			
-			if(downloadType == 0)
-			{
-				GuiCredits.onFinishedDownloading();
-				System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
-			}
-			
+			modulesBeingDownloaded--;
 			finalize();
 		} catch(Throwable e)
 		{
 			GuiCredits.onErrorDownloading();
 			System.err.println("[Mekanism] Error while finishing update thread: " + e.getMessage());
 			try {
+				modulesBeingDownloaded--;
 				finalize();
 			} catch (Throwable e1) {
 				System.err.println("[Mekanism] Error while finalizing update thread: " + e1.getMessage());
@@ -74,11 +75,11 @@ public class ThreadClientUpdate extends Thread
 	}
 	
 	/**
-	 * Prepares to update to the latest version of Mekanism by deleting the files "Mekanism.cfg" and "Mekanism.jar." 
+	 * Prepares to update to the latest version of Mekanism by removing the old files. 
 	 */
 	public void prepareForDownload()
 	{
-		File[] modsList = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append("/mods").toString()).listFiles();
+		File[] modsList = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
 		
 		for(File file : modsList)
 		{

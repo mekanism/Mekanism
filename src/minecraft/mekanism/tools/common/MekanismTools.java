@@ -133,6 +133,9 @@ public class MekanismTools
 	@Init
 	public void init(FMLInitializationEvent event)
 	{
+		//Add this module to the core list
+		Mekanism.modulesLoaded.add(this);
+		
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
 		

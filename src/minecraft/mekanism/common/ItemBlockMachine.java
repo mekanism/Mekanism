@@ -24,6 +24,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.liquids.LiquidStack;
 
 /**
  * Item class for handling multiple machine block IDs.
@@ -43,7 +45,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory
+public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank
 {
 	public Block metaBlock;
 	
@@ -130,6 +132,14 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 			
 			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
 			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			
+			if(hasTank(itemstack))
+			{
+				if(getLiquidStack(itemstack) != null)
+				{
+					list.add(EnumColor.PINK + LiquidDictionary.findLiquidName(getLiquidStack(itemstack)) + ": " + EnumColor.GREY + getLiquidStack(itemstack).amount + "mB");
+				}
+			}
 			
 			if(supportsUpgrades(itemstack))
 			{
@@ -236,6 +246,14 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
     		if(tileEntity instanceof TileEntityFactory)
     		{
     			((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
+    		}
+    		
+    		if(tileEntity instanceof ISustainedTank)
+    		{
+    			if(hasTank(stack) && getLiquidStack(stack) != null)
+    			{
+    				((ISustainedTank)tileEntity).setLiquidStack(getLiquidStack(stack), stack);
+    			}
     		}
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -462,5 +480,53 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		}
 		
 		return null;
+	}
+
+	@Override
+	public void setLiquidStack(LiquidStack liquidStack, Object... data) 
+	{
+		if(liquidStack == null || liquidStack.amount == 0 || liquidStack.itemID == 0)
+		{
+			return;
+		}
+		
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+			
+			itemStack.stackTagCompound.setTag("liquidTank", liquidStack.writeToNBT(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public LiquidStack getLiquidStack(Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null) 
+			{ 
+				return null; 
+			}
+			
+			if(itemStack.stackTagCompound.hasKey("liquidTank"))
+			{
+				return LiquidStack.loadLiquidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("liquidTank"));
+			}
+		}
+		
+		return null;
+	}
+
+	@Override
+	public boolean hasTank(Object... data) 
+	{
+		return data[0] instanceof ItemStack && ((ItemStack)data[0]).getItem() instanceof ISustainedTank && ((ItemStack)data[0]).getItemDamage() == 12;
 	}
 }

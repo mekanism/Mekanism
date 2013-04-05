@@ -32,7 +32,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer
+public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank
 {
 	public LiquidTank liquidTank;
 	
@@ -117,6 +117,24 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
+		if(liquidTank.getLiquid() != null) 
+		{
+			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
+			{
+				TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), orientation);
+
+				if(tileEntity instanceof ITankContainer) 
+				{
+					liquidTank.drain(((ITankContainer)tileEntity).fill(orientation.getOpposite(), liquidTank.getLiquid(), true), true);
+					
+					if(liquidTank.getLiquid() == null || liquidTank.getLiquid().amount <= 0) 
+					{
+						break;
+					}
+				}
+			}
+		}
+		
 		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{			
 			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
@@ -181,24 +199,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 								return;
 							}
 						}
-					}
-				}
-			}
-		}
-		
-		if(liquidTank.getLiquid() != null) 
-		{
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
-			{
-				TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), orientation);
-
-				if(tileEntity instanceof ITankContainer) 
-				{
-					liquidTank.drain(((ITankContainer)tileEntity).fill(orientation.getOpposite(), liquidTank.getLiquid(), true), true);
-					
-					if(liquidTank.getLiquid() == null || liquidTank.getLiquid().amount <= 0) 
-					{
-						break;
 					}
 				}
 			}
@@ -386,5 +386,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
 	{
 		return liquidTank;
+	}
+
+	@Override
+	public void setLiquidStack(LiquidStack liquidStack, Object... data) 
+	{
+		liquidTank.setLiquid(liquidStack);
+	}
+
+	@Override
+	public LiquidStack getLiquidStack(Object... data) 
+	{
+		return liquidTank.getLiquid();
+	}
+
+	@Override
+	public boolean hasTank(Object... data) 
+	{
+		return true;
 	}
 }

@@ -55,7 +55,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  */
 public final class MekanismUtils
 {
-	  public static int[][] ADJACENT_COORDS = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
+	public static int[][] ADJACENT_COORDS = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
 	
 	/**
 	 * Checks for a new version of Mekanism.
@@ -598,6 +598,11 @@ public final class MekanismUtils
     	{
     		return new LiquidStack(Block.waterStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
     	}
+    	else if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta != 0)
+    	{
+    		world.setBlockToAir(x, y, z);
+    		return null;
+    	}
     	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta == 0)
     	{
     		return new LiquidStack(Block.lavaStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
@@ -615,8 +620,12 @@ public final class MekanismUtils
     		{
     			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, liquid.stillLiquidMeta());
     		}
-    		else {
+    		else if(meta == 0)
+    		{
     			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    		}
+    		else {
+    			world.setBlockToAir(x, y, z);
     		}
     	}
     	

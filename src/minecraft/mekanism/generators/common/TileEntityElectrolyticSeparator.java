@@ -14,6 +14,7 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITubeConnection;
+import mekanism.common.ISustainedTank;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -40,7 +41,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection, IStrictEnergyAcceptor
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection, IStrictEnergyAcceptor, ISustainedTank
 {
 	/** This separator's water slot. */
 	public LiquidTank waterTank = new LiquidTank(24000);
@@ -65,7 +66,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("Electrolytic Separator", 9600);
+		super("Electrolytic Separator", 20000);
 		inventory = new ItemStack[4];
 		outputType = EnumGas.HYDROGEN;
 		dumpType = EnumGas.NONE;
@@ -189,7 +190,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getLiquid() != null && waterTank.getLiquid().amount-2 >= 0 && electricityStored-4 > 0)
 		{
 			waterTank.drain(2, true);
-			setJoules(electricityStored - 10);
+			setJoules(electricityStored - 200);
 			setGas(EnumGas.OXYGEN, oxygenStored + 1);
 			setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 		}
@@ -426,7 +427,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		int amount = dataStream.readInt();
 		if(amount != 0)
 		{
-			waterTank.setLiquid(new LiquidStack(Block.waterStill.blockID, dataStream.readInt(), 0));
+			waterTank.setLiquid(new LiquidStack(Block.waterStill.blockID, amount, 0));
 		}
 		
 		oxygenStored = dataStream.readInt();
@@ -659,5 +660,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return side == ForgeDirection.getOrientation(facing);
+	}
+	
+	@Override
+	public void setLiquidStack(LiquidStack liquidStack, Object... data) 
+	{
+		waterTank.setLiquid(liquidStack);
+	}
+
+	@Override
+	public LiquidStack getLiquidStack(Object... data) 
+	{
+		return waterTank.getLiquid();
+	}
+
+	@Override
+	public boolean hasTank(Object... data) 
+	{
+		return true;
 	}
 }

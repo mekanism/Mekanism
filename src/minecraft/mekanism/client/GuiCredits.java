@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import cpw.mods.fml.common.Loader;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -9,6 +10,8 @@ import net.minecraft.client.gui.GuiScreen;
 public class GuiCredits extends GuiScreen 
 {
 	private static String updateProgress = "";
+	private boolean updatedRecently;
+	private boolean notified = false;
 	
 	@Override
 	public void initGui()
@@ -16,18 +19,14 @@ public class GuiCredits extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, width / 2 - 100, height / 4 + 72 + 12, "Update"));
 		buttonList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
-        ((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.isNotOutdated();
-	}
-	
-	@Override
-	public void onGuiClosed()
-	{
-        updateProgress = "";
+        ((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.isNotOutdated() && !ThreadClientUpdate.hasUpdated;
 	}
 	
 	public static void onFinishedDownloading()
 	{
 		updateProgress = "Successfully updated. Restart Minecraft to load.";
+		System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
+		ThreadClientUpdate.hasUpdated = true;
 	}
 	
 	public static void onErrorDownloading()
@@ -46,11 +45,21 @@ public class GuiCredits extends GuiScreen
 		{
 			if(!MekanismUtils.isNotOutdated())
 			{
+				updatedRecently = true;
 				updateProgress = "Downloading latest version...";
 				guibutton.enabled = false;
+				
 				new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/Mekanism-v" + Mekanism.latestVersionNumber + ".jar", 0);
-				new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/MekanismGenerators-v" + Mekanism.latestVersionNumber + ".jar", 1);
-				new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/MekanismTools-v" + Mekanism.latestVersionNumber + ".jar", 2);
+				
+				if(Loader.isModLoaded("MekanismGenerators"))
+				{
+					new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/MekanismGenerators-v" + Mekanism.latestVersionNumber + ".jar", 1);
+				}
+				
+				if(Loader.isModLoaded("MekanismTools"))
+				{
+					new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/MekanismTools-v" + Mekanism.latestVersionNumber + ".jar", 2);
+				}
 			}
 			else {
 				updateProgress = "You already have the latest version.";
@@ -76,6 +85,19 @@ public class GuiCredits extends GuiScreen
 	@Override
 	public void drawScreen(int i, int j, float f)
 	{
+		if(updatedRecently && ThreadClientUpdate.modulesBeingDownloaded == 0 && !updateProgress.contains("Error"))
+		{
+			if(!notified)
+			{
+				onFinishedDownloading();
+				notified = true;
+			}
+		}
+		else if(ThreadClientUpdate.hasUpdated && !notified)
+		{
+			updateProgress = "You have already downloaded the update. Restart MC!";
+		}
+		
 		drawDefaultBackground();
         drawCenteredString(fontRenderer, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
         writeText(EnumColor.GREY + "Your version: " + (MekanismUtils.isNotOutdated() ? Mekanism.versionNumber : EnumColor.DARK_RED + Mekanism.versionNumber.toString() + EnumColor.GREY + " -- OUTDATED"), 36);

@@ -15,6 +15,8 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 {
 	public ModelTheoreticalElementizer theoreticalElementizer = new ModelTheoreticalElementizer();
+	public ModelElectricPump electricPump = new ModelElectricPump();
+	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -31,6 +33,22 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     	    	GL11.glTranslated(0.0F, -0.8F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/TheoreticalElementizer.png"));
     	    	theoreticalElementizer.render(0.0560F);
+    		}
+    		else if(metadata == MachineType.ELECTRIC_PUMP.meta)
+    		{
+    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+    	    	GL11.glTranslated(0.0F, -0.9F, 0.0F);
+    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricPump.png"));
+    	    	electricPump.render(0.0560F);
+    		}
+    		else if(metadata == MachineType.METALLURGIC_INFUSER.meta)
+    		{
+    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+    	    	GL11.glTranslated(0.0F, 0.3F, 0.0F);
+    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/MetallurgicInfuser.png"));
+    	    	metallurgicInfuser.render(0.0625F);
     		}
     		else {
     	        renderItem(renderer, metadata, block);

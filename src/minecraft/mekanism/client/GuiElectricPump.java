@@ -23,15 +23,23 @@ public class GuiElectricPump extends GuiContainer
         super(new ContainerElectricPump(inventory, tentity));
         tileEntity = tentity;
     }
-
+	
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2)
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
         fontRenderer.drawString(tileEntity.liquidTank.getLiquid() != null ? tileEntity.liquidTank.getLiquidName() + ": " + tileEntity.liquidTank.getLiquid().amount : "No liquid.", 51, 35, 0x00CD00);
         fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
+        
+		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
+		{
+			drawCreativeTabHoveringText(tileEntity.liquidTank.getLiquid() != null ? tileEntity.liquidTank.getLiquidName() + ": " + tileEntity.liquidTank.getLiquid().amount + "mB" : "Empty", xAxis, yAxis);
+		}
     }
 
 	@Override
@@ -81,7 +89,7 @@ public class GuiElectricPump extends GuiContainer
 
 			mc.renderEngine.bindTexture(liquid.canonical().getTextureSheet());
 			drawTexturedModelRectFromIcon(width + yPos, height + xPos + 58 - renderRemaining - start, liquid.canonical().getRenderingIcon(), 16, 16 - (16 - renderRemaining));
-			start = start + 16;
+			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)
 			{

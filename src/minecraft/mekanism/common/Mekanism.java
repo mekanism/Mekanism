@@ -5,6 +5,7 @@ import ic2.api.Ic2Recipes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -84,6 +85,9 @@ public class Mekanism
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
+	
+	/** List of Mekanism modules loaded */
+	public static List modulesLoaded = new ArrayList();
 	
 	/** The latest version number which is received from the Mekanism server */
 	public static String latestVersionNumber;
@@ -919,11 +923,9 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
-		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
 		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
-		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -971,6 +973,9 @@ public class Mekanism
 	@Init
 	public void init(FMLInitializationEvent event) 
 	{
+		//Add this module to the core list
+		modulesLoaded.add(this);
+		
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		
