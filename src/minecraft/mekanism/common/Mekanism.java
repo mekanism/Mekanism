@@ -87,16 +87,13 @@ public class Mekanism
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
 	
 	/** List of Mekanism modules loaded */
-	public static List modulesLoaded = new ArrayList();
+	public static List<IModule> modulesLoaded = new ArrayList<IModule>();
 	
 	/** The latest version number which is received from the Mekanism server */
 	public static String latestVersionNumber;
 	
 	/** The recent news which is received from the Mekanism server */
 	public static String recentNews;
-	
-	/** The main MachineryManager instance that is used by all machines */
-	public static MachineryManager manager;
 
 	@SideOnly(Side.CLIENT)
 	/** The main SoundHandler instance that is used by all audio sources */
@@ -305,7 +302,7 @@ public class Mekanism
 			"OOO", "OGO", "OOO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('G'), "ingotRefinedGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Transmitter, 8, 0), new Object[] {
-			"OOO", "GGG", "OOO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
+			"OGO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 8), new Object[] {
 			" S ", "SPS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('P'), "ingotOsmium"
@@ -314,7 +311,10 @@ public class Mekanism
 			"SCS", "GIG", "SCS", Character.valueOf('S'), Block.cobblestone, Character.valueOf('C'), ControlCircuit, Character.valueOf('G'), Block.glass, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Transmitter, 8, 1), new Object[] {
-			"OOO", "RRR", "OOO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('R'), Item.redstone
+			"ORO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('R'), Item.redstone
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 12), new Object[] {
+			" B ", "ECE", "OOO", Character.valueOf('B'), Item.bucketWater, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('O'), "ingotOsmium"
 		}));
 		
 		//Factory Recipes
@@ -652,8 +652,6 @@ public class Mekanism
 			{
 				Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
 			}
-			
-			RecipeHandler.addCrusherRecipe(new ItemStack(Item.coal), hooks.IC2CoalDust);
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
@@ -808,6 +806,14 @@ public class Mekanism
 		
 		try {
 			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 8, MekanismUtils.getStackWithSize(OreDictionary.getOres("ingotSilver").get(0), 1), 1.0F);
+		} catch(Exception e) {}
+		
+		try {
+			RecipeHandler.addCrusherRecipe(new ItemStack(Item.coal), MekanismUtils.getStackWithSize(OreDictionary.getOres("dustCoal").get(0), 1));
+		} catch(Exception e) {}
+		
+		try {
+			RecipeHandler.addCrusherRecipe(new ItemStack(Item.coal, 1, 1), MekanismUtils.getStackWithSize(OreDictionary.getOres("dustCharcoal").get(0), 1));
 		} catch(Exception e) {}
 		
 		try {
@@ -973,17 +979,11 @@ public class Mekanism
 	@Init
 	public void init(FMLInitializationEvent event) 
 	{
-		//Add this module to the core list
-		modulesLoaded.add(this);
-		
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
 		
 		//Register the mod's GUI handler
 		NetworkRegistry.instance().registerGuiHandler(this, new CoreGuiHandler());
-		
-		//Register the MachineryManager
-		manager = new MachineryManager();
 		
 		//Initialization notification
 		System.out.println("[Mekanism] Version " + versionNumber + " initializing...");

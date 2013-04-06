@@ -66,10 +66,31 @@ public final class MekanismUtils
 		{
 			if(!Mekanism.latestVersionNumber.equals("null"))
 			{
-				if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
+				ArrayList<IModule> list = new ArrayList<IModule>();
+				
+				for(IModule module : Mekanism.modulesLoaded)
+				{
+					if(Version.get(Mekanism.latestVersionNumber).comparedState(module.getVersion()) == 1)
+					{
+						list.add(module);
+					}
+				}
+				
+				if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
 				{
 					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
-					entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version " + EnumColor.DARK_GREY + Mekanism.versionNumber + EnumColor.GREY + " for your client.");
+					entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version on one or more modules.");
+					
+					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
+					{
+						entityplayer.addChatMessage(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber);
+					}
+					
+					for(IModule module : list)
+					{
+						entityplayer.addChatMessage(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion());
+					}
+					
 					entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
 					entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
 					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
@@ -218,12 +239,30 @@ public final class MekanismUtils
 	}
 	
 	/**
-	 * Checks if the mod is running on the latest version.
-	 * @return if mod is latest version
+	 * Checks if the mod doesn't need an update.
+	 * @return if mod doesn't need an update
 	 */
-	public static boolean isNotOutdated()
+	public static boolean noUpdates()
 	{
-		return Mekanism.latestVersionNumber.contains("null") || Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) != -1;
+		if(Mekanism.latestVersionNumber.contains("null"))
+		{
+			return true;
+		}
+		
+		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
+		{
+			return false;
+		}
+		
+		for(IModule module : Mekanism.modulesLoaded)
+		{
+			if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -573,18 +612,18 @@ public final class MekanismUtils
      */
     public static boolean isLiquid(World world, int x, int y, int z)
     {
-    	return getLiquidAndCleanup(world, x, y, z) != null;
+    	return getLiquid(world, x, y, z) != null;
     }
     
     /**
-     * Gets a liquid from a certain location, or removes it if it's a dead lava block.
+     * Gets a liquid from a certain location.
      * @param world - world the block is in
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
      * @return the liquid at the certain location, null if it doesn't exist
      */
-    public static LiquidStack getLiquidAndCleanup(World world, int x, int y, int z)
+    public static LiquidStack getLiquid(World world, int x, int y, int z)
     {
     	int id = world.getBlockId(x, y, z);
     	int meta = world.getBlockMetadata(x, y, z);
@@ -598,19 +637,9 @@ public final class MekanismUtils
     	{
     		return new LiquidStack(Block.waterStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
     	}
-    	else if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta != 0)
-    	{
-    		world.setBlockToAir(x, y, z);
-    		return null;
-    	}
     	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta == 0)
     	{
     		return new LiquidStack(Block.lavaStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
-    	}
-    	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta != 0)
-    	{
-    		world.setBlockToAir(x, y, z);
-    		return null;
     	}
     	else if(Block.blocksList[id] instanceof ILiquid)
     	{
@@ -624,12 +653,44 @@ public final class MekanismUtils
     		{
     			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, 0);
     		}
-    		else {
-    			world.setBlockToAir(x, y, z);
-    		}
     	}
     	
     	return null;
+    }
+    
+    public static boolean isDeadLiquid(World world, int x, int y, int z)
+    {
+    	int id = world.getBlockId(x, y, z);
+    	int meta = world.getBlockMetadata(x, y, z);
+    	
+    	if(id == 0)
+    	{
+    		return false;
+    	}
+    	
+    	if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta != 0)
+    	{
+    		return true;
+    	}
+    	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta != 0)
+    	{
+    		return true;
+    	}
+    	else if(Block.blocksList[id] instanceof ILiquid)
+    	{
+    		ILiquid liquid = (ILiquid)Block.blocksList[id];
+    	
+    		if(liquid.isMetaSensitive())
+    		{
+    			return liquid.stillLiquidMeta() != meta || liquid.stillLiquidId() != id;
+    		}
+    		else if(meta != 0)
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
     }
     
     /**

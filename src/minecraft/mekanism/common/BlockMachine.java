@@ -556,7 +556,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	    	}
     	}
     	
-        if (tileEntity != null)
+        if(tileEntity != null)
         {
         	if(metadata != MachineType.TELEPORTER.meta)
         	{

@@ -14,7 +14,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import mekanism.common.IModule;
 import mekanism.common.Mekanism;
+import mekanism.common.Version;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Init;
@@ -24,10 +26,13 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.5.4", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-public class MekanismTools 
+public class MekanismTools implements IModule
 {
 	@Instance("MekanismTools")
 	public static MekanismTools instance;
+	
+	/** MekanismTools version number */
+	public static Version versionNumber = new Version(5, 5, 4);
 	
     //Enums: Tools
     public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 100);
@@ -587,5 +592,17 @@ public class MekanismTools
 				}
 			}
 		}
+	}
+
+	@Override
+	public Version getVersion()
+	{
+		return versionNumber;
+	}
+
+	@Override
+	public String getName() 
+	{
+		return "Tools";
 	}
 }

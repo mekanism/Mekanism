@@ -16,19 +16,19 @@ import net.minecraft.client.Minecraft;
  */
 public class ThreadClientUpdate extends Thread
 {
-	private int downloadType;
 	private int bytesDownloaded;
 	private int lastBytesDownloaded;
 	private byte[] buffer = new byte[10240];
 	private URL url;
+	public String moduleName;
 	
 	public static int modulesBeingDownloaded;
 	public static boolean hasUpdated;
 	
-	public ThreadClientUpdate(String location, int type)
+	public ThreadClientUpdate(String location, String name)
 	{
+		moduleName = name;
 		modulesBeingDownloaded++;
-		downloadType = type;
 		try {
 			url = new URL(location);
 			setDaemon(false);
@@ -41,8 +41,7 @@ public class ThreadClientUpdate extends Thread
 	@Override
 	public void run()
 	{
-		String downloadName = downloadType == 0 ? "" : (downloadType == 1 ? "Generators" : "Tools");
-		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append(File.separator + "mods" + File.separator + "Mekanism" + downloadName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
+		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append(File.separator + "mods" + File.separator + "Mekanism" + moduleName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
 		try {
 			prepareForDownload();
 			download.createNewFile();
@@ -83,7 +82,7 @@ public class ThreadClientUpdate extends Thread
 		
 		for(File file : modsList)
 		{
-			if(file.getName().startsWith("Mekanism") && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
+			if(file.getName().startsWith("Mekanism" + moduleName) && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
 			{
 				file.delete();
 			}

@@ -34,10 +34,16 @@ import net.minecraftforge.liquids.LiquidTank;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank
 {
+	/** This pump's tank */
 	public LiquidTank liquidTank;
 	
+	/** The nodes that have full sources near them or in them */
 	public Set<BlockWrapper> recurringNodes = new HashSet<BlockWrapper>();
 	
+	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
+	public Set<BlockWrapper> cleaningNodes = new HashSet<BlockWrapper>();
+	
+	/** Random for this pump */
 	public Random random = new Random();
 	
 	public TileEntityElectricPump()
@@ -117,6 +123,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
+		if(!suck(true) && !clean(true))
+		{
+			cleaningNodes.clear();
+		}
+		else {
+			clean(true);
+		}
+		
 		if(liquidTank.getLiquid() != null) 
 		{
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
@@ -134,24 +148,56 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				}
 			}
 		}
-		
-		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
+	}
+	
+	public boolean suck(boolean take)
+	{
+		if(!worldObj.isRemote && worldObj.getWorldTime() % 1 == 0)
 		{			
-			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
+			if(/*electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000)*/true)
 			{
 				List<BlockWrapper> tempPumpList = Arrays.asList(recurringNodes.toArray(new BlockWrapper[recurringNodes.size()]));
 				Collections.shuffle(tempPumpList);
+				
+				for(BlockWrapper wrapper : cleaningNodes)
+				{
+					if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+					{
+						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+						{
+							if(take)
+							{
+								setJoules(electricityStored - 100);
+								liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
+								worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							}
+							
+							return true;
+						}
+					}
+				}
 				
 				for(BlockWrapper wrapper : tempPumpList)
 				{
 					if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
 					{
-						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquidAndCleanup(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
 						{
-							setJoules(electricityStored - 100);
-							liquidTank.fill(MekanismUtils.getLiquidAndCleanup(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
+							if(take)
+							{
+								setJoules(electricityStored - 100);
+								liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
+								worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							}
+							
+							return true;
+						}
+					}
+					else if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+					{
+						if(take)
+						{
 							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
-							return;
 						}
 					}
 					
@@ -161,22 +207,34 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						int y = MekanismUtils.getCoords(wrapper, orientation)[1];
 						int z = MekanismUtils.getCoords(wrapper, orientation)[2];
 						
-						if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 60)
+						if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 2340)
 						{
 							if(MekanismUtils.isLiquid(worldObj, x, y, z))
 							{
-								if(liquidTank.getLiquid() == null || MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
+								if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
 								{
-									setJoules(electricityStored - 100);
-									recurringNodes.add(new BlockWrapper(x, y, z));
-									liquidTank.fill(MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z), true);
+									if(take)
+									{
+										setJoules(electricityStored - 100);
+										recurringNodes.add(new BlockWrapper(x, y, z));
+										liquidTank.fill(MekanismUtils.getLiquid(worldObj, x, y, z), true);
+										worldObj.setBlockToAir(x, y, z);
+									}
+									
+									return true;
+								}
+							}
+							else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
+							{
+								if(take)
+								{
 									worldObj.setBlockToAir(x, y, z);
-									return;
 								}
 							}
 						}
 					}
 					
+					cleaningNodes.add(wrapper);
 					recurringNodes.remove(wrapper);
 				}
 				
@@ -190,19 +248,65 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						
 						if(MekanismUtils.isLiquid(worldObj, x, y, z))
 						{
-							if(liquidTank.getLiquid() == null || MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
+							if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
 							{
-								setJoules(electricityStored - 100);
-								recurringNodes.add(new BlockWrapper(x, y, z));
-								liquidTank.fill(MekanismUtils.getLiquidAndCleanup(worldObj, x, y, z), true);
+								if(take)
+								{
+									setJoules(electricityStored - 100);
+									recurringNodes.add(new BlockWrapper(x, y, z));
+									liquidTank.fill(MekanismUtils.getLiquid(worldObj, x, y, z), true);
+									worldObj.setBlockToAir(x, y, z);
+								}
+								
+								return true;
+							}
+						}
+						else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
+						{
+							if(take)
+							{
 								worldObj.setBlockToAir(x, y, z);
-								return;
 							}
 						}
 					}
 				}
 			}
 		}
+		
+		return false;
+	}
+	
+	public boolean clean(boolean take)
+	{
+		boolean took = false;
+		if(!worldObj.isRemote)
+		{
+			for(BlockWrapper wrapper : cleaningNodes)
+			{
+				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+				{
+					took = true;
+					if(take)
+					{
+						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+					}
+				}
+			}
+			
+			for(BlockWrapper wrapper : recurringNodes)
+			{
+				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+				{
+					took = true;
+					if(take)
+					{
+						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+					}
+				}
+			}
+		}
+		
+		return took;
 	}
 	
 	@Override
@@ -257,18 +361,32 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         	nbtTags.setTag("liquidTank", liquidTank.writeToNBT(new NBTTagCompound()));
         }
         
-        NBTTagList tagList = new NBTTagList();
+        NBTTagList recurringList = new NBTTagList();
         
         for(BlockWrapper wrapper : recurringNodes)
         {
         	NBTTagCompound tagCompound = new NBTTagCompound();
         	wrapper.write(tagCompound);
-        	tagList.appendTag(tagCompound);
+        	recurringList.appendTag(tagCompound);
         }
         
-        if(!tagList.tagList.isEmpty())
+        if(!recurringList.tagList.isEmpty())
         {
-        	nbtTags.setTag("recurringNodes", tagList);
+        	nbtTags.setTag("recurringNodes", recurringList);
+        }
+        
+        NBTTagList cleaningList = new NBTTagList();
+        
+        for(BlockWrapper wrapper : cleaningNodes)
+        {
+        	NBTTagCompound tagCompound = new NBTTagCompound();
+        	wrapper.write(tagCompound);
+        	cleaningList.appendTag(tagCompound);
+        }
+        
+        if(!cleaningList.tagList.isEmpty())
+        {
+        	nbtTags.setTag("cleaningNodes", cleaningList);
         }
     }
     
@@ -289,6 +407,16 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     		for(int i = 0; i < tagList.tagCount(); i++)
     		{
     			recurringNodes.add(BlockWrapper.read((NBTTagCompound)tagList.tagAt(i)));
+    		}
+    	}
+    	
+    	if(nbtTags.hasKey("cleaningNodes"))
+    	{
+    		NBTTagList tagList = nbtTags.getTagList("cleaningNodes");
+    		
+    		for(int i = 0; i < tagList.tagCount(); i++)
+    		{
+    			cleaningNodes.add(BlockWrapper.read((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
     }

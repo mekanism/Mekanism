@@ -2,8 +2,10 @@ package mekanism.client;
 
 import cpw.mods.fml.common.Loader;
 import mekanism.api.EnumColor;
+import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
+import mekanism.common.Version;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -19,7 +21,7 @@ public class GuiCredits extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, width / 2 - 100, height / 4 + 72 + 12, "Update"));
 		buttonList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
-        ((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.isNotOutdated() && !ThreadClientUpdate.hasUpdated;
+        ((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.noUpdates() && !ThreadClientUpdate.hasUpdated;
 	}
 	
 	public static void onFinishedDownloading()
@@ -43,22 +45,23 @@ public class GuiCredits extends GuiScreen
 		}
 		if(guibutton.id == 0)
 		{
-			if(!MekanismUtils.isNotOutdated())
+			if(!MekanismUtils.noUpdates())
 			{
 				updatedRecently = true;
 				updateProgress = "Downloading latest version...";
 				guibutton.enabled = false;
 				
-				new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/Mekanism-v" + Mekanism.latestVersionNumber + ".jar", 0);
-				
-				if(Loader.isModLoaded("MekanismGenerators"))
+				if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 				{
-					new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/MekanismGenerators-v" + Mekanism.latestVersionNumber + ".jar", 1);
+					new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/Mekanism-v" + Mekanism.latestVersionNumber + ".jar", "");
 				}
 				
-				if(Loader.isModLoaded("MekanismTools"))
+				for(IModule module : Mekanism.modulesLoaded)
 				{
-					new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/MekanismTools-v" + Mekanism.latestVersionNumber + ".jar", 2);
+					if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
+					{
+						new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/Mekanism" + module.getName() + "-v" + Mekanism.latestVersionNumber + ".jar", module.getName());
+					}
 				}
 			}
 			else {
@@ -100,12 +103,21 @@ public class GuiCredits extends GuiScreen
 		
 		drawDefaultBackground();
         drawCenteredString(fontRenderer, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
-        writeText(EnumColor.GREY + "Your version: " + (MekanismUtils.isNotOutdated() ? Mekanism.versionNumber : EnumColor.DARK_RED + Mekanism.versionNumber.toString() + EnumColor.GREY + " -- OUTDATED"), 36);
-  		writeText(EnumColor.GREY + "Newest version: " + Mekanism.latestVersionNumber, 45);
-  		writeText(EnumColor.GREY + "*Developed on Mac OS X 10.8 Mountain Lion", 63);
-  		writeText(EnumColor.GREY + "*Code, textures, and ideas by aidancbrady", 72);
-  		writeText(EnumColor.GREY + "Recent news: " + EnumColor.DARK_BLUE + (!Mekanism.recentNews.contains("null") ? Mekanism.recentNews : "couldn't access."), 81);
-  		writeText(EnumColor.GREY + updateProgress, 99);
+        writeText(EnumColor.INDIGO + "Mekanism " + (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1 ? EnumColor.DARK_RED : EnumColor.GREY) + Mekanism.versionNumber, 36);
+        
+        int size = 36;
+        
+        for(IModule module : Mekanism.modulesLoaded)
+        {
+    		size += 9;
+    		writeText(EnumColor.INDIGO + "Mekanism" + module.getName() + (module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1 ? EnumColor.DARK_RED : EnumColor.GREY) + " " + module.getVersion(), size);
+        }
+        
+  		writeText(EnumColor.GREY + "Newest version: " + Mekanism.latestVersionNumber, size+9);
+  		writeText(EnumColor.GREY + "*Developed on Mac OS X 10.8 Mountain Lion", size+18);
+  		writeText(EnumColor.GREY + "*Code, textures, and ideas by aidancbrady", size+27);
+  		writeText(EnumColor.GREY + "Recent news: " + EnumColor.DARK_BLUE + (!Mekanism.recentNews.contains("null") ? Mekanism.recentNews : "couldn't access."), size+36);
+  		writeText(EnumColor.GREY + updateProgress, size+45);
   		super.drawScreen(i, j, f);
 	}
 }

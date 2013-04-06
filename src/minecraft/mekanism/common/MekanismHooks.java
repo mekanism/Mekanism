@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
  */
 public final class MekanismHooks 
 {
-	private Class Ic2Items;
 	private Class IC2;
 	
 	private Class Railcraft;
@@ -25,8 +24,6 @@ public final class MekanismHooks
 	
 	private Class ForestryItem;
 	private Class Forestry;
-	
-	public ItemStack IC2CoalDust;
 	
 	public int BuildCraftFuelID = 19108;
 	public ItemStack BuildCraftFuelBucket;
@@ -55,8 +52,6 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
-			IC2CoalDust = getIC2Item("coalDust");
-			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.OreBlock, 1, 0), new ItemStack(Mekanism.Dust, 2, 2));
 			
 			Ic2Recipes.addMaceratorRecipe(new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.Dust, 1, 2));
@@ -74,10 +69,6 @@ public final class MekanismHooks
 			Ic2Recipes.addMatterAmplifier(Mekanism.EnrichedAlloy, 50000);
 			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
-		}
-		if(RailcraftLoaded)
-		{
-			System.out.println("[Mekanism] Hooked into Railcraft successfully.");
 		}
 		if(BasicComponentsLoaded)
 		{
@@ -108,35 +99,6 @@ public final class MekanismHooks
 			ForestryBiofuelID = getForestryItem("liquidBiofuel").itemID;
 			ForestryBiofuelBucket = getForestryItem("bucketBiofuel");
 			System.out.println("[Mekanism] Hooked into Forestry successfully.");
-		}
-	}
-	
-	/**
-	 * Gets an object out of the class Ic2Items.
-	 * @param name - name of the item
-	 * @return the object
-	 */
-	public ItemStack getIC2Item(String name)
-	{
-		try {
-			if(Ic2Items == null) Ic2Items = Class.forName("ic2.core.Ic2Items");
-			if(Ic2Items == null) Ic2Items = Class.forName("net.minecraft.src.ic2.core.Ic2Items");
-			Object ret = Ic2Items.getField(name).get(null);
-			
-			if(ret instanceof ItemStack)
-			{
-				return (ItemStack)ret;
-			}
-			else if(ret instanceof Block)
-			{
-				return new ItemStack((Block)ret);
-			}
-			else {
-				throw new Exception("not instanceof ItemStack");
-			}
-		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to retrieve IC2 item " + name + ".");
-			return null;
 		}
 	}
 	

@@ -64,9 +64,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** The previous active state for this block. */
 	public boolean prevActive;
 	
-	/** Whether or not this machine has been registered with the MachineryManager. */
-	public boolean registered;
-	
 	/** The GUI texture path for this machine. */
 	public String guiTexturePath;
 	
@@ -93,12 +90,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
-		if(!registered && worldObj != null && !worldObj.isRemote)
-		{
-			Mekanism.manager.register(this);
-			registered = true;
-		}
 		
 		if(worldObj.isRemote)
 		{
@@ -212,11 +203,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void invalidate()
 	{
 		super.invalidate();
-		if(!worldObj.isRemote && registered)
-		{
-			Mekanism.manager.remove(this);
-			registered = false;
-		}
 		
 		if(worldObj.isRemote && audio != null)
 		{

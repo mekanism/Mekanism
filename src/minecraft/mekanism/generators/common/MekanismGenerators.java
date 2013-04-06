@@ -2,9 +2,11 @@ package mekanism.generators.common;
 
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionType;
+import mekanism.common.IModule;
 import mekanism.common.ItemMekanism;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
+import mekanism.common.Version;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.item.Item;
@@ -12,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -24,13 +27,16 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.5.4", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
-public class MekanismGenerators
+public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
 	public static GeneratorsCommonProxy proxy;
 	
 	@Instance("MekanismGenerators")
 	public static MekanismGenerators instance;
+	
+	/** MekanismGenerators version number */
+	public static Version versionNumber = new Version(5, 5, 4);
 	
 	//Items
 	public static Item BioFuel;
@@ -152,5 +158,17 @@ public class MekanismGenerators
 		Mekanism.configuration.save();
 		
 		OreDictionary.registerOre("itemBioFuel", new ItemStack(BioFuel));
+	}
+
+	@Override
+	public Version getVersion() 
+	{
+		return versionNumber;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "Generators";
 	}
 }
