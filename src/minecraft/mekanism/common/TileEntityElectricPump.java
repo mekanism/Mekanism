@@ -152,9 +152,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	public boolean suck(boolean take)
 	{
-		if(!worldObj.isRemote && worldObj.getWorldTime() % 1 == 0)
+		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{			
-			if(/*electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000)*/true)
+			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
 			{
 				List<BlockWrapper> tempPumpList = Arrays.asList(recurringNodes.toArray(new BlockWrapper[recurringNodes.size()]));
 				Collections.shuffle(tempPumpList);
