@@ -658,6 +658,50 @@ public final class MekanismUtils
     	return null;
     }
     
+    /**
+     * Gets the liquid ID at a certain location, 0 if there isn't one
+     * @param world - world the block is in
+     * @param x - x coordinate
+     * @param y - y coordinate
+     * @param z - z coordinate
+     * @return liquid ID
+     */
+    public static int getLiquidId(World world, int x, int y, int z)
+    {
+    	int id = world.getBlockId(x, y, z);
+    	int meta = world.getBlockMetadata(x, y, z);
+    	
+    	if(id == 0)
+    	{
+    		return 0;
+    	}
+    	
+    	if(id == Block.waterStill.blockID || id == Block.waterMoving.blockID)
+    	{
+    		return Block.waterStill.blockID;
+    	}
+    	else if(id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID)
+    	{
+    		return Block.lavaStill.blockID;
+    	}
+    	else if(Block.blocksList[id] instanceof ILiquid)
+    	{
+    		ILiquid liquid = (ILiquid)Block.blocksList[id];
+    	
+			return liquid.stillLiquidId();
+    	}
+    	
+    	return 0;
+    }
+    
+    /**
+     * Whether or not a block is a dead liquid.
+     * @param world - world the block is in
+     * @param x - x coordinate
+     * @param y - y coordinate
+     * @param z - z coordinate
+     * @return if the block is a dead liquid
+     */
     public static boolean isDeadLiquid(World world, int x, int y, int z)
     {
     	int id = world.getBlockId(x, y, z);

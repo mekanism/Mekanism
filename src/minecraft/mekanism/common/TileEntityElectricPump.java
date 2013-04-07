@@ -32,7 +32,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank
+public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank, IActiveState
 {
 	/** This pump's tank */
 	public LiquidTank liquidTank;
@@ -42,6 +42,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
 	public Set<BlockWrapper> cleaningNodes = new HashSet<BlockWrapper>();
+	
+	/** Whether or not this block is in it's active state. */
+	public boolean isActive;
+	
+	/** The previous active state for this block. */
+	public boolean prevActive;
 	
 	/** Random for this pump */
 	public Random random = new Random();
@@ -123,11 +129,24 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
-		if(!suck(true) && !clean(true))
+		if(!suck(true))
 		{
-			cleaningNodes.clear();
+			if(!clean(true) && !cleaningNodes.isEmpty())
+			{
+				if(!worldObj.isRemote)
+				{
+					setActive(false);
+				}
+				
+				cleaningNodes.clear();
+			}
 		}
 		else {
+			if(!worldObj.isRemote)
+			{
+				setActive(true);
+			}
+			
 			clean(true);
 		}
 		
@@ -195,9 +214,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					}
 					else if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
 					{
-						if(take)
+						if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
 						{
-							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							if(take)
+							{
+								worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							}
 						}
 					}
 					
@@ -207,7 +229,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						int y = MekanismUtils.getCoords(wrapper, orientation)[1];
 						int z = MekanismUtils.getCoords(wrapper, orientation)[2];
 						
-						if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 2340)
+						if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 80)
 						{
 							if(MekanismUtils.isLiquid(worldObj, x, y, z))
 							{
@@ -226,9 +248,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							}
 							else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
 							{
-								if(take)
+								if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, x, y, z) == liquidTank.getLiquid().itemID)
 								{
-									worldObj.setBlockToAir(x, y, z);
+									if(take)
+									{
+										worldObj.setBlockToAir(x, y, z);
+									}
 								}
 							}
 						}
@@ -263,9 +288,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						}
 						else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
 						{
-							if(take)
+							if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, x, y, z) == liquidTank.getLiquid().itemID)
 							{
-								worldObj.setBlockToAir(x, y, z);
+								if(take)
+								{
+									worldObj.setBlockToAir(x, y, z);
+								}
 							}
 						}
 					}
@@ -285,10 +313,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
 				{
-					took = true;
-					if(take)
+					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
 					{
-						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						took = true;
+						if(take)
+						{
+							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						}
 					}
 				}
 			}
@@ -297,10 +328,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
 				{
-					took = true;
-					if(take)
+					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
 					{
-						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						took = true;
+						if(take)
+						{
+							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						}
 					}
 				}
 			}
@@ -313,6 +347,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
+		isActive = dataStream.readBoolean();
 		
 		try {
 			int amount = dataStream.readInt();
@@ -330,6 +366,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
+		data.add(isActive);
 		
 		if(liquidTank.getLiquid() != null)
 		{
@@ -355,6 +393,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
+        nbtTags.setBoolean("isActive", isActive);
         
         if(liquidTank.getLiquid() != null)
         {
@@ -394,6 +434,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public void readFromNBT(NBTTagCompound nbtTags)
     {
     	super.readFromNBT(nbtTags);
+    	
+    	isActive = nbtTags.getBoolean("isActive");
     	
     	if(nbtTags.hasKey("liquidTank"))
     	{
@@ -533,4 +575,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		return true;
 	}
+	
+	@Override
+    public void setActive(boolean active)
+    {
+    	isActive = active;
+    	
+    	if(prevActive != active)
+    	{
+    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+    	}
+    	
+    	prevActive = active;
+    }
+    
+    @Override
+    public boolean getActive()
+    {
+    	return isActive;
+    }
 }

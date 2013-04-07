@@ -131,7 +131,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-        if(MekanismUtils.isActive(world, x, y, z))
+        if(MekanismUtils.isActive(world, x, y, z) && !(tileEntity instanceof TileEntityElectricPump))
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -747,11 +747,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		
 		public TileEntity create()
 		{
-			TileEntity tileEntity;
-			
 			try {
-				tileEntity = tileEntityClass.newInstance();
-				return tileEntity;
+				return tileEntityClass.newInstance();
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Unable to indirectly create tile entity.");
 				e.printStackTrace();

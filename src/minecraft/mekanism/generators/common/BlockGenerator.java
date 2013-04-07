@@ -593,11 +593,8 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 		
 		public TileEntity create()
 		{
-			TileEntity tileEntity;
-			
 			try {
-				tileEntity = tileEntityClass.newInstance();
-				return tileEntity;
+				return tileEntityClass.newInstance();
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Unable to indirectly create tile entity.");
 				e.printStackTrace();

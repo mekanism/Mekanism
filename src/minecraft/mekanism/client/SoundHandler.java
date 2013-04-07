@@ -8,6 +8,9 @@ import java.util.Random;
 import mekanism.common.IActiveState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.ChunkEvent;
 import paulscode.sound.SoundSystem;
 import cpw.mods.fml.client.FMLClientHandler;
 
@@ -34,6 +37,7 @@ public class SoundHandler
 		if(soundSystem == null)
 		{
 			soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
+			MinecraftForge.EVENT_BUS.register(this);
 			System.out.println("[Mekanism] Successfully set up SoundHandler.");
 		}
 	}
@@ -84,7 +88,6 @@ public class SoundHandler
 			
 			for(Sound sound : soundsToRemove)
 			{
-				System.out.println("[Mekanism] Removed dead sound '" + sound.identifier + ".'");
 				sound.remove();
 				
 				TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
@@ -128,6 +131,31 @@ public class SoundHandler
 		synchronized(sounds)
 		{
 			return "Mekanism_" + sounds.size() + "_" + new Random().nextInt(10000);
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onChunkUnload(ChunkEvent.Unload event)
+	{
+		if(event.getChunk() != null)
+		{
+			for(Object obj : event.getChunk().chunkTileEntityMap.values())
+			{
+				if(obj instanceof TileEntity)
+				{
+					TileEntity tileEntity = (TileEntity)obj;
+					
+					if(tileEntity instanceof IHasSound)
+					{
+						if(sounds.contains(((IHasSound)tileEntity).getSound()))
+						{
+							sounds.remove(((IHasSound)tileEntity).getSound());
+						}
+						
+						((IHasSound)tileEntity).removeSound();
+					}
+				}
+			}
 		}
 	}
 }
