@@ -98,15 +98,6 @@ public class Mekanism
 	@SideOnly(Side.CLIENT)
 	/** The main SoundHandler instance that is used by all audio sources */
 	public static SoundHandler audioHandler;
-	
-	/** The IP used to connect to the Mekanism server */
-	public static String hostIP = "71.56.58.57";
-	
-	/** The port used to connect to the Mekanism server */
-	public static int hostPort = 3073;
-	
-	/** The modpack this client is using */
-	public static String modPack = "none";
     
 	//Block IDs
     public static int basicBlockID = 3000;
@@ -950,7 +941,6 @@ public class Mekanism
 	@ServerStopping
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
-		proxy.unloadSoundHandler();
 		teleporters.clear();
 	}
 	
@@ -964,7 +954,6 @@ public class Mekanism
 		if(config.getAbsolutePath().contains("voltz"))
 		{
 			System.out.println("[Mekanism] Detected Voltz in root directory - hello, fellow user!");
-			modPack = "Voltz";
 		}
 	}
 	
@@ -998,7 +987,7 @@ public class Mekanism
 		//Load proxy
 		proxy.registerRenderInformation();
 		proxy.loadConfiguration();
-		proxy.loadTickHandler();
+		proxy.loadUtilities();
 		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);

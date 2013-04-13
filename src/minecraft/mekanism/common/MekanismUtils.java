@@ -1,9 +1,6 @@
 package mekanism.common;
 
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.Direction;
-import ic2.api.energy.tile.IEnergySink;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,17 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
-import buildcraft.api.power.IPowerReceptor;
-
-import universalelectricity.core.block.IConnectionProvider;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
-
 import mekanism.api.EnumColor;
-import mekanism.api.ICableOutputter;
 import mekanism.api.IConfigurable;
-import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.IUniversalCable;
 import mekanism.api.InfuseObject;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -42,7 +30,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquid;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -61,7 +48,7 @@ public final class MekanismUtils
 	/**
 	 * Checks for a new version of Mekanism.
 	 */
-	public static void checkForUpdates(EntityPlayer entityplayer)
+	public static boolean checkForUpdates(EntityPlayer entityplayer)
 	{
 		if(Mekanism.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 		{
@@ -95,18 +82,20 @@ public final class MekanismUtils
 					entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
 					entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
 					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
-					return;
+					return true;
 				}
 				else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
 				{
 					entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Using developer build " + EnumColor.DARK_GREY + Mekanism.versionNumber);
+					return true;
 				}
 			}
 			else {
 				System.out.println("[Mekanism] Minecraft is in offline mode, could not check for updates.");
-				return;
 			}
 		}
+		
+		return false;
 	}
 	
 	/**

@@ -36,6 +36,7 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:GasTankTop");
@@ -63,6 +64,7 @@ public class BlockGasTank extends BlockContainer
     }
 	
 	@Override
+	@SideOnly(Side.CLIENT)
     public Icon getIcon(int side, int meta)
 	{
 		if(side == 3)

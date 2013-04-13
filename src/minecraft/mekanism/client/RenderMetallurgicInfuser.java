@@ -2,10 +2,14 @@ package mekanism.client;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import mekanism.common.TileEntityMetallurgicInfuser;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
+@SideOnly(Side.CLIENT)
 public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer
 {
 	private ModelMetallurgicInfuser model = new ModelMetallurgicInfuser();

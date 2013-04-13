@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
-
 import dan200.computer.api.IComputerAccess;
 
 public abstract class TileEntityElectricMachine extends TileEntityBasicMachine

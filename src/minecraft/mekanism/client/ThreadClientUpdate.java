@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 
@@ -14,6 +17,7 @@ import net.minecraft.client.Minecraft;
  * @author AidanBrady
  *
  */
+@SideOnly(Side.CLIENT)
 public class ThreadClientUpdate extends Thread
 {
 	private int bytesDownloaded;

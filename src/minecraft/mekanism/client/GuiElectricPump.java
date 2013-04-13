@@ -8,9 +8,13 @@ import net.minecraftforge.liquids.LiquidStack;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 
+@SideOnly(Side.CLIENT)
 public class GuiElectricPump extends GuiContainer
 {
 	public TileEntityElectricPump tileEntity;

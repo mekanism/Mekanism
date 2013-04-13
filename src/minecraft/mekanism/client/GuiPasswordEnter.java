@@ -3,6 +3,9 @@ package mekanism.client;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import universalelectricity.core.item.IItemElectric;
 
 import mekanism.api.EnumColor;
@@ -17,6 +20,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 
+@SideOnly(Side.CLIENT)
 public class GuiPasswordEnter extends GuiScreen
 {
     public int xSize = 176;

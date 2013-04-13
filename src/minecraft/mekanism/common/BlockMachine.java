@@ -65,6 +65,7 @@ public class BlockMachine extends BlockContainer
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
@@ -181,6 +182,7 @@ public class BlockMachine extends BlockContainer
 	}
     
 	@Override
+	@SideOnly(Side.CLIENT)
     public Icon getIcon(int side, int meta)
     {
     	if(meta == 0)

@@ -46,6 +46,7 @@ public class BlockBasic extends Block
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:OsmiumBlock");
@@ -60,6 +61,7 @@ public class BlockBasic extends Block
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
 	{
 		return icons[meta];

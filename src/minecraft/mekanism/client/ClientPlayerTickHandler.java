@@ -15,7 +15,10 @@ import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ClientPlayerTickHandler implements ITickHandler
 {
 	public boolean lastTickConfiguratorChange = false;

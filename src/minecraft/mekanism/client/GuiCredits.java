@@ -1,6 +1,8 @@
 package mekanism.client;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
@@ -9,6 +11,7 @@ import mekanism.common.Version;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class GuiCredits extends GuiScreen 
 {
 	private static String updateProgress = "";

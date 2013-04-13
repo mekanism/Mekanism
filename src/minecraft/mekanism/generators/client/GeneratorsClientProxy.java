@@ -13,7 +13,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GeneratorsClientProxy extends GeneratorsCommonProxy
 {
 	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();

@@ -43,10 +43,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
-	/** The Sound instance for this machine. */
-	@SideOnly(Side.CLIENT)
-	public Sound audio;
-	
 	/** An int[] used to track all current operations' progress. */
 	public int[] progress;
 	
@@ -111,10 +107,13 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				{
 					synchronized(Mekanism.audioHandler.sounds)
 					{
-						updateSound();
+						if(Mekanism.audioHandler.getFrom(this) == null)
+						{
+							Mekanism.proxy.registerSound(this);
+						}
 					}
 				}
-			} catch(NoSuchMethodError e) {}
+			} catch(Exception e) {}
 		}
 		
 		boolean testActive = false;
@@ -329,45 +328,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		return true;
 	}
 	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void updateSound()
-	{
-		if(Mekanism.audioHandler != null)
-		{
-			synchronized(Mekanism.audioHandler.sounds)
-			{
-				if(audio == null && worldObj != null && worldObj.isRemote)
-				{
-					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
-					{
-						audio = Mekanism.audioHandler.getSound(RecipeType.values()[recipeType].getSound(), worldObj, xCoord, yCoord, zCoord);
-					}
-				}
-				
-				if(worldObj != null && worldObj.isRemote && audio != null)
-				{
-					if(!audio.isPlaying && isActive == true)
-					{
-						audio.play();
-					}
-					else if(audio.isPlaying && isActive == false)
-					{
-						audio.stopLoop();
-					}
-				}
-			}
-		}
-	}
-	
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
 		
-		if(worldObj.isRemote && audio != null)
+		if(worldObj.isRemote)
 		{
-			audio.remove();
+			Mekanism.proxy.unregisterSound(this);
 		}
 	}
 	
@@ -763,18 +731,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		return true;
 	}
-	
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public Sound getSound()
+	public String getSoundPath()
 	{
-		return audio;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void removeSound()
-	{
-		audio = null;
+		return RecipeType.values()[recipeType].getSound();
 	}
 }

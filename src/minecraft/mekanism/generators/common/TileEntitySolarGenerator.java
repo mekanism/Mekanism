@@ -43,9 +43,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public void updateSound() {/* No super - prevent sound updating */}
-	
-	@Override
 	public int[] getSizeInventorySide(int side)
 	{
 		return new int[] {0};

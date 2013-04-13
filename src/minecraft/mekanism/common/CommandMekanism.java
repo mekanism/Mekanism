@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class CommandMekanism extends CommandBase
 {
@@ -55,7 +56,16 @@ public class CommandMekanism extends CommandBase
 	        
 	        else if(params[0].equalsIgnoreCase("version"))
 	        {
-	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " This server is running on version " + EnumColor.DARK_GREY + Mekanism.versionNumber.toString() + EnumColor.GREY + ".");
+	        	if(!MekanismUtils.checkForUpdates((EntityPlayer)sender))
+	        	{
+	        		if(Mekanism.updateNotifications || Mekanism.latestVersionNumber == null || Mekanism.recentNews == null || Mekanism.latestVersionNumber.equals("null"))
+	        		{
+	        			sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Minecraft is in offline mode, could not check for updates.");
+	        		}
+	        		else {
+	        			sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Your client is up to date.");
+	        		}
+	        	}
 	        }
 	        
 	        else if(params[0].equalsIgnoreCase("news"))

@@ -51,6 +51,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0][0] = register.registerIcon("mekanism:BasicEnergyCubeFront");
@@ -70,6 +71,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
 	{
 		if(side == 3)

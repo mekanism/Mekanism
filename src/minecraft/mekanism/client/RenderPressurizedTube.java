@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraftforge.common.ForgeDirection;
 
 import mekanism.api.GasTransmission;
@@ -12,6 +15,7 @@ import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
+@SideOnly(Side.CLIENT)
 public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model;

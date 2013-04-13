@@ -2,6 +2,9 @@ package mekanism.common;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -25,6 +28,7 @@ public class BlockObsidianTNT extends Block
     }
     
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:ObsidianTNTBottom");
@@ -33,6 +37,7 @@ public class BlockObsidianTNT extends Block
 	}
 
     @Override
+    @SideOnly(Side.CLIENT)
     public Icon getIcon(int side, int meta)
     {
         if(side == 1)

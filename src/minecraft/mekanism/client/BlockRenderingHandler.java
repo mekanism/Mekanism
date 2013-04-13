@@ -12,7 +12,10 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 {
 	public ModelTheoreticalElementizer theoreticalElementizer = new ModelTheoreticalElementizer();

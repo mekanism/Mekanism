@@ -1,10 +1,13 @@
 package mekanism.client;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
 import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import net.minecraft.entity.player.InventoryPlayer;
 
+@SideOnly(Side.CLIENT)
 public class GuiTheoreticalElementizer extends GuiAdvancedElectricMachine
 {
     public GuiTheoreticalElementizer(InventoryPlayer inventory, TileEntityTheoreticalElementizer tentity)

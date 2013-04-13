@@ -7,6 +7,10 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer
 {
 	private ModelElectrolyticSeparator model = new ModelElectrolyticSeparator();

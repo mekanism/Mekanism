@@ -18,6 +18,7 @@ import mekanism.api.InfusionType;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.client.Sound;
+import mekanism.common.IFactory.RecipeType;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,10 +39,6 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
 {
-	/** The Sound instance for this machine. */
-	@SideOnly(Side.CLIENT)
-	public Sound audio;
-	
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
 	
@@ -112,10 +109,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				{
 					synchronized(Mekanism.audioHandler.sounds)
 					{
-						updateSound();
+						if(Mekanism.audioHandler.getFrom(this) == null)
+						{
+							Mekanism.proxy.registerSound(this);
+						}
 					}
 				}
-			} catch(NoSuchMethodError e) {}
+			} catch(Exception e) {}
 		}
 		
 		boolean testActive = operatingTicks > 0;
@@ -257,37 +257,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			}
 			else {
 				setActive(false);
-			}
-		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void updateSound()
-	{
-		if(Mekanism.audioHandler != null)
-		{
-			synchronized(Mekanism.audioHandler.sounds)
-			{
-				if(audio == null && worldObj != null && worldObj.isRemote)
-				{
-					if(FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
-					{
-						audio = Mekanism.audioHandler.getSound("MetallurgicInfuser.ogg", worldObj, xCoord, yCoord, zCoord);
-					}
-				}
-				
-				if(worldObj != null && worldObj.isRemote && audio != null)
-				{
-					if(!audio.isPlaying && isActive == true)
-					{
-						audio.play();
-					}
-					else if(audio.isPlaying && isActive == false)
-					{
-						audio.stopLoop();
-					}
-				}
 			}
 		}
 	}
@@ -437,9 +406,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		super.invalidate();
 		
-		if(worldObj.isRemote && audio != null)
+		if(worldObj.isRemote)
 		{
-			audio.remove();
+			Mekanism.proxy.unregisterSound(this);
 		}
 	}
 	
@@ -691,20 +660,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public Sound getSound()
-	{
-		return audio;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void removeSound()
-	{
-		audio = null;
-	}
-	
-	@Override
 	public int getOrientation()
 	{
 		return facing;
@@ -738,5 +693,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public boolean supportsUpgrades(Object... data)
 	{
 		return true;
+	}
+
+	@Override
+	public String getSoundPath()
+	{
+		return "MetallurgicInfuser.ogg";
 	}
 }

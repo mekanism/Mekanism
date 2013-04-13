@@ -1,12 +1,10 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
-
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+
+import java.util.ArrayList;
+
 import mekanism.api.EnumColor;
 import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
@@ -14,6 +12,8 @@ import mekanism.api.SideData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import universalelectricity.core.item.IItemElectric;
 
@@ -21,6 +23,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+@SideOnly(Side.CLIENT)
 public class GuiElectricChest extends GuiContainer
 {
 	public TileEntityElectricChest tileEntity;

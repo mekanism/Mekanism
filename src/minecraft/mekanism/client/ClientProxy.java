@@ -1,6 +1,9 @@
 package mekanism.client;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.IElectricChest;
@@ -30,14 +33,17 @@ import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Client proxy for the Mekanism mod.
  * @author AidanBrady
  *
  */
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
 	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
@@ -50,12 +56,34 @@ public class ClientProxy extends CommonProxy
 		
 		Mekanism.configuration.load();
 		Mekanism.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
+		Mekanism.configuration.save();
 	}
 	
 	@Override
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
+	}
+	
+	@Override
+	public void registerSound(IHasSound soundHolder) 
+	{
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			Mekanism.audioHandler.register(soundHolder);
+		}
+	}
+	
+	@Override
+	public void unregisterSound(TileEntity tileEntity) 
+	{
+		synchronized(Mekanism.audioHandler.sounds)
+		{
+			if(Mekanism.audioHandler.getFrom(tileEntity) != null)
+			{
+				Mekanism.audioHandler.getFrom(tileEntity).remove();
+			}
+		}
 	}
 	
 	@Override
@@ -200,12 +228,14 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void loadTickHandler()
+	public void loadUtilities()
 	{
-		super.loadTickHandler();
+		super.loadUtilities();
 		
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new ClientPlayerTickHandler(), Side.CLIENT);
+		
+		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
 	}
 	
 	@Override
@@ -224,13 +254,13 @@ public class ClientProxy extends CommonProxy
 		{
 			synchronized(Mekanism.audioHandler.sounds)
 			{
-				for(Sound sound : Mekanism.audioHandler.sounds)
-				{
-					sound.stopLoop();
-					Mekanism.audioHandler.soundSystem.removeSource(sound.identifier);
-				}
+				ArrayList<Sound> toRemove = new ArrayList<Sound>();
+				toRemove.addAll(Mekanism.audioHandler.sounds);
 				
-				Mekanism.audioHandler.sounds.clear();
+				for(Sound sound : toRemove)
+				{
+					sound.remove();
+				}
 			}
 		}
 	}

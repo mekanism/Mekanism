@@ -3,6 +3,8 @@ package mekanism.client;
 import java.net.URL;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.relauncher.Side;
 
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +18,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  *
  */
+@SideOnly(Side.CLIENT)
 public class Sound
 {
 	/** The bundled path where the sound is */
@@ -33,6 +36,9 @@ public class Sound
 	/** Z coordinate of this sound effect */
 	public int zCoord;
 	
+	/** The dimension ID this sound is playing in */
+	public int dimensionId;
+	
 	/** Whether or not this sound is playing */
 	public boolean isPlaying = false;
 	
@@ -46,7 +52,7 @@ public class Sound
 	 * @param y - y coord
 	 * @param z - z coord
 	 */
-	public Sound(String id, String sound, World world, int x, int y, int z)
+	public Sound(String id, String sound, World world, int x, int y, int z, int dim)
 	{
 		synchronized(Mekanism.audioHandler.sounds)
 		{
@@ -55,6 +61,7 @@ public class Sound
 			xCoord = x;
 			yCoord = y;
 			zCoord = z;
+			dimensionId = dim;
 			
 			URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + sound);
 			if(url == null)
@@ -145,15 +152,18 @@ public class Sound
     {
 		synchronized(Mekanism.audioHandler.sounds)
 		{
-	    	float volume = 0;
-	    	
-	        double distanceVolume = (entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.008);
-	        volume = (float)(Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0))*0.05F;
-	
-	        if(Mekanism.audioHandler.soundSystem != null)
-	        {
-	        	Mekanism.audioHandler.soundSystem.setVolume(identifier, volume);
-	        }
+			if(entityplayer.worldObj.provider.dimensionId == dimensionId)
+			{
+		    	float volume = 0;
+		    	
+		        double distanceVolume = (entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.008);
+		        volume = (float)(Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0))*0.05F;
+		
+		        if(Mekanism.audioHandler.soundSystem != null)
+		        {
+		        	Mekanism.audioHandler.soundSystem.setVolume(identifier, volume);
+		        }
+			}
 		}
     }
 }

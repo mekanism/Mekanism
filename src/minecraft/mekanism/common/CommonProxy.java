@@ -3,6 +3,7 @@ package mekanism.common;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import mekanism.client.IHasSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +29,18 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
 		GameRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest");
 	}
+	
+	/**
+	 * Registers a client-side sound, assigned to a TileEntity.
+	 * @param soundHolder
+	 */
+	public void registerSound(IHasSound soundHolder) {}
+	
+	/**
+	 * Unregisters a client-side sound, assigned to a TileEntity;
+	 * @param tileEntity
+	 */
+	public void unregisterSound(TileEntity tileEntity) {}
 	
 	/**
 	 * Handles an ELECTRIC_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
@@ -96,9 +109,9 @@ public class CommonProxy
 	}
 	
 	/**
-	 * Set up and load the tick handlers.
+	 * Set up and load the utilities this mod uses.
 	 */
-	public void loadTickHandler()
+	public void loadUtilities()
 	{
 		TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
 	}

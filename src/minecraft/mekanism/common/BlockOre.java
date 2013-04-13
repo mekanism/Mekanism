@@ -30,12 +30,14 @@ public class BlockOre extends Block
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
 	{
 		switch(meta)

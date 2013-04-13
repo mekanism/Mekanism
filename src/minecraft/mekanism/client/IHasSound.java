@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -8,25 +9,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@SideOnly(Side.CLIENT)
 public interface IHasSound 
 {
 	/**
-	 * Gets the sound.
-	 * @return sound
+	 * Gets the sound path of this sound.
+	 * @return sound path
 	 */
-	@SideOnly(Side.CLIENT)
-	public Sound getSound();
-	
-	/**
-	 * Removes the sound;
-	 */
-	@SideOnly(Side.CLIENT)
-	public void removeSound();
-	
-	/**
-	 * Ticks and updates the block's sound.
-	 */
-	@SideOnly(Side.CLIENT)
-	public void updateSound();
+	public String getSoundPath();
 }
