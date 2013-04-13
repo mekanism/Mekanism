@@ -11,16 +11,20 @@
 
 	<target name="build">
 
-		<delete dir="contents" />
-		<delete dir="build" />
+		<delete dir="coreContents"/>
+		<delete dir="generatorsContents"/>
+		<delete dir="toolsContents"/>
+		<delete dir="mdkContents"/>
 		<delete dir="${dir.development}/forge" />
 
 		<copy todir="${dir.development}">
 			<fileset dir="../NEI/" />
 		</copy>
 
-		<mkdir dir="contents"/>
-		<mkdir dir="build"/>
+		<mkdir dir="coreContents"/>
+		<mkdir dir="generatorsContents"/>
+		<mkdir dir="toolsContents"/>
+		<mkdir dir="mdkContents"/>
 
 		<replace dir="${dir.mcp}/src/minecraft" token="@MAJOR@" value="${version.mod.major}" />
 		<replace dir="${dir.mcp}/src/minecraft" token="@MINOR@" value="${version.mod.minor}" />
