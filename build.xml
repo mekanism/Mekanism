@@ -15,10 +15,19 @@
 		<delete dir="generatorsContents"/>
 		<delete dir="toolsContents"/>
 		<delete dir="mdkContents"/>
-		<delete dir="${dir.development}/forge" />
+		<delete dir="${dir.development}/forge"/>
 
 		<copy todir="${dir.development}">
-			<fileset dir="../NEI/" />
+			<fileset dir="../NEI/"/>
+		</copy>
+
+		<copy todir="${dir.mcp}/src/minecraft">
+
+			<fileset dir="${dir.development}src">
+				<exclude name=".git/**"/>
+				<exclude name="**/*.xml"/>
+			</fileset>
+
 		</copy>
 
 		<mkdir dir="coreContents"/>
