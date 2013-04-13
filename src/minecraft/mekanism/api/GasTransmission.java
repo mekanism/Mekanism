@@ -25,7 +25,7 @@ public class GasTransmission
     	{
 			TileEntity tube = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
 			
-			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
+			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas(tileEntity))
 			{
 				tubes[orientation.ordinal()] = tube;
 			}

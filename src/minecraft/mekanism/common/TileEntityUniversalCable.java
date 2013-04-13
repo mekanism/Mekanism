@@ -30,7 +30,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 	
 	@Override
-	public boolean canTransferEnergy()
+	public boolean canTransferEnergy(TileEntity fromTile)
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
@@ -58,7 +58,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
 		ignored.add(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), from));
-		return canTransferEnergy() ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()) : 0;
+		return canTransferEnergy(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), from)) ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()) : 0;
 	}
 	
 	@Override

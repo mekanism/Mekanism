@@ -53,7 +53,7 @@ public final class CableUtils
     	{
 			TileEntity cable = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
 			
-			if(cable instanceof IUniversalCable && ((IUniversalCable)cable).canTransferEnergy())
+			if(cable instanceof IUniversalCable && ((IUniversalCable)cable).canTransferEnergy(tileEntity))
 			{
 				cables[orientation.ordinal()] = cable;
 			}

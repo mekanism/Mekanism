@@ -11,7 +11,7 @@ import net.minecraftforge.common.ForgeDirection;
 public class TileEntityPressurizedTube extends TileEntity implements IPressurizedTube, ITubeConnection
 {
 	@Override
-	public boolean canTransferGas()
+	public boolean canTransferGas(TileEntity fromTile)
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
