@@ -19,21 +19,8 @@
 			<fileset dir="../NEI/" />
 		</copy>
 
-		<copy todir="${dir.mcp}/src/minecraft">
-
-			<fileset dir="${dir.development}src">
-				<exclude name=".git/**"/>
-				<exclude name="**/*.xml"/>
-			</fileset>
-
-			<fileset dir="${dir.development}../Universal Electricity/src">
-				<exclude name=".git/**"/>
-				<exclude name="**/*.xml"/>
-			</fileset>
-		</copy>
-
-		<mkdir dir="contents" />
-		<mkdir dir="build" />
+		<mkdir dir="contents"/>
+		<mkdir dir="build"/>
 
 		<replace dir="${dir.mcp}/src/minecraft" token="@MAJOR@" value="${version.mod.major}" />
 		<replace dir="${dir.mcp}/src/minecraft" token="@MINOR@" value="${version.mod.minor}" />
