@@ -68,46 +68,52 @@ public class ItemConfigurator extends ItemEnergized
     				Random random = new Random();
     				TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
     				
-    				for(int i = 0; i < tileEntity.getSizeInventory(); ++i)
-    	            {
-    	                ItemStack slotStack = tileEntity.getStackInSlot(i);
-    	                itemAmount += slotStack != null ? slotStack.stackSize : 0;
-
-    	                if(slotStack != null)
-    	                {
-    	                    float xRandom = random.nextFloat() * 0.8F + 0.1F;
-    	                    float yRandom = random.nextFloat() * 0.8F + 0.1F;
-    	                    float zRandom = random.nextFloat() * 0.8F + 0.1F;
-
-    	                    while(slotStack.stackSize > 0)
-    	                    {
-    	                        int j = random.nextInt(21) + 10;
-
-    	                        if(j > slotStack.stackSize)
-    	                        {
-    	                            j = slotStack.stackSize;
-    	                        }
-
-    	                        slotStack.stackSize -= j;
-    	                        EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
-
-    	                        if(slotStack.hasTagCompound())
-    	                        {
-    	                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-    	                        }
-
-    	                        float k = 0.05F;
-    	                        item.motionX = random.nextGaussian() * k;
-    	                        item.motionY = random.nextGaussian() * k + 0.2F;
-    	                        item.motionZ = random.nextGaussian() * k;
-    	                        world.spawnEntityInWorld(item);
-    	                    }
-    	                }
-    	            }
-    				
-    				tileEntity.inventory = new ItemStack[tileEntity.getSizeInventory()];
-    				onProvide(new ElectricityPack((ENERGY_PER_ITEM_DUMP*itemAmount)/120, 120), stack);
-    				return true;
+    				if(!(tileEntity instanceof TileEntityElectricChest || (((TileEntityElectricChest)tileEntity).canAccess())))
+    				{
+	    				for(int i = 0; i < tileEntity.getSizeInventory(); ++i)
+	    	            {
+	    	                ItemStack slotStack = tileEntity.getStackInSlot(i);
+	    	                itemAmount += slotStack != null ? slotStack.stackSize : 0;
+	
+	    	                if(slotStack != null)
+	    	                {
+	    	                    float xRandom = random.nextFloat() * 0.8F + 0.1F;
+	    	                    float yRandom = random.nextFloat() * 0.8F + 0.1F;
+	    	                    float zRandom = random.nextFloat() * 0.8F + 0.1F;
+	
+	    	                    while(slotStack.stackSize > 0)
+	    	                    {
+	    	                        int j = random.nextInt(21) + 10;
+	
+	    	                        if(j > slotStack.stackSize)
+	    	                        {
+	    	                            j = slotStack.stackSize;
+	    	                        }
+	
+	    	                        slotStack.stackSize -= j;
+	    	                        EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
+	
+	    	                        if(slotStack.hasTagCompound())
+	    	                        {
+	    	                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+	    	                        }
+	
+	    	                        float k = 0.05F;
+	    	                        item.motionX = random.nextGaussian() * k;
+	    	                        item.motionY = random.nextGaussian() * k + 0.2F;
+	    	                        item.motionZ = random.nextGaussian() * k;
+	    	                        world.spawnEntityInWorld(item);
+	    	                    }
+	    	                }
+	    	            }
+	    				
+	    				tileEntity.inventory = new ItemStack[tileEntity.getSizeInventory()];
+	    				onProvide(new ElectricityPack((ENERGY_PER_ITEM_DUMP*itemAmount)/120, 120), stack);
+    				}
+    				else {
+    					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "You are not authenticated on this chest.");
+	    				return true;
+    				}
     			}
     		}
     		else if(getState(stack) == 2)

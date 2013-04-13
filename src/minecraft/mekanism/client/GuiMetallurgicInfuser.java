@@ -30,16 +30,19 @@ public class GuiMetallurgicInfuser extends GuiContainer
     {
 		super.mouseClicked(x, y, button);
 		
-		int xAxis = (x - (width - xSize) / 2);
-		int yAxis = (y - (height - ySize) / 2);
-		
-		if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
+		if(button == 0)
 		{
-			ArrayList data = new ArrayList();
-			data.add(0);
+			int xAxis = (x - (width - xSize) / 2);
+			int yAxis = (y - (height - ySize) / 2);
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
 		}
     }
 

@@ -31,8 +31,16 @@ public enum EnumPacketType
 	CONFIGURATOR_STATE(9),
 	/** Used to change an Electric Bow's state on the server side. */
 	ELECTRIC_BOW_STATE(10),
+	/** Used to open an Electric Chest's GUI on the server side. */
+	ELECTRIC_CHEST_SERVER_OPEN(11),
+	/** Used to open an Electric Chest's GUI on the client side. */
+	ELECTRIC_CHEST_CLIENT_OPEN(12),
+	/** Used to send a password update packet to the server. */
+	ELECTRIC_CHEST_PASSWORD(13),
+	/** Used to send a lock update packet to the server. */
+	ELECTRIC_CHEST_LOCK(14),
 	/** A custom packet type. Handled in PacketHandler. */
-	CUSTOM(11);
+	CUSTOM(-1);
 	
 	/** The ID of the packet type */
 	public final int id;

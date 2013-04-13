@@ -100,32 +100,36 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			}
 		}
 		
-		if(electricityStored > 0 && !worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
 			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
 			
-			if(tileEntity instanceof IUniversalCable)
+			if(electricityStored > 0)
 			{
-				setJoules(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
-			}
-			else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
-			{
-				if(electricityStored >= tier.OUTPUT)
+				if(tileEntity instanceof IUniversalCable)
 				{
-					EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, (int)(tier.OUTPUT*Mekanism.TO_IC2));
-					MinecraftForge.EVENT_BUS.post(event);
-					setJoules(electricityStored - (tier.OUTPUT - (event.amount*Mekanism.FROM_IC2)));
+					setJoules(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
+				}
+				else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
+				{
+					if(electricityStored >= tier.OUTPUT)
+					{
+						EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, (int)(tier.OUTPUT*Mekanism.TO_IC2));
+						MinecraftForge.EVENT_BUS.post(event);
+						setJoules(electricityStored - (tier.OUTPUT - (event.amount*Mekanism.FROM_IC2)));
+					}
+				}
+				else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
+				{
+					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
+	            	double electricityNeeded = Math.min(receptor.powerRequest(ForgeDirection.getOrientation(facing).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+	            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+	            	setJoules(electricityStored - transferEnergy);
 				}
 			}
-			else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
-			{
-				IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-            	double electricityNeeded = Math.min(receptor.powerRequest(ForgeDirection.getOrientation(facing).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
-            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-            	setJoules(electricityStored - transferEnergy);
-			}
-			else if(tileEntity instanceof IConductor)
+			
+			if(tileEntity instanceof IConductor)
 			{
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
 				ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();

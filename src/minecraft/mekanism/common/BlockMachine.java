@@ -5,7 +5,6 @@ import java.util.Random;
 
 import buildcraft.api.tools.IToolWrench;
 
-import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
@@ -19,6 +18,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +28,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ForgeHooks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -46,10 +47,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 10: Energized Smelter
  * 11: Teleporter
  * 12: Electric Pump
+ * 13: Electric Chest
  * @author AidanBrady
  *
  */
-public class BlockMachine extends BlockContainer implements IDismantleable
+public class BlockMachine extends BlockContainer
 {
 	public Icon[][] icons = new Icon[256][256];
 	public Random machineRand = new Random();
@@ -179,7 +181,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	}
     
 	@Override
-    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getIcon(int side, int meta)
     {
     	if(meta == 0)
     	{
@@ -481,6 +483,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		list.add(new ItemStack(i, 1, 10));
 		list.add(new ItemStack(i, 1, 11));
 		list.add(new ItemStack(i, 1, 12));
+		list.add(new ItemStack(i, 1, 13));
 	}
     
     @Override
@@ -524,7 +527,7 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	    	}
 	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
 	    	{
-	    		if(entityplayer.isSneaking())
+	    		if(entityplayer.isSneaking() && metadata != 13)
 	    		{
 	    			dismantleBlock(world, x, y, z, false);
 	    			return true;
@@ -558,28 +561,49 @@ public class BlockMachine extends BlockContainer implements IDismantleable
     	
         if(tileEntity != null)
         {
-        	if(metadata != MachineType.TELEPORTER.meta)
+        	if(metadata == MachineType.TELEPORTER.meta)
         	{
-	        	if(!entityplayer.isSneaking())
-	        	{
-	        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
-	        		return true;
-	        	}
-        	}
-        	else {
         		if(entityplayer.isSneaking())
         		{
         			entityplayer.openGui(Mekanism.instance, 13, world, x, y, z);
         			return true;
         		}
         		
-    			TileEntityTeleporter teleporter = (TileEntityTeleporter)world.getBlockTileEntity(x, y, z);
+    			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
     			
     			if(teleporter.canTeleport() == 1)
     			{
     				teleporter.teleport();
     				return true;
     			}
+        	}
+        	else if(metadata == MachineType.ELECTRIC_CHEST.meta)
+        	{
+        		TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
+        		
+        	 	if(!entityplayer.isSneaking())
+	        	{
+        	 		if(electricChest.canAccess())
+        	 		{
+        	 			MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
+        	 		}
+        	 		else if(!electricChest.authenticated)
+        	 		{
+        	 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, electricChest, 2, 0, true);
+        	 		}
+        	 		else {
+        	 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, electricChest, 1, 0, true);
+        	 		}
+        	 		
+	        		return true;
+	        	}
+        	}
+        	else {
+            	if(!entityplayer.isSneaking())
+	        	{
+	        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
+	        		return true;
+	        	}
         	}
         }
     	return false;
@@ -615,6 +639,19 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 	{
 		return ClientProxy.RENDER_ID;
 	}
+	
+	@Override
+    public float getBlockHardness(World world, int x, int y, int z)
+    {
+		if(world.getBlockMetadata(x, y, z) != 13)
+		{
+			return blockHardness;
+		}
+		else {
+			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getBlockTileEntity(x, y, z);
+			return tileEntity.canAccess() ? 3.5F : -1;
+		}
+    }
 	
     @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
@@ -672,6 +709,14 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         	}
         }
         
+        if(tileEntity instanceof TileEntityElectricChest)
+        {
+        	IElectricChest electricChest = (IElectricChest)itemStack.getItem();
+        	electricChest.setAuthenticated(itemStack, ((TileEntityElectricChest)tileEntity).authenticated);
+        	electricChest.setLocked(itemStack, ((TileEntityElectricChest)tileEntity).locked);
+        	electricChest.setPassword(itemStack, ((TileEntityElectricChest)tileEntity).password);
+        }
+        
         if(tileEntity instanceof TileEntityFactory)
         {
         	IFactory factoryItem = (IFactory)itemStack.getItem();
@@ -681,7 +726,6 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         return itemStack;
 	}
 	
-	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
 		ItemStack itemStack = getPickBlock(null, world, x, y, z);
@@ -702,12 +746,6 @@ public class BlockMachine extends BlockContainer implements IDismantleable
         
         return itemStack;
 	}
-
-	@Override
-	public boolean canDismantle(World world, int x, int y, int z) 
-	{
-		return true;
-	}
 	
 	public static enum MachineType
 	{
@@ -723,7 +761,8 @@ public class BlockMachine extends BlockContainer implements IDismantleable
 		PURIFICATION_CHAMBER(9, 15, 12000, TileEntityPurificationChamber.class, false),
 		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
 		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true);
+		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true),
+		ELECTRIC_CHEST(13, -1, 12000, TileEntityElectricChest.class, true);
 		
 		public int meta;
 		public int guiId;

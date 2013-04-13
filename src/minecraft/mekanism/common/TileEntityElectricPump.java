@@ -32,7 +32,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank, IActiveState
+public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank
 {
 	/** This pump's tank */
 	public LiquidTank liquidTank;
@@ -42,12 +42,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
 	public Set<BlockWrapper> cleaningNodes = new HashSet<BlockWrapper>();
-	
-	/** Whether or not this block is in it's active state. */
-	public boolean isActive;
-	
-	/** The previous active state for this block. */
-	public boolean prevActive;
 	
 	/** Random for this pump */
 	public Random random = new Random();
@@ -129,25 +123,18 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
-		if(!suck(true))
+		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{
-			if(!clean(true) && !cleaningNodes.isEmpty())
+			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
 			{
-				if(!worldObj.isRemote)
+				if(suck(true))
 				{
-					setActive(false);
+					clean(true);
 				}
-				
-				cleaningNodes.clear();
+				else {
+					cleaningNodes.clear();
+				}
 			}
-		}
-		else {
-			if(!worldObj.isRemote)
-			{
-				setActive(true);
-			}
-			
-			clean(true);
 		}
 		
 		if(liquidTank.getLiquid() != null) 
@@ -171,130 +158,124 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	public boolean suck(boolean take)
 	{
-		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
-		{			
-			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
+		List<BlockWrapper> tempPumpList = Arrays.asList(recurringNodes.toArray(new BlockWrapper[recurringNodes.size()]));
+		Collections.shuffle(tempPumpList);
+		
+		for(BlockWrapper wrapper : cleaningNodes)
+		{
+			if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
 			{
-				List<BlockWrapper> tempPumpList = Arrays.asList(recurringNodes.toArray(new BlockWrapper[recurringNodes.size()]));
-				Collections.shuffle(tempPumpList);
-				
-				for(BlockWrapper wrapper : cleaningNodes)
+				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
 				{
-					if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+					if(take)
 					{
-						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+						setJoules(electricityStored - 100);
+						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
+						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+					}
+					
+					return true;
+				}
+			}
+		}
+		
+		for(BlockWrapper wrapper : tempPumpList)
+		{
+			if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+			{
+				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+				{
+					if(take)
+					{
+						setJoules(electricityStored - 100);
+						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
+						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+					}
+					
+					return true;
+				}
+			}
+			else if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+			{
+				if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
+				{
+					if(take)
+					{
+						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+					}
+				}
+			}
+			
+			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+			{
+				int x = MekanismUtils.getCoords(wrapper, orientation)[0];
+				int y = MekanismUtils.getCoords(wrapper, orientation)[1];
+				int z = MekanismUtils.getCoords(wrapper, orientation)[2];
+				
+				if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 80)
+				{
+					if(MekanismUtils.isLiquid(worldObj, x, y, z))
+					{
+						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
 						{
 							if(take)
 							{
 								setJoules(electricityStored - 100);
-								liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
-								worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+								recurringNodes.add(new BlockWrapper(x, y, z));
+								liquidTank.fill(MekanismUtils.getLiquid(worldObj, x, y, z), true);
+								worldObj.setBlockToAir(x, y, z);
 							}
 							
 							return true;
 						}
 					}
-				}
-				
-				for(BlockWrapper wrapper : tempPumpList)
-				{
-					if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+					else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
 					{
-						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+						if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, x, y, z) == liquidTank.getLiquid().itemID)
 						{
 							if(take)
 							{
-								setJoules(electricityStored - 100);
-								liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
-								worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
-							}
-							
-							return true;
-						}
-					}
-					else if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
-					{
-						if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
-						{
-							if(take)
-							{
-								worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+								worldObj.setBlockToAir(x, y, z);
 							}
 						}
 					}
-					
-					for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-					{
-						int x = MekanismUtils.getCoords(wrapper, orientation)[0];
-						int y = MekanismUtils.getCoords(wrapper, orientation)[1];
-						int z = MekanismUtils.getCoords(wrapper, orientation)[2];
-						
-						if(MekanismUtils.getDistance(BlockWrapper.get(this), new BlockWrapper(x, y, z)) <= 80)
-						{
-							if(MekanismUtils.isLiquid(worldObj, x, y, z))
-							{
-								if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
-								{
-									if(take)
-									{
-										setJoules(electricityStored - 100);
-										recurringNodes.add(new BlockWrapper(x, y, z));
-										liquidTank.fill(MekanismUtils.getLiquid(worldObj, x, y, z), true);
-										worldObj.setBlockToAir(x, y, z);
-									}
-									
-									return true;
-								}
-							}
-							else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
-							{
-								if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, x, y, z) == liquidTank.getLiquid().itemID)
-								{
-									if(take)
-									{
-										worldObj.setBlockToAir(x, y, z);
-									}
-								}
-							}
-						}
-					}
-					
-					cleaningNodes.add(wrapper);
-					recurringNodes.remove(wrapper);
 				}
+			}
+			
+			cleaningNodes.add(wrapper);
+			recurringNodes.remove(wrapper);
+		}
+		
+		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(orientation != ForgeDirection.UP)
+			{
+				int x = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[0];
+				int y = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[1];
+				int z = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[2];
 				
-				for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+				if(MekanismUtils.isLiquid(worldObj, x, y, z))
 				{
-					if(orientation != ForgeDirection.UP)
+					if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
 					{
-						int x = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[0];
-						int y = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[1];
-						int z = MekanismUtils.getCoords(BlockWrapper.get(this), orientation)[2];
-						
-						if(MekanismUtils.isLiquid(worldObj, x, y, z))
+						if(take)
 						{
-							if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, x, y, z).isLiquidEqual(liquidTank.getLiquid()))
-							{
-								if(take)
-								{
-									setJoules(electricityStored - 100);
-									recurringNodes.add(new BlockWrapper(x, y, z));
-									liquidTank.fill(MekanismUtils.getLiquid(worldObj, x, y, z), true);
-									worldObj.setBlockToAir(x, y, z);
-								}
-								
-								return true;
-							}
+							setJoules(electricityStored - 100);
+							recurringNodes.add(new BlockWrapper(x, y, z));
+							liquidTank.fill(MekanismUtils.getLiquid(worldObj, x, y, z), true);
+							worldObj.setBlockToAir(x, y, z);
 						}
-						else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
+						
+						return true;
+					}
+				}
+				else if(MekanismUtils.isDeadLiquid(worldObj, x, y, z))
+				{
+					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, x, y, z) == liquidTank.getLiquid().itemID)
+					{
+						if(take)
 						{
-							if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, x, y, z) == liquidTank.getLiquid().itemID)
-							{
-								if(take)
-								{
-									worldObj.setBlockToAir(x, y, z);
-								}
-							}
+							worldObj.setBlockToAir(x, y, z);
 						}
 					}
 				}
@@ -348,8 +329,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		super.handlePacketData(dataStream);
 		
-		isActive = dataStream.readBoolean();
-		
 		try {
 			int amount = dataStream.readInt();
 			int itemID = dataStream.readInt();
@@ -366,8 +345,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
-		data.add(isActive);
 		
 		if(liquidTank.getLiquid() != null)
 		{
@@ -393,8 +370,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        nbtTags.setBoolean("isActive", isActive);
         
         if(liquidTank.getLiquid() != null)
         {
@@ -434,8 +409,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public void readFromNBT(NBTTagCompound nbtTags)
     {
     	super.readFromNBT(nbtTags);
-    	
-    	isActive = nbtTags.getBoolean("isActive");
     	
     	if(nbtTags.hasKey("liquidTank"))
     	{
@@ -575,23 +548,4 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		return true;
 	}
-	
-	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(prevActive != active)
-    	{
-    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
-    	}
-    	
-    	prevActive = active;
-    }
-    
-    @Override
-    public boolean getActive()
-    {
-    	return isActive;
-    }
 }

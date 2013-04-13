@@ -8,7 +8,6 @@ import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 
@@ -37,7 +36,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  *
  */
-public class BlockEnergyCube extends BlockContainer implements IDismantleable
+public class BlockEnergyCube extends BlockContainer
 {
 	public Icon[][] icons = new Icon[256][256];
 	private Random powerRand = new Random();
@@ -71,7 +70,7 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
 	}
 	
 	@Override
-	public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+	public Icon getIcon(int side, int meta)
 	{
 		if(side == 3)
 		{
@@ -297,7 +296,6 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
         return itemStack;
 	}
 
-	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
 		ItemStack itemStack = getPickBlock(null, world, x, y, z);
@@ -317,11 +315,5 @@ public class BlockEnergyCube extends BlockContainer implements IDismantleable
         }
         
         return itemStack;
-	}
-
-	@Override
-	public boolean canDismantle(World world, int x, int y, int z) 
-	{
-		return true;
 	}
 }

@@ -31,6 +31,7 @@ import mekanism.common.Tier.FactoryTier;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.packet.Packet3Chat;
@@ -170,6 +171,7 @@ public final class MekanismUtils
 	{
 		EntityPlayer player = FMLServerHandler.instance().getServer().getConfigurationManager().getPlayerForUsername(playerUsername);
 		Packet3Chat chatPacket = new Packet3Chat(msg);
+		
 		if(player != null)
 		{
 			((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(chatPacket);
@@ -735,6 +737,25 @@ public final class MekanismUtils
     	}
     	
     	return false;
+    }
+    
+    /**
+     * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server.
+     * Call this method server-side only!
+     * @param player - player to open GUI
+     * @param tileEntity - TileEntity of the chest, if it's not an item
+     * @param inventory - IInventory of the item, if it's not a block
+	 * @param isBlock - whether or not this electric chest is in it's block form
+     */
+    public static void openElectricChestGui(EntityPlayerMP player, TileEntityElectricChest tileEntity, IInventory inventory, boolean isBlock)
+    {
+		player.incrementWindowID();
+		player.closeInventory();
+		int id = player.currentWindowId;
+		PacketHandler.sendChestOpenToPlayer(player, tileEntity, 0, id, isBlock);
+		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
+		player.openContainer.windowId = id;
+		player.openContainer.addCraftingToCrafters(player);
     }
     
     /**

@@ -33,7 +33,7 @@ public class ItemMekanismPaxel extends ItemMekanismTool
         {
             return toolMaterial.getHarvestLevel() >= 2;
         }
-        if (block == Block.blockSteel || block == Block.oreIron)
+        if (block == Block.blockIron || block == Block.oreIron)
         {
             return toolMaterial.getHarvestLevel() >= 1;
         }

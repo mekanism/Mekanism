@@ -12,15 +12,15 @@ public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer
 	private ModelElectrolyticSeparator model = new ModelElectrolyticSeparator();
 	
 	@Override
-	public void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityElectrolyticSeparator) var1, var2, var4, var6, 1F);
+		renderAModelAt((TileEntityElectrolyticSeparator)tileEntity, x, y, z, partialTick);
 	}
 	
-	private void renderAModelAt(TileEntityElectrolyticSeparator tileEntity, double x, double y, double z, float f)
+	private void renderAModelAt(TileEntityElectrolyticSeparator tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTextureByName(tileEntity.outputType == EnumGas.HYDROGEN ? "/mods/mekanism/render/ElectrolyticSeparatorHydrogen.png" : 
 			(tileEntity.outputType == EnumGas.OXYGEN ? "/mods/mekanism/render/ElectrolyticSeparatorOxygen.png" : "/mods/mekanism/render/ElectrolyticSeparatorNone.png"));
 		

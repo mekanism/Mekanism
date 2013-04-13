@@ -20,12 +20,18 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	{
 		model = new ModelTransmitter();
 	}
+	
+	@Override
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	{
+		renderAModelAt((TileEntityPressurizedTube)tileEntity, x, y, z, partialTick);
+	}
 
-	public void renderAModelAt(TileEntityPressurizedTube tileEntity, double d, double d1, double d2, float f)
+	public void renderAModelAt(TileEntityPressurizedTube tileEntity, double x, double y, double z, float partialTick)
 	{
 		bindTextureByName("/mods/mekanism/render/PressurizedTube.png");
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 		
 		ITubeConnection[] connections = GasTransmission.getConnections(tileEntity);
@@ -45,11 +51,5 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		model.Center.render(0.0625F);
 		GL11.glPopMatrix();
-	}
-
-	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double var2, double var4, double var6, float var8)
-	{
-		renderAModelAt((TileEntityPressurizedTube)tileEntity, var2, var4, var6, var8);
 	}
 }

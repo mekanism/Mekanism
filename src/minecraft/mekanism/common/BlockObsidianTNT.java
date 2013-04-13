@@ -33,7 +33,7 @@ public class BlockObsidianTNT extends Block
 	}
 
     @Override
-    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getIcon(int side, int meta)
     {
         if(side == 1)
         {
@@ -81,7 +81,7 @@ public class BlockObsidianTNT extends Block
     {
         if(!world.isRemote)
         {
-            EntityObsidianTNT entity = new EntityObsidianTNT(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F));
+            EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
             entity.fuse = world.rand.nextInt(entity.fuse / 4) + entity.fuse / 8;
             world.spawnEntityInWorld(entity);
         }
@@ -97,7 +97,7 @@ public class BlockObsidianTNT extends Block
                 dropBlockAsItem_do(world, x, y, z, new ItemStack(Mekanism.ObsidianTNT, 1, 0));
             }
             else {
-                EntityObsidianTNT entity = new EntityObsidianTNT(world, (double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F));
+                EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
                 world.spawnEntityInWorld(entity);
                 world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
             }

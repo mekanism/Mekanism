@@ -21,7 +21,6 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class FactoryRecipe implements IRecipe
 {
-    //Added in for future ease of change, but hard coded for now.
     private static final int MAX_CRAFT_GRID_WIDTH = 3;
     private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
@@ -286,11 +285,6 @@ public class FactoryRecipe implements IRecipe
         return this;
     }
 
-    /**
-     * Returns the input for this recipe, any mod accessing this value should never
-     * manipulate the values in this array as it will effect the recipe itself.
-     * @return The recipes input vales.
-     */
     public Object[] getInput()
     {
         return this.input;

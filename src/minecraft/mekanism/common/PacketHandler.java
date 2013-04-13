@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.item.IItemElectric;
 
+import mekanism.client.GuiElectricChest;
+import mekanism.client.GuiPasswordEnter;
+import mekanism.client.GuiPasswordModify;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -19,6 +23,7 @@ import net.minecraft.world.World;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -48,7 +53,7 @@ public class PacketHandler implements IPacketHandler
 			        entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
 			        MekanismUtils.setHourForward(entityplayer.worldObj, dataStream.readInt());
 			    }
-			    if(packetType == EnumPacketType.WEATHER.id)
+			    else if(packetType == EnumPacketType.WEATHER.id)
 			    {
 			    	System.out.println("[Mekanism] Received weather update packet from " + entityplayer.username + ".");
 			    	entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
@@ -73,7 +78,7 @@ public class PacketHandler implements IPacketHandler
 				    	entityplayer.worldObj.getWorldInfo().setThundering(true);
 			    	}
 			    }
-			    if(packetType == EnumPacketType.TILE_ENTITY.id)
+			    else if(packetType == EnumPacketType.TILE_ENTITY.id)
 			    {
 			    	try {
 						int x = dataStream.readInt();
@@ -91,7 +96,7 @@ public class PacketHandler implements IPacketHandler
 						e.printStackTrace();
 					}
 			    }
-			    if(packetType == EnumPacketType.CONTROL_PANEL.id)
+			    else if(packetType == EnumPacketType.CONTROL_PANEL.id)
 			    {
 			    	try {
 			    		String modClass = dataStream.readUTF();
@@ -127,7 +132,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.PORTAL_FX.id)
+			    else if(packetType == EnumPacketType.PORTAL_FX.id)
 			    {
 			    	try {
 			    		Random random = new Random();
@@ -145,7 +150,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.DIGIT_UPDATE.id)
+			    else if(packetType == EnumPacketType.DIGIT_UPDATE.id)
 			    {
 			    	try {
 			    		int index = dataStream.readInt();
@@ -163,7 +168,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.STATUS_UPDATE.id)
+			    else if(packetType == EnumPacketType.STATUS_UPDATE.id)
 			    {
 			    	try {
 			    		ItemStack currentStack = entityplayer.getCurrentEquippedItem();
@@ -178,7 +183,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.PORTABLE_TELEPORT.id)
+			    else if(packetType == EnumPacketType.PORTABLE_TELEPORT.id)
 			    {
 			    	try {
 			    		if(entityplayer instanceof EntityPlayerMP)
@@ -213,7 +218,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.DATA_REQUEST.id)
+			    else if(packetType == EnumPacketType.DATA_REQUEST.id)
 			    {
 			    	try {
 			    		int x = dataStream.readInt();
@@ -232,7 +237,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.CONFIGURATOR_STATE.id)
+			    else if(packetType == EnumPacketType.CONFIGURATOR_STATE.id)
 			    {
 			    	try {
 			    		int state = dataStream.readInt();
@@ -249,7 +254,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    if(packetType == EnumPacketType.ELECTRIC_BOW_STATE.id)
+			    else if(packetType == EnumPacketType.ELECTRIC_BOW_STATE.id)
 			    {
 			    	try {
 			    		boolean state = dataStream.readInt() == 1;
@@ -262,7 +267,175 @@ public class PacketHandler implements IPacketHandler
 			    			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, state);
 			    		}
 			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling configurator state packet.");
+			       		System.err.println("[Mekanism] Error while handling electric bow state packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_SERVER_OPEN.id)
+			    {
+			    	try {
+			    		boolean isBlock = dataStream.readBoolean();
+			    		boolean useEnergy = dataStream.readBoolean();
+			    		
+			    		if(isBlock)
+			    		{
+				    		int x = dataStream.readInt();
+				    		int y = dataStream.readInt();
+				    		int z = dataStream.readInt();
+				    		
+				    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+				    		
+				    		if(useEnergy)
+				    		{
+				    			tileEntity.setJoules(tileEntity.getJoules() - 100);
+				    		}
+				    		
+				    		MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, tileEntity, null, true);
+			    		}
+			    		else {
+			    			ItemStack stack = entityplayer.getCurrentEquippedItem();
+			    			
+			    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+			    			{
+			    				if(useEnergy)
+			    				{
+			    					((IItemElectric)stack.getItem()).setJoules(((IItemElectric)stack.getItem()).getJoules(stack) - 100, stack);
+			    				}
+			    				
+			    				InventoryElectricChest inventory = new InventoryElectricChest(stack);
+			    				MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
+			    			}
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling electric chest open packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_CLIENT_OPEN.id)
+			    {
+			    	try {
+			    		int id = dataStream.readInt();
+			    		int windowId = dataStream.readInt();
+			    		boolean isBlock = dataStream.readBoolean();
+			    		int x = 0;
+			    		int y = 0;
+			    		int z = 0;
+			    		
+			    		if(isBlock)
+			    		{
+			        		x = dataStream.readInt();
+				    		y = dataStream.readInt();
+				    		z = dataStream.readInt();
+			    		}
+			    		
+			    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+			    		
+			    		if(id == 0)
+			    		{
+			    			if(isBlock)
+			    			{
+					    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
+					    		entityplayer.openContainer.windowId = windowId;
+			    			}
+			    			else {
+			    				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
+			    				ItemStack stack = entityplayer.getCurrentEquippedItem();
+			    				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+			    				{
+				    				InventoryElectricChest inventory = new InventoryElectricChest(stack);
+						    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
+						    		entityplayer.openContainer.windowId = windowId;
+			    				}
+			    			}
+			    		}
+			    		else if(id == 1)
+			    		{
+			    			if(isBlock)
+			    			{
+			    				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(tileEntity));
+			    			}
+			    			else {
+			    				ItemStack stack = entityplayer.getCurrentEquippedItem();
+			    				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+			    				{
+			    					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
+			    				}
+			    			}
+			    		}
+			    		else if(id == 2)
+			    		{
+			    			if(isBlock)
+			    			{
+			    				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(tileEntity));
+			    			}
+			    			else {
+			    				ItemStack stack = entityplayer.getCurrentEquippedItem();
+			    				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+			    				{
+			    					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
+			    				}
+			    			}
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling electric chest open packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_PASSWORD.id)
+			    {
+			    	try {
+			    		boolean isBlock = dataStream.readBoolean();
+			    		String password = dataStream.readUTF();
+			    		
+			    		if(isBlock)
+			    		{
+				    		int x = dataStream.readInt();
+				    		int y = dataStream.readInt();
+				    		int z = dataStream.readInt();
+				    		
+				    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+				    		tileEntity.password = password;
+				    		tileEntity.authenticated = true;
+			    		}
+			    		else {
+			    			ItemStack stack = entityplayer.getCurrentEquippedItem();
+			    			
+			    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+			    			{
+			    				((IElectricChest)stack.getItem()).setPassword(stack, password);
+			    				((IElectricChest)stack.getItem()).setAuthenticated(stack, true);
+			    			}
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling electric chest password packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_LOCK.id)
+			    {
+			    	try {
+			    		boolean isBlock = dataStream.readBoolean();
+			    		boolean locked = dataStream.readBoolean();
+			    		
+			    		if(isBlock)
+			    		{
+				    		int x = dataStream.readInt();
+				    		int y = dataStream.readInt();
+				    		int z = dataStream.readInt();
+				    		
+				    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+				    		tileEntity.locked = locked;
+			    		}
+			    		else {
+			    			ItemStack stack = entityplayer.getCurrentEquippedItem();
+			    			
+			    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+			    			{
+			    				((IElectricChest)stack.getItem()).setLocked(stack, locked);
+			    			}
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling electric chest password packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
@@ -542,6 +715,165 @@ public class PacketHandler implements IPacketHandler
         if(Mekanism.logPackets)
         {
         	System.out.println("[Mekanism] Sent status update packet to " + entityplayer.username);
+        }
+	}
+	
+	/**
+	 * Sends a packet to a specified client requesting a certain electric chest GUI to be opened.
+	 * @param player - the player to send the chest-opening packet to
+	 * @param tileEntity - TileEntity of the chest, if it's not an item
+	 * @param i - GUI type: 0 if regular electric chest, 1 if password prompt, 2 if password modify
+	 * @param windowId - Minecraft-based container window identifier
+	 * @param isBlock - whether or not this electric chest is in it's block form
+	 */
+	public static void sendChestOpenToPlayer(EntityPlayer player, TileEntity tileEntity, int i, int windowId, boolean isBlock)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_CLIENT_OPEN.id);
+        	data.writeInt(i);
+        	data.writeInt(windowId);
+        	data.writeBoolean(isBlock);
+        	
+        	if(isBlock)
+        	{
+	        	data.writeInt(tileEntity.xCoord);
+	        	data.writeInt(tileEntity.yCoord);
+	        	data.writeInt(tileEntity.zCoord);
+        	}
+        } catch (IOException e) {
+        	System.out.println("[Mekanism] An error occured while writing packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent electric chest open packet to " + player.username);
+        }
+	}
+	
+	/**
+	 * Sends a packet to the server requesting an electric chest to be opened.
+	 * @param tileEntity - TileEntity of the chest, if it's not an item
+	 * @param isBlock - whether or not this electric chest is in it's block form
+	 * @param useEnergy - whether or not to use chest-opening energy (100 J)
+	 */
+	public static void sendChestOpen(TileEntity tileEntity, boolean isBlock, boolean useEnergy)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_SERVER_OPEN.id);
+        	data.writeBoolean(isBlock);
+        	data.writeBoolean(useEnergy);
+        	
+        	if(isBlock)
+        	{
+	        	data.writeInt(tileEntity.xCoord);
+	        	data.writeInt(tileEntity.yCoord);
+	        	data.writeInt(tileEntity.zCoord);
+        	}
+        } catch (IOException e) {
+        	System.out.println("[Mekanism] An error occured while writing packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent electric chest open packet to server.");
+        }
+	}
+	
+	/**
+	 * Sends a packet to the server with a new 'password' value for an electric chest.
+	 * @param tileEntity - TileEntity of the chest, if it's not an item
+	 * @param password - new value
+	 * @param isBlock - whether or not this electric chest is in it's block form
+	 */
+	public static void sendPasswordChange(TileEntity tileEntity, String password, boolean isBlock)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_PASSWORD.id);
+        	data.writeBoolean(isBlock);
+        	data.writeUTF(password);
+        	
+        	if(isBlock)
+        	{
+               	data.writeInt(tileEntity.xCoord);
+            	data.writeInt(tileEntity.yCoord);
+            	data.writeInt(tileEntity.zCoord);
+        	}
+        } catch (IOException e) {
+        	System.out.println("[Mekanism] An error occured while writing packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent electric chest password packet to server.");
+        }
+	}
+	
+	/**
+	 * Sends a packet to the server with a new 'locked' value for an electric chest.
+	 * @param tileEntity - TileEntity of the chest, if it's not an item
+	 * @param locked - new value
+	 * @param isBlock - whether or not this electric chest is in it's block form
+	 */
+	public static void sendLockChange(TileEntity tileEntity, boolean locked, boolean isBlock)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_LOCK.id);
+        	data.writeBoolean(isBlock);
+        	data.writeBoolean(locked);
+        	
+        	if(isBlock)
+        	{
+               	data.writeInt(tileEntity.xCoord);
+            	data.writeInt(tileEntity.yCoord);
+            	data.writeInt(tileEntity.zCoord);
+        	}
+        } catch (IOException e) {
+        	System.out.println("[Mekanism] An error occured while writing packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent electric chest lock packet to server.");
         }
 	}
 	

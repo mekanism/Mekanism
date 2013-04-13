@@ -30,7 +30,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.implement.IToolConfigurator;
 import cpw.mods.fml.relauncher.Side;
@@ -47,7 +46,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockGenerator extends BlockContainer implements IDismantleable
+public class BlockGenerator extends BlockContainer
 {
 	public Icon[] solarSprites = new Icon[256];
 	public Random machineRand = new Random();
@@ -152,7 +151,7 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
 	}
     
 	@Override
-    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getIcon(int side, int meta)
     {
     	if(meta == 1)
     	{
@@ -534,7 +533,6 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         return itemStack;
 	}
 	
-	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
 		ItemStack itemStack = getPickBlock(null, world, x, y, z);
@@ -554,12 +552,6 @@ public class BlockGenerator extends BlockContainer implements IDismantleable
         }
         
         return itemStack;
-	}
-
-	@Override
-	public boolean canDismantle(World world, int x, int y, int z) 
-	{
-		return true;
 	}
 	
 	public static enum GeneratorType

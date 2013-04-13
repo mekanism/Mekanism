@@ -1,6 +1,7 @@
 package mekanism.client;
 
 import mekanism.common.IEnergyCube;
+import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;

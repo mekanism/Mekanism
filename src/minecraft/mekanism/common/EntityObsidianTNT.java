@@ -93,7 +93,7 @@ public class EntityObsidianTNT extends Entity
 
     private void explode()
     {
-        worldObj.createExplosion((Entity)null, posX, posY, posZ, Mekanism.obsidianTNTBlastRadius, true);
+        worldObj.createExplosion(null, posX, posY, posZ, Mekanism.obsidianTNTBlastRadius, true);
         hasExploded = true;
     }
 

@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.util.Random;
 
-import thermalexpansion.api.core.IDismantleable;
 import universalelectricity.prefab.implement.IToolConfigurator;
 import buildcraft.api.tools.IToolWrench;
 
@@ -22,7 +21,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockGasTank extends BlockContainer implements IDismantleable
+public class BlockGasTank extends BlockContainer
 {
 	public Icon[] icons = new Icon[256];
 	public Random machineRand = new Random();
@@ -64,7 +63,7 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
     }
 	
 	@Override
-    public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+    public Icon getIcon(int side, int meta)
 	{
 		if(side == 3)
 		{
@@ -231,7 +230,6 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
     	return false;
     }
     
-	@Override
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
@@ -252,12 +250,6 @@ public class BlockGasTank extends BlockContainer implements IDismantleable
         }
         
         return itemStack;
-	}
-	
-	@Override
-	public boolean canDismantle(World world, int x, int y, int z) 
-	{
-		return true;
 	}
 	
 	@Override

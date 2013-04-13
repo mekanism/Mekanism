@@ -26,6 +26,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
 		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
+		GameRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest");
 	}
 	
 	/**
@@ -81,11 +82,6 @@ public class CommonProxy
 	  	Mekanism.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04).getDouble(.04);
 	  	Mekanism.configuration.save();
 	}
-	
-	/**
-	 * Load and initiate utilities for the mod's proxy.
-	 */
-	public void loadUtilities() {}
 	
 	/**
 	 * Set up and load the tick handlers.

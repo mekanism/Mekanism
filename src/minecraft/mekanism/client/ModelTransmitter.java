@@ -5,7 +5,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class ModelTransmitter extends ModelBase {
+public class ModelTransmitter extends ModelBase 
+{
 	ModelRenderer Center;
 	ModelRenderer Up;
 	ModelRenderer Down;

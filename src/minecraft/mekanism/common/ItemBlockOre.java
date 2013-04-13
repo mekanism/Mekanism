@@ -58,7 +58,7 @@ public class ItemBlockOre extends ItemBlock
 	@Override
 	public Icon getIconFromDamage(int i)
 	{
-		return metaBlock.getBlockTextureFromSideAndMetadata(2, i);
+		return metaBlock.getIcon(2, i);
 	}
 	
 	@Override

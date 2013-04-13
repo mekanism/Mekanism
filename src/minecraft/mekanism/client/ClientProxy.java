@@ -7,6 +7,7 @@ import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import mekanism.common.TileEntityControlPanel;
+import mekanism.common.TileEntityElectricChest;
 import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityElectricPump;
 import mekanism.common.TileEntityEnergyCube;
@@ -63,6 +64,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
 		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
 		ClientRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump", new RenderElectricPump());
+		ClientRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest", new RenderElectricChest());
 	}
 	
 	@Override
@@ -85,17 +87,6 @@ public class ClientProxy extends CommonProxy
 	public World getClientWorld()
 	{
 		return FMLClientHandler.instance().getClient().theWorld;
-	}
-	
-	@Override
-	public void loadUtilities()
-	{
-		if(FMLClientHandler.instance().getClient().gameSettings.snooperEnabled)
-		{
-			new ThreadSendData();
-		}
-		
-		System.out.println("[Mekanism] Utility initiative complete.");
 	}
 	
 	@Override
@@ -145,6 +136,10 @@ public class ClientProxy extends CommonProxy
 				return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 17:
 				return new GuiElectricPump(player.inventory, (TileEntityElectricPump)tileEntity);
+			case 19:
+				return new GuiPasswordEnter((TileEntityElectricChest)tileEntity);
+			case 20:
+				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
 		}
 		return null;
 	}

@@ -314,7 +314,10 @@ public class Mekanism
 			"ORO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('R'), Item.redstone
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 12), new Object[] {
-			" B ", "ECE", "OOO", Character.valueOf('B'), Item.bucketWater, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('O'), "ingotOsmium"
+			" B ", "ECE", "OOO", Character.valueOf('B'), Item.bucketEmpty, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('O'), "ingotOsmium"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 13), new Object[] {
+			"SGS", "CcC", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass, Character.valueOf('C'), Block.chest, Character.valueOf('c'), ControlCircuit
 		}));
 		
 		//Factory Recipes
@@ -458,6 +461,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnergizedSmelter.name", "Energized Smelter");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Teleporter.name", "Teleporter");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.ElectricPump.name", "Electric Pump");
+		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.ElectricChest.name", "Electric Chest");
 		
 		//Localization for OreBlock
 		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.OsmiumOre.name", "Osmium Ore");
@@ -994,7 +998,6 @@ public class Mekanism
 		//Load proxy
 		proxy.registerRenderInformation();
 		proxy.loadConfiguration();
-		proxy.loadUtilities();
 		proxy.loadTickHandler();
 		
 		//Register to receive subscribed events

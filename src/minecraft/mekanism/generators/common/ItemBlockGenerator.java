@@ -62,7 +62,7 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public Icon getIconFromDamage(int i)
 	{
-		return metaBlock.getBlockTextureFromSideAndMetadata(2, i);
+		return metaBlock.getIcon(2, i);
 	}
 	
 	@Override

@@ -22,7 +22,7 @@ public class ItemDust extends ItemMekanism
 	}
 	
 	@Override
-	public void updateIcons(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
 		for(int i = 0; i <= 8; i++)
 		{

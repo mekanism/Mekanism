@@ -10,14 +10,21 @@ import cpw.mods.fml.relauncher.SideOnly;
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 
+import ic2.api.ElectricItem;
 import ic2.api.ICustomElectricItem;
+import ic2.api.IElectricItem;
 import mekanism.api.EnumColor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,7 +52,7 @@ import net.minecraftforge.liquids.LiquidStack;
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank
+public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest
 {
 	public Block metaBlock;
 	
@@ -109,6 +116,9 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 			case 12:
 				name = "ElectricPump";
 				break;
+			case 13:
+				name = "ElectricChest";
+				break;
 			default:
 				name = "Unknown";
 				break;
@@ -128,6 +138,12 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 			if(isFactory(itemstack))
 			{
 				list.add(EnumColor.INDIGO + "Recipe Type: " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
+			}
+			
+			if(isElectricChest(itemstack))
+			{
+				list.add(EnumColor.INDIGO + "Authenticated: " + EnumColor.GREY + getAuthenticated(itemstack));
+				list.add(EnumColor.INDIGO + "Locked: " + EnumColor.GREY + getLocked(itemstack));
 			}
 			
 			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
@@ -252,8 +268,15 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
     		{
     			if(hasTank(stack) && getLiquidStack(stack) != null)
     			{
-    				((ISustainedTank)tileEntity).setLiquidStack(getLiquidStack(stack), stack);
+    				((ISustainedTank)tileEntity).setLiquidStack(getLiquidStack(stack));
     			}
+    		}
+    		
+    		if(tileEntity instanceof TileEntityElectricChest)
+    		{
+    			((TileEntityElectricChest)tileEntity).authenticated = getAuthenticated(stack);
+    			((TileEntityElectricChest)tileEntity).locked = getLocked(stack);
+    			((TileEntityElectricChest)tileEntity).password = getPassword(stack);
     		}
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -411,13 +434,38 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			if(((ItemStack)data[0]).getItemDamage() != 11 && ((ItemStack)data[0]).getItemDamage() != 12)
+			if(((ItemStack)data[0]).getItemDamage() != 11 && ((ItemStack)data[0]).getItemDamage() != 12 && ((ItemStack)data[0]).getItemDamage() != 13)
 			{
 				return true;
 			}
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	{
+		if(!world.isRemote)
+		{
+			if(isElectricChest(itemstack))
+			{
+		 		if(!getAuthenticated(itemstack))
+		 		{
+		 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, null, 2, 0, false);
+		 		}
+		 		else if(getLocked(itemstack) && getJoules(itemstack) > 0)
+		 		{
+		 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, null, 1, 0, false);
+		 		}
+		 		else {
+		 			InventoryElectricChest inventory = new InventoryElectricChest(itemstack);
+		 			MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
+		 		}
+			}
+		}
+		
+		return itemstack;
 	}
 
 	@Override
@@ -528,5 +576,77 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	public boolean hasTank(Object... data) 
 	{
 		return data[0] instanceof ItemStack && ((ItemStack)data[0]).getItem() instanceof ISustainedTank && ((ItemStack)data[0]).getItemDamage() == 12;
+	}
+
+	@Override
+	public void setAuthenticated(ItemStack itemStack, boolean auth) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setBoolean("authenticated", auth);
+	}
+
+	@Override
+	public boolean getAuthenticated(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return false; 
+		}
+		
+		return itemStack.stackTagCompound.getBoolean("authenticated");
+	}
+
+	@Override
+	public boolean isElectricChest(ItemStack itemStack) 
+	{
+		return itemStack.getItemDamage() == 13;
+	}
+
+	@Override
+	public void setPassword(ItemStack itemStack, String pass)
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setString("password", pass);
+	}
+
+	@Override
+	public String getPassword(ItemStack itemStack)
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return "";
+		}
+		
+		return itemStack.stackTagCompound.getString("password");
+	}
+
+	@Override
+	public void setLocked(ItemStack itemStack, boolean locked) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setBoolean("locked", locked);
+	}
+
+	@Override
+	public boolean getLocked(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return false; 
+		}
+		
+		return itemStack.stackTagCompound.getBoolean("locked");
 	}
 }

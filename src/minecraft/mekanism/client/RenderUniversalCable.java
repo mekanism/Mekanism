@@ -18,12 +18,18 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 	{
 		model = new ModelTransmitter();
 	}
+	
+	@Override
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	{
+		renderAModelAt((TileEntityUniversalCable)tileEntity, x, y, z, partialTick);
+	}
 
-	public void renderAModelAt(TileEntityUniversalCable tileEntity, double d, double d1, double d2, float f)
+	public void renderAModelAt(TileEntityUniversalCable tileEntity, double x, double y, double z, float partialTick)
 	{
 		bindTextureByName("/mods/mekanism/render/UniversalCable.png");
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float) d + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 		
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
@@ -72,11 +78,5 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		model.Center.render(0.0625F);
 		GL11.glPopMatrix();
-	}
-
-	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double var2, double var4, double var6, float var8)
-	{
-		renderAModelAt((TileEntityUniversalCable)tileEntity, var2, var4, var6, var8);
 	}
 }

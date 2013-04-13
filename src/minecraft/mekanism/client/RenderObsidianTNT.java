@@ -17,33 +17,40 @@ public class RenderObsidianTNT extends Render
         blockRenderer = new RenderBlocks();
         shadowSize = 0.5F;
     }
+    
+    @Override
+    public void doRender(Entity entity, double x, double y, double z, float f, float f1)
+    {
+        renderObsidianTNT((EntityObsidianTNT)entity, x, y, z, f, f1);
+    }
 
-    public void renderObsidianTNT(EntityObsidianTNT entityobsidiantnt, double d, double d1, double d2, float f, float f1)
+    public void renderObsidianTNT(EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float f, float f1)
     {
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)d, (float)d1, (float)d2);
+        GL11.glTranslatef((float)x, (float)y, (float)z);
+        GL11.glScalef(0.8F, 0.8F, 0.8F);
 
-        if (((float)entityobsidiantnt.fuse - f1) + 1.0F < 10F)
+        if((entityobsidiantnt.fuse - f1) + 1.0F < 10F)
         {
-            float f2 = 1.0F - (((float)entityobsidiantnt.fuse - f1) + 1.0F) / 10F;
+            float scale = 1.0F - ((entityobsidiantnt.fuse - f1) + 1.0F) / 10F;
 
-            if (f2 < 0.0F)
+            if(scale < 0.0F)
             {
-                f2 = 0.0F;
+                scale = 0.0F;
             }
 
-            if (f2 > 1.0F)
+            if(scale > 1.0F)
             {
-                f2 = 1.0F;
+                scale = 1.0F;
             }
 
-            f2 *= f2;
-            f2 *= f2;
-            float f4 = 1.0F + f2 * 0.3F;
-            GL11.glScalef(f4, f4, f4);
+            scale *= scale;
+            scale *= scale;
+            float renderScale = 1.0F + scale * 0.3F;
+            GL11.glScalef(renderScale, renderScale, renderScale);
         }
 
-        float f3 = (1.0F - (((float)entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
+        float f3 = (1.0F - ((entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
         loadTexture("/terrain.png");
         blockRenderer.renderBlockAsItem(Mekanism.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
 
@@ -62,11 +69,5 @@ public class RenderObsidianTNT extends Render
         }
 
         GL11.glPopMatrix();
-    }
-
-    @Override
-    public void doRender(Entity entity, double d, double d1, double d2, float f, float f1)
-    {
-        renderObsidianTNT((EntityObsidianTNT)entity, d, d1, d2, f, f1);
     }
 }

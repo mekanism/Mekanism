@@ -25,8 +25,8 @@ public class ItemMekanismTool extends ItemTool
 	}
     
 	@Override
-	public void updateIcons(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
-		iconIndex = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
+		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}
 }
