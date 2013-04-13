@@ -95,7 +95,7 @@
 		</jar>
 
 		<zip destfile="output/${file.mdk}">
-			<fileset dir="mkdContents"/>
+			<fileset dir="mdkContents"/>
 		</zip>
 
 		<echo file="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/info.txt" append="true" >
