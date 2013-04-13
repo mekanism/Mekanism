@@ -79,19 +79,19 @@
 		</copy>
 
 		<jar destfile="output/${file.core}">
-			<fileset dir="contents"/>
+			<fileset dir="coreContents"/>
 		</jar>
 
 		<jar destfile="output/${file.generators}">
-			<fileset dir="contents"/>
+			<fileset dir="generatorsContents"/>
 		</jar>
 
 		<jar destfile="output/${file.tools}">
-			<fileset dir="contents"/>
+			<fileset dir="toolsContents"/>
 		</jar>
 
 		<zip destfile="output/${file.mdk}">
-			<fileset dir="contents"/>
+			<fileset dir="mkdContents"/>
 		</zip>
 
 		<echo file="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/info.txt" append="true" >
