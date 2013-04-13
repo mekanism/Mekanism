@@ -1,0 +1,101 @@
+-----------------------------------------------------
+-- How to implement your own energy network blocks --
+-----------------------------------------------------
+
+There are currently three different types of energy network blocks:
+- energy sources, e.g. generators or the output side of a storage block/transformer
+- energy sinks, e.g. machines or the input side of a storage block/transformer
+- conductors, e.g. cables
+
+Note that storage blocks or transformers are both sources and sinks.
+
+All those blocks have to have a tile entity which has to implement the interface corresponding to
+its function and also post events to the Forge event bus.
+
+The energy generation, distribution and consumption is strictly limited to the simulating (server)
+side, use the proper side checks before posting the related events. One possibility is to check for
+FMLCommonHandler.instance().getEffectiveSide().isClient() being false.
+
+The energy network works by sources pushing energy into the grid through EnergyTileSourceEvent,
+conductors will carry the energy to sinks which will then receive it through injectEnergy().
+
+-- EnergyTileLoadEvent --
+
+For all energy network tiles (sources, sinks, conductors) you have to post an EnergyTileLoadEvent.
+
+The event has to be posted as soon as the implementing tile entity is fully loaded, usually after
+loading the chunk which contains it or after the user placing the block.
+
+The energy net implementation will use the event to add it to its energy grid map, taking it into
+account for further energy transfers.
+
+You can detect the loading by either using the 1st iteration of updateEntity() or by waiting for
+the next world tick after TileEntity.validate(). The 2nd approach is obviously more sophisticated
+and requires to use some tick queuing mechanism.
+
+The event can by posted as following:
+  MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+
+-- EnergyTileUnloadEvent --
+
+Another event every energy tile has to post is the EnergyTileUnloadEvent.
+
+The event has to be posted as soon as the implementing tile entity is being unloaded, either by
+unloading the containing chunk or by destroying the block containing it.
+
+It's possible to detect the unloading by triggering on both the beginning of
+TileEntity.invalidate() and the beginning of TileEntity.onChunkUnload().
+
+It is important that the tile entity is still properly linked to the world while posting the unload
+event, otherwise the energy net can't find all affected connections.
+
+-- energy source --
+
+An energy source has to post the following events:
+ - EnergyTileLoadEvent on load
+ - EnergyTileUnloadEvent on unload
+ - EnergyTileSourceEvent whenever it wants to send energy
+
+Additionally the interface IEnergySource has to be implemented.
+
+The EnergyTileSourceEvent contains a field amount, which should be evaluated after having posted
+the event. The value determines how much energy couldn't be delivered somewhere.
+
+-- energy sink --
+
+An energy sink has to post the following events:
+ - EnergyTileLoadEvent on load
+ - EnergyTileUnloadEvent on unload
+
+Additionally the interface IEnergySink has to be implemented.
+
+The method demandsEnergy() will be called fairly often and should be implemented with performance
+in mind. It's usually recommended to always fill some small internal buffer regardless of other
+conditions, e.g. even if an enabling redstone signal is off.
+
+-- energy conductor --
+
+An energy conductor has to post the following events:
+ - EnergyTileLoadEvent on load
+ - EnergyTileUnloadEvent on unload
+
+Additionally the interface IEnergyConductor has to be implemented.
+
+
+--------------------------------------------------
+-- How to implement/add your own energy network --
+--------------------------------------------------
+
+If you want to create an alternative way of distributing energy, e.g. to have different
+distribution rules or to use energy networks provided by other mods, you can register to the energy
+tile events and use the interfaces to handle the energy distribution yourself. It's no longer
+required to use conversion blocks.
+
+IC2's EnergyNet itself is built on top of the api events and interfaces, providing their default
+use case.
+
+Note that is you have a pull-type energy network which lets the sinks retrieve energy from the
+sources instead of IC2's method of pushing energy from the sources to the sinks, you'll currently
+have to monitor the energy sinks regularly for their energy demand and start/stop pulling energy
+accordingly. The load and unload events will tell you when to start/stop monitoring demandsEnergy.
+
