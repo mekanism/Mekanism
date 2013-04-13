@@ -30,6 +30,18 @@ public class CommonProxy
 	}
 	
 	/**
+	 * Handles an ELECTRIC_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
+	 * @param entityplayer - player the packet was sent from
+	 * @param id - the electric chest gui ID to open
+	 * @param windowId - the container-specific window ID
+	 * @param isBlock - if the chest is a block
+	 * @param x - x coordinate
+	 * @param y - y coordinate
+	 * @param z - z coordinate
+	 */
+	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z) {}
+	
+	/**
 	 * Register and load client-only render information.
 	 */
 	public void registerRenderInformation() {}

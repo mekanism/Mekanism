@@ -3,6 +3,8 @@ package mekanism.client;
 
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
+import mekanism.common.IElectricChest;
+import mekanism.common.InventoryElectricChest;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
@@ -54,6 +56,59 @@ public class ClientProxy extends CommonProxy
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
+	}
+	
+	@Override
+	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z) 
+	{
+		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+		
+		if(id == 0)
+		{
+			if(isBlock)
+			{
+	    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
+	    		entityplayer.openContainer.windowId = windowId;
+			}
+			else {
+				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
+				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+				{
+    				InventoryElectricChest inventory = new InventoryElectricChest(stack);
+		    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
+		    		entityplayer.openContainer.windowId = windowId;
+				}
+			}
+		}
+		else if(id == 1)
+		{
+			if(isBlock)
+			{
+				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(tileEntity));
+			}
+			else {
+				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+				{
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
+				}
+			}
+		}
+		else if(id == 2)
+		{
+			if(isBlock)
+			{
+				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(tileEntity));
+			}
+			else {
+				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+				{
+					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
+				}
+			}
+		}
 	}
 	
 	@Override

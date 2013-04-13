@@ -419,12 +419,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Sound getSound()
 	{
 		return audio;
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void removeSound()
 	{
 		audio = null;

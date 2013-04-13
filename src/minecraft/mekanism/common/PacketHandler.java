@@ -9,9 +9,6 @@ import java.util.Random;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 
-import mekanism.client.GuiElectricChest;
-import mekanism.client.GuiPasswordEnter;
-import mekanism.client.GuiPasswordModify;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -23,7 +20,6 @@ import net.minecraft.world.World;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -328,54 +324,7 @@ public class PacketHandler implements IPacketHandler
 				    		z = dataStream.readInt();
 			    		}
 			    		
-			    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
-			    		
-			    		if(id == 0)
-			    		{
-			    			if(isBlock)
-			    			{
-					    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
-					    		entityplayer.openContainer.windowId = windowId;
-			    			}
-			    			else {
-			    				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
-			    				ItemStack stack = entityplayer.getCurrentEquippedItem();
-			    				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
-			    				{
-				    				InventoryElectricChest inventory = new InventoryElectricChest(stack);
-						    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
-						    		entityplayer.openContainer.windowId = windowId;
-			    				}
-			    			}
-			    		}
-			    		else if(id == 1)
-			    		{
-			    			if(isBlock)
-			    			{
-			    				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(tileEntity));
-			    			}
-			    			else {
-			    				ItemStack stack = entityplayer.getCurrentEquippedItem();
-			    				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
-			    				{
-			    					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
-			    				}
-			    			}
-			    		}
-			    		else if(id == 2)
-			    		{
-			    			if(isBlock)
-			    			{
-			    				FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(tileEntity));
-			    			}
-			    			else {
-			    				ItemStack stack = entityplayer.getCurrentEquippedItem();
-			    				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
-			    				{
-			    					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
-			    				}
-			    			}
-			    		}
+			    		Mekanism.proxy.openElectricChest(entityplayer, id, windowId, isBlock, x, y, z);
 			    	} catch(Exception e) {
 			       		System.err.println("[Mekanism] Error while handling electric chest open packet.");
 			    		e.printStackTrace();

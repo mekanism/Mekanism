@@ -15,15 +15,18 @@ public interface IHasSound
 	 * Gets the sound.
 	 * @return sound
 	 */
+	@SideOnly(Side.CLIENT)
 	public Sound getSound();
 	
 	/**
 	 * Removes the sound;
 	 */
+	@SideOnly(Side.CLIENT)
 	public void removeSound();
 	
 	/**
 	 * Ticks and updates the block's sound.
 	 */
+	@SideOnly(Side.CLIENT)
 	public void updateSound();
 }

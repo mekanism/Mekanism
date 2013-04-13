@@ -765,12 +765,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Sound getSound()
 	{
 		return audio;
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void removeSound()
 	{
 		audio = null;
