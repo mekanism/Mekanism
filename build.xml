@@ -59,18 +59,14 @@
 		</copy>
 
 		<copy todir="generatorsContents">
-			<fileset dir="${dir.mcp}/reobf/minecraft">
-				<include name="**/mekanism/generators/**"/>
-			</fileset>
+			<fileset dir="${dir.mcp}reobf/minecraft" includes "**/mekanism/generators/**"/>
 
 			<fileset dir="${dir.development}etc/generators"/>
 
 		</copy>
 
 		<copy todir="toolsContents">
-			<fileset dir="${dir.mcp}/reobf/minecraft">
-				<include name="**/mekanism/tools/**"/>
-			</fileset>
+			<fileset dir="${dir.mcp}reobf/minecraft" includes "**/mekanism/tools/**"/>
 
 			<fileset dir="${dir.development}etc/tools"/>
 
