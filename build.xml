@@ -49,13 +49,14 @@
 
 			<fileset dir="${dir.development}bin/minecraft"/>
 
-			<fileset dir="${dir.development}etc/core"/>
+			<fileset dir="${dir.development}etc/core">
+			</fileset>
 
 		</copy>
 
 		<copy todir="generatorsContents">
 			<fileset dir="${dir.mcp}/reobf/minecraft">
-				<include name="mekanism/generators/**"/>
+				<include name="src/minecraft/mekanism/generators/**"/>
 			</fileset>
 
 			<fileset dir="${dir.development}etc/generators"/>
@@ -64,7 +65,7 @@
 
 		<copy todir="toolsContents">
 			<fileset dir="${dir.mcp}/reobf/minecraft">
-				<include name="mekanism/tools/**"/>
+				<include name="src/minecraft/mekanism/tools/**"/>
 			</fileset>
 
 			<fileset dir="${dir.development}etc/tools"/>
@@ -72,8 +73,8 @@
 		</copy>
 
 		<copy todir="mdkContents">
-			<fileset dir="${dir.development}src">
-				<include name = "mekanism/api/**"/>
+			<fileset dir="${dir.development}src/minecraft">
+				<include name = "src/minecraft/mekanism/api/**"/>
 			</fileset>
 		</copy>
 
