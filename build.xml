@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="ElectricExpansion" default="build">
+
+	<property file="build.properties" />
+	<property environment="env" />
+	<property name="file.core" value="Mekanism-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
+	<property name="file.generators" value="MekanismGenerators-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
+	<property name="file.tools" value="MekanismTools-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
+	<property name="file.mdk" value="MDK-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.zip"/>
+
+	<target name="build">
+
+		<delete dir="contents" />
+		<delete dir="build" />
+		<delete dir="${dir.development}/forge" />
+
+		<copy todir="${dir.development}">
+			<fileset dir="../NEI/" />
+		</copy>
+
+		<copy todir="${dir.mcp}/src/minecraft">
+
+			<fileset dir="${dir.development}src">
+				<exclude name=".git/**"/>
+				<exclude name="**/*.xml"/>
+			</fileset>
+
+			<fileset dir="${dir.development}../Universal Electricity/src">
+				<exclude name=".git/**"/>
+				<exclude name="**/*.xml"/>
+			</fileset>
+		</copy>
+
+		<mkdir dir="contents" />
+		<mkdir dir="build" />
+
+		<replace dir="${dir.mcp}/src/minecraft" token="@MAJOR@" value="${version.mod.major}" />
+		<replace dir="${dir.mcp}/src/minecraft" token="@MINOR@" value="${version.mod.minor}" />
+		<replace dir="${dir.mcp}/src/minecraft" token="@REVIS@" value="${version.mod.revis}" />
+		<replace dir="${dir.mcp}/src/minecraft" token="@BUILD@" value="${env.BUILD_NUMBER}" />
+
+		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
+			<arg line="recompile.bat" />
+		</exec>
+		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
+			<arg line="reobfuscate_srg.bat" />
+		</exec>
+
+		<exec dir="${dir.mcp}" executable="bash" osfamily="unix">
+			<arg line="recompile.sh" />
+		</exec>
+		<exec dir="${dir.mcp}" executable="bash" osfamily="unix">
+			<arg line="reobfuscate_srg.sh" />
+		</exec>
+
+		<copy todir="coreContents">
+			<fileset dir="${dir.mcp}/reobf/minecraft">
+				<exclude name="mekanism/generators/**"/>
+				<exclude name="mekanism/tools/**"/>
+			</fileset>
+
+			<fileset dir="${dir.development}bin/minecraft"/>
+
+			<fileset dir="${dir.development}etc/core"/>
+
+		</copy>
+
+		<copy todir="generatorsContents">
+			<fileset dir="${dir.mcp}/reobf/minecraft">
+				<include name="mekanism/generators/**"/>
+			</fileset>
+
+			<fileset dir="${dir.development}etc/generators"/>
+
+		</copy>
+
+		<copy todir="toolsContents">
+			<fileset dir="${dir.mcp}/reobf/minecraft">
+				<include name="mekanism/tools/**"/>
+			</fileset>
+
+			<fileset dir="${dir.development}etc/tools"/>
+
+		</copy>
+
+		<copy todir="mdkContents">
+			<fileset dir="${dir.development}src">
+				<include name = "mekanism/api/**"/>
+			</fileset>
+		</copy>
+
+		<jar destfile="output/${file.core}">
+			<fileset dir="contents"/>
+		</jar>
+
+		<jar destfile="output/${file.generators}">
+			<fileset dir="contents"/>
+		</jar>
+
+		<jar destfile="output/${file.tools}">
+			<fileset dir="contents"/>
+		</jar>
+
+		<zip destfile="output/${file.mdk}">
+			<fileset dir="contents"/>
+		</zip>
+
+		<echo file="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/info.txt" append="true" >
+		@ ${env.BUILD_NUMBER} ${version.minecraft} ${file.core} ${file.generators} ${file.tools} ${file.mdk}</echo>
+
+		<copy todir="output" file="build.properties"/>
+	</target>
+</project>

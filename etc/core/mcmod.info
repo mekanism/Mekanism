@@ -1,0 +1,17 @@
+[
+{
+  "modid": "Mekanism",
+  "name": "Mekanism",
+  "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
+  "version": "5.5.4",
+  "mcversion": "1.5.1",
+  "updateUrl": "",
+  "authors": [
+    "aidancbrady"
+  ],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+}
+]
