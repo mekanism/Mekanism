@@ -32,13 +32,13 @@ public class CommonProxy
 	
 	/**
 	 * Registers a client-side sound, assigned to a TileEntity.
-	 * @param soundHolder
+	 * @param tileEntity - TileEntity who is registering the sound
 	 */
-	public void registerSound(IHasSound soundHolder) {}
+	public void registerSound(TileEntity tileEntiyt) {}
 	
 	/**
 	 * Unregisters a client-side sound, assigned to a TileEntity;
-	 * @param tileEntity
+	 * @param tileEntity - TileEntity who is unregistering the sound
 	 */
 	public void unregisterSound(TileEntity tileEntity) {}
 	
@@ -58,15 +58,6 @@ public class CommonProxy
 	 * Register and load client-only render information.
 	 */
 	public void registerRenderInformation() {}
-	
-	/**
-	 * Gets the world the client is using from ClientProxy.
-	 * @return client world
-	 */
-	public World getClientWorld() 
-	{
-		return null;
-	}
 	
 	/**
 	 * Gets the armor index number from ClientProxy.

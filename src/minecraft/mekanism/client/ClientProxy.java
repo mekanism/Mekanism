@@ -3,6 +3,7 @@ package mekanism.client;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
@@ -66,11 +67,11 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void registerSound(IHasSound soundHolder) 
+	public void registerSound(TileEntity tileEntity) 
 	{
 		synchronized(Mekanism.audioHandler.sounds)
 		{
-			Mekanism.audioHandler.register(soundHolder);
+			Mekanism.audioHandler.register(tileEntity);
 		}
 	}
 	
@@ -167,12 +168,6 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public World getClientWorld()
-	{
-		return FMLClientHandler.instance().getClient().theWorld;
-	}
-	
-	@Override
 	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
@@ -254,10 +249,10 @@ public class ClientProxy extends CommonProxy
 		{
 			synchronized(Mekanism.audioHandler.sounds)
 			{
-				ArrayList<Sound> toRemove = new ArrayList<Sound>();
-				toRemove.addAll(Mekanism.audioHandler.sounds);
+				HashMap<TileEntity, Sound> sounds = new HashMap<TileEntity, Sound>();
+				sounds.putAll(Mekanism.audioHandler.sounds);
 				
-				for(Sound sound : toRemove)
+				for(Sound sound : sounds.values())
 				{
 					sound.remove();
 				}

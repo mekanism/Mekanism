@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
@@ -27,41 +28,25 @@ public class Sound
 	/** A unique identifier for this sound */
 	public String identifier;
 	
-	/** X coordinate of this sound effect */
-	public int xCoord;
-	
-	/** Y coordinate of this sound effect */
-	public int yCoord;
-	
-	/** Z coordinate of this sound effect */
-	public int zCoord;
-	
-	/** The dimension ID this sound is playing in */
-	public int dimensionId;
+	/** The TileEntity this sound is associated with. */
+	public TileEntity tileEntity;
 	
 	/** Whether or not this sound is playing */
 	public boolean isPlaying = false;
 	
-	/** A sound, an object that runs off of the PaulsCode sound system.
-	 * 
-	 * @param system - PaulsCode SoundSystem
+	/**
+	 * A sound that runs off of the PaulsCode sound system.
 	 * @param id - unique identifier
 	 * @param sound - bundled path to the sound
-	 * @param world - world the sound is playing
-	 * @param x - x coord
-	 * @param y - y coord
-	 * @param z - z coord
+	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public Sound(String id, String sound, World world, int x, int y, int z, int dim)
+	public Sound(String id, String sound, TileEntity tileentity)
 	{
 		synchronized(Mekanism.audioHandler.sounds)
 		{
 			soundPath = sound;
 			identifier = id;
-			xCoord = x;
-			yCoord = y;
-			zCoord = z;
-			dimensionId = dim;
+			tileEntity = tileentity;
 			
 			URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + sound);
 			if(url == null)
@@ -71,12 +56,12 @@ public class Sound
 			
 			if(Mekanism.audioHandler.soundSystem != null)
 			{
-				Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, x, y, z, 0, 16F);
+				Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 0, 16F);
 				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.activate(id);
 			}
 			
-			Mekanism.audioHandler.sounds.add(this);
+			Mekanism.audioHandler.sounds.put(tileEntity, this);
 		}
 	}
 	
@@ -134,7 +119,7 @@ public class Sound
 				stopLoop();
 			}
 			
-			Mekanism.audioHandler.sounds.remove(this);
+			Mekanism.audioHandler.sounds.remove(tileEntity);
 			
 			if(Mekanism.audioHandler.soundSystem != null)
 			{
@@ -152,11 +137,11 @@ public class Sound
     {
 		synchronized(Mekanism.audioHandler.sounds)
 		{
-			if(entityplayer.worldObj.provider.dimensionId == dimensionId)
+			if(entityplayer.worldObj == tileEntity.worldObj)
 			{
 		    	float volume = 0;
 		    	
-		        double distanceVolume = (entityplayer.getDistanceSq(xCoord, yCoord, zCoord)*0.008);
+		        double distanceVolume = (entityplayer.getDistanceSq(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord)*0.008);
 		        volume = (float)(Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0))*0.05F;
 		
 		        if(Mekanism.audioHandler.soundSystem != null)

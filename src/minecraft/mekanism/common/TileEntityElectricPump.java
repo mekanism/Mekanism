@@ -163,15 +163,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		for(BlockWrapper wrapper : cleaningNodes)
 		{
-			if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+			if(MekanismUtils.isLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isLiquidEqual(liquidTank.getLiquid()))
 				{
 					if(take)
 					{
 						setJoules(electricityStored - 100);
-						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
-						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 					
 					return true;
@@ -181,27 +181,27 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		for(BlockWrapper wrapper : tempPumpList)
 		{
-			if(MekanismUtils.isLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+			if(MekanismUtils.isLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z).isLiquidEqual(liquidTank.getLiquid()))
+				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isLiquidEqual(liquidTank.getLiquid()))
 				{
 					if(take)
 					{
 						setJoules(electricityStored - 100);
-						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z), true);
-						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 					
 					return true;
 				}
 			}
-			else if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+			else if(MekanismUtils.isDeadLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
+				if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == liquidTank.getLiquid().itemID)
 				{
 					if(take)
 					{
-						worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 				}
 			}
@@ -292,14 +292,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			for(BlockWrapper wrapper : cleaningNodes)
 			{
-				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
-					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
+					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == liquidTank.getLiquid().itemID)
 					{
 						took = true;
 						if(take)
 						{
-							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 						}
 					}
 				}
@@ -307,14 +307,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			
 			for(BlockWrapper wrapper : recurringNodes)
 			{
-				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.x, wrapper.y, wrapper.z))
+				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
-					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.x, wrapper.y, wrapper.z) == liquidTank.getLiquid().itemID)
+					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == liquidTank.getLiquid().itemID)
 					{
 						took = true;
 						if(take)
 						{
-							worldObj.setBlockToAir(wrapper.x, wrapper.y, wrapper.z);
+							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 						}
 					}
 				}

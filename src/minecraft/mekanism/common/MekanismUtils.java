@@ -590,7 +590,7 @@ public final class MekanismUtils
      */
     public static int[] getCoords(BlockWrapper wrapper, ForgeDirection dir)
     {
-        return new int[] {wrapper.x + ADJACENT_COORDS[dir.ordinal()][0], wrapper.y + ADJACENT_COORDS[dir.ordinal()][1], wrapper.z + ADJACENT_COORDS[dir.ordinal()][2]};
+        return new int[] {wrapper.xCoord + ADJACENT_COORDS[dir.ordinal()][0], wrapper.yCoord + ADJACENT_COORDS[dir.ordinal()][1], wrapper.zCoord + ADJACENT_COORDS[dir.ordinal()][2]};
     }
     
     /**
@@ -755,9 +755,9 @@ public final class MekanismUtils
      */
     public static int getDistance(BlockWrapper blockOne, BlockWrapper blockTwo)
     {
-	    int subX = blockOne.x - blockTwo.x;
-	    int subY = blockOne.y - blockTwo.y;
-	    int subZ = blockOne.z - blockTwo.z;
+	    int subX = blockOne.xCoord - blockTwo.xCoord;
+	    int subY = blockOne.yCoord - blockTwo.yCoord;
+	    int subZ = blockOne.zCoord - blockTwo.zCoord;
 	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
     }
 }

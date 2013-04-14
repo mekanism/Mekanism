@@ -2,7 +2,9 @@ package mekanism.client;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import mekanism.common.IActiveState;
@@ -30,12 +32,14 @@ public class SoundHandler
 	public SoundSystem soundSystem;
 	
 	/** All the sound references in the Minecraft game. */
-	public List<Sound> sounds = Collections.synchronizedList(new ArrayList<Sound>());
+	public Map<TileEntity, Sound> sounds = Collections.synchronizedMap(new HashMap<TileEntity, Sound>());
 	
 	/** The current base volume Minecraft is using. */
 	public float masterVolume = 0;
 	
-	/** SoundHandler -- a class that handles all Sounds used by Mekanism. */
+	/** 
+	 * SoundHandler -- a class that handles all Sounds used by Mekanism.
+	 */
 	public SoundHandler()
 	{
 		if(soundSystem == null)
@@ -54,22 +58,36 @@ public class SoundHandler
 		synchronized(sounds)
 		{
 			ArrayList<Sound> soundsToRemove = new ArrayList<Sound>();
-			for(Sound sound : sounds)
+			World world = FMLClientHandler.instance().getClient().theWorld;
+			for(Sound sound : sounds.values())
 			{
-				if(FMLClientHandler.instance().getClient().thePlayer != null && FMLClientHandler.instance().getClient().theWorld != null)
+				if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
 				{
-					TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getBlockTileEntity(sound.xCoord, sound.yCoord, sound.zCoord);
-					
-					if(tileEntity instanceof IActiveState && tileEntity instanceof IHasSound)
+					if(sound.tileEntity == null || !(sound.tileEntity instanceof IHasSound))
 					{
-						if(getFrom(tileEntity).soundPath != sound.soundPath)
+						soundsToRemove.add(sound);
+						continue;
+					}
+					else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) == null)
+					{
+						soundsToRemove.add(sound);
+						continue;
+					}
+					else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) != sound.tileEntity)
+					{
+						soundsToRemove.add(sound);
+						continue;
+					}
+					else if(((IHasSound)sound.tileEntity).getSoundPath() != sound.soundPath)
+					{
+						soundsToRemove.add(sound);
+						continue;
+					}
+					else if(sound.tileEntity instanceof IActiveState)
+					{
+						if(((IActiveState)sound.tileEntity).getActive() != sound.isPlaying)
 						{
-							soundsToRemove.add(sound);
-							continue;
-						}
-						if(((IActiveState)tileEntity).getActive() != sound.isPlaying)
-						{
-							if(((IActiveState)tileEntity).getActive())
+							if(((IActiveState)sound.tileEntity).getActive())
 							{
 								sound.play();
 							}
@@ -77,11 +95,6 @@ public class SoundHandler
 								sound.stopLoop();
 							}
 						}
-					}
-					else if(tileEntity == null)
-					{
-						soundsToRemove.add(sound);
-						continue;
 					}
 					
 					if(sound.isPlaying)
@@ -104,41 +117,27 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
-			if(tileEntity == null)
-			{
-				return null;
-			}
-			
-			for(Sound sound : Mekanism.audioHandler.sounds)
-			{
-				if(sound.xCoord == tileEntity.xCoord && sound.yCoord == tileEntity.yCoord && sound.zCoord == tileEntity.zCoord && sound.dimensionId == tileEntity.worldObj.provider.dimensionId)
-				{
-					return sound;
-				}
-			}
-			
-			return null;
+			return sounds.get(tileEntity);
 		}
 	}
 	
 	/**
 	 * Create and return an instance of a Sound.
-	 * @param name - unique identifier for this sound
-	 * @param path - bundled path to the sound effect
-	 * @param world - world to play sound in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param tileEntity -- the holder of this sound.
 	 * @return Sound instance
 	 */
-	public void register(IHasSound soundHolder)
+	public void register(TileEntity tileEntity)
 	{
+		if(!(tileEntity instanceof IHasSound))
+		{
+			return;
+		}
+		
 		synchronized(sounds)
 		{
-			TileEntity tileEntity = (TileEntity)soundHolder;
 			if(getFrom(tileEntity) == null)
 			{
-				new Sound(getIdentifier(), soundHolder.getSoundPath(), tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
+				new Sound(getIdentifier(), ((IHasSound)tileEntity).getSoundPath(), tileEntity);
 			}
 		}
 	}
@@ -153,7 +152,17 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
-			return "Mekanism_" + sounds.size() + "_" + new Random().nextInt(10000);
+			String toReturn = "Mekanism_" + sounds.size() + "_" + new Random().nextInt(10000);
+			
+			for(Sound sound : sounds.values())
+			{
+				if(sound.identifier.equals(toReturn))
+				{
+					return getIdentifier();
+				}
+			}
+			
+			return toReturn;
 		}
 	}
 	
@@ -172,7 +181,7 @@ public class SoundHandler
 					{
 						if(getFrom(tileEntity) != null)
 						{
-							if(sounds.contains(getFrom(tileEntity)))
+							if(sounds.containsKey(tileEntity))
 							{
 								getFrom(tileEntity).remove();
 							}
