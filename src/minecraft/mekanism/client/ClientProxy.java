@@ -1,8 +1,6 @@
 package mekanism.client;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import mekanism.common.CommonProxy;
@@ -17,10 +15,11 @@ import mekanism.common.TileEntityElectricChest;
 import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityElectricPump;
 import mekanism.common.TileEntityEnergyCube;
+import mekanism.common.TileEntityFactory;
 import mekanism.common.TileEntityGasTank;
+import mekanism.common.TileEntityMechanicalPipe;
 import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.TileEntityPressurizedTube;
-import mekanism.common.TileEntityFactory;
 import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import mekanism.common.TileEntityUniversalCable;
@@ -98,13 +97,14 @@ public class ClientProxy extends CommonProxy
 			{
 	    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
 	    		entityplayer.openContainer.windowId = windowId;
+	    		System.out.println(entityplayer.worldObj.isRemote + " " + windowId);
 			}
 			else {
 				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
 				{
-    				InventoryElectricChest inventory = new InventoryElectricChest(stack);
+    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer, stack);
 		    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
 		    		entityplayer.openContainer.windowId = windowId;
 				}
@@ -149,6 +149,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
 		ClientRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump", new RenderElectricPump());
 		ClientRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest", new RenderElectricChest());
+		ClientRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe", new RenderMechanicalPipe());
 	}
 	
 	@Override

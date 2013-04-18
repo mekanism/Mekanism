@@ -5,20 +5,17 @@ import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import mekanism.api.IConfigurable;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
-import mekanism.client.Sound;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -89,18 +86,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		
 		if(worldObj.isRemote)
 		{
-			try {
-				if(Mekanism.audioHandler != null)
-				{
-					synchronized(Mekanism.audioHandler.sounds)
-					{
-						if(Mekanism.audioHandler.getFrom(this) == null)
-						{
-							Mekanism.proxy.registerSound(this);
-						}
-					}
-				}
-			} catch(Exception e) {}
+			Mekanism.proxy.registerSound(this);
 		}
 	}
 	

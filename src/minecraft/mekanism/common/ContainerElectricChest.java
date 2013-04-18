@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import ic2.api.IElectricItem;
 import universalelectricity.core.item.IItemElectric;
 import mekanism.common.SlotEnergy.SlotDischarge;

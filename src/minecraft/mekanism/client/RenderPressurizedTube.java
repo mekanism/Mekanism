@@ -18,12 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 @SideOnly(Side.CLIENT)
 public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model;
-
-	public RenderPressurizedTube()
-	{
-		model = new ModelTransmitter();
-	}
+	private ModelTransmitter model = new ModelTransmitter();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)

@@ -10,7 +10,7 @@ import universalelectricity.core.vector.VectorHelper;
  * @author AidanBrady
  *
  */
-public class GasTransmission 
+public final class GasTransmission 
 {
     /**
      * Gets all the tubes around a tile entity.

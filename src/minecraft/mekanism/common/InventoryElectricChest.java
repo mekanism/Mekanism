@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
@@ -9,12 +10,15 @@ import net.minecraft.nbt.NBTTagList;
 
 public class InventoryElectricChest extends InventoryBasic
 {
+	public EntityPlayer entityPlayer;
 	public ItemStack itemStack;
 	public int size;
+	public boolean reading;
 	
-	public InventoryElectricChest(ItemStack itemstack)
+	public InventoryElectricChest(EntityPlayer player, ItemStack itemstack)
 	{
 		super("Electric Chest", false, 55);
+		entityPlayer = player;
 		itemStack = itemstack;
 		
 		read();
@@ -24,7 +28,11 @@ public class InventoryElectricChest extends InventoryBasic
     public void onInventoryChanged()
     {
         super.onInventoryChanged();
-        write();
+        
+        if(!reading)
+        {
+        	write();
+        }
     }
 	
 	@Override
@@ -55,10 +63,14 @@ public class InventoryElectricChest extends InventoryBasic
         }
 
         itemStack.stackTagCompound.setTag("Items", tagList);
+        
+        entityPlayer.getCurrentEquippedItem().setTagCompound(itemStack.getTagCompound());
 	}
 	
 	public void read()
 	{
+		reading = true;
+		
         NBTTagList tagList = itemStack.stackTagCompound.getTagList("Items");
 
         for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
@@ -71,5 +83,7 @@ public class InventoryElectricChest extends InventoryBasic
                 setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
             }
         }
+        
+        reading = false;
 	}
 }

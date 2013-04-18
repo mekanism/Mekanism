@@ -64,41 +64,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		super.onUpdate();
 		
-		if(inventory[0] != null && electricityStored > 0)
-		{
-			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[0], getJoules(), getVoltage()));
-			
-			if(Mekanism.hooks.IC2Loaded && inventory[0].getItem() instanceof IElectricItem)
-			{
-				double sent = ElectricItem.charge(inventory[0], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-				setJoules(electricityStored - sent);
-			}
-		}
-		
-		if(inventory[1] != null && electricityStored < tier.MAX_ELECTRICITY)
-		{
-			setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[1], getMaxJoules() - getJoules(), getVoltage()));
-			
-			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
-			{
-				IElectricItem item = (IElectricItem)inventory[1].getItem();
-				if(item.canProvideEnergy(inventory[1]))
-				{
-					double gain = ElectricItem.discharge(inventory[1], (int)((tier.MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-					setJoules(electricityStored + gain);
-				}
-			}
-			else if(inventory[1].itemID == Item.redstone.itemID && electricityStored+1000 <= tier.MAX_ELECTRICITY)
-			{
-				setJoules(electricityStored + 1000);
-				inventory[1].stackSize--;
-				
-                if (inventory[1].stackSize <= 0)
-                {
-                    inventory[1] = null;
-                }
-			}
-		}
+		ChargeUtils.charge(0, this);
+		ChargeUtils.discharge(1, this);
 		
 		if(!worldObj.isRemote)
 		{

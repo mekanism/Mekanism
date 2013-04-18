@@ -35,7 +35,8 @@ public class GasTransferProtocol
 	/**
 	 * GasTransferProtocol -- a calculation used to distribute gasses through a tube network.
 	 * @param head - pointer tile entity
-	 * @param type - type of gas to distribute
+	 * @param orig - original outputter
+	 * @param type - type of gas being transferred
 	 * @param amount - amount of gas to distribute
 	 */
 	public GasTransferProtocol(TileEntity head, TileEntity orig, EnumGas type, int amount)

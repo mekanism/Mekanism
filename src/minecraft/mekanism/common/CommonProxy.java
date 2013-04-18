@@ -1,14 +1,13 @@
 package mekanism.common;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
-import mekanism.client.IHasSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 /**
  * Common proxy for the Mekanism mod.
@@ -28,13 +27,14 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
 		GameRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest");
+		GameRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe");
 	}
 	
 	/**
 	 * Registers a client-side sound, assigned to a TileEntity.
 	 * @param tileEntity - TileEntity who is registering the sound
 	 */
-	public void registerSound(TileEntity tileEntiyt) {}
+	public void registerSound(TileEntity tileEntity) {}
 	
 	/**
 	 * Unregisters a client-side sound, assigned to a TileEntity;

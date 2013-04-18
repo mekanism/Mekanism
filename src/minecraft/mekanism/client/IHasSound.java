@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public interface IHasSound 
 {
 	/**
-	 * Gets the sound path of this sound.
+	 * Gets the sound path of this block's sound.
 	 * @return sound path
 	 */
 	public String getSoundPath();

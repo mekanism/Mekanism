@@ -6,6 +6,7 @@ import java.util.Map;
 
 import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
+import mekanism.common.ChargeUtils;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
@@ -57,16 +58,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	{
 		super.onUpdate();
 		
-		if(inventory[1] != null && electricityStored > 0)
-		{
-			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[1], getJoules(), getVoltage()));
-			
-			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
-			{
-				double sent = ElectricItem.charge(inventory[1], (int)(electricityStored*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-				setJoules(electricityStored - sent);
-			}
-		}
+		ChargeUtils.charge(1, this);
 		
 		if(inventory[0] != null)
 		{

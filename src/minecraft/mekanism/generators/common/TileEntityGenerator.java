@@ -12,14 +12,12 @@ import java.util.EnumSet;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.IUniversalCable;
 import mekanism.client.IHasSound;
-import mekanism.client.Sound;
 import mekanism.common.CableUtils;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
@@ -80,21 +78,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		
 		if(worldObj.isRemote)
 		{
-			try {
-				if(Mekanism.audioHandler != null)
-				{
-					synchronized(Mekanism.audioHandler.sounds)
-					{
-						if(!(this instanceof TileEntitySolarGenerator))
-						{
-							if(Mekanism.audioHandler.getFrom(this) == null)
-							{
-								Mekanism.proxy.registerSound(this);
-							}
-						}
-					}
-				}
-			} catch(Exception e) {}
+			if(!(this instanceof TileEntitySolarGenerator))
+			{
+				Mekanism.proxy.registerSound(this);
+			}
 		}
 		
 		if(!worldObj.isRemote)

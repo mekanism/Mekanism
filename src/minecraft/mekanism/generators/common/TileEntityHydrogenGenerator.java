@@ -9,6 +9,7 @@ import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
+import mekanism.common.ChargeUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -37,20 +38,12 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		inventory = new ItemStack[2];
 	}
 	
+	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
 		
-		if(inventory[1] != null && electricityStored > 0)
-		{
-			setJoules(getJoules() - ElectricItemHelper.chargeItem(inventory[1], getJoules(), getVoltage()));
-			
-			if(Mekanism.hooks.IC2Loaded && inventory[1].getItem() instanceof IElectricItem)
-			{
-				double sent = ElectricItem.charge(inventory[1], (int)(electricityStored*UniversalElectricity.TO_IC2_RATIO), 3, false, false)*UniversalElectricity.IC2_RATIO;
-				setJoules(electricityStored - sent);
-			}
-		}
+		ChargeUtils.charge(1, this);
 		
 		if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 		{

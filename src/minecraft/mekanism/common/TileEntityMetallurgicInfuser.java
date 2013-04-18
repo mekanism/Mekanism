@@ -17,7 +17,6 @@ import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
-import mekanism.client.Sound;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.Item;
@@ -104,49 +103,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		if(worldObj.isRemote)
 		{
-			try {
-				if(Mekanism.audioHandler != null)
-				{
-					synchronized(Mekanism.audioHandler.sounds)
-					{
-						if(Mekanism.audioHandler.getFrom(this) == null)
-						{
-							Mekanism.proxy.registerSound(this);
-						}
-					}
-				}
-			} catch(Exception e) {}
+			Mekanism.proxy.registerSound(this);
 		}
 		
 		boolean testActive = operatingTicks > 0;
 		
-		if(inventory[4] != null)
-		{
-			if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
-			{
-				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[4], getMaxJoules() - getJoules(), getVoltage()));
-				
-				if(Mekanism.hooks.IC2Loaded && inventory[4].getItem() instanceof IElectricItem)
-				{
-					IElectricItem item = (IElectricItem)inventory[4].getItem();
-					if(item.canProvideEnergy(inventory[4]))
-					{
-						double gain = ElectricItem.discharge(inventory[4], (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-						setJoules(electricityStored + gain);
-					}
-				}
-			}
-			if(inventory[4].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
-			{
-				setJoules(electricityStored + 1000);
-				inventory[4].stackSize--;
-				
-	            if(inventory[4].stackSize <= 0)
-	            {
-	                inventory[4] = null;
-	            }
-			}
-		}
+		ChargeUtils.discharge(4, this);
 		
 		if(inventory[0] != null)
 		{

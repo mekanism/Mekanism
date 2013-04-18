@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer
 {
-	private ModelAdvancedSolarGenerator model;
+	private ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)

@@ -18,6 +18,7 @@ import net.minecraft.util.Icon;
  * Item class for handling multiple transmitter IDs.
  * 0: Pressurized Tube
  * 1: Universal Cable
+ * 2: Mechanical Pipe
  * @author AidanBrady
  *
  */
@@ -54,6 +55,11 @@ public class ItemBlockTransmitter extends ItemBlock
 				list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
 				list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
 			}
+			else if(itemstack.getItemDamage() == 2)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(LiquidDictionary)");
+			}
 		}
 	}
 	
@@ -80,6 +86,9 @@ public class ItemBlockTransmitter extends ItemBlock
 				break;
 			case 1:
 				name = "UniversalCable";
+				break;
+			case 2:
+				name = "MechanicalPipe";
 				break;
 			default:
 				name = "Unknown";

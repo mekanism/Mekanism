@@ -163,7 +163,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 				list.add(EnumColor.PURPLE + "Speed: " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
 			}
 			
-			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagList != null && !getInventory(itemstack).tagList.isEmpty()));
+			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
 	}
 
@@ -459,7 +459,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, null, 1, 0, false);
 		 		}
 		 		else {
-		 			InventoryElectricChest inventory = new InventoryElectricChest(itemstack);
+		 			InventoryElectricChest inventory = new InventoryElectricChest(entityplayer, itemstack);
 		 			MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
 		 		}
 			}

@@ -79,34 +79,8 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	     		lidAngle = 0.0F;
 	     	}
 	    }
-		
-		if(inventory[54] != null)
-		{
-			if(electricityStored < MAX_ELECTRICITY)
-			{
-				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[54], getMaxJoules() - getJoules(), getVoltage()));
-				
-				if(Mekanism.hooks.IC2Loaded && inventory[54].getItem() instanceof IElectricItem)
-				{
-					IElectricItem item = (IElectricItem)inventory[54].getItem();
-					if(item.canProvideEnergy(inventory[54]))
-					{
-						double gain = ElectricItem.discharge(inventory[54], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-						setJoules(electricityStored + gain);
-					}
-				}
-			}
-			if(inventory[54].itemID == Item.redstone.itemID && electricityStored+1000 <= MAX_ELECTRICITY)
-			{
-				setJoules(electricityStored + 1000);
-				inventory[54].stackSize--;
-				
-	            if(inventory[54].stackSize <= 0)
-	            {
-	                inventory[54] = null;
-	            }
-			}
-		}
+	    
+	    ChargeUtils.discharge(54, this);
 	}
 	
 	@Override

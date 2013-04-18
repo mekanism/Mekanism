@@ -24,7 +24,7 @@ public class EnergyTransferProtocol
 	/** List of TileEntities that can take in the energy requested. */
 	public ArrayList<TileEntity> availableAcceptors = new ArrayList<TileEntity>();
 	
-	/** Map of directions gas is transferred to. */
+	/** Map of directions energy is transferred to. */
 	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
 	
 	/** Pointer tube of this calculation. */
@@ -44,6 +44,7 @@ public class EnergyTransferProtocol
 	 * @param head - pointer tile entity
 	 * @param orig - original tile entity
 	 * @param amount - amount of energy to distribute
+	 * @param ignored - acceptors/pipes to ignore
 	 */
 	public EnergyTransferProtocol(TileEntity head, TileEntity orig, double amount, ArrayList ignored)
 	{

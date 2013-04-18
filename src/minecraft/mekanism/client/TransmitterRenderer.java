@@ -30,6 +30,9 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
     		case 1:
     			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/UniversalCable.png"));
     			break;
+    		case 2:
+    			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/MechanicalPipe.png"));
+    			break;
     	}
     	
     	transmitter.Center.render(0.0625F);

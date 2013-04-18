@@ -14,11 +14,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderObsidianTNT extends Render
 {
-    private RenderBlocks blockRenderer;
+    private RenderBlocks blockRenderer = new RenderBlocks();
 
     public RenderObsidianTNT()
     {
-        blockRenderer = new RenderBlocks();
         shadowSize = 0.5F;
     }
     

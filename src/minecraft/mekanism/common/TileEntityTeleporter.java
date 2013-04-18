@@ -91,33 +91,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			}
 		}
 		
-		if(inventory[0] != null)
-		{
-			if(electricityStored < MAX_ELECTRICITY)
-			{
-				setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[0], getMaxJoules() - getJoules(), getVoltage()));
-				
-				if(Mekanism.hooks.IC2Loaded && inventory[0].getItem() instanceof IElectricItem)
-				{
-					IElectricItem item = (IElectricItem)inventory[0].getItem();
-					if(item.canProvideEnergy(inventory[0]))
-					{
-						double gain = ElectricItem.discharge(inventory[0], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-						setJoules(electricityStored + gain);
-					}
-				}
-			}
-			if(inventory[0].itemID == Item.redstone.itemID && electricityStored+1000 <= MAX_ELECTRICITY)
-			{
-				setJoules(electricityStored + 1000);
-				inventory[0].stackSize--;
-				
-	            if (inventory[0].stackSize <= 0)
-	            {
-	                inventory[0] = null;
-	            }
-			}
-		}
+		ChargeUtils.discharge(0, this);
 	}
 	
 	@Override

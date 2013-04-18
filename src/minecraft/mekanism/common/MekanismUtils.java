@@ -43,7 +43,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  */
 public final class MekanismUtils
 {
-	public static int[][] ADJACENT_COORDS = {{0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}, {-1, 0, 0}, {1, 0, 0}};
+	public static int[][] CUBE_SIDE_MATRIX = {{3, 2, 1, 0, 5, 4}, {4, 5, 0, 1, 2, 3}, {0, 1, 3, 2, 5, 4}, {0, 1, 2, 3, 4, 5}, {0, 1, 5, 4, 3, 2}, {0, 1, 4, 5, 2, 3 }};
 	
 	/**
 	 * Checks for a new version of Mekanism.
@@ -434,34 +434,7 @@ public final class MekanismUtils
      */
     public static int getBaseOrientation(int side, int blockFacing)
     {
-    	if(blockFacing == 3 || side == 1 || side == 0)
-    	{
-    		if(side == 2 || side == 3)
-    		{
-    			return ForgeDirection.getOrientation(side).getOpposite().ordinal();
-    		}
-    		
-    		return side;
-    	}
-    	else if(blockFacing == 2)
-    	{
-    		if(side == 2 || side == 3)
-    		{
-    			return side;
-    		}
-    		
-    		return ForgeDirection.getOrientation(side).getOpposite().ordinal();
-    	}
-    	else if(blockFacing == 4)
-    	{
-    		return getRight(side).ordinal();
-    	}
-    	else if(blockFacing == 5)
-    	{
-    		return getLeft(side).ordinal();
-    	}
-    	
-    	return side;
+    	return CUBE_SIDE_MATRIX[blockFacing][side];
     }
     
     /**
@@ -580,17 +553,6 @@ public final class MekanismUtils
     		default:
     			return Direction.XP;
     	}
-    }
-    
-    /**
-     * Gets the coordinates at the side of a certain block as an int array.
-     * @param wrapper - original block
-     * @param dir - side
-     * @return coords of the block at a certain side
-     */
-    public static int[] getCoords(BlockWrapper wrapper, ForgeDirection dir)
-    {
-        return new int[] {wrapper.xCoord + ADJACENT_COORDS[dir.ordinal()][0], wrapper.yCoord + ADJACENT_COORDS[dir.ordinal()][1], wrapper.zCoord + ADJACENT_COORDS[dir.ordinal()][2]};
     }
     
     /**

@@ -16,12 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderUniversalCable extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model;
-
-	public RenderUniversalCable()
-	{
-		model = new ModelTransmitter();
-	}
+	private ModelTransmitter model = new ModelTransmitter();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)

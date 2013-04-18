@@ -2,6 +2,8 @@ package mekanism.common;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 public class BlockWrapper 
 {
@@ -26,12 +28,22 @@ public class BlockWrapper
 		dimensionId = dimension;
 	}
 	
+	public TileEntity getTileEntity(World world)
+	{
+		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
+	}
+	
 	public void write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("x", xCoord);
 		nbtTags.setInteger("y", yCoord);
 		nbtTags.setInteger("z", zCoord);
 		nbtTags.setInteger("dimensionId", dimensionId);
+	}
+	
+	public BlockWrapper getFromSide(ForgeDirection side)
+	{
+		return new BlockWrapper(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
 	}
 	
 	public static BlockWrapper get(TileEntity tileEntity)

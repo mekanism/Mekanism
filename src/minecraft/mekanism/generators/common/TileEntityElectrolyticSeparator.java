@@ -14,6 +14,7 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITubeConnection;
+import mekanism.common.ChargeUtils;
 import mekanism.common.ISustainedTank;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
@@ -77,30 +78,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 		
-		if(inventory[3] != null && electricityStored < MAX_ELECTRICITY)
-		{
-			setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[3], getMaxJoules() - getJoules(), getVoltage()));
-			
-			if(Mekanism.hooks.IC2Loaded && inventory[3].getItem() instanceof IElectricItem)
-			{
-				IElectricItem item = (IElectricItem)inventory[3].getItem();
-				if(item.canProvideEnergy(inventory[3]))
-				{
-					double gain = ElectricItem.discharge(inventory[3], (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-					setJoules(electricityStored + gain);
-				}
-			}
-			if(inventory[3].itemID == Item.redstone.itemID && electricityStored+1000 <= MAX_ELECTRICITY)
-			{
-				setJoules(electricityStored + 1000);
-				inventory[3].stackSize--;
-				
-	            if(inventory[3].stackSize <= 0)
-	            {
-	                inventory[3] = null;
-	            }
-			}
-		}
+		ChargeUtils.discharge(3, this);
 		
 		if(inventory[0] != null)
 		{
@@ -190,7 +168,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getLiquid() != null && waterTank.getLiquid().amount-2 >= 0 && electricityStored-100 > 0)
 		{
 			waterTank.drain(2, true);
-			setJoules(electricityStored - 100);
+			setJoules(electricityStored - 10);
 			setGas(EnumGas.OXYGEN, oxygenStored + 1);
 			setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 		}

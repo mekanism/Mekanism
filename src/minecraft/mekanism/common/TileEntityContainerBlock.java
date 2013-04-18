@@ -207,7 +207,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public void setInventory(NBTTagList nbtTags, Object... data) 
 	{
-		if(nbtTags == null || nbtTags.tagList == null || nbtTags.tagList.isEmpty())
+		if(nbtTags == null || nbtTags.tagCount() == 0)
 		{
 			return;
 		}
