@@ -197,7 +197,7 @@ public class EnergyTransferProtocol
 			{
 				if(acceptor instanceof IStrictEnergyAcceptor)
 				{
-					totalNeeded += (((IElectricityStorage)acceptor).getMaxJoules() - ((IElectricityStorage)acceptor).getJoules());
+					totalNeeded += (((IStrictEnergyAcceptor)acceptor).getMaxEnergy() - ((IStrictEnergyAcceptor)acceptor).getEnergy());
 				}
 				else if(acceptor instanceof IEnergySink)
 				{

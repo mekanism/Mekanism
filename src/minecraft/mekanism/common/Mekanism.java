@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import ic2.api.Ic2Recipes;
+import ic2.api.recipe.Recipes;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -511,14 +511,17 @@ public class Mekanism
 	 * Adds and registers all items.
 	 */
 	public void addItems()
-	{
+	{	
+		//Declarations
 		configuration.load();
 		ElectricBow = (ItemElectricBow) new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
+		
 		if(extrasEnabled == true)
 		{
 			Stopwatch = new ItemStopwatch(configuration.getItem("Stopwatch", 11202).getInt()).setUnlocalizedName("Stopwatch");
 			WeatherOrb = new ItemWeatherOrb(configuration.getItem("WeatherOrb", 11203).getInt()).setUnlocalizedName("WeatherOrb");
 		}
+		
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
 		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
@@ -538,6 +541,33 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		configuration.save();
+		
+		//Registrations
+		GameRegistry.registerItem(ElectricBow, "ElectricBow");
+	
+		if(extrasEnabled)
+		{
+			GameRegistry.registerItem(Stopwatch, "Stopwatch");
+			GameRegistry.registerItem(WeatherOrb, "WeatherOrb");
+		}
+		
+		GameRegistry.registerItem(Dust, "Dust");
+		GameRegistry.registerItem(Ingot, "Ingot");
+		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
+		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
+		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
+		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
+		GameRegistry.registerItem(AtomicCore, "AtomicCore");
+		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
+		GameRegistry.registerItem(StorageTank, "StorageTank");
+		GameRegistry.registerItem(ControlCircuit, "ControlCircuit");
+		GameRegistry.registerItem(EnrichedIron, "EnrichedIron");
+		GameRegistry.registerItem(CompressedCarbon, "CompressedCarbon");
+		GameRegistry.registerItem(PortableTeleporter, "PortableTeleporter");
+		GameRegistry.registerItem(TeleportationCore, "TeleportationCore");
+		GameRegistry.registerItem(Clump, "Clump");
+		GameRegistry.registerItem(DirtyDust, "DirtyDust");
+		GameRegistry.registerItem(Configurator, "Configurator");
 	}
 	
 	/**
@@ -605,7 +635,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustDirtySilver", new ItemStack(DirtyDust, 1, 5));
 		OreDictionary.registerOre("dustDirtyObsidian", new ItemStack(DirtyDust, 1, 6));
 		
-		//for RailCraft. cj + obsidian dust = rawr
+		//for RailCraft. rc + mek = rawr
 		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
 		
 		OreDictionary.registerOre("clumpIron", new ItemStack(Clump, 1, 0));
@@ -646,7 +676,7 @@ public class Mekanism
 		{
 			if(!hooks.RailcraftLoaded)
 			{
-				Ic2Recipes.addMaceratorRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
+				Recipes.macerator.addRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
 			}
 		}
 		
@@ -784,7 +814,7 @@ public class Mekanism
 			
 			if(hooks.IC2Loaded)
 			{
-				Ic2Recipes.addMaceratorRecipe(new ItemStack(Ingot, 1, 2), MekanismUtils.getStackWithSize(OreDictionary.getOres("dustBronze").get(0), 1));
+				Recipes.macerator.addRecipe(new ItemStack(Ingot, 1, 2), MekanismUtils.getStackWithSize(OreDictionary.getOres("dustBronze").get(0), 1));
 			}
 			if(hooks.TELoaded)
 			{

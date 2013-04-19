@@ -144,6 +144,7 @@ public class MekanismGenerators implements IModule
 	
 	public void addBlocks()
 	{
+		//Declarations
 		Generator = new BlockGenerator(generatorID).setUnlocalizedName("Generator");
 		
 		Item.itemsList[generatorID] = new ItemBlockGenerator(generatorID - 256, Generator).setUnlocalizedName("Generator");
@@ -151,12 +152,20 @@ public class MekanismGenerators implements IModule
 	
 	public void addItems()
 	{
+		//Declarations
 		Mekanism.configuration.load();
 		SolarPanel = new ItemMekanism(Mekanism.configuration.getItem("SolarPanel", 11300).getInt()).setUnlocalizedName("SolarPanel");
 		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", 11301).getInt()).setUnlocalizedName("BioFuel");
 		ElectrolyticCore = new ItemMekanism(Mekanism.configuration.getItem("ElectrolyticCore", 11302).getInt()).setUnlocalizedName("ElectrolyticCore");
 		Mekanism.configuration.save();
 		
+		//Registrations
+		GameRegistry.registerItem(SolarPanel, "SolarPanel");
+		GameRegistry.registerItem(BioFuel, "BioFuel");
+		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
+		
+		
+		//Ore Dictionary
 		OreDictionary.registerOre("itemBioFuel", new ItemStack(BioFuel));
 	}
 

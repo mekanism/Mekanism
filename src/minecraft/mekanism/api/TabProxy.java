@@ -16,7 +16,7 @@ public final class TabProxy
 	 * Attempts to get the Mekanism creative tab instance from the 'Mekanism' class. Will return
 	 * the tab if the mod is loaded, but otherwise will return the defined 'preferred' creative tab. This way
 	 * you don't need to worry about NPEs!
-	 * @return mekanism creative tab if can, otherwise preferred tab
+	 * @return Mekanism creative tab if can, otherwise preferred tab
 	 */
 	public static CreativeTabs tabMekanism(CreativeTabs preferred)
 	{

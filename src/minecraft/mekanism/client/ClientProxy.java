@@ -97,14 +97,14 @@ public class ClientProxy extends CommonProxy
 			{
 	    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, tileEntity));
 	    		entityplayer.openContainer.windowId = windowId;
-	    		System.out.println(entityplayer.worldObj.isRemote + " " + windowId);
 			}
 			else {
 				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				
 				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
 				{
-    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer, stack);
+    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
 		    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
 		    		entityplayer.openContainer.windowId = windowId;
 				}

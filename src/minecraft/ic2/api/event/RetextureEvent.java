@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.event;
 
 import net.minecraft.world.World;
 

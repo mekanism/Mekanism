@@ -459,7 +459,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, null, 1, 0, false);
 		 		}
 		 		else {
-		 			InventoryElectricChest inventory = new InventoryElectricChest(entityplayer, itemstack);
+		 			InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
 		 			MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
 		 		}
 			}

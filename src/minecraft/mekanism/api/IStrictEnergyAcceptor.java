@@ -7,7 +7,7 @@ import net.minecraftforge.common.ForgeDirection;
  * @author AidanBrady
  *
  */
-public interface IStrictEnergyAcceptor 
+public interface IStrictEnergyAcceptor extends IStrictEnergyStorage
 {
 	/**
 	 * Transfer a certain amount of energy to this acceptor.

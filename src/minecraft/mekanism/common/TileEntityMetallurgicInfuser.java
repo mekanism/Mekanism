@@ -541,7 +541,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public double getMaxJoules() 
+	public double getMaxEnergy() 
 	{
 		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
 	}

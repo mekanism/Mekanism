@@ -76,12 +76,6 @@ public class BlockObsidianTNT extends Block
     }
 
     @Override
-    public int quantityDropped(Random random)
-    {
-        return 1;
-    }
-
-    @Override
     public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
     {
         if(!world.isRemote)
@@ -110,12 +104,6 @@ public class BlockObsidianTNT extends Block
     }
 
     @Override
-    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityplayer)
-    {
-        super.onBlockClicked(world, x, y, z, entityplayer);
-    }
-
-    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
         if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
@@ -124,8 +112,7 @@ public class BlockObsidianTNT extends Block
             world.setBlockToAir(x, y, z);
             return true;
         }
-        else
-        {
+        else {
             return super.onBlockActivated(world, x, y, z, entityplayer, i1, f1, f2, f3);
         }
     }

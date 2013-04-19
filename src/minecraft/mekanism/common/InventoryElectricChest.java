@@ -11,15 +11,13 @@ import net.minecraft.nbt.NBTTagList;
 public class InventoryElectricChest extends InventoryBasic
 {
 	public EntityPlayer entityPlayer;
-	public ItemStack itemStack;
 	public int size;
 	public boolean reading;
 	
-	public InventoryElectricChest(EntityPlayer player, ItemStack itemstack)
+	public InventoryElectricChest(EntityPlayer player)
 	{
 		super("Electric Chest", false, 55);
 		entityPlayer = player;
-		itemStack = itemstack;
 		
 		read();
 	}
@@ -61,17 +59,15 @@ public class InventoryElectricChest extends InventoryBasic
                 tagList.appendTag(tagCompound);
             }
         }
-
-        itemStack.stackTagCompound.setTag("Items", tagList);
         
-        entityPlayer.getCurrentEquippedItem().setTagCompound(itemStack.getTagCompound());
+        ((ISustainedInventory)getItemStack().getItem()).setInventory(tagList, getItemStack());
 	}
 	
 	public void read()
 	{
 		reading = true;
 		
-        NBTTagList tagList = itemStack.stackTagCompound.getTagList("Items");
+        NBTTagList tagList = ((ISustainedInventory)getItemStack().getItem()).getInventory(getItemStack());
 
         for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
         {
@@ -85,5 +81,10 @@ public class InventoryElectricChest extends InventoryBasic
         }
         
         reading = false;
+	}
+	
+	public ItemStack getItemStack()
+	{
+		return entityPlayer.getCurrentEquippedItem();
 	}
 }

@@ -254,19 +254,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public double getJoules() 
-	{
-		return electricityStored;
-	}
-
-	@Override
-	public void setJoules(double joules)
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
-	}
-
-	@Override
-	public double getMaxJoules() 
+	public double getMaxEnergy() 
 	{
 		return tier.MAX_ELECTRICITY;
 	}

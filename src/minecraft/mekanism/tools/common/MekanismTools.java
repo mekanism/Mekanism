@@ -22,6 +22,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.5.4", dependencies = "required-after:Mekanism")
@@ -450,6 +451,7 @@ public class MekanismTools implements IModule
 	
 	public void addItems()
 	{
+		//Declarations
 		Mekanism.configuration.load();
 		//Bronze
 		BronzeHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("BronzeHelmet", 11400).getInt(), armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 0)).setUnlocalizedName("BronzeHelmet");
@@ -530,6 +532,86 @@ public class MekanismTools implements IModule
 		SteelLeggings = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelLeggings", 11463).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setUnlocalizedName("SteelLeggings");
 		SteelBoots = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelBoots", 11464).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setUnlocalizedName("SteelBoots");
 		Mekanism.configuration.save();
+		
+		//Registrations
+		//Base
+		GameRegistry.registerItem(WoodPaxel, "WoodPaxel");
+		GameRegistry.registerItem(StonePaxel, "StonePaxel");
+		GameRegistry.registerItem(IronPaxel, "IronPaxel");
+		GameRegistry.registerItem(DiamondPaxel, "DiamondPaxel");
+		GameRegistry.registerItem(GoldPaxel, "GoldPaxel");
+		
+		//Obsidian
+		GameRegistry.registerItem(ObsidianHelmet, "ObsidianHelmet");
+		GameRegistry.registerItem(ObsidianChestplate, "ObsidianChestplate");
+		GameRegistry.registerItem(ObsidianLeggings, "ObsidianLeggings");
+		GameRegistry.registerItem(ObsidianBoots, "ObsidianBoots");
+		GameRegistry.registerItem(ObsidianPaxel, "ObsidianPaxel");
+		GameRegistry.registerItem(ObsidianPickaxe, "ObsidianPickaxe");
+		GameRegistry.registerItem(ObsidianAxe, "ObsidianAxe");
+		GameRegistry.registerItem(ObsidianShovel, "ObsidianShovel");
+		GameRegistry.registerItem(ObsidianHoe, "ObsidianHoe");
+		GameRegistry.registerItem(ObsidianSword, "ObsidianSword");
+		
+		//Lazuli
+		GameRegistry.registerItem(LazuliHelmet, "LapisLazuliHelmet");
+		GameRegistry.registerItem(LazuliChestplate, "LapisLazuliChestplate");
+		GameRegistry.registerItem(LazuliLeggings, "LapisLazuliLeggings");
+		GameRegistry.registerItem(LazuliBoots, "LapisLazuliBoots");
+		GameRegistry.registerItem(LazuliPaxel, "LapisLazuliPaxel");
+		GameRegistry.registerItem(LazuliPickaxe, "LapisLazuliPickaxe");
+		GameRegistry.registerItem(LazuliAxe, "LapisLazuliAxe");
+		GameRegistry.registerItem(LazuliShovel, "LapisLazuliShovel");
+		GameRegistry.registerItem(LazuliHoe, "LapisLazuliHoe");
+		GameRegistry.registerItem(LazuliSword, "LapisLazuliSword");
+		
+		//Osmium
+		GameRegistry.registerItem(OsmiumHelmet, "OsmiumHelmet");
+		GameRegistry.registerItem(OsmiumChestplate, "OsmiumChestplate");
+		GameRegistry.registerItem(OsmiumLeggings, "OsmiumLeggings");
+		GameRegistry.registerItem(OsmiumBoots, "OsmiumBoots");
+		GameRegistry.registerItem(OsmiumPaxel, "OsmiumPaxel");
+		GameRegistry.registerItem(OsmiumPickaxe, "OsmiumPickaxe");
+		GameRegistry.registerItem(OsmiumAxe, "OsmiumAxe");
+		GameRegistry.registerItem(OsmiumShovel, "OsmiumShovel");
+		GameRegistry.registerItem(OsmiumHoe, "OsmiumHoe");
+		GameRegistry.registerItem(OsmiumSword, "OsmiumSword");
+		
+		//Redstone
+		GameRegistry.registerItem(BronzeHelmet, "BronzeHelmet");
+		GameRegistry.registerItem(BronzeChestplate, "BronzeChestplate");
+		GameRegistry.registerItem(BronzeLeggings, "BronzeLeggings");
+		GameRegistry.registerItem(BronzeBoots, "BronzeBoots");
+		GameRegistry.registerItem(BronzePaxel, "BronzePaxel");
+		GameRegistry.registerItem(BronzePickaxe, "BronzePickaxe");
+		GameRegistry.registerItem(BronzeAxe, "BronzeAxe");
+		GameRegistry.registerItem(BronzeShovel, "BronzeShovel");
+		GameRegistry.registerItem(BronzeHoe, "BronzeHoe");
+		GameRegistry.registerItem(BronzeSword, "BronzeSword");
+		
+		//Glowstone
+		GameRegistry.registerItem(GlowstonePaxel, "GlowstonePaxel");
+		GameRegistry.registerItem(GlowstonePickaxe, "GlowstonePickaxe");
+		GameRegistry.registerItem(GlowstoneAxe, "GlowstoneAxe");
+		GameRegistry.registerItem(GlowstoneShovel, "GlowstoneShovel");
+		GameRegistry.registerItem(GlowstoneHoe, "GlowstoneHoe");
+		GameRegistry.registerItem(GlowstoneSword, "GlowstoneSword");
+		GameRegistry.registerItem(GlowstoneHelmet, "GlowstoneHelmet");
+		GameRegistry.registerItem(GlowstoneChestplate, "GlowstoneChestplate");
+		GameRegistry.registerItem(GlowstoneLeggings, "GlowstoneLeggings");
+		GameRegistry.registerItem(GlowstoneBoots, "GlowstoneBoots");
+		
+		//Steel
+		GameRegistry.registerItem(SteelPaxel, "SteelPaxel");
+		GameRegistry.registerItem(SteelPickaxe, "SteelPickaxe");
+		GameRegistry.registerItem(SteelAxe, "SteelAxe");
+		GameRegistry.registerItem(SteelShovel, "SteelShovel");
+		GameRegistry.registerItem(SteelHoe, "SteelHoe");
+		GameRegistry.registerItem(SteelSword, "SteelSword");
+		GameRegistry.registerItem(SteelHelmet, "SteelHelmet");
+		GameRegistry.registerItem(SteelChestplate, "SteelChestplate");
+		GameRegistry.registerItem(SteelLeggings, "SteelLeggings");
+		GameRegistry.registerItem(SteelBoots, "SteelBoots");
 	}
 	
 	@ForgeSubscribe

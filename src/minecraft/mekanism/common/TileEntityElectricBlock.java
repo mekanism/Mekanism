@@ -8,6 +8,7 @@ import ic2.api.energy.tile.IEnergyTile;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.IStrictEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,7 +23,7 @@ import buildcraft.api.power.PowerFramework;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector, IStrictEnergyStorage
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -66,11 +67,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		
 		if(!worldObj.isRemote)
 		{
-			if(powerProvider != null)
-			{
-				powerProvider.update(this);
-			}
-			
 			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
 			setJoules(getJoules()+electricityPack.getWatts());
 		}
@@ -93,21 +89,39 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public double getMaxJoules() 
+	public double getEnergy()
+	{
+		return electricityStored;
+	}
+	
+	@Override
+	public void setEnergy(double energy)
+	{
+		electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
+	}
+	
+	@Override
+	public double getMaxEnergy()
 	{
 		return MAX_ELECTRICITY;
 	}
 	
 	@Override
+	public double getMaxJoules() 
+	{
+		return getMaxEnergy();
+	}
+	
+	@Override
 	public double getJoules() 
 	{
-		return electricityStored;
+		return getEnergy();
 	}
 
 	@Override
 	public void setJoules(double joules)
 	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
+		setEnergy(joules);
 	}
 	
 	@Override

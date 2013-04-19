@@ -298,7 +298,7 @@ public class PacketHandler implements IPacketHandler
 			    					((IItemElectric)stack.getItem()).setJoules(((IItemElectric)stack.getItem()).getJoules(stack) - 100, stack);
 			    				}
 			    				
-			    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer, stack);
+			    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
 			    				MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
 			    			}
 			    		}

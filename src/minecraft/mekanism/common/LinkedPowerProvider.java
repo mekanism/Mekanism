@@ -7,9 +7,9 @@ import buildcraft.api.power.PowerProvider;
 
 public class LinkedPowerProvider extends PowerProvider
 {
-	public TileEntity tileEntity;
+	public TileEntityElectricBlock tileEntity;
 	
-	public LinkedPowerProvider(TileEntity tile)
+	public LinkedPowerProvider(TileEntityElectricBlock tile)
 	{
 		tileEntity = tile;
 	}
@@ -17,16 +17,41 @@ public class LinkedPowerProvider extends PowerProvider
 	@Override
 	public boolean update(IPowerReceptor receptor)
 	{
-		TileEntityElectricBlock electricBlock = (TileEntityElectricBlock)tileEntity;
-		maxEnergyStored = (int)(electricBlock.getMaxJoules()*Mekanism.TO_BC);
-		energyStored = (int)(electricBlock.electricityStored);
 		return true;
+	}
+	
+	@Override
+	public float useEnergy(float min, float max, boolean doUse) 
+	{
+		float result = 0;
+
+		if(tileEntity.electricityStored*Mekanism.TO_BC >= min) 
+		{
+			if(tileEntity.electricityStored*Mekanism.TO_BC <= max) 
+			{
+				result = (float)(tileEntity.electricityStored*Mekanism.TO_BC);
+				
+				if(doUse)
+				{
+					tileEntity.electricityStored = 0;
+				}
+			} 
+			else {
+				result = max;
+				
+				if(doUse) 
+				{
+					tileEntity.electricityStored -= max*Mekanism.FROM_BC;
+				}
+			}
+		}
+
+		return result;
 	}
 	
 	@Override
 	public void receiveEnergy(float quantity, ForgeDirection from) 
 	{
-		TileEntityElectricBlock electricBlock = (TileEntityElectricBlock)tileEntity;
-		electricBlock.setJoules(electricBlock.electricityStored+(quantity*Mekanism.FROM_BC));
+		tileEntity.setEnergy(tileEntity.electricityStored+(quantity*Mekanism.FROM_BC));
 	}
 }

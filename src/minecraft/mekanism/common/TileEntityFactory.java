@@ -578,7 +578,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public double getMaxJoules() 
+	public double getMaxEnergy() 
 	{
 		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
 	}
