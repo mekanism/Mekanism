@@ -62,7 +62,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	    		lidAngle -= increment;
 	    	}
 
-	    	if (lidAngle > 1.0F)
+	    	if(lidAngle > 1.0F)
 	    	{
 	    		lidAngle = 1.0F;
 	    	}

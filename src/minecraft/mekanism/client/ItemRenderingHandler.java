@@ -3,8 +3,10 @@ package mekanism.client;
 import mekanism.common.IEnergyCube;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
+import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -12,6 +14,8 @@ import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -33,16 +37,37 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) 
 	{
+        if(type == ItemRenderType.EQUIPPED)
+        {
+        	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+        }
+        
 		if(item.getItem() instanceof IEnergyCube)
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 	        
-	        if(type == ItemRenderType.EQUIPPED)
-	        {
-	        	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-	        }
-	        
 	        renderItem((RenderBlocks)data[0], tier.ordinal());
+		}
+		else if(item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
+		{
+			IElectricChest chest = (IElectricChest)item.getItem();
+			ModelChest electricChest = new ModelChest();
+			
+			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+            GL11.glTranslatef(0, 1.0F, 1.0F);
+            GL11.glScalef(1.0F, -1F, -1F);
+	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricChest.png"));
+	    	
+			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * 1F;//partialTick;
+	        lidangle = 1.0F - lidangle;
+	        lidangle = 1.0F - lidangle * lidangle * lidangle;
+	        electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
+	    	
+	    	electricChest.renderAll();
+		}
+		else {
+			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.machineBlockID], item.getItemDamage(), ClientProxy.RENDER_ID);
 		}
 	}
 	

@@ -360,6 +360,41 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	{
 		return 0;
 	}
+	
+	@Override
+	public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
+	{
+		if(isElectricChest(itemstack))
+		{
+			setPrevLidAngle(itemstack, getLidAngle(itemstack));
+			float increment = 0.1F;
+			
+		    if((!getOpen(itemstack) && getLidAngle(itemstack) > 0.0F) || (getOpen(itemstack) && getLidAngle(itemstack) < 1.0F))
+		    {
+		    	float angle = getLidAngle(itemstack);
+	
+		    	if(getOpen(itemstack))
+		    	{
+		    		setLidAngle(itemstack, getLidAngle(itemstack)+increment);
+		    	}
+		    	else {
+		    		setLidAngle(itemstack, getLidAngle(itemstack)-increment);
+		    	}
+	
+		    	if(getLidAngle(itemstack) > 1.0F)
+		    	{
+		    		setLidAngle(itemstack, 1.0F);
+		    	}
+	
+		     	float split = 0.5F;
+	
+		     	if(getLidAngle(itemstack) < 0.0F)
+		     	{
+		     		setLidAngle(itemstack, 0.0F);
+		     	}
+		    }
+		}
+	}
 
 	@Override
 	public int getEnergyMultiplier(Object... data) 
@@ -648,5 +683,71 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		}
 		
 		return itemStack.stackTagCompound.getBoolean("locked");
+	}
+	
+	@Override
+	public void setOpen(ItemStack itemStack, boolean open) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setBoolean("open", open);
+	}
+
+	@Override
+	public boolean getOpen(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return false; 
+		}
+		
+		return itemStack.stackTagCompound.getBoolean("open");
+	}
+	
+	@Override
+	public void setLidAngle(ItemStack itemStack, float lidAngle) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setFloat("lidAngle", lidAngle);
+	}
+
+	@Override
+	public float getLidAngle(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0.0F; 
+		}
+		
+		return itemStack.stackTagCompound.getFloat("lidAngle");
+	}
+	
+	@Override
+	public void setPrevLidAngle(ItemStack itemStack, float prevLidAngle) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setFloat("prevLidAngle", prevLidAngle);
+	}
+
+	@Override
+	public float getPrevLidAngle(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0.0F; 
+		}
+		
+		return itemStack.stackTagCompound.getFloat("prevLidAngle");
 	}
 }

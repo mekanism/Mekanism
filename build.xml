@@ -27,7 +27,6 @@
 				<exclude name=".git/**"/>
 				<exclude name="**/*.xml"/>
 			</fileset>
-
 		</copy>
 
 		<mkdir dir="coreContents"/>
@@ -41,17 +40,17 @@
 		<replace dir="${dir.mcp}/src/minecraft" token="@BUILD@" value="${env.BUILD_NUMBER}"/>
 
 		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
-			<arg line="recompile.bat" />
+			<arg line="recompile.bat"/>
 		</exec>
 		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
-			<arg line="reobfuscate_srg.bat" />
+			<arg line="reobfuscate_srg.bat"/>
 		</exec>
 
 		<exec dir="${dir.mcp}" executable="bash" osfamily="unix">
-			<arg line="recompile.sh" />
+			<arg line="recompile.sh"/>
 		</exec>
 		<exec dir="${dir.mcp}" executable="bash" osfamily="unix">
-			<arg line="reobfuscate_srg.sh" />
+			<arg line="reobfuscate_srg.sh"/>
 		</exec>
 
 		<copy todir="coreContents">
@@ -62,9 +61,7 @@
 
 			<fileset dir="${dir.development}bin/minecraft"/>
 
-			<fileset dir="${dir.development}etc/core">
-			</fileset>
-
+			<fileset dir="${dir.development}etc/core"/>
 		</copy>
 
 		<copy todir="generatorsContents">
@@ -73,7 +70,6 @@
 			</fileset>
 
 			<fileset dir="${dir.development}etc/generators"/>
-
 		</copy>
 
 		<copy todir="toolsContents">
@@ -82,7 +78,6 @@
 			</fileset>
 
 			<fileset dir="${dir.development}etc/tools"/>
-
 		</copy>
 
 		<copy todir="mdkContents">
@@ -107,8 +102,9 @@
 			<fileset dir="mdkContents"/>
 		</zip>
 
-		<echo file="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/info.txt" append="true" >
-		@ ${env.BUILD_NUMBER} ${version.minecraft} ${file.core} ${file.generators} ${file.tools} ${file.mdk}</echo>
+		<echo file="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/info.txt" append="true">
+			@ ${env.BUILD_NUMBER} ${version.minecraft} ${file.core} ${file.generators} ${file.tools} ${file.mdk}
+		</echo>
 
 		<copy todir="output" file="build.properties"/>
 	</target>
