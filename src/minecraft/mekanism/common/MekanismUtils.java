@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
+import mekanism.api.BlockVector;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.InfuseObject;
@@ -715,7 +716,7 @@ public final class MekanismUtils
      * @param blockTwo - second block
      * @return distance between the two blocks
      */
-    public static int getDistance(BlockWrapper blockOne, BlockWrapper blockTwo)
+    public static int getDistance(BlockVector blockOne, BlockVector blockTwo)
     {
 	    int subX = blockOne.xCoord - blockTwo.xCoord;
 	    int subY = blockOne.yCoord - blockTwo.yCoord;

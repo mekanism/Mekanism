@@ -1,6 +1,5 @@
 package mekanism.api;
 
-
 public class SideData 
 {
 	/** The color of this SideData */

@@ -1,18 +1,18 @@
-package mekanism.common;
+package mekanism.api;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
-public class BlockWrapper 
+public class BlockVector 
 {
 	public int xCoord;
 	public int yCoord;
 	public int zCoord;
 	public int dimensionId;
 	
-	public BlockWrapper(int x, int y, int z)
+	public BlockVector(int x, int y, int z)
 	{
 		xCoord = x;
 		yCoord = y;
@@ -20,7 +20,7 @@ public class BlockWrapper
 		dimensionId = 0;
 	}
 	
-	public BlockWrapper(int x, int y, int z, int dimension)
+	public BlockVector(int x, int y, int z, int dimension)
 	{
 		xCoord = x;
 		yCoord = y;
@@ -41,29 +41,29 @@ public class BlockWrapper
 		nbtTags.setInteger("dimensionId", dimensionId);
 	}
 	
-	public BlockWrapper getFromSide(ForgeDirection side)
+	public BlockVector getFromSide(ForgeDirection side)
 	{
-		return new BlockWrapper(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
+		return new BlockVector(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
 	}
 	
-	public static BlockWrapper get(TileEntity tileEntity)
+	public static BlockVector get(TileEntity tileEntity)
 	{
-		return new BlockWrapper(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
+		return new BlockVector(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
 	}
 	
-	public static BlockWrapper read(NBTTagCompound nbtTags)
+	public static BlockVector read(NBTTagCompound nbtTags)
 	{
-		return new BlockWrapper(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
+		return new BlockVector(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
 	}
 	
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof BlockWrapper && 
-				((BlockWrapper)obj).xCoord == xCoord && 
-				((BlockWrapper)obj).yCoord == yCoord && 
-				((BlockWrapper)obj).zCoord == zCoord && 
-				((BlockWrapper)obj).dimensionId == dimensionId;
+		return obj instanceof BlockVector && 
+				((BlockVector)obj).xCoord == xCoord && 
+				((BlockVector)obj).yCoord == yCoord && 
+				((BlockVector)obj).zCoord == zCoord && 
+				((BlockVector)obj).dimensionId == dimensionId;
 	}
 	
 	@Override
