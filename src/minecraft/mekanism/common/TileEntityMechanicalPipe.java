@@ -25,7 +25,13 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 {
 	public LiquidTank dummyTank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME);
 	
+	public LiquidStack refLiquid = null;
+	
 	public boolean isActive = false;
+	
+	public float liquidScale;
+	
+	public float prevRoundedScale;
 	
 	@Override
 	public boolean canTransferLiquids(TileEntity fromTile)
@@ -34,9 +40,43 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 	
 	@Override
+	public void onTransfer(LiquidStack liquidStack)
+	{
+		if(liquidStack.isLiquidEqual(refLiquid))
+		{
+			liquidScale = Math.min(1, liquidScale+((float)liquidStack.amount/(float)3000));
+		}
+		else if(refLiquid == null)
+		{
+			refLiquid = liquidStack.copy();
+			liquidScale += Math.min(1, (float)liquidStack.amount/(float)3000);
+		}
+	}
+	
+	@Override
 	public void updateEntity()
 	{
-		if(!worldObj.isRemote && isActive)
+		if(liquidScale > 0)
+		{
+			liquidScale -= .01;
+		}
+		else {
+			refLiquid = null;
+		}
+		
+		if(worldObj.isRemote)
+		{
+			float roundedScale = liquidScale*16F;
+			
+			if(roundedScale != prevRoundedScale)
+			{
+				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+			}
+			
+			prevRoundedScale = roundedScale;
+		}
+		
+		if(isActive)
 		{
 			ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);
 			
@@ -60,7 +100,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	@Override
 	public boolean canUpdate()
 	{
-		return isActive;
+		return true;
 	}
 	
 	@Override

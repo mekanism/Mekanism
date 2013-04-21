@@ -48,6 +48,31 @@ public class BlockTransmitter extends Block
 	}
 	
 	@Override
+	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		
+		if(tileEntity instanceof TileEntityMechanicalPipe)
+		{
+			TileEntityMechanicalPipe mechanicalPipe = (TileEntityMechanicalPipe)tileEntity;
+			
+			if(mechanicalPipe.refLiquid != null)
+			{
+				if(mechanicalPipe.refLiquid.itemID == Block.lavaStill.blockID)
+				{
+					return (int)(mechanicalPipe.liquidScale*16F);
+				}
+			}
+		}
+		else if(tileEntity instanceof TileEntityUniversalCable)
+		{
+			return (int)(((TileEntityUniversalCable)tileEntity).liquidScale*16F);
+		}
+		
+		return 0;
+	}
+	
+	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);

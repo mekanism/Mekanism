@@ -104,7 +104,8 @@ public class CommonProxy
 	 */
 	public void loadUtilities()
 	{
-		TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
+		TickRegistry.registerTickHandler(new CommonPlayerTickHandler(), Side.SERVER);
+		TickRegistry.registerTickHandler(new CommonWorldTickHandler(), Side.SERVER);
 	}
 	
 	/**

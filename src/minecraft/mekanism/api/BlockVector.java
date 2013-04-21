@@ -73,6 +73,7 @@ public class BlockVector
 		code = 31 * code + xCoord;
 		code = 31 * code + yCoord;
 		code = 31 * code + zCoord;
+		code = 31 * code + dimensionId;
 		return code;
 	}
 }

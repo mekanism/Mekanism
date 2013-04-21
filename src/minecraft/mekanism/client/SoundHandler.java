@@ -121,7 +121,7 @@ public class SoundHandler
 	
 	/**
 	 * Create and return an instance of a Sound.
-	 * @param tileEntity -- the holder of this sound.
+	 * @param tileEntity - the holder of this sound.
 	 * @return Sound instance
 	 */
 	public void register(TileEntity tileEntity)

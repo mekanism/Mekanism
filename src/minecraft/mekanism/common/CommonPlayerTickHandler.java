@@ -4,11 +4,10 @@ import java.util.EnumSet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
-public class CommonTickHandler implements ITickHandler
+public class CommonPlayerTickHandler implements ITickHandler
 {
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
@@ -91,6 +90,6 @@ public class CommonTickHandler implements ITickHandler
 	@Override
 	public String getLabel()
 	{
-		return "MekanismCommon";
+		return "MekanismCommonPlayer";
 	}
 }

@@ -67,17 +67,19 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		ChargeUtils.charge(0, this);
 		ChargeUtils.discharge(1, this);
 		
-		if(!worldObj.isRemote)
+		TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+		
+		if(electricityStored > 0)
 		{
-			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
-			
-			if(electricityStored > 0)
+			if(tileEntity instanceof IUniversalCable)
 			{
-				if(tileEntity instanceof IUniversalCable)
-				{
-					setJoules(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
-				}
-				else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
+				setJoules(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
+				return;
+			}
+			
+			if(!worldObj.isRemote)
+			{
+				if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
 				{
 					if(electricityStored >= tier.OUTPUT)
 					{
@@ -95,40 +97,40 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	            	setJoules(electricityStored - transferEnergy);
 				}
 			}
+		}
+		
+		if(!worldObj.isRemote && tileEntity instanceof IConductor)
+		{
+			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+			ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
 			
-			if(tileEntity instanceof IConductor)
+			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 			{
-				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-				ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
-				
-				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+				if(direction != outputDirection)
 				{
-					if(direction != outputDirection)
+					IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
+					if(network != null)
 					{
-						IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
-						if(network != null)
-						{
-							inputNetworks.add(network);
-						}
+						inputNetworks.add(network);
 					}
 				}
-				
-				TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
+			}
+			
+			TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
 
-				if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
+			if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
+			{
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
+
+				if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
 				{
-					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
-
-					if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
-					{
-						outputNetwork.startProducing(this, Math.min(outputWatts, getJoules()) / getVoltage(), getVoltage());
-						setJoules(electricityStored - outputWatts);
-					}
-					else {
-						outputNetwork.stopProducing(this);
-					}
+					outputNetwork.startProducing(this, Math.min(outputWatts, getJoules()) / getVoltage(), getVoltage());
+					setJoules(electricityStored - outputWatts);
+				}
+				else {
+					outputNetwork.stopProducing(this);
 				}
 			}
 		}

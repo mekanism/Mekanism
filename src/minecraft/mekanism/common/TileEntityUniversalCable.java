@@ -20,6 +20,10 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 {
 	public CablePowerProvider powerProvider;
 	
+	public float liquidScale;
+	
+	public float prevRoundedScale;
+	
 	public TileEntityUniversalCable()
 	{
 		if(PowerFramework.currentFramework != null)
@@ -30,15 +34,42 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 	
 	@Override
+	public void updateEntity()
+	{
+		if(liquidScale > 0)
+		{
+			liquidScale -= .01;
+		}
+		
+		if(worldObj.isRemote)
+		{
+			float roundedScale = liquidScale*16F;
+			
+			if(roundedScale != prevRoundedScale)
+			{
+				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+			}
+			
+			prevRoundedScale = roundedScale;
+		}
+	}
+	
+	@Override
 	public boolean canTransferEnergy(TileEntity fromTile)
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
 	
 	@Override
+	public void onTransfer()
+	{
+		liquidScale = Math.min(1, liquidScale+.02F);
+	}
+	
+	@Override
 	public boolean canUpdate()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

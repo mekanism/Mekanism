@@ -19,6 +19,7 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
+import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.block.Block;
@@ -64,6 +65,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	
 	/** Type type of gas this block is dumping. */
 	public EnumGas dumpType;
+	
+	/** Previous tank full state. */
+	public boolean prevTankFull;
+	
+	/** Previous tank empty state. */
+	public boolean prevTankEmpty;
 
 	public TileEntityElectrolyticSeparator()
 	{
@@ -204,6 +211,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			setGas(dumpType, (getGas(dumpType) - 8));
 			spawnParticle();
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			if(prevTankFull != (waterTank.getLiquid() != null && waterTank.getLiquid().amount == waterTank.getCapacity()) || prevTankEmpty != (waterTank.getLiquid() == null || waterTank.getLiquid().amount == 0))
+			{
+				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+			}
+			
+			prevTankFull = waterTank.getLiquid() != null && waterTank.getLiquid().amount == waterTank.getCapacity();
+			prevTankEmpty = waterTank.getLiquid() == null;
 		}
 	}
 	

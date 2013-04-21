@@ -14,4 +14,9 @@ public interface IUniversalCable
 	 * @return if the cable can transfer energy
 	 */
 	public boolean canTransferEnergy(TileEntity fromTile);
+	
+	/**
+	 * Called when energy is transferred through this cable.
+	 */
+	public void onTransfer();
 }

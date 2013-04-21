@@ -50,6 +50,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	/** Random for this pump */
 	public Random random = new Random();
 	
+	public boolean prevEmpty;
+	
 	public TileEntityElectricPump()
 	{
 		super("Electric Pump", 10000);
@@ -60,8 +62,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public void onUpdate()
 	{
-		super.onUpdate();
-		
 		ChargeUtils.discharge(2, this);
 		
 		if(inventory[0] != null)
@@ -110,14 +110,28 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				if(suck(true))
 				{
 					clean(true);
+					PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 				}
 				else {
+					clean(true);
 					cleaningNodes.clear();
 				}
 			}
 		}
 		
-		/*if(liquidTank.getLiquid() != null) 
+		super.onUpdate();
+		
+		if(!worldObj.isRemote)
+		{
+			if(prevEmpty != (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount == 0))
+			{
+				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+			}
+			
+			prevEmpty = liquidTank.getLiquid() == null;
+		}
+		
+		if(liquidTank.getLiquid() != null) 
 		{
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
 			{
@@ -133,7 +147,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					}
 				}
 			}
-		}*/
+		}
 	}
 	
 	public boolean suck(boolean take)

@@ -84,17 +84,19 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		
+		TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+		
+		if(electricityStored > 0)
 		{
-			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
-			
-			if(electricityStored > 0)
+			if(tileEntity instanceof IUniversalCable)
 			{
-				if(tileEntity instanceof IUniversalCable)
-				{
-					setJoules(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
-				}
-				else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
+				setJoules(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
+			}
+			
+			if(!worldObj.isRemote)
+			{
+				if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
 				{
 					if(electricityStored >= output)
 					{
@@ -112,26 +114,26 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	            	setJoules(electricityStored - transferEnergy);
 				}
 			}
-			
-			if(tileEntity instanceof IConductor)
+		}
+		
+		if(!worldObj.isRemote && tileEntity instanceof IConductor)
+		{
+			ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+			TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
+
+			IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+
+			if(outputNetwork != null)
 			{
-				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-				TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
+				double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
 
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
-
-				if(outputNetwork != null)
+				if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
 				{
-					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
-
-					if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
-					{
-						outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
-						setJoules(electricityStored - outputWatts);
-					}
-					else {
-						outputNetwork.stopProducing(this);
-					}
+					outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
+					setJoules(electricityStored - outputWatts);
+				}
+				else {
+					outputNetwork.stopProducing(this);
 				}
 			}
 		}

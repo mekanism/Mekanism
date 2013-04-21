@@ -8,13 +8,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import universalelectricity.core.block.IElectricityStorage;
-
-import buildcraft.api.power.IPowerReceptor;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.IUniversalCable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.block.IElectricityStorage;
+import buildcraft.api.power.IPowerReceptor;
 
 public class EnergyTransferProtocol
 {
@@ -115,7 +116,10 @@ public class EnergyTransferProtocol
 			}
 		}
 		
-		iteratedCables.add(tile);
+		if(!iteratedCables.contains(tile))
+		{
+			iteratedCables.add(tile);
+		}
 		
 		TileEntity[] tubes = CableUtils.getConnectedCables(tile);
 		
@@ -139,41 +143,60 @@ public class EnergyTransferProtocol
 	{
 		loopThrough(pointer);
 		
+		boolean fill = FMLCommonHandler.instance().getEffectiveSide().isServer();
+		
 		Collections.shuffle(availableAcceptors);
 		
-		if(!availableAcceptors.isEmpty())
+		if(fill)
 		{
-			int divider = availableAcceptors.size();
-			double remaining = energyToSend % divider;
-			double currentRemaining = remaining;
-			double sending = (energyToSend-remaining)/divider;
-			
-			for(TileEntity acceptor : availableAcceptors)
+			if(!availableAcceptors.isEmpty())
 			{
-				double currentSending = sending;
+				int divider = availableAcceptors.size();
+				double remaining = energyToSend % divider;
+				double currentRemaining = remaining;
+				double sending = (energyToSend-remaining)/divider;
 				
-				if(currentRemaining > 0)
+				for(TileEntity acceptor : availableAcceptors)
 				{
-					currentSending += (currentRemaining/divider);
-					currentRemaining -= (currentRemaining/divider);
+					double currentSending = sending;
+					
+					if(currentRemaining > 0)
+					{
+						currentSending += (currentRemaining/divider);
+						currentRemaining -= (currentRemaining/divider);
+					}
+					
+					if(acceptor instanceof IStrictEnergyAcceptor)
+					{
+						energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
+					}
+					else if(acceptor instanceof IEnergySink)
+					{
+						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
+						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergy(MekanismUtils.toIC2Direction(acceptorDirections.get(acceptor).getOpposite()), (int)(toSend*Mekanism.TO_IC2))*Mekanism.FROM_IC2));
+					}
+					else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
+					{
+						IPowerReceptor receptor = (IPowerReceptor)acceptor;
+		            	double electricityNeeded = Math.min(receptor.powerRequest(acceptorDirections.get(acceptor).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+		            	float transferEnergy = (float)Math.min(electricityNeeded, currentSending);
+		            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
+						energyToSend -= transferEnergy;
+					}
 				}
-				
-				if(acceptor instanceof IStrictEnergyAcceptor)
+			}
+		}
+		else {
+			double needed = neededEnergy();
+			
+			if(needed > 0 && energyToSend > 0)
+			{
+				for(TileEntity tileEntity : iteratedCables)
 				{
-					energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
-				}
-				else if(acceptor instanceof IEnergySink)
-				{
-					double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
-					energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergy(MekanismUtils.toIC2Direction(acceptorDirections.get(acceptor).getOpposite()), (int)(toSend*Mekanism.TO_IC2))*Mekanism.FROM_IC2));
-				}
-				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
-				{
-					IPowerReceptor receptor = (IPowerReceptor)acceptor;
-	            	double electricityNeeded = Math.min(receptor.powerRequest(acceptorDirections.get(acceptor).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-	            	float transferEnergy = (float)Math.min(electricityNeeded, currentSending);
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
-					energyToSend -= transferEnergy;
+					if(tileEntity instanceof IUniversalCable)
+					{
+						((IUniversalCable)tileEntity).onTransfer();
+					}
 				}
 			}
 		}

@@ -34,6 +34,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	/** BuildCraft power provider. */
 	public IPowerProvider powerProvider;
 	
+	public boolean prevFull;
+	
+	public boolean prevEmpty;
+	
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
 	 * and a current amount of stored energy.
@@ -69,6 +73,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		{
 			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
 			setJoules(getJoules()+electricityPack.getWatts());
+			
+			if(prevFull != (getMaxEnergy() == getEnergy()) || prevEmpty != (getEnergy() == 0))
+			{
+				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+			}
+			
+			prevFull = getMaxEnergy() == getEnergy();
+			prevEmpty = getEnergy() == 0;
 		}
 	}
 
