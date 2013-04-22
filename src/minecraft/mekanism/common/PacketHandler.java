@@ -9,6 +9,7 @@ import java.util.Random;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 
+import mekanism.generators.common.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -16,6 +17,8 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.LiquidStack;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -388,6 +391,61 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
+			    else if(packetType == EnumPacketType.LIQUID_TRANSFER_UPDATE.id)
+			    {
+			    	try {
+			    		int x = dataStream.readInt();
+			    		int y = dataStream.readInt();
+			    		int z = dataStream.readInt();
+			    		
+			    		TileEntity tileEntity = entityplayer.worldObj.getBlockTileEntity(x, y, z);
+			    		LiquidStack liquidStack = new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			    		
+			    		if(tileEntity != null)
+			    		{
+			    			new LiquidTransferProtocol(tileEntity, null, liquidStack).clientUpdate(liquidStack);
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling liquid transfer update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ENERGY_TRANSFER_UPDATE.id)
+			    {
+			    	try {
+			    		int x = dataStream.readInt();
+			    		int y = dataStream.readInt();
+			    		int z = dataStream.readInt();
+			    		
+			    		TileEntity tileEntity = entityplayer.worldObj.getBlockTileEntity(x, y, z);
+			    		
+			    		if(tileEntity != null)
+			    		{
+			    			new EnergyTransferProtocol(tileEntity, null, new ArrayList()).clientUpdate();
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE.id)
+			    {
+			    	try {
+			    		int x = dataStream.readInt();
+			    		int y = dataStream.readInt();
+			    		int z = dataStream.readInt();
+			    		
+			    		TileEntityElectrolyticSeparator tileEntity = (TileEntityElectrolyticSeparator)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+			    		
+			    		if(tileEntity != null)
+			    		{
+			    			tileEntity.spawnParticle();
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");
 				e.printStackTrace();
@@ -520,8 +578,13 @@ public class PacketHandler implements IPacketHandler
             packet.data = bytes.toByteArray();
             packet.length = packet.data.length;
             
-            if(distance == 0) PacketDispatcher.sendPacketToAllPlayers(packet);
-            else PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+            if(distance == 0)
+            {
+            	PacketDispatcher.sendPacketToAllPlayers(packet);
+            }
+            else {
+            	PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
+            }
         } catch (IOException e) {
         	System.err.println("[Mekanism] Error while writing tile entity packet.");
         	e.printStackTrace();
@@ -823,6 +886,92 @@ public class PacketHandler implements IPacketHandler
         if(Mekanism.logPackets)
         {
         	System.out.println("[Mekanism] Sent electric chest lock packet to server.");
+        }
+	}
+	
+	/**
+	 * Sends a packet to the client-side with a LiquidTransferProtocol's information.  Used for render updates.
+	 * @param head - head TileEntity of the calculation
+	 * @param resource - the LiquidStack transferred by the server
+	 */
+	public static void sendLiquidTransferUpdate(TileEntity head, LiquidStack resource)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.LIQUID_TRANSFER_UPDATE.id);
+        	
+        	output.writeInt(head.xCoord);
+        	output.writeInt(head.yCoord);
+        	output.writeInt(head.zCoord);
+        	
+        	output.writeInt(resource.itemID);
+        	output.writeInt(resource.amount);
+        	output.writeInt(resource.itemMeta);
+        	
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = "Mekanism";
+            packet.data = bytes.toByteArray();
+            packet.length = packet.data.length;
+        	PacketDispatcher.sendPacketToAllPlayers(packet);
+        } catch (IOException e) {
+        	System.err.println("[Mekanism] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+	}
+	
+	/**
+	 * Sends a packet to the client-side with an EnergyTransferProtocol's information.  Used for render updates.
+	 * @param head - head TileEntity of the calculation
+	 */
+	public static void sendEnergyTransferUpdate(TileEntity head)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.ENERGY_TRANSFER_UPDATE.id);
+        	
+        	output.writeInt(head.xCoord);
+        	output.writeInt(head.yCoord);
+        	output.writeInt(head.zCoord);
+        	
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = "Mekanism";
+            packet.data = bytes.toByteArray();
+            packet.length = packet.data.length;
+        	PacketDispatcher.sendPacketToAllPlayers(packet);
+        } catch (IOException e) {
+        	System.err.println("[Mekanism] Error while writing tile entity packet.");
+        	e.printStackTrace();
+        }
+	}
+	
+	/**
+	 * Sends a request to clients near an Electrolytic Separator to emit a gas dump particle.
+	 * @param tileEntity - TileEntity who is emitting the particle
+	 */
+	public static void sendElectrolyticSeparatorParticle(TileEntityElectrolyticSeparator tileEntity)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE.id);
+        	
+        	output.writeInt(tileEntity.xCoord);
+        	output.writeInt(tileEntity.yCoord);
+        	output.writeInt(tileEntity.zCoord);
+        	
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = "Mekanism";
+            packet.data = bytes.toByteArray();
+            packet.length = packet.data.length;
+        	PacketDispatcher.sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 40, tileEntity.worldObj.provider.dimensionId, packet);
+        } catch (IOException e) {
+        	System.err.println("[Mekanism] Error while writing tile entity packet.");
+        	e.printStackTrace();
         }
 	}
 	

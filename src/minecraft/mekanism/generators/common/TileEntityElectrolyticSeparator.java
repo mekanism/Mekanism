@@ -6,6 +6,7 @@ import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
@@ -65,12 +66,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	
 	/** Type type of gas this block is dumping. */
 	public EnumGas dumpType;
-	
-	/** Previous tank full state. */
-	public boolean prevTankFull;
-	
-	/** Previous tank empty state. */
-	public boolean prevTankEmpty;
 
 	public TileEntityElectrolyticSeparator()
 	{
@@ -209,23 +204,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				}
 			}
 			
-			if(prevTankFull != (waterTank.getLiquid() != null && waterTank.getLiquid().amount == waterTank.getCapacity()) || prevTankEmpty != (waterTank.getLiquid() == null || waterTank.getLiquid().amount == 0))
-			{
-				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
-			}
-			
-			prevTankFull = waterTank.getLiquid() != null && waterTank.getLiquid().amount == waterTank.getCapacity();
-			prevTankEmpty = waterTank.getLiquid() == null;
-		}
-		
-		if(dumpType != EnumGas.NONE && getGas(dumpType) > 0)
-		{
-			if(!worldObj.isRemote)
+			if(dumpType != EnumGas.NONE && getGas(dumpType) > 0)
 			{
 				setGas(dumpType, (getGas(dumpType) - 8));
+				
+				if(new Random().nextInt(3) == 2)
+				{
+					PacketHandler.sendElectrolyticSeparatorParticle(this);
+				}
 			}
-			
-			spawnParticle();
 		}
 	}
 	

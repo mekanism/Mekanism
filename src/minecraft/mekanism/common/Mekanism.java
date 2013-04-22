@@ -49,7 +49,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Mekanism mod -- adds in Tools, Armor, Weapons, Machines, and Magic. Universal source.
+ * Mekanism - the mod in which no true definition fits.
  * @author AidanBrady
  *
  */

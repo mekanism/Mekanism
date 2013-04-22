@@ -37,12 +37,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	/** The amount of electricity this machine can produce with a unit of fuel. */
 	public final int GENERATION = 80;
 	
-	/** Previous tank full state. */
-	public boolean prevTankFull;
-	
-	/** Previous tank empty state. */
-	public boolean prevTankEmpty;
-	
 	public TileEntityHeatGenerator()
 	{
 		super("Heat Generator", 160000, 160);
@@ -113,14 +107,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			else {
 				setActive(false);
 			}
-			
-			if(prevTankFull != (lavaTank.getLiquid() != null && lavaTank.getLiquid().amount == lavaTank.getCapacity()) || prevTankEmpty != (lavaTank.getLiquid() == null || lavaTank.getLiquid().amount == 0))
-			{
-				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
-			}
-			
-			prevTankFull = lavaTank.getLiquid() != null && lavaTank.getLiquid().amount == lavaTank.getCapacity();
-			prevTankEmpty = lavaTank.getLiquid() == null;
 		}
 	}
 	

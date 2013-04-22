@@ -143,6 +143,23 @@ public class LiquidTransferProtocol
 	}
 	
 	/**
+	 * Updates the client-side pipes for rendering.
+	 * @param transferred - the LiquidStack of server-side transferred liquid
+	 */
+	public void clientUpdate(LiquidStack transferred)
+	{
+		loopThrough(pointer);
+		
+		for(TileEntity tileEntity : iteratedPipes)
+		{
+			if(tileEntity instanceof IMechanicalPipe)
+			{
+				((IMechanicalPipe)tileEntity).onTransfer(transferred);
+			}
+		}
+	}
+	
+	/**
 	 * Runs the protocol and distributes the liquid.
 	 * @return liquid transferred
 	 */
@@ -200,17 +217,11 @@ public class LiquidTransferProtocol
 			}
 		}
 		
-		if(liquidSent > 0)
+		if(liquidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			for(TileEntity tileEntity : iteratedPipes)
-			{
-				if(tileEntity instanceof IMechanicalPipe)
-				{
-					LiquidStack sendStack = liquidToSend.copy();
-					sendStack.amount = liquidSent;
-					((IMechanicalPipe)tileEntity).onTransfer(sendStack);
-				}
-			}
+			LiquidStack sendStack = liquidToSend.copy();
+			sendStack.amount = liquidSent;
+			PacketHandler.sendLiquidTransferUpdate(pointer, sendStack);
 		}
 		
 		return liquidSent;

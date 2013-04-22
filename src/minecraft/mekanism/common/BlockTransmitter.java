@@ -60,13 +60,13 @@ public class BlockTransmitter extends Block
 			{
 				if(mechanicalPipe.refLiquid.itemID == Block.lavaStill.blockID)
 				{
-					return (int)(mechanicalPipe.liquidScale*16F);
+					return (int)(mechanicalPipe.liquidScale*15F);
 				}
 			}
 		}
 		else if(tileEntity instanceof TileEntityUniversalCable)
 		{
-			return (int)(((TileEntityUniversalCable)tileEntity).liquidScale*16F);
+			return (int)(((TileEntityUniversalCable)tileEntity).liquidScale*15F);
 		}
 		
 		return 0;

@@ -47,11 +47,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
 	public Set<BlockVector> cleaningNodes = new HashSet<BlockVector>();
 	
-	/** Random for this pump */
-	public Random random = new Random();
-	
-	public boolean prevEmpty;
-	
 	public TileEntityElectricPump()
 	{
 		super("Electric Pump", 10000);
@@ -120,16 +115,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		}
 		
 		super.onUpdate();
-		
-		if(!worldObj.isRemote)
-		{
-			if(prevEmpty != (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount == 0))
-			{
-				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
-			}
-			
-			prevEmpty = liquidTank.getLiquid() == null;
-		}
 		
 		if(liquidTank.getLiquid() != null) 
 		{

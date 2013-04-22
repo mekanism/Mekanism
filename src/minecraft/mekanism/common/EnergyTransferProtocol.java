@@ -10,6 +10,7 @@ import java.util.Map;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+import mekanism.api.IMechanicalPipe;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUniversalCable;
 import net.minecraft.tileentity.TileEntity;
@@ -136,6 +137,22 @@ public class EnergyTransferProtocol
 	}
 	
 	/**
+	 * Updates the client-side cables for rendering.
+	 */
+	public void clientUpdate()
+	{
+		loopThrough(pointer);
+		
+		for(TileEntity tileEntity : iteratedCables)
+		{
+			if(tileEntity instanceof IUniversalCable)
+			{
+				((IUniversalCable)tileEntity).onTransfer();
+			}
+		}
+	}
+	
+	/**
 	 * Runs the protocol and distributes the energy.
 	 * @return rejected energy
 	 */
@@ -185,15 +202,9 @@ public class EnergyTransferProtocol
 			}
 		}
 		
-		if(prevNeeded > 0 && prevSending > 0)
+		if(prevNeeded > 0 && prevSending > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			for(TileEntity tileEntity : iteratedCables)
-			{
-				if(tileEntity instanceof IUniversalCable)
-				{
-					((IUniversalCable)tileEntity).onTransfer();
-				}
-			}
+			PacketHandler.sendEnergyTransferUpdate(pointer);
 		}
 		
 		return energyToSend;

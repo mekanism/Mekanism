@@ -25,8 +25,6 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 {
 	public LiquidTank dummyTank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME);
 	
-	public LiquidStack prevLiquid;
-	
 	public LiquidStack refLiquid = null;
 	
 	public boolean isActive = false;
@@ -58,16 +56,14 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	@Override
 	public void updateEntity()
 	{
-		if(!worldObj.isRemote)
+		if(worldObj.isRemote)
 		{
-			if(liquidScale != prevScale || refLiquid != prevLiquid)
+			if(liquidScale != prevScale)
 			{
 				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 			}
 		
 			prevScale = liquidScale;
-			prevLiquid = refLiquid;
 			
 			if(liquidScale > 0)
 			{
@@ -76,7 +72,8 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 			else {
 				refLiquid = null;
 			}
-			
+		}	
+		else {		
 			if(isActive)
 			{
 				ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);

@@ -2,25 +2,20 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
+import mekanism.api.IUniversalCable;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 import buildcraft.api.power.PowerProvider;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import mekanism.api.IUniversalCable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor, ITileNetwork
+public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
 {
 	public CablePowerProvider powerProvider;
 	
@@ -40,12 +35,11 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public void updateEntity()
 	{
-		if(!worldObj.isRemote)
+		if(worldObj.isRemote)
 		{
 			if(liquidScale != prevScale)
 			{
 				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 			}
 			
 			prevScale = liquidScale;
@@ -55,30 +49,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 				liquidScale -= .01;
 			}
 		}
-	}
-	
-	@Override
-	public void validate()
-	{
-		super.validate();
-		
-		if(worldObj.isRemote)
-		{
-			PacketHandler.sendDataRequest(this);
-		}
-	}
-	
-	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
-	{
-		liquidScale = dataStream.readFloat();
-	}
-	
-	@Override
-	public ArrayList getNetworkedData(ArrayList data)
-	{
-		data.add(liquidScale);
-		return data;
 	}
 	
 	@Override
