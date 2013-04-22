@@ -43,82 +43,84 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		super.onUpdate();
 		
-		ChargeUtils.discharge(1, this);
-		
-		if(inventory[3] != null)
+		if(worldObj.isRemote)
 		{
-			if(inventory[3].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
+			System.out.println(electricityStored);
+		}
+		
+		if(!worldObj.isRemote)
+		{
+			ChargeUtils.discharge(1, this);
+			
+			if(inventory[3] != null)
 			{
-				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				if(inventory[3].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
 				{
-					upgradeTicks++;
-				}
-				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-				{
-					upgradeTicks = 0;
-					energyMultiplier++;
-					
-					inventory[3].stackSize--;
-					
-					if(inventory[3].stackSize == 0)
+					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
-						inventory[3] = null;
+						upgradeTicks++;
+					}
+					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+					{
+						upgradeTicks = 0;
+						energyMultiplier++;
+						
+						inventory[3].stackSize--;
+						
+						if(inventory[3].stackSize == 0)
+						{
+							inventory[3] = null;
+						}
 					}
 				}
-			}
-			else if(inventory[3].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-			{
-				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				else if(inventory[3].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
 				{
-					upgradeTicks++;
-				}
-				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-				{
-					upgradeTicks = 0;
-					speedMultiplier++;
-					
-					inventory[3].stackSize--;
-					
-					if(inventory[3].stackSize == 0)
+					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
-						inventory[3] = null;
+						upgradeTicks++;
 					}
+					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+					{
+						upgradeTicks = 0;
+						speedMultiplier++;
+						
+						inventory[3].stackSize--;
+						
+						if(inventory[3].stackSize == 0)
+						{
+							inventory[3] = null;
+						}
+					}
+				}
+				else {
+					upgradeTicks = 0;
 				}
 			}
 			else {
 				upgradeTicks = 0;
 			}
-		}
-		else {
-			upgradeTicks = 0;
-		}
-		
-		if(electricityStored >= ENERGY_PER_TICK)
-		{
-			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+			
+			if(electricityStored >= ENERGY_PER_TICK)
 			{
-				operatingTicks++;
-				electricityStored -= ENERGY_PER_TICK;
-			}
-			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
-			{
-				if(!worldObj.isRemote)
+				if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				{
+					operatingTicks++;
+					electricityStored -= ENERGY_PER_TICK;
+				}
+				else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operate();
+					
+					operatingTicks = 0;
+					electricityStored -= ENERGY_PER_TICK;
 				}
-				
-				operatingTicks = 0;
-				electricityStored -= ENERGY_PER_TICK;
 			}
-		}
-		
-		if(!canOperate())
-		{
-			operatingTicks = 0;
-		}
-		
-		if(!worldObj.isRemote)
-		{
+			
+			if(!canOperate())
+			{
+				operatingTicks = 0;
+			}
+			
 			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
 			{
 				setActive(true);

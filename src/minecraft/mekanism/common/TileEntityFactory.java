@@ -104,112 +104,102 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			Mekanism.proxy.registerSound(this);
 		}
 		
-		boolean testActive = false;
-		
-		for(int i : progress)
+		if(!worldObj.isRemote)
 		{
-			if(i > 0)
+			ChargeUtils.discharge(1, this);
+			
+			if(inventory[0] != null)
 			{
-				testActive = true;
-			}
-		}
-		
-		ChargeUtils.discharge(1, this);
-		
-		if(inventory[0] != null)
-		{
-			if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
-			{
-				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
 				{
-					upgradeTicks++;
-				}
-				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-				{
-					upgradeTicks = 0;
-					energyMultiplier++;
-					
-					inventory[0].stackSize--;
-					
-					if(inventory[0].stackSize == 0)
+					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
-						inventory[0] = null;
+						upgradeTicks++;
+					}
+					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+					{
+						upgradeTicks = 0;
+						energyMultiplier++;
+						
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
+						}
 					}
 				}
-			}
-			else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-			{
-				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
 				{
-					upgradeTicks++;
-				}
-				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-				{
-					upgradeTicks = 0;
-					speedMultiplier++;
-					
-					inventory[0].stackSize--;
-					
-					if(inventory[0].stackSize == 0)
+					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
-						inventory[0] = null;
+						upgradeTicks++;
 					}
+					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+					{
+						upgradeTicks = 0;
+						speedMultiplier++;
+						
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
+						}
+					}
+				}
+				else {
+					upgradeTicks = 0;
 				}
 			}
 			else {
 				upgradeTicks = 0;
 			}
-		}
-		else {
-			upgradeTicks = 0;
-		}
-		
-		for(int process = 0; process < tier.processes; process++)
-		{
-			if(electricityStored >= ENERGY_PER_TICK)
+			
+			for(int process = 0; process < tier.processes; process++)
 			{
-				if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				if(electricityStored >= ENERGY_PER_TICK)
 				{
-					progress[process]++;
-					electricityStored -= ENERGY_PER_TICK;
-				}
-				else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
-				{
-					if(!worldObj.isRemote)
+					if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+					{
+						progress[process]++;
+						electricityStored -= ENERGY_PER_TICK;
+					}
+					else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
+						
+						progress[process] = 0;
+						electricityStored -= ENERGY_PER_TICK;
 					}
-					
-					progress[process] = 0;
-					electricityStored -= ENERGY_PER_TICK;
 				}
-			}
-			
-			if(!canOperate(getInputSlot(process), getOutputSlot(process)))
-			{
-				progress[process] = 0;
-			}
-		}
-		
-		if(!worldObj.isRemote)
-		{
-			boolean hasOperation = false;
-			
-			for(int i = 0; i < tier.processes; i++)
-			{
-				if(canOperate(getInputSlot(i), getOutputSlot(i)))
+				
+				if(!canOperate(getInputSlot(process), getOutputSlot(process)))
 				{
-					hasOperation = true;
-					break;
+					progress[process] = 0;
 				}
 			}
 			
-			if(hasOperation && electricityStored >= ENERGY_PER_TICK)
+			if(!worldObj.isRemote)
 			{
-				setActive(true);
-			}
-			else {
-				setActive(false);
+				boolean hasOperation = false;
+				
+				for(int i = 0; i < tier.processes; i++)
+				{
+					if(canOperate(getInputSlot(i), getOutputSlot(i)))
+					{
+						hasOperation = true;
+						break;
+					}
+				}
+				
+				if(hasOperation && electricityStored >= ENERGY_PER_TICK)
+				{
+					setActive(true);
+				}
+				else {
+					setActive(false);
+				}
 			}
 		}
 	}

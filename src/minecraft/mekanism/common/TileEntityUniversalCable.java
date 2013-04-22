@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -14,15 +16,17 @@ import universalelectricity.core.vector.VectorHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidStack;
 import mekanism.api.IUniversalCable;
 
-public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
+public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor, ITileNetwork
 {
 	public CablePowerProvider powerProvider;
 	
 	public float liquidScale;
 	
-	public float prevRoundedScale;
+	public float prevScale;
 	
 	public TileEntityUniversalCable()
 	{
@@ -36,22 +40,45 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public void updateEntity()
 	{
-		if(liquidScale > 0)
+		if(!worldObj.isRemote)
 		{
-			liquidScale -= .01;
+			if(liquidScale != prevScale)
+			{
+				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+			}
+			
+			prevScale = liquidScale;
+			
+			if(liquidScale > 0)
+			{
+				liquidScale -= .01;
+			}
 		}
+	}
+	
+	@Override
+	public void validate()
+	{
+		super.validate();
 		
 		if(worldObj.isRemote)
 		{
-			float roundedScale = liquidScale*16F;
-			
-			if(roundedScale != prevRoundedScale)
-			{
-				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-			}
-			
-			prevRoundedScale = roundedScale;
+			PacketHandler.sendDataRequest(this);
 		}
+	}
+	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		liquidScale = dataStream.readFloat();
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		data.add(liquidScale);
+		return data;
 	}
 	
 	@Override

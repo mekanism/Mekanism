@@ -54,24 +54,44 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	{
 		super.onUpdate();
 		
-		ChargeUtils.charge(1, this);
-		
-		if(inventory[0] != null)
+		if(!worldObj.isRemote)
 		{
-			LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
+			ChargeUtils.charge(1, this);
 			
-			if(liquid != null && liquid.itemID == Block.lavaStill.blockID)
+			if(inventory[0] != null)
 			{
-				if(lavaTank.getLiquid() == null || lavaTank.getLiquid().amount+liquid.amount <= lavaTank.getCapacity())
+				LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
+				
+				if(liquid != null && liquid.itemID == Block.lavaStill.blockID)
 				{
-					lavaTank.fill(liquid, true);
-					
-					if(inventory[0].isItemEqual(new ItemStack(Item.bucketLava)))
+					if(lavaTank.getLiquid() == null || lavaTank.getLiquid().amount+liquid.amount <= lavaTank.getCapacity())
 					{
-						inventory[0] = new ItemStack(Item.bucketEmpty);
+						lavaTank.fill(liquid, true);
+						
+						if(inventory[0].isItemEqual(new ItemStack(Item.bucketLava)))
+						{
+							inventory[0] = new ItemStack(Item.bucketEmpty);
+						}
+						else {
+							inventory[0].stackSize--;
+							
+							if(inventory[0].stackSize == 0)
+							{
+								inventory[0] = null;
+							}
+						}
 					}
-					else {
-						inventory[0].stackSize--;
+				}
+				else {
+					int fuel = getFuel(inventory[0]);
+					if(fuel > 0)
+					{
+						int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0);
+						if(fuel <= fuelNeeded)
+						{
+							lavaTank.fill(new LiquidStack(Block.lavaStill.blockID, fuel), true);
+							inventory[0].stackSize--;
+						}
 						
 						if(inventory[0].stackSize == 0)
 						{
@@ -80,46 +100,20 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					}
 				}
 			}
-			else {
-				int fuel = getFuel(inventory[0]);
-				if(fuel > 0)
-				{
-					int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0);
-					if(fuel <= fuelNeeded)
-					{
-						lavaTank.fill(new LiquidStack(Block.lavaStill.blockID, fuel), true);
-						inventory[0].stackSize--;
-					}
-					
-					if(inventory[0].stackSize == 0)
-					{
-						inventory[0] = null;
-					}
-				}
-			}
-		}
-		
-		setJoules(electricityStored + getEnvironmentBoost());
-		
-		if(canOperate())
-		{	
-			if(!worldObj.isRemote)
-			{
-				setActive(true);
-			}
 			
-			lavaTank.drain(10, true);
-			setJoules(electricityStored + GENERATION);
-		}
-		else {
-			if(!worldObj.isRemote)
-			{
+			setJoules(electricityStored + getEnvironmentBoost());
+			
+			if(canOperate())
+			{	
+				setActive(true);
+				
+				lavaTank.drain(10, true);
+				setJoules(electricityStored + GENERATION);
+			}
+			else {
 				setActive(false);
 			}
-		}
-		
-		if(!worldObj.isRemote)
-		{
+			
 			if(prevTankFull != (lavaTank.getLiquid() != null && lavaTank.getLiquid().amount == lavaTank.getCapacity()) || prevTankEmpty != (lavaTank.getLiquid() == null || lavaTank.getLiquid().amount == 0))
 			{
 				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));

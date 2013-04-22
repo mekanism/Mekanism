@@ -51,6 +51,12 @@ public class EntityObsidianTNT extends Entity
     }
     
     @Override
+    public boolean canBePushed()
+    {
+    	return true;
+    }
+    
+    @Override
     public void onUpdate()
     {
         prevPosX = posX;

@@ -25,13 +25,15 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 {
 	public LiquidTank dummyTank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME);
 	
+	public LiquidStack prevLiquid;
+	
 	public LiquidStack refLiquid = null;
 	
 	public boolean isActive = false;
 	
 	public float liquidScale;
 	
-	public float prevRoundedScale;
+	public float prevScale;
 	
 	@Override
 	public boolean canTransferLiquids(TileEntity fromTile)
@@ -56,41 +58,41 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	@Override
 	public void updateEntity()
 	{
-		if(liquidScale > 0)
+		if(!worldObj.isRemote)
 		{
-			liquidScale -= .01;
-		}
-		else {
-			refLiquid = null;
-		}
-		
-		if(worldObj.isRemote)
-		{
-			float roundedScale = liquidScale*16F;
-			
-			if(roundedScale != prevRoundedScale)
+			if(liquidScale != prevScale || refLiquid != prevLiquid)
 			{
 				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+			}
+		
+			prevScale = liquidScale;
+			prevLiquid = refLiquid;
+			
+			if(liquidScale > 0)
+			{
+				liquidScale -= .01;
+			}
+			else {
+				refLiquid = null;
 			}
 			
-			prevRoundedScale = roundedScale;
-		}
-		
-		if(isActive)
-		{
-			ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);
-			
-			for(ITankContainer container : connectedAcceptors)
+			if(isActive)
 			{
-				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container)).getOpposite();
+				ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);
 				
-				if(container != null)
+				for(ITankContainer container : connectedAcceptors)
 				{
-					LiquidStack received = container.drain(side, 100, false);
+					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container)).getOpposite();
 					
-					if(received != null && received.amount != 0)
+					if(container != null)
 					{
-						container.drain(side, new LiquidTransferProtocol(this, VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), side.getOpposite()), received).calculate(), true);
+						LiquidStack received = container.drain(side, 100, false);
+						
+						if(received != null && received.amount != 0)
+						{
+							container.drain(side, new LiquidTransferProtocol(this, VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), side.getOpposite()), received).calculate(), true);
+						}
 					}
 				}
 			}
@@ -118,12 +120,30 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		isActive = dataStream.readBoolean();
+		liquidScale = dataStream.readFloat();
+		
+		if(dataStream.readInt() == 1)
+		{
+			refLiquid = new LiquidStack(dataStream.readInt(), LiquidContainerRegistry.BUCKET_VOLUME, dataStream.readInt());
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		data.add(isActive);
+		data.add(liquidScale);
+		
+		if(refLiquid != null)
+		{
+			data.add(1);
+			data.add(refLiquid.itemID);
+			data.add(refLiquid.itemMeta);
+		}
+		else {
+			data.add(0);
+		}
+		
 		return data;
 	}
 	

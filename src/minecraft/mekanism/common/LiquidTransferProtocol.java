@@ -150,7 +150,6 @@ public class LiquidTransferProtocol
 	{
 		loopThrough(pointer);
 		
-		boolean fill = FMLCommonHandler.instance().getEffectiveSide().isServer();
 		Collections.shuffle(availableAcceptors);
 		
 		int liquidSent = 0;
@@ -187,7 +186,7 @@ public class LiquidTransferProtocol
 							tankRemaining--;
 						}
 						
-						liquidSent += acceptor.fill(acceptorDirections.get(acceptor), new LiquidStack(liquidToSend.itemID, tankCurrentSending, liquidToSend.itemMeta), fill);
+						liquidSent += acceptor.fill(acceptorDirections.get(acceptor), new LiquidStack(liquidToSend.itemID, tankCurrentSending, liquidToSend.itemMeta), true);
 					}
 				}
 				else {
@@ -195,13 +194,13 @@ public class LiquidTransferProtocol
 					{
 						ILiquidTank tank = acceptor.getTank(acceptorDirections.get(acceptor), liquidToSend);
 						
-						liquidSent += acceptor.fill(acceptorDirections.get(acceptor), new LiquidStack(liquidToSend.itemID, currentSending, liquidToSend.itemMeta), fill);
+						liquidSent += acceptor.fill(acceptorDirections.get(acceptor), new LiquidStack(liquidToSend.itemID, currentSending, liquidToSend.itemMeta), true);
 					}
 				}
 			}
 		}
 		
-		if(!fill && liquidSent > 0)
+		if(liquidSent > 0)
 		{
 			for(TileEntity tileEntity : iteratedPipes)
 			{
@@ -212,8 +211,6 @@ public class LiquidTransferProtocol
 					((IMechanicalPipe)tileEntity).onTransfer(sendStack);
 				}
 			}
-			
-			return 0;
 		}
 		
 		return liquidSent;

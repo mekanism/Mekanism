@@ -36,11 +36,9 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 		{
 			if(playersUsing > 0)
 			{
-				if(packetTick % 3 == 0)
-				{
-					PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
-				}
+				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 			}
+			
 			packetTick++;
 		}
 	}

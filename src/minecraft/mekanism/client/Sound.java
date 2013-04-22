@@ -135,7 +135,7 @@ public class Sound
     {
 		synchronized(Mekanism.audioHandler.sounds)
 		{
-			if(entityplayer.worldObj == tileEntity.worldObj)
+			if(entityplayer != null && tileEntity != null && entityplayer.worldObj == tileEntity.worldObj)
 			{
 		    	float volume = 0;
 		    	

@@ -43,50 +43,42 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.onUpdate();
 		
-		ChargeUtils.charge(1, this);
-		
-		if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
+		if(!worldObj.isRemote)
 		{
-			if(inventory[0].getItem() instanceof IStorageTank)
+			ChargeUtils.charge(1, this);
+			
+			if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 			{
-				IStorageTank item = (IStorageTank)inventory[0].getItem();
-				
-				if(item.canProvideGas(inventory[0], EnumGas.HYDROGEN) && item.getGasType(inventory[0]) == EnumGas.HYDROGEN)
+				if(inventory[0].getItem() instanceof IStorageTank)
 				{
-					int received = 0;
-					int hydrogenNeeded = MAX_HYDROGEN - hydrogenStored;
-					if(item.getRate() <= hydrogenNeeded)
-					{
-						received = item.removeGas(inventory[0], EnumGas.HYDROGEN, item.getRate());
-					}
-					else if(item.getRate() > hydrogenNeeded)
-					{
-						received = item.removeGas(inventory[0], EnumGas.HYDROGEN, hydrogenNeeded);
-					}
+					IStorageTank item = (IStorageTank)inventory[0].getItem();
 					
-					setGas(EnumGas.HYDROGEN, hydrogenStored + received);
+					if(item.canProvideGas(inventory[0], EnumGas.HYDROGEN) && item.getGasType(inventory[0]) == EnumGas.HYDROGEN)
+					{
+						int received = 0;
+						int hydrogenNeeded = MAX_HYDROGEN - hydrogenStored;
+						if(item.getRate() <= hydrogenNeeded)
+						{
+							received = item.removeGas(inventory[0], EnumGas.HYDROGEN, item.getRate());
+						}
+						else if(item.getRate() > hydrogenNeeded)
+						{
+							received = item.removeGas(inventory[0], EnumGas.HYDROGEN, hydrogenNeeded);
+						}
+						
+						setGas(EnumGas.HYDROGEN, hydrogenStored + received);
+					}
 				}
 			}
-		}
-		
-		if(hydrogenStored > MAX_HYDROGEN)
-		{
-			hydrogenStored = MAX_HYDROGEN;
-		}
-		
-		if(canOperate())
-		{
-			if(!worldObj.isRemote)
+			
+			if(canOperate())
 			{
 				setActive(true);
+				
+				hydrogenStored-=2;
+				setJoules(electricityStored + 200);
 			}
-			
-			hydrogenStored-=2;
-			setJoules(electricityStored + 200);
-		}
-		else {
-			if(!worldObj.isRemote)
-			{
+			else {
 				setActive(false);
 			}
 		}

@@ -143,60 +143,55 @@ public class EnergyTransferProtocol
 	{
 		loopThrough(pointer);
 		
-		boolean fill = FMLCommonHandler.instance().getEffectiveSide().isServer();
-		
 		Collections.shuffle(availableAcceptors);
 		
-		if(fill)
+		double prevNeeded = neededEnergy();
+		double prevSending = energyToSend;
+		
+		if(!availableAcceptors.isEmpty())
 		{
-			if(!availableAcceptors.isEmpty())
+			int divider = availableAcceptors.size();
+			double remaining = energyToSend % divider;
+			double currentRemaining = remaining;
+			double sending = (energyToSend-remaining)/divider;
+			
+			for(TileEntity acceptor : availableAcceptors)
 			{
-				int divider = availableAcceptors.size();
-				double remaining = energyToSend % divider;
-				double currentRemaining = remaining;
-				double sending = (energyToSend-remaining)/divider;
+				double currentSending = sending;
 				
-				for(TileEntity acceptor : availableAcceptors)
+				if(currentRemaining > 0)
 				{
-					double currentSending = sending;
-					
-					if(currentRemaining > 0)
-					{
-						currentSending += (currentRemaining/divider);
-						currentRemaining -= (currentRemaining/divider);
-					}
-					
-					if(acceptor instanceof IStrictEnergyAcceptor)
-					{
-						energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
-					}
-					else if(acceptor instanceof IEnergySink)
-					{
-						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
-						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergy(MekanismUtils.toIC2Direction(acceptorDirections.get(acceptor).getOpposite()), (int)(toSend*Mekanism.TO_IC2))*Mekanism.FROM_IC2));
-					}
-					else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
-					{
-						IPowerReceptor receptor = (IPowerReceptor)acceptor;
-		            	double electricityNeeded = Math.min(receptor.powerRequest(acceptorDirections.get(acceptor).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-		            	float transferEnergy = (float)Math.min(electricityNeeded, currentSending);
-		            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
-						energyToSend -= transferEnergy;
-					}
+					currentSending += (currentRemaining/divider);
+					currentRemaining -= (currentRemaining/divider);
+				}
+				
+				if(acceptor instanceof IStrictEnergyAcceptor)
+				{
+					energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
+				}
+				else if(acceptor instanceof IEnergySink)
+				{
+					double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
+					energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergy(MekanismUtils.toIC2Direction(acceptorDirections.get(acceptor).getOpposite()), (int)(toSend*Mekanism.TO_IC2))*Mekanism.FROM_IC2));
+				}
+				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
+				{
+					IPowerReceptor receptor = (IPowerReceptor)acceptor;
+	            	double electricityNeeded = Math.min(receptor.powerRequest(acceptorDirections.get(acceptor).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
+	            	float transferEnergy = (float)Math.min(electricityNeeded, currentSending);
+	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
+					energyToSend -= transferEnergy;
 				}
 			}
 		}
-		else {
-			double needed = neededEnergy();
-			
-			if(needed > 0 && energyToSend > 0)
+		
+		if(prevNeeded > 0 && prevSending > 0)
+		{
+			for(TileEntity tileEntity : iteratedCables)
 			{
-				for(TileEntity tileEntity : iteratedCables)
+				if(tileEntity instanceof IUniversalCable)
 				{
-					if(tileEntity instanceof IUniversalCable)
-					{
-						((IUniversalCable)tileEntity).onTransfer();
-					}
+					((IUniversalCable)tileEntity).onTransfer();
 				}
 			}
 		}

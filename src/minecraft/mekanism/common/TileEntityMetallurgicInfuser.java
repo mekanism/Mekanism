@@ -106,113 +106,108 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			Mekanism.proxy.registerSound(this);
 		}
 		
-		boolean testActive = operatingTicks > 0;
-		
-		ChargeUtils.discharge(4, this);
-		
-		if(inventory[0] != null)
+		if(!worldObj.isRemote)
 		{
-			if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
+			ChargeUtils.discharge(4, this);
+			
+			if(inventory[0] != null)
 			{
-				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
 				{
-					upgradeTicks++;
-				}
-				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-				{
-					upgradeTicks = 0;
-					energyMultiplier++;
-					
-					inventory[0].stackSize--;
-					
-					if(inventory[0].stackSize == 0)
+					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
-						inventory[0] = null;
+						upgradeTicks++;
+					}
+					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+					{
+						upgradeTicks = 0;
+						energyMultiplier++;
+						
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
+						}
 					}
 				}
-			}
-			else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-			{
-				if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
+				else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
 				{
-					upgradeTicks++;
-				}
-				else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-				{
-					upgradeTicks = 0;
-					speedMultiplier++;
-					
-					inventory[0].stackSize--;
-					
-					if(inventory[0].stackSize == 0)
+					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
-						inventory[0] = null;
+						upgradeTicks++;
 					}
+					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
+					{
+						upgradeTicks = 0;
+						speedMultiplier++;
+						
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
+						}
+					}
+				}
+				else {
+					upgradeTicks = 0;
 				}
 			}
 			else {
 				upgradeTicks = 0;
 			}
-		}
-		else {
-			upgradeTicks = 0;
-		}
-		
-		if(inventory[1] != null)
-		{
-			if(MekanismUtils.getInfuseObject(inventory[1]) != null)
+			
+			if(inventory[1] != null)
 			{
-				InfuseObject infuse = MekanismUtils.getInfuseObject(inventory[1]);
-				
-				if(type == InfusionType.NONE || type == infuse.type)
+				if(MekanismUtils.getInfuseObject(inventory[1]) != null)
 				{
-					if(infuseStored+infuse.stored <= MAX_INFUSE)
+					InfuseObject infuse = MekanismUtils.getInfuseObject(inventory[1]);
+					
+					if(type == InfusionType.NONE || type == infuse.type)
 					{
-						infuseStored+=infuse.stored;
-						type = infuse.type;
-						inventory[1].stackSize--;
-						
-			            if(inventory[1].stackSize <= 0)
-			            {
-			                inventory[1] = null;
-			            }
+						if(infuseStored+infuse.stored <= MAX_INFUSE)
+						{
+							infuseStored+=infuse.stored;
+							type = infuse.type;
+							inventory[1].stackSize--;
+							
+				            if(inventory[1].stackSize <= 0)
+				            {
+				                inventory[1] = null;
+				            }
+						}
 					}
 				}
 			}
-		}
-		
-		if(electricityStored >= ENERGY_PER_TICK)
-		{
-			if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+			
+			if(electricityStored >= ENERGY_PER_TICK)
 			{
-				operatingTicks++;
-				electricityStored -= ENERGY_PER_TICK;
-			}
-			else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
-			{
-				if(!worldObj.isRemote)
+				if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				{
+					operatingTicks++;
+					electricityStored -= ENERGY_PER_TICK;
+				}
+				else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operate();
+					
+					operatingTicks = 0;
+					electricityStored -= ENERGY_PER_TICK;
 				}
-				
-				operatingTicks = 0;
-				electricityStored -= ENERGY_PER_TICK;
 			}
-		}
-		
-		if(!canOperate())
-		{
-			operatingTicks = 0;
-		}
-		
-		if(infuseStored <= 0)
-		{
-			infuseStored = 0;
-			type = InfusionType.NONE;
-		}
-		
-		if(!worldObj.isRemote)
-		{
+			
+			if(!canOperate())
+			{
+				operatingTicks = 0;
+			}
+			
+			if(infuseStored <= 0)
+			{
+				infuseStored = 0;
+				type = InfusionType.NONE;
+			}
+			
 			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
 			{
 				setActive(true);
