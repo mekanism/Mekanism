@@ -64,7 +64,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 	
 	public int getStatus(ItemStack itemstack)
 	{
-		if (itemstack.stackTagCompound == null) 
+		if(itemstack.stackTagCompound == null) 
 		{ 
 			return 0;
 		}
@@ -74,7 +74,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 	
 	public void setStatus(ItemStack itemstack, int status)
 	{
-		if (itemstack.stackTagCompound == null)
+		if(itemstack.stackTagCompound == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -84,7 +84,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 	
 	public int getDigit(ItemStack itemstack, int index)
 	{
-		if (itemstack.stackTagCompound == null) 
+		if(itemstack.stackTagCompound == null) 
 		{ 
 			return 0; 
 		}
@@ -94,7 +94,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 	
 	public void setDigit(ItemStack itemstack, int index, int digit)
 	{
-		if (itemstack.stackTagCompound == null)
+		if(itemstack.stackTagCompound == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -106,5 +106,11 @@ public class ItemPortableTeleporter extends ItemEnergized
 	public ElectricityPack getProvideRequest(ItemStack itemStack)
 	{
 		return new ElectricityPack();
+	}
+	
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return false;
 	}
 }

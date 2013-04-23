@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.item.IItemElectric;
-
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransferProtocol;
+import mekanism.api.IEnergizedItem;
 import mekanism.generators.common.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,8 +17,8 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidStack;
+import universalelectricity.core.electricity.ElectricityPack;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -288,7 +286,7 @@ public class PacketHandler implements IPacketHandler
 				    		
 				    		if(useEnergy)
 				    		{
-				    			tileEntity.setJoules(tileEntity.getJoules() - 100);
+				    			tileEntity.setEnergy(tileEntity.getEnergy() - 100);
 				    		}
 				    		
 				    		MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, tileEntity, null, true);
@@ -300,7 +298,7 @@ public class PacketHandler implements IPacketHandler
 			    			{
 			    				if(useEnergy)
 			    				{
-			    					((IItemElectric)stack.getItem()).setJoules(((IItemElectric)stack.getItem()).getJoules(stack) - 100, stack);
+			    					((IEnergizedItem)stack.getItem()).setEnergy(stack, ((IEnergizedItem)stack.getItem()).getEnergy(stack) - 100);
 			    				}
 			    				
 			    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);

@@ -86,7 +86,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		
 		if(canOperate())
 		{
-			setJoules(electricityStored + getEnvironmentBoost());
+			setEnergy(electricityStored + getEnvironmentBoost());
 		}
 	}
 	

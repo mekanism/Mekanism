@@ -8,15 +8,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import mekanism.api.IMechanicalPipe;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUniversalCable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IElectricityStorage;
 import buildcraft.api.power.IPowerReceptor;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyTransferProtocol
 {
@@ -86,7 +83,7 @@ public class EnergyTransferProtocol
 				{
 					if(((IStrictEnergyAcceptor)acceptor).canReceiveEnergy(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite()))
 					{
-						if((((IElectricityStorage)acceptor).getMaxJoules() - ((IElectricityStorage)acceptor).getJoules()) > 0)
+						if((((IStrictEnergyAcceptor)acceptor).getMaxEnergy() - ((IStrictEnergyAcceptor)acceptor).getEnergy()) > 0)
 						{
 							availableAcceptors.add(acceptor);
 						}

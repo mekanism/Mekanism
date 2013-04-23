@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import mekanism.common.PacketHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * The actual protocol gas goes through when it is transferred via Pressurized Tubes.
@@ -142,9 +142,19 @@ public class GasTransferProtocol
 		
 		if(prevSending > gasToSend && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			PacketHandler.sendGasTransferUpdate(pointer, transferType);
+			MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this));
 		}
 		
 		return gasToSend;
+	}
+	
+	public static class GasTransferEvent extends Event
+	{
+		public final GasTransferProtocol transferProtocol;
+		
+		public GasTransferEvent(GasTransferProtocol protocol)
+		{
+			transferProtocol = protocol;
+		}
 	}
 }

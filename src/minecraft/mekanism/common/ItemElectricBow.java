@@ -2,8 +2,6 @@ package mekanism.common;
 
 import java.util.List;
 
-import universalelectricity.core.electricity.ElectricityPack;
-
 import mekanism.api.EnumColor;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -14,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import universalelectricity.core.electricity.ElectricityPack;
 
 public class ItemElectricBow extends ItemEnergized
 {
@@ -32,7 +31,7 @@ public class ItemElectricBow extends ItemEnergized
     @Override
     public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int itemUseCount)
     {
-    	if(!player.isSneaking() && getJoules(itemstack) > 0)
+    	if(getEnergy(itemstack) > 0)
     	{
 	        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
 	
@@ -47,7 +46,7 @@ public class ItemElectricBow extends ItemEnergized
 	                return;
 	            }
 	
-	            if (f > 1.0F)
+	            if(f > 1.0F)
 	            {
 	                f = 1.0F;
 	            }
@@ -61,7 +60,7 @@ public class ItemElectricBow extends ItemEnergized
 	            
 	            if(!player.capabilities.isCreativeMode)
 	            {
-	            	onProvide(new ElectricityPack((getFireState(itemstack) ? 1200 : 120)/120, 120), itemstack);
+	            	setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
 	            }
 	            
 	            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
@@ -81,12 +80,6 @@ public class ItemElectricBow extends ItemEnergized
 	            }
 	        }
     	}
-    }
-
-    @Override
-    public ItemStack onEaten(ItemStack itemstack, World world, EntityPlayer entityplayer)
-    {
-        return itemstack;
     }
 
     @Override
@@ -153,5 +146,11 @@ public class ItemElectricBow extends ItemEnergized
 	public ElectricityPack getProvideRequest(ItemStack itemStack)
 	{
 		return new ElectricityPack();
+	}
+	
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return false;
 	}
 }

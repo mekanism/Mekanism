@@ -76,33 +76,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		if(!worldObj.isRemote)
 		{
-			if(inventory[3] != null)
-			{
-				if(electricityStored < MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
-				{
-					setJoules(getJoules() + ElectricItemHelper.dechargeItem(inventory[3], getMaxJoules() - getJoules(), getVoltage()));
-					
-					if(Mekanism.hooks.IC2Loaded && inventory[3].getItem() instanceof IElectricItem)
-					{
-						IElectricItem item = (IElectricItem)inventory[3].getItem();
-						if(item.canProvideEnergy(inventory[3]))
-						{
-							double gain = ElectricItem.discharge(inventory[3], (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-							setJoules(electricityStored + gain);
-						}
-					}
-				}
-				if(inventory[3].itemID == Item.redstone.itemID && electricityStored+1000 <= MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY))
-				{
-					setJoules(electricityStored + 1000);
-					inventory[3].stackSize--;
-					
-		            if(inventory[3].stackSize <= 0)
-		            {
-		                inventory[3] = null;
-		            }
-				}
-			}
+			ChargeUtils.discharge(3, this);
 			
 			if(inventory[4] != null)
 			{

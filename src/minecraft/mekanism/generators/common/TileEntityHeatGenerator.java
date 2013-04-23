@@ -95,14 +95,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				}
 			}
 			
-			setJoules(electricityStored + getEnvironmentBoost());
+			setEnergy(electricityStored + getEnvironmentBoost());
 			
 			if(canOperate())
 			{	
 				setActive(true);
 				
 				lavaTank.drain(10, true);
-				setJoules(electricityStored + GENERATION);
+				setEnergy(electricityStored + GENERATION);
 			}
 			else {
 				setActive(false);

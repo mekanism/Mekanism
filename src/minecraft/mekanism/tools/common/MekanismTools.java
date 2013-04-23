@@ -25,7 +25,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.5.4", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.5.5", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismTools implements IModule
 {
@@ -33,7 +33,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(5, 5, 4);
+	public static Version versionNumber = new Version(5, 5, 5);
 	
     //Enums: Tools
     public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 100);

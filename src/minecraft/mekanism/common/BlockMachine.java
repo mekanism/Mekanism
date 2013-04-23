@@ -3,11 +3,7 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
-import buildcraft.api.tools.IToolWrench;
-
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.prefab.implement.IToolConfigurator;
-
+import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
 import mekanism.common.IFactory.RecipeType;
@@ -20,7 +16,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -28,7 +23,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ForgeHooks;
+import universalelectricity.prefab.implement.IToolConfigurator;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -694,8 +690,8 @@ public class BlockMachine extends BlockContainer
 	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
     	}
         
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
+        energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
         
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

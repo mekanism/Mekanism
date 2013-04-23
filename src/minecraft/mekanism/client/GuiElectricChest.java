@@ -1,20 +1,9 @@
 package mekanism.client;
 
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import universalelectricity.core.item.IItemElectric;
-
 import mekanism.api.EnumColor;
+import mekanism.api.IEnergizedItem;
 import mekanism.common.ContainerElectricChest;
 import mekanism.common.IElectricChest;
-import mekanism.common.InventoryElectricChest;
-import mekanism.common.ItemBlockMachine;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricChest;
@@ -23,6 +12,12 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiElectricChest extends GuiContainer
@@ -165,7 +160,7 @@ public class GuiElectricChest extends GuiContainer
 		}
 		else {
 			ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
-			return (int)(((IItemElectric)stack.getItem()).getJoules(stack)*52 / ((IItemElectric)stack.getItem()).getMaxJoules(stack));
+			return (int)(((IEnergizedItem)stack.getItem()).getEnergy(stack)*52 / ((IEnergizedItem)stack.getItem()).getMaxEnergy(stack));
 		}
 	}
 }

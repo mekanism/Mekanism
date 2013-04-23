@@ -196,7 +196,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		
 		for(EntityPlayer entity : entitiesInPortal)
 		{
-			setJoules(electricityStored - calculateEnergyCost(entity, closestCoords));
+			setEnergy(electricityStored - calculateEnergyCost(entity, closestCoords));
 			
 			worldObj.playSoundAtEntity((EntityPlayerMP)entity, "mob.endermen.portal", 1.0F, 1.0F);
 			

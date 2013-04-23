@@ -10,7 +10,7 @@ public class ObjectRenderer
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	
-	public static class Object3D
+	public static class Model3D
 	{
 		public double minX;
 		public double minY;
@@ -42,7 +42,7 @@ public class ObjectRenderer
 		}
 	}
 	
-	public static void renderObject(Object3D object, IBlockAccess blockAccess, int i, int j, int k, boolean doLight, boolean doTessellating)
+	public static void renderObject(Model3D object, IBlockAccess blockAccess, int i, int j, int k, boolean doLight, boolean doTessellating)
 	{
 		float f = 0.5F;
 		float f1 = 1.0F;

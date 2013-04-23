@@ -10,6 +10,7 @@ import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
 
 import mekanism.api.EnumColor;
+import mekanism.api.IEnergizedItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.world.World;
 
-public class ItemEnergized extends ItemMekanism implements IItemElectric, ICustomElectricItem
+public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ICustomElectricItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
@@ -70,43 +71,19 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	@Override
 	public double getJoules(ItemStack itemStack)
 	{
-		if (itemStack.stackTagCompound == null) 
-		{ 
-			return 0; 
-		}
-		
-		double electricityStored = 0;
-		
-		if (itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
-		{
-			electricityStored = itemStack.stackTagCompound.getFloat("electricity");
-		}
-		else
-		{
-			electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		}
-		
-		itemStack.setItemDamage((int)(Math.abs(((electricityStored/MAX_ELECTRICITY)*100)-100)));
-		return electricityStored;
+		return getEnergy(itemStack);
 	}
 
 	@Override
 	public void setJoules(double wattHours, ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)(Math.abs(((electricityStored/MAX_ELECTRICITY)*100)-100)));
+		setEnergy(itemStack, wattHours);
 	}
 
 	@Override
 	public double getMaxJoules(ItemStack itemStack)
 	{
-		return MAX_ELECTRICITY;
+		return getMaxEnergy(itemStack);
 	}
 
 	@Override
@@ -146,7 +123,7 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	
 	public double getTransferRate(ItemStack itemStack)
 	{
-		return getMaxJoules(itemStack)*0.01;
+		return getMaxTransfer(itemStack);
 	}
 	
 	@Override
@@ -203,7 +180,7 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
-		return getProvideRequest(itemStack).amperes != 0;
+		return canSend(itemStack);
 	}
 
 	@Override
@@ -234,5 +211,56 @@ public class ItemEnergized extends ItemMekanism implements IItemElectric, ICusto
 	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
+	}
+
+	@Override
+	public double getEnergy(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0; 
+		}
+		
+		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
+		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
+		
+		return electricityStored;
+	}
+
+	@Override
+	public void setEnergy(ItemStack itemStack, double amount) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		double electricityStored = Math.max(Math.min(amount, getMaxJoules(itemStack)), 0);
+		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
+	}
+
+	@Override
+	public double getMaxEnergy(ItemStack itemStack) 
+	{
+		return MAX_ELECTRICITY;
+	}
+
+	@Override
+	public double getMaxTransfer(ItemStack itemStack) 
+	{
+		return getMaxEnergy(itemStack)*0.005;
+	}
+
+	@Override
+	public boolean canReceive(ItemStack itemStack) 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return true;
 	}
 }

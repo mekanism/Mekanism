@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import mekanism.api.EnumGas;
+import mekanism.api.GasTransferProtocol.GasTransferEvent;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionType;
@@ -24,6 +25,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -54,7 +56,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.4")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.5")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -76,7 +78,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 5, 4);
+	public static Version versionNumber = new Version(5, 5, 5);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
@@ -1063,5 +1065,11 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
+	}
+	
+	@ForgeSubscribe
+	public void onGasTransferred(GasTransferEvent event)
+	{
+		PacketHandler.sendGasTransferUpdate(event.transferProtocol.pointer, event.transferProtocol.transferType);
 	}
 }

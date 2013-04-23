@@ -6,7 +6,7 @@ import java.util.HashMap;
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
-import mekanism.client.ObjectRenderer.Object3D;
+import mekanism.client.ObjectRenderer.Model3D;
 import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
@@ -103,7 +103,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			return cachedGasses.get(side).get(type);
 		}
 		
-		Object3D toReturn = new Object3D();
+		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.texture = type.gasItem.getIconFromDamage(0);
 		

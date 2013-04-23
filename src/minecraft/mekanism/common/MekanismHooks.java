@@ -1,9 +1,14 @@
 package mekanism.common;
 
+import java.util.Map;
+
+import thermalexpansion.api.crafting.CraftingManagers;
+import thermalexpansion.api.crafting.IPulverizerRecipe;
 import universalelectricity.prefab.RecipeHelper;
 import cpw.mods.fml.common.Loader;
 import ic2.api.Ic2Recipes;
 import ic2.api.recipe.Recipes;
+import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -67,6 +72,14 @@ public final class MekanismHooks
 			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 4), new ItemStack(Mekanism.DirtyDust, 1, 4));
 			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 5), new ItemStack(Mekanism.DirtyDust, 1, 5));
 			
+			for(Map.Entry<ItemStack, ItemStack> entry : Recipes.macerator.getRecipes().entrySet())
+			{
+				if(!Recipe.ENRICHMENT_CHAMBER.get().containsKey(entry.getKey()))
+				{
+					RecipeHandler.addEnrichmentChamberRecipe(entry.getKey(), entry.getValue());
+				}
+			}
+			
 			Recipes.matterAmplifier.addRecipe(new ItemStack(Mekanism.EnrichedAlloy), 50000);
 			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
@@ -100,6 +113,19 @@ public final class MekanismHooks
 			ForestryBiofuelID = getForestryItem("liquidBiofuel").itemID;
 			ForestryBiofuelBucket = getForestryItem("bucketBiofuel");
 			System.out.println("[Mekanism] Hooked into Forestry successfully.");
+		}
+		if(TELoaded)
+		{
+			for(IPulverizerRecipe recipe : CraftingManagers.pulverizerManager.getRecipeList())
+			{
+				if(recipe.getSecondaryOutput() == null)
+				{
+					if(!Recipe.ENRICHMENT_CHAMBER.get().containsKey(recipe.getInput()))
+					{
+						RecipeHandler.addEnrichmentChamberRecipe(recipe.getInput(), recipe.getPrimaryOutput());
+					}
+				}
+			}
 		}
 	}
 	

@@ -152,7 +152,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 				setActive(true);
 			}
 			bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 1);
-			setJoules(electricityStored + GENERATION);
+			setEnergy(electricityStored + GENERATION);
 		}
 		else {
 			if(!worldObj.isRemote)

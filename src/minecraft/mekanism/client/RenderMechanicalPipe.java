@@ -3,7 +3,7 @@ package mekanism.client;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import mekanism.client.ObjectRenderer.Object3D;
+import mekanism.client.ObjectRenderer.Model3D;
 import mekanism.common.CableUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
@@ -121,7 +121,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			return cachedLiquids.get(side).get(stack);
 		}
 		
-		Object3D toReturn = new Object3D();
+		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.texture = stack.getRenderingIcon();
 		

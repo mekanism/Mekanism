@@ -13,6 +13,7 @@ import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 import mekanism.api.EnumColor;
+import mekanism.api.IEnergizedItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -41,7 +42,7 @@ import net.minecraftforge.liquids.LiquidStack;
  * @author AidanBrady
  *
  */
-public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICustomElectricItem, ISustainedInventory, ISustainedTank
+public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IItemElectric, ICustomElectricItem, ISustainedInventory, ISustainedTank
 {
 	public Block metaBlock;
 	
@@ -123,40 +124,19 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	@Override
 	public double getJoules(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null) 
-		{ 
-			return 0; 
-		}
-		
-		double electricityStored = 0;
-		
-		if(itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
-		{
-			electricityStored = itemStack.stackTagCompound.getFloat("electricity");
-		}
-		else {
-			electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		}
-		
-		return electricityStored;
+		return getEnergy(itemStack);
 	}
 
 	@Override
 	public void setJoules(double wattHours, ItemStack itemStack)
 	{
-		if (itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		setEnergy(itemStack, wattHours);
 	}
 
 	@Override
 	public double getMaxJoules(ItemStack itemStack)
 	{
-		return GeneratorType.getFromMetadata(itemStack.getItemDamage()).maxEnergy;
+		return getMaxEnergy(itemStack);
 	}
 
 	@Override
@@ -433,5 +413,52 @@ public class ItemBlockGenerator extends ItemBlock implements IItemElectric, ICus
 	public boolean hasTank(Object... data) 
 	{
 		return data[0] instanceof ItemStack && ((ItemStack)data[0]).getItem() instanceof ISustainedTank && (((ItemStack)data[0]).getItemDamage() == 2);
+	}
+	
+	@Override
+	public double getEnergy(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0; 
+		}
+		
+		return itemStack.stackTagCompound.getDouble("electricity");
+	}
+
+	@Override
+	public void setEnergy(ItemStack itemStack, double amount) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		double electricityStored = Math.max(Math.min(amount, getMaxJoules(itemStack)), 0);
+		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+	}
+
+	@Override
+	public double getMaxEnergy(ItemStack itemStack) 
+	{
+		return GeneratorType.getFromMetadata(itemStack.getItemDamage()).maxEnergy;
+	}
+
+	@Override
+	public double getMaxTransfer(ItemStack itemStack) 
+	{
+		return getMaxEnergy(itemStack)*0.005;
+	}
+
+	@Override
+	public boolean canReceive(ItemStack itemStack) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return true;
 	}
 }

@@ -3,14 +3,7 @@ package mekanism.common;
 import java.util.List;
 import java.util.Random;
 
-import buildcraft.api.tools.IToolWrench;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.prefab.implement.IToolConfigurator;
-
+import mekanism.api.IEnergizedItem;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,13 +13,16 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import universalelectricity.prefab.implement.IToolConfigurator;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple energy cube block IDs. 
@@ -152,7 +148,7 @@ public class BlockEnergyCube extends BlockContainer
 			list.add(discharged);
 			ItemStack charged = new ItemStack(this);
 			((ItemBlockEnergyCube)charged.getItem()).setEnergyCubeTier(charged, tier);
-			((ItemBlockEnergyCube)charged.getItem()).setJoules(tier.MAX_ELECTRICITY, charged);
+			((ItemBlockEnergyCube)charged.getItem()).setEnergy(charged, tier.MAX_ELECTRICITY);
 			list.add(charged);
 		};
 	}
@@ -289,8 +285,8 @@ public class BlockEnergyCube extends BlockContainer
         IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
         energyCube.setEnergyCubeTier(itemStack, tileEntity.tier);
         
-        IItemElectric electricItem = (IItemElectric)itemStack.getItem();
-        electricItem.setJoules(tileEntity.electricityStored, itemStack);
+        IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
+        energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
         
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

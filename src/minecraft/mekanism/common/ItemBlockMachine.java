@@ -17,6 +17,7 @@ import ic2.api.ElectricItem;
 import ic2.api.ICustomElectricItem;
 import ic2.api.IElectricItem;
 import mekanism.api.EnumColor;
+import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.Block;
@@ -52,7 +53,7 @@ import net.minecraftforge.liquids.LiquidStack;
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest
 {
 	public Block metaBlock;
 	
@@ -170,40 +171,19 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	@Override
 	public double getJoules(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null) 
-		{ 
-			return 0; 
-		}
-		
-		double electricityStored = 0;
-		
-		if(itemStack.stackTagCompound.getTag("electricity") instanceof NBTTagFloat)
-		{
-			electricityStored = itemStack.stackTagCompound.getFloat("electricity");
-		}
-		else {
-			electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		}
-		
-		return electricityStored;
+		return getEnergy(itemStack);
 	}
 
 	@Override
 	public void setJoules(double wattHours, ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(wattHours, getMaxJoules(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		setEnergy(itemStack, wattHours);
 	}
 
 	@Override
 	public double getMaxJoules(ItemStack itemStack)
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(itemStack), MachineType.getFromMetadata(itemStack.getItemDamage()).baseEnergy);
+		return getMaxEnergy(itemStack);
 	}
 
 	@Override
@@ -241,7 +221,7 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 	
 	public double getTransferRate(ItemStack itemStack)
 	{
-		return getMaxJoules(itemStack)*0.01;
+		return getMaxTransfer(itemStack);
 	}
 	
 	@Override
@@ -749,5 +729,52 @@ public class ItemBlockMachine extends ItemBlock implements IItemElectric, ICusto
 		}
 		
 		return itemStack.stackTagCompound.getFloat("prevLidAngle");
+	}
+	
+	@Override
+	public double getEnergy(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound == null) 
+		{ 
+			return 0; 
+		}
+		
+		return itemStack.stackTagCompound.getDouble("electricity");
+	}
+
+	@Override
+	public void setEnergy(ItemStack itemStack, double amount) 
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		double electricityStored = Math.max(Math.min(amount, getMaxJoules(itemStack)), 0);
+		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+	}
+
+	@Override
+	public double getMaxEnergy(ItemStack itemStack) 
+	{
+		return MekanismUtils.getEnergy(getEnergyMultiplier(itemStack), MachineType.getFromMetadata(itemStack.getItemDamage()).baseEnergy);
+	}
+
+	@Override
+	public double getMaxTransfer(ItemStack itemStack) 
+	{
+		return getMaxEnergy(itemStack)*0.005;
+	}
+
+	@Override
+	public boolean canReceive(ItemStack itemStack) 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return false;
 	}
 }

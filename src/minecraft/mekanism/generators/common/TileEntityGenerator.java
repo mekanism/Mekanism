@@ -92,7 +92,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			{
 				if(tileEntity instanceof IUniversalCable)
 				{
-					setJoules(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
+					setEnergy(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
 				}
 				
 				if(!worldObj.isRemote)
@@ -103,7 +103,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 						{
 							EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, output);
 							MinecraftForge.EVENT_BUS.post(event);
-							setJoules(electricityStored - (output - event.amount));
+							setEnergy(electricityStored - (output - event.amount));
 						}
 					}
 					else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
@@ -112,7 +112,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		            	double electricityNeeded = Math.min(receptor.powerRequest(ForgeDirection.getOrientation(facing).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
 		            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
 		            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-		            	setJoules(electricityStored - transferEnergy);
+		            	setEnergy(electricityStored - transferEnergy);
 					}
 				}
 			}
@@ -126,12 +126,12 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	
 				if(outputNetwork != null)
 				{
-					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getJoules(), 10000));
+					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getEnergy(), 10000));
 	
-					if(getJoules() > 0 && outputWatts > 0 && getJoules()-outputWatts >= 0)
+					if(getEnergy() > 0 && outputWatts > 0 && getEnergy()-outputWatts >= 0)
 					{
 						outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
-						setJoules(electricityStored - outputWatts);
+						setEnergy(electricityStored - outputWatts);
 					}
 					else {
 						outputNetwork.stopProducing(this);
@@ -286,14 +286,14 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public int addEnergy(int amount)
 	{
-		setJoules(electricityStored + amount*Mekanism.FROM_IC2);
+		setEnergy(electricityStored + amount*Mekanism.FROM_IC2);
 		return (int)electricityStored;
 	}
 	
 	@Override
 	public void setStored(int energy)
 	{
-		setJoules(energy*Mekanism.FROM_IC2);
+		setEnergy(energy*Mekanism.FROM_IC2);
 	}
 	
 	@Override

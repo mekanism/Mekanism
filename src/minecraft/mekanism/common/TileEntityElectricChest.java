@@ -21,8 +21,6 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 {
 	public String password = "";
 	
-	public final int MAX_ACCESS = 2400;
-	
 	public boolean authenticated = false;
 	
 	public boolean locked = false;
@@ -124,7 +122,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	
 	public boolean canAccess()
 	{
-		return authenticated && (getJoules() == 0 || !locked);
+		return authenticated && (getEnergy() == 0 || !locked);
 	}
 	
 	@Override

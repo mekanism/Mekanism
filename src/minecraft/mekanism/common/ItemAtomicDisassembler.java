@@ -2,8 +2,6 @@ package mekanism.common;
 
 import java.util.List;
 
-import universalelectricity.core.electricity.ElectricityPack;
-
 import mekanism.api.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLiving;
@@ -12,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import universalelectricity.core.electricity.ElectricityPack;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -37,10 +36,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     @Override
     public boolean hitEntity(ItemStack itemstack, EntityLiving hitEntity, EntityLiving player)
     {
-    	if(getJoules(itemstack) > 0)
+    	if(getEnergy(itemstack) > 0)
     	{
 			hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 20);
-			onProvide(new ElectricityPack(2000/120, 120), itemstack);
+			setEnergy(itemstack, getEnergy(itemstack) - 2000);
     	}
     	else {
     		hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 4);
@@ -51,7 +50,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-    	return getJoules(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
+    	return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
     }
     
     @Override
@@ -59,10 +58,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     {
         if(Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
         {
-            onProvide(new ElectricityPack(getEfficiency(itemstack), 120), itemstack);
+        	setEnergy(itemstack, getEnergy(itemstack) - getEfficiency(itemstack));
         }
         else {
-        	onProvide(new ElectricityPack((getEfficiency(itemstack)/2)/120, 120), itemstack);
+        	setEnergy(itemstack, getEnergy(itemstack) - (getEfficiency(itemstack)/2));
         }
 
         return true;

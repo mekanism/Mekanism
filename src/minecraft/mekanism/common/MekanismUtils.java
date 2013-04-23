@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
-import mekanism.api.BlockVector;
+import mekanism.api.Object3D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.InfuseObject;
@@ -708,19 +708,5 @@ public final class MekanismUtils
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);
-    }
-    
-    /**
-     * Gets the distance between one block and another.
-     * @param blockOne - first block
-     * @param blockTwo - second block
-     * @return distance between the two blocks
-     */
-    public static int getDistance(BlockVector blockOne, BlockVector blockTwo)
-    {
-	    int subX = blockOne.xCoord - blockTwo.xCoord;
-	    int subY = blockOne.yCoord - blockTwo.yCoord;
-	    int subZ = blockOne.zCoord - blockTwo.zCoord;
-	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
     }
 }

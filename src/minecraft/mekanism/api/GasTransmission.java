@@ -21,7 +21,7 @@ public final class GasTransmission
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity tube = BlockVector.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas(tileEntity))
 			{
@@ -43,7 +43,7 @@ public final class GasTransmission
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity acceptor = BlockVector.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(acceptor instanceof IGasAcceptor)
 			{
@@ -65,7 +65,7 @@ public final class GasTransmission
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity connection = BlockVector.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity connection = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(connection instanceof ITubeConnection)
 			{
@@ -86,7 +86,7 @@ public final class GasTransmission
      */
     public static int emitGasToNetwork(EnumGas type, int amount, TileEntity sender, ForgeDirection facing)
     {
-    	TileEntity pointer = BlockVector.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
+    	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
     	if(pointer instanceof IPressurizedTube)
     	{

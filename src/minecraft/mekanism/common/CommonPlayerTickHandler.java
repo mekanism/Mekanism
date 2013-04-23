@@ -34,7 +34,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 	    			{
 	    				int energyNeeded = item.calculateEnergyCost(player, MekanismUtils.getClosestCoords(teleCode, player));
 	    				
-	    				if(item.getJoules(itemstack) < energyNeeded)
+	    				if(item.getEnergy(itemstack) < energyNeeded)
 	    				{
 		    				if(item.getStatus(itemstack) != 2)
 		    				{

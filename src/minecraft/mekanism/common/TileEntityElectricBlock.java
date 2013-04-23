@@ -68,7 +68,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(!worldObj.isRemote)
 		{
 			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
-			setJoules(getJoules()+electricityPack.getWatts());
+			setEnergy(getEnergy()+electricityPack.getWatts());
 		}
 	}
 
@@ -85,7 +85,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	
 	public ElectricityPack getRequest()
 	{
-		return new ElectricityPack((getMaxJoules() - getJoules()) / getVoltage(), getVoltage());
+		return new ElectricityPack((getMaxEnergy() - getEnergy()) / getVoltage(), getVoltage());
 	}
 	
 	@Override

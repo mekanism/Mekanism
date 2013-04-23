@@ -1,24 +1,20 @@
 package mekanism.client;
 
+import mekanism.api.EnumColor;
+import mekanism.api.IEnergizedItem;
+import mekanism.common.IElectricChest;
+import mekanism.common.PacketHandler;
+import mekanism.common.TileEntityElectricChest;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.item.ItemStack;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import universalelectricity.core.item.IItemElectric;
-
-import mekanism.api.EnumColor;
-import mekanism.common.EnumPacketType;
-import mekanism.common.IElectricChest;
-import mekanism.common.InventoryElectricChest;
-import mekanism.common.PacketHandler;
-import mekanism.common.TileEntityElectricChest;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.item.ItemStack;
 
 @SideOnly(Side.CLIENT)
 public class GuiPasswordEnter extends GuiScreen
@@ -131,11 +127,11 @@ public class GuiPasswordEnter extends GuiScreen
 		else {
 			if(isBlock)
 			{
-				tileEntity.setJoules(tileEntity.getJoules() - 100);
+				tileEntity.setEnergy(tileEntity.getEnergy() - 100);
 				PacketHandler.sendChestOpen(tileEntity, true, true);
 			}
 			else {
-				((IItemElectric)itemStack.getItem()).setJoules(((IItemElectric)itemStack.getItem()).getJoules(itemStack) - 100, itemStack);
+				((IEnergizedItem)itemStack.getItem()).setEnergy(itemStack, ((IEnergizedItem)itemStack.getItem()).getEnergy(itemStack) - 100);
 				PacketHandler.sendChestOpen(null, false, true);
 			}
 		}
