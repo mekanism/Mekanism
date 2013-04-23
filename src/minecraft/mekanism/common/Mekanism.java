@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import mekanism.api.EnumGas;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionType;
@@ -127,6 +128,8 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	public static Item LiquidEnergy;
+	public static Item LiquidHydrogen;
+	public static Item LiquidOxygen;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -431,6 +434,8 @@ public class Mekanism
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
 		LanguageRegistry.addName(LiquidEnergy, "Liquid Energy");
+		LanguageRegistry.addName(LiquidHydrogen, "Liquid Hydrogen");
+		LanguageRegistry.addName(LiquidOxygen, "Liquid Oxygen");
 		
 		//Localization for BasicBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
@@ -545,6 +550,8 @@ public class Mekanism
 		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
+		LiquidHydrogen = new ItemMekanism(configuration.getItem("LiquidHydrogen", 11222).getInt()).setUnlocalizedName("LiquidHydrogen").setCreativeTab(null);
+		LiquidOxygen = new ItemMekanism(configuration.getItem("LiquidOxygen", 11223).getInt()).setUnlocalizedName("LiquidOxygen").setCreativeTab(null);
 		configuration.save();
 		
 		//Registrations
@@ -574,6 +581,8 @@ public class Mekanism
 		GameRegistry.registerItem(Clump, "Clump");
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
+		GameRegistry.registerItem(LiquidHydrogen, "LiquidHydrogen");
+		GameRegistry.registerItem(LiquidOxygen, "LiquidOxygen");
 	}
 	
 	/**
@@ -1000,6 +1009,18 @@ public class Mekanism
 		hooks = new MekanismHooks();
 		hooks.hook();
 		addIntegratedItems();
+		
+		if(!EnumGas.HYDROGEN.hasTexture())
+		{
+			EnumGas.HYDROGEN.gasItem = LiquidHydrogen;
+			EnumGas.HYDROGEN.texturePath = "/mods/mekanism/textures/items/LiquidHydrogen.png";
+		}
+		
+		if(!EnumGas.OXYGEN.hasTexture())
+		{
+			EnumGas.OXYGEN.gasItem = LiquidOxygen;
+			EnumGas.OXYGEN.texturePath = "/mods/mekanism/textures/items/LiquidOxygen.png";
+		}
 		
 		System.out.println("[Mekanism] Hooking complete.");
 		

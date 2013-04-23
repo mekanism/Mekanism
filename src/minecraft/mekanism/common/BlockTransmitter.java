@@ -66,7 +66,7 @@ public class BlockTransmitter extends Block
 		}
 		else if(tileEntity instanceof TileEntityUniversalCable)
 		{
-			return (int)(((TileEntityUniversalCable)tileEntity).liquidScale*15F);
+			return (int)(((TileEntityUniversalCable)tileEntity).energyScale*15F);
 		}
 		
 		return 0;

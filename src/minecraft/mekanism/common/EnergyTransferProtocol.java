@@ -162,7 +162,6 @@ public class EnergyTransferProtocol
 		
 		Collections.shuffle(availableAcceptors);
 		
-		double prevNeeded = neededEnergy();
 		double prevSending = energyToSend;
 		
 		if(!availableAcceptors.isEmpty())
@@ -202,7 +201,7 @@ public class EnergyTransferProtocol
 			}
 		}
 		
-		if(prevNeeded > 0 && prevSending > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(prevSending > energyToSend && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			PacketHandler.sendEnergyTransferUpdate(pointer);
 		}

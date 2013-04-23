@@ -17,10 +17,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
 {
+	/** A fake power provider used to initiate energy transfer calculations. */
 	public CablePowerProvider powerProvider;
 	
-	public float liquidScale;
+	/** The scale of the energy (0F -> 1F) currently inside this cable. */
+	public float energyScale;
 	
+	/** This cable's previous energy scale state. */
 	public float prevScale;
 	
 	public TileEntityUniversalCable()
@@ -37,16 +40,16 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		if(worldObj.isRemote)
 		{
-			if(liquidScale != prevScale)
+			if(energyScale != prevScale)
 			{
 				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 			}
 			
-			prevScale = liquidScale;
+			prevScale = energyScale;
 			
-			if(liquidScale > 0)
+			if(energyScale > 0)
 			{
-				liquidScale -= .01;
+				energyScale -= .01;
 			}
 		}
 	}
@@ -60,7 +63,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public void onTransfer()
 	{
-		liquidScale = Math.min(1, liquidScale+.02F);
+		energyScale = Math.min(1, energyScale+.02F);
 	}
 	
 	@Override

@@ -126,7 +126,10 @@ public class LiquidTransferProtocol
 			}
 		}
 		
-		iteratedPipes.add(tile);
+		if(!iteratedPipes.contains(tile))
+		{
+			iteratedPipes.add(tile);
+		}
 		
 		TileEntity[] pipes = PipeUtils.getConnectedPipes(tile);
 		
@@ -146,7 +149,7 @@ public class LiquidTransferProtocol
 	 * Updates the client-side pipes for rendering.
 	 * @param transferred - the LiquidStack of server-side transferred liquid
 	 */
-	public void clientUpdate(LiquidStack transferred)
+	public void clientUpdate()
 	{
 		loopThrough(pointer);
 		
@@ -154,7 +157,7 @@ public class LiquidTransferProtocol
 		{
 			if(tileEntity instanceof IMechanicalPipe)
 			{
-				((IMechanicalPipe)tileEntity).onTransfer(transferred);
+				((IMechanicalPipe)tileEntity).onTransfer(liquidToSend);
 			}
 		}
 	}

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
+import mekanism.common.PacketHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -70,7 +73,10 @@ public class GasTransferProtocol
 			}
 		}
 		
-		iteratedTubes.add(tile);
+		if(!iteratedTubes.contains(tile))
+		{
+			iteratedTubes.add(tile);
+		}
 		
 		TileEntity[] tubes = GasTransmission.getConnectedTubes(tile);
 		
@@ -87,6 +93,22 @@ public class GasTransferProtocol
 	}
 	
 	/**
+	 * Updates the client-side tubes for rendering.
+	 */
+	public void clientUpdate()
+	{
+		loopThrough(pointer);
+		
+		for(TileEntity tileEntity : iteratedTubes)
+		{
+			if(tileEntity instanceof IPressurizedTube)
+			{
+				((IPressurizedTube)tileEntity).onTransfer(transferType);
+			}
+		}
+	}
+	
+	/**
 	 * Runs the protocol and distributes the gas.
 	 * @return rejected gas
 	 */
@@ -95,6 +117,8 @@ public class GasTransferProtocol
 		loopThrough(pointer);
 		
 		Collections.shuffle(availableAcceptors);
+		
+		int prevSending = gasToSend;
 		
 		if(!availableAcceptors.isEmpty())
 		{
@@ -114,6 +138,11 @@ public class GasTransferProtocol
 				
 				gasToSend -= (currentSending - acceptor.transferGasToAcceptor(currentSending, transferType));
 			}
+		}
+		
+		if(prevSending > gasToSend && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			PacketHandler.sendGasTransferUpdate(pointer, transferType);
 		}
 		
 		return gasToSend;

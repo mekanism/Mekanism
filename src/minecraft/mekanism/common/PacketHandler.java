@@ -9,6 +9,8 @@ import java.util.Random;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 
+import mekanism.api.EnumGas;
+import mekanism.api.GasTransferProtocol;
 import mekanism.generators.common.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -403,7 +405,7 @@ public class PacketHandler implements IPacketHandler
 			    		
 			    		if(tileEntity != null)
 			    		{
-			    			new LiquidTransferProtocol(tileEntity, null, liquidStack).clientUpdate(liquidStack);
+			    			new LiquidTransferProtocol(tileEntity, null, liquidStack).clientUpdate();
 			    		}
 			    	} catch(Exception e) {
 			       		System.err.println("[Mekanism] Error while handling liquid transfer update packet.");
@@ -422,6 +424,26 @@ public class PacketHandler implements IPacketHandler
 			    		if(tileEntity != null)
 			    		{
 			    			new EnergyTransferProtocol(tileEntity, null, new ArrayList()).clientUpdate();
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.GAS_TRANSFER_UPDATE.id)
+			    {
+			    	try {
+			    		int x = dataStream.readInt();
+			    		int y = dataStream.readInt();
+			    		int z = dataStream.readInt();
+			    		
+			    		EnumGas type = EnumGas.getFromName(dataStream.readUTF());
+			    		
+			    		TileEntity tileEntity = entityplayer.worldObj.getBlockTileEntity(x, y, z);
+			    		
+			    		if(tileEntity != null)
+			    		{
+			    			new GasTransferProtocol(tileEntity, null, type, 0).clientUpdate();
 			    		}
 			    	} catch(Exception e) {
 			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
@@ -916,7 +938,7 @@ public class PacketHandler implements IPacketHandler
             packet.length = packet.data.length;
         	PacketDispatcher.sendPacketToAllPlayers(packet);
         } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
+        	System.err.println("[Mekanism] Error while writing liquid transfer update packet.");
         	e.printStackTrace();
         }
 	}
@@ -943,7 +965,36 @@ public class PacketHandler implements IPacketHandler
             packet.length = packet.data.length;
         	PacketDispatcher.sendPacketToAllPlayers(packet);
         } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
+        	System.err.println("[Mekanism] Error while writing energy transfer update packet.");
+        	e.printStackTrace();
+        }
+	}
+	
+	/**
+	 * Sends a packet to the client-side with a GasTransferProtocol's information.  Used for render updates.
+	 * @param head - head TileEntity of the calculation
+	 */
+	public static void sendGasTransferUpdate(TileEntity head, EnumGas type)
+	{
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        
+        try {
+        	output.writeInt(EnumPacketType.GAS_TRANSFER_UPDATE.id);
+        	
+        	output.writeInt(head.xCoord);
+        	output.writeInt(head.yCoord);
+        	output.writeInt(head.zCoord);
+        	
+        	output.writeUTF(type.name);
+        	
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            packet.channel = "Mekanism";
+            packet.data = bytes.toByteArray();
+            packet.length = packet.data.length;
+        	PacketDispatcher.sendPacketToAllPlayers(packet);
+        } catch (IOException e) {
+        	System.err.println("[Mekanism] Error while writing gas transfer update packet.");
         	e.printStackTrace();
         }
 	}

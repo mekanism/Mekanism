@@ -9,4 +9,10 @@ public interface IPressurizedTube
 	 * @return if the tube can transfer gas
 	 */
 	public boolean canTransferGas(TileEntity fromTile);
+	
+	/**
+	 * Called when a gas is transferred through this tube.
+	 * @param type - the type of gas transferred
+	 */
+	public void onTransfer(EnumGas type);
 }

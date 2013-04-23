@@ -23,14 +23,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalPipe, ITankContainer, ITileNetwork
 {
+	/** The fake tank used for liquid transfer calculations. */
 	public LiquidTank dummyTank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME);
 	
+	/** The LiquidStack displayed on this pipe. */
 	public LiquidStack refLiquid = null;
 	
+	/** This pipe's active state. */
 	public boolean isActive = false;
 	
+	/** The scale (0F -> 1F) of this pipe's liquid level. */
 	public float liquidScale;
 	
+	/** Previous scale for this pipe's liquid level. */
 	public float prevScale;
 	
 	@Override
@@ -44,12 +49,12 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(liquidStack.isLiquidEqual(refLiquid))
 		{
-			liquidScale = Math.min(1, liquidScale+((float)liquidStack.amount/(float)3000));
+			liquidScale = Math.min(1, liquidScale+((float)liquidStack.amount/50F));
 		}
 		else if(refLiquid == null)
 		{
 			refLiquid = liquidStack.copy();
-			liquidScale += Math.min(1, (float)liquidStack.amount/(float)3000);
+			liquidScale += Math.min(1, ((float)liquidStack.amount/50F));
 		}
 	}
 	

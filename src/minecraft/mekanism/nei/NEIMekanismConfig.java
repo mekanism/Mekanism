@@ -39,6 +39,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.LiquidEnergy.itemID);
+		API.hideItem(Mekanism.LiquidHydrogen.itemID);
+		API.hideItem(Mekanism.LiquidOxygen.itemID);
 	}
 
 	@Override

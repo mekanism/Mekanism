@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import net.minecraft.item.Item;
+
 /**
  * The gasses currently available in Mekanism.
  * @author AidanBrady
@@ -7,11 +9,13 @@ package mekanism.api;
  */
 public enum EnumGas 
 {
-	NONE("None"),
-	OXYGEN("Oxygen"),
-	HYDROGEN("Hydrogen");
+	NONE("None", null, null),
+	OXYGEN("Oxygen", null, null),
+	HYDROGEN("Hydrogen", null, null);
 	
 	public String name;
+	public Item gasItem;
+	public String texturePath;
 	
 	public static EnumGas getFromName(String gasName)
 	{
@@ -27,8 +31,15 @@ public enum EnumGas
 		return NONE;
 	}
 	
-	private EnumGas(String s)
+	public boolean hasTexture()
+	{
+		return gasItem != null && texturePath != null;
+	}
+	
+	private EnumGas(String s, Item item, String path)
 	{
 		name = s;
+		gasItem = item;
+		texturePath = path;
 	}
 }

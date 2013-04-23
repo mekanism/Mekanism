@@ -60,8 +60,11 @@ public enum EnumPacketType
 	/** Used to send an energy transfer update packet to all clients. */
 	ENERGY_TRANSFER_UPDATE(16),
 	
+	/** Used to send a gas transfer update packet to all clients. */
+	GAS_TRANSFER_UPDATE(17),
+	
 	/** Used to send an electrolytic separator particle to all clients. */
-	ELECTROLYTIC_SEPARATOR_PARTICLE(17),
+	ELECTROLYTIC_SEPARATOR_PARTICLE(18),
 	
 	/** A custom packet type. Handled in PacketHandler. */
 	CUSTOM(-1);

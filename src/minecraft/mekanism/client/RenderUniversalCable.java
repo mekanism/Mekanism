@@ -92,7 +92,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		model.Center.render(0.0625F);
 		GL11.glPopMatrix();
 		
-		if(tileEntity.liquidScale > 0)
+		if(tileEntity.energyScale > 0)
 		{
 			GL11.glPushMatrix();
 			GL11.glDisable(2896);
@@ -104,12 +104,12 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 				if(connectable[i])
 				{
 					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.worldObj);
-					GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+					GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.energyScale*(stages-1)))]);
 				}
 			}
 			
 			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.worldObj);
-			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.energyScale*(stages-1)))]);
 			
 			GL11.glEnable(2896);
 			GL11.glPopMatrix();
