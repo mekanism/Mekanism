@@ -950,45 +950,66 @@ public class Mekanism
 			}
 		} catch(Exception e) {}
 		
-		
+		if(hooks.MetallurgyCoreLoaded){
 		try{
 			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("base").getOreList().values()){
 				ItemStack ore = oreInfo.getOre();
 				ItemStack dust = oreInfo.getDust();
+				ItemStack ingot = oreInfo.getIngot();
 				if (ore != null && dust != null){
 					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+				if (ingot != null && dust != null){
+					RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
 				}
 			}
 			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("precious").getOreList().values()){
 				ItemStack ore = oreInfo.getOre();
 				ItemStack dust = oreInfo.getDust();
+				ItemStack ingot = oreInfo.getIngot();
 				if (ore != null && dust != null){
 					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+				if (ingot != null && dust != null){
+					RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
 				}
 			}
 			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("ender").getOreList().values()){
 				ItemStack ore = oreInfo.getOre();
 				ItemStack dust = oreInfo.getDust();
+				ItemStack ingot = oreInfo.getIngot();
 				if (ore != null && dust != null){
 					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+				if (ingot != null && dust != null){
+					RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
 				}
 			}
 			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("fantasy").getOreList().values()){
 				ItemStack ore = oreInfo.getOre();
 				ItemStack dust = oreInfo.getDust();
+				ItemStack ingot = oreInfo.getIngot();
 				if (ore != null && dust != null){
 					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+				if (ingot != null && dust != null){
+					RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
 				}
 			}
 			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("nether").getOreList().values()){
 				ItemStack ore = oreInfo.getOre();
 				ItemStack dust = oreInfo.getDust();
+				ItemStack ingot = oreInfo.getIngot();
 				if (ore != null && dust != null){
 					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+				if (ingot != null && dust != null){
+					RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
 				}
 			}
 		}
 		catch(Exception e) {}
+		}
 	}
 	
 	/**
