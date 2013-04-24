@@ -51,6 +51,8 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import rebelkeithy.mods.metallurgy.api.*;
+
 /**
  * Mekanism - the mod in which no true definition fits.
  * @author AidanBrady
@@ -947,6 +949,46 @@ public class Mekanism
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), MekanismUtils.getStackWithSize(OreDictionary.getOres("oreSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
+		
+		
+		try{
+			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("base").getOreList().values()){
+				ItemStack ore = oreInfo.getOre();
+				ItemStack dust = oreInfo.getDust();
+				if (ore != null && dust != null){
+					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+			}
+			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("precious").getOreList().values()){
+				ItemStack ore = oreInfo.getOre();
+				ItemStack dust = oreInfo.getDust();
+				if (ore != null && dust != null){
+					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+			}
+			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("ender").getOreList().values()){
+				ItemStack ore = oreInfo.getOre();
+				ItemStack dust = oreInfo.getDust();
+				if (ore != null && dust != null){
+					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+			}
+			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("fantasy").getOreList().values()){
+				ItemStack ore = oreInfo.getOre();
+				ItemStack dust = oreInfo.getDust();
+				if (ore != null && dust != null){
+					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+			}
+			for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet("nether").getOreList().values()){
+				ItemStack ore = oreInfo.getOre();
+				ItemStack dust = oreInfo.getDust();
+				if (ore != null && dust != null){
+					RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+				}
+			}
+		}
+		catch(Exception e) {}
 	}
 	
 	/**
