@@ -57,35 +57,36 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	
 	public int getInfuseX(InfusionType type)
 	{
-		switch(type)
+		//as with other stuff we default to the diamond-color bar
+		switch(type.name)
 		{
-			case COAL:
+			case "Coal":
 				return 4;
-			case TIN:
+			case "Tin":
 				return 0;
-			case DIAMOND:
+			case "Diamond":
 				return 4;
-			case BIO:
+			case "Bio":
 				return 8;
 			default:
-				return 0;
+				return 4;
 		}
 	}
 	
 	public int getInfuseY(InfusionType type)
 	{
-		switch(type)
+		switch(type.name)
 		{
-			case COAL:
+			case "Coal":
 				return 0;
-			case TIN:
+			case "Tin":
 				return 52;
-			case DIAMOND:
+			case "Diamond":
 				return 52;
-			case BIO:
+			case "Bio":
 				return 0;
 			default:
-				return 0;
+				return 52;
 		}
 	}
 	
@@ -101,21 +102,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 	
 	public ItemStack getInfuseStack(InfusionType type)
 	{
-		switch(type)
-		{
-			case COAL:
-				return new ItemStack(Mekanism.CompressedCarbon);
-			case TIN:
-				return new ItemStack(Mekanism.Dust, 1, 7);
-			case DIAMOND:
-				return new ItemStack(Mekanism.Dust, 1, 4);
-			case BIO:
-				try {
-					return new ItemStack(MekanismGenerators.BioFuel);
-				} catch(Throwable t) {}
-			default:
-				return null;
-		}
+		return type.item;
 	}
 
 	public Set<Entry<InfusionInput, InfusionOutput>> getRecipes()

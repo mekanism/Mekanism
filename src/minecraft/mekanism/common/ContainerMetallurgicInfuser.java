@@ -70,7 +70,7 @@ public class ContainerMetallurgicInfuser extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
             {
-            	if(MekanismUtils.getInfuseObject(slotStack) != null && (tileEntity.type == InfusionType.NONE || tileEntity.type == MekanismUtils.getInfuseObject(slotStack).type))
+            	if(MekanismUtils.getInfuseObject(slotStack) != null && (tileEntity.type.name == "None" || tileEntity.type == MekanismUtils.getInfuseObject(slotStack).type))
             	{
             		if(!mergeItemStack(slotStack, 1, 2, false))
             		{
@@ -149,7 +149,7 @@ public class ContainerMetallurgicInfuser extends Container
     
     public boolean isInputItem(ItemStack itemStack)
     {
-    	if(tileEntity.type != InfusionType.NONE)
+    	if(tileEntity.type.name != "None")
     	{
     		if(RecipeHandler.getOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, itemStack), false, Recipe.METALLURGIC_INFUSER.get()) != null)
     		{

@@ -51,6 +51,8 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import rebelkeithy.mods.metallurgy.api.*;
+
 /**
  * Mekanism - the mod in which no true definition fits.
  * @author AidanBrady
@@ -85,6 +87,9 @@ public class Mekanism
 	
 	/** Map of infuse objects */
 	public static Map<ItemStack, InfuseObject> infusions = new HashMap<ItemStack, InfuseObject>();
+	
+	/**List of infuse types*/
+	public static Map<String,InfusionType> infuseTypes = new HashMap<String,InfusionType>();
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -394,13 +399,19 @@ public class Mekanism
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 3, 1));
         
         //Metallurgic Infuser Recipes
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.BIO, 10, new ItemStack(Block.cobblestone)), new ItemStack(Block.cobblestoneMossy));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.BIO, 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
         
-        infusions.put(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfusionType.COAL, 10));
-        infusions.put(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfusionType.COAL, 20));
-        infusions.put(new ItemStack(CompressedCarbon), new InfuseObject(InfusionType.COAL, 100));
+        infuseTypes.put("Coal", new InfusionType("Coal", new ItemStack(Item.coal, 1, 0)));
+        infuseTypes.put("Tin", new InfusionType("Tin", new ItemStack(Dust, 1, 7)));
+        infuseTypes.put("Diamond", new InfusionType("Diamond", new ItemStack(Dust, 1, 4)));
+        infuseTypes.put("None", new InfusionType("None", null));
+        
+        
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(infuseTypes.get("Coal") , 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+               
+       
+        infusions.put(new ItemStack(Item.coal, 1, 0), new InfuseObject(infuseTypes.get("Coal"), 10));
+        infusions.put(new ItemStack(Item.coal, 1, 1), new InfuseObject(infuseTypes.get("Coal"), 20));
+        infusions.put(new ItemStack(CompressedCarbon), new InfuseObject(infuseTypes.get("Coal"), 100));
 	}
 	
 	/**
@@ -898,7 +909,7 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
 			RecipeHandler.addCombinerRecipe(ore, new ItemStack(Block.obsidian));
-			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.DIAMOND, 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Dust, 1, 3));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(infuseTypes.get("Diamond"), 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Dust, 1, 3));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustOsmium"))
@@ -908,7 +919,7 @@ public class Mekanism
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDiamond"))
 		{
-			infusions.put(ore, new InfuseObject(InfusionType.DIAMOND, 80));
+			infusions.put(ore, new InfuseObject(infuseTypes.get("Diamond"), 80));
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Item.diamond));
 		}
 		
@@ -922,7 +933,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
-				RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.TIN, 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Ingot, 1, 2));
+				RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(infuseTypes.get("Tin"), 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Ingot, 1, 2));
 			}
 		} catch(Exception e) {}
 			
@@ -930,7 +941,7 @@ public class Mekanism
 			for(ItemStack ore : OreDictionary.getOres("dustTin"))
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), MekanismUtils.getStackWithSize(OreDictionary.getOres("oreTin").get(0), 1));
-				infusions.put(ore, new InfuseObject(InfusionType.TIN, 50));
+				infusions.put(ore, new InfuseObject(infuseTypes.get("Tin"), 50));
 			}
 		} catch(Exception e) {}
 		
@@ -947,6 +958,76 @@ public class Mekanism
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), MekanismUtils.getStackWithSize(OreDictionary.getOres("oreSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
+		/** Here we go through every Metallurgy metal set and add recipes to handle the new metals added
+		 *  There is no API way to iterate all the metal types, so we use hardcode :( */
+		if(hooks.MetallurgyCoreLoaded){
+			try{
+				String[] setNames = {"base", "precious", "nether", "fantasy", "ender", "utility"};
+				for (String setName : setNames ){
+					for (IOreInfo oreInfo : MetallurgyAPI.getMetalSet(setName).getOreList().values()){
+						switch (oreInfo.getType()) {			
+							/** Alloy metal don't drop, they are only produced by combining other metals
+							 * here we add new catalyst types as infusions and make recipes for infuser
+							 */
+							case ALLOY: {
+								if(oreInfo.getAlloyRecipe().length == 2) {
+									String alloyBase = oreInfo.getAlloyRecipe()[0].substring(4);
+									String alloyCatalyst = oreInfo.getAlloyRecipe()[1].substring(4);
+									InfusionType infuseType;
+									
+									if(!infuseTypes.containsKey(alloyCatalyst)){ //only add new infuseType if it does not already exist
+										infuseTypes.put(alloyCatalyst, new InfusionType(alloyCatalyst, OreDictionary.getOres("dust" + alloyCatalyst).get(0)));
+									}
+									infuseType = infuseTypes.get(alloyCatalyst);
+
+									//values are copy of Bronze recipe with tin
+									for(ItemStack baseIngot : OreDictionary.getOres("ingot" + alloyBase)){
+										RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(infuseType, 10, baseIngot), oreInfo.getIngot());
+									}
+									for(ItemStack catalystDust : OreDictionary.getOres("dust" + alloyCatalyst)){
+										infusions.put(catalystDust, new InfuseObject(infuseType, 50));
+									}
+
+								}
+								if (oreInfo.getIngot() != null && oreInfo.getDust() != null){
+									RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(oreInfo.getIngot() ,1), MekanismUtils.getStackWithSize(oreInfo.getDust(),1));
+								}
+								break;
+							}
+							
+							 /** DROP-type ores normally drop something else then the ore itself, so here we add
+							 *  bonus items given by enrichment chamber if silk touch or other way gives the player the ore block
+							 *  Maybe add combiner recipe, but seems pointless now
+							 */
+							case DROP: {
+								ItemStack ore = oreInfo.getOre();
+								ItemStack drop = oreInfo.getDrop();
+								if(drop != null && ore != null){ 
+									RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore, 1), MekanismUtils.getStackWithSize(drop, 12));
+									//maybe combiner recipe too
+								}
+								break;
+							}
+							/** For all other types we don't really care, just try the general stencil*/
+							default: {
+								ItemStack ore = oreInfo.getOre();
+								ItemStack dust = oreInfo.getDust();
+								ItemStack ingot = oreInfo.getIngot();
+								if (ore != null && dust != null){
+									RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+								}
+								if (ingot != null && dust != null){
+									RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		
+		catch(Exception e) {}
+		}
 	}
 	
 	/**
