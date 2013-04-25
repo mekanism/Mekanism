@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.api.InfuseObject;
+import mekanism.api.InfusionInput;
 import mekanism.api.InfusionType;
 import mekanism.common.IModule;
 import mekanism.common.ItemMekanism;
@@ -118,8 +119,13 @@ public class MekanismGenerators implements IModule
         {
         	RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling, 1, i), new ItemStack(BioFuel, 2));
         }
+        mekanism.common.Mekanism.infuseTypes.put("Bio", new InfusionType("Bio", new ItemStack(BioFuel, 1)));
         
-        Mekanism.infusions.put(new ItemStack(BioFuel), new InfuseObject(InfusionType.BIO, 5));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(mekanism.common.Mekanism.infuseTypes.get("Bio"), 10, new ItemStack(Block.cobblestone)), new ItemStack(Block.cobblestoneMossy));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(mekanism.common.Mekanism.infuseTypes.get("Bio"), 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
+
+        
+        Mekanism.infusions.put(new ItemStack(BioFuel), new InfuseObject(mekanism.common.Mekanism.infuseTypes.get("Bio"), 5));
 	}
 	
 	public void addNames()

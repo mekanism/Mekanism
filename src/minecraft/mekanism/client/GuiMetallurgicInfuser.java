@@ -67,9 +67,11 @@ public class GuiMetallurgicInfuser extends GuiContainer
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
-        int infuseX = 176 + 26 + (tileEntity.type == InfusionType.TIN ? 0 : (tileEntity.type == InfusionType.BIO ? 8 : 4));
-        int infuseY = 52 + (tileEntity.type == InfusionType.COAL ? 0 : (tileEntity.type == InfusionType.BIO ? 0 : 52));
+        /* I don't know enough about minecraft GUIs to even try make this part modular
+         * , not sure if it is even possible to inject arbitrary color into the GUI without it being pre-drawn
+         */
+        int infuseX = 176 + 26 + tileEntity.type.name == "Tin" ? 0 : (tileEntity.type.name == "Bio" ? 8 : 4);
+        int infuseY = 52 + tileEntity.type.name == "Coal" ? 0 : (tileEntity.type.name == "Bio" ? 0 : 52);
         
         int displayInt;
         

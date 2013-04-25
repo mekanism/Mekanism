@@ -45,7 +45,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 	
 	/** The type of infuse this machine stores. */
-	public InfusionType type = InfusionType.NONE;
+	public InfusionType type = mekanism.common.Mekanism.infuseTypes.get("None");
 	
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -164,7 +164,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				{
 					InfuseObject infuse = MekanismUtils.getInfuseObject(inventory[1]);
 					
-					if(type == InfusionType.NONE || type == infuse.type)
+					if(type.name == "None" || type == infuse.type)
 					{
 						if(infuseStored+infuse.stored <= MAX_INFUSE)
 						{
@@ -205,7 +205,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			if(infuseStored <= 0)
 			{
 				infuseStored = 0;
-				type = InfusionType.NONE;
+				type = mekanism.common.Mekanism.infuseTypes.get("None");
 			}
 			
 			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
@@ -245,7 +245,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.getInfuseObject(itemstack) != null && (type == InfusionType.NONE || type == MekanismUtils.getInfuseObject(itemstack).type);
+			return MekanismUtils.getInfuseObject(itemstack) != null && (type.name == "None" || type == MekanismUtils.getInfuseObject(itemstack).type);
 		}
 		else if(slotID == 0)
 		{
@@ -253,7 +253,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 2)
 		{
-	    	if(type != InfusionType.NONE)
+	    	if(type.name != "None")
 	    	{
 	    		if(RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, itemstack), false, Recipe.METALLURGIC_INFUSER.get()) != null)
 	    		{
@@ -379,7 +379,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
-    	type = InfusionType.getFromName(nbtTags.getString("type"));
+    	type = mekanism.common.Mekanism.infuseTypes.get(nbtTags.getString("type"));
     	
         if(nbtTags.hasKey("sideDataStored"))
         {
@@ -461,7 +461,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		isActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
-		type = InfusionType.getFromName(dataStream.readUTF());
+		type = mekanism.common.Mekanism.infuseTypes.get(dataStream.readUTF());
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
