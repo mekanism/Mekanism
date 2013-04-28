@@ -22,6 +22,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
 	public ModelHydrogenGenerator hydrogenGenerator = new ModelHydrogenGenerator();
 	public ModelElectrolyticSeparator electrolyticSeparator = new ModelElectrolyticSeparator();
+	public ModelWindTurbine windTurbine = new ModelWindTurbine();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -69,6 +70,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectrolyticSeparatorHydrogen.png"));
     	    	electrolyticSeparator.render(0.0625F);
+    		}
+    		else if(metadata == GeneratorType.WIND_TURBINE.meta)
+    		{
+    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+    	    	GL11.glTranslatef(0.0F, 0.35F, 0.0F);
+    	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/WindTurbine.png"));
+    	        windTurbine.render(0.018F, 0);
     		}
     		else {
     	        renderItem(renderer, metadata, block);

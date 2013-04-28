@@ -40,12 +40,11 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		if(worldObj.isRemote)
 		{
-			if(energyScale != prevScale)
+			if(Math.abs((energyScale-prevScale)*15F) >= 1)
 			{
 				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+				prevScale = energyScale;
 			}
-			
-			prevScale = energyScale;
 			
 			if(energyScale > 0)
 			{

@@ -14,9 +14,11 @@ import net.minecraft.util.Icon;
  * 4: Refined Glowstone
  * 5: Steel Block
  * 6: Control Panel
- * 7: Teleporter
- * 8: Teleporter Frame
- * 9: Steel Casing
+ * 7: Teleporter Frame
+ * 8: Steel Casing
+ * 9: Dynamic Tank
+ * 10: Dynamic Glass
+ * 11: Dynamic Valve
  * @author AidanBrady
  *
  */
@@ -75,6 +77,15 @@ public class ItemBlockBasic extends ItemBlock
 				break;
 			case 8:
 				name = "SteelCasing";
+				break;
+			case 9:
+				name = "DynamicTank";
+				break;
+			case 10:
+				name = "DynamicGlass";
+				break;
+			case 11:
+				name = "DynamicValve";
 				break;
 			default:
 				name = "Unknown";

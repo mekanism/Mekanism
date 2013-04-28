@@ -50,6 +50,7 @@ import net.minecraftforge.liquids.LiquidStack;
  * 10: Energized Smelter
  * 11: Teleporter
  * 12: Electric Pump
+ * 13: Electric Chest
  * @author AidanBrady
  *
  */

@@ -11,6 +11,8 @@ import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import mekanism.common.TileEntityControlPanel;
+import mekanism.common.TileEntityDynamicTank;
+import mekanism.common.TileEntityDynamicValve;
 import mekanism.common.TileEntityElectricChest;
 import mekanism.common.TileEntityElectricMachine;
 import mekanism.common.TileEntityElectricPump;
@@ -46,8 +48,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int TRANSMITTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	@Override
 	public void loadConfiguration()
@@ -68,20 +71,26 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSound(TileEntity tileEntity) 
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.enableSounds && FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
 		{
-			Mekanism.audioHandler.register(tileEntity);
+			synchronized(Mekanism.audioHandler.sounds)
+			{
+				Mekanism.audioHandler.register(tileEntity);
+			}
 		}
 	}
 	
 	@Override
 	public void unregisterSound(TileEntity tileEntity) 
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		if(Mekanism.enableSounds && FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
 		{
-			if(Mekanism.audioHandler.getFrom(tileEntity) != null)
+			synchronized(Mekanism.audioHandler.sounds)
 			{
-				Mekanism.audioHandler.getFrom(tileEntity).remove();
+				if(Mekanism.audioHandler.getFrom(tileEntity) != null)
+				{
+					Mekanism.audioHandler.getFrom(tileEntity).remove();
+				}
 			}
 		}
 	}
@@ -150,6 +159,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump", new RenderElectricPump());
 		ClientRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest", new RenderElectricChest());
 		ClientRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe", new RenderMechanicalPipe());
+		ClientRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank", new RenderDynamicTank());
+		ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
 	}
 	
 	@Override
@@ -165,6 +176,7 @@ public class ClientProxy extends CommonProxy
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new TransmitterRenderer());
+		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 		
 		System.out.println("[Mekanism] Render registrations complete.");
 	}
@@ -216,6 +228,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 17:
 				return new GuiElectricPump(player.inventory, (TileEntityElectricPump)tileEntity);
+			case 18:
+				return new GuiDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
 			case 19:
 				return new GuiPasswordEnter((TileEntityElectricChest)tileEntity);
 			case 20:
@@ -247,18 +261,40 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unloadSoundHandler()
 	{
-		if(Mekanism.audioHandler != null)
+		if(Mekanism.enableSounds)
 		{
-			synchronized(Mekanism.audioHandler.sounds)
+			if(Mekanism.audioHandler != null)
 			{
-				HashMap<TileEntity, Sound> sounds = new HashMap<TileEntity, Sound>();
-				sounds.putAll(Mekanism.audioHandler.sounds);
-				
-				for(Sound sound : sounds.values())
+				synchronized(Mekanism.audioHandler.sounds)
 				{
-					sound.remove();
+					HashMap<TileEntity, Sound> sounds = new HashMap<TileEntity, Sound>();
+					sounds.putAll(Mekanism.audioHandler.sounds);
+					
+					for(Sound sound : sounds.values())
+					{
+						sound.remove();
+					}
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean isPaused()
+	{
+		if(FMLClientHandler.instance().getClient().isSingleplayer() && !FMLClientHandler.instance().getClient().getIntegratedServer().getPublic())
+		{
+			GuiScreen screen = FMLClientHandler.instance().getClient().currentScreen;
+			
+			if(screen != null)
+			{
+				if(screen.doesGuiPauseGame())
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

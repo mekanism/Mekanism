@@ -1,12 +1,13 @@
 package mekanism.common;
 
-import universalelectricity.core.electricity.ElectricityPack;
 import mekanism.api.EnumColor;
+import mekanism.api.Object3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import universalelectricity.core.electricity.ElectricityPack;
 
 public class ItemPortableTeleporter extends ItemEnergized
 {
@@ -22,7 +23,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 		return itemstack;
 	}
 	
-	public int calculateEnergyCost(Entity entity, Teleporter.Coords coords)
+	public int calculateEnergyCost(Entity entity, Object3D coords)
 	{
 		if(coords == null)
 		{

@@ -2,6 +2,7 @@ package mekanism.common;
 
 import universalelectricity.core.item.IItemElectric;
 import ic2.api.IElectricItem;
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.SlotEnergy.SlotDischarge;
@@ -22,6 +23,8 @@ public class ContainerFactory extends Container
         
         addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
         addSlotToContainer(new SlotDischarge(tentity, 1, 7, 35));
+        addSlotToContainer(new Slot(tentity, 2, 180, 75));
+        addSlotToContainer(new Slot(tentity, 3, 180, 112));
         
         if(tileEntity.tier == FactoryTier.BASIC)
         {
@@ -29,14 +32,14 @@ public class ContainerFactory extends Container
         	{
         		int xAxis = 55 + (i*38);
         		
-		        addSlotToContainer(new Slot(tentity, 2+i, xAxis, 13));
+		        addSlotToContainer(new Slot(tentity, 4+i, xAxis, 13));
         	}
         	
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
         		int xAxis = 55 + (i*38);
         		
-		        addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+2+i, xAxis, 57));
+		        addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+4+i, xAxis, 57));
         	}
         }
         else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -45,14 +48,14 @@ public class ContainerFactory extends Container
         	{
 	        	int xAxis = 35 + (i*26);
 	        	
-	        	addSlotToContainer(new Slot(tentity, 2+i, xAxis, 13));
+	        	addSlotToContainer(new Slot(tentity, 4+i, xAxis, 13));
         	}
         	
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
 	        	int xAxis = 35 + (i*26);
 	        	
-	        	addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+2+i, xAxis, 57));
+	        	addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+4+i, xAxis, 57));
         	}
         }
         else if(tileEntity.tier == FactoryTier.ELITE)
@@ -61,14 +64,14 @@ public class ContainerFactory extends Container
         	{
 	        	int xAxis = 29 + (i*19);
 	        	
-	        	addSlotToContainer(new Slot(tentity, 2+i, xAxis, 13));
+	        	addSlotToContainer(new Slot(tentity, 4+i, xAxis, 13));
         	}
         	
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
 	        	int xAxis = 29 + (i*19);
 	        	
-	        	addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+2+i, xAxis, 57));
+	        	addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+4+i, xAxis, 57));
         	}
         }
         
@@ -117,6 +120,13 @@ public class ContainerFactory extends Container
             if(isOutputSlot(slotID))
             {
             	if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+            	{
+            		return null;
+            	}
+            }
+            else if(slotID != 2 && slotID != 3 && isProperMachine(slotStack) && !slotStack.isItemEqual(tileEntity.getMachineStack()))
+            {
+            	if(!mergeItemStack(slotStack, 2, 3, false))
             	{
             		return null;
             	}
@@ -214,14 +224,29 @@ public class ContainerFactory extends Container
         return stack;
     }
     
+    public boolean isProperMachine(ItemStack itemStack)
+    {
+    	if(itemStack != null && itemStack.getItem() instanceof ItemBlockMachine)
+    	{
+    		if(itemStack.getItemDamage() == MachineType.ENERGIZED_SMELTER.meta || 
+    				itemStack.getItemDamage() == MachineType.ENRICHMENT_CHAMBER.meta || 
+    				itemStack.getItemDamage() == MachineType.CRUSHER.meta)
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
     public boolean isInputSlot(int slot)
     {
     	if(tileEntity.tier == Tier.FactoryTier.BASIC)
-    		return slot >= 2 && slot <= 4;
+    		return slot >= 4 && slot <= 6;
     	if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-    		return slot >= 2 && slot <= 6;
+    		return slot >= 4 && slot <= 8;
     	if(tileEntity.tier == Tier.FactoryTier.ELITE)
-    		return slot >= 2 && slot <= 8;
+    		return slot >= 4 && slot <= 10;
     	
     	return false;
     }
@@ -229,11 +254,11 @@ public class ContainerFactory extends Container
     public boolean isOutputSlot(int slot)
     {
     	if(tileEntity.tier == Tier.FactoryTier.BASIC)
-    		return slot >= 5 && slot <= 7;
+    		return slot >= 7 && slot <= 9;
     	if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-    		return slot >= 7 && slot <= 11;
+    		return slot >= 9 && slot <= 13;
     	if(tileEntity.tier == Tier.FactoryTier.ELITE)
-    		return slot >= 9 && slot <= 15;
+    		return slot >= 11 && slot <= 17;
     	
     	return false;
     }

@@ -43,11 +43,6 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
-		{
-			System.out.println(electricityStored);
-		}
-		
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.discharge(1, this);

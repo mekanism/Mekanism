@@ -24,6 +24,7 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
+		GameRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine");
 	}
 	
 	/**
@@ -82,6 +83,8 @@ public class GeneratorsCommonProxy
 				return new ContainerHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
 			case 4:
 				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
+			case 5:
+				return new ContainerWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
 		}
 		return null;
 	}

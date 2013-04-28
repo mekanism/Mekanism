@@ -1,12 +1,15 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
+import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import mekanism.common.IFactory.RecipeType;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -105,7 +108,7 @@ public class BlockMachine extends BlockContainer
 	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
     {
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
         int change = 3;
         
@@ -129,8 +132,8 @@ public class BlockMachine extends BlockContainer
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-        if(MekanismUtils.isActive(world, x, y, z) && !(tileEntity instanceof TileEntityElectricPump))
+    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+        if(MekanismUtils.isActive(world, x, y, z))
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -314,7 +317,7 @@ public class BlockMachine extends BlockContainer
     public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         
     	if(metadata == 0)
     	{
@@ -492,7 +495,7 @@ public class BlockMachine extends BlockContainer
     		return true;
     	}
     	
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	int metadata = world.getBlockMetadata(x, y, z);
     	
     	if(entityplayer.getCurrentEquippedItem() != null)
@@ -635,7 +638,7 @@ public class BlockMachine extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.RENDER_ID;
+		return ClientProxy.MACHINE_RENDER_ID;
 	}
 	
 	@Override
@@ -656,7 +659,7 @@ public class BlockMachine extends BlockContainer
     {
     	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
     	{
-	    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+	    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
 	    	
             float motion = 0.7F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -680,7 +683,7 @@ public class BlockMachine extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z));
         
     	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
@@ -690,8 +693,11 @@ public class BlockMachine extends BlockContainer
 	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
     	}
         
-        IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
-        energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
+    	if(tileEntity instanceof TileEntityElectricBlock)
+    	{
+	        IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
+	        energizedItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
+    	}
         
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

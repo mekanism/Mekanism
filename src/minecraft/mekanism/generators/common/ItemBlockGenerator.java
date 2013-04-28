@@ -39,6 +39,7 @@ import net.minecraftforge.liquids.LiquidStack;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
+ * 6: Wind Turbine
  * @author AidanBrady
  *
  */
@@ -89,6 +90,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 				break;
 			case 5:
 				name = "AdvancedSolarGenerator";
+				break;
+			case 6:
+				name = "WindTurbine";
 				break;
 			default:
 				name = "Unknown";
@@ -212,6 +216,23 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0) 
 						place = false;
 				}
+			}
+		}
+		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
+		{
+	        if(world.getBlockId(x, y, z) != Block.tallGrass.blockID && world.getBlockId(x, y, z) != 0) 
+	        	place = false;
+	        
+	        if(world.getBlockId(x, y, z) != 0)
+	        {
+	        	if(Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z)) 
+	        		place = true; 
+	        }
+	        
+			for(int yPos = y+1; yPos <= y+4; yPos++)
+			{
+				if(world.getBlockId(x, yPos, z) != 0) 
+					place = false;
 			}
 		}
 		
@@ -453,12 +474,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public boolean canReceive(ItemStack itemStack) 
 	{
-		return false;
+		return itemStack.getItemDamage() == GeneratorType.ELECTROLYTIC_SEPARATOR.meta;
 	}
 
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return true;
+		return itemStack.getItemDamage() != GeneratorType.ELECTROLYTIC_SEPARATOR.meta;
 	}
 }

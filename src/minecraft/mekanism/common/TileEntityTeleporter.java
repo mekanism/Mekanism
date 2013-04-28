@@ -1,23 +1,15 @@
 package mekanism.common;
 
 import ic2.api.Direction;
-import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
-
 import mekanism.api.EnumColor;
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.Object3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +19,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.item.IItemElectric;
+
+import com.google.common.io.ByteArrayDataInput;
+
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IPeripheral;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IStrictEnergyAcceptor
 {
@@ -52,19 +50,19 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		{
 			if(Mekanism.teleporters.containsKey(code))
 			{
-				if(!Mekanism.teleporters.get(code).contains(Teleporter.Coords.get(this)) && hasFrame())
+				if(!Mekanism.teleporters.get(code).contains(Object3D.get(this)) && hasFrame())
 				{
-					Mekanism.teleporters.get(code).add(Teleporter.Coords.get(this));
+					Mekanism.teleporters.get(code).add(Object3D.get(this));
 				}
-				else if(Mekanism.teleporters.get(code).contains(Teleporter.Coords.get(this)) && !hasFrame())
+				else if(Mekanism.teleporters.get(code).contains(Object3D.get(this)) && !hasFrame())
 				{
-					Mekanism.teleporters.get(code).remove(Teleporter.Coords.get(this));
+					Mekanism.teleporters.get(code).remove(Object3D.get(this));
 				}
 			}
 			else if(hasFrame())
 			{
-				ArrayList<Teleporter.Coords> newCoords = new ArrayList<Teleporter.Coords>();
-				newCoords.add(Teleporter.Coords.get(this));
+				ArrayList<Object3D> newCoords = new ArrayList<Object3D>();
+				newCoords.add(Object3D.get(this));
 				Mekanism.teleporters.put(code, newCoords);
 			}
 			
@@ -143,11 +141,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		{
 			List<EntityPlayer> entitiesInPortal = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(xCoord-1, yCoord, zCoord-1, xCoord+1, yCoord+3, zCoord+1));
 
-			Teleporter.Coords closestCoords = null;
+			Object3D closestCoords = null;
 			
-			for(Teleporter.Coords coords : Mekanism.teleporters.get(code))
+			for(Object3D coords : Mekanism.teleporters.get(code))
 			{
-				if(!coords.equals(Teleporter.Coords.get(this)))
+				if(!coords.equals(Object3D.get(this)))
 				{
 					closestCoords = coords;
 					break;
@@ -183,11 +181,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		
 		List<EntityPlayer> entitiesInPortal = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(xCoord-1, yCoord, zCoord-1, xCoord+1, yCoord+3, zCoord+1));
 
-		Teleporter.Coords closestCoords = null;
+		Object3D closestCoords = null;
 		
-		for(Teleporter.Coords coords : Mekanism.teleporters.get(code))
+		for(Object3D coords : Mekanism.teleporters.get(code))
 		{
-			if(!coords.equals(Teleporter.Coords.get(this)))
+			if(!coords.equals(Object3D.get(this)))
 			{
 				closestCoords = coords;
 				break;
@@ -207,7 +205,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			
 			((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 			
-			for(Teleporter.Coords coords : Mekanism.teleporters.get(code))
+			for(Object3D coords : Mekanism.teleporters.get(code))
 			{
 				PacketHandler.sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
 			}
@@ -229,9 +227,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		{
 			if(Mekanism.teleporters.containsKey(code))
 			{
-				if(Mekanism.teleporters.get(code).contains(Teleporter.Coords.get(this)))
+				if(Mekanism.teleporters.get(code).contains(Object3D.get(this)))
 				{
-					Mekanism.teleporters.get(code).remove(Teleporter.Coords.get(this));
+					Mekanism.teleporters.get(code).remove(Object3D.get(this));
 				}
 				
 				if(Mekanism.teleporters.get(code).isEmpty()) 
@@ -242,7 +240,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		}
 	}
 	
-	public int calculateEnergyCost(Entity entity, Teleporter.Coords coords)
+	public int calculateEnergyCost(Entity entity, Object3D coords)
 	{
 		int energyCost = 1000;
 		
@@ -311,9 +309,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		{
 			if(Mekanism.teleporters.containsKey(code))
 			{
-				if(Mekanism.teleporters.get(code).contains(Teleporter.Coords.get(this)))
+				if(Mekanism.teleporters.get(code).contains(Object3D.get(this)))
 				{
-					Mekanism.teleporters.get(code).remove(Teleporter.Coords.get(this));
+					Mekanism.teleporters.get(code).remove(Object3D.get(this));
 				}
 				
 				if(Mekanism.teleporters.get(code).isEmpty()) Mekanism.teleporters.remove(code);

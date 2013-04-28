@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 import mekanism.common.IActiveState;
+import mekanism.common.Mekanism;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,12 +41,9 @@ public class SoundHandler
 	 */
 	public SoundHandler()
 	{
-		if(soundSystem == null)
-		{
-			soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
-			MinecraftForge.EVENT_BUS.register(this);
-			System.out.println("[Mekanism] Successfully set up SoundHandler.");
-		}
+		soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
+		MinecraftForge.EVENT_BUS.register(this);
+		System.out.println("[Mekanism] Successfully set up SoundHandler.");
 	}
 	
 	/**
@@ -55,59 +53,82 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
-			ArrayList<Sound> soundsToRemove = new ArrayList<Sound>();
-			World world = FMLClientHandler.instance().getClient().theWorld;
-			for(Sound sound : sounds.values())
+			if(soundSystem == null)
 			{
-				if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
+				soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
+			}
+			
+			if(soundSystem != null)
+			{
+				if(!Mekanism.proxy.isPaused())
 				{
-					if(sound.tileEntity == null || !(sound.tileEntity instanceof IHasSound))
+					ArrayList<Sound> soundsToRemove = new ArrayList<Sound>();
+					World world = FMLClientHandler.instance().getClient().theWorld;
+					for(Sound sound : sounds.values())
 					{
-						soundsToRemove.add(sound);
-						continue;
-					}
-					else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) == null)
-					{
-						soundsToRemove.add(sound);
-						continue;
-					}
-					else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) != sound.tileEntity)
-					{
-						soundsToRemove.add(sound);
-						continue;
-					}
-					else if(((IHasSound)sound.tileEntity).getSoundPath() != sound.soundPath)
-					{
-						soundsToRemove.add(sound);
-						continue;
-					}
-					else if(sound.tileEntity instanceof IActiveState)
-					{
-						if(((IActiveState)sound.tileEntity).getActive() != sound.isPlaying)
+						if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
 						{
-							if(((IActiveState)sound.tileEntity).getActive())
+							if(sound.tileEntity == null || !(sound.tileEntity instanceof IHasSound))
 							{
-								sound.play();
+								soundsToRemove.add(sound);
+								continue;
 							}
-							else {
-								sound.stopLoop();
+							else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) == null)
+							{
+								soundsToRemove.add(sound);
+								continue;
+							}
+							else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) != sound.tileEntity)
+							{
+								soundsToRemove.add(sound);
+								continue;
+							}
+							else if(((IHasSound)sound.tileEntity).getSoundPath() != sound.soundPath)
+							{
+								soundsToRemove.add(sound);
+								continue;
+							}
+							else if(sound.tileEntity instanceof IActiveState)
+							{
+								if(((IActiveState)sound.tileEntity).getActive() != sound.isPlaying)
+								{
+									if(((IActiveState)sound.tileEntity).getActive())
+									{
+										sound.play();
+									}
+									else {
+										sound.stopLoop();
+									}
+								}
+							}
+							
+							if(sound.isPlaying)
+							{
+								sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 							}
 						}
 					}
 					
-					if(sound.isPlaying)
+					for(Sound sound : soundsToRemove)
 					{
-						sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+						sound.remove();
+					}
+					
+					masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;
+				}
+				else {
+					for(Sound sound : sounds.values())
+					{
+						if(sound.isPlaying)
+						{
+							sound.stopLoop();
+						}
 					}
 				}
 			}
-			
-			for(Sound sound : soundsToRemove)
-			{
-				sound.remove();
+			else {
+				Mekanism.proxy.unloadSoundHandler();
 			}
-			
-			masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;
 		}
 	}
 	

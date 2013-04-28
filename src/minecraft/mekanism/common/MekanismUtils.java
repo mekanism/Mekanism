@@ -8,12 +8,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
-import mekanism.api.Object3D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.InfuseObject;
+import mekanism.api.Object3D;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
@@ -25,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -171,7 +171,7 @@ public final class MekanismUtils
 	/**
 	 * Returns the closest teleporter between a selection of one or two.
 	 */
-	public static Teleporter.Coords getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
+	public static Object3D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
 	{
 		if(Mekanism.teleporters.get(teleCode).size() == 1)
 		{
@@ -180,8 +180,8 @@ public final class MekanismUtils
 		else {
 			int dimensionId = player.worldObj.provider.dimensionId;
 			
-			Teleporter.Coords coords0 = Mekanism.teleporters.get(teleCode).get(0);
-			Teleporter.Coords coords1 = Mekanism.teleporters.get(teleCode).get(1);
+			Object3D coords0 = Mekanism.teleporters.get(teleCode).get(0);
+			Object3D coords1 = Mekanism.teleporters.get(teleCode).get(1);
 			
 			int distance0 = (int)player.getDistance(coords0.xCoord, coords0.yCoord, coords0.zCoord);
 			int distance1 = (int)player.getDistance(coords1.xCoord, coords1.yCoord, coords1.zCoord);
@@ -507,14 +507,15 @@ public final class MekanismUtils
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
+     * @param orig - original block
      */
-    public static void makeBoundingBlock(World world, int x, int y, int z, int origX, int origY, int origZ)
+    public static void makeBoundingBlock(World world, int x, int y, int z, Object3D orig)
     {
 		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID);
 		
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(origX, origY, origZ);
+			((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
 		}
     }
     
@@ -708,5 +709,100 @@ public final class MekanismUtils
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);
+    }
+    
+    /**
+     * Grabs an inventory from the world's caches, and removes all the world's references to it.
+     * @param world - world the cache is stored in
+     * @param id - inventory ID to pull
+     * @return
+     */
+    public static DynamicTankCache pullInventory(World world, int id)
+    {
+    	DynamicTankCache toReturn = Mekanism.dynamicInventories.get(id);
+    	Mekanism.dynamicInventories.remove(id);
+    	
+    	for(Object3D obj : Mekanism.inventoryLocations.get(id))
+    	{
+    		TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
+    		
+    		if(tileEntity != null)
+    		{
+    			tileEntity.cachedLiquid = null;
+    			tileEntity.inventory = new ItemStack[2];
+    			tileEntity.inventoryID = -1;
+    		}
+    	}
+    	
+    	Mekanism.inventoryLocations.remove(id);
+    	
+    	return toReturn;
+    }
+    
+    /**
+     * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
+     * @param inventoryID
+     * @param liquid
+     * @param inventory
+     * @param tileEntity
+     */
+    public static void updateCache(int inventoryID, LiquidStack liquid, ItemStack[] inventory, TileEntityDynamicTank tileEntity)
+    {
+    	if(!Mekanism.dynamicInventories.containsKey(inventoryID))
+    	{
+    		DynamicTankCache cache = new DynamicTankCache();
+    		cache.inventory = inventory;
+    		cache.liquid = liquid;
+    		
+    		Mekanism.dynamicInventories.put(inventoryID, cache);
+    		
+    		HashSet<Object3D> set = new HashSet<Object3D>();
+    		set.add(Object3D.get(tileEntity));
+    		
+    		Mekanism.inventoryLocations.put(inventoryID, set);
+    		
+    		return;
+    	}
+    	
+    	Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
+    	Mekanism.dynamicInventories.get(inventoryID).liquid = liquid;
+    	
+    	if(!Mekanism.inventoryLocations.containsKey(inventoryID))
+    	{
+    		HashSet<Object3D> set = new HashSet<Object3D>();
+    		set.add(Object3D.get(tileEntity));
+    		
+    		Mekanism.inventoryLocations.put(inventoryID, set);
+    		
+    		return;
+    	}
+    	
+    	if(!Mekanism.inventoryLocations.get(inventoryID).contains(Object3D.get(tileEntity)))
+    	{
+    		Mekanism.inventoryLocations.get(inventoryID).add(Object3D.get(tileEntity));
+    	}
+    }
+    
+    /**
+     * Grabs a unique inventory ID for a dynamic tank.
+     * @return unique inventory ID
+     */
+    public static int getUniqueInventoryID()
+    {
+    	int id = 0;
+    	
+    	while(true)
+    	{
+    		for(Integer i : Mekanism.dynamicInventories.keySet())
+    		{
+    			if(id == i)
+    			{
+    				id++;
+    				continue;
+    			}
+    		}
+    		
+    		return id;
+    	}
     }
 }

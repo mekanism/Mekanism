@@ -152,7 +152,7 @@ public class BlockTransmitter extends Block
 					{
 						int side = Arrays.asList(connectedAcceptors).indexOf(container);
 						
-						if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
+						if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
 						{
 							connectable[side] = true;
 						}

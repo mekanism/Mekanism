@@ -93,22 +93,22 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
     public ItemStack decrStackSize(int slotID, int amount)
     {
-        if(inventory[slotID] != null)
+        if(getStackInSlot(slotID) != null)
         {
             ItemStack tempStack;
 
-            if(inventory[slotID].stackSize <= amount)
+            if(getStackInSlot(slotID).stackSize <= amount)
             {
-                tempStack = inventory[slotID];
-                inventory[slotID] = null;
+                tempStack = getStackInSlot(slotID);
+                setInventorySlotContents(slotID, null);
                 return tempStack;
             }
             else {
-                tempStack = inventory[slotID].splitStack(amount);
+                tempStack = getStackInSlot(slotID).splitStack(amount);
 
-                if(inventory[slotID].stackSize == 0)
+                if(getStackInSlot(slotID).stackSize == 0)
                 {
-                    inventory[slotID] = null;
+                	setInventorySlotContents(slotID, null);
                 }
 
                 return tempStack;
@@ -122,10 +122,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
     public ItemStack getStackInSlotOnClosing(int slotID)
     {
-        if(inventory[slotID] != null)
+        if(getStackInSlot(slotID) != null)
         {
-            ItemStack tempStack = inventory[slotID];
-            inventory[slotID] = null;
+            ItemStack tempStack = getStackInSlot(slotID);
+            setInventorySlotContents(slotID, null);
             return tempStack;
         }
         else {

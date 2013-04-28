@@ -14,6 +14,8 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IMechanicalPipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
@@ -71,22 +73,25 @@ public class LiquidTransferProtocol
 					ILiquidTank[] tanks = acceptor.getTanks(side);
 					boolean hasTank = false;
 					
-					for(ILiquidTank tank : tanks)
+					if(tanks != null)
 					{
-						if(tank != null)
+						for(ILiquidTank tank : tanks)
 						{
-							if(tank.getLiquid() == null)
+							if(tank != null)
 							{
-								hasTank = true;
-								break;
-							}
-							else {
-								if(tank.getLiquid().isLiquidEqual(liquidToSend))
+								if(tank.getLiquid() == null)
 								{
-									if(tank.getCapacity()-tank.getLiquid().amount != 0)
+									hasTank = true;
+									break;
+								}
+								else {
+									if(tank.getLiquid().isLiquidEqual(liquidToSend))
 									{
-										hasTank = true;
-										break;
+										if(tank.getCapacity()-tank.getLiquid().amount != 0)
+										{
+											hasTank = true;
+											break;
+										}
 									}
 								}
 							}
@@ -224,9 +229,22 @@ public class LiquidTransferProtocol
 		{
 			LiquidStack sendStack = liquidToSend.copy();
 			sendStack.amount = liquidSent;
-			PacketHandler.sendLiquidTransferUpdate(pointer, sendStack);
+			MinecraftForge.EVENT_BUS.post(new LiquidTransferEvent(this, sendStack));
 		}
 		
 		return liquidSent;
+	}
+	
+	public static class LiquidTransferEvent extends Event
+	{
+		public final LiquidTransferProtocol transferProtocol;
+		
+		public final LiquidStack liquidSent;
+		
+		public LiquidTransferEvent(LiquidTransferProtocol protocol, LiquidStack liquid)
+		{
+			transferProtocol = protocol;
+			liquidSent = liquid;
+		}
 	}
 }

@@ -63,12 +63,11 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(worldObj.isRemote)
 		{
-			if(liquidScale != prevScale)
+			if(Math.abs((liquidScale-prevScale)*15F) >= 1)
 			{
 				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+				prevScale = liquidScale;
 			}
-		
-			prevScale = liquidScale;
 			
 			if(liquidScale > 0)
 			{
@@ -122,30 +121,12 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		isActive = dataStream.readBoolean();
-		liquidScale = dataStream.readFloat();
-		
-		if(dataStream.readInt() == 1)
-		{
-			refLiquid = new LiquidStack(dataStream.readInt(), LiquidContainerRegistry.BUCKET_VOLUME, dataStream.readInt());
-		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		data.add(isActive);
-		data.add(liquidScale);
-		
-		if(refLiquid != null)
-		{
-			data.add(1);
-			data.add(refLiquid.itemID);
-			data.add(refLiquid.itemMeta);
-		}
-		else {
-			data.add(0);
-		}
-		
 		return data;
 	}
 	
@@ -175,13 +156,23 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
 	{
-		return new LiquidTransferProtocol(this, VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), from), resource).calculate();
+		if(!isActive)
+		{
+			return new LiquidTransferProtocol(this, VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), from), resource).calculate();
+		}
+		
+		return 0;
 	}
 
 	@Override
 	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
 	{
-		return new LiquidTransferProtocol(this, null, resource).calculate();
+		if(!isActive)
+		{
+			return new LiquidTransferProtocol(this, null, resource).calculate();
+		}
+		
+		return 0;
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			{
 				int side = Arrays.asList(connectedAcceptors).indexOf(container);
 				
-				if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
+				if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
 				{
 					connectable[side] = true;
 				}
@@ -92,8 +92,8 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		
 		if(tileEntity.liquidScale > 0 && tileEntity.refLiquid != null)
 		{
-			GL11.glPushMatrix();
-			GL11.glDisable(2896);
+			push();
+			
 			bindTextureByName(tileEntity.refLiquid.getTextureSheet());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
@@ -109,9 +109,24 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid, tileEntity.worldObj);
 			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
 			
-			GL11.glEnable(2896);
-			GL11.glPopMatrix();
+			pop();
 		}
+	}
+	
+	private void pop()
+	{
+		GL11.glPopAttrib();
+		GL11.glPopMatrix();
+	}
+	
+	private void push()
+	{
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	private int[] getListAndRender(ForgeDirection side, LiquidStack stack, World world)

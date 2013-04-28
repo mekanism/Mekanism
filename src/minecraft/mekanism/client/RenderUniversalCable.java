@@ -96,6 +96,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		{
 			GL11.glPushMatrix();
 			GL11.glDisable(2896);
+			
 			bindTextureByName("/mods/mekanism/textures/items/LiquidEnergy.png");
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			

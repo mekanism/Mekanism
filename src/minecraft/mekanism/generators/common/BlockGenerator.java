@@ -41,6 +41,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
+ * 6: Wind Turbine
  * @author AidanBrady
  *
  */
@@ -218,6 +219,7 @@ public class BlockGenerator extends BlockContainer
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
+		list.add(new ItemStack(i, 1, 6));
 	}
 	
 	@Override
@@ -226,7 +228,7 @@ public class BlockGenerator extends BlockContainer
     {
 		int metadata = world.getBlockMetadata(x, y, z);
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-        if (MekanismUtils.isActive(world, x, y, z))
+        if(MekanismUtils.isActive(world, x, y, z))
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -234,7 +236,7 @@ public class BlockGenerator extends BlockContainer
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
 
-            if (tileEntity.facing == 4)
+            if(tileEntity.facing == 4)
             {
             	switch(GeneratorType.values()[metadata])
             	{
@@ -249,7 +251,7 @@ public class BlockGenerator extends BlockContainer
             			break;
             	}
             }
-            else if (tileEntity.facing == 5)
+            else if(tileEntity.facing == 5)
             {
             	switch(GeneratorType.values()[metadata])
             	{
@@ -264,7 +266,7 @@ public class BlockGenerator extends BlockContainer
             			break;
             	}
             }
-            else if (tileEntity.facing == 2)
+            else if(tileEntity.facing == 2)
             {
             	switch(GeneratorType.values()[metadata])
             	{
@@ -279,7 +281,7 @@ public class BlockGenerator extends BlockContainer
             			break;
             	}
             }
-            else if (tileEntity.facing == 3)
+            else if(tileEntity.facing == 3)
             {
             	switch(GeneratorType.values()[metadata])
             	{
@@ -306,14 +308,26 @@ public class BlockGenerator extends BlockContainer
 	        
 	        int idSum = 0;
 	        idSum += world.getBlockId(x, y, z);
-	        World worldObj = world;
 	        
 			for(int xPos=-1;xPos<=2;xPos++)
 			{
 				for(int zPos=-1;zPos<=2;zPos++)
 				{
-					idSum += worldObj.getBlockId(x+xPos, y+2, z+zPos);
+					idSum += world.getBlockId(x+xPos, y+2, z+zPos);
 				}
+			}
+			
+			return (idSum == 0) && canPlace;
+		}
+		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_TURBINE.meta)
+		{
+	        boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
+	        
+	        int idSum = 0;
+	        
+			for(int yPos = y+1; yPos <= y+4; yPos++)
+			{
+				idSum += world.getBlockId(x, yPos, z);
 			}
 			
 			return (idSum == 0) && canPlace;
@@ -559,7 +573,8 @@ public class BlockGenerator extends BlockContainer
 		ELECTROLYTIC_SEPARATOR(2, 2, 20000, TileEntityElectrolyticSeparator.class, true),
 		HYDROGEN_GENERATOR(3, 3, 40000, TileEntityHydrogenGenerator.class, true),
 		BIO_GENERATOR(4, 4, 160000, TileEntityBioGenerator.class, true),
-		ADVANCED_SOLAR_GENERATOR(5, 1, 200000, TileEntityAdvancedSolarGenerator.class, true);
+		ADVANCED_SOLAR_GENERATOR(5, 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
+		WIND_TURBINE(6, 5, 200000, TileEntityWindTurbine.class, true);
 		
 		public int meta;
 		public int guiId;

@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.MekanismUtils;
 
@@ -13,13 +14,13 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, xCoord, yCoord, zCoord);
+		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Object3D.get(this));
 		
 		for(int x=-1;x<=1;x++)
 		{
 			for(int z=-1;z<=1;z++)
 			{
-				MekanismUtils.makeBoundingBlock(worldObj, xCoord+x, yCoord+2, zCoord+z, xCoord, yCoord, zCoord);
+				MekanismUtils.makeBoundingBlock(worldObj, xCoord+x, yCoord+2, zCoord+z, Object3D.get(this));
 			}
 		}
 	}

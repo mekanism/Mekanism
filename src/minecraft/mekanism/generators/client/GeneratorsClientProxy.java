@@ -7,6 +7,7 @@ import mekanism.generators.common.TileEntityElectrolyticSeparator;
 import mekanism.generators.common.TileEntityHeatGenerator;
 import mekanism.generators.common.TileEntityHydrogenGenerator;
 import mekanism.generators.common.TileEntitySolarGenerator;
+import mekanism.generators.common.TileEntityWindTurbine;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +30,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
 		ClientRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator", new RenderHydrogenGenerator());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
+		ClientRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine", new RenderWindTurbine());
 	}
 	
 	@Override
@@ -57,6 +59,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 				return new GuiHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
 			case 4:
 				return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
+			case 5:
+				return new GuiWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
 		}
 		return null;
 	}

@@ -67,7 +67,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	    	electricChest.renderAll();
 		}
 		else {
-			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.machineBlockID], item.getItemDamage(), ClientProxy.RENDER_ID);
+			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.machineBlockID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
 		}
 	}
 	

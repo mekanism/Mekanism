@@ -135,6 +135,7 @@ public class MekanismGenerators implements IModule
 		LanguageRegistry.instance().addStringLocalization("tile.Generator.HydrogenGenerator.name", "Hydrogen Generator");
 		LanguageRegistry.instance().addStringLocalization("tile.Generator.BioGenerator.name", "Bio-Generator");
 		LanguageRegistry.instance().addStringLocalization("tile.Generator.AdvancedSolarGenerator.name", "Advanced Solar Generator");
+		LanguageRegistry.instance().addStringLocalization("tile.Generator.WindTurbine.name", "Wind Turbine");
 	}
 	
 	public void addEntities()

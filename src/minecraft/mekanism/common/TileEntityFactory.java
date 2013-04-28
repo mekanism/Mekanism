@@ -12,6 +12,7 @@ import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import net.minecraft.item.Item;
@@ -63,6 +64,12 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
 	
+	/** How long it takes this factory to switch recipe types. */
+	public int RECIPE_TICKS_REQUIRED = 40;
+	
+	/** How many recipe ticks have progressed. */
+	public int recipeTicks;
+	
 	/** This machine's previous active state, used for calculating packets. */
 	public boolean prevActive;
 	
@@ -89,7 +96,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		super(type.name + " Factory", type.processes*2000);
 		tier = type;
-		inventory = new ItemStack[2+type.processes*2];
+		inventory = new ItemStack[4+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
 	}
@@ -156,6 +163,64 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				upgradeTicks = 0;
 			}
 			
+			if(inventory[2] != null && inventory[3] == null)
+			{
+				if(inventory[2].isItemEqual(new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENERGIZED_SMELTER.meta)) && recipeType != 0)
+				{
+					if(recipeTicks < RECIPE_TICKS_REQUIRED)
+					{
+						recipeTicks++;
+					}
+					else if(recipeTicks == RECIPE_TICKS_REQUIRED)
+					{
+						recipeTicks = 0;
+						
+						inventory[2] = null;
+						inventory[3] = getMachineStack();
+						
+						recipeType = 0;
+					}
+				}
+				else if(inventory[2].isItemEqual(new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENRICHMENT_CHAMBER.meta)) && recipeType != 1)
+				{
+					if(recipeTicks < RECIPE_TICKS_REQUIRED)
+					{
+						recipeTicks++;
+					}
+					else if(recipeTicks == RECIPE_TICKS_REQUIRED)
+					{
+						recipeTicks = 0;
+						
+						inventory[2] = null;
+						inventory[3] = getMachineStack();
+						
+						recipeType = 1;
+					}
+				}
+				else if(inventory[2].isItemEqual(new ItemStack(Mekanism.MachineBlock, 1, MachineType.CRUSHER.meta)) && recipeType != 2)
+				{
+					if(recipeTicks < RECIPE_TICKS_REQUIRED)
+					{
+						recipeTicks++;
+					}
+					else if(recipeTicks == RECIPE_TICKS_REQUIRED)
+					{
+						recipeTicks = 0;
+						
+						inventory[2] = null;
+						inventory[3] = getMachineStack();
+						
+						recipeType = 2;
+					}
+				}
+				else {
+					recipeTicks = 0;
+				}
+			}
+			else {
+				recipeTicks = 0;
+			}
+			
 			for(int process = 0; process < tier.processes; process++)
 			{
 				if(electricityStored >= ENERGY_PER_TICK)
@@ -204,6 +269,21 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		}
 	}
 	
+	public ItemStack getMachineStack()
+	{
+		switch(recipeType)
+		{
+			case 0:
+				return new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENERGIZED_SMELTER.meta);
+			case 1:
+				return new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENRICHMENT_CHAMBER.meta);
+			case 2:
+				return new ItemStack(Mekanism.MachineBlock, 1, MachineType.CRUSHER.meta);
+			default:
+				return null;
+		}
+	}
+	
 	@Override
 	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
 	{
@@ -214,15 +294,15 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 							(!(itemstack.getItem() instanceof IItemElectric) || 
 							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
 		}
-		else if(tier == FactoryTier.BASIC && slotID >= 5 && slotID <= 7)
+		else if(tier == FactoryTier.BASIC && slotID >= 7 && slotID <= 9)
 		{
 			return true;
 		}
-		else if(tier == FactoryTier.ADVANCED && slotID >= 7 && slotID <= 11)
+		else if(tier == FactoryTier.ADVANCED && slotID >= 9 && slotID <= 13)
 		{
 			return true;
 		}
-		else if(tier == FactoryTier.ELITE && slotID >= 9 && slotID <= 15)
+		else if(tier == FactoryTier.ELITE && slotID >= 11 && slotID <= 17)
 		{
 			return true;
 		}
@@ -235,33 +315,33 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		if(tier == FactoryTier.BASIC)
 		{
-			if(slotID >= 5 && slotID <= 7)
+			if(slotID >= 7 && slotID <= 9)
 			{
 				return false;
 			}
-			else if(slotID >= 2 && slotID <= 4)
+			else if(slotID >= 4 && slotID <= 6)
 			{
 				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
 			}
 		}
 		else if(tier == FactoryTier.ADVANCED)
 		{
-			if(slotID >= 7 && slotID <= 11)
+			if(slotID >= 9 && slotID <= 13)
 			{
 				return false;
 			}
-			else if(slotID >= 2 && slotID <= 6)
+			else if(slotID >= 4 && slotID <= 8)
 			{
 				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
 			}
 		}
 		else if(tier == FactoryTier.ELITE)
 		{
-			if(slotID >= 9 && slotID <= 15)
+			if(slotID >= 11 && slotID <= 17)
 			{
 				return false;
 			}
-			else if(slotID >= 2 && slotID <= 8)
+			else if(slotID >= 4 && slotID <= 10)
 			{
 				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
 			}
@@ -309,6 +389,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int getScaledUpgradeProgress(int i)
 	{
 		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
+	}
+	
+	public int getScaledRecipeProgress(int i)
+	{
+		return recipeTicks*i / RECIPE_TICKS_REQUIRED;
 	}
 	
 	public boolean canOperate(int inputSlot, int outputSlot)
@@ -382,6 +467,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		energyMultiplier = dataStream.readInt();
 		isActive = dataStream.readBoolean();
 		recipeType = dataStream.readInt();
+		upgradeTicks = dataStream.readInt();
+		recipeTicks = dataStream.readInt();
 		
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -400,6 +487,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         energyMultiplier = nbtTags.getInteger("energyMultiplier");
         isActive = nbtTags.getBoolean("isActive");
         recipeType = nbtTags.getInteger("recipeType");
+        upgradeTicks = nbtTags.getInteger("upgradeTicks");
+        recipeTicks = nbtTags.getInteger("recipeTicks");
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -424,6 +513,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         nbtTags.setInteger("energyMultiplier", energyMultiplier);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("recipeType", recipeType);
+        nbtTags.setInteger("upgradeTicks", upgradeTicks);
+        nbtTags.setInteger("recipeTicks", recipeTicks);
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -446,6 +537,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		data.add(energyMultiplier);
 		data.add(isActive);
 		data.add(recipeType);
+		data.add(upgradeTicks);
+		data.add(recipeTicks);
 		data.add(progress);
 		return data;
 	}

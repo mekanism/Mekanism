@@ -5,8 +5,10 @@ import ic2.api.recipe.Recipes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import mekanism.api.EnumGas;
@@ -14,8 +16,11 @@ import mekanism.api.GasTransferProtocol.GasTransferEvent;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionType;
+import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
+import mekanism.common.EnergyTransferProtocol.EnergyTransferEvent;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.LiquidTransferProtocol.LiquidTransferEvent;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import net.minecraft.block.Block;
@@ -81,10 +86,13 @@ public class Mekanism
 	public static Version versionNumber = new Version(5, 5, 5);
 	
 	/** Map of Teleporters */
-	public static Map<Teleporter.Code, ArrayList<Teleporter.Coords>> teleporters = new HashMap<Teleporter.Code, ArrayList<Teleporter.Coords>>();
+	public static Map<Teleporter.Code, ArrayList<Object3D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Object3D>>();
 	
 	/** Map of infuse objects */
 	public static Map<ItemStack, InfuseObject> infusions = new HashMap<ItemStack, InfuseObject>();
+	
+	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
+	public static Map<Integer, HashSet<Object3D>> inventoryLocations = new HashMap<Integer, HashSet<Object3D>>();
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -449,6 +457,9 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.ControlPanel.name", "Control Panel");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.TeleporterFrame.name", "Teleporter Frame");
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.SteelCasing.name", "Steel Casing");
+		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.DynamicTank.name", "Dynamic Tank");
+		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.DynamicGlass.name", "Dynamic Glass");
+		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.DynamicValve.name", "Dynamic Valve");
 		
 		//Localization for MachineBlock
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnrichmentChamber.name", "Enrichment Chamber");
@@ -990,6 +1001,8 @@ public class Mekanism
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
 		teleporters.clear();
+		dynamicInventories.clear();
+		inventoryLocations.clear();
 	}
 	
 	@PreInit
@@ -1071,5 +1084,17 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		PacketHandler.sendGasTransferUpdate(event.transferProtocol.pointer, event.transferProtocol.transferType);
+	}
+	
+	@ForgeSubscribe
+	public void onLiquidTransferred(LiquidTransferEvent event)
+	{
+		PacketHandler.sendLiquidTransferUpdate(event.transferProtocol.pointer, event.liquidSent);
+	}
+	
+	@ForgeSubscribe
+	public void onEnergyTransferred(EnergyTransferEvent event)
+	{
+		PacketHandler.sendEnergyTransferUpdate(event.transferProtocol.pointer);
 	}
 }

@@ -51,6 +51,9 @@ public class GuiFactory extends GuiContainer
         displayInt = tileEntity.getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 72, 10, displayInt);
         
+        displayInt = tileEntity.getScaledRecipeProgress(15);
+        drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 176 + 26, 86, 10, displayInt);
+        
         if(tileEntity.tier == FactoryTier.BASIC)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)

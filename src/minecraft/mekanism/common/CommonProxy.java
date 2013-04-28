@@ -28,6 +28,8 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");
 		GameRegistry.registerTileEntity(TileEntityElectricChest.class, "ElectricChest");
 		GameRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe");
+		GameRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank");
+		GameRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve");
 	}
 	
 	/**
@@ -118,6 +120,12 @@ public class CommonProxy
 	 */
 	public void unloadSoundHandler() {}
 	
+	/** Whether or not the game is paused. */
+	public boolean isPaused() 
+	{
+		return false;
+	}
+	
 	/**
 	 * Get the actual interface for a GUI. Client-only.
 	 * @param ID - gui ID
@@ -175,6 +183,8 @@ public class CommonProxy
 				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 17:
 				return new ContainerElectricPump(player.inventory, (TileEntityElectricPump)tileEntity);
+			case 18:
+				return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
 		}
 		return null;
 	}

@@ -12,6 +12,8 @@ import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUniversalCable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
 import buildcraft.api.power.IPowerReceptor;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -200,7 +202,7 @@ public class EnergyTransferProtocol
 		
 		if(prevSending > energyToSend && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			PacketHandler.sendEnergyTransferUpdate(pointer);
+			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this));
 		}
 		
 		return energyToSend;
@@ -236,5 +238,15 @@ public class EnergyTransferProtocol
 		}
 		
 		return totalNeeded;
+	}
+	
+	public static class EnergyTransferEvent extends Event
+	{
+		public final EnergyTransferProtocol transferProtocol;
+		
+		public EnergyTransferEvent(EnergyTransferProtocol protocol)
+		{
+			transferProtocol = protocol;
+		}
 	}
 }
