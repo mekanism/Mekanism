@@ -47,6 +47,9 @@ public final class MekanismHooks
 	public boolean ForestryLoaded = false;
 	public boolean TELoaded = false;
 	
+	public boolean MetallurgyCoreLoaded = false;
+	public boolean MetallurgyBaseLoaded = false;
+	
 	public void hook()
 	{
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
@@ -55,6 +58,10 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("Forestry")) ForestryLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
+		if(Loader.isModLoaded("Metallurgy3Core")) {
+			MetallurgyCoreLoaded = true;
+			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
+		}
 		
 		if(IC2Loaded)
 		{
