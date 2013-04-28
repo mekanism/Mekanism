@@ -100,6 +100,9 @@ public class MekanismGenerators implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(SolarPanel), new Object[] {
 			"GGG", "RAR", "PPP", Character.valueOf('G'), Block.thinGlass, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "ingotOsmium"
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Generator, 1, 6), new Object[] {
+			" O ", "OTO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('T'), new ItemStack(Mekanism.BasicBlock, 1, 8), Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), Mekanism.ControlCircuit
+		}));
 		
 		//BioFuel Crusher Recipes
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling), new ItemStack(BioFuel, 2));

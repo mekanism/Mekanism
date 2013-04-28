@@ -78,7 +78,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		
 		if(worldObj.isRemote)
 		{
-			if(!(this instanceof TileEntitySolarGenerator) && !(this instanceof TileEntityWindTurbine))
+			if(!(this instanceof TileEntitySolarGenerator))
 			{
 				Mekanism.proxy.registerSound(this);
 			}

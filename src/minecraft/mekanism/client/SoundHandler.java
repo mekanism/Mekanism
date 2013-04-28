@@ -83,7 +83,7 @@ public class SoundHandler
 								soundsToRemove.add(sound);
 								continue;
 							}
-							else if(((IHasSound)sound.tileEntity).getSoundPath() != sound.soundPath)
+							else if(!((IHasSound)sound.tileEntity).getSoundPath().equals(sound.soundPath))
 							{
 								soundsToRemove.add(sound);
 								continue;

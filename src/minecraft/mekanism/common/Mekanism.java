@@ -327,6 +327,15 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(Transmitter, 8, 2), new Object[] {
 			"O O", Character.valueOf('O'), "ingotOsmium"
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 4, 9), new Object[] {
+			" O ", "OSO", " O ", Character.valueOf('O'), "ingotOsmium", Character.valueOf('S'), Block.cobblestone
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 4, 10), new Object[] {
+			" O ", "OGO", " O ", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 11), new Object[] {
+			" O ", "OCO", " O ", Character.valueOf('O'), "ingotOsmium", Character.valueOf('C'), ControlCircuit
+		}));
 		
 		//Factory Recipes
 		CraftingManager.getInstance().getRecipeList().add(new FactoryRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, RecipeType.SMELTING), new Object[] {

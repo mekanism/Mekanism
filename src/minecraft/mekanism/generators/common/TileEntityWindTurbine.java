@@ -33,7 +33,11 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 		{
 			if(canOperate())
 			{
+				setActive(true);
 				setEnergy(electricityStored + (GENERATION_RATE*getMultiplier()));
+			}
+			else {
+				setActive(false);
 			}
 		}
 	}
