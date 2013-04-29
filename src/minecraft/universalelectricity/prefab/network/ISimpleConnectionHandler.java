@@ -1,7 +1,7 @@
 package universalelectricity.prefab.network;
 
 import universalelectricity.prefab.network.ConnectionHandler.ConnectionType;
-
+@Deprecated
 public interface ISimpleConnectionHandler
 {
 	/**

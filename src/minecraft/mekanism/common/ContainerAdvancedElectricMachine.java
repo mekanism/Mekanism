@@ -39,6 +39,7 @@ public class ContainerAdvancedElectricMachine extends Container
         }
         
         tileEntity.openChest();
+        tileEntity.playersUsing.add(inventory.player);
     }
     
     @Override
@@ -46,12 +47,13 @@ public class ContainerAdvancedElectricMachine extends Container
     {
 		super.onCraftGuiClosed(entityplayer);
 		tileEntity.closeChest();
+		tileEntity.playersUsing.remove(entityplayer);
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer par1EntityPlayer)
-    {
-        return tileEntity.isUseableByPlayer(par1EntityPlayer);
+	@Override
+    public boolean canInteractWith(EntityPlayer entityplayer)
+	{
+        return tileEntity.isUseableByPlayer(entityplayer);
     }
 
     @Override

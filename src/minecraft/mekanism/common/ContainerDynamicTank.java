@@ -47,10 +47,10 @@ public class ContainerDynamicTank extends Container
 		tileEntity.closeChest();
     }
 
-    @Override
-    public boolean canInteractWith(EntityPlayer par1EntityPlayer)
-    {
-        return tileEntity.isUseableByPlayer(par1EntityPlayer);
+	@Override
+    public boolean canInteractWith(EntityPlayer entityplayer)
+	{
+        return tileEntity.isUseableByPlayer(entityplayer);
     }
 
     @Override

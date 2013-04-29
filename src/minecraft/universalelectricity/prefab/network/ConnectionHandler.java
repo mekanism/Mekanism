@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
 
+@Deprecated
 public class ConnectionHandler implements IConnectionHandler
 {
 	private static final List<ISimpleConnectionHandler> simpleConnectionHandlers = new ArrayList<ISimpleConnectionHandler>();

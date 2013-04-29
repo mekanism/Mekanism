@@ -24,8 +24,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityDynamicTank extends TileEntityContainerBlock
 {
-	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
-	
 	/** Unique inventory ID for the dynamic tank, serves as a way to retrieve cached inventories. */
 	public int inventoryID = -1;
 	

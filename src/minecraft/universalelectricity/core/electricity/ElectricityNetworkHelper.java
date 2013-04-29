@@ -96,9 +96,13 @@ public class ElectricityNetworkHelper
 				{
 					if (wattsPerSide > 0 && producingPack.getWatts() > 0)
 					{
-						double amperes = wattsPerSide / voltage;
-						network.startProducing(tileEntity, amperes, voltage);
-						remainingElectricity.amperes -= amperes;
+						double amperes = Math.min(wattsPerSide / voltage, network.getRequest(tileEntity).amperes);
+
+						if (amperes > 0)
+						{
+							network.startProducing(tileEntity, amperes, voltage);
+							remainingElectricity.amperes -= amperes;
+						}
 					}
 					else
 					{

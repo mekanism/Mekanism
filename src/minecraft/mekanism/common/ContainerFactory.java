@@ -91,6 +91,7 @@ public class ContainerFactory extends Container
         }
         
         tileEntity.openChest();
+        tileEntity.playersUsing.add(inventory.player);
     }
     
     @Override
@@ -98,12 +99,13 @@ public class ContainerFactory extends Container
     {
 		super.onCraftGuiClosed(entityplayer);
 		tileEntity.closeChest();
+		tileEntity.playersUsing.remove(entityplayer);
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer par1EntityPlayer)
+    public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        return tileEntity.isUseableByPlayer(par1EntityPlayer);
+        return tileEntity.isUseableByPlayer(entityplayer);
     }
 
     @Override
@@ -131,6 +133,13 @@ public class ContainerFactory extends Container
             		return null;
             	}
             }
+            else if(slotID == 3)
+            {
+            	if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+            	{
+            		return null;
+            	}
+            }
         	else if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
             {
 	            if(slotID != 1)
@@ -152,7 +161,7 @@ public class ContainerFactory extends Container
     		{
             	if(!isInputSlot(slotID))
             	{
-            		if(!mergeItemStack(slotStack, 2, 2+tileEntity.tier.processes, false))
+            		if(!mergeItemStack(slotStack, 4, 4+tileEntity.tier.processes, false))
             		{
             			return null;
             		}

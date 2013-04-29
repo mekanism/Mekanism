@@ -551,12 +551,12 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	public int getInputSlot(int operation)
 	{
-		return operation+2;
+		return operation+4;
 	}
 	
 	public int getOutputSlot(int operation)
 	{
-		return tier.processes+2+operation;
+		return tier.processes+4+operation;
 	}
 	
 	@Override

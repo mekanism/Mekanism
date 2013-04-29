@@ -40,7 +40,7 @@ public class ElectricItemHelper
 	}
 
 	/**
-	 * Decharge an electric item.
+	 * Decharges an electric item.
 	 * 
 	 * @param joules - The joules being withdrawn from the electric item
 	 * @param voltage - The voltage in which is used to decharge the electric item

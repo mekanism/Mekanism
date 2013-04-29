@@ -18,8 +18,6 @@ public class ObjectRenderer
 		public double maxX;
 		public double maxY;
 		public double maxZ;
-		
-		public int lightValue;
 
 		public Block baseBlock = Block.sand;
 

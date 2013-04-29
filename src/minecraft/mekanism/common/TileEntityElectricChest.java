@@ -43,16 +43,16 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 		prevLidAngle = lidAngle;
 	    float increment = 0.1F;
 
-	    if((playersUsing > 0) && (lidAngle == 0.0F)) 
+	    if((playersUsing.size() > 0) && (lidAngle == 0.0F)) 
 	    {
 	    	worldObj.playSoundEffect(xCoord + 0.5F, yCoord + 0.5D, zCoord + 0.5F, "random.chestopen", 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
 	    }
 
-	    if((playersUsing == 0 && lidAngle > 0.0F) || (playersUsing > 0 && lidAngle < 1.0F))
+	    if((playersUsing.size() == 0 && lidAngle > 0.0F) || (playersUsing.size() > 0 && lidAngle < 1.0F))
 	    {
 	    	float angle = lidAngle;
 
-	    	if(playersUsing > 0)
+	    	if(playersUsing.size() > 0)
 	    	{
 	    		lidAngle += increment;
 	    	}

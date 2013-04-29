@@ -58,7 +58,7 @@ public abstract class ItemElectric extends Item implements IItemElectric
 	@Override
 	public void onCreated(ItemStack itemStack, World par2World, EntityPlayer par3EntityPlayer)
 	{
-		itemStack = ElectricItemHelper.getUncharged(itemStack);
+		this.setJoules(0, itemStack);
 	}
 
 	@Override

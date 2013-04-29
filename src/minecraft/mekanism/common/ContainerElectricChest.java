@@ -30,6 +30,7 @@ public class ContainerElectricChest extends Container
         if(isBlock)
         {
         	tileEntity.openChest();
+        	tileEntity.playersUsing.add(inventory.player);
         }
         else {
         	itemInventory.openChest();
@@ -80,6 +81,7 @@ public class ContainerElectricChest extends Container
 		if(isBlock)
 		{
 			tileEntity.closeChest();
+			tileEntity.playersUsing.remove(entityplayer);
 		}
 		else {
 			itemInventory.closeChest();
@@ -87,11 +89,11 @@ public class ContainerElectricChest extends Container
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer par1EntityPlayer)
+    public boolean canInteractWith(EntityPlayer entityplayer)
     {
     	if(isBlock)
     	{
-    		return tileEntity.isUseableByPlayer(par1EntityPlayer);
+    		return tileEntity.isUseableByPlayer(entityplayer);
     	}
     	
     	return true;

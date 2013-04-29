@@ -163,16 +163,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 	
 	@Override
-	public void openChest()
-	{
-		playersUsing++;
-	}
+	public void openChest() {}
 
 	@Override
-	public void closeChest()
-	{
-		playersUsing--;
-	}
+	public void closeChest() {}
 	
 	@Override
 	public boolean isInvNameLocalized()

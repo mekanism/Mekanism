@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import ic2.api.Direction;
-import ic2.api.ElectricItem;
 import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
 
@@ -17,21 +16,15 @@ import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
-import mekanism.common.IFactory.RecipeType;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;

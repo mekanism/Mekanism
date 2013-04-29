@@ -1,17 +1,20 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import ic2.api.IWrenchable;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import universalelectricity.prefab.tile.TileEntityDisableable;
+import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileEntityBasicBlock extends TileEntityDisableable implements IWrenchable, ITileNetwork
+import com.google.common.io.ByteArrayDataInput;
+
+public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork
 {
 	/** Whether or not this machine has initialized and registered with other mods. */
 	public boolean initialized;
@@ -19,8 +22,8 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	/** The direction this block is facing. */
 	public int facing;
 	
-	/** The amount of players using this block */
-	public int playersUsing = 0;
+	/** The players currently using this block. */
+	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 	
 	/** A timer used to send packets to clients. */
 	public int packetTick;
@@ -28,13 +31,11 @@ public abstract class TileEntityBasicBlock extends TileEntityDisableable impleme
 	@Override
 	public void updateEntity()
 	{
-		super.updateEntity();
-		
 		onUpdate();
 		
 		if(!worldObj.isRemote)
 		{
-			if(playersUsing > 0)
+			if(playersUsing.size() > 0)
 			{
 				PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 			}

@@ -168,7 +168,6 @@ public class MekanismGenerators implements IModule
 		GameRegistry.registerItem(BioFuel, "BioFuel");
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 		
-		
 		//Ore Dictionary
 		OreDictionary.registerOre("itemBioFuel", new ItemStack(BioFuel));
 	}

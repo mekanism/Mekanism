@@ -11,12 +11,17 @@ import net.minecraft.item.ItemStack;
 public interface IModifier
 {
 	/**
-	 * @return - The name of the modifier.
+	 * @return - The type of the modifier.
 	 */
-	public String getName(ItemStack itemstack);
+	public String getType(ItemStack itemstack);
 
 	/**
 	 * @return - How much effect does this modifier have?
 	 */
-	public int getEffectiveness(ItemStack itemstack);
+	public double getEffectiveness(ItemStack itemstack);
+	
+	/**
+	 * @return - What UE tier is the Modifier?
+	 */
+	public int getTier(ItemStack itemstack);
 }

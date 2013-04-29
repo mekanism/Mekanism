@@ -1,15 +1,9 @@
 package mekanism.common;
 
-import static net.minecraftforge.common.ForgeDirection.UP;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockStep;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -22,7 +16,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import cpw.mods.fml.relauncher.Side;
