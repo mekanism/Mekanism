@@ -31,7 +31,7 @@ import dan200.computer.api.IComputerAccess;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements ITankContainer
 {
-	/** The LiquidSlot fuel instance for this generator. */
+	/** The LiquidTank for this generator. */
 	public LiquidTank lavaTank = new LiquidTank(24000);
 	
 	/** The amount of electricity this machine can produce with a unit of fuel. */
@@ -62,13 +62,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					{
 						lavaTank.fill(liquid, true);
 						
-						if(inventory[0].isItemEqual(new ItemStack(Item.bucketLava)))
+						if(LiquidContainerRegistry.isBucket(inventory[0]))
 						{
 							inventory[0] = new ItemStack(Item.bucketEmpty);
 						}
 						else {
 							inventory[0].stackSize--;
-							
+
 							if(inventory[0].stackSize == 0)
 							{
 								inventory[0] = null;

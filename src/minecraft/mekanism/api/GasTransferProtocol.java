@@ -61,7 +61,7 @@ public class GasTransferProtocol
 		
 		for(IGasAcceptor acceptor : acceptors)
 		{
-			if(acceptor != null)
+			if(acceptor != null && !availableAcceptors.contains(acceptor))
 			{
 				if(acceptor != original && acceptor.canReceiveGas(ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)).getOpposite(), transferType))
 				{

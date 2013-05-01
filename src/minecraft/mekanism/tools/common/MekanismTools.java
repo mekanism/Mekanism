@@ -52,8 +52,8 @@ public class MekanismTools implements IModule
     //Enums: Armor
     public static EnumArmorMaterial armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", 50, new int[]{5, 12, 8, 5}, 50);
     public static EnumArmorMaterial armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", 13, new int[]{2, 5, 4, 2}, 50);
-    public static EnumArmorMaterial armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", 30, new int[]{3, 9, 7, 3}, 50);
-    public static EnumArmorMaterial armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", 35, new int[]{3, 8, 6, 2}, 50);
+    public static EnumArmorMaterial armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", 30, new int[]{3, 5, 6, 3}, 50);
+    public static EnumArmorMaterial armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", 35, new int[]{3, 6, 5, 2}, 50);
     public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
     public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {3, 7, 6, 3}, 50);
     

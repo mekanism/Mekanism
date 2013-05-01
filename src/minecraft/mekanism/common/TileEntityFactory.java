@@ -86,8 +86,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 3, new int[] {2, 3, 4}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 5, 3, new int[] {5, 6, 7}));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 4, 3, new int[] {4, 5, 6}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 7, 3, new int[] {7, 8, 9}));
 		
 		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}

@@ -13,8 +13,8 @@ public class TileEntityEliteFactory extends TileEntityFactory
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 2, 7, new int[] {2, 3, 4, 5, 6, 7, 8}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 9, 7, new int[] {9, 10, 11, 12, 13, 14, 15}));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, 4, 7, new int[] {4, 5, 6, 7, 8, 9, 10}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 11, 7, new int[] {11, 12, 13, 14, 15, 16, 17}));
 		
 		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}

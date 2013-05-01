@@ -104,13 +104,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(suck(true))
 				{
-					clean(true);
 					PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
 				}
-				else {
-					clean(true);
-					cleaningNodes.clear();
-				}
+				
+				clean(true);
 			}
 		}
 		

@@ -79,7 +79,7 @@ public class EnergyTransferProtocol
 		
 		for(TileEntity acceptor : acceptors)
 		{
-			if(acceptor != original && !ignoredAcceptors.contains(acceptor))
+			if(acceptor != original && !ignoredAcceptors.contains(acceptor) && !availableAcceptors.contains(acceptor))
 			{
 				if(acceptor instanceof IStrictEnergyAcceptor)
 				{

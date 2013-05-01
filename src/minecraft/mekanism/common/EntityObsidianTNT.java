@@ -62,8 +62,11 @@ public class EntityObsidianTNT extends Entity
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
+        
         motionY -= 0.04;
+        
         moveEntity(motionX, motionY, motionZ);
+        
         motionX *= 0.98;
         motionY *= 0.98;
         motionZ *= 0.98;
@@ -88,12 +91,12 @@ public class EntityObsidianTNT extends Entity
             		setDead();
             	}
             	else {
-            		worldObj.spawnParticle("lava", posX, posY + 0.5D, posZ, 0.0D, 0.0D, 0.0D);
+            		worldObj.spawnParticle("lava", posX, posY + 0.5, posZ, 0, 0, 0);
             	}
             }
         }
         else {
-        	worldObj.spawnParticle("lava", posX, posY + 0.5D, posZ, 0.0D, 0.0D, 0.0D);
+        	worldObj.spawnParticle("lava", posX, posY + 0.5, posZ, 0, 0, 0);
         }
     }
 
@@ -104,20 +107,20 @@ public class EntityObsidianTNT extends Entity
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
+    protected void writeEntityToNBT(NBTTagCompound nbtTags)
     {
-        par1NBTTagCompound.setByte("Fuse", (byte)fuse);
+        nbtTags.setByte("Fuse", (byte)fuse);
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
+    protected void readEntityFromNBT(NBTTagCompound nbtTags)
     {
-        fuse = par1NBTTagCompound.getByte("Fuse");
+        fuse = nbtTags.getByte("Fuse");
     }
 
     @Override
     public float getShadowSize()
     {
-        return 0.0F;
+        return 0;
     }
 }

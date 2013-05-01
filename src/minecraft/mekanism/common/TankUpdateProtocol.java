@@ -20,7 +20,7 @@ public class TankUpdateProtocol
 	public Set<TileEntityDynamicTank> iteratedNodes = new HashSet<TileEntityDynamicTank>();
 	
 	/** The structures found, all connected by some nodes to the pointer. */
-	public List<SynchronizedTankData> structuresFound = new ArrayList<SynchronizedTankData>();
+	public SynchronizedTankData structureFound = null;
 	
 	/** The original block the calculation is getting run from. */
 	public TileEntity pointer;
@@ -45,6 +45,7 @@ public class TankUpdateProtocol
 		
 		boolean isCorner = true;
 		boolean isHollowPrism = true;
+		boolean tooBig = false;
 		 
 		Set<Object3D> locations = new HashSet<Object3D>();
 		 
@@ -128,52 +129,60 @@ public class TankUpdateProtocol
 		        
 		        zmin = z;
 		    }
-		   
-		    for(x = xmin; x <= xmax; x++)
+		    
+		    if(Math.abs(xmax-xmin)+1 > 18 || Math.abs(ymax-ymin)+1 > 18 || Math.abs(zmax-zmin) > 18)
 		    {
-		        for(y = ymin; y <= ymax; y++)
-		        {
-		            for(z = zmin; z <= zmax; z++)
-		            {
-		                if(x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax)
-		                {
-		                    if(!isViableNode(origX+x, origY+y, origZ+z))
-		                    {
-		                        isHollowPrism = false;
-		                        break;
-		                    }
-		                    else if(isFrame(new Object3D(origX+x, origY+y, origZ+z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
-		                    {
-		                    	isHollowPrism = false;
-		                        break;
-		                    }
-		                    else {
-		                        locations.add(new Object3D(origX+x, origY+y, origZ+z));
-		                    }
-		                }
-		                else {
-		                    if(!isAir(origX+x, origY+y, origZ+z))
-		                    {
-		                        isHollowPrism = false;
-		                        break;
-		                    }
-		                    
-		                    volume++;
-		                }
-		            }
-		            if(!isHollowPrism)
-		            {
-		                break;
-		            }
-		        }
-		        if(!isHollowPrism)
-		        {
-		        	break;
-		        }
+		    	tooBig = true;
+		    }
+		   
+		    if(!tooBig)
+		    {
+			    for(x = xmin; x <= xmax; x++)
+			    {
+			        for(y = ymin; y <= ymax; y++)
+			        {
+			            for(z = zmin; z <= zmax; z++)
+			            {
+			                if(x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax)
+			                {
+			                    if(!isViableNode(origX+x, origY+y, origZ+z))
+			                    {
+			                        isHollowPrism = false;
+			                        break;
+			                    }
+			                    else if(isFrame(new Object3D(origX+x, origY+y, origZ+z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+			                    {
+			                    	isHollowPrism = false;
+			                        break;
+			                    }
+			                    else {
+			                        locations.add(new Object3D(origX+x, origY+y, origZ+z));
+			                    }
+			                }
+			                else {
+			                    if(!isAir(origX+x, origY+y, origZ+z))
+			                    {
+			                        isHollowPrism = false;
+			                        break;
+			                    }
+			                    
+			                    volume++;
+			                }
+			            }
+			            if(!isHollowPrism)
+			            {
+			                break;
+			            }
+			        }
+			        if(!isHollowPrism)
+			        {
+			        	break;
+			        }
+			    }
 		    }
 		}
 		
-		if(isHollowPrism && isCorner && volume > 0 && volume <= 5832 && locations.size() >= 9)
+		if(!tooBig && isHollowPrism && isCorner && volume > 0 && volume <= 4096 && locations.size() >= 9)
 		{
 			SynchronizedTankData structure = new SynchronizedTankData();
 			structure.locations = locations;
@@ -194,19 +203,14 @@ public class TankUpdateProtocol
 					structure.valves.add(data);
 				}
 			}
-			
-			if(!structuresFound.contains(structure))
+
+			if(structure.locations.contains(Object3D.get(pointer)) && isCorrectCorner(new Object3D(origX, origY, origZ), origX+xmin, origY+ymin, origZ+zmin))
 			{
-				if(structure.locations.contains(Object3D.get(pointer)) && isCorrectCorner(new Object3D(origX, origY, origZ), origX+xmin, origY+ymin, origZ+zmin))
-				{
-					if(!entitiesInside(structure))
-					{
-						structuresFound.add(structure);
-					}
-				}
-				else {
-					pointerNotPartOf = true;
-				}
+				structureFound = structure;
+				return;
+			}
+			else {
+				pointerNotPartOf = true;
 			}
 		}
 		
@@ -257,36 +261,6 @@ public class TankUpdateProtocol
 	}
 	
 	/**
-	 * Checks whether or not there are entities inside this dynamic tank.
-	 */
-	public boolean entitiesInside(SynchronizedTankData structure)
-	{
-		int x = structure.renderLocation.xCoord;
-		int y = structure.renderLocation.yCoord;
-		int z = structure.renderLocation.zCoord;
-		
-		AxisAlignedBB boundingBox = AxisAlignedBB.getBoundingBox(x, y, z, x+structure.volLength, y+structure.volHeight, z+structure.volWidth);
-		
-		for(Object obj : pointer.worldObj.getEntitiesWithinAABB(Entity.class, boundingBox))
-		{
-			if(obj instanceof Entity)
-			{
-				Entity entity = (Entity)obj;
-				
-				if(entity instanceof EntityPlayer)
-				{
-					return true;
-				}
-				else {
-					pointer.worldObj.removeEntity(entity);
-				}
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
 	 * Whether or not the block at the specified location is an air block.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
@@ -307,14 +281,9 @@ public class TankUpdateProtocol
 	 */
 	private boolean isViableNode(int x, int y, int z)
 	{
-		TileEntity tileEntity = pointer.worldObj.getBlockTileEntity(x, y, z);
-		
-		if(tileEntity != null)
+		if(pointer.worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityDynamicTank)
 		{
-			if(tileEntity instanceof TileEntityDynamicTank)
-			{
-				return true;
-			}
+			return true;
 		}
 		
 		return false;
@@ -401,10 +370,8 @@ public class TankUpdateProtocol
 	{
 		loopThrough(pointer);
 		
-		if(structuresFound.size() == 1)
+		if(structureFound != null)
 		{
-			SynchronizedTankData structureFound = structuresFound.get(0);
-			
 			int idFound = -1;
 			
 			for(Object3D obj : structureFound.locations)

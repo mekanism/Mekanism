@@ -327,13 +327,13 @@ public class Mekanism
 			"O O", Character.valueOf('O'), "ingotOsmium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 4, 9), new Object[] {
-			" O ", "OSO", " O ", Character.valueOf('O'), "ingotOsmium", Character.valueOf('S'), Block.cobblestone
+			" I ", "ISI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('S'), Block.cobblestone
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 4, 10), new Object[] {
-			" O ", "OGO", " O ", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
+			" I ", "IGI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('G'), Block.glass
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 11), new Object[] {
-			" O ", "OCO", " O ", Character.valueOf('O'), "ingotOsmium", Character.valueOf('C'), ControlCircuit
+			" I ", "ICI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('C'), ControlCircuit
 		}));
 		
 		//Factory Recipes
@@ -1031,6 +1031,7 @@ public class Mekanism
 	{
 		hooks = new MekanismHooks();
 		hooks.hook();
+		
 		addIntegratedItems();
 		
 		if(!EnumGas.HYDROGEN.hasTexture())

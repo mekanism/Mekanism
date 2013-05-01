@@ -36,13 +36,26 @@ public class ItemConfigurator extends ItemEnergized
     {
     	if(!world.isRemote)
     	{
-    		if(player.isSneaking() && world.getBlockTileEntity(x, y, z) instanceof TileEntityMechanicalPipe)
+    		if(player.isSneaking())
     		{
-    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
-    			tileEntity.isActive = !tileEntity.isActive;
-    			PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
-    			return true;
+	    		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityMechanicalPipe)
+	    		{
+	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
+	    			tileEntity.isActive = !tileEntity.isActive;
+	    			PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
+	    			return true;
+	    		}
+	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityElectricPump)
+	    		{
+	    			TileEntityElectricPump tileEntity = (TileEntityElectricPump)world.getBlockTileEntity(x, y, z);
+	    			tileEntity.recurringNodes.clear();
+	    			tileEntity.cleaningNodes.clear();
+	    			
+	    			player.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation.");
+	    			return true;
+	    		}
     		}
+    		
     		if(getState(stack) == 0)
     		{
 	    		if(world.getBlockTileEntity(x, y, z) instanceof IConfigurable)
