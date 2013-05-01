@@ -52,6 +52,15 @@ public class Object3D
 		nbtTags.setInteger("dimensionId", dimensionId);
 	}
 	
+	public Object3D translate(int x, int y, int z)
+	{
+		xCoord += x;
+		yCoord += y;
+		zCoord += z;
+		
+		return this;
+	}
+	
 	public Object3D getFromSide(ForgeDirection side)
 	{
 		return new Object3D(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);

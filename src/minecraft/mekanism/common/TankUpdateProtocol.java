@@ -44,8 +44,10 @@ public class TankUpdateProtocol
 		int origX = tile.xCoord, origY = tile.yCoord, origZ = tile.zCoord;
 		
 		boolean isCorner = true;
-		boolean isHollowPrism = true;
+		boolean isHollow = true;
 		boolean tooBig = false;
+		boolean rightBlocks = true;
+		boolean rightFrame = true;
 		 
 		Set<Object3D> locations = new HashSet<Object3D>();
 		 
@@ -147,34 +149,34 @@ public class TankUpdateProtocol
 			                {
 			                    if(!isViableNode(origX+x, origY+y, origZ+z))
 			                    {
-			                        isHollowPrism = false;
+			                        rightBlocks = false;
 			                        break;
 			                    }
-			                    else if(isFrame(new Object3D(origX+x, origY+y, origZ+z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+			                    else if(isFrame(Object3D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
 			                    {
-			                    	isHollowPrism = false;
+			                    	rightFrame = false;
 			                        break;
 			                    }
 			                    else {
-			                        locations.add(new Object3D(origX+x, origY+y, origZ+z));
+			                        locations.add(Object3D.get(tile).translate(x, y, z));
 			                    }
 			                }
 			                else {
 			                    if(!isAir(origX+x, origY+y, origZ+z))
 			                    {
-			                        isHollowPrism = false;
+			                        isHollow = false;
 			                        break;
 			                    }
 			                    
 			                    volume++;
 			                }
 			            }
-			            if(!isHollowPrism)
+			            if(!isHollow || !rightBlocks || !rightFrame)
 			            {
 			                break;
 			            }
 			        }
-			        if(!isHollowPrism)
+			        if(!isHollow || !rightBlocks || !rightFrame)
 			        {
 			        	break;
 			        }
@@ -182,35 +184,38 @@ public class TankUpdateProtocol
 		    }
 		}
 		
-		if(!tooBig && isHollowPrism && isCorner && volume > 0 && volume <= 4096 && locations.size() >= 9)
+		if(volume > 0 && volume <= 4096 && locations.size() >= 9)
 		{
-			SynchronizedTankData structure = new SynchronizedTankData();
-			structure.locations = locations;
-			structure.volLength = Math.abs(xmax-xmin)+1;
-			structure.volHeight = Math.abs(ymax-ymin)+1;
-			structure.volWidth = Math.abs(zmax-zmin)+1;
-			structure.volume = volume;
-			structure.renderLocation = new Object3D(origX+1, origY+1, origZ+1);
-			
-			for(Object3D obj : structure.locations)
+			if(!tooBig && rightBlocks && rightFrame && isHollow && isCorner)
 			{
-				if(obj.getTileEntity(pointer.worldObj) instanceof TileEntityDynamicValve)
+				SynchronizedTankData structure = new SynchronizedTankData();
+				structure.locations = locations;
+				structure.volLength = Math.abs(xmax-xmin)+1;
+				structure.volHeight = Math.abs(ymax-ymin)+1;
+				structure.volWidth = Math.abs(zmax-zmin)+1;
+				structure.volume = volume;
+				structure.renderLocation = Object3D.get(tile).translate(1, 1, 1);
+				
+				for(Object3D obj : structure.locations)
 				{
-					ValveData data = new ValveData();
-					data.location = obj;
-					data.side = getSide(obj, origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax);
-							
-					structure.valves.add(data);
+					if(obj.getTileEntity(pointer.worldObj) instanceof TileEntityDynamicValve)
+					{
+						ValveData data = new ValveData();
+						data.location = obj;
+						data.side = getSide(obj, origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax);
+								
+						structure.valves.add(data);
+					}
 				}
-			}
-
-			if(structure.locations.contains(Object3D.get(pointer)) && isCorrectCorner(new Object3D(origX, origY, origZ), origX+xmin, origY+ymin, origZ+zmin))
-			{
-				structureFound = structure;
-				return;
-			}
-			else {
-				pointerNotPartOf = true;
+	
+				if(structure.locations.contains(Object3D.get(pointer)) && isCorrectCorner(Object3D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
+				{
+					structureFound = structure;
+					return;
+				}
+				else {
+					pointerNotPartOf = true;
+				}
 			}
 		}
 		
