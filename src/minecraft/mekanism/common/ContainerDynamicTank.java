@@ -1,7 +1,6 @@
 package mekanism.common;
 
-import ic2.api.IElectricItem;
-import mekanism.common.SlotEnergy.SlotDischarge;
+import ic2.api.item.IElectricItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

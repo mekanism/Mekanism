@@ -1,17 +1,17 @@
 package mekanism.common;
 
+import ic2.api.recipe.Recipes;
+
 import java.util.Map;
 
-import thermalexpansion.api.crafting.CraftingManagers;
-import thermalexpansion.api.crafting.IPulverizerRecipe;
-import universalelectricity.prefab.RecipeHelper;
-import cpw.mods.fml.common.Loader;
-import ic2.api.Ic2Recipes;
-import ic2.api.recipe.Recipes;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import thermalexpansion.api.crafting.CraftingManagers;
+import thermalexpansion.api.crafting.IPulverizerRecipe;
+import universalelectricity.prefab.RecipeHelper;
+import cpw.mods.fml.common.Loader;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.

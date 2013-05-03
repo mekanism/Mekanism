@@ -1,17 +1,9 @@
 package mekanism.generators.common;
 
+import ic2.api.item.ICustomElectricItem;
+
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import ic2.api.ICustomElectricItem;
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.item.IItemElectric;
 import mekanism.api.EnumColor;
 import mekanism.api.IEnergizedItem;
 import mekanism.common.ISustainedInventory;
@@ -24,12 +16,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
+
+import org.lwjgl.input.Keyboard;
+
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.item.IItemElectric;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple generator block IDs.

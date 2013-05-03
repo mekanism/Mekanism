@@ -1,11 +1,6 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import ic2.api.IElectricItem;
-import universalelectricity.core.item.IItemElectric;
+import ic2.api.item.IElectricItem;
 import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import universalelectricity.core.item.IItemElectric;
 
 public class ContainerElectricChest extends Container
 {

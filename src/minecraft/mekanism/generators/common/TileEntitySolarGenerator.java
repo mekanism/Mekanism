@@ -1,21 +1,15 @@
 package mekanism.generators.common;
 
+import ic2.api.item.IElectricItem;
+
 import java.util.ArrayList;
 
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
-
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
-import mekanism.api.EnumGas;
-import mekanism.api.IStorageTank;
 import mekanism.common.ChargeUtils;
-import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.API.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 

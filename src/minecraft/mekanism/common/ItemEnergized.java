@@ -1,13 +1,8 @@
 package mekanism.common;
 
-import ic2.api.ICustomElectricItem;
+import ic2.api.item.ICustomElectricItem;
 
 import java.util.List;
-
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-import universalelectricity.core.item.IItemElectric;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IEnergizedItem;
@@ -15,8 +10,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.world.World;
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.item.IItemElectric;
 
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ICustomElectricItem
 {

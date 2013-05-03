@@ -1,11 +1,11 @@
 package mekanism.common;
 
+import ic2.api.Direction;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.item.IElectricItem;
+
 import java.util.ArrayList;
 
-import ic2.api.Direction;
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
-import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IStrictEnergyAcceptor;
@@ -20,14 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;

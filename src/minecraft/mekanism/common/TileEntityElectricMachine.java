@@ -1,12 +1,10 @@
 package mekanism.common;
 
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
+import ic2.api.item.IElectricItem;
 import mekanism.api.EnumColor;
 import mekanism.api.SideData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import dan200.computer.api.IComputerAccess;
 

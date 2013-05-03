@@ -1,22 +1,21 @@
 package mekanism.common;
 
 import ic2.api.Direction;
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
+import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.IEnergyStorage;
-import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.api.item.IElectricItem;
+import ic2.api.tile.IEnergyStorage;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 
 import mekanism.api.ICableOutputter;
-import mekanism.api.IUniversalCable;
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.IUniversalCable;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,15 +23,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import universalelectricity.core.block.IConductor;
 import universalelectricity.core.block.IElectricityStorage;
 import universalelectricity.core.block.IVoltage;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.IElectricityNetwork;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
-import universalelectricity.core.block.IConductor;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;

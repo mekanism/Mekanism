@@ -1,19 +1,14 @@
 package mekanism.generators.common;
 
 import ic2.api.Direction;
+import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.IEnergyStorage;
-import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.api.tile.IEnergyStorage;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.IUniversalCable;
@@ -24,20 +19,24 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
-import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import universalelectricity.core.block.IConductor;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.IElectricityNetwork;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
-import universalelectricity.core.block.IConductor;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;
+
+import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 

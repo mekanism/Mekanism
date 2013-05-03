@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import ic2.api.IWrenchable;
+import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
 import java.util.HashSet;

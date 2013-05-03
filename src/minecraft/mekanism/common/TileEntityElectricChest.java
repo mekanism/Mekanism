@@ -1,21 +1,17 @@
 package mekanism.common;
 
+import ic2.api.item.IElectricItem;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.google.common.io.ByteArrayDataInput;
-
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
-import mekanism.api.InfusionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.core.item.IItemElectric;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityElectricChest extends TileEntityElectricBlock
 {

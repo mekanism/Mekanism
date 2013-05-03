@@ -1,9 +1,8 @@
 package mekanism.generators.common;
 
-import ic2.api.IElectricItem;
+import ic2.api.item.IElectricItem;
 import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
-import mekanism.common.SlotEnergy;
 import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

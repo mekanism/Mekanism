@@ -1,9 +1,9 @@
 package mekanism.common;
 
-import ic2.api.IWrenchable;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

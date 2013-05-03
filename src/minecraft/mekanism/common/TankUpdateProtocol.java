@@ -45,7 +45,6 @@ public class TankUpdateProtocol
 		
 		boolean isCorner = true;
 		boolean isHollow = true;
-		boolean tooBig = false;
 		boolean rightBlocks = true;
 		boolean rightFrame = true;
 		 
@@ -131,62 +130,54 @@ public class TankUpdateProtocol
 		        
 		        zmin = z;
 		    }
-		    
-		    if(Math.abs(xmax-xmin)+1 > 18 || Math.abs(ymax-ymin)+1 > 18 || Math.abs(zmax-zmin) > 18)
-		    {
-		    	tooBig = true;
-		    }
 		   
-		    if(!tooBig)
+		    for(x = xmin; x <= xmax; x++)
 		    {
-			    for(x = xmin; x <= xmax; x++)
-			    {
-			        for(y = ymin; y <= ymax; y++)
-			        {
-			            for(z = zmin; z <= zmax; z++)
-			            {
-			                if(x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax)
-			                {
-			                    if(!isViableNode(origX+x, origY+y, origZ+z))
-			                    {
-			                        rightBlocks = false;
-			                        break;
-			                    }
-			                    else if(isFrame(Object3D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
-			                    {
-			                    	rightFrame = false;
-			                        break;
-			                    }
-			                    else {
-			                        locations.add(Object3D.get(tile).translate(x, y, z));
-			                    }
-			                }
-			                else {
-			                    if(!isAir(origX+x, origY+y, origZ+z))
-			                    {
-			                        isHollow = false;
-			                        break;
-			                    }
-			                    
-			                    volume++;
-			                }
-			            }
-			            if(!isHollow || !rightBlocks || !rightFrame)
-			            {
-			                break;
-			            }
-			        }
-			        if(!isHollow || !rightBlocks || !rightFrame)
-			        {
-			        	break;
-			        }
-			    }
+		        for(y = ymin; y <= ymax; y++)
+		        {
+		            for(z = zmin; z <= zmax; z++)
+		            {
+		                if(x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax)
+		                {
+		                    if(!isViableNode(origX+x, origY+y, origZ+z))
+		                    {
+		                        rightBlocks = false;
+		                        break;
+		                    }
+		                    else if(isFrame(Object3D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+		                    {
+		                    	rightFrame = false;
+		                        break;
+		                    }
+		                    else {
+		                        locations.add(Object3D.get(tile).translate(x, y, z));
+		                    }
+		                }
+		                else {
+		                    if(!isAir(origX+x, origY+y, origZ+z))
+		                    {
+		                        isHollow = false;
+		                        break;
+		                    }
+		                    
+		                    volume++;
+		                }
+		            }
+		            if(!isHollow || !rightBlocks || !rightFrame)
+		            {
+		                break;
+		            }
+		        }
+		        if(!isHollow || !rightBlocks || !rightFrame)
+		        {
+		        	break;
+		        }
 		    }
-		}
+	    }
 		
 		if(volume > 0 && volume <= 4096 && locations.size() >= 9)
 		{
-			if(!tooBig && rightBlocks && rightFrame && isHollow && isCorner)
+			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
 				SynchronizedTankData structure = new SynchronizedTankData();
 				structure.locations = locations;

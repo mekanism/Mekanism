@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import ic2.api.IElectricItem;
-
 import java.util.ArrayList;
 
 import mekanism.api.EnumGas;
@@ -10,12 +8,10 @@ import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
 

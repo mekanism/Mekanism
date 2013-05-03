@@ -1,9 +1,8 @@
 package mekanism.generators.common;
 
 import ic2.api.Direction;
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.item.IElectricItem;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,11 +16,9 @@ import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITubeConnection;
 import mekanism.common.ChargeUtils;
 import mekanism.common.ISustainedTank;
-import mekanism.common.LiquidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.RecipeHandler;
 import mekanism.common.TileEntityElectricBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -34,7 +31,6 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;

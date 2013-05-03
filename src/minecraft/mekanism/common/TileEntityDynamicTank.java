@@ -30,18 +30,25 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	/** The tank data for this structure. */
 	public SynchronizedTankData structure;
 	
+	/** Whether or not to send this tank's structure in the next update packet. */
 	public boolean sendStructure;
 	
+	/** This tank's previous "has structure" state. */
 	public boolean prevStructure;
 	
+	/** Whether or not this tank has it's structure, for the client side mechanics. */
 	public boolean clientHasStructure;
 	
+	/** The cached liquid this tank segment contains. */
 	public LiquidStack cachedLiquid;
 	
+	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering liquids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
 	
+	/** The capacity this tank has on the client-side. */
 	public int clientCapacity;
 	
+	/** Whether or not this tank segment is rendering the structure. */
 	public boolean isRendering;
 	
 	public TileEntityDynamicTank()

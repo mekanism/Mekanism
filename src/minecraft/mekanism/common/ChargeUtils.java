@@ -1,12 +1,10 @@
 package mekanism.common;
 
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IEnergizedItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import universalelectricity.core.block.IElectricityStorage;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 

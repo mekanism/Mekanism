@@ -1,14 +1,12 @@
 package mekanism.generators.common;
 
-import ic2.api.IElectricItem;
-import mekanism.common.SlotEnergy;
+import ic2.api.item.IElectricItem;
+import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import mekanism.common.SlotEnergy.SlotCharge;
 import universalelectricity.core.item.IItemElectric;
 
 public class ContainerSolarGenerator extends Container

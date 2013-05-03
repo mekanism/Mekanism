@@ -1,29 +1,18 @@
 package mekanism.common;
 
+import ic2.api.Direction;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.item.IElectricItem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
-import buildcraft.api.core.Position;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import ic2.api.Direction;
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
-import ic2.api.energy.tile.IEnergySink;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
-import mekanism.api.Object3D;
 import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.InfusionType;
-import net.minecraft.block.Block;
+import mekanism.api.Object3D;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,6 +24,11 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.core.vector.Vector3;
+import universalelectricity.core.vector.VectorHelper;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank, IEnergySink, IStrictEnergyAcceptor
 {

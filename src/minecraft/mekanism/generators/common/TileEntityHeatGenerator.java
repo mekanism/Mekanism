@@ -1,16 +1,11 @@
 package mekanism.generators.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import ic2.api.item.IElectricItem;
 
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
+import java.util.ArrayList;
+
 import mekanism.common.ChargeUtils;
-import mekanism.common.LiquidSlot;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import mekanism.common.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,7 +17,6 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;

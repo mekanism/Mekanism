@@ -1,23 +1,19 @@
 package mekanism.generators.common;
 
+import ic2.api.item.IElectricItem;
+
 import java.util.ArrayList;
 
-import ic2.api.ElectricItem;
-import ic2.api.IElectricItem;
 import mekanism.api.EnumGas;
 import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
 import mekanism.common.ChargeUtils;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
