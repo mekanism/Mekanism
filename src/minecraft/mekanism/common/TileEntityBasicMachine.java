@@ -377,4 +377,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		return soundURL;
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
+	}
 }

@@ -777,4 +777,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		return RecipeType.values()[recipeType].getSound();
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
+	}
 }

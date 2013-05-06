@@ -47,6 +47,12 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	{
 		return worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord) ? (((float)yCoord+4)/(float)256)*8 : 0;
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1.5F;
+	}
 
 	@Override
 	public String[] getMethodNames() 

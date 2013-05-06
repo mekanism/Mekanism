@@ -255,7 +255,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	
 	private int getStages(int height)
 	{
-		return (height-2)*100;
+		return (height-2)*1600;
 	}
 	
 	private double getX(int x)

@@ -650,4 +650,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		return "MetallurgicInfuser.ogg";
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
+	}
 }

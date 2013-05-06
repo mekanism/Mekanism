@@ -16,4 +16,10 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 	{
 		return Recipe.ENRICHMENT_CHAMBER.get();
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 0.3F;
+	}
 }

@@ -137,10 +137,12 @@ public class Sound
 		{
 			if(entityplayer != null && tileEntity != null && entityplayer.worldObj == tileEntity.worldObj)
 			{
+				float multiplier = ((IHasSound)tileEntity).getVolumeMultiplier();
 		    	float volume = 0;
+		    	float masterVolume = Mekanism.audioHandler.masterVolume;
 		    	
-		        double distanceVolume = (entityplayer.getDistanceSq(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord)*0.008);
-		        volume = (float)(Math.max(Mekanism.audioHandler.masterVolume-distanceVolume, 0))*0.05F;
+		        double distance = entityplayer.getDistance(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
 		
 		        if(Mekanism.audioHandler.soundSystem != null)
 		        {

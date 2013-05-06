@@ -77,10 +77,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		
 		if(worldObj.isRemote)
 		{
-			if(!(this instanceof TileEntitySolarGenerator))
-			{
-				Mekanism.proxy.registerSound(this);
-			}
+			Mekanism.proxy.registerSound(this);
 		}
 		
 		if(!worldObj.isRemote)
@@ -349,6 +346,12 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public String getSoundPath()
 	{
-		return fullName.replace(" ", "").replace("-","") + ".ogg";
+		return fullName.replace(" ", "").replace("-","").replace("Advanced", "") + ".ogg";
+	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
 	}
 }

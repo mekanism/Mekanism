@@ -6,7 +6,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -50,6 +52,9 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
 		{
+			int performanceToFps = EntityRenderer.performanceToFps(Minecraft.getMinecraft().gameSettings.limitFramerate);
+			float partialTick = System.nanoTime() + (long)(1000000000 / performanceToFps);
+			
 			IElectricChest chest = (IElectricChest)item.getItem();
 			ModelChest electricChest = new ModelChest();
 			
@@ -59,7 +64,7 @@ public class ItemRenderingHandler implements IItemRenderer
             GL11.glScalef(1.0F, -1F, -1F);
 	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricChest.png"));
 	    	
-			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * 1F;//partialTick;
+			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * 1F;
 	        lidangle = 1.0F - lidangle;
 	        lidangle = 1.0F - lidangle * lidangle * lidangle;
 	        electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);

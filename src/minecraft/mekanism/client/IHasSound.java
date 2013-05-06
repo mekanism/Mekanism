@@ -16,4 +16,10 @@ public interface IHasSound
 	 * @return sound path
 	 */
 	public String getSoundPath();
+	
+	/**
+	 * Gets the multiplier to play this sound by.
+	 * @return sound multiplier
+	 */
+	public float getVolumeMultiplier();
 }

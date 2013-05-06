@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.client.ClientProxy;
@@ -177,6 +178,7 @@ public class BlockBasic extends Block
 				
 				if(!manageInventory(entityplayer, tileEntity))
 				{
+					PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
 					entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 				}
 				else {

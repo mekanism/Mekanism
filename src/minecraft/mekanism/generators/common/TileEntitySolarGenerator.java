@@ -4,9 +4,11 @@ import ic2.api.item.IElectricItem;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
 import mekanism.common.ChargeUtils;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.API.ISolarLevel;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.item.IItemElectric;
@@ -44,6 +46,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
+	public float getVolumeMultiplier()
+	{
+		return 0.05F;
+	}
+	
+	@Override
 	public int getSizeInventorySide(ForgeDirection side)
 	{
 		return 1;
@@ -72,15 +80,29 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				seesSun = false;
 			}
 			
-			if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == MekanismGenerators.generatorID && worldObj.getBlockMetadata(xCoord, yCoord+1, zCoord) == GeneratorType.SOLAR_GENERATOR.meta)
+			for(int y = yCoord+1; y < 256; y++)
 			{
-				seesSun = false;
+				Object3D obj = new Object3D(xCoord, y, zCoord);
+				Block block = Block.blocksList[obj.getBlockId(worldObj)];
+				
+				if(block != null)
+				{
+					if(block.isOpaqueCube() || block.blockID == MekanismGenerators.generatorID && obj.getMetadata(worldObj) == GeneratorType.SOLAR_GENERATOR.meta)
+					{
+						seesSun = false;
+						break;
+					}
+				}
 			}
-		}
-		
-		if(canOperate())
-		{
-			setEnergy(electricityStored + getEnvironmentBoost());
+			
+			if(canOperate())
+			{
+				setActive(true);
+				setEnergy(electricityStored + getEnvironmentBoost());
+			}
+			else {
+				setActive(false);
+			}
 		}
 	}
 	

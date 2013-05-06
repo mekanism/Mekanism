@@ -2,9 +2,7 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import mekanism.api.Object3D;
 import mekanism.common.SynchronizedTankData.ValveData;
@@ -12,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
@@ -98,6 +97,16 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			
 			if(!clientHasStructure || !isRendering)
 			{
+				for(ValveData data : valveViewing.keySet())
+				{
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+					
+					if(tileEntity != null)
+					{
+						tileEntity.clientHasStructure = false;
+					}
+				}
+				
 				valveViewing.clear();
 			}
 		}
@@ -125,6 +134,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			if(structure == null && packetTick == 5)
 			{
 				update();
+			}
+			
+			if(structure != null && isRendering && packetTick % 20 == 0)
+			{
+				sendStructure = true;
+				PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
 			}
 			
 			if(prevStructure != (structure != null))
@@ -203,7 +218,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.liquidStored = null;
 							}
 							
-							PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+							PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
 						}
 					}
 				}
@@ -262,7 +277,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						}
 					}
 					
-					PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+					PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
 				}
 			}
 		}
@@ -379,6 +394,13 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				}
 				
 				valveViewing.put(data, viewingTicks);
+				
+				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+				
+				if(tileEntity != null)
+				{
+					tileEntity.clientHasStructure = true;
+				}
 			}
 		}
 	}
@@ -393,7 +415,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					PacketHandler.sendTileEntityPacketToClients(tileEntity, 50, tileEntity.getNetworkedData(new ArrayList()));
+					PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
 				}
 			}
 		}
