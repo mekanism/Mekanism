@@ -101,6 +101,11 @@ public class Vector2 implements Cloneable
 		return new Vector2(Math.round(this.x), Math.round(this.y));
 	}
 
+	public Vector2 ceil()
+	{
+		return new Vector2(Math.ceil(this.x), Math.ceil(this.y));
+	}
+
 	public Vector2 floor()
 	{
 		return new Vector2(Math.floor(this.x), Math.floor(this.y));

@@ -280,6 +280,11 @@ public class Vector3 implements Cloneable
 		return new Vector3(Math.round(this.x), Math.round(this.y), Math.round(this.z));
 	}
 
+	public Vector3 ceil()
+	{
+		return new Vector3(Math.ceil(this.x), Math.ceil(this.y), Math.ceil(this.z));
+	}
+
 	public Vector3 floor()
 	{
 		return new Vector3(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));

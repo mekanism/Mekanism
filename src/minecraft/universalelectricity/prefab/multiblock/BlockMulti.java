@@ -42,7 +42,7 @@ public class BlockMulti extends BlockContainer
 	@Override
 	public void registerIcons(IconRegister iconRegister)
 	{
-		if (textureName != null)
+		if (this.textureName != null)
 		{
 			this.blockIcon = iconRegister.registerIcon(this.textureName);
 		}
@@ -53,11 +53,16 @@ public class BlockMulti extends BlockContainer
 	}
 
 	@Override
-	public void breakBlock(World par1World, int x, int y, int z, int par5, int par6)
+	public void breakBlock(World world, int x, int y, int z, int par5, int par6)
 	{
-		TileEntityMulti tileEntity = (TileEntityMulti) par1World.getBlockTileEntity(x, y, z);
-		tileEntity.onBlockRemoval();
-		super.breakBlock(par1World, x, y, z, par5, par6);
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if (tileEntity instanceof TileEntityMulti)
+		{
+			((TileEntityMulti) tileEntity).onBlockRemoval();
+		}
+
+		super.breakBlock(world, x, y, z, par5, par6);
 	}
 
 	/**
