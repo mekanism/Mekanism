@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.tile;
 
 import java.util.*;
 

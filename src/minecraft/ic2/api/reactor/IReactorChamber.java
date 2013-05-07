@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.reactor;
 
 /**
  * Interface implemented by the reactor chamber tile entity.

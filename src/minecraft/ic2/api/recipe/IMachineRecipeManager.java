@@ -29,7 +29,9 @@ public interface IMachineRecipeManager<V> {
 	/**
 	 * Gets a list of recipes.
 	 * 
-	 * @return Unmodifiable list of recipes
+	 * You're a mad evil scientist if you ever modify this.
+	 * 
+	 * @return List of recipes
 	 */
 	public Map<ItemStack, V> getRecipes();
 }

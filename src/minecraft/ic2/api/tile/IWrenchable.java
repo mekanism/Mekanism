@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

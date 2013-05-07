@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.item;
 
 import net.minecraft.item.ItemStack;
 

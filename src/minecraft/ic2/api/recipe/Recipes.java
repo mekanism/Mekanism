@@ -32,4 +32,7 @@ public class Recipes {
 	 * 5.0: Dirt, Wooden Hoe
 	 */
 	public static IMachineRecipeManager<Float> scrapboxDrops;
+	public static IListRecipeManager recyclerBlacklist;
+	
+	public static ICraftingRecipeManager advRecipes;
 }

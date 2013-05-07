@@ -1,4 +1,6 @@
-package ic2.api;
+package ic2.api.tile;
+
+import ic2.api.Direction;
 
 /**
  * Interface implemented by the tile entity of energy storage blocks.

@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.item;
 
 import java.lang.reflect.Method;
 
@@ -115,8 +115,14 @@ public final class ElectricItem {
 	 */
 	private static String getPackage() {
 		Package pkg = ElectricItem.class.getPackage();
-		if (pkg != null) return pkg.getName().substring(0, pkg.getName().lastIndexOf('.'));
-		else return "ic2";
+
+		if (pkg != null) {
+			String packageName = pkg.getName();
+
+			return packageName.substring(0, packageName.length() - ".api.item".length());
+		}
+
+		return "ic2";
 	}
 
 	private static Method ElectricItem_charge;
