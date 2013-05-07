@@ -313,7 +313,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
-	public int[] getSizeInventorySide(int side)
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
 	}

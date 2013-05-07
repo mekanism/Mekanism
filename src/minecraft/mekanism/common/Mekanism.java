@@ -90,7 +90,10 @@ public class Mekanism
 	/** Map of infuse objects */
 	public static Map<ItemStack, InfuseObject> infusions = new HashMap<ItemStack, InfuseObject>();
 	
+	/** A map containing references to all dynamic tank inventory caches. */
 	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
+	
+	/** A map containing references to all locations corresponding to a specific inventory ID. */
 	public static Map<Integer, HashSet<Object3D>> inventoryLocations = new HashMap<Integer, HashSet<Object3D>>();
 	
 	/** Mekanism creative tab */

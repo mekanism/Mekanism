@@ -132,6 +132,11 @@ public class SoundHandler
 		}
 	}
 	
+	/**
+	 * Gets a sound object from a specific TileEntity, null if there is none.
+	 * @param tileEntity - the holder of the sound
+	 * @return Sound instance
+	 */
 	public Sound getFrom(TileEntity tileEntity)
 	{
 		synchronized(sounds)

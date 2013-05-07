@@ -136,7 +136,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 	
 	@Override
-	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		if(slotID == 1)
 		{
@@ -166,7 +166,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 	
 	@Override
-	public int[] getSizeInventorySide(int side)
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return side == 1 ? new int[] {0} : new int[] {1};
 	}

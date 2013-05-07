@@ -141,7 +141,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 	
 	@Override
-	public int[] getSizeInventorySide(int side) 
+	public int[] getAccessibleSlotsFromSide(int side) 
 	{
 		if(side == 0)
 		{
@@ -160,7 +160,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 
 	@Override
-	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		if(slotID == 54)
 		{

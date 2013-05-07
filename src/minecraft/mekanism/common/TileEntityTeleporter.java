@@ -93,7 +93,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
-	public int[] getSizeInventorySide(int side)
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return new int[] {0};
 	}
@@ -365,7 +365,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
-	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
 				(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 

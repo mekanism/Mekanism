@@ -181,19 +181,19 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 	
 	@Override
-	public boolean func_102007_a(int slotID, ItemStack itemstack, int side)
+	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
 	{
 		return isStackValidForSlot(slotID, itemstack);
 	}
 	
 	@Override
-	public int[] getSizeInventorySide(int side) 
+	public int[] getAccessibleSlotsFromSide(int side) 
 	{
 		return new int[0];
 	}
 
 	@Override
-	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		return true;
 	}

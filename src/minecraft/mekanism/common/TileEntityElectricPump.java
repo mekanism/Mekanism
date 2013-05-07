@@ -414,7 +414,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
     
 	@Override
-	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		if(slotID == 2)
 		{
@@ -510,7 +510,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public int[] getSizeInventorySide(int side)
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		if(side == 1)
 		{

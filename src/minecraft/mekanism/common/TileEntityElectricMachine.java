@@ -197,7 +197,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
     }
 	
 	@Override
-	public boolean func_102008_b(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		if(slotID == 1)
 		{
