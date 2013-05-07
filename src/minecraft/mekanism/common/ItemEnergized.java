@@ -11,12 +11,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ICustomElectricItem
+public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ICustomElectricItem, IChargeableItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
@@ -260,5 +261,45 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	public boolean canSend(ItemStack itemStack)
 	{
 		return true;
+	}
+
+	@Override
+	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	{
+		double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
+		double toReceive = Math.min(energy*Mekanism.FROM_BC, energyNeeded);
+		
+		if(doReceive)
+		{
+			setEnergy(theItem, getEnergy(theItem) + toReceive);
+		}
+		
+		return (float)(toReceive*Mekanism.TO_BC);
+	}
+
+	@Override
+	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	{
+		double energyRemaining = getEnergy(theItem);
+		double toSend = Math.min(energy*Mekanism.FROM_BC, energyRemaining);
+		
+		if(doTransfer)
+		{
+			setEnergy(theItem, getEnergy(theItem) - toSend);
+		}
+		
+		return (float)(toSend*Mekanism.TO_BC);
+	}
+
+	@Override
+	public float getEnergyStored(ItemStack theItem)
+	{
+		return (float)(getEnergy(theItem)*Mekanism.TO_BC);
+	}
+
+	@Override
+	public float getMaxEnergyStored(ItemStack theItem)
+	{
+		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
 	}
 }

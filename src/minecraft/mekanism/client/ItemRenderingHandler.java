@@ -48,6 +48,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 	        
+			GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
 	        renderItem((RenderBlocks)data[0], tier.ordinal());
 		}
 		else if(item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)

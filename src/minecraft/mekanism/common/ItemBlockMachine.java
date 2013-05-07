@@ -22,6 +22,7 @@ import net.minecraftforge.liquids.LiquidStack;
 
 import org.lwjgl.input.Keyboard;
 
+import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -48,7 +49,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ICustomElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IChargeableItem
 {
 	public Block metaBlock;
 	
@@ -771,5 +772,37 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	public boolean canSend(ItemStack itemStack)
 	{
 		return false;
+	}
+	
+	@Override
+	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	{
+		double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
+		double toReceive = Math.min(energy*Mekanism.FROM_BC, energyNeeded);
+		
+		if(doReceive)
+		{
+			setEnergy(theItem, getEnergy(theItem) + toReceive);
+		}
+		
+		return (float)(toReceive*Mekanism.TO_BC);
+	}
+
+	@Override
+	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	{
+		return 0;
+	}
+
+	@Override
+	public float getEnergyStored(ItemStack theItem)
+	{
+		return (float)(getEnergy(theItem)*Mekanism.TO_BC);
+	}
+
+	@Override
+	public float getMaxEnergyStored(ItemStack theItem)
+	{
+		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
 	}
 }
