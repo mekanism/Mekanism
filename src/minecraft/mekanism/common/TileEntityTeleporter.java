@@ -203,7 +203,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 				entity.travelToDimension(closestCoords.dimensionId);
 			}
 			
-			((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 			
 			for(Object3D coords : Mekanism.teleporters.get(code))
 			{

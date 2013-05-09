@@ -206,7 +206,7 @@ public class PacketHandler implements IPacketHandler
 			    						entityPlayerMP.travelToDimension(coords.dimensionId);
 			    					}
 			    					
-			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord, coords.zCoord+0.5, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
+			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
 			    					
 			    					entityplayer.worldObj.playSoundAtEntity(entityplayer, "mob.endermen.portal", 1.0F, 1.0F);
 			    					sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);

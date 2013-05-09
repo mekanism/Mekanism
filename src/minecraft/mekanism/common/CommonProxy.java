@@ -120,7 +120,9 @@ public class CommonProxy
 	 */
 	public void unloadSoundHandler() {}
 	
-	/** Whether or not the game is paused. */
+	/** 
+	 * Whether or not the game is paused. 
+	 */
 	public boolean isPaused() 
 	{
 		return false;

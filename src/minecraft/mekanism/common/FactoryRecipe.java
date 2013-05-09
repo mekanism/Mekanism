@@ -50,12 +50,11 @@ public class FactoryRecipe implements IRecipe
         if(recipe[idx] instanceof Boolean)
         {
             mirrored = (Boolean)recipe[idx];
-            if (recipe[idx+1] instanceof Object[])
+            if(recipe[idx+1] instanceof Object[])
             {
                 recipe = (Object[])recipe[idx+1];
             }
-            else
-            {
+            else {
                 idx = 1;
             }
         }
@@ -287,6 +286,6 @@ public class FactoryRecipe implements IRecipe
 
     public Object[] getInput()
     {
-        return this.input;
+        return input;
     }
 }

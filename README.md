@@ -1,4 +1,4 @@
-# Mekanism for Minecraft 1.5.1 #
+# Mekanism for Minecraft 1.5.2 #
 
 Source code.  More information can be found on the mod's forum post.
 
