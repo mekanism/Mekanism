@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GeneratorsClientProxy extends GeneratorsCommonProxy
 {
-	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int GENERATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	
 	@Override
 	public void registerSpecialTileEntities() 

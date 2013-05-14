@@ -1,11 +1,13 @@
 package mekanism.client;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import net.minecraft.tileentity.TileEntity;
@@ -188,6 +190,25 @@ public class SoundHandler
 			
 			return toReturn;
 		}
+	}
+	
+	/**
+	 * Plays a sound in a specific location.
+	 * @param soundPath - sound path to play
+	 * @param world - world to play in
+	 * @param object - location to play
+	 */
+	public void quickPlay(String soundPath, World world, Object3D object)
+	{
+		URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + soundPath);
+		
+		if(url == null)
+		{
+			System.out.println("[Mekanism] Invalid sound file: " + soundPath);
+		}
+		
+		String s = soundSystem.quickPlay(false, url, soundPath, false, object.xCoord, object.yCoord, object.zCoord, 0, 16F);
+		soundSystem.setVolume(s, masterVolume);
 	}
 	
 	@ForgeSubscribe

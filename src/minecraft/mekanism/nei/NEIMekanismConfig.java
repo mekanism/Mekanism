@@ -38,9 +38,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiMetallurgicInfuser.class, 5, 15);
 		
 		API.hideItem(Mekanism.boundingBlockID);
-		API.hideItem(Mekanism.LiquidEnergy.itemID);
-		API.hideItem(Mekanism.LiquidHydrogen.itemID);
-		API.hideItem(Mekanism.LiquidOxygen.itemID);
 	}
 
 	@Override

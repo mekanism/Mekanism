@@ -47,6 +47,7 @@ public class Sound
 			tileEntity = tileentity;
 			
 			URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + sound);
+			
 			if(url == null)
 			{
 				System.out.println("[Mekanism] Invalid sound file: " + sound);
@@ -80,6 +81,7 @@ public class Sound
 				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.play(identifier);
 			}
+			
 			isPlaying = true;
 		}
 	}
@@ -101,6 +103,7 @@ public class Sound
 				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 				Mekanism.audioHandler.soundSystem.stop(identifier);
 			}
+			
 			isPlaying = false;
 		}
 	}

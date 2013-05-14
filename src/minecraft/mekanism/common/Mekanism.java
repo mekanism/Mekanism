@@ -139,9 +139,6 @@ public class Mekanism
 	public static Item PortableTeleporter;
 	public static Item TeleportationCore;
 	public static Item Configurator;
-	public static Item LiquidEnergy;
-	public static Item LiquidHydrogen;
-	public static Item LiquidOxygen;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -168,6 +165,7 @@ public class Mekanism
 	public static boolean enableSounds = true;
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
+	public static boolean dynamicTankEasterEgg = false;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
 	public static double TO_IC2;
@@ -453,9 +451,6 @@ public class Mekanism
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
-		LanguageRegistry.addName(LiquidEnergy, "Liquid Energy");
-		LanguageRegistry.addName(LiquidHydrogen, "Liquid Hydrogen");
-		LanguageRegistry.addName(LiquidOxygen, "Liquid Oxygen");
 		
 		//Localization for BasicBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
@@ -560,7 +555,7 @@ public class Mekanism
 		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt(), 0, 150).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt(), 1000, 0).setUnlocalizedName("EnergyUpgrade");
-		LiquidEnergy = new ItemMekanism(configuration.getItem("LiquidEnergy", 11209).getInt()).setUnlocalizedName("LiquidEnergy").setCreativeTab(null);
+		//Free ID...again :(
 		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
@@ -573,8 +568,6 @@ public class Mekanism
 		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
-		LiquidHydrogen = new ItemMekanism(configuration.getItem("LiquidHydrogen", 11222).getInt()).setUnlocalizedName("LiquidHydrogen").setCreativeTab(null);
-		LiquidOxygen = new ItemMekanism(configuration.getItem("LiquidOxygen", 11223).getInt()).setUnlocalizedName("LiquidOxygen").setCreativeTab(null);
 		configuration.save();
 		
 		//Registrations
@@ -591,7 +584,6 @@ public class Mekanism
 		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
-		GameRegistry.registerItem(LiquidEnergy, "LiquidEnergy");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(AtomicCore, "AtomicCore");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
@@ -604,8 +596,6 @@ public class Mekanism
 		GameRegistry.registerItem(Clump, "Clump");
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
-		GameRegistry.registerItem(LiquidHydrogen, "LiquidHydrogen");
-		GameRegistry.registerItem(LiquidOxygen, "LiquidOxygen");
 	}
 	
 	/**
@@ -1035,18 +1025,6 @@ public class Mekanism
 		hooks.hook();
 		
 		addIntegratedItems();
-		
-		if(!EnumGas.HYDROGEN.hasTexture())
-		{
-			EnumGas.HYDROGEN.gasItem = LiquidHydrogen;
-			EnumGas.HYDROGEN.texturePath = "/mods/mekanism/textures/items/LiquidHydrogen.png";
-		}
-		
-		if(!EnumGas.OXYGEN.hasTexture())
-		{
-			EnumGas.OXYGEN.gasItem = LiquidOxygen;
-			EnumGas.OXYGEN.texturePath = "/mods/mekanism/textures/items/LiquidOxygen.png";
-		}
 		
 		System.out.println("[Mekanism] Hooking complete.");
 		

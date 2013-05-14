@@ -39,7 +39,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) 
 	{
-        if(type == ItemRenderType.EQUIPPED)
+        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
         {
         	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         }
@@ -62,7 +62,7 @@ public class ItemRenderingHandler implements IItemRenderer
             GL11.glScalef(1.0F, -1F, -1F);
 	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricChest.png"));
 	    	
-			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * 1F;
+			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * Minecraft.getMinecraft().timer.renderPartialTicks;
 	        lidangle = 1.0F - lidangle;
 	        lidangle = 1.0F - lidangle * lidangle * lidangle;
 	        electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);

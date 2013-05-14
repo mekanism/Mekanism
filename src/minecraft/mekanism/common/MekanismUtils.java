@@ -784,6 +784,15 @@ public final class MekanismUtils
     }
     
     /**
+     * Whether or not this mod is in an obfuscated environment.
+     * @return if the mod is in an obfuscated environment
+     */
+    public static boolean isObfuscated()
+    {
+    	return !World.class.getSimpleName().equals("World");
+    }
+    
+    /**
      * Grabs a unique inventory ID for a dynamic tank.
      * @return unique inventory ID
      */

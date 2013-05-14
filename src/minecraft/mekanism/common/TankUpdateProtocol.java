@@ -25,9 +25,6 @@ public class TankUpdateProtocol
 	/** The original block the calculation is getting run from. */
 	public TileEntity pointer;
 	
-	/** If the pointer is not a part of any actual dynamic tank. */
-	public boolean pointerNotPartOf;
-	
 	public TankUpdateProtocol(TileEntity tileEntity)
 	{
 		pointer = tileEntity;
@@ -204,9 +201,6 @@ public class TankUpdateProtocol
 					structureFound = structure;
 					return;
 				}
-				else {
-					pointerNotPartOf = true;
-				}
 			}
 		}
 		
@@ -368,6 +362,19 @@ public class TankUpdateProtocol
 		
 		if(structureFound != null)
 		{
+			for(TileEntityDynamicTank tileEntity : iteratedNodes)
+			{
+				if(!structureFound.locations.contains(Object3D.get(tileEntity)))
+				{
+					for(TileEntity tile : iteratedNodes)
+					{
+						((TileEntityDynamicTank)tileEntity).structure = null;
+					}
+					
+					return;
+				}
+			}
+			
 			int idFound = -1;
 			
 			for(Object3D obj : structureFound.locations)
@@ -407,8 +414,7 @@ public class TankUpdateProtocol
 				tileEntity.inventory = cache.inventory;
 			}
 		}
-		else if(!pointerNotPartOf)
-		{
+		else {
 			for(TileEntity tileEntity : iteratedNodes)
 			{
 				((TileEntityDynamicTank)tileEntity).structure = null;

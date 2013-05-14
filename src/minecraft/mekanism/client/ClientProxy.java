@@ -3,6 +3,7 @@ package mekanism.client;
 
 import java.util.HashMap;
 
+import mekanism.api.EnumGas;
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.IElectricChest;
@@ -178,6 +179,18 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new TransmitterRenderer());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 		
+		if(!EnumGas.HYDROGEN.hasTexture())
+		{
+			EnumGas.HYDROGEN.gasIcon = FMLClientHandler.instance().getClient().renderEngine.textureMapItems.registerIcon("mekanism:LiquidHydrogen");
+			EnumGas.HYDROGEN.texturePath = "/mods/mekanism/textures/items/LiquidHydrogen.png";
+		}
+		
+		if(!EnumGas.OXYGEN.hasTexture())
+		{
+			EnumGas.OXYGEN.gasIcon = FMLClientHandler.instance().getClient().renderEngine.textureMapItems.registerIcon("mekanism:LiquidOxygen");
+			EnumGas.OXYGEN.texturePath = "/mods/mekanism/textures/items/LiquidOxygen.png";
+		}
+		
 		System.out.println("[Mekanism] Render registrations complete.");
 	}
 	
@@ -239,12 +252,19 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
+	public void doTankAnimation(TileEntityDynamicTank tileEntity)
+	{
+		new ThreadTankSparkle(tileEntity).start();
+	}
+	
+	@Override
 	public void loadUtilities()
 	{
 		super.loadUtilities();
 		
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new ClientPlayerTickHandler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);
 		
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
 	}

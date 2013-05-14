@@ -475,7 +475,7 @@ public class BlockGenerator extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return GeneratorsClientProxy.RENDER_ID;
+		return GeneratorsClientProxy.GENERATOR_RENDER_ID;
 	}
 	
     /*This method is not used, metadata manipulation is required to create a Tile Entity.*/

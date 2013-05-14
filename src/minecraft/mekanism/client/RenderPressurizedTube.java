@@ -105,7 +105,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.texture = type.gasItem.getIconFromDamage(0);
+		toReturn.texture = type.gasIcon;
 		
 		int[] displays = new int[stages];
 		

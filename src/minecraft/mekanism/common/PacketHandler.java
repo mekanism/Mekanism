@@ -317,6 +317,7 @@ public class PacketHandler implements IPacketHandler
 			    		int id = dataStream.readInt();
 			    		int windowId = dataStream.readInt();
 			    		boolean isBlock = dataStream.readBoolean();
+			    		
 			    		int x = 0;
 			    		int y = 0;
 			    		int z = 0;

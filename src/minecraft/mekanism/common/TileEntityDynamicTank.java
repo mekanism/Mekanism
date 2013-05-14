@@ -93,7 +93,14 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						valveViewing.put(data, valveViewing.get(data)-1);
 					}
 				}
+				
+				if(!prevStructure)
+				{
+					Mekanism.proxy.doTankAnimation(this);
+				}
 			}
+			
+			prevStructure = clientHasStructure;
 			
 			if(!clientHasStructure || !isRendering)
 			{
