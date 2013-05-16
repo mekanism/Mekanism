@@ -97,6 +97,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 						}
 						
 						setGas(gasType, gasStored + received);
+						
+						// Fix for expendable gas containers.
+                        if (inventory[1].stackSize <= 0)
+                            inventory[1] = null;
 					}
 				}
 			}
