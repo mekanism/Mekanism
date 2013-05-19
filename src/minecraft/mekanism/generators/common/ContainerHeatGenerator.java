@@ -80,8 +80,7 @@ public class ContainerHeatGenerator extends Container
 	            	}
 	            }
             }
-        	else if(tileEntity.getFuel(slotStack) > 0 ||
-        			(Mekanism.hooks.BuildCraftLoaded && (slotStack.itemID == Mekanism.hooks.BuildCraftFuelBucket.itemID || slotStack.itemID == Mekanism.hooks.BuildCraftOilBucket.itemID)))
+        	else if(tileEntity.getFuel(slotStack) > 0)
         	{
             	if(slotID != 0 && slotID != 1)
             	{

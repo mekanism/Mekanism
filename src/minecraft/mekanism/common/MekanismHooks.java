@@ -31,12 +31,6 @@ public final class MekanismHooks
 	private Class ForestryItem;
 	private Class Forestry;
 	
-	public int BuildCraftFuelID = 19108;
-	public ItemStack BuildCraftFuelBucket;
-	
-	public int BuildCraftOilID = 1521;
-	public ItemStack BuildCraftOilBucket;
-	
 	public int ForestryBiofuelID = 5013;
 	public ItemStack ForestryBiofuelBucket;
 	
@@ -102,10 +96,6 @@ public final class MekanismHooks
 		}
 		if(BuildCraftLoaded)
 		{
-			BuildCraftFuelID = getBuildCraftItem("fuel").itemID;
-			BuildCraftFuelBucket = getBuildCraftItem("bucketFuel");
-			BuildCraftOilID = getBuildCraftItem("oilStill").itemID;
-			BuildCraftOilBucket = getBuildCraftItem("bucketOil");
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
 		if(ForestryLoaded)

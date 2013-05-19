@@ -446,7 +446,7 @@ public class PacketHandler implements IPacketHandler
 			    			new GasTransferProtocol(tileEntity, null, type, 0).clientUpdate();
 			    		}
 			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
+			       		System.err.println("[Mekanism] Error while handling gas transfer update packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
@@ -464,7 +464,47 @@ public class PacketHandler implements IPacketHandler
 			    			tileEntity.spawnParticle();
 			    		}
 			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
+			       		System.err.println("[Mekanism] Error while handling electrolytic separator particle packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.ROBIT_GUI.id)
+			    {
+			    	try {
+			    		int type = dataStream.readInt();
+			    		int id = dataStream.readInt();
+			    		
+			    		if(type == 0)
+			    		{
+			    			entityplayer.openGui(Mekanism.instance, 21, entityplayer.worldObj, id, 0, 0);
+			    		}
+			    		else if(type == 1)
+			    		{
+			    			entityplayer.openGui(Mekanism.instance, 22, entityplayer.worldObj, id, 0, 0);
+			    		}
+			    		else if(type == 2)
+			    		{
+			    			entityplayer.openGui(Mekanism.instance, 23, entityplayer.worldObj, id, 0, 0);
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling robit GUI packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.FOLLOW_UPDATE.id)
+			    {
+			    	try {
+			    		boolean value = dataStream.readBoolean();
+			    		int id = dataStream.readInt();
+			    		
+			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+			    		
+			    		if(robit != null)
+			    		{
+			    			robit.setFollowing(value);
+			    		}
+			    	} catch(Exception e) {
+			       		System.err.println("[Mekanism] Error while handling follow update packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
@@ -1023,6 +1063,68 @@ public class PacketHandler implements IPacketHandler
         } catch (IOException e) {
         	System.err.println("[Mekanism] Error while writing tile entity packet.");
         	e.printStackTrace();
+        }
+	}
+	
+	/**
+	 * Sends a Robit GUI packet to the server.
+	 * @param type - GUI type to open
+	 * @param id - the robit's entity ID
+	 */
+	public static void sendRobitGui(int type, int id)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.ROBIT_GUI.id);
+			data.writeInt(type);
+			data.writeInt(id);
+		} catch (IOException e) {
+			System.out.println("[Mekanism] An error occured while writing packet data.");
+			e.printStackTrace();
+		}
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent robit GUI packet to server.");
+        }
+	}
+	
+	/**
+	 * Sends a Robit follow update packet to the server.
+	 * @param value - new follow value
+	 * @param id - the robit's entity ID
+	 */
+	public static void sendFollowUpdate(boolean value, int id)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.FOLLOW_UPDATE.id);
+			data.writeBoolean(value);
+			data.writeInt(id);
+		} catch (IOException e) {
+			System.out.println("[Mekanism] An error occured while writing packet data.");
+			e.printStackTrace();
+		}
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sent follow update packet to server.");
         }
 	}
 	

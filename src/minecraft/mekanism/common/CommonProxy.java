@@ -30,6 +30,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe");
 		GameRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank");
 		GameRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve");
+		GameRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad");
 	}
 	
 	/**
@@ -193,7 +194,22 @@ public class CommonProxy
 				return new ContainerElectricPump(player.inventory, (TileEntityElectricPump)tileEntity);
 			case 18:
 				return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
+			case 21:
+				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				if(robit != null)
+				{
+					return new ContainerRobitMain(player.inventory, robit);
+				}
+			case 22:
+				return new ContainerRobitCrafting(player.inventory, world);
+			case 23:
+				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				if(robit1 != null)
+				{
+					return new ContainerRobitInventory(player.inventory, robit1);
+				}
 		}
+		
 		return null;
 	}
 }

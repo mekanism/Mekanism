@@ -1,17 +1,24 @@
 package mekanism.client;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 
+import org.lwjgl.opengl.GL11;
+
 /*
  * Credit to BuildCraft
  */
-public class ObjectRenderer 
+public class MekanismRenderer 
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
+	
+	private static float lightmapLastX;
+    private static float lightmapLastY;
 	
 	public static class Model3D
 	{
@@ -159,4 +166,19 @@ public class ObjectRenderer
 			tessellator.draw();
 		}
 	}
+	
+    public static void glowOn() 
+    {
+        GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+        lightmapLastX = OpenGlHelper.lastBrightnessX;
+        lightmapLastY = OpenGlHelper.lastBrightnessY;
+        RenderHelper.disableStandardItemLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+    }
+
+    public static void glowOff() 
+    {
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+        GL11.glPopAttrib();
+    }
 }

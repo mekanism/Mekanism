@@ -28,7 +28,7 @@ public class RenderTickHandler implements ITickHandler
 	{
 		Minecraft mc = FMLClientHandler.instance().getClient();
 		
-		if(mc.currentScreen == null && mc.thePlayer != null && mc.theWorld != null && !MekanismUtils.isObfuscated())
+		if(mc.currentScreen == null && mc.thePlayer != null && mc.theWorld != null && !MekanismUtils.isObfuscated() && !mc.gameSettings.showDebugInfo)
 		{
 			EntityPlayer player = mc.thePlayer;
 			World world = mc.theWorld;

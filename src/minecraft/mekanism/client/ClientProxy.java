@@ -6,11 +6,13 @@ import java.util.HashMap;
 import mekanism.api.EnumGas;
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
+import mekanism.common.EntityRobit;
 import mekanism.common.IElectricChest;
 import mekanism.common.InventoryElectricChest;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityAdvancedElectricMachine;
+import mekanism.common.TileEntityChargepad;
 import mekanism.common.TileEntityControlPanel;
 import mekanism.common.TileEntityDynamicTank;
 import mekanism.common.TileEntityDynamicValve;
@@ -162,6 +164,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe", new RenderMechanicalPipe());
 		ClientRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
+		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
 	}
 	
 	@Override
@@ -169,13 +172,15 @@ public class ClientProxy extends CommonProxy
 	{
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
+		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
 		
 		//Register item handler
 		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, new ItemRenderingHandler());
 		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, new ItemRenderingHandler());
+		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, new ItemRenderingHandler());
 		
 		//Register block handlers
-		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
+		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new TransmitterRenderer());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 		
@@ -247,7 +252,22 @@ public class ClientProxy extends CommonProxy
 				return new GuiPasswordEnter((TileEntityElectricChest)tileEntity);
 			case 20:
 				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
+			case 21:
+				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				if(robit != null)
+				{
+					return new GuiRobitMain(player.inventory, robit);
+				}
+			case 22:
+				return new GuiRobitCrafting(player.inventory, world, x);
+			case 23:
+				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				if(robit1 != null)
+				{
+					return new GuiRobitInventory(player.inventory, robit1);
+				}
 		}
+		
 		return null;
 	}
 	

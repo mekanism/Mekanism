@@ -7,6 +7,7 @@ import java.util.Random;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

@@ -4,8 +4,12 @@ import mekanism.common.ContainerAdvancedElectricMachine;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.liquids.LiquidDictionary;
 
 import org.lwjgl.opengl.GL11;
+
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,12 +27,20 @@ public class GuiAdvancedElectricMachine extends GuiContainer
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int par1, int par2)
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString("S:" + (tileEntity.speedMultiplier+1) + "x", 179, 47, 0x404040);
         fontRenderer.drawString("E:" + (tileEntity.energyMultiplier+1) + "x", 179, 57, 0x404040);
+        
+		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+		}
     }
 
     @Override

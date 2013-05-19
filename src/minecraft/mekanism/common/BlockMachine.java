@@ -1,15 +1,12 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
-import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import mekanism.common.IFactory.RecipeType;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -20,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -47,6 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 11: Teleporter
  * 12: Electric Pump
  * 13: Electric Chest
+ * 14: Chargepad
  * @author AidanBrady
  *
  */
@@ -133,7 +132,7 @@ public class BlockMachine extends BlockContainer
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-        if(MekanismUtils.isActive(world, x, y, z))
+        if(MekanismUtils.isActive(world, x, y, z) && !(tileEntity instanceof TileEntityChargepad))
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -485,6 +484,7 @@ public class BlockMachine extends BlockContainer
 		list.add(new ItemStack(i, 1, 11));
 		list.add(new ItemStack(i, 1, 12));
 		list.add(new ItemStack(i, 1, 13));
+		list.add(new ItemStack(i, 1, 14));
 	}
     
     @Override
@@ -600,7 +600,7 @@ public class BlockMachine extends BlockContainer
 	        	}
         	}
         	else {
-            	if(!entityplayer.isSneaking())
+            	if(!entityplayer.isSneaking() && MachineType.getFromMetadata(metadata).guiId != -1)
 	        	{
 	        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
 	        		return true;
@@ -751,6 +751,31 @@ public class BlockMachine extends BlockContainer
         return itemStack;
 	}
 	
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) 
+    {
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(metadata == MachineType.CHARGEPAD.meta)
+    	{
+    		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
+    	}
+    	else {
+    		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+    	}
+    }
+    
+    @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+    	if(world.getBlockTileEntity(x, y, z) instanceof TileEntityChargepad)
+    	{
+    		return null;
+    	}
+    	
+    	return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    }
+	
 	public static enum MachineType
 	{
 		ENRICHMENT_CHAMBER(0, 3, 2000, TileEntityEnrichmentChamber.class, false),
@@ -766,7 +791,8 @@ public class BlockMachine extends BlockContainer
 		ENERGIZED_SMELTER(10, 16, 2000, TileEntityEnergizedSmelter.class, false),
 		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
 		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true),
-		ELECTRIC_CHEST(13, -1, 12000, TileEntityElectricChest.class, true);
+		ELECTRIC_CHEST(13, -1, 12000, TileEntityElectricChest.class, true),
+		CHARGEPAD(14, -1, 9000, TileEntityChargepad.class, true);
 		
 		public int meta;
 		public int guiId;

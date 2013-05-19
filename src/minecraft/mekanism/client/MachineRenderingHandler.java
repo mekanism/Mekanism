@@ -16,12 +16,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
+public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 {
 	public ModelTheoreticalElementizer theoreticalElementizer = new ModelTheoreticalElementizer();
 	public ModelElectricPump electricPump = new ModelElectricPump();
 	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
 	public ModelChest electricChest = new ModelChest();
+	public ModelChargepad chargepad = new ModelChargepad();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -35,7 +36,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -0.8F, 0.0F);
+    	    	GL11.glTranslatef(0.0F, -0.8F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/TheoreticalElementizer.png"));
     	    	theoreticalElementizer.render(0.0560F);
     		}
@@ -43,7 +44,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -0.85F, 0.0F);
+    	    	GL11.glTranslatef(0.0F, -0.85F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricPump.png"));
     	    	electricPump.render(0.0560F);
     		}
@@ -51,7 +52,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, 0.3F, 0.0F);
+    	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/MetallurgicInfuser.png"));
     	    	metallurgicInfuser.render(0.0625F);
     		}
@@ -62,6 +63,13 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
                 GL11.glScalef(1.0F, -1F, -1F);
     	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricChest.png"));
     	    	electricChest.renderAll();
+    		}
+    		else if(metadata == MachineType.CHARGEPAD.meta)
+    		{
+    			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
+    			GL11.glTranslatef(0.0F, -1.4F, 0.0F);
+    			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/Chargepad.png"));
+    			chargepad.render(0.0625F);
     		}
     		else {
     	        renderItem(renderer, metadata, block);
@@ -110,9 +118,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	 */
 	public void renderItem(RenderBlocks renderer, int metadata, Block block)
 	{
-		block.setBlockBoundsForItemRender();
-		
-		renderer.setRenderBoundsFromBlock(block);
+		//nope
+		renderer.setRenderBounds(0, 0, 0, 1, 1, 1);
 
         if (renderer.useInventoryTint)
         {

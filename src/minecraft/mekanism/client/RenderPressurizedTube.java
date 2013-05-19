@@ -6,7 +6,7 @@ import java.util.HashMap;
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
-import mekanism.client.ObjectRenderer.Model3D;
+import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
@@ -136,7 +136,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -157,7 +157,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 + offset;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -178,7 +178,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 1.0;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -199,7 +199,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.3 + offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -220,7 +220,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 1.0;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -241,7 +241,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -262,7 +262,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				

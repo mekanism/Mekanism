@@ -1,14 +1,15 @@
 package mekanism.client;
 
-import mekanism.common.IEnergyCube;
-import mekanism.common.IElectricChest;
-import mekanism.common.Mekanism;
 import mekanism.common.BlockMachine.MachineType;
+import mekanism.common.IElectricChest;
+import mekanism.common.IEnergyCube;
+import mekanism.common.ItemBlockMachine;
+import mekanism.common.ItemRobit;
+import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ItemRenderingHandler implements IItemRenderer
 {
+	public ModelRobit robit = new ModelRobit();
+	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
@@ -51,7 +54,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
 	        renderItem((RenderBlocks)data[0], tier.ordinal());
 		}
-		else if(item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
+		else if(item.getItem() instanceof ItemBlockMachine && item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
 		{
 			IElectricChest chest = (IElectricChest)item.getItem();
 			ModelChest electricChest = new ModelChest();
@@ -68,6 +71,14 @@ public class ItemRenderingHandler implements IItemRenderer
 	        electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
 	    	
 	    	electricChest.renderAll();
+		}
+		else if(item.getItem() instanceof ItemRobit)
+		{
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.5F, 0.0F);
+			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/Robit.png"));
+			robit.render(0.08F);
 		}
 		else {
 			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.machineBlockID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);

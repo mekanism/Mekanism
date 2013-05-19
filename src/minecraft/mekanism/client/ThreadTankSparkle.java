@@ -27,12 +27,14 @@ public class ThreadTankSparkle extends Thread
 	@Override
 	public void run()
 	{
-		if(Mekanism.dynamicTankEasterEgg)
-		{
-			Mekanism.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(3)+1) + ".ogg", pointer.worldObj, Object3D.get(pointer));
-		}
-		
-		loop(pointer);
+		try {
+			if(Mekanism.dynamicTankEasterEgg)
+			{
+				Mekanism.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(3)+1) + ".ogg", pointer.worldObj, Object3D.get(pointer));
+			}
+			
+			loop(pointer);
+		} catch(Exception e) {}
 	}
 	
 	public void loop(TileEntityDynamicTank tileEntity)

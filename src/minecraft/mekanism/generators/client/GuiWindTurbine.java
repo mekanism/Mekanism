@@ -29,8 +29,11 @@ public class GuiWindTurbine extends GuiContainer
     }
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2)
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
@@ -48,8 +51,13 @@ public class GuiWindTurbine extends GuiContainer
         if(!tileEntity.worldObj.canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
         {
         	size += 9;
-        	 fontRenderer.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);
+        	fontRenderer.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);
         }
+        
+    	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+		}
     }
 
 	@Override

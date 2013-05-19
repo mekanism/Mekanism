@@ -10,6 +10,7 @@ import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
@@ -46,6 +47,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 11: Teleporter
  * 12: Electric Pump
  * 13: Electric Chest
+ * 14: Chargepad
  * @author AidanBrady
  *
  */
@@ -115,6 +117,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				break;
 			case 13:
 				name = "ElectricChest";
+				break;
+			case 14:
+				name = "Chargepad";
 				break;
 			default:
 				name = "Unknown";
@@ -370,6 +375,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		     	}
 		    }
 		}
+	}
+	
+	@Override
+	public boolean onEntityItemUpdate(EntityItem entityItem)
+	{
+		 onUpdate(entityItem.getEntityItem(), null, entityItem, 0, false);
+		 return false;
 	}
 
 	@Override

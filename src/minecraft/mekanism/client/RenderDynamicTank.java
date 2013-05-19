@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Object3D;
-import mekanism.client.ObjectRenderer.Model3D;
+import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.TileEntityDynamicTank;
 import net.minecraft.block.Block;
@@ -130,7 +130,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
 			toReturn.maxZ = data.width-2 - .01;
 			
-			ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+			MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 			GL11.glEndList();
 		}
 		
@@ -242,7 +242,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			}
 		}
 		
-		ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+		MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 		GL11.glEndList();
 		
 		return display;

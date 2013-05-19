@@ -3,7 +3,7 @@ package mekanism.client;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import mekanism.client.ObjectRenderer.Model3D;
+import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.CableUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityUniversalCable;
@@ -151,7 +151,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -172,7 +172,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 + offset;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -193,7 +193,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 1.0;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -214,7 +214,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.3 + offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -235,7 +235,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 1.0;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -256,7 +256,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				
@@ -277,7 +277,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					ObjectRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
 					GL11.glEndList();
 				}
 				

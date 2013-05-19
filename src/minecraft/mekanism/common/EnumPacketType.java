@@ -66,6 +66,12 @@ public enum EnumPacketType
 	/** Used to send an electrolytic separator particle to all clients. */
 	ELECTROLYTIC_SEPARATOR_PARTICLE(18),
 	
+	/** Used to send a Robit GUI request to the server. */
+	ROBIT_GUI(19),
+	
+	/** Used to send a Robit follow update packet to the server. */
+	FOLLOW_UPDATE(20),
+	
 	/** A custom packet type. Handled in PacketHandler. */
 	CUSTOM(-1);
 	

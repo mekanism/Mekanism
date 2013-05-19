@@ -11,6 +11,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
 
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -87,11 +90,19 @@ public class GuiElectrolyticSeparator extends GuiContainer
     }
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2)
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Output", 124, 73, 0x404040);
         fontRenderer.drawString("Dump", 21, 73, 0x404040);
+        
+    	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+		}
     }
 
 	@Override

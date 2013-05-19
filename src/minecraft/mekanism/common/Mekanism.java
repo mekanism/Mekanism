@@ -60,7 +60,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.5")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.6")
 @NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -82,7 +82,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 5, 5);
+	public static Version versionNumber = new Version(5, 5, 6);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Object3D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Object3D>>();
@@ -130,6 +130,7 @@ public class Mekanism
 	public static ItemEnergized EnergyTablet;
 	public static Item SpeedUpgrade;
 	public static Item EnergyUpgrade;
+	public static ItemRobit Robit;
 	public static ItemAtomicDisassembler AtomicDisassembler;
 	public static Item AtomicCore;
 	public static ItemStorageTank StorageTank;
@@ -334,6 +335,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BasicBlock, 1, 11), new Object[] {
 			" I ", "ICI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('C'), ControlCircuit
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(MachineBlock, 1, 14), new Object[] {
+			"PPP", "SES", Character.valueOf('P'), Block.pressurePlateStone, Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), EnergyTablet.getUnchargedItem()
+		}));
 		
 		//Factory Recipes
 		CraftingManager.getInstance().getRecipeList().add(new FactoryRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, RecipeType.SMELTING), new Object[] {
@@ -438,6 +442,7 @@ public class Mekanism
 		LanguageRegistry.addName(EnergyTablet, "Energy Tablet");
 		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
 		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
+		LanguageRegistry.addName(Robit, "Robit");
 		LanguageRegistry.addName(AtomicDisassembler, "Atomic Disassembler");
 		LanguageRegistry.addName(AtomicCore, "Atomic Core");
 		LanguageRegistry.addName(ElectricBow, "Electric Bow");
@@ -481,6 +486,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Teleporter.name", "Teleporter");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.ElectricPump.name", "Electric Pump");
 		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.ElectricChest.name", "Electric Chest");
+		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Chargepad.name", "Chargepad");
 		
 		//Localization for OreBlock
 		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.OsmiumOre.name", "Osmium Ore");
@@ -555,7 +561,7 @@ public class Mekanism
 		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt(), 0, 150).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt(), 1000, 0).setUnlocalizedName("EnergyUpgrade");
-		//Free ID...again :(
+		Robit = (ItemRobit) new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
 		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
@@ -584,6 +590,7 @@ public class Mekanism
 		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
+		GameRegistry.registerItem(Robit, "Robit");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(AtomicCore, "AtomicCore");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
@@ -967,9 +974,11 @@ public class Mekanism
 	{
 		//Entity IDs
 		EntityRegistry.registerGlobalEntityID(EntityObsidianTNT.class, "ObsidianTNT", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerGlobalEntityID(EntityRobit.class, "Robit", EntityRegistry.findGlobalUniqueEntityId());
 		
 		//Registrations
-		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 51, this, 40, 5, true);
+		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 40, 5, true);
+		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 5, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber");
@@ -1009,12 +1018,17 @@ public class Mekanism
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		File config = event.getSuggestedConfigurationFile();
+		
 		//Set the mod's configuration
 		configuration = new Configuration(config);
 		
 		if(config.getAbsolutePath().contains("voltz"))
 		{
 			System.out.println("[Mekanism] Detected Voltz in root directory - hello, fellow user!");
+		}
+		else if(config.getAbsolutePath().contains("tekkit"))
+		{
+			System.out.println("[Mekanism] Detected Tekkit in root directory - hello, fellow user!");
 		}
 	}
 	
@@ -1046,11 +1060,6 @@ public class Mekanism
 		//Get data from server.
 		new ThreadGetData();
 		
-		//Load proxy
-		proxy.registerRenderInformation();
-		proxy.loadConfiguration();
-		proxy.loadUtilities();
-		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
@@ -1061,6 +1070,11 @@ public class Mekanism
 		addNames();
 		addRecipes();
 		addEntities();
+		
+		//Load proxy
+		proxy.registerRenderInformation();
+		proxy.loadConfiguration();
+		proxy.loadUtilities();
 		
 		//Completion notification
 		System.out.println("[Mekanism] Loading complete.");

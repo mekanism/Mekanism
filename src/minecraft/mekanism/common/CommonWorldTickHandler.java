@@ -88,27 +88,6 @@ public class CommonWorldTickHandler implements ITickHandler
 					Mekanism.dynamicInventories.remove(inventoryID);
 				}
 			}
-			
-			for(Object obj : world.loadedEntityList)
-			{
-				if(obj instanceof EntityItem)
-				{
-					EntityItem item = (EntityItem)obj;
-					
-					if(item.getEntityItem() != null)
-					{
-						ItemStack itemStack = item.getEntityItem();
-						
-						if(itemStack.getItem() instanceof IElectricChest)
-						{
-							if(((IElectricChest)itemStack.getItem()).isElectricChest(itemStack))
-							{
-								itemStack.getItem().onUpdate(itemStack, world, null, 0, false);
-							}
-						}
-					}
-				}
-			}
 		}
 	}
 
