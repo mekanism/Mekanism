@@ -214,6 +214,8 @@ public class CommonProxy
 				{
 					return new ContainerRobitSmelting(player.inventory, robit2);
 				}
+			case 25:
+				return new ContainerRobitRepair(player.inventory, world);
 		}
 		
 		return null;

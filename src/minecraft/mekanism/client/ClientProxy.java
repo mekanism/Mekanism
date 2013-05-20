@@ -272,6 +272,8 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitSmelting(player.inventory, robit2);
 				}
+			case 25:
+				return new GuiRobitRepair(player.inventory, world, x);
 		}
 		
 		return null;

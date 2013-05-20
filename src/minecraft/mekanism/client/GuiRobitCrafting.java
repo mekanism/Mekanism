@@ -72,6 +72,14 @@ public class GuiRobitCrafting extends GuiContainer
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 126, 18, 18);
 		}
+		
+		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
+		{
+			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 144, 18, 18);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 162, 18, 18);
+		}
     }
     
 	@Override
@@ -105,6 +113,12 @@ public class GuiRobitCrafting extends GuiContainer
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendRobitGui(3, entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, entityId, 0, 0);
+			}
+			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendRobitGui(4, entityId);
+				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, entityId, 0, 0);
 			}
 		}
 	}

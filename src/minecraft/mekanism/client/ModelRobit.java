@@ -20,6 +20,9 @@ public class ModelRobit extends ModelBase
 	public ModelRenderer leftarm;
 	public ModelRenderer righthand;
 	public ModelRenderer lefthand;
+    public ModelRenderer backLight;
+    public ModelRenderer eyeRight;
+    public ModelRenderer eyeLeft;
 
 	public ModelRobit() 
 	{
@@ -98,6 +101,24 @@ public class ModelRobit extends ModelBase
 		lefthand.setTextureSize(64, 64);
 		lefthand.mirror = true;
 		setRotation(lefthand, 0F, 0F, 0F);
+		backLight = new ModelRenderer(this, 20, 15);
+		backLight.addBox(0F, 0F, 0F, 2, 1, 1);
+		backLight.setRotationPoint(-1F, 17.8F, -4.001F);
+		backLight.setTextureSize(64, 64);
+		backLight.mirror = true;
+		setRotation(backLight, 0F, 0F, 0F);
+		eyeRight = new ModelRenderer(this, 43, 25);
+		eyeRight.addBox(0F, 0F, 0F, 1, 1, 1);
+		eyeRight.setRotationPoint(1.5F, 14.5F, 1.50001F);
+		eyeRight.setTextureSize(64, 64);
+		eyeRight.mirror = true;
+		setRotation(eyeRight, 0F, 0F, 0F);
+		eyeLeft = new ModelRenderer(this, 43, 25);
+		eyeLeft.addBox(0F, 0F, 0F, 1, 1, 1);
+		eyeLeft.setRotationPoint(-2.5F, 14.5F, 1.50001F);
+		eyeLeft.setTextureSize(64, 64);
+      	eyeLeft.mirror = true;
+      	setRotation(eyeLeft, 0F, 0F, 0F);
 	}
 
 	@Override
@@ -108,7 +129,6 @@ public class ModelRobit extends ModelBase
 		
 		GL11.glPushMatrix();
 		GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
-		MekanismRenderer.glowOn();
 		
 		Body.render(f5);
 		Bottom.render(f5);
@@ -123,7 +143,12 @@ public class ModelRobit extends ModelBase
 		righthand.render(f5);
 		lefthand.render(f5);
 		
+		MekanismRenderer.glowOn();
+		backLight.render(f5);
+		eyeRight.render(f5);
+		eyeLeft.render(f5);
 		MekanismRenderer.glowOff();
+		
 		GL11.glPopMatrix();
 	}
 	
@@ -141,6 +166,9 @@ public class ModelRobit extends ModelBase
 		leftarm.render(size);
 		righthand.render(size);
 		lefthand.render(size);
+		backLight.render(size);
+		eyeRight.render(size);
+		eyeLeft.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) 

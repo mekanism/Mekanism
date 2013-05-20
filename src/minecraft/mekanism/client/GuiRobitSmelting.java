@@ -74,6 +74,14 @@ public class GuiRobitSmelting extends GuiContainer
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 126, 18, 18);
 		}
 		
+		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
+		{
+			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 144, 18, 18);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 162, 18, 18);
+		}
+		
         int displayInt;
 
         if(robit.furnaceBurnTime > 0)
@@ -117,6 +125,12 @@ public class GuiRobitSmelting extends GuiContainer
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendRobitGui(4, robit.entityId);
+				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.entityId, 0, 0);
 			}
 		}
 	}
