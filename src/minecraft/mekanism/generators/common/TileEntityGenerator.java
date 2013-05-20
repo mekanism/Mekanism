@@ -97,9 +97,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 					{
 						if(electricityStored >= output)
 						{
-							EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, output);
+							EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, (int)(output*Mekanism.TO_IC2));
 							MinecraftForge.EVENT_BUS.post(event);
-							setEnergy(electricityStored - (output - event.amount));
+							setEnergy(electricityStored - (output - (event.amount*Mekanism.FROM_IC2)));
 						}
 					}
 					else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)

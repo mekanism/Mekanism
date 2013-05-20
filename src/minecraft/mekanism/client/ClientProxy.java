@@ -266,6 +266,12 @@ public class ClientProxy extends CommonProxy
 				{
 					return new GuiRobitInventory(player.inventory, robit1);
 				}
+			case 24:
+				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				if(robit2 != null)
+				{
+					return new GuiRobitSmelting(player.inventory, robit2);
+				}
 		}
 		
 		return null;

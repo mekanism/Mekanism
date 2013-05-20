@@ -29,11 +29,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	public LiquidTank lavaTank = new LiquidTank(24000);
 	
 	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 80;
+	public final int GENERATION = 100;
 	
 	public TileEntityHeatGenerator()
 	{
-		super("Heat Generator", 160000, 160);
+		super("Heat Generator", 160000, 200);
 		inventory = new ItemStack[2];
 	}
 	

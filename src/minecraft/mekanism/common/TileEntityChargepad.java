@@ -80,36 +80,21 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 						
 						for(ItemStack itemstack : player.inventory.mainInventory)
 						{
-							if(itemstack != null)
+							chargeItemStack(itemstack);
+							
+							if(prevEnergy != getEnergy())
 							{
-								if(itemstack.getItem() instanceof IEnergizedItem)
-								{
-									setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
-								}
-								else if(itemstack.getItem() instanceof IItemElectric)
-								{
-									setEnergy(getEnergy() - ElectricItemHelper.chargeItem(itemstack, getEnergy(), getVoltage()));
-								}
-								else if(Mekanism.hooks.IC2Loaded && itemstack.getItem() instanceof IElectricItem)
-								{
-									double sent = ElectricItem.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
-									setEnergy(getEnergy() - sent);
-								}
-								else if(itemstack.getItem() instanceof IChargeableItem)
-								{
-									IChargeableItem item = (IChargeableItem)itemstack.getItem();
-									
-									float itemEnergy = (float)Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack));
-									float toTransfer = (float)Math.min(itemEnergy, (getEnergy()*Mekanism.TO_BC));
-									
-									item.receiveEnergy(itemstack, toTransfer, true);
-									setEnergy(getEnergy() - (toTransfer*Mekanism.FROM_BC));
-								}
-								
-								if(prevEnergy != getEnergy())
-								{
-									break;
-								}
+								break;
+							}
+						}
+						
+						for(ItemStack itemstack : player.inventory.armorInventory)
+						{
+							chargeItemStack(itemstack);
+							
+							if(prevEnergy != getEnergy())
+							{
+								break;
 							}
 						}
 					}
@@ -128,6 +113,36 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			if(isActive)
 			{
 				worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
+			}
+		}
+	}
+	
+	public void chargeItemStack(ItemStack itemstack)
+	{
+		if(itemstack != null)
+		{
+			if(itemstack.getItem() instanceof IEnergizedItem)
+			{
+				setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
+			}
+			else if(itemstack.getItem() instanceof IItemElectric)
+			{
+				setEnergy(getEnergy() - ElectricItemHelper.chargeItem(itemstack, getEnergy(), getVoltage()));
+			}
+			else if(Mekanism.hooks.IC2Loaded && itemstack.getItem() instanceof IElectricItem)
+			{
+				double sent = ElectricItem.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+				setEnergy(getEnergy() - sent);
+			}
+			else if(itemstack.getItem() instanceof IChargeableItem)
+			{
+				IChargeableItem item = (IChargeableItem)itemstack.getItem();
+				
+				float itemEnergy = (float)Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack));
+				float toTransfer = (float)Math.min(itemEnergy, (getEnergy()*Mekanism.TO_BC));
+				
+				item.receiveEnergy(itemstack, toTransfer, true);
+				setEnergy(getEnergy() - (toTransfer*Mekanism.FROM_BC));
 			}
 		}
 	}

@@ -486,6 +486,10 @@ public class PacketHandler implements IPacketHandler
 			    		{
 			    			entityplayer.openGui(Mekanism.instance, 23, entityplayer.worldObj, id, 0, 0);
 			    		}
+			    		else if(type == 3)
+			    		{
+			    			entityplayer.openGui(Mekanism.instance, 24, entityplayer.worldObj, id, 0, 0);
+			    		}
 			    	} catch(Exception e) {
 			       		System.err.println("[Mekanism] Error while handling robit GUI packet.");
 			    		e.printStackTrace();

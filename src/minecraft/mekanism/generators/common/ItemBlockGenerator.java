@@ -214,7 +214,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 			{
 				for(int zPos=-1;zPos<=1;zPos++)
 				{
-					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0) 
+					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0 || y+2 > 255) 
 						place = false;
 				}
 			}
@@ -232,7 +232,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	        
 			for(int yPos = y+1; yPos <= y+4; yPos++)
 			{
-				if(world.getBlockId(x, yPos, z) != 0) 
+				if(world.getBlockId(x, yPos, z) != 0 || yPos > 255) 
 					place = false;
 			}
 		}

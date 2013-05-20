@@ -2,9 +2,10 @@ package mekanism.common;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
-import thermalexpansion.api.item.IChargeableItem;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
@@ -17,11 +18,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import thermalexpansion.api.item.IChargeableItem;
+import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 import codechicken.core.alg.MathHelper;
 
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory
@@ -30,14 +36,18 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	
 	public Object3D homeLocation;
 	
-	public ItemStack[] inventory = new ItemStack[28];
+	public ItemStack[] inventory = new ItemStack[31];
+	
+    public int furnaceBurnTime = 0;
+    public int currentItemBurnTime = 0;
+    public int furnaceCookTime = 0;
 	
 	public EntityRobit(World world) 
 	{
 		super(world);
 		
 		setSize(1, 1);
-		moveSpeed = 0.2F;
+		moveSpeed = 0.35F;
 		texture = "/mods/mekanism/render/Robit.png";
 		
 		getNavigator().setAvoidsWater(true);
@@ -84,9 +94,22 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		dataWatcher.addObject(13, new Byte((byte)0)); /* Follow */
 	}
 	
+	public double getRoundedTravelEnergy()
+	{
+		return new BigDecimal(getDistance(prevPosX, prevPosY, prevPosZ)*1.5).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+	}
+	
 	@Override
 	public void onEntityUpdate()
 	{
+		if(!worldObj.isRemote)
+		{
+			if(getFollowing() && getOwner() != null && getDistanceSqToEntity(getOwner()) > 4 && !getNavigator().noPath() && getEnergy() > 0)
+			{
+				setEnergy(getEnergy() - getRoundedTravelEnergy());
+			}
+		}
+		
 		super.onEntityUpdate();
 		
 		if(!worldObj.isRemote)
@@ -108,6 +131,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			
 			if(getEnergy() == 0 && !isOnChargepad())
 			{
+				setFollowing(false);
 				setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
 				
 				motionX = 0;
@@ -157,8 +181,88 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		            }
 				}
 			}
+
+	        if(furnaceBurnTime > 0)
+	        {
+	            furnaceBurnTime--;
+	        }
+
+	        if(!worldObj.isRemote)
+	        {
+	            if(furnaceBurnTime == 0 && canSmelt())
+	            {
+	                currentItemBurnTime = furnaceBurnTime = TileEntityFurnace.getItemBurnTime(inventory[29]);
+
+	                if(furnaceBurnTime > 0)
+	                {
+	                    if(inventory[29] != null)
+	                    {
+	                        inventory[29].stackSize--;
+
+	                        if(inventory[29].stackSize == 0)
+	                        {
+	                            inventory[29] = inventory[29].getItem().getContainerItemStack(inventory[29]);
+	                        }
+	                    }
+	                }
+	            }
+
+	            if(furnaceBurnTime > 0 && canSmelt())
+	            {
+	                furnaceCookTime++;
+
+	                if(furnaceCookTime == 200)
+	                {
+	                    furnaceCookTime = 0;
+	                    smeltItem();
+	                }
+	            }
+	            else {
+	                furnaceCookTime = 0;
+	            }
+	        }
 		}
 	}
+
+    private boolean canSmelt()
+    {
+        if(inventory[28] == null)
+        {
+            return false;
+        }
+        else {
+            ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[28]);
+            if(itemstack == null) return false;
+            if(inventory[30] == null) return true;
+            if(!inventory[30].isItemEqual(itemstack)) return false;
+            int result = inventory[30].stackSize + itemstack.stackSize;
+            return (result <= getInventoryStackLimit() && result <= itemstack.getMaxStackSize());
+        }
+    }
+
+    public void smeltItem()
+    {
+        if(canSmelt())
+        {
+            ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(inventory[28]);
+
+            if(inventory[30] == null)
+            {
+                inventory[30] = itemstack.copy();
+            }
+            else if(inventory[30].isItemEqual(itemstack))
+            {
+                inventory[30].stackSize += itemstack.stackSize;
+            }
+
+            inventory[28].stackSize--;
+
+            if(inventory[28].stackSize <= 0)
+            {
+                inventory[28] = null;
+            }
+        }
+    }
 	
 	public boolean isOnChargepad()
 	{
@@ -498,4 +602,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
         return tagList;
 	}
+	
+    @Override
+    public float getShadowSize()
+    {
+        return 0.25F;
+    }
 }

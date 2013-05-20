@@ -38,7 +38,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	public float crushMatrix = 0;
 
 	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 50;
+	public final int GENERATION = 120;
 
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
@@ -48,7 +48,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 160000, 100);
+		super("Bio-Generator", 160000, 240);
 		inventory = new ItemStack[2];
 
 		if(Mekanism.hooks.ForestryLoaded)

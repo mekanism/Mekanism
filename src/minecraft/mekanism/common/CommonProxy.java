@@ -208,6 +208,12 @@ public class CommonProxy
 				{
 					return new ContainerRobitInventory(player.inventory, robit1);
 				}
+			case 24:
+				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				if(robit2 != null)
+				{
+					return new ContainerRobitSmelting(player.inventory, robit2);
+				}
 		}
 		
 		return null;

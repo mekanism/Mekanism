@@ -83,12 +83,20 @@ public class GuiRobitMain extends GuiContainer
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 90, 18, 18);
 		}
 		
-		if(xAxis >= 152 && xAxis <= 170 && yAxis >= 53 && yAxis <= 71)
+		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 		{
-			drawTexturedModalRect(guiWidth + 152, guiHeight + 53, 176 + 25, 108, 18, 18);
+			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 108, 18, 18);
 		}
 		else {
-			drawTexturedModalRect(guiWidth + 152, guiHeight + 53, 176 + 25, 126, 18, 18);
+			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 126, 18, 18);
+		}
+		
+		if(xAxis >= 152 && xAxis <= 170 && yAxis >= 53 && yAxis <= 71)
+		{
+			drawTexturedModalRect(guiWidth + 152, guiHeight + 53, 176 + 25, 144, 18, 18);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 152, guiHeight + 53, 176 + 25, 162, 18, 18);
 		}
 		
 		int displayInt;
@@ -127,6 +135,12 @@ public class GuiRobitMain extends GuiContainer
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendRobitGui(2, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.entityId, 0, 0);
+			}
+			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendRobitGui(3, robit.entityId);
+				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 53 && yAxis <= 71)
 			{

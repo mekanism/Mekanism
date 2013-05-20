@@ -63,6 +63,10 @@ public class RobitAIFollow extends EntityAIBase
         {
             return false;
         }
+        else if(theRobit.getEnergy() == 0)
+        {
+        	return false;
+        }
         else {
             theOwner = player;
             return true;
@@ -72,7 +76,7 @@ public class RobitAIFollow extends EntityAIBase
     @Override
     public boolean continueExecuting()
     {
-        return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing();
+        return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0;
     }
 
     @Override
