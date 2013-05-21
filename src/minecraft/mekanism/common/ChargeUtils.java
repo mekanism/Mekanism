@@ -50,9 +50,9 @@ public final class ChargeUtils
 				item.transferEnergy(itemStack, toTransfer, true);
 				storer.setEnergy(storer.getEnergy() + (toTransfer*Mekanism.FROM_BC));
 			}
-			else if(storer.inventory[slotID].itemID == Item.redstone.itemID && storer.getEnergy()+1000 <= storer.getMaxEnergy())
+			else if(storer.inventory[slotID].itemID == Item.redstone.itemID && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
-				storer.setEnergy(storer.getEnergy() + 1000);
+				storer.setEnergy(storer.getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
 				storer.inventory[slotID].stackSize--;
 				
 	            if(storer.inventory[slotID].stackSize <= 0)

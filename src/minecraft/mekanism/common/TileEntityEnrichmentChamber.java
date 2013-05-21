@@ -2,13 +2,14 @@ package mekanism.common;
 
 import java.util.Map;
 
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("Chamber.ogg", "Enrichment Chamber", "/mods/mekanism/gui/GuiChamber.png", 10, 200, 2000);
+		super("Chamber.ogg", "Enrichment Chamber", "/mods/mekanism/gui/GuiChamber.png", 50, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
 	}
 	
 	@Override

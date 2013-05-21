@@ -16,6 +16,7 @@ import mekanism.api.InfusionOutput;
 import mekanism.api.InfusionType;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,7 +45,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 	
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = 10;
+	public double ENERGY_PER_TICK = 50;
 	
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
@@ -75,7 +76,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public TileEntityMetallurgicInfuser()
 	{
-		super("Metallurgic Infuser", 2000);
+		super("Metallurgic Infuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));

@@ -7,6 +7,7 @@ import java.util.Random;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -15,7 +16,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 {
 	public TileEntityTheoreticalElementizer()
 	{
-		super("Elementizer.ogg", "Theoretical Elementizer", "/mods/mekanism/gui/GuiElementizer.png", 24, 1, 1000, 4800, 1000);
+		super("Elementizer.ogg", "Theoretical Elementizer", "/mods/mekanism/gui/GuiElementizer.png", 24, 1, 1000, MachineType.THEORETICAL_ELEMENTIZER.baseEnergy, 1000);
 	}
 	
 	@Override

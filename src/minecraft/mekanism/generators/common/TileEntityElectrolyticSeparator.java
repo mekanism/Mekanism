@@ -20,6 +20,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
+import mekanism.generators.common.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,7 +66,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("Electrolytic Separator", 20000);
+		super("Electrolytic Separator", GeneratorType.ELECTROLYTIC_SEPARATOR.maxEnergy);
 		inventory = new ItemStack[4];
 		outputType = EnumGas.HYDROGEN;
 		dumpType = EnumGas.NONE;
@@ -168,7 +169,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getLiquid() != null && waterTank.getLiquid().amount-2 >= 0 && electricityStored-100 > 0)
 			{
 				waterTank.drain(2, true);
-				setEnergy(electricityStored - 10);
+				setEnergy(electricityStored - 50);
 				setGas(EnumGas.OXYGEN, oxygenStored + 1);
 				setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 			}
@@ -408,6 +409,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		super.handlePacketData(dataStream);
 		
 		int amount = dataStream.readInt();
+		
 		if(amount != 0)
 		{
 			waterTank.setLiquid(new LiquidStack(Block.waterStill.blockID, amount, 0));

@@ -170,9 +170,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					item.transferEnergy(itemStack, toTransfer, true);
 					setEnergy(getEnergy() + (toTransfer*Mekanism.FROM_BC));
 				}
-				else if(inventory[27].itemID == Item.redstone.itemID && getEnergy()+1000 <= MAX_ELECTRICITY)
+				else if(inventory[27].itemID == Item.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
-					setEnergy(getEnergy() + 1000);
+					setEnergy(getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
 					inventory[27].stackSize--;
 					
 		            if(inventory[27].stackSize <= 0)

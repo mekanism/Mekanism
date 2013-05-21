@@ -42,7 +42,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 * @param maxEnergy - maximum amount of energy this machine can hold.
 	 * @param maxSecondaryEnergy - maximum amount of secondary energy (fuel) this machine can hold.
 	 */
-	public TileEntityAdvancedElectricMachine(String soundPath, String name, String path, int perTick, int secondaryPerTick, int ticksRequired, int maxEnergy, int maxSecondaryEnergy)
+	public TileEntityAdvancedElectricMachine(String soundPath, String name, String path, int perTick, int secondaryPerTick, int ticksRequired, double maxEnergy, int maxSecondaryEnergy)
 	{
 		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
 		

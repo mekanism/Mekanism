@@ -21,7 +21,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String soundPath, String name, String path, int perTick, int ticksRequired, int maxEnergy)
+	public TileEntityElectricMachine(String soundPath, String name, String path, int perTick, int ticksRequired, double maxEnergy)
 	{
 		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
 		

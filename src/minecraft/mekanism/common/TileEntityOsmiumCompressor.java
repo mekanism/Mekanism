@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.Map;
 
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -10,7 +11,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 {
 	public TileEntityOsmiumCompressor()
 	{
-		super("Compressor.ogg", "Osmium Compressor", "/mods/mekanism/gui/GuiCompressor.png", 10, 1, 200, 2000, 200);
+		super("Compressor.ogg", "Osmium Compressor", "/mods/mekanism/gui/GuiCompressor.png", 50, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy, 200);
 	}
 	
 	@Override

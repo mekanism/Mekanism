@@ -173,6 +173,7 @@ public class Mekanism
 	public static double TO_BC;
 	public static double FROM_IC2;
 	public static double FROM_BC;
+	public static double ENERGY_PER_REDSTONE = 10000;
 	
 	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;

@@ -11,13 +11,14 @@ import mekanism.api.IGasAcceptor;
 import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasAcceptor, IGasStorage, ITubeConnection
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "Purification Chamber", "/mods/mekanism/gui/GuiPurificationChamber.png", 30, 1, 200, 12000, 1200);
+		super("PurificationChamber.ogg", "Purification Chamber", "/mods/mekanism/gui/GuiPurificationChamber.png", 50, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy, 1200);
 	}
 	
 	@Override

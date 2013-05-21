@@ -2,13 +2,14 @@ package mekanism.common;
 
 import java.util.Map;
 
+import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.RecipeHandler.Recipe;
 
 public class TileEntityCrusher extends TileEntityElectricMachine
 {
 	public TileEntityCrusher()
 	{
-		super("Crusher.ogg", "Crusher", "/mods/mekanism/gui/GuiCrusher.png", 10, 200, 2000);
+		super("Crusher.ogg", "Crusher", "/mods/mekanism/gui/GuiCrusher.png", 50, 200, MachineType.CRUSHER.baseEnergy);
 	}
 	
 	@Override

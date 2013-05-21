@@ -53,6 +53,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 					{
 						int received = 0;
 						int hydrogenNeeded = MAX_HYDROGEN - hydrogenStored;
+						
 						if(item.getRate() <= hydrogenNeeded)
 						{
 							received = item.removeGas(inventory[0], EnumGas.HYDROGEN, item.getRate());

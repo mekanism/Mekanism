@@ -45,7 +45,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int TICKS_REQUIRED = 200;
 	
 	/** How much energy each operation consumes per tick. */
-	public int ENERGY_PER_TICK = 10;
+	public int ENERGY_PER_TICK = 50;
 	
 	/** This machine's speed multiplier. */
 	public int speedMultiplier;
@@ -76,7 +76,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	public TileEntityFactory()
 	{
-		this(FactoryTier.BASIC);
+		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));
@@ -87,9 +87,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}
 	
-	public TileEntityFactory(FactoryTier type)
+	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super(type.name + " Factory", type.processes*2000);
+		super(type.name + " Factory", machine.baseEnergy);
 		tier = type;
 		inventory = new ItemStack[4+type.processes*2];
 		progress = new int[type.processes];
