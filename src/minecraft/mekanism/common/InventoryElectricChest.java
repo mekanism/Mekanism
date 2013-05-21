@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagList;
 public class InventoryElectricChest extends InventoryBasic
 {
 	public EntityPlayer entityPlayer;
-	public int size;
 	public boolean reading;
 	
 	public InventoryElectricChest(EntityPlayer player)

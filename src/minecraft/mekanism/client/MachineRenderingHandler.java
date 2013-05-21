@@ -67,7 +67,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     		else if(metadata == MachineType.CHARGEPAD.meta)
     		{
     			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
-    			GL11.glTranslatef(0.0F, -1.4F, 0.0F);
+    			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
     			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/Chargepad.png"));
     			chargepad.render(0.0625F);
     		}
