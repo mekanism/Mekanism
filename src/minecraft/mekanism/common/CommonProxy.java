@@ -21,6 +21,15 @@ public class CommonProxy
 	 */
 	public void registerSpecialTileEntities() 
 	{
+		GameRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber");
+		GameRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor");
+		GameRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner");
+		GameRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher");
+		GameRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory");
+		GameRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory");
+		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
+		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
+		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
 		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");

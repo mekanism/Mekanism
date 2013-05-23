@@ -84,6 +84,11 @@ public class Object3D
 	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
 	}
 	
+	public boolean sideVisible(ForgeDirection side, World world)
+	{
+		return world.getBlockId(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ) == 0;
+	}
+	
 	@Override
 	public boolean equals(Object obj)
 	{

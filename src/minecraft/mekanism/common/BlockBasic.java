@@ -75,7 +75,7 @@ public class BlockBasic extends Block
 		icons[3] = register.registerIcon("mekanism:CoalBlock");
 		icons[4] = register.registerIcon("mekanism:RefinedGlowstone");
 		icons[5] = register.registerIcon("mekanism:SteelBlock");
-		icons[6] = register.registerIcon("mekanism:ControlPanel");
+		//icons[6] = register.registerIcon("mekanism:ControlPanel");
 		icons[7] = register.registerIcon("mekanism:TeleporterFrame");
 		icons[8] = register.registerIcon("mekanism:SteelCasing");
 		icons[9] = register.registerIcon("mekanism:DynamicTank");

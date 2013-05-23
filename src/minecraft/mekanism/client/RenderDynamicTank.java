@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Object3D;
+import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.TileEntityDynamicTank;
@@ -21,10 +22,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderDynamicTank extends TileEntitySpecialRenderer
 {
-	private static RenderBlocks renderBlocks = new RenderBlocks();
-	
 	private static Map<RenderData, HashMap<LiquidStack, int[]>> cachedCenterLiquids = new HashMap<RenderData, HashMap<LiquidStack, int[]>>();
-	private static Map<ValveRenderData, HashMap<LiquidStack, ValveDisplayInteger>> cachedValveLiquids = new HashMap<ValveRenderData, HashMap<LiquidStack, ValveDisplayInteger>>();
+	private static Map<ValveRenderData, HashMap<LiquidStack, DisplayInteger>> cachedValveLiquids = new HashMap<ValveRenderData, HashMap<LiquidStack, DisplayInteger>>();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -137,7 +136,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		return displays;
 	}
 	
-	private ValveDisplayInteger getValveDisplay(ValveRenderData data, LiquidStack stack, World world)
+	private DisplayInteger getValveDisplay(ValveRenderData data, LiquidStack stack, World world)
 	{
 		if(cachedValveLiquids.containsKey(data) && cachedValveLiquids.get(data).containsKey(stack))
 		{
@@ -153,14 +152,14 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			toReturn.baseBlock = Block.blocksList[stack.itemID];
 		}
 		
-		ValveDisplayInteger display = new ValveDisplayInteger();
+		DisplayInteger display = new DisplayInteger();
 		
 		if(cachedValveLiquids.containsKey(data))
 		{
 			cachedValveLiquids.get(data).put(stack, display);
 		}
 		else {
-			HashMap<LiquidStack, ValveDisplayInteger> map = new HashMap<LiquidStack, ValveDisplayInteger>();
+			HashMap<LiquidStack, DisplayInteger> map = new HashMap<LiquidStack, DisplayInteger>();
 			map.put(stack, display);
 			cachedValveLiquids.put(data, map);
 		}
@@ -333,25 +332,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			code = 31 * code + side.ordinal();
 			code = 31 * code + valveLocation.hashCode();
 			return code;
-		}
-	}
-	
-	public static class ValveDisplayInteger
-	{
-		public int display;
-		
-		@Override
-		public int hashCode()
-		{
-			int code = 1;
-			code = 31 * code + display;
-			return code;
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			return obj instanceof ValveDisplayInteger && ((ValveDisplayInteger)obj).display == display;
 		}
 	}
 }

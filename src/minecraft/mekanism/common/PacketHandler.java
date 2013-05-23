@@ -575,6 +575,13 @@ public class PacketHandler implements IPacketHandler
         				output.writeInt(i);
         			}
         		}
+        		else if(data instanceof byte[])
+        		{
+        			for(byte b : (byte[])data)
+        			{
+        				output.writeByte(b);
+        			}
+        		}
         	}
         	
             Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -639,6 +646,13 @@ public class PacketHandler implements IPacketHandler
         			for(int i : (int[])data)
         			{
         				output.writeInt(i);
+        			}
+        		}
+        		else if(data instanceof byte[])
+        		{
+        			for(byte b : (byte[])data)
+        			{
+        				output.writeByte(b);
         			}
         		}
         	}

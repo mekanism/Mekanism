@@ -991,20 +991,11 @@ public class Mekanism
 		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 5, true);
 		
 		//Tile entities
-		GameRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber");
-		GameRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor");
-		GameRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner");
-		GameRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher");
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityControlPanel.class, "ControlPanel");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
-		GameRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory");
-		GameRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory");
-		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
-		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
-		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -1073,6 +1064,9 @@ public class Mekanism
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
+		
+		//Load configuration
+		proxy.loadConfiguration();
 
 		//Load this module
 		addItems();
@@ -1083,7 +1077,6 @@ public class Mekanism
 		
 		//Load proxy
 		proxy.registerRenderInformation();
-		proxy.loadConfiguration();
 		proxy.loadUtilities();
 		
 		//Completion notification

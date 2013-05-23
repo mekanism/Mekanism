@@ -74,6 +74,12 @@ public class ItemConfigurator extends ItemEnergized
 	    					setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 		    				MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
 		    				player.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName());
+		    				
+		    				if(config instanceof TileEntityBasicBlock)
+		    				{
+		    					TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
+		    					PacketHandler.sendTileEntityPacketToClients(tileEntity, 50, tileEntity.getNetworkedData(new ArrayList()));
+		    				}
 		    				return true;
 	    				}
 	    			}

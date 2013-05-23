@@ -470,6 +470,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			progress[i] = dataStream.readInt();
 		}
 		
+		for(int i = 0; i < 6; i++)
+		{
+			sideConfig[i] = dataStream.readByte();
+		}
+		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
@@ -535,6 +540,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		data.add(upgradeTicks);
 		data.add(recipeTicks);
 		data.add(progress);
+		data.add(sideConfig);
 		return data;
 	}
 

@@ -27,6 +27,11 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
+		if(block == null || renderer == null)
+		{
+			return;
+		}
+		
 	    GL11.glPushMatrix();
 	    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 	    

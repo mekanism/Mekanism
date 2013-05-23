@@ -2,6 +2,7 @@ package mekanism.client;
 
 import java.util.EnumSet;
 
+import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 

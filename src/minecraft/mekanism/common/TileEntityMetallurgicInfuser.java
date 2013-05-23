@@ -456,6 +456,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
 		type = InfusionType.getFromName(dataStream.readUTF());
+		
+		for(int i = 0; i < 6; i++)
+		{
+			sideConfig[i] = dataStream.readByte();
+		}
+		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
@@ -469,6 +475,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		data.add(operatingTicks);
 		data.add(infuseStored);
 		data.add(type.name);
+		data.add(sideConfig);
 		return data;
 	}
 

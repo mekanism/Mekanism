@@ -43,32 +43,32 @@ public class ThreadTankSparkle extends Thread
 		
 		for(int i = 0; i < 6; i++)
 		{
-			if(world.getBlockId(tileEntity.xCoord, tileEntity.yCoord-1, tileEntity.zCoord) == 0)
+			if(Object3D.get(tileEntity).sideVisible(ForgeDirection.DOWN, world))
 			{
 				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + -.01, tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
 			}
 			
-			if(world.getBlockId(tileEntity.xCoord, tileEntity.yCoord+1, tileEntity.zCoord) == 0)
+			if(Object3D.get(tileEntity).sideVisible(ForgeDirection.UP, world))
 			{
 				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + 1.01, tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
 			}
 			
-			if(world.getBlockId(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord-1) == 0)
+			if(Object3D.get(tileEntity).sideVisible(ForgeDirection.NORTH, world))
 			{
 				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + -.01, 0, 0, 0);
 			}
 			
-			if(world.getBlockId(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord+1) == 0)
+			if(Object3D.get(tileEntity).sideVisible(ForgeDirection.SOUTH, world))
 			{
 				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + 1.01, 0, 0, 0);
 			}
 			
-			if(world.getBlockId(tileEntity.xCoord-1, tileEntity.yCoord, tileEntity.zCoord) == 0)
+			if(Object3D.get(tileEntity).sideVisible(ForgeDirection.WEST, world))
 			{
 				world.spawnParticle("reddust", tileEntity.xCoord + -.01, tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
 			}
 			
-			if(world.getBlockId(tileEntity.xCoord+1, tileEntity.yCoord, tileEntity.zCoord) == 0)
+			if(Object3D.get(tileEntity).sideVisible(ForgeDirection.EAST, world))
 			{
 				world.spawnParticle("reddust", tileEntity.xCoord + 1.01, tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
 			}

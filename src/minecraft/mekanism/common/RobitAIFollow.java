@@ -98,7 +98,7 @@ public class RobitAIFollow extends EntityAIBase
     @Override
     public void updateTask()
     {
-        theRobit.getLookHelper().setLookPositionWithEntity(theOwner, 10.0F, theRobit.getVerticalFaceSpeed());
+        theRobit.getLookHelper().setLookPositionWithEntity(theOwner, 12.0F, theRobit.getVerticalFaceSpeed());
 
         if(theRobit.getFollowing())
         {

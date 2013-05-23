@@ -11,6 +11,7 @@ import mekanism.api.ITubeConnection;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -31,6 +32,10 @@ public class BlockTransmitter extends Block
 		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
