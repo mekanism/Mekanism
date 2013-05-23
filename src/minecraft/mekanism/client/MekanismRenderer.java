@@ -182,53 +182,6 @@ public class MekanismRenderer
         GL11.glPopAttrib();
     }
     
-    public static void renderOverlay(int x, int y, int z, int side, double minX, double maxX, double minY, double maxY)
-    {
-    	Tessellator tessellator = Tessellator.instance;
-    	
-    	double[] bounds = new double[] {x - .01, x + 1.01, y - .01, y + 1.01, z - .01, z + 1.01};
-    	
-        switch(side)
-        {
-			case 0:
-				tessellator.addVertexWithUV(bounds[0], bounds[2], bounds[4], minX, minY);
-				tessellator.addVertexWithUV(bounds[1], bounds[2], bounds[4], maxX, minY);
-				tessellator.addVertexWithUV(bounds[1], bounds[2], bounds[5], maxX, maxY);
-				tessellator.addVertexWithUV(bounds[0], bounds[2], bounds[5], minX, maxY);
-				break;
-			case 1:
-				tessellator.addVertexWithUV(bounds[1], bounds[3], bounds[4], maxX, minY);
-				tessellator.addVertexWithUV(bounds[0], bounds[3], bounds[4], minX, minY);
-				tessellator.addVertexWithUV(bounds[0], bounds[3], bounds[5], minX, maxY);
-				tessellator.addVertexWithUV(bounds[1], bounds[3], bounds[5], maxX, maxY);
-				break;
-			case 2:
-				tessellator.addVertexWithUV(bounds[0], bounds[3], bounds[4], maxX, minY);
-				tessellator.addVertexWithUV(bounds[1], bounds[3], bounds[4], minX, minY);
-				tessellator.addVertexWithUV(bounds[1], bounds[2], bounds[4], minX, maxY);
-				tessellator.addVertexWithUV(bounds[0], bounds[2], bounds[4], maxX, maxY);
-				break;
-			case 3:
-				tessellator.addVertexWithUV(bounds[1], bounds[3], bounds[5], maxX, minY);
-				tessellator.addVertexWithUV(bounds[0], bounds[3], bounds[5], minX, minY);
-				tessellator.addVertexWithUV(bounds[0], bounds[2], bounds[5], minX, maxY);
-				tessellator.addVertexWithUV(bounds[1], bounds[2], bounds[5], maxX, maxY);
-				break;
-			case 4:
-				tessellator.addVertexWithUV(bounds[0], bounds[3], bounds[5], maxX, minY);
-				tessellator.addVertexWithUV(bounds[0], bounds[3], bounds[4], minX, minY);
-				tessellator.addVertexWithUV(bounds[0], bounds[2], bounds[4], minX, maxY);
-				tessellator.addVertexWithUV(bounds[0], bounds[2], bounds[5], maxX, maxY);
-				break;
-			case 5:
-				tessellator.addVertexWithUV(bounds[1], bounds[3], bounds[4], maxX, minY);
-				tessellator.addVertexWithUV(bounds[1], bounds[3], bounds[5], minX, minY);
-				tessellator.addVertexWithUV(bounds[1], bounds[2], bounds[5], minX, maxY);
-				tessellator.addVertexWithUV(bounds[1], bounds[2], bounds[4], maxX, maxY);
-				break;
-		}
-	}
-    
     public static class DisplayInteger
     {
     	public int display;

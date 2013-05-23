@@ -815,10 +815,10 @@ public final class MekanismUtils
     public static boolean isObfuscated()
     {
     	try {
-    		Class.forName("net.minecraft.src.World");
-    		return true;
-    	} catch(Exception e) {
+    		Class.forName("net.minecraft.world.World");
     		return false;
+    	} catch(Exception e) {
+    		return true;
     	}
     }
     
