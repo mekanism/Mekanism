@@ -23,9 +23,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	/** The scale of the energy (0F -> 1F) currently inside this cable. */
 	public float energyScale;
 	
-	/** This cable's previous energy scale state. */
-	public float prevScale;
-	
 	public TileEntityUniversalCable()
 	{
 		if(PowerFramework.currentFramework != null)
@@ -40,12 +37,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		if(worldObj.isRemote)
 		{
-			if(Math.abs((energyScale-prevScale)*15F) >= 1)
-			{
-				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-				prevScale = energyScale;
-			}
-			
 			if(energyScale > 0)
 			{
 				energyScale -= .01;

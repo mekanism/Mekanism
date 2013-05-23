@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.CableUtils;
-import mekanism.common.Mekanism;
 import mekanism.common.TileEntityUniversalCable;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
@@ -98,6 +97,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		{
 			GL11.glPushMatrix();
 			GL11.glDisable(2896);
+			MekanismRenderer.glowOn();
 			
 			bindTextureByName("/mods/mekanism/textures/items/LiquidEnergy.png");
 			GL11.glTranslatef((float)x, (float)y, (float)z);
@@ -114,6 +114,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.worldObj);
 			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.energyScale*(stages-1)))]);
 			
+			MekanismRenderer.glowOff();
 			GL11.glEnable(2896);
 			GL11.glPopMatrix();
 		}

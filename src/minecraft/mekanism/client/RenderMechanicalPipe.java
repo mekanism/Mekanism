@@ -94,6 +94,11 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		{
 			push();
 			
+			if(tileEntity.refLiquid.itemID == Block.lavaStill.blockID)
+			{
+				MekanismRenderer.glowOn();
+			}
+			
 			bindTextureByName(tileEntity.refLiquid.getTextureSheet());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
@@ -108,6 +113,11 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			
 			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid, tileEntity.worldObj);
 			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+			
+			if(tileEntity.refLiquid.itemID == Block.lavaStill.blockID)
+			{
+				MekanismRenderer.glowOff();
+			}
 			
 			pop();
 		}

@@ -35,9 +35,6 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	/** The scale (0F -> 1F) of this pipe's liquid level. */
 	public float liquidScale;
 	
-	/** Previous scale for this pipe's liquid level. */
-	public float prevScale;
-	
 	@Override
 	public boolean canTransferLiquids(TileEntity fromTile)
 	{
@@ -63,12 +60,6 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(worldObj.isRemote)
 		{
-			if(Math.abs((liquidScale-prevScale)*15F) >= 1)
-			{
-				worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-				prevScale = liquidScale;
-			}
-			
 			if(liquidScale > 0)
 			{
 				liquidScale -= .01;

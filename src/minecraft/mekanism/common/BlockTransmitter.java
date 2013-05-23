@@ -3,9 +3,6 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
 import mekanism.client.ClientProxy;
@@ -17,10 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTransmitter extends Block
 {
@@ -50,31 +48,6 @@ public class BlockTransmitter extends Block
 	public int damageDropped(int i)
 	{
 		return i;
-	}
-	
-	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
-		if(tileEntity instanceof TileEntityMechanicalPipe)
-		{
-			TileEntityMechanicalPipe mechanicalPipe = (TileEntityMechanicalPipe)tileEntity;
-			
-			if(mechanicalPipe.refLiquid != null)
-			{
-				if(mechanicalPipe.refLiquid.itemID == Block.lavaStill.blockID)
-				{
-					return (int)(mechanicalPipe.liquidScale*15F);
-				}
-			}
-		}
-		else if(tileEntity instanceof TileEntityUniversalCable)
-		{
-			return (int)(((TileEntityUniversalCable)tileEntity).energyScale*15F);
-		}
-		
-		return 0;
 	}
 	
 	@Override
