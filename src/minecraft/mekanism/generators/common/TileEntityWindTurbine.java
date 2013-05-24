@@ -10,10 +10,10 @@ import dan200.computer.api.IComputerAccess;
 
 public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
 {
-	public boolean canSpin;
-	
+	/** The angle the blades of this Wind Turbine are currently at. */
 	public int angle;
 	
+	/** How much energy this generator produces per-tick. */
 	public int GENERATION_RATE = 30;
 	
 	public TileEntityWindTurbine() 

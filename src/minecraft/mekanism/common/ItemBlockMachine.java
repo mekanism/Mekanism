@@ -165,7 +165,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				list.add(EnumColor.PURPLE + "Speed: " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
 			}
 			
-			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+			if(itemstack.getItemDamage() != 14)
+			{
+				list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+			}
 		}
 	}
 
@@ -457,7 +460,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			if(((ItemStack)data[0]).getItemDamage() != 11 && ((ItemStack)data[0]).getItemDamage() != 12 && ((ItemStack)data[0]).getItemDamage() != 13)
+			if(((ItemStack)data[0]).getItemDamage() != 11 && ((ItemStack)data[0]).getItemDamage() != 12 && ((ItemStack)data[0]).getItemDamage() != 13 && ((ItemStack)data[0]).getItemDamage() != 14)
 			{
 				return true;
 			}

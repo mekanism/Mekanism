@@ -699,8 +699,11 @@ public class BlockMachine extends BlockContainer
 	        energizedItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
     	}
         
-        ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-        inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+    	if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.length > 0)
+    	{
+	        ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+	        inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+    	}
         
         if(((ISustainedTank)itemStack.getItem()).hasTank(itemStack))
         {

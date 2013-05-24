@@ -236,7 +236,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return side == ForgeDirection.DOWN || side == ForgeDirection.getOrientation(facing);
+		return side == ForgeDirection.DOWN || side == ForgeDirection.getOrientation(facing).getOpposite();
 	}
 	
 	@Override
@@ -272,7 +272,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
-		return direction.toForgeDirection() == ForgeDirection.DOWN || direction.toForgeDirection() == ForgeDirection.getOrientation(facing);
+		return direction.toForgeDirection() == ForgeDirection.DOWN || direction.toForgeDirection() == ForgeDirection.getOrientation(facing).getOpposite();
 	}
 
 	@Override
