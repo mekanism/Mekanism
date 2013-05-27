@@ -71,6 +71,7 @@ public class ClientProxy extends CommonProxy
 		
 		Mekanism.configuration.load();
 		Mekanism.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
+		Mekanism.enableBlockDebug = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableBlockDebug", false).getBoolean(false);
 		Mekanism.configuration.save();
 	}
 	
