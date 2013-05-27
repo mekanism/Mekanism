@@ -164,6 +164,7 @@ public class Mekanism
 	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
 	public static boolean enableSounds = true;
+	public static boolean enableBlockDebug = false;
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
