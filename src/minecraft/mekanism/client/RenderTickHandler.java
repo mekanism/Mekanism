@@ -46,7 +46,7 @@ public class RenderTickHandler implements ITickHandler
 				
 				Object3D obj = new Object3D(x, y, z);
 				
-				if(!MekanismUtils.isObfuscated() && mc.currentScreen == null && !mc.gameSettings.showDebugInfo && Mekanism.enableBlockDebug == true)
+				if(!MekanismUtils.isObfuscated() && mc.currentScreen == null && !mc.gameSettings.showDebugInfo && Mekanism.enableBlockDebug)
 				{
 					String tileDisplay = "";
 					
