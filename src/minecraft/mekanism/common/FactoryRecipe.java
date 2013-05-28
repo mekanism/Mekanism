@@ -128,13 +128,14 @@ public class FactoryRecipe implements IRecipe
 
         input = new Object[width * height];
         int x = 0;
+        
         for(char chr : shape.toCharArray())
         {
             input[x++] = itemMap.get(chr);
         }
     }
 
-    FactoryRecipe(ShapedRecipes recipe, Map<ItemStack, String> replacements)
+    public FactoryRecipe(ShapedRecipes recipe, Map<ItemStack, String> replacements)
     {
         output = recipe.getRecipeOutput();
         width = recipe.recipeWidth;

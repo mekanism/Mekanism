@@ -6,6 +6,7 @@ import java.util.Random;
 import mekanism.api.IEnergizedItem;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -13,6 +14,7 @@ import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityBasicBlock;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.client.GeneratorsClientProxy;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -45,7 +47,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockGenerator extends BlockContainer
+public class BlockGenerator extends BlockContainer implements ISpecialBounds
 {
 	public Icon[] solarSprites = new Icon[256];
 	public Random machineRand = new Random();
@@ -612,5 +614,23 @@ public class BlockGenerator extends BlockContainer
 		{
 			return Integer.toString(meta);
 		}
+	}
+
+	@Override
+	public void setRenderBounds(Block block, int metadata) 
+	{
+		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
+		{
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.4F, 1.0F);
+		}
+		else {
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		}
+	}
+
+	@Override
+	public boolean doDefaultBoundSetting(int metadata)
+	{
+		return true;
 	}
 }

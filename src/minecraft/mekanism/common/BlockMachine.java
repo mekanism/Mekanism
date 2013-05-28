@@ -7,6 +7,7 @@ import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
 import mekanism.client.ClientProxy;
 import mekanism.common.IFactory.RecipeType;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -49,7 +50,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockMachine extends BlockContainer
+public class BlockMachine extends BlockContainer implements ISpecialBounds
 {
 	public Icon[][] icons = new Icon[256][256];
 	public Random machineRand = new Random();
@@ -833,5 +834,14 @@ public class BlockMachine extends BlockContainer
 		{
 			return Integer.toString(meta);
 		}
+	}
+
+	@Override
+	public void setRenderBounds(Block block, int metadata) {}
+
+	@Override
+	public boolean doDefaultBoundSetting(int metadata) 
+	{
+		return false;
 	}
 }

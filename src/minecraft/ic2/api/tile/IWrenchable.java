@@ -52,7 +52,7 @@ public interface IWrenchable {
 	 * Determine the item the block will drop when the wrenching is successful.
 	 * 
 	 * @param entityPlayer player using the wrench, may be null
-	 * @return Item to drop
+	 * @return Item to drop, may be null
 	 */
 	ItemStack getWrenchDrop(EntityPlayer entityPlayer);
 }

@@ -3,6 +3,7 @@ package mekanism.client;
 import java.util.EnumSet;
 
 import mekanism.api.Object3D;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -45,7 +46,7 @@ public class RenderTickHandler implements ITickHandler
 				
 				Object3D obj = new Object3D(x, y, z);
 				
-				if(!MekanismUtils.isObfuscated() && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
+				if(Mekanism.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 				{
 					String tileDisplay = "";
 					

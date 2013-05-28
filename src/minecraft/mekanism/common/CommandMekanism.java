@@ -3,6 +3,8 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import mekanism.api.EnumColor;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -51,9 +53,9 @@ public class CommandMekanism extends CommandBase
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk version" + EnumColor.GREY + " -- displays the version number.");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk latest" + EnumColor.GREY + " -- displays the latest version number.");
 	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk news" + EnumColor.GREY + " -- displays most recent recent news.");
+	            sender.sendChatToPlayer(EnumColor.INDIGO + " /mk debug" + EnumColor.GREY + " -- toggles Mekanism's debug mode.");
 	            sender.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
 	        }
-	        
 	        else if(params[0].equalsIgnoreCase("version"))
 	        {
 	        	if(!MekanismUtils.checkForUpdates((EntityPlayer)sender))
@@ -67,17 +69,19 @@ public class CommandMekanism extends CommandBase
 	        		}
 	        	}
 	        }
-	        
 	        else if(params[0].equalsIgnoreCase("news"))
 	        {
 	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Most recent news: " + EnumColor.INDIGO + Mekanism.recentNews);
 	        }
-	        
 	        else if(params[0].equalsIgnoreCase("latest"))
 	        {
 	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for this mod is " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + ".");
 	        }
-	        
+	        else if(params[0].equalsIgnoreCase("debug"))
+	        {
+	        	Mekanism.debug = !Mekanism.debug;
+	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Debug mode set to " + EnumColor.DARK_GREY + Mekanism.debug);
+	        }
 	        else {
 	        	sender.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Unknown command. Type '" + EnumColor.INDIGO + "/mk help" + EnumColor.GREY + "' for help.");
 	        }

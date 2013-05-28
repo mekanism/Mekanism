@@ -1,29 +1,23 @@
 package ic2.api.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 
 /**
- * Allows for charging, discharging and using electric items (IElectricItem).
+ * This interface specifies a manager to handle the various tasks for electric items.
  *
- * The charge or remaining capacity of an item can be determined by calling charge/discharge with
- * ignoreTransferLimit and simulate set to true.
+ * The default implementation does the following:
+ * - store and retrieve the charge
+ * - handle charging, taking amount, tier, transfer limit, canProvideEnergy and simulate into account
+ * - replace item IDs if appropriate (getChargedItemId() and getEmptyItemId())
+ * - update and manage the damage value for the visual charge indicator
+ * 
+ * @note If you're implementing your own variant (ISpecialElectricItem), you can delegate to the
+ * default implementations through ElectricItem.rawManager. The default implementation is designed
+ * to minimize its dependency on its own constraints/structure and delegates most work back to the
+ * more atomic features in the gateway manager.
  */
-public final class ElectricItem {
-	/**
-	 * IElectricItemManager to use for interacting with IElectricItem ItemStacks.
-	 * 
-	 * This manager will act as a gateway and delegate the tasks to the final implementation
-	 * (rawManager or a custom one) as necessary.
-	 */
-	public static IElectricItemManager manager;
-
-	/**
-	 * Standard IElectricItemManager implementation, only call it directly from another
-	 * IElectricItemManager. Use manager instead.
-	 */
-	public static IElectricItemManager rawManager;
-
+public interface IElectricItemManager {
 	/**
 	 * Charge an item with a specified amount of energy
 	 *
@@ -33,13 +27,8 @@ public final class ElectricItem {
 	 * @param ignoreTransferLimit ignore the transfer limit specified by getTransferLimit()
 	 * @param simulate don't actually change the item, just determine the return value
 	 * @return Energy transferred into the electric item
-	 * 
-	 * @deprecated use manager.charge() instead
 	 */
-	@Deprecated
-	public static int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
-		return manager.charge(itemStack, amount, tier, ignoreTransferLimit, simulate);
-	}
+	int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate);
 
 	/**
 	 * Discharge an item by a specified amount of energy
@@ -50,13 +39,16 @@ public final class ElectricItem {
 	 * @param ignoreTransferLimit ignore the transfer limit specified by getTransferLimit()
 	 * @param simulate don't actually discharge the item, just determine the return value
 	 * @return Energy retrieved from the electric item
-	 * 
-	 * @deprecated use manager.discharge() instead
 	 */
-	@Deprecated
-	public static int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
-		return manager.discharge(itemStack, amount, tier, ignoreTransferLimit, simulate);
-	}
+	int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate);
+
+	/**
+	 * Determine the charge level for the specified item
+	 * 
+	 * @param itemStack ItemStack containing the electric item
+	 * @return charge level in EU
+	 */
+	int getCharge(ItemStack itemStack);
 
 	/**
 	 * Determine if the specified electric item has at least a specific amount of EU.
@@ -66,13 +58,8 @@ public final class ElectricItem {
 	 * @param itemStack electric item's stack
 	 * @param amount minimum amount of energy required
 	 * @return true if there's enough energy
-	 * 
-	 * @deprecated use manager.canUse() instead
 	 */
-	@Deprecated
-	public static boolean canUse(ItemStack itemStack, int amount) {
-		return manager.canUse(itemStack, amount);
-	}
+	boolean canUse(ItemStack itemStack, int amount);
 
 	/**
 	 * Try to retrieve a specific amount of energy from an Item, and if applicable, a BatPack.
@@ -80,15 +67,10 @@ public final class ElectricItem {
 	 *
 	 * @param itemStack electric item's stack
 	 * @param amount amount of energy to discharge in EU
-	 * @param player player holding the item
+	 * @param entity entity holding the item
 	 * @return true if the operation succeeded
-	 * 
-	 * @deprecated use manager.use() instead
 	 */
-	@Deprecated
-	public static boolean use(ItemStack itemStack, int amount, EntityPlayer player) {
-		return manager.use(itemStack, amount, player);
-	}
+	boolean use(ItemStack itemStack, int amount, EntityLiving entity);
 
 	/**
 	 * Charge an item from the BatPack a player is wearing.
@@ -96,13 +78,15 @@ public final class ElectricItem {
 	 * use() already contains this functionality.
 	 *
 	 * @param itemStack electric item's stack
-	 * @param player player holding the item
-	 * 
-	 * @deprecated use manager.chargeFromArmor() instead
+	 * @param entity entity holding the item
 	 */
-	@Deprecated
-	public static void chargeFromArmor(ItemStack itemStack, EntityPlayer player) {
-		manager.chargeFromArmor(itemStack, player);
-	}
-}
+	void chargeFromArmor(ItemStack itemStack, EntityLiving entity);
 
+	/**
+	 * Get the tool tip to display for electric items.
+	 * 
+	 * @param itemStack ItemStack to determine the tooltip for
+	 * @return tool tip string or null for none
+	 */
+	String getToolTip(ItemStack itemStack);
+}

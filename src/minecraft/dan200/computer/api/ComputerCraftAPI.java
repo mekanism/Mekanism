@@ -13,25 +13,7 @@ import java.lang.reflect.Method;
  * but may be called before it is fully loaded.
  */
 public class ComputerCraftAPI 
-{
-	/**
-	 * Get the creative mode tab that ComputerCraft items can be found on.
-	 * Use this to add your peripherals to ComputerCraft's tab.
-	 */
-	public static net.minecraft.creativetab.CreativeTabs getCreativeTab()
-	{
-		findCC();
-		if (computerCraft_getCreativeTab != null)
-		{
-			try {
-				return (net.minecraft.creativetab.CreativeTabs)( computerCraft_getCreativeTab.invoke(null) );
-			} catch (Exception e){
-				// It failed
-			}
-		}
-		return null;	
-	}
-	
+{	
 	/**
 	 * Registers a peripheral handler for a TileEntity that you do not have access to. Only
 	 * use this if you want to expose IPeripheral on a TileEntity from another mod. For your own
@@ -61,7 +43,6 @@ public class ComputerCraftAPI
 		if( !ccSearched ) {
 			try {
 				computerCraft = Class.forName( "dan200.ComputerCraft" );
-				computerCraft_getCreativeTab = findCCMethod( "getCreativeTab", new Class[] { } );
 				computerCraft_registerExternalPeripheral = findCCMethod( "registerExternalPeripheral", new Class[] { 
 					Class.class, IPeripheralHandler.class 
 				} );
@@ -87,5 +68,4 @@ public class ComputerCraftAPI
 	private static boolean ccSearched = false;	
 	private static Class computerCraft = null;
 	private static Method computerCraft_registerExternalPeripheral = null;
-	private static Method computerCraft_getCreativeTab = null;
 }

@@ -46,9 +46,9 @@ public class ClientPlayerTickHandler implements ITickHandler
 		    		{
 		    			if(!lastTickConfiguratorChange)
 		    			{
-			    			item.setState(stack, (byte)(item.getState(stack) == 0 ? 1 : (item.getState(stack) == 1 ? 2 : 0)));
+			    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
 			    			PacketHandler.sendPacketDataInt(EnumPacketType.CONFIGURATOR_STATE, item.getState(stack));
-			    			entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + (item.getState(stack) == 0 ? (EnumColor.BRIGHT_GREEN + "modify") : (item.getState(stack) == 1 ? (EnumColor.AQUA + "empty") : (EnumColor.YELLOW + "upgrade dump"))));
+			    			entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack)));
 			    			lastTickConfiguratorChange = true;
 		    			}
 		    		}

@@ -48,4 +48,5 @@ public interface IChargeableItem {
      * Get the max amount of energy that can be stored in the item.
      */
     public float getMaxEnergyStored(ItemStack theItem);
+
 }

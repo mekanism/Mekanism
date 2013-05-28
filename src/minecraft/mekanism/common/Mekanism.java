@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import mekanism.api.EnumGas;
 import mekanism.api.GasTransferProtocol.GasTransferEvent;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfusionInput;
@@ -70,6 +69,9 @@ public class Mekanism
 	/** Mekanism proxy instance */
 	@SidedProxy(clientSide = "mekanism.client.ClientProxy", serverSide = "mekanism.common.CommonProxy")
 	public static CommonProxy proxy;
+	
+	/** Mekanism debug mode */
+	public static boolean debug = false;
 	
     /** Mekanism mod instance */
 	@Instance("Mekanism")

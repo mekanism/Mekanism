@@ -250,6 +250,12 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
+	
+	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
 	{
 		return direction.toForgeDirection() == ForgeDirection.getOrientation(facing);

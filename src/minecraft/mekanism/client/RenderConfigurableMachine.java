@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -72,9 +73,10 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		TileEntity tileEntity = (TileEntity)configurable; 
 		EntityPlayer player = mc.thePlayer;
 		World world = mc.thePlayer.worldObj;
+		ItemStack itemStack = player.getCurrentEquippedItem();
 		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 		
-		if(pos != null && player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemConfigurator)
+		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack) == 0)
 		{
 			int xPos = MathHelper.floor_double(pos.blockX);
 			int yPos = MathHelper.floor_double(pos.blockY);

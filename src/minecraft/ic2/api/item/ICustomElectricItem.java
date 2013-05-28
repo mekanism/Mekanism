@@ -10,12 +10,15 @@ import net.minecraft.item.ItemStack;
  *
  * The default implementation (when not using ICustomElectricItem) does the following:
  * - store and retrieve the charge
- * - handle charging, taking amount, tier, transfer limit and simulate into account
+ * - handle charging, taking amount, tier, transfer limit, canProvideEnergy and simulate into account
  * - replace item IDs if appropriate (getChargedItemId() and getEmptyItemId())
  * - update and manage the damage value for the visual charge indicator
  *
  * @note ICustomElectricItem must not call the ElectricItem methods charge, discharge or canUse
+ * 
+ * @deprecated Use ISpecialElectricItem instead.
  */
+@Deprecated
 public interface ICustomElectricItem extends IElectricItem {
 	/**
 	 * Charge an item with a specified amount of energy

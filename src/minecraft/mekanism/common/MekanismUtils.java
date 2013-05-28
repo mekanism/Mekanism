@@ -371,6 +371,7 @@ public final class MekanismUtils
     			return ((IActiveState)tileEntity).getActive();
     		}
     	}
+    	
     	return false;
     }
     
@@ -805,20 +806,6 @@ public final class MekanismUtils
     	if(!Mekanism.inventoryLocations.get(inventoryID).contains(Object3D.get(tileEntity)))
     	{
     		Mekanism.inventoryLocations.get(inventoryID).add(Object3D.get(tileEntity));
-    	}
-    }
-    
-    /**
-     * Whether or not this mod is in an obfuscated environment.
-     * @return if the mod is in an obfuscated environment
-     */
-    public static boolean isObfuscated()
-    {
-    	try {
-    		Class.forName("net.minecraft.world.World");
-    		return false;
-    	} catch(Exception e) {
-    		return true;
     	}
     }
     

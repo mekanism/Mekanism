@@ -238,7 +238,7 @@ public class BlockEnergyCube extends BlockContainer
     	    	}
         	}
         	
-            if (tileEntity != null)
+            if(tileEntity != null)
             {
             	if(!entityplayer.isSneaking())
             	{

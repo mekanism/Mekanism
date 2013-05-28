@@ -7,12 +7,13 @@ import java.util.Random;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.electricity.ElectricityPack;
 
 public class ItemConfigurator extends ItemEnergized
@@ -29,7 +30,7 @@ public class ItemConfigurator extends ItemEnergized
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add(EnumColor.PINK + "State: " + EnumColor.GREY + (getState(itemstack) == 0 ? "modify" : (getState(itemstack) == 1 ? "empty" : "upgrade dump")));
+		list.add(EnumColor.PINK + "State: " + EnumColor.GREY + getState(getState(itemstack)));
 	}
     
     @Override
@@ -172,8 +173,69 @@ public class ItemConfigurator extends ItemEnergized
     				return true;
     			}
     		}
+    		else if(getState(stack) == 3)
+    		{
+    			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    			
+    			if(tileEntity instanceof TileEntityBasicBlock)
+    			{
+    				TileEntityBasicBlock basicBlock = (TileEntityBasicBlock)tileEntity;
+    				int newSide = basicBlock.facing;
+    				
+    				if(!player.isSneaking())
+    				{
+    					newSide = side;
+    				}
+    				else {
+    					newSide = ForgeDirection.OPPOSITES[side];
+    				}
+    				
+    				if(basicBlock.canSetFacing(newSide))
+    				{
+    					basicBlock.setFacing((short)newSide);
+	    				world.playSoundEffect(x, y, z, "random.click", 1.0F, 1.0F);
+    				}
+    				
+    				return true;
+    			}
+    		}
     	}
+    	
         return false;
+    }
+    
+    public String getState(int state)
+    {
+    	switch(state)
+    	{
+    		case 0:
+    			return "modify";
+    		case 1:
+    			return "empty";
+    		case 2:
+    			return "upgrade dump";
+    		case 3:
+    			return "wrench";
+    	}
+    	
+    	return "unknown";
+    }
+    
+    public EnumColor getColor(int state)
+    {
+    	switch(state)
+    	{
+    		case 0:
+    			return EnumColor.BRIGHT_GREEN;
+    		case 1:
+    			return EnumColor.AQUA;
+    		case 2:
+    			return EnumColor.YELLOW;
+    		case 3:
+    			return EnumColor.ORANGE;
+    	}
+    	
+    	return EnumColor.GREY;
     }
     
     public void setState(ItemStack itemstack, byte state)

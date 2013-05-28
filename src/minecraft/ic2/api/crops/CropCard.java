@@ -1,7 +1,5 @@
 package ic2.api.crops;
 
-import java.util.HashMap;
-
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -363,7 +361,7 @@ public abstract class CropCard
 	{
 		return Crops.instance.getIdFor(this);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	protected Icon textures[];
 }
