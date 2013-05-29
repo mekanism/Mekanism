@@ -72,6 +72,9 @@ public enum EnumPacketType
 	/** Used to send a Robit follow update packet to the server. */
 	FOLLOW_UPDATE(20),
 	
+	/** Used to send a Robit name update packet to the server. */
+	NAME_UPDATE(21),
+	
 	/** A custom packet type. Handled in PacketHandler. */
 	CUSTOM(-1);
 	

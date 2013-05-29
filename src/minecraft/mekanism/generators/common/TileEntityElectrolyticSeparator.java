@@ -414,6 +414,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			waterTank.setLiquid(new LiquidStack(Block.waterStill.blockID, amount, 0));
 		}
+		else {
+			waterTank.setLiquid(null);
+		}
 		
 		oxygenStored = dataStream.readInt();
 		hydrogenStored = dataStream.readInt();

@@ -78,7 +78,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 						
 						double prevEnergy = getEnergy();
 						
-						for(ItemStack itemstack : player.inventory.mainInventory)
+						for(ItemStack itemstack : player.inventory.armorInventory)
 						{
 							chargeItemStack(itemstack);
 							
@@ -88,7 +88,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 							}
 						}
 						
-						for(ItemStack itemstack : player.inventory.armorInventory)
+						for(ItemStack itemstack : player.inventory.mainInventory)
 						{
 							chargeItemStack(itemstack);
 							

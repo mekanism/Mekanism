@@ -11,9 +11,13 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 /*
  * Credit to BuildCraft
  */
+@SideOnly(Side.CLIENT)
 public class MekanismRenderer 
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();

@@ -281,11 +281,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		if(dataStream.readInt() == 1)
 		{
-			int amount = dataStream.readInt();
-			int itemID = dataStream.readInt();
-			int itemMeta = dataStream.readInt();
-		
-			liquidTank.setLiquid(new LiquidStack(itemID, amount, itemMeta));
+			liquidTank.setLiquid(new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt()));
 		}
 		else {
 			liquidTank.setLiquid(null);

@@ -2,10 +2,14 @@ package mekanism.client;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import mekanism.common.TileEntityChargepad;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
+@SideOnly(Side.CLIENT)
 public class RenderChargepad extends TileEntitySpecialRenderer
 {
 	private ModelChargepad model = new ModelChargepad();

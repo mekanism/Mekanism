@@ -516,6 +516,23 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
+			    else if(packetType == EnumPacketType.NAME_UPDATE.id)
+			    {
+			    	try {
+			    		String name = dataStream.readUTF();
+			    		int id = dataStream.readInt();
+			    		
+			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+			    		
+			    		if(robit != null)
+			    		{
+			    			robit.setName(name);
+			    		}
+			    	} catch(Exception e) {
+			      		System.err.println("[Mekanism] Error while handling name update packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");
 				e.printStackTrace();
@@ -1147,6 +1164,37 @@ public class PacketHandler implements IPacketHandler
         if(Mekanism.logPackets)
         {
         	System.out.println("[Mekanism] Sent follow update packet to server.");
+        }
+	}
+	
+	/**
+	 * Sends a Robit name update packet to the server.
+	 * @param value - new follow value
+	 * @param id - the robit's entity ID
+	 */
+	public static void sendNameUpdate(String name, int id)
+	{
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(EnumPacketType.NAME_UPDATE.id);
+			data.writeUTF(name);
+			data.writeInt(id);
+		} catch (IOException e) {
+			System.out.println("[Mekanism] An error occured while writing packet data.");
+			e.printStackTrace();
+		}
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        PacketDispatcher.sendPacketToServer(packet);
+        
+        if(Mekanism.logPackets)
+        {
+        	System.out.println("[Mekanism] Sentname update packet to server.");
         }
 	}
 	

@@ -5,17 +5,28 @@ import mekanism.common.EntityRobit;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 
+@SideOnly(Side.CLIENT)
 public class GuiRobitMain extends GuiContainer
 {
 	public EntityRobit robit;
+	
+	public boolean displayNameChange;
+	
+	private GuiTextField nameChangeField;
+	private GuiButton confirmName;
     
     public GuiRobitMain(InventoryPlayer inventory, EntityRobit entity)
     {
@@ -23,27 +34,98 @@ public class GuiRobitMain extends GuiContainer
     	xSize += 25;
     	robit = entity;
     }
+    
+    private void toggleNameChange()
+    {
+    	displayNameChange = !displayNameChange;
+    	confirmName.drawButton = displayNameChange;
+    	nameChangeField.setFocused(displayNameChange);
+    }
+    
+    private void changeName()
+    {
+    	if(nameChangeField.getText() != null && !nameChangeField.getText().isEmpty())
+    	{
+    		PacketHandler.sendNameUpdate(nameChangeField.getText(), robit.entityId);
+    		toggleNameChange();
+    		nameChangeField.setText("");
+    	}
+    }
+    
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		if(guibutton.id == 0)
+		{
+			changeName();
+		}
+	}
+    
+    @Override
+    public void initGui()
+	{
+		super.initGui();
+		
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+		
+		buttonList.clear();
+		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, "Confirm"));
+		confirmName.drawButton = displayNameChange;
+		
+		nameChangeField = new GuiTextField(fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
+		nameChangeField.setMaxStringLength(12);
+		nameChangeField.setFocused(true);
+	}
+    
+	@Override
+	public void keyTyped(char c, int i)
+	{
+		if(!displayNameChange)
+		{
+			super.keyTyped(c, i);
+		}
+		else {
+			if(i == Keyboard.KEY_RETURN)
+			{
+				changeName();
+			}
+			else if(i == Keyboard.KEY_ESCAPE)
+			{
+				mc.thePlayer.closeScreen();
+			}
+			
+			nameChangeField.textboxKeyTyped(c, i);
+		}
+	}
 	
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
     	fontRenderer.drawString("Robit", 76, 6, 0x404040);
-    	fontRenderer.drawString("Inventory", 8, (ySize - 96) + 3, 0x404040);
-    	fontRenderer.drawString("Hi, I'm Robit!", 29, 18, 0x00CD00);
-    	fontRenderer.drawString("Energy: " + ElectricityDisplay.getDisplayShort(robit.getEnergy(), ElectricUnit.JOULES), 29, 36, 0x00CD00);
-    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45, 0x00CD00);
-    	fontRenderer.drawString("Owner: " + robit.getOwnerName(), 29, 54, 0x00CD00);
+    	
+    	if(!displayNameChange)
+    	{
+	    	fontRenderer.drawString("Hi, I'm " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
+	    	fontRenderer.drawString("Energy: " + ElectricityDisplay.getDisplayShort(robit.getEnergy(), ElectricUnit.JOULES), 29, 36, 0x00CD00);
+	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45, 0x00CD00);
+	    	fontRenderer.drawString("Owner: " + robit.getOwnerName(), 29, 54, 0x00CD00);
+    	}
     	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
     	
-		if(xAxis >= 20 && xAxis <= 24 && yAxis >= 17 && yAxis <= 70)
+		if(xAxis >= 28 && xAxis <= 148 && yAxis >= 74 && yAxis <= 78)
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(robit.getEnergy(), ElectricUnit.JOULES), xAxis, yAxis);
 		}
 		else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 53 && yAxis <= 71)
 		{
 			drawCreativeTabHoveringText("Toggle 'follow' mode", xAxis, yAxis);
+		}
+		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 53 && yAxis <= 71)
+		{
+			drawCreativeTabHoveringText("Rename this Robit", xAxis, yAxis);
 		}
     }
 
@@ -107,10 +189,24 @@ public class GuiRobitMain extends GuiContainer
 			drawTexturedModalRect(guiWidth + 152, guiHeight + 53, 176 + 25, 198, 18, 18);
 		}
 		
+		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 53 && yAxis <= 71)
+		{
+			drawTexturedModalRect(guiWidth + 6, guiHeight + 53, 176 + 25, 216, 18, 18);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 6, guiHeight + 53, 176 + 25, 234, 18, 18);
+		}
+		
 		int displayInt;
 		
-        displayInt = getScaledEnergyLevel(53);
-        drawTexturedModalRect(guiWidth + 20, guiHeight + 17 + 53 - displayInt, 176 + 25 + 18, 36 + 53 - displayInt, 4, displayInt);
+        displayInt = getScaledEnergyLevel(120);
+        drawTexturedModalRect(guiWidth + 28, guiHeight + 74, 0, 166, displayInt, 4);
+        
+    	if(displayNameChange)
+    	{
+    		drawTexturedModalRect(guiWidth + 28, guiHeight + 17, 0, 166 + 4, 120, 53);
+    	   	nameChangeField.drawTextBox();
+    	}
     }
     
 	private int getScaledEnergyLevel(int i)
@@ -122,6 +218,8 @@ public class GuiRobitMain extends GuiContainer
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
 		super.mouseClicked(mouseX, mouseY, button);
+		
+		nameChangeField.mouseClicked(mouseX, mouseY, button);
 		
 		if(button == 0)
 		{
@@ -160,6 +258,11 @@ public class GuiRobitMain extends GuiContainer
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendFollowUpdate(!robit.getFollowing(), robit.entityId);
+			}
+			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 53 && yAxis <= 71)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				toggleNameChange();
 			}
 		}
 	}

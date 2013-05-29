@@ -20,6 +20,10 @@ import net.minecraftforge.liquids.LiquidStack;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderDynamicTank extends TileEntitySpecialRenderer
 {
 	private static Map<RenderData, HashMap<LiquidStack, int[]>> cachedCenterLiquids = new HashMap<RenderData, HashMap<LiquidStack, int[]>>();

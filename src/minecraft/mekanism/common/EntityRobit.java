@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
+import micdoodle8.mods.galacticraft.API.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -30,7 +31,7 @@ import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import codechicken.core.alg.MathHelper;
 
-public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory
+public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
 	public double MAX_ELECTRICITY = 100000;
 	
@@ -46,7 +47,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super(world);
 		
-		setSize(1, 1);
+		setSize(0.5F, 0.5F);
 		moveSpeed = 0.35F;
 		texture = "/mods/mekanism/render/Robit.png";
 		
@@ -56,6 +57,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		tasks.addTask(2, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(2, new EntityAILookIdle(this));
 		tasks.addTask(3, new EntityAISwimming(this));
+		
+		func_94061_f(true);
 	}
 	
 	public EntityRobit(World world, double x, double y, double z)
@@ -92,6 +95,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		dataWatcher.addObject(11, new String("")); /* Electricity */
 		dataWatcher.addObject(12, new String("")); /* Owner */
 		dataWatcher.addObject(13, new Byte((byte)0)); /* Follow */
+		dataWatcher.addObject(14, new String("")); /* Name */
 	}
 	
 	public double getRoundedTravelEnergy()
@@ -328,6 +332,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     	
     	nbtTags.setDouble("electricityStored", getEnergy());
     	
+    	nbtTags.setString("name", getName());
+    	
     	if(getOwnerName() != null)
     	{
     		nbtTags.setString("owner", getOwnerName());
@@ -359,6 +365,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     	super.readEntityFromNBT(nbtTags);
     	
     	setEnergy(nbtTags.getDouble("electricityStored"));
+    	
+    	setName(nbtTags.getString("name"));
     	
     	if(nbtTags.hasKey("owner"))
     	{
@@ -449,6 +457,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void setFollowing(boolean follow)
 	{
 		dataWatcher.updateObject(13, follow ? (byte)1 : (byte)0);
+	}
+	
+	public String getName()
+	{
+		return dataWatcher.getWatchableObjectString(14);
+	}
+	
+	public void setName(String name)
+	{
+		dataWatcher.updateObject(14, name);
 	}
 
 	@Override
@@ -603,9 +621,21 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         return tagList;
 	}
 	
+	@Override
+	public String getTranslatedEntityName()
+	{
+		return getName().isEmpty() ? "Robit" : getName();
+	}
+	
     @Override
     public float getShadowSize()
     {
         return 0.25F;
     }
+
+	@Override
+	public boolean canBreath() 
+	{
+		return true;
+	}
 }

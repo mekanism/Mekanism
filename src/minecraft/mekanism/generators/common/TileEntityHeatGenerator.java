@@ -72,9 +72,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				}
 				else {
 					int fuel = getFuel(inventory[0]);
+					
 					if(fuel > 0)
 					{
 						int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0);
+						
 						if(fuel <= fuelNeeded)
 						{
 							lavaTank.fill(new LiquidStack(Block.lavaStill.blockID, fuel), true);
@@ -235,9 +237,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		super.handlePacketData(dataStream);
 		
 		int amount = dataStream.readInt();
+		
 		if(amount != 0)
 		{
 			lavaTank.setLiquid(new LiquidStack(Block.lavaStill.blockID, amount, 0));
+		}
+		else {
+			lavaTank.setLiquid(null);
 		}
 	}
 	
