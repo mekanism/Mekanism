@@ -126,21 +126,21 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			
 			handleSecondaryFuel();
 			
-			if(electricityStored >= ENERGY_PER_TICK && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+			if(electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK))
 			{
-				if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED) && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+				if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK))
 				{
 					operatingTicks++;
-					secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-					electricityStored -= ENERGY_PER_TICK;
+					secondaryEnergyStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 				}
 				else if((operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
-					secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-					electricityStored -= ENERGY_PER_TICK;
+					secondaryEnergyStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 				}
 			}
 			
@@ -149,7 +149,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				operatingTicks = 0;
 			}
 			
-			if(canOperate() && electricityStored >= ENERGY_PER_TICK && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+			if(canOperate() && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK))
 			{
 				setActive(true);
 			}
