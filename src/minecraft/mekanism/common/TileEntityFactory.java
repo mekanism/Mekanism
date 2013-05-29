@@ -218,19 +218,19 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(electricityStored >= ENERGY_PER_TICK)
+				if(electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 				{
 					if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 					{
 						progress[process]++;
-						electricityStored -= ENERGY_PER_TICK;
+						electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 					}
 					else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
 						
 						progress[process] = 0;
-						electricityStored -= ENERGY_PER_TICK;
+						electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 					}
 				}
 				
@@ -253,7 +253,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 					}
 				}
 				
-				if(hasOperation && electricityStored >= ENERGY_PER_TICK)
+				if(hasOperation && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 				{
 					setActive(true);
 				}

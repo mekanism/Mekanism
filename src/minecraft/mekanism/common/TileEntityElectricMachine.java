@@ -93,19 +93,19 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				upgradeTicks = 0;
 			}
 			
-			if(electricityStored >= ENERGY_PER_TICK)
+			if(electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 			{
 				if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					electricityStored -= ENERGY_PER_TICK;
+					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 				}
 				else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
-					electricityStored -= ENERGY_PER_TICK;
+					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 				}
 			}
 			
@@ -114,7 +114,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				operatingTicks = 0;
 			}
 			
-			if(canOperate() && electricityStored >= ENERGY_PER_TICK)
+			if(canOperate() && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 			{
 				setActive(true);
 			}

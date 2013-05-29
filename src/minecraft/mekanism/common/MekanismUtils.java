@@ -507,24 +507,48 @@ public final class MekanismUtils
     
     /**
      * Gets the operating ticks required for a machine via it's upgrades.
-     * @param multiplier - speed multiplier
+     * @param speedUpgrade - number of speed upgrades
      * @param def - the original, default ticks required
      * @return max operating ticks
      */
-    public static int getTicks(int multiplier, int def)
+    public static int getTicks(int speedUpgrade, int def)
     {
-    	return def/(multiplier+1);
+        return (int) (def * Math.pow(10, (-speedUpgrade/9.0)));
+    }
+    
+    /**
+     * Gets the energy required  per tick for a machine via it's upgrades.
+     * @param speedUpgrade - number of speed upgrades
+     * @param energyUpgrade - number of energy upgrades
+     * @param def - the original, default energy required
+     * @return max energy per tick
+     */
+    public static int getEnergyPerTick(int speedUpgrade, int energyUpgrade, int def)
+    {
+        return (int) (def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));
+    }
+    
+    /**
+     * Gets the energy required  per tick for a machine via it's upgrades.
+     * @param speedUpgrade - number of speed upgrades
+     * @param energyUpgrade - number of energy upgrades
+     * @param def - the original, default energy required
+     * @return max energy per tick
+     */
+    public static double getEnergyPerTick(int speedUpgrade, int energyUpgrade, double def)
+    {
+        return (def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));
     }
     
     /**
      * Gets the maximum energy for a machine via it's upgrades.
-     * @param multiplier - energy multiplier
+     * @param energyUpgrade - number of energy upgrades
      * @param def - original, default max energy
      * @return max energy
      */
-    public static double getEnergy(int multiplier, double def)
+    public static double getEnergy(int energyUpgrade, double def)
     {
-    	return def*(multiplier+1);
+        return (int) (def * Math.pow(10, (energyUpgrade/9.0)));
     }
     
     /**
