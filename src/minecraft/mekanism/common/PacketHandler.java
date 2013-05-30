@@ -533,6 +533,22 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
+			    else if(packetType == EnumPacketType.GO_HOME.id)
+			    {
+			       	try {
+			    		int id = dataStream.readInt();
+			    		
+			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+			    		
+			    		if(robit != null)
+			    		{
+			    			robit.goHome();
+			    		}
+			    	} catch(Exception e) {
+			      		System.err.println("[Mekanism] Error while handling go home packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");
 				e.printStackTrace();

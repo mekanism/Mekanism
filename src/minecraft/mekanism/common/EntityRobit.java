@@ -5,6 +5,7 @@ import ic2.api.item.IElectricItem;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IEnergizedItem;
@@ -118,6 +119,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		
 		if(!worldObj.isRemote)
 		{
+			collectItems();
+			
 			if(homeLocation == null)
 			{
 				setDead();
@@ -135,12 +138,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			
 			if(getEnergy() == 0 && !isOnChargepad())
 			{
-				setFollowing(false);
-				setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
-				
-				motionX = 0;
-				motionY = 0;
-				motionZ = 0;
+				goHome();
 			}
 			
 			if(inventory[27] != null && getEnergy() < MAX_ELECTRICITY)
@@ -226,6 +224,65 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	            }
 	        }
 		}
+	}
+	
+	private void collectItems()
+	{
+		List<EntityItem> items = worldObj.getEntitiesWithinAABB(EntityItem.class, boundingBox.expand(1.5, 1.5, 1.5));
+		
+		if(items != null && !items.isEmpty())
+		{
+			for(EntityItem item : items)
+			{
+				if(item.delayBeforeCanPickup > 0)
+				{
+					continue;
+				}
+				
+				for(int i = 0; i < 27; i++)
+				{
+					ItemStack itemStack = inventory[i];
+					
+					if(itemStack == null)
+					{
+						inventory[i] = item.getEntityItem();
+						item.setPosition(posX, posY, posZ);
+						item.setDead();
+						playSound("random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						
+						break;
+					}
+					else if(itemStack.isItemEqual(item.getEntityItem()) && itemStack.stackSize < itemStack.getMaxStackSize())
+					{
+						int needed = itemStack.getMaxStackSize() - itemStack.stackSize;
+						int toAdd = Math.min(needed, item.getEntityItem().stackSize);
+						
+						itemStack.stackSize += toAdd;
+						item.getEntityItem().stackSize -= toAdd;
+						
+						if(item.getEntityItem().stackSize == 0)
+						{
+							item.setPosition(posX, posY, posZ);
+							item.setDead();
+						}
+						
+						playSound("random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	public void goHome()
+	{
+		setFollowing(false);
+		setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
+		
+		motionX = 0;
+		motionY = 0;
+		motionZ = 0;
 	}
 
     private boolean canSmelt()
@@ -316,6 +373,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
 		item.setInventory(getInventory(), entityItem.getEntityItem());
+		item.setName(entityItem.getEntityItem(), getName());
 		
 	    float k = 0.05F;
 	    entityItem.motionX = 0;

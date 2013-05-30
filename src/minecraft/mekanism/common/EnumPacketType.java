@@ -75,6 +75,9 @@ public enum EnumPacketType
 	/** Used to send a Robit name update packet to the server. */
 	NAME_UPDATE(21),
 	
+	/** Used to send a Robit 'go home' packet to the server. */
+	GO_HOME(22),
+	
 	/** A custom packet type. Handled in PacketHandler. */
 	CUSTOM(-1);
 	

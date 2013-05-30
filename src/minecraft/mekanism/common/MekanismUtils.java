@@ -517,7 +517,7 @@ public final class MekanismUtils
     }
     
     /**
-     * Gets the energy required  per tick for a machine via it's upgrades.
+     * Gets the energy required per tick for a machine via it's upgrades.
      * @param speedUpgrade - number of speed upgrades
      * @param energyUpgrade - number of energy upgrades
      * @param def - the original, default energy required
@@ -529,7 +529,7 @@ public final class MekanismUtils
     }
     
     /**
-     * Gets the energy required  per tick for a machine via it's upgrades.
+     * Gets the energy required per tick for a machine via it's upgrades.
      * @param speedUpgrade - number of speed upgrades
      * @param energyUpgrade - number of energy upgrades
      * @param def - the original, default energy required

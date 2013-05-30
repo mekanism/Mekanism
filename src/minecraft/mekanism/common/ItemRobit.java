@@ -36,8 +36,10 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
+		list.add(EnumColor.INDIGO + "Name: " + EnumColor.GREY + (getName(itemstack).isEmpty() ? "Robit" : getName(itemstack)));
+		
 		super.addInformation(itemstack, entityplayer, list, flag);
-			
+		
 		list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 	}
 	
@@ -58,6 +60,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 					robit.setEnergy(getEnergy(itemstack));
 					robit.setOwner(entityplayer.username);
 					robit.setInventory(getInventory(itemstack));
+					robit.setName(getName(itemstack));
 					
 					world.spawnEntityInWorld(robit);
 				}
@@ -75,6 +78,27 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	public boolean canSend(ItemStack itemStack)
 	{
 		return false;
+	}
+	
+	public void setName(ItemStack itemstack, String name)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+		
+		itemstack.stackTagCompound.setString("name", name);
+	}
+	
+	public String getName(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			return null;
+		}
+		
+		String name = itemstack.stackTagCompound.getString("name");
+		return name != null ? name : "";
 	}
 	
 	@Override

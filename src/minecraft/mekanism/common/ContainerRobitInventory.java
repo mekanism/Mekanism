@@ -60,25 +60,16 @@ public class ContainerRobitInventory extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-        	if(slotID >= 27 && slotID <= 53)
+        	if(slotID < 27)
         	{
-        		if(!mergeItemStack(slotStack, 54, inventorySlots.size(), false))
-        		{
-        			return null;
-        		}
-        	}
-        	else if(slotID > 53)
-        	{
-        		if(!mergeItemStack(slotStack, 27, 53, false))
-        		{
-        			return null;
-        		}
-        	}
-        	else {
         		if(!mergeItemStack(slotStack, 27, inventorySlots.size(), true))
         		{
         			return null;
         		}
+        	}
+        	else if(!mergeItemStack(slotStack, 0, 27, false))
+        	{
+        		return null;
         	}
             
             if(slotStack.stackSize == 0)

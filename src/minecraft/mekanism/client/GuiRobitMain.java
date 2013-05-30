@@ -2,6 +2,7 @@ package mekanism.client;
 
 import mekanism.common.ContainerRobitMain;
 import mekanism.common.EntityRobit;
+import mekanism.common.EnumPacketType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -12,11 +13,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRobitMain extends GuiContainer
@@ -127,6 +127,10 @@ public class GuiRobitMain extends GuiContainer
 		{
 			drawCreativeTabHoveringText("Rename this Robit", xAxis, yAxis);
 		}
+		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
+		{
+			drawCreativeTabHoveringText("Teleport back home", xAxis, yAxis);
+		}
     }
 
     @Override
@@ -197,6 +201,14 @@ public class GuiRobitMain extends GuiContainer
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 53, 176 + 25, 234, 18, 18);
 		}
 		
+		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
+		{
+			drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 176 + 25 + 18, 36, 18, 18);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 176 + 25 + 18, 54, 18, 18);
+		}
+		
 		int displayInt;
 		
         displayInt = getScaledEnergyLevel(120);
@@ -263,6 +275,11 @@ public class GuiRobitMain extends GuiContainer
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				toggleNameChange();
+			}
+			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacketDataInt(EnumPacketType.GO_HOME, robit.entityId);
 			}
 		}
 	}
