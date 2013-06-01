@@ -2,24 +2,22 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
+import mekanism.api.IEnergizedItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
- * Code originally from Eloraam and her work on the Ore Dictionary.  Cleaned up and modified to work with Factory recipe types.
+ * Code originally from Eloraam and her work on the Ore Dictionary.  Cleaned up and modified to work well with energized items.
  * @author Eloraam, aidancbrady
  *
  */
-public class FactoryRecipe implements IRecipe
+public class MekanismRecipe implements IRecipe
 {
     private static final int MAX_CRAFT_GRID_WIDTH = 3;
     private static final int MAX_CRAFT_GRID_HEIGHT = 3;
@@ -30,17 +28,17 @@ public class FactoryRecipe implements IRecipe
     private int height = 0;
     private boolean mirrored = true;
 
-    public FactoryRecipe(Block result, Object... recipe)
+    public MekanismRecipe(Block result, Object... recipe)
     { 
     	this(new ItemStack(result), recipe); 
     }
     
-    public FactoryRecipe(Item result, Object... recipe)
+    public MekanismRecipe(Item result, Object... recipe)
     {
     	this(new ItemStack(result), recipe);
     }
     
-    public FactoryRecipe(ItemStack result, Object... recipe)
+    public MekanismRecipe(ItemStack result, Object... recipe)
     {
         output = result.copy();
 
@@ -50,6 +48,7 @@ public class FactoryRecipe implements IRecipe
         if(recipe[idx] instanceof Boolean)
         {
             mirrored = (Boolean)recipe[idx];
+            
             if(recipe[idx+1] instanceof Object[])
             {
                 recipe = (Object[])recipe[idx+1];
@@ -84,10 +83,12 @@ public class FactoryRecipe implements IRecipe
         if(width * height != shape.length())
         {
             String ret = "Invalid shaped ore recipe: ";
+            
             for (Object tmp :  recipe)
             {
                 ret += tmp + ", ";
             }
+            
             ret += output;
             throw new RuntimeException(ret);
         }
@@ -117,10 +118,12 @@ public class FactoryRecipe implements IRecipe
             }
             else {
                 String ret = "Invalid shaped ore recipe: ";
+                
                 for(Object tmp :  recipe)
                 {
                     ret += tmp + ", ";
                 }
+                
                 ret += output;
                 throw new RuntimeException(ret);
             }
@@ -135,37 +138,30 @@ public class FactoryRecipe implements IRecipe
         }
     }
 
-    public FactoryRecipe(ShapedRecipes recipe, Map<ItemStack, String> replacements)
-    {
-        output = recipe.getRecipeOutput();
-        width = recipe.recipeWidth;
-        height = recipe.recipeHeight;
-
-        input = new Object[recipe.recipeItems.length];
-
-        for(int i = 0; i < input.length; i++)
-        {
-            ItemStack ingred = recipe.recipeItems[i];
-
-            if(ingred == null) continue;
-
-            input[i] = recipe.recipeItems[i];
-
-            for(Entry<ItemStack, String> replace : replacements.entrySet())
-            {
-                if(OreDictionary.itemMatches(replace.getKey(), ingred, true))
-                {
-                    input[i] = OreDictionary.getOres(replace.getValue());
-                    break;
-                }
-            }
-        }
-    }
-
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
-    { 
-    	return output.copy(); 
+    {
+    	ItemStack toReturn = output.copy();
+    	
+    	if(toReturn.getItem() instanceof IEnergizedItem)
+    	{
+    		double energyFound = 0;
+    		
+    		for(ItemStack itemstack : inv.stackList)
+    		{
+    			if(itemstack != null)
+    			{
+	    			if(itemstack.getItem() instanceof IEnergizedItem)
+	    			{
+	    				energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
+	    			}
+    			}
+    		}
+    		
+    		((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, Math.min(((IEnergizedItem)toReturn.getItem()).getMaxEnergy(toReturn), energyFound));
+    	}
+    	
+    	return toReturn;
     }
 
     @Override
@@ -263,23 +259,45 @@ public class FactoryRecipe implements IRecipe
             return false;
         }
         
-        if(target.itemID != input.itemID || target.getItemDamage() != input.getItemDamage())
+        if(target.itemID != input.itemID)
         {
         	return false;
         }
         
-     	if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
-    	{
-			if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
-			{
-				return false;
-			}
-    	}
+        if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem))
+        {
+	        if(target.getItemDamage() != input.getItemDamage())
+	        {
+	        	return false;
+	        }
+        }
+        else if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
+        {
+        	if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+        	{
+        		return false;
+        	}
+        }
+        else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
+        {
+        	if(((IFactory)target.getItem()).isFactory(target) && ((IFactory)input.getItem()).isFactory(input))
+        	{
+    	        if(target.getItemDamage() != input.getItemDamage())
+    	        {
+    	        	return false;
+    	        }
+    	        
+        		if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
+        		{
+        			return false;
+        		}
+        	}
+        }
         
         return true;
     }
 
-    public FactoryRecipe setMirrored(boolean mirror)
+    public MekanismRecipe setMirrored(boolean mirror)
     {
         mirrored = mirror;
         return this;

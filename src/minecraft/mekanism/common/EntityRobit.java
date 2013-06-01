@@ -49,7 +49,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		super(world);
 		
 		setSize(0.5F, 0.5F);
-		moveSpeed = 0.35F;
+		moveSpeed = 0.3F;
 		texture = "/mods/mekanism/render/Robit.png";
 		
 		getNavigator().setAvoidsWater(true);
@@ -97,6 +97,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		dataWatcher.addObject(12, new String("")); /* Owner */
 		dataWatcher.addObject(13, new Byte((byte)0)); /* Follow */
 		dataWatcher.addObject(14, new String("")); /* Name */
+		dataWatcher.addObject(15, new Byte((byte)0)); /* Drop Pickup */
 	}
 	
 	public double getRoundedTravelEnergy()
@@ -119,7 +120,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		
 		if(!worldObj.isRemote)
 		{
-			collectItems();
+			if(getDropPickup())
+			{
+				collectItems();
+			}
 			
 			if(homeLocation == null)
 			{
@@ -234,7 +238,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		{
 			for(EntityItem item : items)
 			{
-				if(item.delayBeforeCanPickup > 0)
+				if(item.delayBeforeCanPickup > 0 || item.getEntityItem().getItem() instanceof ItemRobit)
 				{
 					continue;
 				}
@@ -246,9 +250,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					if(itemStack == null)
 					{
 						inventory[i] = item.getEntityItem();
-						item.setPosition(posX, posY, posZ);
+						onItemPickup(item, item.getEntityItem().stackSize);
 						item.setDead();
-						playSound("random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						
+						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						
 						break;
 					}
@@ -260,13 +265,14 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 						itemStack.stackSize += toAdd;
 						item.getEntityItem().stackSize -= toAdd;
 						
+						onItemPickup(item, toAdd);
+						
 						if(item.getEntityItem().stackSize == 0)
 						{
-							item.setPosition(posX, posY, posZ);
 							item.setDead();
 						}
 						
-						playSound("random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 						
 						break;
 					}
@@ -373,7 +379,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
 		item.setInventory(getInventory(), entityItem.getEntityItem());
-		item.setName(entityItem.getEntityItem(), getName());
+		item.setName(entityItem.getEntityItem(), getTranslatedEntityName());
 		
 	    float k = 0.05F;
 	    entityItem.motionX = 0;
@@ -398,6 +404,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     	}
     	
     	nbtTags.setBoolean("follow", getFollowing());
+    	
+    	nbtTags.setBoolean("dropPickup", getDropPickup());
     	
     	homeLocation.write(nbtTags);
     	
@@ -432,6 +440,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     	}
     	
     	setFollowing(nbtTags.getBoolean("follow"));
+    	
+    	setDropPickup(nbtTags.getBoolean("dropPickup"));
     	
     	homeLocation = Object3D.read(nbtTags);
     	
@@ -525,6 +535,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void setName(String name)
 	{
 		dataWatcher.updateObject(14, name);
+	}
+	
+	public boolean getDropPickup()
+	{
+		return dataWatcher.getWatchableObjectByte(15) == 1;
+	}
+	
+	public void setDropPickup(boolean pickup)
+	{
+		dataWatcher.updateObject(15, pickup ? (byte)1 : (byte)0);
 	}
 
 	@Override

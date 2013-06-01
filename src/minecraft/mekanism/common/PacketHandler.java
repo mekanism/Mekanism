@@ -502,14 +502,13 @@ public class PacketHandler implements IPacketHandler
 			    else if(packetType == EnumPacketType.FOLLOW_UPDATE.id)
 			    {
 			    	try {
-			    		boolean value = dataStream.readBoolean();
 			    		int id = dataStream.readInt();
 			    		
 			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
 			    		
 			    		if(robit != null)
 			    		{
-			    			robit.setFollowing(value);
+			    			robit.setFollowing(!robit.getFollowing());
 			    		}
 			    	} catch(Exception e) {
 			       		System.err.println("[Mekanism] Error while handling follow update packet.");
@@ -546,6 +545,22 @@ public class PacketHandler implements IPacketHandler
 			    		}
 			    	} catch(Exception e) {
 			      		System.err.println("[Mekanism] Error while handling go home packet.");
+			    		e.printStackTrace();
+			    	}
+			    }
+			    else if(packetType == EnumPacketType.DROP_PICKUP_UPDATE.id)
+			    {
+			       	try {
+			    		int id = dataStream.readInt();
+			    		
+			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+			    		
+			    		if(robit != null)
+			    		{
+			    			robit.setDropPickup(!robit.getDropPickup());
+			    		}
+			    	} catch(Exception e) {
+			      		System.err.println("[Mekanism] Error while handling drop pickup update packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
@@ -1149,37 +1164,6 @@ public class PacketHandler implements IPacketHandler
         if(Mekanism.logPackets)
         {
         	System.out.println("[Mekanism] Sent robit GUI packet to server.");
-        }
-	}
-	
-	/**
-	 * Sends a Robit follow update packet to the server.
-	 * @param value - new follow value
-	 * @param id - the robit's entity ID
-	 */
-	public static void sendFollowUpdate(boolean value, int id)
-	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.FOLLOW_UPDATE.id);
-			data.writeBoolean(value);
-			data.writeInt(id);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent follow update packet to server.");
         }
 	}
 	

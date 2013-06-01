@@ -35,11 +35,10 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
-	{
-		list.add(EnumColor.INDIGO + "Name: " + EnumColor.GREY + (getName(itemstack).isEmpty() ? "Robit" : getName(itemstack)));
-		
+	{	
 		super.addInformation(itemstack, entityplayer, list, flag);
 		
+		list.add(EnumColor.INDIGO + "Name: " + EnumColor.GREY + getName(itemstack));
 		list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 	}
 	
@@ -94,11 +93,12 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		if(itemstack.stackTagCompound == null)
 		{
-			return null;
+			return "Robit";
 		}
 		
 		String name = itemstack.stackTagCompound.getString("name");
-		return name != null ? name : "";
+		
+		return name.equals("") ? "Robit" : name;
 	}
 	
 	@Override

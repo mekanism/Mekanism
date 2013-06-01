@@ -124,25 +124,16 @@ public class ContainerElectricChest extends Container
 	            }
             }
             else {
-            	if(slotID >= 55 && slotID <= 81)
+            	if(slotID < 54)
             	{
-            		if(!mergeItemStack(slotStack, 82, inventorySlots.size(), false))
-            		{
-            			return null;
-            		}
-            	}
-            	else if(slotID > 81)
-            	{
-            		if(!mergeItemStack(slotStack, 55, 81, false))
-            		{
-            			return null;
-            		}
-            	}
-            	else {
             		if(!mergeItemStack(slotStack, 55, inventorySlots.size(), true))
             		{
             			return null;
             		}
+            	}
+            	else if(!mergeItemStack(slotStack, 0, 54, false))
+            	{
+            		return null;
             	}
             }
             
