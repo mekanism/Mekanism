@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -33,10 +34,32 @@ public class MekanismRenderer
 		public double maxX;
 		public double maxY;
 		public double maxZ;
+		
+		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true};
 
 		public Block baseBlock = Block.sand;
 
 		public Icon texture = null;
+		
+	    public final void setBlockBounds(float xNeg, float yNeg, float zNeg, float xPos, float yPos, float zPos)
+	    {
+	    	minX = xNeg;
+	    	minY = yNeg;
+	    	minZ = zNeg;
+	    	maxX = xPos;
+	    	maxY = yPos;
+	    	maxZ = zPos;
+	    }
+		
+		public void setSideRender(ForgeDirection side, boolean value)
+		{
+			renderSides[side.ordinal()] = value;
+		}
+		
+		public boolean shouldSideRender(ForgeDirection side)
+		{
+			return renderSides[side.ordinal()];
+		}
 
 		public Icon getBlockTextureFromSide(int i) 
 		{
@@ -55,13 +78,8 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static void renderObject(Model3D object, IBlockAccess blockAccess, int i, int j, int k, boolean doLight, boolean doTessellating)
+	public static void renderObject(Model3D object)
 	{
-		float f = 0.5F;
-		float f1 = 1.0F;
-		float f2 = 0.8F;
-		float f3 = 0.6F;
-
         renderBlocks.renderMaxX = object.maxX;
         renderBlocks.renderMinX = object.minX;
         renderBlocks.renderMaxY = object.maxY;
@@ -71,105 +89,40 @@ public class MekanismRenderer
 
         renderBlocks.enableAO = false;
 
-
 		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawingQuads();
 
-		if(doTessellating) 
+		if(object.shouldSideRender(ForgeDirection.DOWN))
 		{
-			tessellator.startDrawingQuads();
+			renderBlocks.renderFaceYNeg(null, 0, 0, 0, object.getBlockTextureFromSide(0));
 		}
 
-		float f4 = 0, f5 = 0;
-
-		if(doLight)
+		if(object.shouldSideRender(ForgeDirection.UP))
 		{
-			f4 = object.getBlockBrightness(blockAccess, i, j, k);
-			f5 = object.getBlockBrightness(blockAccess, i, j, k);
-			
-			if(f5 < f4) 
-			{
-				f5 = f4;
-			}
-			
-			tessellator.setColorOpaque_F(f * f5, f * f5, f * f5);
+			renderBlocks.renderFaceYPos(null, 0, 0, 0, object.getBlockTextureFromSide(1));
 		}
 
-		renderBlocks.renderFaceYNeg(null, 0, 0, 0, object.getBlockTextureFromSide(0));
-
-		if(doLight) 
+		if(object.shouldSideRender(ForgeDirection.NORTH))
 		{
-			f5 = object.getBlockBrightness(blockAccess, i, j, k);
-			
-			if(f5 < f4)
-			{
-				f5 = f4;
-			}
-			
-			tessellator.setColorOpaque_F(f1 * f5, f1 * f5, f1 * f5);
+			renderBlocks.renderFaceZNeg(null, 0, 0, 0, object.getBlockTextureFromSide(2));
 		}
 
-		renderBlocks.renderFaceYPos(null, 0, 0, 0, object.getBlockTextureFromSide(1));
-
-		if(doLight) 
+		if(object.shouldSideRender(ForgeDirection.SOUTH))
 		{
-			f5 = object.getBlockBrightness(blockAccess, i, j, k);
-			
-			if(f5 < f4) 
-			{
-				f5 = f4;
-			}
-			
-			tessellator.setColorOpaque_F(f2 * f5, f2 * f5, f2 * f5);
+			renderBlocks.renderFaceZPos(null, 0, 0, 0, object.getBlockTextureFromSide(3));
 		}
 
-		renderBlocks.renderFaceZNeg(null, 0, 0, 0, object.getBlockTextureFromSide(2));
-
-		if(doLight)
+		if(object.shouldSideRender(ForgeDirection.WEST))
 		{
-			f5 = object.getBlockBrightness(blockAccess, i, j, k);
-			
-			if(f5 < f4) 
-			{
-				f5 = f4;
-			}
-			
-			tessellator.setColorOpaque_F(f2 * f5, f2 * f5, f2 * f5);
+			renderBlocks.renderFaceXNeg(null, 0, 0, 0, object.getBlockTextureFromSide(4));
 		}
 
-		renderBlocks.renderFaceZPos(null, 0, 0, 0, object.getBlockTextureFromSide(3));
-
-		if(doLight)
+		if(object.shouldSideRender(ForgeDirection.EAST))
 		{
-			f5 = object.getBlockBrightness(blockAccess, i, j, k);
-			
-			if(f5 < f4)
-			{
-				f5 = f4;
-			}
-			
-			tessellator.setColorOpaque_F(f3 * f5, f3 * f5, f3 * f5);
+			renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
 		}
-
-		renderBlocks.renderFaceXNeg(null, 0, 0, 0, object.getBlockTextureFromSide(4));
-
-		if(doLight) 
-		{
-			f5 = object.getBlockBrightness(blockAccess, i, j, k);
-			
-			if(f5 < f4)
-			{
-				f5 = f4;
-			}
-			
-			tessellator.setColorOpaque_F(f3 * f5, f3 * f5, f3 * f5);
-		}
-
-		renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
-
-		if(doTessellating) 
-		{
-			tessellator.draw();
-		}
+		
+		tessellator.draw();
 	}
 	
     public static void glowOn() 

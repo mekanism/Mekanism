@@ -104,23 +104,23 @@ public class BlockGasTank extends BlockContainer
     {
     	TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
 
-        if (tileEntity != null)
+        if(tileEntity != null)
         {
-            for (int i = 0; i < tileEntity.getSizeInventory(); ++i)
+            for(int i = 0; i < tileEntity.getSizeInventory(); ++i)
             {
                 ItemStack slotStack = tileEntity.getStackInSlot(i);
 
-                if (slotStack != null)
+                if(slotStack != null)
                 {
                     float xRandom = machineRand.nextFloat() * 0.8F + 0.1F;
                     float yRandom = machineRand.nextFloat() * 0.8F + 0.1F;
                     float zRandom = machineRand.nextFloat() * 0.8F + 0.1F;
 
-                    while (slotStack.stackSize > 0)
+                    while(slotStack.stackSize > 0)
                     {
                         int j = machineRand.nextInt(21) + 10;
 
-                        if (j > slotStack.stackSize)
+                        if(j > slotStack.stackSize)
                         {
                             j = slotStack.stackSize;
                         }
@@ -128,7 +128,7 @@ public class BlockGasTank extends BlockContainer
                         slotStack.stackSize -= j;
                         EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
 
-                        if (slotStack.hasTagCompound())
+                        if(slotStack.hasTagCompound())
                         {
                             item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
                         }

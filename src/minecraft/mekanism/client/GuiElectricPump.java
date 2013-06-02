@@ -3,6 +3,7 @@ package mekanism.client;
 import mekanism.common.ContainerElectricPump;
 import mekanism.common.TileEntityElectricPump;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.liquids.LiquidStack;
 
@@ -43,6 +44,11 @@ public class GuiElectricPump extends GuiContainer
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
 			drawCreativeTabHoveringText(tileEntity.liquidTank.getLiquid() != null ? tileEntity.liquidTank.getLiquidName() + ": " + tileEntity.liquidTank.getLiquid().amount + "mB" : "Empty", xAxis, yAxis);
+		}
+		
+		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
 		}
     }
 

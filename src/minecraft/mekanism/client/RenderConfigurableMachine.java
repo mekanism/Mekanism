@@ -222,7 +222,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			}
 		}
 		
-		MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+		MekanismRenderer.renderObject(toReturn);
 		GL11.glEndList();
 		
 		return display;

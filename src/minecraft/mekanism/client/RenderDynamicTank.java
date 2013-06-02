@@ -133,7 +133,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
 			toReturn.maxZ = data.width-2 - .01;
 			
-			MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+			MekanismRenderer.renderObject(toReturn);
 			GL11.glEndList();
 		}
 		
@@ -245,7 +245,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			}
 		}
 		
-		MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+		MekanismRenderer.renderObject(toReturn);
 		GL11.glEndList();
 		
 		return display;

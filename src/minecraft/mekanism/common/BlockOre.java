@@ -45,6 +45,7 @@ public class BlockOre extends Block
 			case 0:
 				return icons[0];
 		}
+		
 		return null;
 	}
 	

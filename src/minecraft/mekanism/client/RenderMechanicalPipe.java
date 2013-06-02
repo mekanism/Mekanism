@@ -185,7 +185,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				
@@ -206,7 +206,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 + offset;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				
@@ -227,7 +227,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 1.0;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				
@@ -248,7 +248,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.3 + offset;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				
@@ -269,7 +269,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 1.0;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				
@@ -290,7 +290,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				
@@ -311,7 +311,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
 					
-					MekanismRenderer.renderObject(toReturn, world, 0, 0, 0, false, true);
+					MekanismRenderer.renderObject(toReturn);
 					GL11.glEndList();
 				}
 				

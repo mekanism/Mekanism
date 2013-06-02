@@ -249,8 +249,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
 		gasStored = dataStream.readInt();
 		gasType = EnumGas.getFromName(dataStream.readUTF());
+		
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override

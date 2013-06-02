@@ -3,6 +3,7 @@ package mekanism.api;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -11,6 +12,7 @@ public class Object3D
 	public int xCoord;
 	public int yCoord;
 	public int zCoord;
+	
 	public int dimensionId;
 	
 	public Object3D(int x, int y, int z)
@@ -18,6 +20,7 @@ public class Object3D
 		xCoord = x;
 		yCoord = y;
 		zCoord = z;
+		
 		dimensionId = 0;
 	}
 	
@@ -26,20 +29,21 @@ public class Object3D
 		xCoord = x;
 		yCoord = y;
 		zCoord = z;
+		
 		dimensionId = dimension;
 	}
 	
-	public int getMetadata(World world)
+	public int getMetadata(IBlockAccess world)
 	{
 		return world.getBlockMetadata(xCoord, yCoord, zCoord);
 	}
 	
-	public int getBlockId(World world)
+	public int getBlockId(IBlockAccess world)
 	{
 		return world.getBlockId(xCoord, yCoord, zCoord);
 	}
 	
-	public TileEntity getTileEntity(World world)
+	public TileEntity getTileEntity(IBlockAccess world)
 	{
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
@@ -84,7 +88,7 @@ public class Object3D
 	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
 	}
 	
-	public boolean sideVisible(ForgeDirection side, World world)
+	public boolean sideVisible(ForgeDirection side, IBlockAccess world)
 	{
 		return world.getBlockId(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ) == 0;
 	}
