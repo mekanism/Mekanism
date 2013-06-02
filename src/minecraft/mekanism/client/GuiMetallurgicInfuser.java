@@ -2,7 +2,7 @@ package mekanism.client;
 
 import java.util.ArrayList;
 
-import mekanism.api.InfusionType;
+import mekanism.api.InfuseType;
 import mekanism.common.ContainerMetallurgicInfuser;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityMetallurgicInfuser;
@@ -79,21 +79,22 @@ public class GuiMetallurgicInfuser extends GuiContainer
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int infuseX = 176 + 26 + (tileEntity.type == InfusionType.TIN ? 0 : (tileEntity.type == InfusionType.BIO ? 8 : 4));
-        int infuseY = 52 + (tileEntity.type == InfusionType.COAL ? 0 : (tileEntity.type == InfusionType.BIO ? 0 : 52));
-        
         int displayInt;
         
-        displayInt = tileEntity.getScaledInfuseLevel(52);
-        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, infuseX, infuseY - displayInt, 4, displayInt);
-        
         displayInt = tileEntity.getScaledProgress(32);
-        drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176 + 26, 52 + 52, displayInt + 1, 8);
+        drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176 + 26, 52, displayInt + 1, 8);
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
         
         displayInt = tileEntity.getScaledUpgradeProgress(14);
-        drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 112, 10, displayInt);
+        drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 60, 10, displayInt);
+        
+        if(tileEntity.type != null)
+        {
+	        displayInt = tileEntity.getScaledInfuseLevel(52);
+	        mc.renderEngine.bindTexture(tileEntity.type.texture);
+	        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
+        }
     }
 }

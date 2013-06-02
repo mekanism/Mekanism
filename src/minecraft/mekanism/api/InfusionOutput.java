@@ -28,7 +28,7 @@ public class InfusionOutput
 	
 	public int getInfuseRequired()
 	{
-		return infusionInput.infuseStored;
+		return infusionInput.infuseAmount;
 	}
 	
 	public InfusionOutput copy()

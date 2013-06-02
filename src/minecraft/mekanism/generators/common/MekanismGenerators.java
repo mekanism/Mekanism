@@ -1,7 +1,8 @@
 package mekanism.generators.common;
 
 import mekanism.api.InfuseObject;
-import mekanism.api.InfusionType;
+import mekanism.api.InfuseRegistry;
+import mekanism.api.InfuseType;
 import mekanism.common.IModule;
 import mekanism.common.ItemMekanism;
 import mekanism.common.Mekanism;
@@ -17,8 +18,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -47,6 +50,13 @@ public class MekanismGenerators implements IModule
 	
 	//Block IDs
 	public static int generatorID = 3005;
+	
+	@PreInit
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		//Register infuses
+        InfuseRegistry.registerInfuseType(new InfuseType("BIO", "/mods/mekanism/infuse/Infusions.png", 12, 0));
+	}
 	
 	@Init
 	public void init(FMLInitializationEvent event)
@@ -121,7 +131,7 @@ public class MekanismGenerators implements IModule
         	RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling, 1, i), new ItemStack(BioFuel, 2));
         }
         
-        Mekanism.infusions.put(new ItemStack(BioFuel), new InfuseObject(InfusionType.BIO, 5));
+        InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
 	}
 	
 	public void addNames()

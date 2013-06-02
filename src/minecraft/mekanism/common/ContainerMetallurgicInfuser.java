@@ -1,8 +1,8 @@
 package mekanism.common;
 
 import ic2.api.item.IElectricItem;
+import mekanism.api.InfuseRegistry;
 import mekanism.api.InfusionInput;
-import mekanism.api.InfusionType;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.SlotEnergy.SlotDischarge;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,7 +71,7 @@ public class ContainerMetallurgicInfuser extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
             {
-            	if(MekanismUtils.getInfuseObject(slotStack) != null && (tileEntity.type == InfusionType.NONE || tileEntity.type == MekanismUtils.getInfuseObject(slotStack).type))
+            	if(InfuseRegistry.getObject(slotStack) != null && (tileEntity.type == null || tileEntity.type == InfuseRegistry.getObject(slotStack).type))
             	{
             		if(!mergeItemStack(slotStack, 1, 2, false))
             		{
@@ -150,7 +150,7 @@ public class ContainerMetallurgicInfuser extends Container
     
     public boolean isInputItem(ItemStack itemStack)
     {
-    	if(tileEntity.type != InfusionType.NONE)
+    	if(tileEntity.type != null)
     	{
     		if(RecipeHandler.getOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, itemStack), false, Recipe.METALLURGIC_INFUSER.get()) != null)
     		{
@@ -161,7 +161,7 @@ public class ContainerMetallurgicInfuser extends Container
     		for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
     		{
     			InfusionInput input = (InfusionInput)obj;
-    			if(input.inputSlot.isItemEqual(itemStack))
+    			if(input.inputStack.isItemEqual(itemStack))
     			{
     				return true;
     			}

@@ -485,27 +485,6 @@ public final class MekanismUtils
     }
     
     /**
-     * Gets the infuse object from an ItemStack.
-     * @param itemStack - itemstack to check
-     * @return infuse object
-     */
-    public static InfuseObject getInfuseObject(ItemStack itemStack)
-    {
-    	if(itemStack != null)
-    	{
-	    	for(Map.Entry<ItemStack, InfuseObject> entry : Mekanism.infusions.entrySet())
-	    	{
-	    		if(itemStack.isItemEqual(entry.getKey()))
-	    		{
-	    			return entry.getValue();
-	    		}
-	    	}
-    	}
-    	
-    	return null;
-    }
-    
-    /**
      * Gets the operating ticks required for a machine via it's upgrades.
      * @param speedUpgrade - number of speed upgrades
      * @param def - the original, default ticks required

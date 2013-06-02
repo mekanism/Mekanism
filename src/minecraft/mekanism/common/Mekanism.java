@@ -12,8 +12,9 @@ import java.util.logging.Logger;
 
 import mekanism.api.GasTransferProtocol.GasTransferEvent;
 import mekanism.api.InfuseObject;
+import mekanism.api.InfuseRegistry;
 import mekanism.api.InfusionInput;
-import mekanism.api.InfusionType;
+import mekanism.api.InfuseType;
 import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
 import mekanism.common.EnergyTransferProtocol.EnergyTransferEvent;
@@ -87,9 +88,6 @@ public class Mekanism
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Object3D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Object3D>>();
-	
-	/** Map of infuse objects */
-	public static Map<ItemStack, InfuseObject> infusions = new HashMap<ItemStack, InfuseObject>();
 	
 	/** A map containing references to all dynamic tank inventory caches. */
 	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
@@ -413,13 +411,17 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         
         //Metallurgic Infuser Recipes
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.COAL, 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.BIO, 10, new ItemStack(Block.cobblestone)), new ItemStack(Block.cobblestoneMossy));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.BIO, 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
         
-        infusions.put(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfusionType.COAL, 10));
-        infusions.put(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfusionType.COAL, 20));
-        infusions.put(new ItemStack(CompressedCarbon), new InfuseObject(InfusionType.COAL, 100));
+        if(InfuseRegistry.contains("BIO"))
+        {
+	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.cobblestone)), new ItemStack(Block.cobblestoneMossy));
+	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
+        }
+        
+        InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
+        InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
+        InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
 	}
 	
 	/**
@@ -927,7 +929,7 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
 			RecipeHandler.addCombinerRecipe(ore, new ItemStack(Block.obsidian));
-			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.DIAMOND, 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Dust, 1, 3));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("DIAMOND"), 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Dust, 1, 3));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustOsmium"))
@@ -937,7 +939,7 @@ public class Mekanism
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDiamond"))
 		{
-			infusions.put(ore, new InfuseObject(InfusionType.DIAMOND, 80));
+			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 80));
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore, 1), new ItemStack(Item.diamond));
 		}
 		
@@ -951,7 +953,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 			{
-				RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfusionType.TIN, 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Ingot, 1, 2));
+				RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("TIN"), 10, MekanismUtils.getStackWithSize(ore, 1)), new ItemStack(Ingot, 1, 2));
 			}
 		} catch(Exception e) {}
 			
@@ -959,7 +961,7 @@ public class Mekanism
 			for(ItemStack ore : OreDictionary.getOres("dustTin"))
 			{
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), MekanismUtils.getStackWithSize(OreDictionary.getOres("oreTin").get(0), 1));
-				infusions.put(ore, new InfuseObject(InfusionType.TIN, 50));
+				InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 50));
 			}
 		} catch(Exception e) {}
 		
@@ -1032,6 +1034,11 @@ public class Mekanism
 		{
 			System.out.println("[Mekanism] Detected Tekkit in root directory - hello, fellow user!");
 		}
+		
+		//Register infuses
+        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", "/mods/mekanism/infuse/Infusions.png", 0, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("TIN", "/mods/mekanism/infuse/Infusions.png", 4, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", "/mods/mekanism/infuse/Infusions.png", 8, 0));
 	}
 	
 	@PostInit

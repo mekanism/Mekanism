@@ -88,17 +88,17 @@ public final class RecipeHandler
 	 */
 	public static InfusionOutput getOutput(InfusionInput infusion, boolean stackDecrease, Map<InfusionInput, InfusionOutput> recipes)
 	{
-		if(infusion != null && infusion.inputSlot != null)
+		if(infusion != null && infusion.inputStack != null)
 		{
 			for(Map.Entry entry : recipes.entrySet())
 			{
-				if(((InfusionInput)entry.getKey()).inputSlot.isItemEqual(infusion.inputSlot) && infusion.inputSlot.stackSize >= ((InfusionInput)entry.getKey()).inputSlot.stackSize)
+				if(((InfusionInput)entry.getKey()).inputStack.isItemEqual(infusion.inputStack) && infusion.inputStack.stackSize >= ((InfusionInput)entry.getKey()).inputStack.stackSize)
 				{
 					if(infusion.infusionType == ((InfusionInput)entry.getKey()).infusionType)
 					{
 						if(stackDecrease)
 						{
-							infusion.inputSlot.stackSize -= ((InfusionInput)entry.getKey()).inputSlot.stackSize;
+							infusion.inputStack.stackSize -= ((InfusionInput)entry.getKey()).inputStack.stackSize;
 						}
 						
 						return ((InfusionOutput)entry.getValue()).copy();

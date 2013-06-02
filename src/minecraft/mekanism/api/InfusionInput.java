@@ -10,22 +10,22 @@ import net.minecraft.item.ItemStack;
 public class InfusionInput
 {
 	/** The type of this infusion */
-	public InfusionType infusionType;
+	public InfuseType infusionType;
 	
 	/** How much infuse it takes to perform this operation */
-	public int infuseStored;
+	public int infuseAmount;
 	
 	/** The input ItemStack */
-	public ItemStack inputSlot;
+	public ItemStack inputStack;
 	
-	public InfusionInput(InfusionType infusiontype, int required, ItemStack itemstack)
+	public InfusionInput(InfuseType infusiontype, int required, ItemStack itemstack)
 	{
 		infusionType = infusiontype;
-		infuseStored = required;
-		inputSlot = itemstack;
+		infuseAmount = required;
+		inputStack = itemstack;
 	}
 	
-	public static InfusionInput getInfusion(InfusionType type, int stored, ItemStack itemstack)
+	public static InfusionInput getInfusion(InfuseType type, int stored, ItemStack itemstack)
 	{
 		return new InfusionInput(type, stored, itemstack);
 	}

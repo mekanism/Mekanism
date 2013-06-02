@@ -51,8 +51,8 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 		{
 			if(irecipe instanceof MekanismRecipe && areItemsEqual(irecipe.getRecipeOutput(), result))
 			{
-				MekanismRecipe EnergyRecipe = (MekanismRecipe)irecipe;
-				CachedEnergyRecipe recipe = new CachedEnergyRecipe(3, 3, EnergyRecipe.getInput(), EnergyRecipe.getRecipeOutput());
+				MekanismRecipe energyRecipe = (MekanismRecipe)irecipe;
+				CachedEnergyRecipe recipe = new CachedEnergyRecipe(energyRecipe.width, energyRecipe.height, energyRecipe.getInput(), energyRecipe.getRecipeOutput());
 				arecipes.add(recipe);
 			}
 		}
@@ -66,8 +66,8 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 		{
 			if(irecipe instanceof MekanismRecipe)
 			{
-				MekanismRecipe EnergyRecipe = (MekanismRecipe)irecipe;
-				CachedEnergyRecipe recipe = new CachedEnergyRecipe(3, 3, EnergyRecipe.getInput(), EnergyRecipe.getRecipeOutput());
+				MekanismRecipe energyRecipe = (MekanismRecipe)irecipe;
+				CachedEnergyRecipe recipe = new CachedEnergyRecipe(energyRecipe.width, energyRecipe.height, energyRecipe.getInput(), energyRecipe.getRecipeOutput());
 				
 				if(recipe.contains(recipe.ingredients, ingredient))
 				{
@@ -145,6 +145,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 					{
 						continue;
 					}
+					
 					PositionedStack stack = new PositionedStack(items[y*width+x], 25+x*18, 6+y*18);
 					stack.setMaxSize(1);
 					ingredients.add(stack);
