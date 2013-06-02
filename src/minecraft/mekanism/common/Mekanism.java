@@ -54,6 +54,8 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import rebelkeithy.mods.metallurgy.api.*;
+
 /**
  * Mekanism - the mod in which no true definition fits.
  * @author AidanBrady
@@ -978,7 +980,59 @@ public class Mekanism
 				RecipeHandler.addCombinerRecipe(MekanismUtils.getStackWithSize(ore, 8), MekanismUtils.getStackWithSize(OreDictionary.getOres("oreSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
+		/** Here we go through every Metallurgy metal set and add recipes to handle the new metals added
+		 *  There is no API way to iterate all the metal types, so we use hardcode :( */
+		if(hooks.MetallurgyCoreLoaded){
+			try{
+				String[] setNames = {"base", "precious", "nether", "fantasy", "ender", "utility"};
+				for (String setName : setNames ){
+					for (IOreInfo oreInfo : MetallurgyAPI.getMetalSet(setName).getOreList().values()){
+						switch (oreInfo.getType()) {			
+							/** Alloy metal don't drop, they are only produced by combining other metals
+							 *  only adding crusher
+							 */
+							case ALLOY: {
+								if (oreInfo.getIngot() != null && oreInfo.getDust() != null){
+									RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(oreInfo.getIngot() ,1), MekanismUtils.getStackWithSize(oreInfo.getDust(),1));
+								}
+								break;
+							}
+							
+							 /** DROP-type ores normally drop something else then the ore itself, so here we add
+							 *  bonus items given by enrichment chamber if silk touch or other way gives the player the ore block
+							 *  Maybe add combiner recipe, but seems pointless now
+							 */
+							case DROP: {
+								ItemStack ore = oreInfo.getOre();
+								ItemStack drop = oreInfo.getDrop();
+								if(drop != null && ore != null){ 
+									RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore, 1), MekanismUtils.getStackWithSize(drop, 12));
+									//maybe combiner recipe too
+								}
+								break;
+							}
+							/** For all other types we don't really care, just try the general stencil*/
+							default: {
+								ItemStack ore = oreInfo.getOre();
+								ItemStack dust = oreInfo.getDust();
+								ItemStack ingot = oreInfo.getIngot();
+								if (ore != null && dust != null){
+									RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.getStackWithSize(ore ,1), MekanismUtils.getStackWithSize(dust,2));
+								}
+								if (ingot != null && dust != null){
+									RecipeHandler.addCrusherRecipe(MekanismUtils.getStackWithSize(ingot ,1), MekanismUtils.getStackWithSize(dust,1));
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		
+		catch(Exception e) {}
+		}
 	}
+	
 	
 	/**
 	 * Adds and registers all entities and tile entities.
