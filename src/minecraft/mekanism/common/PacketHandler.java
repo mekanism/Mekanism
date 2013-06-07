@@ -468,99 +468,84 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    else if(packetType == EnumPacketType.ROBIT_GUI.id)
+			    else if(packetType == EnumPacketType.ROBIT.id)
 			    {
 			    	try {
-			    		int type = dataStream.readInt();
-			    		int id = dataStream.readInt();
+			    		int subType = dataStream.readInt();
 			    		
-			    		if(type == 0)
+			    		if(subType == 0)
 			    		{
-			    			entityplayer.openGui(Mekanism.instance, 21, entityplayer.worldObj, id, 0, 0);
+			    			int type = dataStream.readInt();
+			    			int id = dataStream.readInt();
+			    			
+				    		if(type == 0)
+				    		{
+				    			entityplayer.openGui(Mekanism.instance, 21, entityplayer.worldObj, id, 0, 0);
+				    		}
+				    		else if(type == 1)
+				    		{
+				    			entityplayer.openGui(Mekanism.instance, 22, entityplayer.worldObj, id, 0, 0);
+				    		}
+				    		else if(type == 2)
+				    		{
+				    			entityplayer.openGui(Mekanism.instance, 23, entityplayer.worldObj, id, 0, 0);
+				    		}
+				    		else if(type == 3)
+				    		{
+				    			entityplayer.openGui(Mekanism.instance, 24, entityplayer.worldObj, id, 0, 0);
+				    		}
+				    		else if(type == 4)
+				    		{
+				    			entityplayer.openGui(Mekanism.instance, 25, entityplayer.worldObj, id, 0, 0);
+				    		}
 			    		}
-			    		else if(type == 1)
+			    		else if(subType == 1)
 			    		{
-			    			entityplayer.openGui(Mekanism.instance, 22, entityplayer.worldObj, id, 0, 0);
+			    			int id = dataStream.readInt();
+				    		
+				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+				    		
+				    		if(robit != null)
+				    		{
+				    			robit.setFollowing(!robit.getFollowing());
+				    		}
 			    		}
-			    		else if(type == 2)
+			    		else if(subType == 2)
 			    		{
-			    			entityplayer.openGui(Mekanism.instance, 23, entityplayer.worldObj, id, 0, 0);
+			    	 		String name = dataStream.readUTF();
+				    		int id = dataStream.readInt();
+				    		
+				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+				    		
+				    		if(robit != null)
+				    		{
+				    			robit.setName(name);
+				    		}
 			    		}
-			    		else if(type == 3)
+			    		else if(subType == 3)
 			    		{
-			    			entityplayer.openGui(Mekanism.instance, 24, entityplayer.worldObj, id, 0, 0);
+				    		int id = dataStream.readInt();
+				    		
+				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+				    		
+				    		if(robit != null)
+				    		{
+				    			robit.goHome();
+				    		}
 			    		}
-			    		else if(type == 4)
+			    		else if(subType == 4)
 			    		{
-			    			entityplayer.openGui(Mekanism.instance, 25, entityplayer.worldObj, id, 0, 0);
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling robit GUI packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.FOLLOW_UPDATE.id)
-			    {
-			    	try {
-			    		int id = dataStream.readInt();
-			    		
-			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-			    		
-			    		if(robit != null)
-			    		{
-			    			robit.setFollowing(!robit.getFollowing());
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling follow update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.NAME_UPDATE.id)
-			    {
-			    	try {
-			    		String name = dataStream.readUTF();
-			    		int id = dataStream.readInt();
-			    		
-			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-			    		
-			    		if(robit != null)
-			    		{
-			    			robit.setName(name);
-			    		}
-			    	} catch(Exception e) {
-			      		System.err.println("[Mekanism] Error while handling name update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.GO_HOME.id)
-			    {
-			       	try {
-			    		int id = dataStream.readInt();
-			    		
-			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-			    		
-			    		if(robit != null)
-			    		{
-			    			robit.goHome();
-			    		}
-			    	} catch(Exception e) {
-			      		System.err.println("[Mekanism] Error while handling go home packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.DROP_PICKUP_UPDATE.id)
-			    {
-			       	try {
-			    		int id = dataStream.readInt();
-			    		
-			    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-			    		
-			    		if(robit != null)
-			    		{
-			    			robit.setDropPickup(!robit.getDropPickup());
+				    		int id = dataStream.readInt();
+				    		
+				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
+				    		
+				    		if(robit != null)
+				    		{
+				    			robit.setDropPickup(!robit.getDropPickup());
+				    		}
 			    		}
 			    	} catch(Exception e) {
-			      		System.err.println("[Mekanism] Error while handling drop pickup update packet.");
+			    		System.err.println("[Mekanism] Error while handling robit packet.");
 			    		e.printStackTrace();
 			    	}
 			    }
@@ -581,146 +566,25 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendTileEntityPacketToServer(TileEntity sender, ArrayList dataValues)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	
-        	for(Object data : dataValues)
-        	{
-        		if(data instanceof Integer)
-        		{
-        			output.writeInt((Integer)data);
-        		}
-        		else if(data instanceof Boolean)
-        		{
-        			output.writeBoolean((Boolean)data);
-        		}
-        		else if(data instanceof Double)
-        		{
-        			output.writeDouble((Double)data);
-        		}
-        		else if(data instanceof Float)
-        		{
-        			output.writeFloat((Float)data);
-        		}
-        		else if(data instanceof String)
-        		{
-        			output.writeUTF((String)data);
-        		}
-        		else if(data instanceof Byte)
-        		{
-        			output.writeByte((Byte)data);
-        		}
-        		else if(data instanceof int[])
-        		{
-        			for(int i : (int[])data)
-        			{
-        				output.writeInt(i);
-        			}
-        		}
-        		else if(data instanceof byte[])
-        		{
-        			for(byte b : (byte[])data)
-        			{
-        				output.writeByte(b);
-        			}
-        		}
-        	}
-        	
-            Packet250CustomPayload packet = new Packet250CustomPayload();
-            packet.channel = "Mekanism";
-            packet.data = bytes.toByteArray();
-            packet.length = packet.data.length;
-            
-            PacketDispatcher.sendPacketToServer(packet);
-        } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
+		sendPacketData(EnumPacketType.TILE_ENTITY, Transmission.SERVER, sender.xCoord, sender.yCoord, sender.zCoord, dataValues);
 	}
 	
 	/**
 	 * Sends a packet from server to client with the TILE_ENTITY ID as well as an undefined amount of objects.
-	 * While it won't give you an error, you cannot send anything other than integers or booleans. This can
-	 * also be sent with a defined range, so players far away won't receive the packet.
+	 * This can also be sent with a defined range, so players far away won't receive the packet.
 	 * @param sender - sending tile entity
 	 * @param distance - distance to send the packet, 0 if infinite range
 	 * @param dataValues - data to send
 	 */
 	public static void sendTileEntityPacketToClients(TileEntity sender, double distance, ArrayList dataValues)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.TILE_ENTITY.id);
-        	output.writeInt(sender.xCoord);
-        	output.writeInt(sender.yCoord);
-        	output.writeInt(sender.zCoord);
-        	
-        	for(Object data : dataValues)
-        	{
-        		if(data instanceof Integer)
-        		{
-        			output.writeInt((Integer)data);
-        		}
-        		else if(data instanceof Boolean)
-        		{
-        			output.writeBoolean((Boolean)data);
-        		}
-        		else if(data instanceof Double)
-        		{
-        			output.writeDouble((Double)data);
-        		}
-        		else if(data instanceof Float)
-        		{
-        			output.writeFloat((Float)data);
-        		}
-        		else if(data instanceof String)
-        		{
-        			output.writeUTF((String)data);
-        		}
-        		else if(data instanceof Byte)
-        		{
-        			output.writeByte((Byte)data);
-        		}
-        		else if(data instanceof int[])
-        		{
-        			for(int i : (int[])data)
-        			{
-        				output.writeInt(i);
-        			}
-        		}
-        		else if(data instanceof byte[])
-        		{
-        			for(byte b : (byte[])data)
-        			{
-        				output.writeByte(b);
-        			}
-        		}
-        	}
-        	
-            Packet250CustomPayload packet = new Packet250CustomPayload();
-            packet.channel = "Mekanism";
-            packet.data = bytes.toByteArray();
-            packet.length = packet.data.length;
-            
-            if(distance == 0)
-            {
-            	PacketDispatcher.sendPacketToAllPlayers(packet);
-            }
-            else {
-            	PacketDispatcher.sendPacketToAllAround(sender.xCoord, sender.yCoord, sender.zCoord, distance, sender.worldObj.provider.dimensionId, packet);
-            }
-        } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
+		if(distance == 0)
+		{
+			sendPacketData(EnumPacketType.TILE_ENTITY, Transmission.ALL_CLIENTS, sender.xCoord, sender.yCoord, sender.zCoord, dataValues);
+		}
+		else {
+			sendPacketData(EnumPacketType.TILE_ENTITY, Transmission.CLIENTS_RANGE, Object3D.get(sender), distance, sender.xCoord, sender.yCoord, sender.zCoord, dataValues);
+		}
 	}
 	
 	/**
@@ -739,32 +603,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendGuiRequest(String modClass, String modInstance, int x, int y, int z, int guiId)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.CONTROL_PANEL.id);
-        	data.writeUTF(modClass);
-        	data.writeUTF(modInstance);
-        	data.writeInt(x);
-        	data.writeInt(y);
-        	data.writeInt(z);
-        	data.writeInt(guiId);
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent control panel packet to server.");
-        }
+		sendPacketData(EnumPacketType.CONTROL_PANEL, Transmission.SERVER, modClass, modInstance, x, y, z, guiId);
 	}
 	
 	/**
@@ -776,29 +615,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendPortalFX(int x, int y, int z, int id)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.PORTAL_FX.id);
-        	data.writeInt(x);
-        	data.writeInt(y);
-        	data.writeInt(z);
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToAllAround(x, y, z, 40, id, packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent portal FX packet to clients.");
-        }
+		sendPacketData(EnumPacketType.PORTAL_FX, Transmission.CLIENTS_RANGE, new Object3D(x, y, z, id), 40D, x, y, z);
 	}
 	
 	/**
@@ -808,28 +625,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendDigitUpdate(int index, int digit)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.DIGIT_UPDATE.id);
-			data.writeInt(index);
-			data.writeInt(digit);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent digit update packet to server.");
-        }
+		sendPacketData(EnumPacketType.DIGIT_UPDATE, Transmission.SERVER, index, digit);
 	}
 	
 	/**
@@ -839,27 +635,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendStatusUpdate(EntityPlayer entityplayer, int status)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.STATUS_UPDATE.id);
-			data.writeInt(status);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToPlayer(packet, (Player)entityplayer);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent status update packet to " + entityplayer.username);
-        }
+		sendPacketData(EnumPacketType.STATUS_UPDATE, Transmission.SERVER, status);
 	}
 	
 	/**
@@ -872,36 +648,22 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendChestOpenToPlayer(EntityPlayer player, TileEntity tileEntity, int i, int windowId, boolean isBlock)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_CLIENT_OPEN.id);
-        	data.writeInt(i);
-        	data.writeInt(windowId);
-        	data.writeBoolean(isBlock);
-        	
-        	if(isBlock)
-        	{
-	        	data.writeInt(tileEntity.xCoord);
-	        	data.writeInt(tileEntity.yCoord);
-	        	data.writeInt(tileEntity.zCoord);
-        	}
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent electric chest open packet to " + player.username);
-        }
+		ArrayList dataValues = new ArrayList();
+		
+		dataValues.add(player);
+		
+		dataValues.add(i);
+		dataValues.add(windowId);
+		dataValues.add(isBlock);
+		
+		if(isBlock)
+		{
+			dataValues.add(tileEntity.xCoord);
+			dataValues.add(tileEntity.yCoord);
+			dataValues.add(tileEntity.zCoord);
+		}
+		
+		sendPacketData(EnumPacketType.ELECTRIC_CHEST_CLIENT_OPEN, Transmission.SINGLE_CLIENT, dataValues);
 	}
 	
 	/**
@@ -912,35 +674,19 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendChestOpen(TileEntity tileEntity, boolean isBlock, boolean useEnergy)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_SERVER_OPEN.id);
-        	data.writeBoolean(isBlock);
-        	data.writeBoolean(useEnergy);
-        	
-        	if(isBlock)
-        	{
-	        	data.writeInt(tileEntity.xCoord);
-	        	data.writeInt(tileEntity.yCoord);
-	        	data.writeInt(tileEntity.zCoord);
-        	}
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent electric chest open packet to server.");
-        }
+		ArrayList dataValues = new ArrayList();
+		
+		dataValues.add(isBlock);
+		dataValues.add(useEnergy);
+		
+		if(isBlock)
+		{
+			dataValues.add(tileEntity.xCoord);
+			dataValues.add(tileEntity.yCoord);
+			dataValues.add(tileEntity.zCoord);
+		}
+		
+		sendPacketData(EnumPacketType.ELECTRIC_CHEST_SERVER_OPEN, Transmission.SERVER, dataValues);
 	}
 	
 	/**
@@ -951,35 +697,19 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendPasswordChange(TileEntity tileEntity, String password, boolean isBlock)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_PASSWORD.id);
-        	data.writeBoolean(isBlock);
-        	data.writeUTF(password);
-        	
-        	if(isBlock)
-        	{
-               	data.writeInt(tileEntity.xCoord);
-            	data.writeInt(tileEntity.yCoord);
-            	data.writeInt(tileEntity.zCoord);
-        	}
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent electric chest password packet to server.");
-        }
+		ArrayList dataValues = new ArrayList();
+		
+		dataValues.add(isBlock);
+		dataValues.add(password);
+		
+		if(isBlock)
+		{
+			dataValues.add(tileEntity.xCoord);
+			dataValues.add(tileEntity.yCoord);
+			dataValues.add(tileEntity.zCoord);
+		}
+		
+		sendPacketData(EnumPacketType.ELECTRIC_CHEST_PASSWORD, Transmission.SERVER, dataValues);
 	}
 	
 	/**
@@ -990,35 +720,19 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendLockChange(TileEntity tileEntity, boolean locked, boolean isBlock)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.ELECTRIC_CHEST_LOCK.id);
-        	data.writeBoolean(isBlock);
-        	data.writeBoolean(locked);
-        	
-        	if(isBlock)
-        	{
-               	data.writeInt(tileEntity.xCoord);
-            	data.writeInt(tileEntity.yCoord);
-            	data.writeInt(tileEntity.zCoord);
-        	}
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent electric chest lock packet to server.");
-        }
+		ArrayList dataValues = new ArrayList();
+		
+		dataValues.add(isBlock);
+		dataValues.add(locked);
+		
+		if(isBlock)
+		{
+			dataValues.add(tileEntity.xCoord);
+			dataValues.add(tileEntity.yCoord);
+			dataValues.add(tileEntity.zCoord);
+		}
+		
+		sendPacketData(EnumPacketType.ELECTRIC_CHEST_LOCK, Transmission.SERVER, dataValues);
 	}
 	
 	/**
@@ -1028,29 +742,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendLiquidTransferUpdate(TileEntity head, LiquidStack resource)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.LIQUID_TRANSFER_UPDATE.id);
-        	
-        	output.writeInt(head.xCoord);
-        	output.writeInt(head.yCoord);
-        	output.writeInt(head.zCoord);
-        	
-        	output.writeInt(resource.itemID);
-        	output.writeInt(resource.amount);
-        	output.writeInt(resource.itemMeta);
-        	
-            Packet250CustomPayload packet = new Packet250CustomPayload();
-            packet.channel = "Mekanism";
-            packet.data = bytes.toByteArray();
-            packet.length = packet.data.length;
-        	PacketDispatcher.sendPacketToAllPlayers(packet);
-        } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing liquid transfer update packet.");
-        	e.printStackTrace();
-        }
+		sendPacketData(EnumPacketType.LIQUID_TRANSFER_UPDATE, Transmission.ALL_CLIENTS, head.xCoord, head.yCoord, head.zCoord, resource.itemID, resource.amount, resource.itemMeta);
 	}
 	
 	/**
@@ -1059,25 +751,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendEnergyTransferUpdate(TileEntity head)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.ENERGY_TRANSFER_UPDATE.id);
-        	
-        	output.writeInt(head.xCoord);
-        	output.writeInt(head.yCoord);
-        	output.writeInt(head.zCoord);
-        	
-            Packet250CustomPayload packet = new Packet250CustomPayload();
-            packet.channel = "Mekanism";
-            packet.data = bytes.toByteArray();
-            packet.length = packet.data.length;
-        	PacketDispatcher.sendPacketToAllPlayers(packet);
-        } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing energy transfer update packet.");
-        	e.printStackTrace();
-        }
+		sendPacketData(EnumPacketType.ENERGY_TRANSFER_UPDATE, Transmission.ALL_CLIENTS, head.xCoord, head.yCoord, head.zCoord);
 	}
 	
 	/**
@@ -1086,27 +760,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendGasTransferUpdate(TileEntity head, EnumGas type)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.GAS_TRANSFER_UPDATE.id);
-        	
-        	output.writeInt(head.xCoord);
-        	output.writeInt(head.yCoord);
-        	output.writeInt(head.zCoord);
-        	
-        	output.writeUTF(type.name);
-        	
-            Packet250CustomPayload packet = new Packet250CustomPayload();
-            packet.channel = "Mekanism";
-            packet.data = bytes.toByteArray();
-            packet.length = packet.data.length;
-        	PacketDispatcher.sendPacketToAllPlayers(packet);
-        } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing gas transfer update packet.");
-        	e.printStackTrace();
-        }
+		sendPacketData(EnumPacketType.GAS_TRANSFER_UPDATE, Transmission.ALL_CLIENTS, head.xCoord, head.yCoord, head.zCoord, type.name);
 	}
 	
 	/**
@@ -1115,25 +769,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendElectrolyticSeparatorParticle(TileEntityElectrolyticSeparator tileEntity)
 	{
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream output = new DataOutputStream(bytes);
-        
-        try {
-        	output.writeInt(EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE.id);
-        	
-        	output.writeInt(tileEntity.xCoord);
-        	output.writeInt(tileEntity.yCoord);
-        	output.writeInt(tileEntity.zCoord);
-        	
-            Packet250CustomPayload packet = new Packet250CustomPayload();
-            packet.channel = "Mekanism";
-            packet.data = bytes.toByteArray();
-            packet.length = packet.data.length;
-        	PacketDispatcher.sendPacketToAllAround(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 40, tileEntity.worldObj.provider.dimensionId, packet);
-        } catch (IOException e) {
-        	System.err.println("[Mekanism] Error while writing tile entity packet.");
-        	e.printStackTrace();
-        }
+		sendPacketData(EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE, Transmission.CLIENTS_RANGE, Object3D.get(tileEntity), 40D, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 	}
 	
 	/**
@@ -1143,28 +779,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendRobitGui(int type, int id)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.ROBIT_GUI.id);
-			data.writeInt(type);
-			data.writeInt(id);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent robit GUI packet to server.");
-        }
+		sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, 0, type, id);
 	}
 	
 	/**
@@ -1174,58 +789,7 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendNameUpdate(String name, int id)
 	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(EnumPacketType.NAME_UPDATE.id);
-			data.writeUTF(name);
-			data.writeInt(id);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sentname update packet to server.");
-        }
-	}
-	
-	/**
-	 * Sends the server the defined packet data int.
-	 * @param type - packet type
-	 * @param i - int to send
-	 */
-	public static void sendPacketDataInt(EnumPacketType type, int i)
-	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(type.id);
-			data.writeInt(i);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent data int packet '" + type.id + ":" + i + "' to server");
-        }
+		sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, 2, name, id);
 	}
 	
 	/**
@@ -1235,29 +799,144 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void sendDataRequest(TileEntity tileEntity)
 	{
+		sendPacketData(EnumPacketType.DATA_REQUEST, Transmission.SERVER, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
+	}
+	
+	/**
+	 * Sends the server the defined packet type with an undefined amount of data.
+	 * @param type - packet type
+	 * @param dataValues - data to send
+	 */
+	public static void sendPacketData(EnumPacketType type, Transmission trans, Object... dataValues)
+	{
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(bytes);
         
         try {
-        	data.writeInt(EnumPacketType.DATA_REQUEST.id);
-        	data.writeInt(tileEntity.xCoord);
-        	data.writeInt(tileEntity.yCoord);
-        	data.writeInt(tileEntity.zCoord);
-        	data.writeInt(tileEntity.worldObj.provider.dimensionId);
-        } catch (IOException e) {
-        	System.out.println("[Mekanism] An error occured while writing packet data.");
-        	e.printStackTrace();
-        }
+        	data.writeInt(type.id);
+        	encode(dataValues, data, trans.parameters);
+		} catch (IOException e) {
+			System.out.println("[Mekanism] An error occured while writing packet data.");
+			e.printStackTrace();
+		}
         
         Packet250CustomPayload packet = new Packet250CustomPayload();
         packet.channel = "Mekanism";
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
-        PacketDispatcher.sendPacketToServer(packet);
+        
+        switch(trans)
+        {
+        	case SERVER:
+        		PacketDispatcher.sendPacketToServer(packet);
+        		break;
+        	case ALL_CLIENTS:
+        		PacketDispatcher.sendPacketToAllPlayers(packet);
+        		break;
+        	case CLIENTS_RANGE:
+        		Object3D obj = (Object3D)dataValues[0];
+        		PacketDispatcher.sendPacketToAllAround(obj.xCoord, obj.yCoord, obj.zCoord, (Double)dataValues[1], obj.dimensionId, packet);
+        		break;
+        	case SINGLE_CLIENT:
+        		((EntityPlayerMP)dataValues[0]).playerNetServerHandler.sendPacketToPlayer(packet);
+        		break;
+        }
         
         if(Mekanism.logPackets)
         {
-        	System.out.println("[Mekanism] Sent data request packet to server.");
+        	System.out.println("[Mekanism] Sent data int packet '" + type.id + "' to server");
         }
+	}
+	
+	public static void encode(Object[] dataValues, DataOutputStream output, int ignore)
+	{
+		int iterations = 0;
+		
+		try {
+	    	for(Object data : dataValues)
+	    	{
+	    		if(iterations++ < ignore)
+	    		{
+	    			continue;
+	    		}
+	    		
+	    		if(data instanceof Integer)
+	    		{
+	    			output.writeInt((Integer)data);
+	    		}
+	    		else if(data instanceof Boolean)
+	    		{
+	    			output.writeBoolean((Boolean)data);
+	    		}
+	    		else if(data instanceof Double)
+	    		{
+	    			output.writeDouble((Double)data);
+	    		}
+	    		else if(data instanceof Float)
+	    		{
+	    			output.writeFloat((Float)data);
+	    		}
+	    		else if(data instanceof String)
+	    		{
+	    			output.writeUTF((String)data);
+	    		}
+	    		else if(data instanceof Byte)
+	    		{
+	    			output.writeByte((Byte)data);
+	    		}
+	    		else if(data instanceof int[])
+	    		{
+	    			for(int i : (int[])data)
+	    			{
+	    				output.writeInt(i);
+	    			}
+	    		}
+	    		else if(data instanceof byte[])
+	    		{
+	    			for(byte b : (byte[])data)
+	    			{
+	    				output.writeByte(b);
+	    			}
+	    		}
+	    		else if(data instanceof ArrayList)
+	    		{
+	    			encode(((ArrayList)data).toArray(), output, 0);
+	    		}
+	    	}
+		} catch(Exception e) {
+    		System.err.println("[Mekanism] Error while encoding packet data.");
+    		e.printStackTrace();
+		}
+	}
+	
+	public static enum Transmission
+	{
+		/** No additional parameters. */
+		SERVER(0),
+		
+		/** No additional parameters. */
+		ALL_CLIENTS(0),
+		
+		/** 2 parameters - Object3D representing the location of the transmission, and a double of the distance this packet can be sent in. */
+		CLIENTS_RANGE(2),
+		
+		/** 1 parameter - EntityPlayer to send this packet to. */
+		SINGLE_CLIENT(1);
+		
+		public int parameters;
+		
+		private Transmission(int params)
+		{
+			parameters = params;
+		}
+	}
+	
+	public static enum RobitPacket
+	{
+		GUI,
+		FOLLOW,
+		NAME,
+		GO_HOME,
+		DROP_PICKUP;
 	}
 }

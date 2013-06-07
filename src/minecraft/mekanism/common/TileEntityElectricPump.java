@@ -51,7 +51,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public void onUpdate()
 	{
-		System.out.println(worldObj.isRemote + " " + (liquidTank.getLiquid() != null ? liquidTank.getLiquid().amount : "ASDF"));
 		ChargeUtils.discharge(2, this);
 		
 		if(inventory[0] != null)

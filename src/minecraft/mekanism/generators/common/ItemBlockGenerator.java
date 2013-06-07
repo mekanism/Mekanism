@@ -515,4 +515,10 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	{
 		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
 	}
+	
+	@Override
+	public boolean isMetadataSpecific()
+	{
+		return true;
+	}
 }

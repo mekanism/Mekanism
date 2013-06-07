@@ -392,4 +392,10 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	{
 		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
 	}
+	
+	@Override
+	public boolean isMetadataSpecific()
+	{
+		return true;
+	}
 }

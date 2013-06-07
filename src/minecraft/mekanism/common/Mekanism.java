@@ -259,7 +259,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(StorageTank.getEmptyItem(), new Object[] {
 			"III", "IDI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('D'), "dustIron"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(GasTank, new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GasTank), new Object[] {
 			"PPP", "PDP", "PPP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('D'), "dustIron"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), new Object[] {
@@ -326,7 +326,7 @@ public class Mekanism
 			"SGS", "CcC", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass, Character.valueOf('C'), Block.chest, Character.valueOf('c'), ControlCircuit
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 8, 2), new Object[] {
-			"O O", Character.valueOf('O'), "ingotOsmium"
+			"OBO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('B'), Item.bucketEmpty
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 4, 9), new Object[] {
 			" I ", "ISI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('S'), Block.cobblestone
@@ -981,9 +981,6 @@ public class Mekanism
 			}
 		} catch(Exception e) {}
 		
-		/** Here we go through every Metallurgy metal set and add recipes to handle the new metals added
-		 *  There is no API way to iterate all the metal types, so we use hardcode :( 
-		 */
 		if(hooks.MetallurgyCoreLoaded)
 		{
 			try {
@@ -994,10 +991,7 @@ public class Mekanism
 					for(IOreInfo oreInfo : MetallurgyAPI.getMetalSet(setName).getOreList().values())
 					{
 						switch(oreInfo.getType()) 
-						{			
-							/** Alloy metal don't drop, they are only produced by combining other metals
-							 *  only adding crusher
-							 */
+						{
 							case ALLOY: 
 							{
 								if(oreInfo.getIngot() != null && oreInfo.getDust() != null)
@@ -1007,11 +1001,6 @@ public class Mekanism
 								
 								break;
 							}
-							
-							/** DROP-type ores normally drop something else then the ore itself, so here we add
-							 *  bonus items given by enrichment chamber if silk touch or other way gives the player the ore block
-							 *  Maybe add combiner recipe, but seems pointless now
-							 */
 							case DROP: 
 							{
 								ItemStack ore = oreInfo.getOre();
@@ -1025,10 +1014,6 @@ public class Mekanism
 								
 								break;
 							}
-							
-							/** 
-							 * For all other types we don't really care, just try the general stencil
-							 */
 							default: 
 							{
 								ItemStack ore = oreInfo.getOre();

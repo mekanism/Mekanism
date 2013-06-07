@@ -4,6 +4,7 @@ import mekanism.common.EnumPacketType;
 import mekanism.common.EnumWeatherType;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,25 +73,25 @@ public class GuiWeatherOrb extends GuiScreen
 		if(guibutton.id == 0)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.CLEAR.id);
+			PacketHandler.sendPacketData(EnumPacketType.WEATHER, Transmission.SERVER, EnumWeatherType.CLEAR.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.STORM.id);
+			PacketHandler.sendPacketData(EnumPacketType.WEATHER, Transmission.SERVER, EnumWeatherType.STORM.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.HAZE.id);
+			PacketHandler.sendPacketData(EnumPacketType.WEATHER, Transmission.SERVER, EnumWeatherType.HAZE.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.WEATHER, EnumWeatherType.RAIN.id);
+			PacketHandler.sendPacketData(EnumPacketType.WEATHER, Transmission.SERVER, EnumWeatherType.RAIN.id);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)

@@ -5,6 +5,8 @@ import mekanism.common.EntityRobit;
 import mekanism.common.EnumPacketType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.RobitPacket;
+import mekanism.common.PacketHandler.Transmission;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -282,7 +284,7 @@ public class GuiRobitMain extends GuiContainer
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacketDataInt(EnumPacketType.FOLLOW_UPDATE, robit.entityId);
+				PacketHandler.sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, RobitPacket.FOLLOW.ordinal(), robit.entityId);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 			{
@@ -292,12 +294,12 @@ public class GuiRobitMain extends GuiContainer
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacketDataInt(EnumPacketType.GO_HOME, robit.entityId);
+				PacketHandler.sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, RobitPacket.GO_HOME.ordinal(), robit.entityId);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacketDataInt(EnumPacketType.DROP_PICKUP_UPDATE, robit.entityId);
+				PacketHandler.sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, RobitPacket.DROP_PICKUP.ordinal(), robit.entityId);
 			}
 		}
 	}

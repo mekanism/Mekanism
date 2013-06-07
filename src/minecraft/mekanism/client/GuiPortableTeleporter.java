@@ -3,6 +3,7 @@ package mekanism.client;
 import mekanism.common.EnumPacketType;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -78,7 +79,7 @@ public class GuiPortableTeleporter extends GuiScreen
 	{
 		if(guibutton.id == 0)
 		{
-			PacketHandler.sendPacketDataInt(EnumPacketType.PORTABLE_TELEPORT, 0);
+			PacketHandler.sendPacketData(EnumPacketType.PORTABLE_TELEPORT, Transmission.SERVER, 0);
 			mc.setIngameFocus();
 		}
 	}

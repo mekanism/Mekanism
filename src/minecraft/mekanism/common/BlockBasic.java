@@ -1,8 +1,11 @@
 package mekanism.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -17,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import cpw.mods.fml.relauncher.Side;
@@ -192,7 +196,7 @@ public class BlockBasic extends Block
         return false;
     }
 	
-	public boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
+	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
 	{
 		ItemStack itemStack = player.getCurrentEquippedItem();
 		

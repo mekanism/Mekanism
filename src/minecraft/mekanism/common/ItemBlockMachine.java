@@ -820,4 +820,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
 	}
+	
+	@Override
+	public boolean isMetadataSpecific()
+	{
+		return true;
+	}
 }

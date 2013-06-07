@@ -3,6 +3,7 @@ package mekanism.client;
 import mekanism.common.EnumPacketType;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,25 +72,25 @@ public class GuiStopwatch extends GuiScreen
 		if(guibutton.id == 0)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 0);
+			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 0);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 6);
+			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 6);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 12);
+			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 12);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketDataInt(EnumPacketType.TIME, 18);
+			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 18);
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)

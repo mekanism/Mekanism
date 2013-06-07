@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import mekanism.api.IEnergizedItem;
-import mekanism.common.MekanismRecipe;
 import mekanism.common.IEnergyCube;
 import mekanism.common.IFactory;
+import mekanism.common.MekanismRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -80,9 +80,13 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 	
     public static boolean areItemsEqual(ItemStack stack1, ItemStack stack2)
     {
-    	if(stack1 == null || stack2 == null)
+    	if(stack1 == null && stack2 != null || stack1 != null && stack2 == null)
     	{
     		return false;
+    	}
+    	else if(stack1 == null && stack2 == null)
+    	{
+    		return true;
     	}
     	
         if(stack1.itemID != stack2.itemID)
@@ -97,27 +101,32 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 	        	return false;
 	        }
         }
-        else if(stack1.getItem() instanceof IEnergyCube && stack2.getItem() instanceof IEnergyCube)
-        {
-        	if(((IEnergyCube)stack1.getItem()).getEnergyCubeTier(stack1) != ((IEnergyCube)stack2.getItem()).getEnergyCubeTier(stack2))
-        	{
-        		return false;
-        	}
-        }
-        else if(stack1.getItem() instanceof IFactory && stack2.getItem() instanceof IFactory)
-        {
-        	if(((IFactory)stack1.getItem()).isFactory(stack1) && ((IFactory)stack2.getItem()).isFactory(stack2))
+        else {
+        	if(((IEnergizedItem)stack1.getItem()).isMetadataSpecific() && ((IEnergizedItem)stack2.getItem()).isMetadataSpecific())
         	{
         		if(stack1.getItemDamage() != stack2.getItemDamage())
         		{
         			return false;
         		}
-        		
-        		if(((IFactory)stack1.getItem()).getRecipeType(stack1) != ((IFactory)stack2.getItem()).getRecipeType(stack2))
-        		{
-        			return false;
-        		}
         	}
+        	
+            if(stack1.getItem() instanceof IEnergyCube && stack2.getItem() instanceof IEnergyCube)
+            {
+            	if(((IEnergyCube)stack1.getItem()).getEnergyCubeTier(stack1) != ((IEnergyCube)stack2.getItem()).getEnergyCubeTier(stack2))
+            	{
+            		return false;
+            	}
+            }
+            else if(stack1.getItem() instanceof IFactory && stack2.getItem() instanceof IFactory)
+            {
+            	if(((IFactory)stack1.getItem()).isFactory(stack1) && ((IFactory)stack2.getItem()).isFactory(stack2))
+            	{
+            		if(((IFactory)stack1.getItem()).getRecipeType(stack1) != ((IFactory)stack2.getItem()).getRecipeType(stack2))
+            		{
+            			return false;
+            		}
+            	}
+            }
         }
     	
     	return true;

@@ -27,16 +27,6 @@ public class MekanismRecipe implements IRecipe
     public int width = 0;
     public int height = 0;
     private boolean mirrored = true;
-
-    public MekanismRecipe(Block result, Object... recipe)
-    { 
-    	this(new ItemStack(result), recipe); 
-    }
-    
-    public MekanismRecipe(Item result, Object... recipe)
-    {
-    	this(new ItemStack(result), recipe);
-    }
     
     public MekanismRecipe(ItemStack result, Object... recipe)
     {
@@ -84,12 +74,13 @@ public class MekanismRecipe implements IRecipe
         {
             String ret = "Invalid shaped ore recipe: ";
             
-            for (Object tmp :  recipe)
+            for(Object tmp :  recipe)
             {
                 ret += tmp + ", ";
             }
             
             ret += output;
+            
             throw new RuntimeException(ret);
         }
 
@@ -110,7 +101,7 @@ public class MekanismRecipe implements IRecipe
             }
             else if(in instanceof Block)
             {
-                itemMap.put(chr, new ItemStack((Block)in, 1, OreDictionary.WILDCARD_VALUE));
+                itemMap.put(chr, new ItemStack((Block)in));
             }
             else if(in instanceof String)
             {
@@ -256,11 +247,18 @@ public class MekanismRecipe implements IRecipe
     {
         if(input == null && target != null || input != null && target == null)
         {
+        	System.out.println("False");
             return false;
+        }
+        else if(input == null && target == null)
+        {
+        	System.out.println("True");
+        	return true;
         }
         
         if(target.itemID != input.itemID)
         {
+        	System.out.println("False");
         	return false;
         }
         
@@ -268,32 +266,42 @@ public class MekanismRecipe implements IRecipe
         {
 	        if(target.getItemDamage() != input.getItemDamage())
 	        {
+	        	System.out.println("False");
 	        	return false;
 	        }
         }
-        else if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
-        {
-        	if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+        else {
+        	if(((IEnergizedItem)target.getItem()).isMetadataSpecific() && ((IEnergizedItem)input.getItem()).isMetadataSpecific())
         	{
-        		return false;
-        	}
-        }
-        else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
-        {
-        	if(((IFactory)target.getItem()).isFactory(target) && ((IFactory)input.getItem()).isFactory(input))
-        	{
-    	        if(target.getItemDamage() != input.getItemDamage())
-    	        {
-    	        	return false;
-    	        }
-    	        
-        		if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
+        		if(target.getItemDamage() != input.getItemDamage())
         		{
+        			System.out.println("False");
         			return false;
         		}
         	}
+        	
+            if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
+            {
+            	if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+            	{
+            		System.out.println("False");
+            		return false;
+            	}
+            }
+            else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
+            {
+            	if(((IFactory)target.getItem()).isFactory(target) && ((IFactory)input.getItem()).isFactory(input))
+            	{
+            		if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
+            		{
+            			System.out.println("False");
+            			return false;
+            		}
+            	}
+            }
         }
         
+        System.out.println("True");
         return true;
     }
 

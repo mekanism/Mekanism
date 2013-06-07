@@ -302,4 +302,10 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	{
 		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
 	}
+	
+	@Override
+	public boolean isMetadataSpecific()
+	{
+		return false;
+	}
 }
