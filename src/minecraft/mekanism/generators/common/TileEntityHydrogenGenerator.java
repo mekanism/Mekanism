@@ -64,6 +64,10 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 						}
 						
 						setGas(EnumGas.HYDROGEN, hydrogenStored + received);
+						
+						// Fix for expendable gas containers.
+						if (inventory[0].stackSize <= 0)
+						    inventory[0] = null;
 					}
 				}
 			}
