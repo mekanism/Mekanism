@@ -31,4 +31,10 @@ public class MetallurgyAPI
 		
 		return null;
 	}
+	public static String[] getMetalSetNames()
+	{
+		// TODO maybe put something to get runtime list here
+		String[] names = {"base", "precious", "nether", "fantasy", "ender", "utility"};
+		return names;
+	}
 }

@@ -7,6 +7,8 @@ public interface IOreInfo
 	public String getName();
 	public OreType getType();
 	
+	public boolean isEnabled();
+	
 	public ItemStack getOre();
 	public ItemStack getBlock();
 	public ItemStack getBrick();
