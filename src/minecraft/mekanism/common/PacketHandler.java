@@ -10,7 +10,6 @@ import mekanism.api.EnumGas;
 import mekanism.api.GasTransferProtocol;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
-import mekanism.generators.common.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -450,7 +449,7 @@ public class PacketHandler implements IPacketHandler
 			    		e.printStackTrace();
 			    	}
 			    }
-			    else if(packetType == EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE.id)
+			    /*else if(packetType == EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE.id)
 			    {
 			    	try {
 			    		int x = dataStream.readInt();
@@ -467,7 +466,7 @@ public class PacketHandler implements IPacketHandler
 			       		System.err.println("[Mekanism] Error while handling electrolytic separator particle packet.");
 			    		e.printStackTrace();
 			    	}
-			    }
+			    }*/
 			    else if(packetType == EnumPacketType.ROBIT.id)
 			    {
 			    	try {
@@ -767,10 +766,10 @@ public class PacketHandler implements IPacketHandler
 	 * Sends a request to clients near an Electrolytic Separator to emit a gas dump particle.
 	 * @param tileEntity - TileEntity who is emitting the particle
 	 */
-	public static void sendElectrolyticSeparatorParticle(TileEntityElectrolyticSeparator tileEntity)
+	/*public static void sendElectrolyticSeparatorParticle(TileEntityElectrolyticSeparator tileEntity)
 	{
 		sendPacketData(EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE, Transmission.CLIENTS_RANGE, Object3D.get(tileEntity), 40D, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-	}
+	}*/
 	
 	/**
 	 * Sends a Robit GUI packet to the server.

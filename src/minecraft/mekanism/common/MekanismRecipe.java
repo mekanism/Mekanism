@@ -24,8 +24,10 @@ public class MekanismRecipe implements IRecipe
 
     private ItemStack output = null;
     private Object[] input = null;
+    
     public int width = 0;
     public int height = 0;
+    
     private boolean mirrored = true;
     
     public MekanismRecipe(ItemStack result, Object... recipe)

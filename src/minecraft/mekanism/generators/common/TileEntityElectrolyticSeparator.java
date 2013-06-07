@@ -207,7 +207,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(new Random().nextInt(3) == 2)
 				{
-					PacketHandler.sendElectrolyticSeparatorParticle(this);
+					//PacketHandler.sendElectrolyticSeparatorParticle(this);
 				}
 			}
 		}
