@@ -312,7 +312,7 @@ public final class MekanismUtils
 	 * @param size - size to change to
 	 * @return resized ItemStack
 	 */
-	public static ItemStack getStackWithSize(ItemStack itemstack, int size)
+	public static ItemStack size(ItemStack itemstack, int size)
 	{
 		ItemStack newStack = itemstack.copy();
 		newStack.stackSize = size;

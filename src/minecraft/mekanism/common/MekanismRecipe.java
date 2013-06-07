@@ -247,18 +247,15 @@ public class MekanismRecipe implements IRecipe
     {
         if(input == null && target != null || input != null && target == null)
         {
-        	System.out.println("False");
             return false;
         }
         else if(input == null && target == null)
         {
-        	System.out.println("True");
         	return true;
         }
         
         if(target.itemID != input.itemID)
         {
-        	System.out.println("False");
         	return false;
         }
         
@@ -266,7 +263,6 @@ public class MekanismRecipe implements IRecipe
         {
 	        if(target.getItemDamage() != input.getItemDamage())
 	        {
-	        	System.out.println("False");
 	        	return false;
 	        }
         }
@@ -275,7 +271,6 @@ public class MekanismRecipe implements IRecipe
         	{
         		if(target.getItemDamage() != input.getItemDamage())
         		{
-        			System.out.println("False");
         			return false;
         		}
         	}
@@ -284,7 +279,6 @@ public class MekanismRecipe implements IRecipe
             {
             	if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
             	{
-            		System.out.println("False");
             		return false;
             	}
             }
@@ -294,14 +288,12 @@ public class MekanismRecipe implements IRecipe
             	{
             		if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
             		{
-            			System.out.println("False");
             			return false;
             		}
             	}
             }
         }
         
-        System.out.println("True");
         return true;
     }
 
