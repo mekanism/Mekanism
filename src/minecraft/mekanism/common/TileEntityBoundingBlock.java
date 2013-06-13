@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -21,7 +25,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 			mainY = y;
 			mainZ = z;
 			
-			PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 	
@@ -32,7 +36,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendDataRequest(this);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest(Object3D.get(this)));
 		}
 	}
 	

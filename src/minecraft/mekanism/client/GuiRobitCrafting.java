@@ -4,6 +4,9 @@ import mekanism.common.ContainerRobitCrafting;
 import mekanism.common.EnumPacketType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketRobit.RobitPacketType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
@@ -99,7 +102,8 @@ public class GuiRobitCrafting extends GuiContainer
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(0, entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 0, entityId));
+				//PacketHandler.sendRobitGui(0, entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 21, mc.theWorld, entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
@@ -109,19 +113,22 @@ public class GuiRobitCrafting extends GuiContainer
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(2, entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 2, entityId));
+				//PacketHandler.sendRobitGui(2, entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(3, entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 3, entityId));
+				//PacketHandler.sendRobitGui(3, entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(4, entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 4, entityId));
+				//PacketHandler.sendRobitGui(4, entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, entityId, 0, 0);
 			}
 		}

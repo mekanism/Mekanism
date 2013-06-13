@@ -8,6 +8,9 @@ import mekanism.api.EnumColor;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
 import mekanism.common.BlockMachine.MachineType;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -478,11 +481,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			{
 		 		if(!getAuthenticated(itemstack))
 		 		{
-		 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, null, 2, 0, false);
+		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
 		 		}
 		 		else if(getLocked(itemstack) && getJoules(itemstack) > 0)
 		 		{
-		 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, null, 1, 0, false);
+		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
 		 		}
 		 		else {
 		 			InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);

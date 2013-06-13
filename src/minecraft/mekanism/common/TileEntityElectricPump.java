@@ -13,6 +13,8 @@ import java.util.Set;
 
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -98,7 +100,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(suck(true))
 				{
-					PacketHandler.sendTileEntityPacketToClients(this, 50, getNetworkedData(new ArrayList()));
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 				}
 				
 				clean(true);

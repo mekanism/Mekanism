@@ -2,11 +2,15 @@ package mekanism.client;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IEnergizedItem;
+import mekanism.api.Object3D;
 import mekanism.common.ContainerElectricChest;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricChest;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -105,10 +109,14 @@ public class GuiElectricChest extends GuiContainer
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
 			{	
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendLockChange(tileEntity, !getLocked(), isBlock);
 				
-				if(!isBlock)
+				if(isBlock)
 				{
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), true, Object3D.get(tileEntity)));
+				}
+				else {
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), false));
+					
 					ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
 					((IElectricChest)stack.getItem()).setLocked(stack, !getLocked());
 				}

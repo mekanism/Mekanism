@@ -3,9 +3,12 @@ package mekanism.client;
 import java.util.ArrayList;
 
 import mekanism.api.InfuseType;
+import mekanism.api.Object3D;
 import mekanism.common.ContainerMetallurgicInfuser;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityMetallurgicInfuser;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -47,7 +50,7 @@ public class GuiMetallurgicInfuser extends GuiContainer
 				ArrayList data = new ArrayList();
 				data.add(0);
 				
-				PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

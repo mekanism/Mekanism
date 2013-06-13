@@ -14,13 +14,16 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITubeConnection;
+import mekanism.api.Object3D;
 import mekanism.common.ChargeUtils;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
+import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -207,7 +210,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(new Random().nextInt(3) == 2)
 				{
-					//PacketHandler.sendElectrolyticSeparatorParticle(this);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketElectrolyticSeparatorParticle(this), Object3D.get(this), 40D);
 				}
 			}
 		}

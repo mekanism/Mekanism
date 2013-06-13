@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.SynchronizedTankData.ValveData;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
@@ -146,7 +147,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			if(structure != null && isRendering && packetTick % 20 == 0)
 			{
 				sendStructure = true;
-				PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 			}
 			
 			if(prevStructure != (structure != null))
@@ -158,7 +159,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					sendStructure = true;
 				}
 				
-				PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
 			}
 			
 			prevStructure = structure != null;
@@ -225,7 +226,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.liquidStored = null;
 							}
 							
-							PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
 						}
 					}
 				}
@@ -284,7 +285,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						}
 					}
 					
-					PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
@@ -422,7 +423,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 				}
 			}
 		}

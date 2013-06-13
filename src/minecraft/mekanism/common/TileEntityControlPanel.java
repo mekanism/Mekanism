@@ -2,6 +2,9 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -28,11 +31,11 @@ public class TileEntityControlPanel extends TileEntity implements ITileNetwork
 		
 		if(packetTick == 5 && !worldObj.isRemote)
 		{
-			PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 		if(packetTick % 20 == 0 && worldObj.isRemote)
 		{
-			PacketHandler.sendTileEntityPacketToServer(this, getNetworkedData(new ArrayList()));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 	

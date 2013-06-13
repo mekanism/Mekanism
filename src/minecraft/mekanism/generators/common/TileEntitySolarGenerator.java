@@ -140,7 +140,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public int getEnvironmentBoost()
 	{
-		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolorEnergyMultiplier() : 1)) : 0;
+		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier() : 1)) : 0;
 	}
 
 	@Override

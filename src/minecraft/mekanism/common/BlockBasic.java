@@ -7,6 +7,8 @@ import java.util.Map;
 
 import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -182,7 +184,7 @@ public class BlockBasic extends Block
 				
 				if(!manageInventory(entityplayer, tileEntity))
 				{
-					PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 					entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 				}
 				else {

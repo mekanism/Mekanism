@@ -4,6 +4,9 @@ import mekanism.common.ContainerRobitSmelting;
 import mekanism.common.EntityRobit;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketRobit.RobitPacketType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -107,19 +110,22 @@ public class GuiRobitSmelting extends GuiContainer
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(0, robit.entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 0, robit.entityId));
+				//PacketHandler.sendRobitGui(0, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 21, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(1, robit.entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 1, robit.entityId));
+				//PacketHandler.sendRobitGui(1, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(2, robit.entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 2, robit.entityId));
+				//PacketHandler.sendRobitGui(2, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
@@ -129,7 +135,8 @@ public class GuiRobitSmelting extends GuiContainer
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendRobitGui(4, robit.entityId);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 4, robit.entityId));
+				//PacketHandler.sendRobitGui(4, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.entityId, 0, 0);
 			}
 		}

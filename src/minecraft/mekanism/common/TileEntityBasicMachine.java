@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import mekanism.api.IConfigurable;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUpgradeManagement;
+import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -265,7 +268,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;

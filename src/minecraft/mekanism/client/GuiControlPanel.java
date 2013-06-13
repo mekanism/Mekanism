@@ -2,8 +2,11 @@ package mekanism.client;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IAccessibleGui;
+import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityControlPanel;
+import mekanism.common.network.PacketControlPanel;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -161,7 +164,7 @@ public class GuiControlPanel extends GuiScreen
 				    			return;
 				    		}
 							
-							PacketHandler.sendGuiRequest(gui.getClassPath(), gui.getInstanceName(), Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()), gui.getGuiID());
+				    		PacketHandler.sendPacket(Transmission.SERVER, new PacketControlPanel(gui.getClassPath(), gui.getInstanceName(), new Object3D(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())), gui.getGuiID()));
 							usingPlayer.openGui(instance, gui.getGuiID(), worldObj, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
 						} catch(Exception e) {
 							System.err.println("[Mekanism] Error while handling Control Panel GUI request.");

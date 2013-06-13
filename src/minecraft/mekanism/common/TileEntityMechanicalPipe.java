@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import mekanism.api.IMechanicalPipe;
+import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -104,7 +107,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendDataRequest(this);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest(Object3D.get(this)));
 		}
 	}
 	

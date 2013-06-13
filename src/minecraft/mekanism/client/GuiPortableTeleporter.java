@@ -4,6 +4,8 @@ import mekanism.common.EnumPacketType;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDigitUpdate;
+import mekanism.common.network.PacketPortableTeleport;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,7 +81,7 @@ public class GuiPortableTeleporter extends GuiScreen
 	{
 		if(guibutton.id == 0)
 		{
-			PacketHandler.sendPacketData(EnumPacketType.PORTABLE_TELEPORT, Transmission.SERVER, 0);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketPortableTeleport());
 			mc.setIngameFocus();
 		}
 	}
@@ -94,25 +96,25 @@ public class GuiPortableTeleporter extends GuiScreen
 		
 		if(xAxis > 23 && xAxis < 37 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendDigitUpdate(0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitUpdate(0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0)));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 62 && xAxis < 76 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendDigitUpdate(1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitUpdate(1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1)));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 101 && xAxis < 115 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendDigitUpdate(2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitUpdate(2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2)));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 140 && xAxis < 154 && yAxis > 44 && yAxis < 58)
 		{
-			PacketHandler.sendDigitUpdate(3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitUpdate(3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3)));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}

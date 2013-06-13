@@ -2,9 +2,12 @@ package mekanism.client;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
 import mekanism.common.ContainerTeleporter;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityTeleporter;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -58,7 +61,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(0);
 			data.add(getIncrementedNumber(tileEntity.code.digitOne));
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 			tileEntity.code.digitOne = getIncrementedNumber(tileEntity.code.digitOne);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -67,7 +70,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(1);
 			data.add(getIncrementedNumber(tileEntity.code.digitTwo));
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 			tileEntity.code.digitTwo = getIncrementedNumber(tileEntity.code.digitTwo);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -76,7 +79,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(2);
 			data.add(getIncrementedNumber(tileEntity.code.digitThree));
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 			tileEntity.code.digitThree = getIncrementedNumber(tileEntity.code.digitThree);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -85,7 +88,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(3);
 			data.add(getIncrementedNumber(tileEntity.code.digitFour));
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 			tileEntity.code.digitFour = getIncrementedNumber(tileEntity.code.digitFour);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}

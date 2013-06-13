@@ -7,7 +7,10 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IEnergizedItem;
+import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -147,7 +150,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		if(!world.isRemote)
     		{
-    			PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
+    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
     		}
     	}
     	

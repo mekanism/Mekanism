@@ -13,15 +13,31 @@ import java.util.logging.Logger;
 import mekanism.api.GasTransferProtocol.GasTransferEvent;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfuseRegistry;
-import mekanism.api.InfusionInput;
 import mekanism.api.InfuseType;
+import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
 import mekanism.common.EnergyTransferProtocol.EnergyTransferEvent;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.LiquidTransferProtocol.LiquidTransferEvent;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.network.PacketConfiguratorState;
+import mekanism.common.network.PacketControlPanel;
+import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketDigitUpdate;
+import mekanism.common.network.PacketElectricBowState;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketPortableTeleport;
+import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketStatusUpdate;
+import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTime;
+import mekanism.common.network.PacketTransmitterTransferUpdate;
+import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
+import mekanism.common.network.PacketWeather;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,6 +48,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import rebelkeithy.mods.metallurgy.api.IOreInfo;
+import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import thermalexpansion.api.crafting.CraftingManagers;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -53,8 +71,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import rebelkeithy.mods.metallurgy.api.*;
 
 /**
  * Mekanism - the mod in which no true definition fits.
@@ -1142,6 +1158,22 @@ public class Mekanism
 		addRecipes();
 		addEntities();
 		
+		//Packet registrations
+		PacketHandler.registerPacket(PacketRobit.class);
+		PacketHandler.registerPacket(PacketTransmitterTransferUpdate.class);
+		PacketHandler.registerPacket(PacketTime.class);
+		PacketHandler.registerPacket(PacketWeather.class);
+		PacketHandler.registerPacket(PacketElectricChest.class);
+		PacketHandler.registerPacket(PacketElectricBowState.class);
+		PacketHandler.registerPacket(PacketConfiguratorState.class);
+		PacketHandler.registerPacket(PacketControlPanel.class);
+		PacketHandler.registerPacket(PacketTileEntity.class);
+		PacketHandler.registerPacket(PacketPortalFX.class);
+		PacketHandler.registerPacket(PacketDataRequest.class);
+		PacketHandler.registerPacket(PacketStatusUpdate.class);
+		PacketHandler.registerPacket(PacketDigitUpdate.class);
+		PacketHandler.registerPacket(PacketPortableTeleport.class);
+		
 		//Load proxy
 		proxy.registerRenderInformation();
 		proxy.loadUtilities();
@@ -1156,18 +1188,18 @@ public class Mekanism
 	@ForgeSubscribe
 	public void onGasTransferred(GasTransferEvent event)
 	{
-		PacketHandler.sendGasTransferUpdate(event.transferProtocol.pointer, event.transferProtocol.transferType);
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate(TransmitterTransferType.GAS, event.transferProtocol.pointer, event.transferProtocol.transferType));
 	}
 	
 	@ForgeSubscribe
 	public void onLiquidTransferred(LiquidTransferEvent event)
 	{
-		PacketHandler.sendLiquidTransferUpdate(event.transferProtocol.pointer, event.liquidSent);
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate(TransmitterTransferType.LIQUID, event.transferProtocol.pointer, event.liquidSent));
 	}
 	
 	@ForgeSubscribe
 	public void onEnergyTransferred(EnergyTransferEvent event)
 	{
-		PacketHandler.sendEnergyTransferUpdate(event.transferProtocol.pointer);
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate(TransmitterTransferType.ENERGY, event.transferProtocol.pointer));
 	}
 }

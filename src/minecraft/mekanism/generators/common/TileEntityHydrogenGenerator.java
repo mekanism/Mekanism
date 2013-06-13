@@ -234,6 +234,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		{
 			boost = 4;
 		}
+		
 		return boost;
 	}
 	

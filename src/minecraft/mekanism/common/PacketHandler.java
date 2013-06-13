@@ -2,28 +2,19 @@ package mekanism.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.List;
 
-import mekanism.api.EnumGas;
-import mekanism.api.GasTransferProtocol;
-import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
+import mekanism.common.network.IMekanismPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.liquids.LiquidStack;
-import universalelectricity.core.electricity.ElectricityPack;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -35,6 +26,8 @@ import cpw.mods.fml.common.network.Player;
  */
 public class PacketHandler implements IPacketHandler
 {
+	public static List<Class<? extends IMekanismPacket>> packets = new ArrayList<Class<? extends IMekanismPacket>>();
+	
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
 	{
@@ -44,510 +37,27 @@ public class PacketHandler implements IPacketHandler
 		if(packet.channel.equals("Mekanism"))
 		{
 			try {
-				int packetType = dataStream.readInt();
+				int packetIndex = dataStream.readInt();
 				
-			    if(packetType == EnumPacketType.TIME.id)
-			    {
-			        System.out.println("[Mekanism] Received time update packet from " + entityplayer.username + ".");
-			        entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
-			        MekanismUtils.setHourForward(entityplayer.worldObj, dataStream.readInt());
-			    }
-			    else if(packetType == EnumPacketType.WEATHER.id)
-			    {
-			    	System.out.println("[Mekanism] Received weather update packet from " + entityplayer.username + ".");
-			    	entityplayer.getCurrentEquippedItem().damageItem(4999, entityplayer);
-			    	int weatherType = dataStream.readInt();
-			    	
-			    	if(weatherType == EnumWeatherType.CLEAR.id)
-			    	{
-			    		entityplayer.worldObj.getWorldInfo().setRaining(false);
-				        entityplayer.worldObj.getWorldInfo().setThundering(false);
-			    	}
-			    	if(weatherType == EnumWeatherType.HAZE.id)
-			    	{
-			    		entityplayer.worldObj.getWorldInfo().setRaining(true);
-				        entityplayer.worldObj.getWorldInfo().setThundering(true);
-			    	}
-			    	if(weatherType == EnumWeatherType.RAIN.id)
-			    	{
-			    		entityplayer.worldObj.getWorldInfo().setRaining(true);
-			    	}
-			    	if(weatherType == EnumWeatherType.STORM.id)
-			    	{
-				    	entityplayer.worldObj.getWorldInfo().setThundering(true);
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.TILE_ENTITY.id)
-			    {
-			    	try {
-						int x = dataStream.readInt();
-						int y = dataStream.readInt();
-						int z = dataStream.readInt();
-						
-						World world = entityplayer.worldObj;
-						TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-						if(tileEntity instanceof ITileNetwork)
-						{
-							((ITileNetwork)tileEntity).handlePacketData(dataStream);
-						}
-					} catch(Exception e) {
-						System.err.println("[Mekanism] Error while handling tile entity packet.");
-						e.printStackTrace();
-					}
-			    }
-			    else if(packetType == EnumPacketType.CONTROL_PANEL.id)
-			    {
-			    	try {
-			    		String modClass = dataStream.readUTF();
-			    		String modInstance = dataStream.readUTF();
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		int guiId = dataStream.readInt();
-			    		
-			    		Class mod = Class.forName(modClass);
-			    		
-			    		if(mod == null)
-			    		{
-			    			System.err.println("[Mekanism] Incorrectly implemented IAccessibleGui -- ignoring handler packet.");
-			    			System.err.println(" ~ Unable to locate class '" + modClass + ".'");
-			    			System.err.println(" ~ GUI Container may not function correctly.");
-			    			return;
-			    		}
-			    		
-			    		Object instance = mod.getField(modInstance).get(null);
-			    		
-			    		if(instance == null)
-			    		{
-			    			System.err.println("[Mekanism] Incorrectly implemented IAccessibleGui -- ignoring handler packet.");
-			    			System.err.println(" ~ Unable to locate instance object '" + modInstance + ".'");
-			    			System.err.println(" ~ GUI Container may not function correctly.");
-			    			return;
-			    		}
-			    		
-			    		entityplayer.openGui(instance, guiId, entityplayer.worldObj, x, y, z);
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling control panel packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.PORTAL_FX.id)
-			    {
-			    	try {
-			    		Random random = new Random();
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		
-						for(int i = 0; i < 50; i++)
-						{
-							entityplayer.worldObj.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-							entityplayer.worldObj.spawnParticle("portal", x + random.nextFloat(), y + 1 + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-						}
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling portal FX packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.DIGIT_UPDATE.id)
-			    {
-			    	try {
-			    		int index = dataStream.readInt();
-			    		int digit = dataStream.readInt();
-			    		
-			    		ItemStack currentStack = entityplayer.getCurrentEquippedItem();
-			    		
-			    		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
-			    		{
-			    			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
-			    			item.setDigit(currentStack, index, digit);
-			    		}
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling digit update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.STATUS_UPDATE.id)
-			    {
-			    	try {
-			    		ItemStack currentStack = entityplayer.getCurrentEquippedItem();
-			    		
-			    		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
-			    		{
-			    			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
-			    			item.setStatus(currentStack, dataStream.readInt());
-			    		}
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling status update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.PORTABLE_TELEPORT.id)
-			    {
-			    	try {
-			    		if(entityplayer instanceof EntityPlayerMP)
-			    		{
-			    			EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityplayer;
-			    			ItemStack itemstack = entityPlayerMP.getCurrentEquippedItem();
-			    			
-			    			if(itemstack != null && itemstack.getItem() instanceof ItemPortableTeleporter)
-			    			{
-			    				ItemPortableTeleporter item = (ItemPortableTeleporter)itemstack.getItem();
-			    				
-			    				if(item.getStatus(itemstack) == 1)
-			    				{
-			    					Object3D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), entityPlayerMP);
-			    					
-			    					item.onProvide(new ElectricityPack(item.calculateEnergyCost(entityPlayerMP, coords)/120, 120), itemstack);
-			    					
-			    					if(entityPlayerMP.worldObj.provider.dimensionId != coords.dimensionId)
-			    					{
-			    						entityPlayerMP.travelToDimension(coords.dimensionId);
-			    					}
-			    					
-			    					entityPlayerMP.playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, entityPlayerMP.rotationYaw, entityPlayerMP.rotationPitch);
-			    					
-			    					entityplayer.worldObj.playSoundAtEntity(entityplayer, "mob.endermen.portal", 1.0F, 1.0F);
-			    					sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
-			    				}
-			    			}
-			    		}
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling portable teleport packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.DATA_REQUEST.id)
-			    {
-			    	try {
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		int id = dataStream.readInt();
-			    		
-			    		World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(id);
-			    		
-			    		if(world != null && world.getBlockTileEntity(x, y, z) instanceof ITileNetwork)
-			    		{
-			    			sendTileEntityPacketToClients(world.getBlockTileEntity(x, y, z), 0, ((ITileNetwork)world.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList()));
-			    		}
-			    	} catch (Exception e) {
-			    		System.err.println("[Mekanism] Error while handling data request packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.CONFIGURATOR_STATE.id)
-			    {
-			    	try {
-			    		int state = dataStream.readInt();
-			    		
-			    		EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityplayer;
-			    		ItemStack itemstack = entityPlayerMP.getCurrentEquippedItem();
-			    		
-			    		if(itemstack != null && itemstack.getItem() instanceof ItemConfigurator)
-			    		{
-			    			((ItemConfigurator)itemstack.getItem()).setState(itemstack, (byte)state);
-			    		}
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling configurator state packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.ELECTRIC_BOW_STATE.id)
-			    {
-			    	try {
-			    		boolean state = dataStream.readInt() == 1;
-			    		
-			    		EntityPlayerMP entityPlayerMP = (EntityPlayerMP)entityplayer;
-			    		ItemStack itemstack = entityPlayerMP.getCurrentEquippedItem();
-			    		
-			    		if(itemstack != null && itemstack.getItem() instanceof ItemElectricBow)
-			    		{
-			    			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, state);
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling electric bow state packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_SERVER_OPEN.id)
-			    {
-			    	try {
-			    		boolean isBlock = dataStream.readBoolean();
-			    		boolean useEnergy = dataStream.readBoolean();
-			    		
-			    		if(isBlock)
-			    		{
-				    		int x = dataStream.readInt();
-				    		int y = dataStream.readInt();
-				    		int z = dataStream.readInt();
-				    		
-				    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
-				    		
-				    		if(useEnergy)
-				    		{
-				    			tileEntity.setEnergy(tileEntity.getEnergy() - 100);
-				    		}
-				    		
-				    		MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, tileEntity, null, true);
-			    		}
-			    		else {
-			    			ItemStack stack = entityplayer.getCurrentEquippedItem();
-			    			
-			    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
-			    			{
-			    				if(useEnergy)
-			    				{
-			    					((IEnergizedItem)stack.getItem()).setEnergy(stack, ((IEnergizedItem)stack.getItem()).getEnergy(stack) - 100);
-			    				}
-			    				
-			    				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
-			    				MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, null, inventory, false);
-			    			}
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling electric chest open packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_CLIENT_OPEN.id)
-			    {
-			    	try {
-			    		int id = dataStream.readInt();
-			    		int windowId = dataStream.readInt();
-			    		boolean isBlock = dataStream.readBoolean();
-			    		
-			    		int x = 0;
-			    		int y = 0;
-			    		int z = 0;
-			    		
-			    		if(isBlock)
-			    		{
-			        		x = dataStream.readInt();
-				    		y = dataStream.readInt();
-				    		z = dataStream.readInt();
-			    		}
-			    		
-			    		Mekanism.proxy.openElectricChest(entityplayer, id, windowId, isBlock, x, y, z);
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling electric chest open packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_PASSWORD.id)
-			    {
-			    	try {
-			    		boolean isBlock = dataStream.readBoolean();
-			    		String password = dataStream.readUTF();
-			    		
-			    		if(isBlock)
-			    		{
-				    		int x = dataStream.readInt();
-				    		int y = dataStream.readInt();
-				    		int z = dataStream.readInt();
-				    		
-				    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
-				    		tileEntity.password = password;
-				    		tileEntity.authenticated = true;
-			    		}
-			    		else {
-			    			ItemStack stack = entityplayer.getCurrentEquippedItem();
-			    			
-			    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
-			    			{
-			    				((IElectricChest)stack.getItem()).setPassword(stack, password);
-			    				((IElectricChest)stack.getItem()).setAuthenticated(stack, true);
-			    			}
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling electric chest password packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.ELECTRIC_CHEST_LOCK.id)
-			    {
-			    	try {
-			    		boolean isBlock = dataStream.readBoolean();
-			    		boolean locked = dataStream.readBoolean();
-			    		
-			    		if(isBlock)
-			    		{
-				    		int x = dataStream.readInt();
-				    		int y = dataStream.readInt();
-				    		int z = dataStream.readInt();
-				    		
-				    		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
-				    		tileEntity.locked = locked;
-			    		}
-			    		else {
-			    			ItemStack stack = entityplayer.getCurrentEquippedItem();
-			    			
-			    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
-			    			{
-			    				((IElectricChest)stack.getItem()).setLocked(stack, locked);
-			    			}
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling electric chest password packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.LIQUID_TRANSFER_UPDATE.id)
-			    {
-			    	try {
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		
-			    		TileEntity tileEntity = entityplayer.worldObj.getBlockTileEntity(x, y, z);
-			    		LiquidStack liquidStack = new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-			    		
-			    		if(tileEntity != null)
-			    		{
-			    			new LiquidTransferProtocol(tileEntity, null, liquidStack).clientUpdate();
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling liquid transfer update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.ENERGY_TRANSFER_UPDATE.id)
-			    {
-			    	try {
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		
-			    		TileEntity tileEntity = entityplayer.worldObj.getBlockTileEntity(x, y, z);
-			    		
-			    		if(tileEntity != null)
-			    		{
-			    			new EnergyTransferProtocol(tileEntity, null, new ArrayList()).clientUpdate();
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling energy transfer update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    else if(packetType == EnumPacketType.GAS_TRANSFER_UPDATE.id)
-			    {
-			    	try {
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		
-			    		EnumGas type = EnumGas.getFromName(dataStream.readUTF());
-			    		
-			    		TileEntity tileEntity = entityplayer.worldObj.getBlockTileEntity(x, y, z);
-			    		
-			    		if(tileEntity != null)
-			    		{
-			    			new GasTransferProtocol(tileEntity, null, type, 0).clientUpdate();
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling gas transfer update packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
-			    /*else if(packetType == EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE.id)
-			    {
-			    	try {
-			    		int x = dataStream.readInt();
-			    		int y = dataStream.readInt();
-			    		int z = dataStream.readInt();
-			    		
-			    		TileEntityElectrolyticSeparator tileEntity = (TileEntityElectrolyticSeparator)entityplayer.worldObj.getBlockTileEntity(x, y, z);
-			    		
-			    		if(tileEntity != null)
-			    		{
-			    			tileEntity.spawnParticle();
-			    		}
-			    	} catch(Exception e) {
-			       		System.err.println("[Mekanism] Error while handling electrolytic separator particle packet.");
-			    		e.printStackTrace();
-			    	}
-			    }*/
-			    else if(packetType == EnumPacketType.ROBIT.id)
-			    {
-			    	try {
-			    		int subType = dataStream.readInt();
-			    		
-			    		if(subType == 0)
-			    		{
-			    			int type = dataStream.readInt();
-			    			int id = dataStream.readInt();
-			    			
-				    		if(type == 0)
-				    		{
-				    			entityplayer.openGui(Mekanism.instance, 21, entityplayer.worldObj, id, 0, 0);
-				    		}
-				    		else if(type == 1)
-				    		{
-				    			entityplayer.openGui(Mekanism.instance, 22, entityplayer.worldObj, id, 0, 0);
-				    		}
-				    		else if(type == 2)
-				    		{
-				    			entityplayer.openGui(Mekanism.instance, 23, entityplayer.worldObj, id, 0, 0);
-				    		}
-				    		else if(type == 3)
-				    		{
-				    			entityplayer.openGui(Mekanism.instance, 24, entityplayer.worldObj, id, 0, 0);
-				    		}
-				    		else if(type == 4)
-				    		{
-				    			entityplayer.openGui(Mekanism.instance, 25, entityplayer.worldObj, id, 0, 0);
-				    		}
-			    		}
-			    		else if(subType == 1)
-			    		{
-			    			int id = dataStream.readInt();
-				    		
-				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-				    		
-				    		if(robit != null)
-				    		{
-				    			robit.setFollowing(!robit.getFollowing());
-				    		}
-			    		}
-			    		else if(subType == 2)
-			    		{
-			    	 		String name = dataStream.readUTF();
-				    		int id = dataStream.readInt();
-				    		
-				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-				    		
-				    		if(robit != null)
-				    		{
-				    			robit.setName(name);
-				    		}
-			    		}
-			    		else if(subType == 3)
-			    		{
-				    		int id = dataStream.readInt();
-				    		
-				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-				    		
-				    		if(robit != null)
-				    		{
-				    			robit.goHome();
-				    		}
-			    		}
-			    		else if(subType == 4)
-			    		{
-				    		int id = dataStream.readInt();
-				    		
-				    		EntityRobit robit = (EntityRobit)entityplayer.worldObj.getEntityByID(id);
-				    		
-				    		if(robit != null)
-				    		{
-				    			robit.setDropPickup(!robit.getDropPickup());
-				    		}
-			    		}
-			    	} catch(Exception e) {
-			    		System.err.println("[Mekanism] Error while handling robit packet.");
-			    		e.printStackTrace();
-			    	}
-			    }
+				if(packets.get(packetIndex) == null)
+				{
+					System.err.println("[Mekanism] Received unknown packet identifier '" + packetIndex + ".' Ignorning!");
+					return;
+				}
+				
+				IMekanismPacket packetType = packets.get(packetIndex).newInstance();
+				
+				if(packetType == null)
+				{
+					System.err.println("[Mekanism] Unable to create instance of packet type '" + packetIndex + ".' Ignoring!");
+					return;
+				}
+				
+				try {
+					packetType.read(dataStream, entityplayer, entityplayer.worldObj);
+				} catch(Exception e) {
+					System.err.println("[Mekanism] Error while reading '" + packetType.getName() + "' packet.");
+				}
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");
 				e.printStackTrace();
@@ -555,296 +65,17 @@ public class PacketHandler implements IPacketHandler
 		}
 	}
 	
-	/**
-	 * Sends a packet from client to server with the TILE_ENTITY ID as well as an undefined amount of objects.
-	 * While it won't give you an error, you cannot send anything other than integers or booleans. This can
-	 * also be sent with a defined range, so players far away won't receive the packet.
-	 * @param sender - sending tile entity
-	 * @param distance - distance to send the packet, 0 if infinite range
-	 * @param dataValues - data to send
-	 */
-	public static void sendTileEntityPacketToServer(TileEntity sender, ArrayList dataValues)
+	public static void registerPacket(Class<? extends IMekanismPacket> packetClass)
 	{
-		sendPacketData(EnumPacketType.TILE_ENTITY, Transmission.SERVER, sender.xCoord, sender.yCoord, sender.zCoord, dataValues);
-	}
-	
-	/**
-	 * Sends a packet from server to client with the TILE_ENTITY ID as well as an undefined amount of objects.
-	 * This can also be sent with a defined range, so players far away won't receive the packet.
-	 * @param sender - sending tile entity
-	 * @param distance - distance to send the packet, 0 if infinite range
-	 * @param dataValues - data to send
-	 */
-	public static void sendTileEntityPacketToClients(TileEntity sender, double distance, ArrayList dataValues)
-	{
-		if(distance == 0)
+		for(Class<? extends IMekanismPacket> iteration : packets)
 		{
-			sendPacketData(EnumPacketType.TILE_ENTITY, Transmission.ALL_CLIENTS, sender.xCoord, sender.yCoord, sender.zCoord, dataValues);
-		}
-		else {
-			sendPacketData(EnumPacketType.TILE_ENTITY, Transmission.CLIENTS_RANGE, Object3D.get(sender), distance, sender.xCoord, sender.yCoord, sender.zCoord, dataValues);
-		}
-	}
-	
-	/**
-	 * When the 'Access' button is clicked on the Control Panel's GUI, it both opens the client-side GUI, as well as
-	 * send a packet to the server with enough data to open up the server-side object, or container. This packet does
-	 * that function -- it sends over the data from IAccessibleGui (modClass, modInstance, guiId), and uses reflection
-	 * to attempt and access the declared instance object from the mod's main class, which is also accessed using
-	 * reflection. Upon being handled server-side, the data is put together, checked for NPEs, and then used inside
-	 * EntityPlayer.openGui() along with the sent-over coords.
-	 * @param modClass
-	 * @param modInstance
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param guiId
-	 */
-	public static void sendGuiRequest(String modClass, String modInstance, int x, int y, int z, int guiId)
-	{
-		sendPacketData(EnumPacketType.CONTROL_PANEL, Transmission.SERVER, modClass, modInstance, x, y, z, guiId);
-	}
-	
-	/**
-	 * Sends a portal effect packet to all clients in a radius around a teleporter.
-	 * @param x - x coordinate of teleporter
-	 * @param y - y coordinate of teleporter
-	 * @param z - z coordinate of teleporter
-	 * @param id - dimension ID of teleporter
-	 */
-	public static void sendPortalFX(int x, int y, int z, int id)
-	{
-		sendPacketData(EnumPacketType.PORTAL_FX, Transmission.CLIENTS_RANGE, new Object3D(x, y, z, id), 40D, x, y, z);
-	}
-	
-	/**
-	 * Sends a digit update for a portable teleporter to the server as an integer.
-	 * @param index - digit index
-	 * @param digit - digit to send
-	 */
-	public static void sendDigitUpdate(int index, int digit)
-	{
-		sendPacketData(EnumPacketType.DIGIT_UPDATE, Transmission.SERVER, index, digit);
-	}
-	
-	/**
-	 * Sends a status update for a portable teleporter to the client as a string.
-	 * @param entityplayer - player who is using the teleporter
-	 * @param status - status to send
-	 */
-	public static void sendStatusUpdate(EntityPlayer entityplayer, int status)
-	{
-		sendPacketData(EnumPacketType.STATUS_UPDATE, Transmission.SERVER, status);
-	}
-	
-	/**
-	 * Sends a packet to a specified client requesting a certain electric chest GUI to be opened.
-	 * @param player - the player to send the chest-opening packet to
-	 * @param tileEntity - TileEntity of the chest, if it's not an item
-	 * @param i - GUI type: 0 if regular electric chest, 1 if password prompt, 2 if password modify
-	 * @param windowId - Minecraft-based container window identifier
-	 * @param isBlock - whether or not this electric chest is in it's block form
-	 */
-	public static void sendChestOpenToPlayer(EntityPlayer player, TileEntity tileEntity, int i, int windowId, boolean isBlock)
-	{
-		ArrayList dataValues = new ArrayList();
-		
-		dataValues.add(player);
-		
-		dataValues.add(i);
-		dataValues.add(windowId);
-		dataValues.add(isBlock);
-		
-		if(isBlock)
-		{
-			dataValues.add(tileEntity.xCoord);
-			dataValues.add(tileEntity.yCoord);
-			dataValues.add(tileEntity.zCoord);
+			if(iteration == packetClass)
+			{
+				return;
+			}
 		}
 		
-		sendPacketData(EnumPacketType.ELECTRIC_CHEST_CLIENT_OPEN, Transmission.SINGLE_CLIENT, dataValues);
-	}
-	
-	/**
-	 * Sends a packet to the server requesting an electric chest to be opened.
-	 * @param tileEntity - TileEntity of the chest, if it's not an item
-	 * @param isBlock - whether or not this electric chest is in it's block form
-	 * @param useEnergy - whether or not to use chest-opening energy (100 J)
-	 */
-	public static void sendChestOpen(TileEntity tileEntity, boolean isBlock, boolean useEnergy)
-	{
-		ArrayList dataValues = new ArrayList();
-		
-		dataValues.add(isBlock);
-		dataValues.add(useEnergy);
-		
-		if(isBlock)
-		{
-			dataValues.add(tileEntity.xCoord);
-			dataValues.add(tileEntity.yCoord);
-			dataValues.add(tileEntity.zCoord);
-		}
-		
-		sendPacketData(EnumPacketType.ELECTRIC_CHEST_SERVER_OPEN, Transmission.SERVER, dataValues);
-	}
-	
-	/**
-	 * Sends a packet to the server with a new 'password' value for an electric chest.
-	 * @param tileEntity - TileEntity of the chest, if it's not an item
-	 * @param password - new value
-	 * @param isBlock - whether or not this electric chest is in it's block form
-	 */
-	public static void sendPasswordChange(TileEntity tileEntity, String password, boolean isBlock)
-	{
-		ArrayList dataValues = new ArrayList();
-		
-		dataValues.add(isBlock);
-		dataValues.add(password);
-		
-		if(isBlock)
-		{
-			dataValues.add(tileEntity.xCoord);
-			dataValues.add(tileEntity.yCoord);
-			dataValues.add(tileEntity.zCoord);
-		}
-		
-		sendPacketData(EnumPacketType.ELECTRIC_CHEST_PASSWORD, Transmission.SERVER, dataValues);
-	}
-	
-	/**
-	 * Sends a packet to the server with a new 'locked' value for an electric chest.
-	 * @param tileEntity - TileEntity of the chest, if it's not an item
-	 * @param locked - new value
-	 * @param isBlock - whether or not this electric chest is in it's block form
-	 */
-	public static void sendLockChange(TileEntity tileEntity, boolean locked, boolean isBlock)
-	{
-		ArrayList dataValues = new ArrayList();
-		
-		dataValues.add(isBlock);
-		dataValues.add(locked);
-		
-		if(isBlock)
-		{
-			dataValues.add(tileEntity.xCoord);
-			dataValues.add(tileEntity.yCoord);
-			dataValues.add(tileEntity.zCoord);
-		}
-		
-		sendPacketData(EnumPacketType.ELECTRIC_CHEST_LOCK, Transmission.SERVER, dataValues);
-	}
-	
-	/**
-	 * Sends a packet to the client-side with a LiquidTransferProtocol's information.  Used for render updates.
-	 * @param head - head TileEntity of the calculation
-	 * @param resource - the LiquidStack transferred by the server
-	 */
-	public static void sendLiquidTransferUpdate(TileEntity head, LiquidStack resource)
-	{
-		sendPacketData(EnumPacketType.LIQUID_TRANSFER_UPDATE, Transmission.ALL_CLIENTS, head.xCoord, head.yCoord, head.zCoord, resource.itemID, resource.amount, resource.itemMeta);
-	}
-	
-	/**
-	 * Sends a packet to the client-side with an EnergyTransferProtocol's information.  Used for render updates.
-	 * @param head - head TileEntity of the calculation
-	 */
-	public static void sendEnergyTransferUpdate(TileEntity head)
-	{
-		sendPacketData(EnumPacketType.ENERGY_TRANSFER_UPDATE, Transmission.ALL_CLIENTS, head.xCoord, head.yCoord, head.zCoord);
-	}
-	
-	/**
-	 * Sends a packet to the client-side with a GasTransferProtocol's information.  Used for render updates.
-	 * @param head - head TileEntity of the calculation
-	 */
-	public static void sendGasTransferUpdate(TileEntity head, EnumGas type)
-	{
-		sendPacketData(EnumPacketType.GAS_TRANSFER_UPDATE, Transmission.ALL_CLIENTS, head.xCoord, head.yCoord, head.zCoord, type.name);
-	}
-	
-	/**
-	 * Sends a request to clients near an Electrolytic Separator to emit a gas dump particle.
-	 * @param tileEntity - TileEntity who is emitting the particle
-	 */
-	/*public static void sendElectrolyticSeparatorParticle(TileEntityElectrolyticSeparator tileEntity)
-	{
-		sendPacketData(EnumPacketType.ELECTROLYTIC_SEPARATOR_PARTICLE, Transmission.CLIENTS_RANGE, Object3D.get(tileEntity), 40D, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-	}*/
-	
-	/**
-	 * Sends a Robit GUI packet to the server.
-	 * @param type - GUI type to open
-	 * @param id - the robit's entity ID
-	 */
-	public static void sendRobitGui(int type, int id)
-	{
-		sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, 0, type, id);
-	}
-	
-	/**
-	 * Sends a Robit name update packet to the server.
-	 * @param value - new follow value
-	 * @param id - the robit's entity ID
-	 */
-	public static void sendNameUpdate(String name, int id)
-	{
-		sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, 2, name, id);
-	}
-	
-	/**
-	 * This method is used to request a data update from the server in order to update a client-sided tile entity.
-	 * The server will receive this request, and then send a packet to the client with all the needed information.
-	 * @param tileEntity
-	 */
-	public static void sendDataRequest(TileEntity tileEntity)
-	{
-		sendPacketData(EnumPacketType.DATA_REQUEST, Transmission.SERVER, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
-	}
-	
-	/**
-	 * Sends the server the defined packet type with an undefined amount of data.
-	 * @param type - packet type
-	 * @param dataValues - data to send
-	 */
-	public static void sendPacketData(EnumPacketType type, Transmission trans, Object... dataValues)
-	{
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(bytes);
-        
-        try {
-        	data.writeInt(type.id);
-        	encode(dataValues, data, trans.parameters);
-		} catch (IOException e) {
-			System.out.println("[Mekanism] An error occured while writing packet data.");
-			e.printStackTrace();
-		}
-        
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
-        packet.data = bytes.toByteArray();
-        packet.length = packet.data.length;
-        
-        switch(trans)
-        {
-        	case SERVER:
-        		PacketDispatcher.sendPacketToServer(packet);
-        		break;
-        	case ALL_CLIENTS:
-        		PacketDispatcher.sendPacketToAllPlayers(packet);
-        		break;
-        	case CLIENTS_RANGE:
-        		Object3D obj = (Object3D)dataValues[0];
-        		PacketDispatcher.sendPacketToAllAround(obj.xCoord, obj.yCoord, obj.zCoord, (Double)dataValues[1], obj.dimensionId, packet);
-        		break;
-        	case SINGLE_CLIENT:
-        		((EntityPlayerMP)dataValues[0]).playerNetServerHandler.sendPacketToPlayer(packet);
-        		break;
-        }
-        
-        if(Mekanism.logPackets)
-        {
-        	System.out.println("[Mekanism] Sent data int packet '" + type.id + "' to server");
-        }
+		packets.add(packetClass);
 	}
 	
 	public static void encode(Object[] dataValues, DataOutputStream output, int ignore)
@@ -908,6 +139,78 @@ public class PacketHandler implements IPacketHandler
 		}
 	}
 	
+	public static void sendPacket(Transmission trans, IMekanismPacket packetType, Object... transParams)
+	{
+		if(packetType == null)
+		{
+			System.err.println("[Mekanism] Attempted to send null packet, ignoring!");
+			return;
+		}
+		
+		if(!packets.contains(packetType.getClass()))
+		{
+			System.err.println("[Mekanism] Attempted to send unregistered packet '" + packetType.getName() + ",' ignoring!");
+			return;
+		}
+		
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream data = new DataOutputStream(bytes);
+        
+        try {
+        	data.writeInt(packets.indexOf(packetType.getClass()));
+        	packetType.write(data);
+        } catch(Exception e) {
+        	System.err.println("[Mekanism] Error while encoding packet data.");
+        	e.printStackTrace();
+        }
+        
+        Packet250CustomPayload packet = new Packet250CustomPayload();
+        packet.channel = "Mekanism";
+        packet.data = bytes.toByteArray();
+        packet.length = packet.data.length;
+        
+        switch(trans)
+        {
+        	case SERVER:
+        		PacketDispatcher.sendPacketToServer(packet);
+        		break;
+        	case ALL_CLIENTS:
+        		PacketDispatcher.sendPacketToAllPlayers(packet);
+        		break;
+        	case CLIENTS_RANGE:
+        		Object3D obj = (Object3D)transParams[0];
+        		PacketDispatcher.sendPacketToAllAround(obj.xCoord, obj.yCoord, obj.zCoord, (Double)transParams[1], obj.dimensionId, packet);
+        		break;
+        	case SINGLE_CLIENT:
+        		((EntityPlayerMP)transParams[0]).playerNetServerHandler.sendPacketToPlayer(packet);
+        		break;
+        }
+        
+        log(trans, packetType, transParams);
+	}
+	
+	private static void log(Transmission trans, IMekanismPacket packetType, Object[] transParams)
+	{
+		if(Mekanism.logPackets)
+		{
+			switch(trans)
+			{
+				case SERVER:
+					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to server.");
+					break;
+				case ALL_CLIENTS:
+					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to all clients.");
+					break;
+				case CLIENTS_RANGE:
+					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in a " + (Double)transParams[1] + " block range.");
+					break;
+				case SINGLE_CLIENT:
+					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to " + ((EntityPlayer)transParams[0]).username);
+					break;
+			}
+		}
+	}
+	
 	public static enum Transmission
 	{
 		/** No additional parameters. */
@@ -928,14 +231,5 @@ public class PacketHandler implements IPacketHandler
 		{
 			parameters = params;
 		}
-	}
-	
-	public static enum RobitPacket
-	{
-		GUI,
-		FOLLOW,
-		NAME,
-		GO_HOME,
-		DROP_PICKUP;
 	}
 }

@@ -1,10 +1,14 @@
 package mekanism.client;
 
 import mekanism.api.EnumColor;
+import mekanism.api.Object3D;
 import mekanism.common.IElectricChest;
 import mekanism.common.InventoryElectricChest;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricChest;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -158,13 +162,13 @@ public class GuiPasswordModify extends GuiScreen
 		else {
 			if(isBlock)
 			{
-				PacketHandler.sendPasswordChange(tileEntity, confirmPasswordField.getText(), true);
-				PacketHandler.sendChestOpen(tileEntity, true, false);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Object3D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, true, Object3D.get(tileEntity)));
 			}
 			else {
 				((IElectricChest)itemStack.getItem()).setPassword(itemStack, confirmPasswordField.getText());
-				PacketHandler.sendPasswordChange(null, confirmPasswordField.getText(), false);
-				PacketHandler.sendChestOpen(null, false, false);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), false));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, false));
 			}
 		}
 	}

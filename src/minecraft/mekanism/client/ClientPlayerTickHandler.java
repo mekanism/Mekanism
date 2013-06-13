@@ -8,6 +8,8 @@ import mekanism.common.ItemConfigurator;
 import mekanism.common.ItemElectricBow;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketConfiguratorState;
+import mekanism.common.network.PacketElectricBowState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -47,7 +49,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 		    			if(!lastTickConfiguratorChange)
 		    			{
 			    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
-			    			PacketHandler.sendPacketData(EnumPacketType.CONFIGURATOR_STATE, Transmission.SERVER, item.getState(stack));
+			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState(item.getState(stack)));
 			    			entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack)));
 			    			lastTickConfiguratorChange = true;
 		    			}
@@ -65,7 +67,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 						if(!lastTickElectricBowChange)
 						{
 							item.setFireState(stack, !item.getFireState(stack));
-							PacketHandler.sendPacketData(EnumPacketType.ELECTRIC_BOW_STATE, Transmission.SERVER, item.getFireState(stack) ? 1 : 0);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState(item.getFireState(stack)));
 							entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF")));
 							lastTickElectricBowChange = true;
 						}

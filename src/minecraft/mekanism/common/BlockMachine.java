@@ -5,8 +5,12 @@ import java.util.Random;
 
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
+import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -591,10 +595,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	 		}
         	 		else if(!electricChest.authenticated)
         	 		{
-        	 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, electricChest, 2, 0, true);
+        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Object3D.get(electricChest)), entityplayer);
         	 		}
         	 		else {
-        	 			PacketHandler.sendChestOpenToPlayer((EntityPlayerMP)entityplayer, electricChest, 1, 0, true);
+        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Object3D.get(electricChest)), entityplayer);
         	 		}
         	 		
 	        		return true;

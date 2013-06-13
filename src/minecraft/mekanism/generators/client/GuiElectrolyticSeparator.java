@@ -3,7 +3,10 @@ package mekanism.generators.client;
 import java.util.ArrayList;
 
 import mekanism.api.EnumGas;
+import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.generators.common.ContainerElectrolyticSeparator;
 import mekanism.generators.common.TileEntityElectrolyticSeparator;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -13,7 +16,6 @@ import org.lwjgl.opengl.GL11;
 
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -60,7 +62,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			data.add((byte)0);
 			data.add(nameToSet);
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
@@ -84,7 +86,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			data.add((byte)1);
 			data.add(nameToSet);
 			
-			PacketHandler.sendTileEntityPacketToServer(tileEntity, data);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

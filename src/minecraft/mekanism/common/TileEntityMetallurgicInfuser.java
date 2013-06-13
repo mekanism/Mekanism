@@ -15,10 +15,13 @@ import mekanism.api.InfuseRegistry;
 import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.InfusionOutput;
+import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.common.BlockMachine.MachineType;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -571,7 +574,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;

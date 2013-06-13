@@ -10,6 +10,8 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketPortalFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -207,7 +209,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			
 			for(Object3D coords : Mekanism.teleporters.get(code))
 			{
-				PacketHandler.sendPortalFX(coords.xCoord, coords.yCoord, coords.zCoord, coords.dimensionId);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX(coords), coords, 40D);
 			}
 		}
 	}

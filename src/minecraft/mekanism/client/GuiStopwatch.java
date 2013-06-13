@@ -4,6 +4,7 @@ import mekanism.common.EnumPacketType;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTime;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,7 +55,7 @@ public class GuiStopwatch extends GuiScreen
 	@Override
     public void keyTyped(char c, int i)
     {
-        if (i == 1)
+        if(i == 1)
         {
             mc.displayGuiScreen(null);
         }
@@ -72,25 +73,25 @@ public class GuiStopwatch extends GuiScreen
 		if(guibutton.id == 0)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 0);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(0));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 6);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(6));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 12);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(12));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacketData(EnumPacketType.TIME, Transmission.SERVER, 18);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(18));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)

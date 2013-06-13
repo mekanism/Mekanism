@@ -17,7 +17,10 @@ import universalelectricity.core.item.IItemElectric;
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.Object3D;
 import mekanism.client.IHasSound;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -131,7 +134,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			}
 			else if(Mekanism.hooks.IC2Loaded && itemstack.getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setEnergy(getEnergy() - sent);
 			}
 			else if(itemstack.getItem() instanceof IChargeableItem)
@@ -177,7 +180,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;

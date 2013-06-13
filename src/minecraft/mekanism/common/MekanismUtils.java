@@ -16,8 +16,11 @@ import mekanism.api.IConfigurable;
 import mekanism.api.InfuseObject;
 import mekanism.api.Object3D;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -734,7 +737,15 @@ public final class MekanismUtils
 		player.incrementWindowID();
 		player.closeInventory();
 		int id = player.currentWindowId;
-		PacketHandler.sendChestOpenToPlayer(player, tileEntity, 0, id, isBlock);
+		
+		if(isBlock)
+		{
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Object3D.get(tileEntity)), player);
+		}
+		else {
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 0, id, false), player);
+		}
+		
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);

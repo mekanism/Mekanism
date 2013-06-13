@@ -7,6 +7,9 @@ import java.util.Random;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
+import mekanism.api.Object3D;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -44,7 +47,7 @@ public class ItemConfigurator extends ItemEnergized
 	    		{
 	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
 	    			tileEntity.isActive = !tileEntity.isActive;
-	    			PacketHandler.sendTileEntityPacketToClients(tileEntity, 0, tileEntity.getNetworkedData(new ArrayList()));
+	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 	    			return true;
 	    		}
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityElectricPump)
@@ -79,7 +82,7 @@ public class ItemConfigurator extends ItemEnergized
 		    				if(config instanceof TileEntityBasicBlock)
 		    				{
 		    					TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-		    					PacketHandler.sendTileEntityPacketToClients(tileEntity, 50, tileEntity.getNetworkedData(new ArrayList()));
+		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Object3D.get(tileEntity), 50D);
 		    				}
 		    				return true;
 	    				}

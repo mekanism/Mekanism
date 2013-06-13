@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.EnumSet;
 
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketStatusUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.ITickHandler;
@@ -39,14 +41,14 @@ public class CommonPlayerTickHandler implements ITickHandler
 		    				if(item.getStatus(itemstack) != 2)
 		    				{
 			    				item.setStatus(itemstack, 2);
-			    				PacketHandler.sendStatusUpdate(player, 2);
+			    				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate(2), player);
 		    				}
 	    				}
 	    				else {
 		    				if(item.getStatus(itemstack) != 1)
 		    				{
 			    				item.setStatus(itemstack, 1);
-			    				PacketHandler.sendStatusUpdate(player, 1);
+			    				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate(1), player);
 		    				}
 	    				}
 	    				return;
@@ -56,7 +58,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 	    				if(item.getStatus(itemstack) != 3)
 	    				{
 	    					item.setStatus(itemstack, 3);
-	    					PacketHandler.sendStatusUpdate(player, 3);
+	    					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate(3), player);
 	    				}
 	    				return;
 	    			}
@@ -64,7 +66,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 		    			if(item.getStatus(itemstack) != 4)
 			    		{
 			    			item.setStatus(itemstack, 4);
-			    			PacketHandler.sendStatusUpdate(player, 4);
+			    			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate(4), player);
 			    		}
 		    			return;
 	    			}
@@ -73,7 +75,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 	    			if(item.getStatus(itemstack) != 4)
 		    		{
 		    			item.setStatus(itemstack, 4);
-		    			PacketHandler.sendStatusUpdate(player, 4);
+		    			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate(4), player);
 		    		}
 	    			return;
 	    		}

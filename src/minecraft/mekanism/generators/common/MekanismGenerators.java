@@ -7,8 +7,10 @@ import mekanism.common.IModule;
 import mekanism.common.ItemMekanism;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismRecipe;
+import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
+import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.item.Item;
@@ -78,6 +80,9 @@ public class MekanismGenerators implements IModule
 		addNames();
 		addRecipes();
 		addEntities();
+		
+		//Packet registrations
+		PacketHandler.registerPacket(PacketElectrolyticSeparatorParticle.class);
 		
 		//Finalization
 		Mekanism.logger.info("[MekanismGenerators] Loaded module.");

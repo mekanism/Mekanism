@@ -12,6 +12,7 @@ import java.util.EnumSet;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.IUniversalCable;
+import mekanism.api.Object3D;
 import mekanism.client.IHasSound;
 import mekanism.common.CableUtils;
 import mekanism.common.IActiveState;
@@ -19,6 +20,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileEntityElectricBlock;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -211,7 +214,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendTileEntityPacketToClients(this, 0, getNetworkedData(new ArrayList()));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;
