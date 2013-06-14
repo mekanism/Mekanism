@@ -34,7 +34,7 @@ public class PacketHandler implements IPacketHandler
 		ByteArrayDataInput dataStream = ByteStreams.newDataInput(packet.data);
         EntityPlayer entityplayer = (EntityPlayer)player;
         
-		if(packet.channel.equals("Mekanism"))
+		if(packet.channel.equals("MEK"))
 		{
 			try {
 				int packetIndex = dataStream.readInt();
@@ -165,7 +165,7 @@ public class PacketHandler implements IPacketHandler
         }
         
         Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "Mekanism";
+        packet.channel = "MEK";
         packet.data = bytes.toByteArray();
         packet.length = packet.data.length;
         

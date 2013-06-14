@@ -44,6 +44,8 @@ public class PacketRobit implements IMekanismPacket
 		}
 	}
 	
+	public PacketRobit() {}
+	
 	@Override
 	public String getName() 
 	{

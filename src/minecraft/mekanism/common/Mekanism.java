@@ -78,7 +78,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  *
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.6")
-@NetworkMod(channels = {"Mekanism"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
+@NetworkMod(channels = {"MEK"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
 	/** Mekanism logger instance */
