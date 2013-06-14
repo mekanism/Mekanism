@@ -61,7 +61,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(0);
 			data.add(getIncrementedNumber(tileEntity.code.digitOne));
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			tileEntity.code.digitOne = getIncrementedNumber(tileEntity.code.digitOne);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -70,7 +70,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(1);
 			data.add(getIncrementedNumber(tileEntity.code.digitTwo));
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			tileEntity.code.digitTwo = getIncrementedNumber(tileEntity.code.digitTwo);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -79,7 +79,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(2);
 			data.add(getIncrementedNumber(tileEntity.code.digitThree));
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			tileEntity.code.digitThree = getIncrementedNumber(tileEntity.code.digitThree);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -88,7 +88,7 @@ public class GuiTeleporter extends GuiContainer
 			data.add(3);
 			data.add(getIncrementedNumber(tileEntity.code.digitFour));
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			tileEntity.code.digitFour = getIncrementedNumber(tileEntity.code.digitFour);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}

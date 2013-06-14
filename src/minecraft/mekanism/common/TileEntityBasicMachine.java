@@ -268,7 +268,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;

@@ -78,18 +78,11 @@ public class PacketHandler implements IPacketHandler
 		packets.add(packetClass);
 	}
 	
-	public static void encode(Object[] dataValues, DataOutputStream output, int ignore)
+	public static void encode(Object[] dataValues, DataOutputStream output)
 	{
-		int iterations = 0;
-		
 		try {
 	    	for(Object data : dataValues)
 	    	{
-	    		if(iterations++ < ignore)
-	    		{
-	    			continue;
-	    		}
-	    		
 	    		if(data instanceof Integer)
 	    		{
 	    			output.writeInt((Integer)data);
@@ -130,7 +123,7 @@ public class PacketHandler implements IPacketHandler
 	    		}
 	    		else if(data instanceof ArrayList)
 	    		{
-	    			encode(((ArrayList)data).toArray(), output, 0);
+	    			encode(((ArrayList)data).toArray(), output);
 	    		}
 	    	}
 		} catch(Exception e) {

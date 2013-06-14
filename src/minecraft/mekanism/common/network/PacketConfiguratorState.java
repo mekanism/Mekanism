@@ -14,17 +14,18 @@ public class PacketConfiguratorState implements IMekanismPacket
 {
 	public byte state;
 	
-	public PacketConfiguratorState(byte b)
-	{
-		state = b;
-	}
-	
-	public PacketConfiguratorState() {}
-	
 	@Override
 	public String getName()
 	{
 		return "ConfiguratorState";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		state = (Byte)data[0];
+		
+		return this;
 	}
 
 	@Override

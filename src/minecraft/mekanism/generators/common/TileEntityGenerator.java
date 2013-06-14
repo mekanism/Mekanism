@@ -19,8 +19,8 @@ import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.TileEntityElectricBlock;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.TileEntityElectricBlock;
 import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -30,8 +30,6 @@ import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.IElectricityNetwork;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;
@@ -85,7 +83,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		
 		if(!worldObj.isRemote)
 		{
-			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
 			if(electricityStored > 0)
 			{
@@ -119,9 +117,8 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			if(!worldObj.isRemote && tileEntity instanceof IConductor)
 			{
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-				TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 	
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
 	
 				if(outputNetwork != null)
 				{
@@ -214,7 +211,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;

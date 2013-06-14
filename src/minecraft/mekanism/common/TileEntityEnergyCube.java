@@ -16,6 +16,7 @@ import java.util.HashSet;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUniversalCable;
+import mekanism.api.Object3D;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,8 +30,6 @@ import universalelectricity.core.block.IVoltage;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.IElectricityNetwork;
 import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;
@@ -67,7 +66,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		
 		if(!worldObj.isRemote)
 		{
-			TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
 			if(electricityStored > 0)
 			{
@@ -98,23 +97,23 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			if(tileEntity instanceof IConductor)
 			{
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+				
 				ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
 				
 				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 				{
 					if(direction != outputDirection)
 					{
-						IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), direction), direction);
+						IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj), direction);
+						
 						if(network != null)
 						{
 							inputNetworks.add(network);
 						}
 					}
 				}
-				
-				TileEntity outputTile = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), outputDirection);
 	
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(outputTile, outputDirection);
+				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
 	
 				if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
 				{

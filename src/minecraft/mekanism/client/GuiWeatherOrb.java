@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import mekanism.common.EnumPacketType;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -74,25 +73,25 @@ public class GuiWeatherOrb extends GuiScreen
 		if(guibutton.id == 0)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather(WeatherType.CLEAR));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather().setParams(WeatherType.CLEAR));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather(WeatherType.STORM));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather().setParams(WeatherType.STORM));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather(WeatherType.HAZE));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather().setParams(WeatherType.HAZE));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather(WeatherType.RAIN));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketWeather().setParams(WeatherType.RAIN));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)

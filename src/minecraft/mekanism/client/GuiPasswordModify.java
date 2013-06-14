@@ -162,13 +162,13 @@ public class GuiPasswordModify extends GuiScreen
 		else {
 			if(isBlock)
 			{
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Object3D.get(tileEntity)));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, true, Object3D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Object3D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, false, true, Object3D.get(tileEntity)));
 			}
 			else {
 				((IElectricChest)itemStack.getItem()).setPassword(itemStack, confirmPasswordField.getText());
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), false));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, false));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), false));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, false, false));
 			}
 		}
 	}

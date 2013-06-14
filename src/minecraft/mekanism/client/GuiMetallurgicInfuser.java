@@ -50,7 +50,7 @@ public class GuiMetallurgicInfuser extends GuiContainer
 				ArrayList data = new ArrayList();
 				data.add(0);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

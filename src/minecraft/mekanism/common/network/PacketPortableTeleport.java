@@ -24,6 +24,12 @@ public class PacketPortableTeleport implements IMekanismPacket
 	{
 		return "PortableTeleport";
 	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		return this;
+	}
 
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
@@ -48,7 +54,7 @@ public class PacketPortableTeleport implements IMekanismPacket
 				((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 				
 				world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX(coords), coords, 40D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
 			}
 		}
 	}

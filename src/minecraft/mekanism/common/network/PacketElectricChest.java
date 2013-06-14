@@ -33,62 +33,63 @@ public class PacketElectricChest implements IMekanismPacket
 	
 	public Object3D obj;
 	
-	public PacketElectricChest(ElectricChestPacketType type, Object... params)
-	{
-		activeType = type;
-		
-		switch(activeType)
-		{
-			case LOCK:
-				locked = (Boolean)params[0];
-				isBlock = (Boolean)params[1];
-				
-				if(isBlock)
-				{
-					obj = (Object3D)params[2];
-				}
-				
-				break;
-			case PASSWORD:
-				password = (String)params[0];
-				isBlock = (Boolean)params[1];
-				
-				if(isBlock)
-				{
-					obj = (Object3D)params[2];
-				}
-				
-				break;
-			case CLIENT_OPEN:
-				guiType = (Integer)params[0];
-				windowId = (Integer)params[1];
-				isBlock = (Boolean)params[2];
-				
-				if(isBlock)
-				{
-					obj = (Object3D)params[3];
-				}
-				
-				break;
-			case SERVER_OPEN:
-				useEnergy = (Boolean)params[0];
-				isBlock = (Boolean)params[1];
-				
-				if(isBlock)
-				{
-					obj = (Object3D)params[2];
-				}
-				
-				break;
-		}
-	}
-	
-	public PacketElectricChest() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "ElectricChest";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		activeType = (ElectricChestPacketType)data[0];
+		
+		switch(activeType)
+		{
+			case LOCK:
+				locked = (Boolean)data[1];
+				isBlock = (Boolean)data[2];
+				
+				if(isBlock)
+				{
+					obj = (Object3D)data[3];
+				}
+				
+				break;
+			case PASSWORD:
+				password = (String)data[1];
+				isBlock = (Boolean)data[2];
+				
+				if(isBlock)
+				{
+					obj = (Object3D)data[3];
+				}
+				
+				break;
+			case CLIENT_OPEN:
+				guiType = (Integer)data[1];
+				windowId = (Integer)data[2];
+				isBlock = (Boolean)data[3];
+				
+				if(isBlock)
+				{
+					obj = (Object3D)data[4];
+				}
+				
+				break;
+			case SERVER_OPEN:
+				useEnergy = (Boolean)data[1];
+				isBlock = (Boolean)data[2];
+				
+				if(isBlock)
+				{
+					obj = (Object3D)data[3];
+				}
+				
+				break;
+		}
+		
+		return this;
 	}
 
 	@Override

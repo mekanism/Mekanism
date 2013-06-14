@@ -1,11 +1,10 @@
 package mekanism.common;
 
 import mekanism.api.IMechanicalPipe;
+import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 
 public final class PipeUtils 
 {
@@ -16,19 +15,19 @@ public final class PipeUtils
      */
     public static TileEntity[] getConnectedPipes(TileEntity tileEntity)
     {
-    	TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
+    	TileEntity[] pipes = new TileEntity[] {null, null, null, null, null, null};
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity tube = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(tube instanceof IMechanicalPipe && ((IMechanicalPipe)tube).canTransferLiquids(tileEntity))
+			if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).canTransferLiquids(tileEntity))
 			{
-				tubes[orientation.ordinal()] = tube;
+				pipes[orientation.ordinal()] = pipe;
 			}
     	}
     	
-    	return tubes;
+    	return pipes;
     }
     
     /**
@@ -42,7 +41,7 @@ public final class PipeUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity acceptor = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(acceptor instanceof ITankContainer)
 			{

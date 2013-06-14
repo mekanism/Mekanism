@@ -112,10 +112,10 @@ public class GuiElectricChest extends GuiContainer
 				
 				if(isBlock)
 				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), true, Object3D.get(tileEntity)));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), true, Object3D.get(tileEntity)));
 				}
 				else {
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), false));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), false));
 					
 					ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
 					((IElectricChest)stack.getItem()).setLocked(stack, !getLocked());

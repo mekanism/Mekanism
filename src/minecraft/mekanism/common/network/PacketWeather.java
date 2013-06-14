@@ -11,17 +11,18 @@ public class PacketWeather implements IMekanismPacket
 {
 	public WeatherType activeType;
 	
-	public PacketWeather(WeatherType type)
-	{
-		activeType = type;
-	}
-	
-	public PacketWeather() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "Weather";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		activeType = (WeatherType)data[0];
+		
+		return this;
 	}
 
 	@Override
@@ -59,10 +60,13 @@ public class PacketWeather implements IMekanismPacket
 	{
 		/** Clears the world of all weather effects, including rain, lightning, and clouds. */
 		CLEAR,
+		
 		/** Sets the world's weather to thunder. This may or may not include rain. */
 		STORM,
+		
 		/** Sets the world's weather to both thunder AND rain. */
 		HAZE,
+		
 		/** Sets the world's weather to rain. */
 		RAIN
 	}

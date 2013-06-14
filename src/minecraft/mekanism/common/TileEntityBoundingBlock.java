@@ -25,7 +25,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 			mainY = y;
 			mainZ = z;
 			
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 	
@@ -36,7 +36,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
 		}
 	}
 	

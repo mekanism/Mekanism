@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IUniversalCable;
+import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IConnectionProvider;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerReceptor;
 
 public final class CableUtils
@@ -29,7 +28,7 @@ public final class CableUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity acceptor = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || (acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded))
 			{
@@ -51,7 +50,7 @@ public final class CableUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity cable = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(cable instanceof IUniversalCable && ((IUniversalCable)cable).canTransferEnergy(tileEntity))
 			{
@@ -73,7 +72,7 @@ public final class CableUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity outputter = VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), orientation);
+			TileEntity outputter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite()) || outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, MekanismUtils.toIC2Direction(orientation.getOpposite())))
 			{
@@ -92,7 +91,7 @@ public final class CableUtils
      */
     public static boolean canConnectToAcceptor(ForgeDirection side, TileEntity tile)
     {
-    	TileEntity tileEntity = VectorHelper.getTileEntityFromSide(tile.worldObj, new Vector3(tile.xCoord, tile.yCoord, tile.zCoord), side);
+    	TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
     	
     	if(tileEntity instanceof IStrictEnergyAcceptor && ((IStrictEnergyAcceptor)tileEntity).canReceiveEnergy(side.getOpposite()))
     	{
@@ -137,7 +136,7 @@ public final class CableUtils
      */
     public static double emitEnergyToNetwork(double amount, TileEntity sender, ForgeDirection facing)
     {
-    	TileEntity pointer = VectorHelper.getTileEntityFromSide(sender.worldObj, new Vector3(sender.xCoord, sender.yCoord, sender.zCoord), facing);
+    	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
     	if(pointer instanceof IUniversalCable)
     	{

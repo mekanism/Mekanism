@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 import mekanism.api.Object3D;
 import mekanism.common.ITileNetwork;
@@ -15,20 +16,21 @@ public class PacketTileEntity implements IMekanismPacket
 {
 	public Object3D object3D;
 	
-	public Object[] parameters;
-	
-	public PacketTileEntity(Object3D obj, Object... params)
-	{
-		object3D = obj;
-		parameters = params;
-	}
-	
-	public PacketTileEntity() {}
+	public ArrayList parameters;
 	
 	@Override
 	public String getName() 
 	{
 		return "TileEntity";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		object3D = (Object3D)data[0];
+		parameters = (ArrayList)data[1];
+		
+		return this;
 	}
 
 	@Override
@@ -53,6 +55,6 @@ public class PacketTileEntity implements IMekanismPacket
 		dataStream.writeInt(object3D.yCoord);
 		dataStream.writeInt(object3D.zCoord);
 		
-		PacketHandler.encode(parameters, dataStream, 0);
+		PacketHandler.encode(new Object[] {parameters}, dataStream);
 	}
 }

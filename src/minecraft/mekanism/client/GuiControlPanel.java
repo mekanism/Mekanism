@@ -164,7 +164,7 @@ public class GuiControlPanel extends GuiScreen
 				    			return;
 				    		}
 							
-				    		PacketHandler.sendPacket(Transmission.SERVER, new PacketControlPanel(gui.getClassPath(), gui.getInstanceName(), new Object3D(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())), gui.getGuiID()));
+				    		PacketHandler.sendPacket(Transmission.SERVER, new PacketControlPanel().setParams(gui.getClassPath(), gui.getInstanceName(), new Object3D(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText())), gui.getGuiID()));
 							usingPlayer.openGui(instance, gui.getGuiID(), worldObj, Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()), Integer.parseInt(zField.getText()));
 						} catch(Exception e) {
 							System.err.println("[Mekanism] Error while handling Control Panel GUI request.");

@@ -209,7 +209,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 			
 			for(Object3D coords : Mekanism.teleporters.get(code))
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX(coords), coords, 40D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
 			}
 		}
 	}

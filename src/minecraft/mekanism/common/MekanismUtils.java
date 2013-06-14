@@ -135,21 +135,25 @@ public final class MekanismUtils
 		BufferedReader rd;
 		String line;
 		String result = "";
+		
 		try {
 			url = new URL(urlToRead);
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			while ((line = rd.readLine()) != null) 
+			
+			while((line = rd.readLine()) != null) 
 			{
 				result += line;
 				sb.append(line);
 			}
+			
 			rd.close();
 		} catch (Exception e) {
 			result = "null";
 			System.err.println("[Mekanism] An error occured while connecting to URL '" + urlToRead + ".'");
 		}
+		
 		return result;
 	}
 	
@@ -740,10 +744,10 @@ public final class MekanismUtils
 		
 		if(isBlock)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Object3D.get(tileEntity)), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Object3D.get(tileEntity)), player);
 		}
 		else {
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 0, id, false), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, false), player);
 		}
 		
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);

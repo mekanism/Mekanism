@@ -3,11 +3,10 @@ package mekanism.common;
 import java.util.ArrayList;
 
 import mekanism.api.IUniversalCable;
+import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -78,8 +77,8 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	public int powerRequest(ForgeDirection from)
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		ignored.add(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), from));
-		return canTransferEnergy(VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), from)) ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()) : 0;
+		ignored.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
+		return canTransferEnergy(Object3D.get(this).getFromSide(from).getTileEntity(worldObj)) ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()) : 0;
 	}
 	
 	@Override
@@ -103,7 +102,7 @@ class CablePowerProvider extends PowerProvider
 	public void receiveEnergy(float quantity, ForgeDirection from)
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		ignored.add(VectorHelper.getTileEntityFromSide(tileEntity.worldObj, new Vector3(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord), from));
+		ignored.add(Object3D.get(tileEntity).getFromSide(from).getTileEntity(tileEntity.worldObj));
 		CableUtils.emitEnergyFromAllSidesIgnore(quantity*Mekanism.FROM_BC, tileEntity, ignored);
 	}
 }

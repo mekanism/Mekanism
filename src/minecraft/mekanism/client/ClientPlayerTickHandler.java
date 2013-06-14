@@ -3,7 +3,6 @@ package mekanism.client;
 import java.util.EnumSet;
 
 import mekanism.api.EnumColor;
-import mekanism.common.EnumPacketType;
 import mekanism.common.ItemConfigurator;
 import mekanism.common.ItemElectricBow;
 import mekanism.common.PacketHandler;
@@ -49,7 +48,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 		    			if(!lastTickConfiguratorChange)
 		    			{
 			    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
-			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState(item.getState(stack)));
+			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
 			    			entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack)));
 			    			lastTickConfiguratorChange = true;
 		    			}
@@ -67,7 +66,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 						if(!lastTickElectricBowChange)
 						{
 							item.setFireState(stack, !item.getFireState(stack));
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState(item.getFireState(stack)));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
 							entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF")));
 							lastTickElectricBowChange = true;
 						}

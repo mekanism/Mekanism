@@ -11,16 +11,15 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketElectrolyticSeparatorParticle implements IMekanismPacket
 {
-	public int packetId;
-	
 	public TileEntityElectrolyticSeparator tileEntity;
 	
-	public PacketElectrolyticSeparatorParticle(TileEntityElectrolyticSeparator tile)
+	@Override
+	public IMekanismPacket setParams(Object... data)
 	{
-		tileEntity = tile;
+		tileEntity = (TileEntityElectrolyticSeparator)data[0];
+		
+		return this;
 	}
-	
-	public PacketElectrolyticSeparatorParticle() {}
 	
 	@Override
 	public String getName() 

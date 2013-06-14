@@ -36,8 +36,6 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -181,7 +179,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				setGas(outputType, getGas(outputType) - (Math.min(getGas(outputType), output) - GasTransmission.emitGasToNetwork(outputType, Math.min(getGas(outputType), output), this, ForgeDirection.getOrientation(facing))));
 				
-				TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), ForgeDirection.getOrientation(facing));
+				TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
 				if(tileEntity instanceof IGasAcceptor)
 				{
@@ -210,7 +208,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(new Random().nextInt(3) == 2)
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketElectrolyticSeparatorParticle(this), Object3D.get(this), 40D);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketElectrolyticSeparatorParticle().setParams(this), Object3D.get(this), 40D);
 				}
 			}
 		}

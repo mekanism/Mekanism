@@ -12,17 +12,18 @@ public class PacketTime implements IMekanismPacket
 {
 	public int hourToSet;
 	
-	public PacketTime(int hour)
-	{
-		hourToSet = hour;
-	}
-	
-	public PacketTime() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "Time";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		hourToSet = (Integer)data[0];
+		
+		return this;
 	}
 
 	@Override

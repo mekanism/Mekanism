@@ -18,17 +18,18 @@ public class PacketDataRequest implements IMekanismPacket
 {
 	public Object3D object3D;
 	
-	public PacketDataRequest(Object3D obj)
-	{
-		object3D = obj;
-	}
-	
-	public PacketDataRequest() {}
-	
 	@Override
 	public String getName()
 	{
 		return "DataRequest";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		object3D = (Object3D)data[0];
+		
+		return this;
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class PacketDataRequest implements IMekanismPacket
 		
 		if(worldServer != null && worldServer.getBlockTileEntity(x, y, z) instanceof ITileNetwork)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
 		}
 	}
 

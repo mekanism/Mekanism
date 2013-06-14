@@ -1188,18 +1188,18 @@ public class Mekanism
 	@ForgeSubscribe
 	public void onGasTransferred(GasTransferEvent event)
 	{
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate(TransmitterTransferType.GAS, event.transferProtocol.pointer, event.transferProtocol.transferType));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.GAS, event.transferProtocol.pointer, event.transferProtocol.transferType));
 	}
 	
 	@ForgeSubscribe
 	public void onLiquidTransferred(LiquidTransferEvent event)
 	{
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate(TransmitterTransferType.LIQUID, event.transferProtocol.pointer, event.liquidSent));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.LIQUID, event.transferProtocol.pointer, event.liquidSent));
 	}
 	
 	@ForgeSubscribe
 	public void onEnergyTransferred(EnergyTransferEvent event)
 	{
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate(TransmitterTransferType.ENERGY, event.transferProtocol.pointer));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.ENERGY, event.transferProtocol.pointer));
 	}
 }

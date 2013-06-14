@@ -13,17 +13,18 @@ public class PacketStatusUpdate implements IMekanismPacket
 {
 	public int status;
 	
-	public PacketStatusUpdate(int i)
-	{
-		status = i;
-	}
-	
-	public PacketStatusUpdate() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "StatusUpdate";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		status = (Integer)data[0];
+		
+		return this;
 	}
 
 	@Override

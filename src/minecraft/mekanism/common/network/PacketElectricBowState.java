@@ -14,17 +14,18 @@ public class PacketElectricBowState implements IMekanismPacket
 {
 	public boolean fireMode;
 	
-	public PacketElectricBowState(boolean fire)
-	{
-		fireMode = fire;
-	}
-	
-	public PacketElectricBowState() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "ElectricBowState";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		fireMode = (Boolean)data[0];
+		
+		return this;
 	}
 
 	@Override

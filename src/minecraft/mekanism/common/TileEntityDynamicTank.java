@@ -147,7 +147,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			if(structure != null && isRendering && packetTick % 20 == 0)
 			{
 				sendStructure = true;
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 			}
 			
 			if(prevStructure != (structure != null))
@@ -159,7 +159,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					sendStructure = true;
 				}
 				
-				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 			}
 			
 			prevStructure = structure != null;
@@ -226,7 +226,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.liquidStored = null;
 							}
 							
-							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 						}
 					}
 				}
@@ -285,7 +285,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						}
 					}
 					
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
@@ -423,7 +423,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 				}
 			}
 		}

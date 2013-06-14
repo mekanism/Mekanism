@@ -27,8 +27,6 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -100,7 +98,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(suck(true))
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 				}
 				
 				clean(true);
@@ -113,7 +111,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
 			{
-				TileEntity tileEntity = VectorHelper.getTileEntityFromSide(worldObj, new Vector3(xCoord, yCoord, zCoord), orientation);
+				TileEntity tileEntity = Object3D.get(this).getFromSide(orientation).getTileEntity(worldObj);
 
 				if(tileEntity instanceof ITankContainer) 
 				{

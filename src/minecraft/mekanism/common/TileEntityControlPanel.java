@@ -31,11 +31,11 @@ public class TileEntityControlPanel extends TileEntity implements ITileNetwork
 		
 		if(packetTick == 5 && !worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 		if(packetTick % 20 == 0 && worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 	

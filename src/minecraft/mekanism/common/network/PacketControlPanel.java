@@ -17,22 +17,23 @@ public class PacketControlPanel implements IMekanismPacket
 	
 	public int guiId;
 	
-	public PacketControlPanel(String mClass, String mInstance, Object3D obj, int id)
-	{
-		modClass = mClass;
-		modInstance = mInstance;
-		
-		object3D = obj;
-		
-		guiId = id;
-	}
-	
-	public PacketControlPanel() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "ControlPanel";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		modClass = (String)data[0];
+		modInstance = (String)data[1];
+		
+		object3D = (Object3D)data[2];
+		
+		guiId = (Integer)data[3];
+		
+		return this;
 	}
 
 	@Override

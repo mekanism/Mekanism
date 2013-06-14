@@ -47,7 +47,7 @@ public class ItemConfigurator extends ItemEnergized
 	    		{
 	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
 	    			tileEntity.isActive = !tileEntity.isActive;
-	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 	    			return true;
 	    		}
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityElectricPump)
@@ -82,7 +82,7 @@ public class ItemConfigurator extends ItemEnergized
 		    				if(config instanceof TileEntityBasicBlock)
 		    				{
 		    					TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Object3D.get(tileEntity), 50D);
+		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Object3D.get(tileEntity), 50D);
 		    				}
 		    				return true;
 	    				}

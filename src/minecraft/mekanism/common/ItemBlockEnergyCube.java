@@ -150,7 +150,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		if(!world.isRemote)
     		{
-    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
     		}
     	}
     	

@@ -595,10 +595,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	 		}
         	 		else if(!electricChest.authenticated)
         	 		{
-        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Object3D.get(electricChest)), entityplayer);
+        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Object3D.get(electricChest)), entityplayer);
         	 		}
         	 		else {
-        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Object3D.get(electricChest)), entityplayer);
+        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Object3D.get(electricChest)), entityplayer);
         	 		}
         	 		
 	        		return true;

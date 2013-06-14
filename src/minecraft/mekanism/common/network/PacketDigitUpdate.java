@@ -14,18 +14,19 @@ public class PacketDigitUpdate implements IMekanismPacket
 	public int index;
 	public int digit;
 	
-	public PacketDigitUpdate(int i, int j)
-	{
-		index = i;
-		digit = j;
-	}
-	
-	public PacketDigitUpdate() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "DigitUpdate";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		index = (Integer)data[0];
+		digit = (Integer)data[1];
+		
+		return this;
 	}
 
 	@Override

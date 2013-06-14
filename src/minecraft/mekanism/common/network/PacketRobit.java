@@ -18,38 +18,39 @@ public class PacketRobit implements IMekanismPacket
 	
 	public String name;
 	
-	public PacketRobit(RobitPacketType type, Object... params)
-	{
-		activeType = type;
-		
-		switch(activeType)
-		{
-			case GUI:
-				guiType = (Integer)params[0];
-				entityId = (Integer)params[1];
-				break;
-			case FOLLOW:
-				entityId = (Integer)params[0];
-				break;
-			case NAME:
-				name = (String)params[0];
-				entityId = (Integer)params[1];
-				break;
-			case GO_HOME:
-				entityId = (Integer)params[0];
-				break;
-			case DROP_PICKUP:
-				entityId = (Integer)params[0];
-				break;
-		}
-	}
-	
-	public PacketRobit() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "Robit";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		activeType = (RobitPacketType)data[0];
+		
+		switch(activeType)
+		{
+			case GUI:
+				guiType = (Integer)data[1];
+				entityId = (Integer)data[2];
+				break;
+			case FOLLOW:
+				entityId = (Integer)data[1];
+				break;
+			case NAME:
+				name = (String)data[1];
+				entityId = (Integer)data[2];
+				break;
+			case GO_HOME:
+				entityId = (Integer)data[1];
+				break;
+			case DROP_PICKUP:
+				entityId = (Integer)data[1];
+				break;
+		}
+		
+		return this;
 	}
 
 	@Override

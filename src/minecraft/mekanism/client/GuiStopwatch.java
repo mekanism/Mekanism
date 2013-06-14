@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import mekanism.common.EnumPacketType;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -73,25 +72,25 @@ public class GuiStopwatch extends GuiScreen
 		if(guibutton.id == 0)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(0));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime().setParams(0));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 1)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(6));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime().setParams(6));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 2)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(12));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime().setParams(12));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 3)
 		{
 			MekanismUtils.doFakeEntityExplosion(player);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime(18));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTime().setParams(18));
 			mc.displayGuiScreen(null);
 		}
 		if(guibutton.id == 4)

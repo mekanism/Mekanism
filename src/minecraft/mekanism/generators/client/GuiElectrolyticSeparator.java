@@ -62,7 +62,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			data.add((byte)0);
 			data.add(nameToSet);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
@@ -86,7 +86,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			data.add((byte)1);
 			data.add(nameToSet);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

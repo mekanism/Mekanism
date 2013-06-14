@@ -481,11 +481,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			{
 		 		if(!getAuthenticated(itemstack))
 		 		{
-		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
+		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
 		 		}
 		 		else if(getLocked(itemstack) && getJoules(itemstack) > 0)
 		 		{
-		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
+		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
 		 		}
 		 		else {
 		 			InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);

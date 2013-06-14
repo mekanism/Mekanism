@@ -41,7 +41,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		{
 			if(playersUsing.size() > 0)
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 			}
 			
 			packetTick++;
@@ -68,7 +68,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
 		}
 	}
 	
@@ -111,7 +111,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			facing = direction;
 		}
 		
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(this), getNetworkedData(new ArrayList())));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 	}
 	
 	/**

@@ -13,17 +13,18 @@ public class PacketPortalFX implements IMekanismPacket
 {
 	public Object3D object3D;
 	
-	public PacketPortalFX(Object3D obj)
-	{
-		object3D = obj;
-	}
-	
-	public PacketPortalFX() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "PortalFX";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		object3D = (Object3D)data[0];
+		
+		return this;
 	}
 
 	@Override

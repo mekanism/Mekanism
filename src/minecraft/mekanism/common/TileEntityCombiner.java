@@ -28,6 +28,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 		{
 			return 200;
 		}
+		
 		return 0;
 	}
 }

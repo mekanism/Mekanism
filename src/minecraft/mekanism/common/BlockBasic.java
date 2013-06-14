@@ -184,7 +184,7 @@ public class BlockBasic extends Block
 				
 				if(!manageInventory(entityplayer, tileEntity))
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 					entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 				}
 				else {

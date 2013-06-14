@@ -132,11 +132,11 @@ public class GuiPasswordEnter extends GuiScreen
 			if(isBlock)
 			{
 				tileEntity.setEnergy(tileEntity.getEnergy() - 100);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, true, Object3D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, true, true, Object3D.get(tileEntity)));
 			}
 			else {
 				((IEnergizedItem)itemStack.getItem()).setEnergy(itemStack, ((IEnergizedItem)itemStack.getItem()).getEnergy(itemStack) - 100);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, false));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, true, false));
 			}
 		}
 	}

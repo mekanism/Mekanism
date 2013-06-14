@@ -16,8 +16,6 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
-import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -78,7 +76,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 				
 				for(ITankContainer container : connectedAcceptors)
 				{
-					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container)).getOpposite();
+					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container));
 					
 					if(container != null)
 					{
@@ -86,7 +84,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side, new LiquidTransferProtocol(this, VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), side.getOpposite()), received).calculate(), true);
+							container.drain(side, new LiquidTransferProtocol(this, Object3D.get(this).getFromSide(side).getTileEntity(worldObj), received).calculate(), true);
 						}
 					}
 				}
@@ -107,7 +105,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
 		}
 	}
 	
@@ -152,7 +150,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(!isActive)
 		{
-			return new LiquidTransferProtocol(this, VectorHelper.getTileEntityFromSide(worldObj, new Vector3(this), from), resource).calculate();
+			return new LiquidTransferProtocol(this, Object3D.get(this).getFromSide(from).getTileEntity(worldObj), resource).calculate();
 		}
 		
 		return 0;

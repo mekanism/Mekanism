@@ -24,31 +24,31 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	
 	public LiquidStack liquidStack;
 	
-	public PacketTransmitterTransferUpdate(TransmitterTransferType type, Object... params)
-	{
-		tileEntity = (TileEntity)params[0];
-		
-		activeType = type;
-		
-		switch(type)
-		{
-			case ENERGY:
-				break;
-			case GAS:
-				gasName = ((EnumGas)params[1]).name;
-				break;
-			case LIQUID:
-				liquidStack = (LiquidStack)params[1];
-				break;
-		}
-	}
-	
-	public PacketTransmitterTransferUpdate() {}
-	
 	@Override
 	public String getName() 
 	{
 		return "TransmitterTransferUpdate";
+	}
+	
+	@Override
+	public IMekanismPacket setParams(Object... data)
+	{
+		activeType = (TransmitterTransferType)data[0];
+		tileEntity = (TileEntity)data[1];
+		
+		switch(activeType)
+		{
+			case ENERGY:
+				break;
+			case GAS:
+				gasName = ((EnumGas)data[2]).name;
+				break;
+			case LIQUID:
+				liquidStack = (LiquidStack)data[2];
+				break;
+		}
+		
+		return this;
 	}
 
 	@Override
