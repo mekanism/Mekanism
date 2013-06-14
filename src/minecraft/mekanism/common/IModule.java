@@ -1,7 +1,7 @@
 package mekanism.common;
 
 /**
- * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, a Mekanism module.
+ * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.
  * @author aidancbrady
  *
  */

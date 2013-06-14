@@ -50,7 +50,6 @@ public class GuiRobitMain extends GuiContainer
     	if(nameChangeField.getText() != null && !nameChangeField.getText().isEmpty())
     	{
     		PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.NAME, nameChangeField.getText(), robit.entityId));
-    		//PacketHandler.sendNameUpdate(nameChangeField.getText(), robit.entityId);
     		toggleNameChange();
     		nameChangeField.setText("");
     	}
@@ -263,35 +262,30 @@ public class GuiRobitMain extends GuiContainer
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 1, robit.entityId));
-				//PacketHandler.sendRobitGui(1, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 2, robit.entityId));
-				//PacketHandler.sendRobitGui(2, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 3, robit.entityId));
-				//PacketHandler.sendRobitGui(3, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GUI, 4, robit.entityId));
-				//PacketHandler.sendRobitGui(4, robit.entityId);
 				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.entityId, 0, 0);
 			}
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.FOLLOW, robit.entityId));
-				//PacketHandler.sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, RobitPacket.FOLLOW.ordinal(), robit.entityId);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 			{
@@ -302,13 +296,11 @@ public class GuiRobitMain extends GuiContainer
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.GO_HOME, robit.entityId));
-				//PacketHandler.sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, RobitPacket.GO_HOME.ordinal(), robit.entityId);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit(RobitPacketType.DROP_PICKUP, robit.entityId));
-				//PacketHandler.sendPacketData(EnumPacketType.ROBIT, Transmission.SERVER, RobitPacket.DROP_PICKUP.ordinal(), robit.entityId);
 			}
 		}
 	}

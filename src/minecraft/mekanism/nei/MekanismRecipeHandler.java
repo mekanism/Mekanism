@@ -32,8 +32,8 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 			{
 				if(irecipe instanceof MekanismRecipe)
 				{
-					MekanismRecipe EnergyRecipe = (MekanismRecipe)irecipe;
-					CachedEnergyRecipe recipe = new CachedEnergyRecipe(3, 3, EnergyRecipe.getInput(), EnergyRecipe.getRecipeOutput());
+					MekanismRecipe energyRecipe = (MekanismRecipe)irecipe;
+					CachedEnergyRecipe recipe = new CachedEnergyRecipe(energyRecipe.width, energyRecipe.height, energyRecipe.getInput(), energyRecipe.getRecipeOutput());
 					arecipes.add(recipe);
 				}
 			}
@@ -182,7 +182,9 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 				for(ItemStack item : stack.items)
 				{
 					if(areItemsEqual(item, ingredient))
+					{
 						return true;
+					}
 				}
 			}
 			return false;
