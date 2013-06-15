@@ -26,6 +26,7 @@ import cpw.mods.fml.common.network.Player;
  */
 public class PacketHandler implements IPacketHandler
 {
+	/** The ArrayList of registered packet classes, who's index tells which packet is which. */
 	public static List<Class<? extends IMekanismPacket>> packets = new ArrayList<Class<? extends IMekanismPacket>>();
 	
 	@Override
@@ -65,6 +66,11 @@ public class PacketHandler implements IPacketHandler
 		}
 	}
 	
+	/**
+	 * Registers a packet class for identification and reflection purposes.  This MUST be called both server-side and client-side,
+	 * otherwise the packet will not be handled correctly.
+	 * @param packetClass - class of the packet to register
+	 */
 	public static void registerPacket(Class<? extends IMekanismPacket> packetClass)
 	{
 		for(Class<? extends IMekanismPacket> iteration : packets)
@@ -78,6 +84,11 @@ public class PacketHandler implements IPacketHandler
 		packets.add(packetClass);
 	}
 	
+	/**
+	 * Encodes an Object[] of data into a DataOutputStream.
+	 * @param dataValues - an Object[] of data to encode
+	 * @param output - the output stream to write to
+	 */
 	public static void encode(Object[] dataValues, DataOutputStream output)
 	{
 		try {
@@ -132,6 +143,12 @@ public class PacketHandler implements IPacketHandler
 		}
 	}
 	
+	/**
+	 * Sends a packet with the defined type of transmission.
+	 * @param trans - the type of transmission to use with this packet
+	 * @param packetType - the object representing this packet, both registered and properly using write()
+	 * @param transParams - any extra parameters the transmission type requires
+	 */
 	public static void sendPacket(Transmission trans, IMekanismPacket packetType, Object... transParams)
 	{
 		if(packetType == null)
@@ -182,6 +199,12 @@ public class PacketHandler implements IPacketHandler
         log(trans, packetType, transParams);
 	}
 	
+	/**
+	 * Writes a log to the console with information about a packet recently sent.
+	 * @param trans - transmission type this packet used when it was sent
+	 * @param packetType - object representing this packet
+	 * @param transParams - any extra parameters the transmission type requires
+	 */
 	private static void log(Transmission trans, IMekanismPacket packetType, Object[] transParams)
 	{
 		if(Mekanism.logPackets)

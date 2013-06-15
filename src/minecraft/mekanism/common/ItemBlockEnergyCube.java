@@ -399,6 +399,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	@Override
 	public boolean isMetadataSpecific()
 	{
-		return true;
+		return false;
 	}
 }
