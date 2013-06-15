@@ -51,10 +51,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			if(data.location != null && data.height > 0)
 			{
 				push();
+				
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 				
 				int[] displayList = getListAndRender(data, tileEntity.structure.liquidStored.canonical(), tileEntity.worldObj);
 				GL11.glCallList(displayList[(int)(((float)tileEntity.structure.liquidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
+				
 				pop();
 				
 				for(ValveData valveData : tileEntity.valveViewing.keySet())

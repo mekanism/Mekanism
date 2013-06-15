@@ -277,18 +277,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		double givenEnergy = amount*Mekanism.FROM_IC2;
-		double energyNeeded = getMaxJoules(itemStack)-getJoules(itemStack);
-		double energyToStore = Math.min(Math.min(amount, getMaxJoules(itemStack)*0.01), energyNeeded);
+		double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
+		double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
 		
 		if(!simulate)
 		{
-			setJoules(getJoules(itemStack) + energyToStore, itemStack);
-		}
-		
-		if(energyToStore < 1)
-		{
-			return 1;
+			setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
 		}
 		
 		return (int)(energyToStore*Mekanism.TO_IC2);
@@ -297,7 +291,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		return amount;
+		return 0;
 	}
 
 	@Override

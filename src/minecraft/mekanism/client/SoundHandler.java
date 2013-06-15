@@ -70,12 +70,7 @@ public class SoundHandler
 					{
 						if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
 						{
-							if(sound.tileEntity == null || !(sound.tileEntity instanceof IHasSound))
-							{
-								soundsToRemove.add(sound);
-								continue;
-							}
-							else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) == null)
+							if(!(sound.tileEntity instanceof IHasSound))
 							{
 								soundsToRemove.add(sound);
 								continue;

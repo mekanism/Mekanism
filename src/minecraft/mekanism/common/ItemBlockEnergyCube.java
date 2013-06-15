@@ -187,18 +187,12 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	@Override
 	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		double givenEnergy = amount*Mekanism.FROM_IC2;
-		double energyNeeded = getEnergyCubeTier(itemStack).MAX_ELECTRICITY-getJoules(itemStack);
-		double energyToStore = Math.min(Math.min(amount, getEnergyCubeTier(itemStack).MAX_ELECTRICITY*0.01), energyNeeded);
+		double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
+		double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
 		
 		if(!simulate)
 		{
-			setJoules(getJoules(itemStack) + energyToStore, itemStack);
-		}
-		
-		if(energyToStore < 1)
-		{
-			return 1;
+			setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
 		}
 		
 		return (int)(energyToStore*Mekanism.TO_IC2);
@@ -208,16 +202,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
 		double energyWanted = amount*Mekanism.FROM_IC2;
-		double energyToGive = Math.min(Math.min(energyWanted, getEnergyCubeTier(itemStack).MAX_ELECTRICITY*0.01), getJoules(itemStack));
+		double energyToGive = Math.min(Math.min(energyWanted, getMaxEnergy(itemStack)*0.01), getJoules(itemStack));
 		
 		if(!simulate)
 		{
 			setJoules(getJoules(itemStack) - energyToGive, itemStack);
-		}
-		
-		if(energyWanted < 1)
-		{
-			return 1;
 		}
 		
 		return (int)(energyToGive*Mekanism.TO_IC2);
