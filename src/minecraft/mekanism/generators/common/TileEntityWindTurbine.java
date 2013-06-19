@@ -13,12 +13,9 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public int angle;
 	
-	/** How much energy this generator produces per-tick. */
-	public int GENERATION_RATE = 30;
-	
 	public TileEntityWindTurbine() 
 	{
-		super("Wind Turbine", 200000, 400);
+		super("Wind Turbine", 200000, (MekanismGenerators.windGeneration*8)*2);
 		inventory = new ItemStack[1];
 	}
 	
@@ -34,7 +31,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + (GENERATION_RATE*getMultiplier()));
+				setEnergy(electricityStored + (MekanismGenerators.windGeneration*getMultiplier()));
 			}
 			else {
 				setActive(false);
@@ -67,9 +64,9 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public int getEnvironmentBoost() 
+	public double getEnvironmentBoost() 
 	{
-		return (int)getMultiplier();
+		return getMultiplier();
 	}
 
 	@Override
@@ -88,7 +85,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			{
 				for(int z = obj.zCoord-2; z <= obj.zCoord+2; z++)
 				{
-					if(worldObj.getBlockId(x, y, z) == 0)
+					if(worldObj.isAirBlock(x, y, z))
 					{
 						continue;
 					}

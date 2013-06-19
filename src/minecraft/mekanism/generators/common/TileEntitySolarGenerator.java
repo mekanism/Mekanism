@@ -23,16 +23,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public boolean seesSun = false;
 	
 	/** How fast this tile entity generates energy. */
-	public int GENERATION_RATE;
+	public double GENERATION_RATE;
 	
 	public TileEntitySolarGenerator()
 	{
-		super("Solar Generator", 96000, 60);
-		GENERATION_RATE = 30;
+		super("Solar Generator", 96000, MekanismGenerators.solarGeneration*2);
+		GENERATION_RATE = MekanismGenerators.solarGeneration;
 		inventory = new ItemStack[1];
 	}
 	
-	public TileEntitySolarGenerator(String name, int maxEnergy, int output, int generation)
+	public TileEntitySolarGenerator(String name, double maxEnergy, double output, double generation)
 	{
 		super(name, maxEnergy, output);
 		GENERATION_RATE = generation;
@@ -138,7 +138,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public int getEnvironmentBoost()
+	public double getEnvironmentBoost()
 	{
 		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier() : 1)) : 0;
 	}

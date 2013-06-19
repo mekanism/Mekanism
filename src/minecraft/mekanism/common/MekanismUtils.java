@@ -764,9 +764,8 @@ public final class MekanismUtils
     public static DynamicTankCache pullInventory(World world, int id)
     {
     	DynamicTankCache toReturn = Mekanism.dynamicInventories.get(id);
-    	Mekanism.dynamicInventories.remove(id);
     	
-    	for(Object3D obj : Mekanism.inventoryLocations.get(id))
+    	for(Object3D obj : Mekanism.dynamicInventories.get(id).locations)
     	{
     		TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
     		
@@ -778,7 +777,7 @@ public final class MekanismUtils
     		}
     	}
     	
-    	Mekanism.inventoryLocations.remove(id);
+    	Mekanism.dynamicInventories.remove(id);
     	
     	return toReturn;
     }
@@ -797,13 +796,9 @@ public final class MekanismUtils
     		DynamicTankCache cache = new DynamicTankCache();
     		cache.inventory = inventory;
     		cache.liquid = liquid;
+    		cache.locations.add(Object3D.get(tileEntity));
     		
     		Mekanism.dynamicInventories.put(inventoryID, cache);
-    		
-    		HashSet<Object3D> set = new HashSet<Object3D>();
-    		set.add(Object3D.get(tileEntity));
-    		
-    		Mekanism.inventoryLocations.put(inventoryID, set);
     		
     		return;
     	}
@@ -811,20 +806,7 @@ public final class MekanismUtils
     	Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
     	Mekanism.dynamicInventories.get(inventoryID).liquid = liquid;
     	
-    	if(!Mekanism.inventoryLocations.containsKey(inventoryID))
-    	{
-    		HashSet<Object3D> set = new HashSet<Object3D>();
-    		set.add(Object3D.get(tileEntity));
-    		
-    		Mekanism.inventoryLocations.put(inventoryID, set);
-    		
-    		return;
-    	}
-    	
-    	if(!Mekanism.inventoryLocations.get(inventoryID).contains(Object3D.get(tileEntity)))
-    	{
-    		Mekanism.inventoryLocations.get(inventoryID).add(Object3D.get(tileEntity));
-    	}
+		Mekanism.dynamicInventories.get(inventoryID).locations.add(Object3D.get(tileEntity));
     }
     
     /**

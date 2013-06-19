@@ -30,7 +30,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	
 	public TileEntityHydrogenGenerator()
 	{
-		super("Hydrogen Generator", 40000, 600);
+		super("Hydrogen Generator", 40000, MekanismGenerators.hydrogenGeneration*2);
 		inventory = new ItemStack[2];
 	}
 	
@@ -73,7 +73,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				setActive(true);
 				
 				hydrogenStored-=2;
-				setEnergy(electricityStored + 300);
+				setEnergy(electricityStored + MekanismGenerators.hydrogenGeneration);
 			}
 			else {
 				setActive(false);
@@ -160,7 +160,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && hydrogenStored-10 > -1;
+		return electricityStored < MAX_ELECTRICITY && hydrogenStored-2 > -1;
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public int getEnvironmentBoost() 
+	public double getEnvironmentBoost() 
 	{
 		int boost = 1;
 		

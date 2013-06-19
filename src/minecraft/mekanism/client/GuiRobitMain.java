@@ -295,6 +295,7 @@ public class GuiRobitMain extends GuiContainer
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GO_HOME, robit.entityId));
+				mc.displayGuiScreen(null);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 			{

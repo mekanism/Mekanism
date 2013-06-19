@@ -44,7 +44,7 @@ import dan200.computer.api.IPeripheral;
 public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter
 {
 	/** Output per tick this generator can transfer. */
-	public int output;
+	public double output;
 	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
@@ -58,7 +58,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 * @param maxEnergy - how much energy this generator can store
 	 * @param maxFuel - how much fuel this generator can store
 	 */
-	public TileEntityGenerator(String name, int maxEnergy, int out)
+	public TileEntityGenerator(String name, double maxEnergy, double out)
 	{
 		super(name, maxEnergy);
 		
@@ -164,7 +164,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 * Gets the boost this generator can receive in it's current location.
 	 * @return environmental boost
 	 */
-	public abstract int getEnvironmentBoost();
+	public abstract double getEnvironmentBoost();
 	
 	/**
 	 * Whether or not this generator can operate.
@@ -238,7 +238,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public int getMaxEnergyOutput()
 	{
-		return output;
+		return (int)(output*Mekanism.TO_IC2);
 	}
 	
 	@Override
@@ -276,7 +276,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public int getOutput() 
 	{
-		return output;
+		return (int)(output*Mekanism.TO_IC2);
 	}
 	
 	@Override

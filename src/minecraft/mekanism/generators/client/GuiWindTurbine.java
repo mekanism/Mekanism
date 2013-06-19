@@ -2,17 +2,17 @@ package mekanism.generators.client;
 
 import mekanism.api.EnumColor;
 import mekanism.generators.common.ContainerWindTurbine;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.TileEntityWindTurbine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiWindTurbine extends GuiContainer
@@ -37,7 +37,7 @@ public class GuiWindTurbine extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
-        fontRenderer.drawString("Power: " + tileEntity.GENERATION_RATE*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
+        fontRenderer.drawString("Power: " + MekanismGenerators.windGeneration*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
         fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
         
         int size = 44;

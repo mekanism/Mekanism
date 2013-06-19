@@ -7,9 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import mekanism.api.Object3D;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -34,11 +32,11 @@ public class CommonWorldTickHandler implements ITickHandler
 			
 			if(!world.isRemote)
 			{
-				for(Map.Entry<Integer, HashSet<Object3D>> entry : Mekanism.inventoryLocations.entrySet())
+				for(Map.Entry<Integer, DynamicTankCache> entry : Mekanism.dynamicInventories.entrySet())
 				{
 					int inventoryID = entry.getKey();
 					
-					for(Object3D obj : entry.getValue())
+					for(Object3D obj : entry.getValue().locations)
 					{
 						if(obj.dimensionId == world.provider.dimensionId)
 						{
@@ -56,7 +54,7 @@ public class CommonWorldTickHandler implements ITickHandler
 						}
 					}
 					
-					if(entry.getValue().isEmpty())
+					if(entry.getValue().locations.isEmpty())
 					{
 						idsToKill.add(inventoryID);
 					}
@@ -66,13 +64,13 @@ public class CommonWorldTickHandler implements ITickHandler
 				{
 					for(Object3D obj : entry.getValue())
 					{
-						Mekanism.inventoryLocations.get(entry.getKey()).remove(obj);
+						Mekanism.dynamicInventories.get(entry.getKey()).locations.remove(obj);
 					}
 				}
 				
 				for(int inventoryID : idsToKill)
 				{	
-					for(Object3D obj : Mekanism.inventoryLocations.get(inventoryID))
+					for(Object3D obj : Mekanism.dynamicInventories.get(inventoryID).locations)
 					{
 						TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)obj.getTileEntity(world);
 						
@@ -84,7 +82,6 @@ public class CommonWorldTickHandler implements ITickHandler
 						}
 					}
 					
-					Mekanism.inventoryLocations.remove(inventoryID);
 					Mekanism.dynamicInventories.remove(inventoryID);
 				}
 			}

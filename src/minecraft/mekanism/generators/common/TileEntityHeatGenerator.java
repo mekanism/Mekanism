@@ -28,12 +28,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	/** The LiquidTank for this generator. */
 	public LiquidTank lavaTank = new LiquidTank(24000);
 	
-	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 100;
-	
 	public TileEntityHeatGenerator()
 	{
-		super("Heat Generator", 160000, 200);
+		super("Heat Generator", 160000, MekanismGenerators.heatGeneration*2);
 		inventory = new ItemStack[2];
 	}
 	
@@ -98,7 +95,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 				setActive(true);
 				
 				lavaTank.drain(10, true);
-				setEnergy(electricityStored + GENERATION);
+				setEnergy(electricityStored + MekanismGenerators.heatGeneration);
 			}
 			else {
 				setActive(false);
@@ -168,7 +165,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	}
 	
 	@Override
-	public int getEnvironmentBoost()
+	public double getEnvironmentBoost()
 	{
 		int boost = 0;
 		

@@ -110,9 +110,6 @@ public class Mekanism
 	/** A map containing references to all dynamic tank inventory caches. */
 	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
 	
-	/** A map containing references to all locations corresponding to a specific inventory ID. */
-	public static Map<Integer, HashSet<Object3D>> inventoryLocations = new HashMap<Integer, HashSet<Object3D>>();
-	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
 	
@@ -344,13 +341,13 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 8, 2), new Object[] {
 			"OBO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('B'), Item.bucketEmpty
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 4, 9), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 8, 9), new Object[] {
 			" I ", "ISI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('S'), Block.cobblestone
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 4, 10), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 8, 10), new Object[] {
 			" I ", "IGI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('G'), Block.glass
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 11), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 2, 11), new Object[] {
 			" I ", "ICI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('C'), ControlCircuit
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 14), new Object[] {
@@ -1066,7 +1063,7 @@ public class Mekanism
 		
 		//Registrations
 		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 40, 5, true);
-		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 5, true);
+		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 2, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
@@ -1090,7 +1087,6 @@ public class Mekanism
 	{
 		teleporters.clear();
 		dynamicInventories.clear();
-		inventoryLocations.clear();
 	}
 	
 	@PreInit

@@ -53,6 +53,14 @@ public class MekanismGenerators implements IModule
 	//Block IDs
 	public static int generatorID = 3005;
 	
+	//Configuration
+	public static double advancedSolarGeneration;
+	public static double bioGeneration;
+	public static double heatGeneration;
+	public static double hydrogenGeneration;
+	public static double solarGeneration;
+	public static double windGeneration;
+	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)
 	{
@@ -100,7 +108,7 @@ public class MekanismGenerators implements IModule
 			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(Generator, 1, 1), Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 4), new Object[] {
-			"RER", "BIB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('B'), BioFuel, Character.valueOf('I'), new ItemStack(Mekanism.BasicBlock, 1, 8), Character.valueOf('N'), Item.ingotIron
+			"RER", "BCB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('B'), BioFuel, Character.valueOf('C'), Mekanism.ControlCircuit, Character.valueOf('N'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 2), new Object[] {
 			"IRI", "ECE", "IRI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('C'), ElectrolyticCore
@@ -115,7 +123,7 @@ public class MekanismGenerators implements IModule
 			"GGG", "RAR", "PPP", Character.valueOf('G'), Block.thinGlass, Character.valueOf('R'), Item.redstone, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "ingotOsmium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 6), new Object[] {
-			" O ", "OTO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('T'), new ItemStack(Mekanism.BasicBlock, 1, 8), Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), Mekanism.ControlCircuit
+			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), Mekanism.ControlCircuit
 		}));
 		
 		//BioFuel Crusher Recipes

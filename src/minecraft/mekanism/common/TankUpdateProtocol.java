@@ -259,7 +259,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isAir(int x, int y, int z)
 	{
-		return pointer.worldObj.getBlockId(x, y, z) == 0;
+		return pointer.worldObj.isAirBlock(x, y, z);
 	}
 	
 	/**

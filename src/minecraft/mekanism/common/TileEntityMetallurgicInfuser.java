@@ -89,7 +89,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 3, 1, new int[] {3}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 4, 1, new int[] {4}));
 		
-		sideConfig = new byte[] {0, 1, 0, 5, 3, 4};
+		sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
 		
 		inventory = new ItemStack[5];
 	}

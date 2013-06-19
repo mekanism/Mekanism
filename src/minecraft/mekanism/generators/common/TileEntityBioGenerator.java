@@ -37,9 +37,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	/** Where the crush piston should be on the model. */
 	public float crushMatrix = 0;
 
-	/** The amount of electricity this machine can produce with a unit of fuel. */
-	public final int GENERATION = 120;
-
 	/** The LiquidSlot biofuel instance for this generator. */
 	public LiquidSlot bioFuelSlot = new LiquidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
 
@@ -48,7 +45,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 160000, 240);
+		super("Bio-Generator", 160000, MekanismGenerators.bioGeneration*2);
 		inventory = new ItemStack[2];
 
 		if(Mekanism.hooks.ForestryLoaded)
@@ -148,7 +145,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 				setActive(true);
 			}
 			bioFuelSlot.setLiquid(bioFuelSlot.liquidStored - 1);
-			setEnergy(electricityStored + GENERATION);
+			setEnergy(electricityStored + MekanismGenerators.bioGeneration);
 		}
 		else {
 			if(!worldObj.isRemote)
@@ -197,7 +194,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
     }
 
 	@Override
-	public int getEnvironmentBoost()
+	public double getEnvironmentBoost()
 	{
 		return 0;
 	}
