@@ -9,7 +9,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerFramework;
 import buildcraft.api.power.PowerProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,11 +23,8 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	
 	public TileEntityUniversalCable()
 	{
-		if(PowerFramework.currentFramework != null)
-		{
-			powerProvider = new CablePowerProvider(this);
-			powerProvider.configure(0, 0, 100, 0, 100);
-		}
+		powerProvider = new CablePowerProvider(this);
+		powerProvider.configure(0, 0, 100, 0, 100);
 	}
 	
 	@Override
@@ -78,7 +74,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
 		ignored.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-		return canTransferEnergy(Object3D.get(this).getFromSide(from).getTileEntity(worldObj)) ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()) : 0;
+		return canTransferEnergy(Object3D.get(this).getFromSide(from).getTileEntity(worldObj)) ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()*Mekanism.TO_BC) : 0;
 	}
 	
 	@Override

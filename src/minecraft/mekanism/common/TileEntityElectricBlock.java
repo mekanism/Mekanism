@@ -19,7 +19,6 @@ import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerFramework;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -45,11 +44,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
 		
-		if(PowerFramework.currentFramework != null)
-		{
-			powerProvider = new LinkedPowerProvider(this);
-			powerProvider.configure(0, 0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
-		}
+		powerProvider = new LinkedPowerProvider(this);
+		powerProvider.configure(0, 0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
 	}
 	
 	@Override

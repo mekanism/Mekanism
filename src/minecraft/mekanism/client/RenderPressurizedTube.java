@@ -6,13 +6,13 @@ import java.util.HashMap;
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
+import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -25,9 +25,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
 	
-	private HashMap<ForgeDirection, HashMap<EnumGas, int[]>> cachedGasses = new HashMap<ForgeDirection, HashMap<EnumGas, int[]>>();
-	
-	private static final int stages = 40;
+	private HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>> cachedGasses = new HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>>();
 	
 	private static final double offset = 0.015;
 	
@@ -75,8 +73,9 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	
 		if(tileEntity.gasScale > 0 && tileEntity.refGas != null && tileEntity.refGas.hasTexture())
 		{
-			GL11.glPushMatrix();
-			GL11.glDisable(2896);
+			push();
+			
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.gasScale);
 			bindTextureByName(tileEntity.refGas.texturePath);
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
@@ -84,20 +83,35 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			{
 				if(connectable[i])
 				{
-					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas, tileEntity.worldObj);
-					GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.gasScale*(stages-1)))]);
+					int displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).display;
+					GL11.glCallList(displayList);
 				}
 			}
 			
-			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refGas, tileEntity.worldObj);
-			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.gasScale*(stages-1)))]);
+			int displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refGas).display;
+			GL11.glCallList(displayList);
 			
-			GL11.glEnable(2896);
-			GL11.glPopMatrix();
+			pop();
 		}
 	}
 	
-	private int[] getListAndRender(ForgeDirection side, EnumGas type, World world)
+	private void pop()
+	{
+		GL11.glPopAttrib();
+		GL11.glPopMatrix();
+	}
+	
+	private void push()
+	{
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
+	private DisplayInteger getListAndRender(ForgeDirection side, EnumGas type)
 	{
 		if(cachedGasses.containsKey(side) && cachedGasses.get(side).containsKey(type))
 		{
@@ -108,169 +122,105 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.texture = type.gasIcon;
 		
-		int[] displays = new int[stages];
+		DisplayInteger display = new DisplayInteger();
 		
 		if(cachedGasses.containsKey(side))
 		{
-			cachedGasses.get(side).put(type, displays);
+			cachedGasses.get(side).put(type, display);
 		}
 		else {
-			HashMap<EnumGas, int[]> map = new HashMap<EnumGas, int[]>();
-			map.put(type, displays);
+			HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
+			map.put(type, display);
 			cachedGasses.put(side, map);
 		}
+		
+		display.display = GLAllocation.generateDisplayLists(1);
+		GL11.glNewList(display.display, 4864);
 		
 		switch(side)
 		{
 			case UNKNOWN:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
-					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.3 + offset;
+				toReturn.minY = 0.3 + offset;
+				toReturn.minZ = 0.3 + offset;
 				
-				return displays;
+				toReturn.maxX = 0.7 - offset;
+				toReturn.maxY = 0.7 - offset;
+				toReturn.maxZ = 0.7 - offset;
+				break;
 			}
 			case DOWN:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
-					toReturn.minY = 0.0;
-					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
-					
-					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
-					toReturn.maxY = 0.3 + offset;
-					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.3 + offset;
+				toReturn.minY = 0.0;
+				toReturn.minZ = 0.3 + offset;
 				
-				return displays;
+				toReturn.maxX = 0.7 - offset;
+				toReturn.maxY = 0.3 + offset;
+				toReturn.maxZ = 0.7 - offset;
+				break;
 			}
 			case UP:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
-					toReturn.minY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
-					
-					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
-					toReturn.maxY = 1.0;
-					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.3 + offset;
+				toReturn.minY = 0.3 - offset;
+				toReturn.minZ = 0.3 + offset;
 				
-				return displays;
+				toReturn.maxX = 0.7 - offset;
+				toReturn.maxY = 1.0;
+				toReturn.maxZ = 0.7 - offset;
+				break;
 			}
 			case NORTH:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.0;
-					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.3 + offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.3 + offset;
+				toReturn.minY = 0.3 + offset;
+				toReturn.minZ = 0.0;
 				
-				return displays;
+				toReturn.maxX = 0.7 - offset;
+				toReturn.maxY = 0.7 - offset;
+				toReturn.maxZ = 0.3 + offset;
+				break;
 			}
 			case SOUTH:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.7 - offset;
-					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 1.0;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.3 + offset;
+				toReturn.minY = 0.3 + offset;
+				toReturn.minZ = 0.7 - offset;
 				
-				return displays;
+				toReturn.maxX = 0.7 - offset;
+				toReturn.maxY = 0.7 - offset;
+				toReturn.maxZ = 1.0;
+				break;
 			}
 			case WEST:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.0;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
-					
-					toReturn.maxX = 0.3 + offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.0;
+				toReturn.minY = 0.3 + offset;
+				toReturn.minZ = 0.3 + offset;
 				
-				return displays;
+				toReturn.maxX = 0.3 + offset;
+				toReturn.maxY = 0.7 - offset;
+				toReturn.maxZ = 0.7 - offset;
+				break;
 			}
 			case EAST:
 			{
-				for(int i = 0; i < stages; i++)
-				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
-					toReturn.minX = 0.7 - offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
-					
-					toReturn.maxX = 1.0;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
-				}
+				toReturn.minX = 0.7 - offset;
+				toReturn.minY = 0.3 + offset;
+				toReturn.minZ = 0.3 + offset;
 				
-				return displays;
+				toReturn.maxX = 1.0;
+				toReturn.maxY = 0.7 - offset;
+				toReturn.maxZ = 0.7 - offset;
+				break;
 			}
 		}
 		
-		return null;
+		MekanismRenderer.renderObject(toReturn);
+		GL11.glEndList();
+		
+		return display;
 	}
 }
