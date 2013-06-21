@@ -6,13 +6,13 @@ import java.util.HashMap;
 import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.CableUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.TileEntityUniversalCable;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -93,7 +93,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		model.Center.render(0.0625F);
 		GL11.glPopMatrix();
 		
-		if(tileEntity.energyScale > 0)
+		if(tileEntity.energyScale > 0 && Mekanism.fancyUniversalCableRender)
 		{
 			push();
 			MekanismRenderer.glowOn();
