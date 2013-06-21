@@ -97,7 +97,7 @@ public class ItemConfigurator extends ItemEnergized
     				Random random = new Random();
     				TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
     				
-    				if(!(tileEntity instanceof TileEntityElectricChest || (((TileEntityElectricChest)tileEntity).canAccess())))
+    				if(!(tileEntity instanceof TileEntityElectricChest) || (((TileEntityElectricChest)tileEntity).canAccess()))
     				{
 	    				for(int i = 0; i < tileEntity.getSizeInventory(); ++i)
 	    	            {
@@ -138,6 +138,7 @@ public class ItemConfigurator extends ItemEnergized
 	    				
 	    				tileEntity.inventory = new ItemStack[tileEntity.getSizeInventory()];
 	    				onProvide(new ElectricityPack((ENERGY_PER_ITEM_DUMP*itemAmount)/120, 120), stack);
+	    				return true;
     				}
     				else {
     					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "You are not authenticated on this chest.");

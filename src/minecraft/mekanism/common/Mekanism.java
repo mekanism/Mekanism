@@ -125,6 +125,9 @@ public class Mekanism
 	@SideOnly(Side.CLIENT)
 	/** The main SoundHandler instance that is used by all audio sources */
 	public static SoundHandler audioHandler;
+	
+	/** A list of the usernames of players who have donated to Mekanism. */
+	public static List<String> donators = new ArrayList<String>();
     
 	//Block IDs
     public static int basicBlockID = 3000;
@@ -178,6 +181,7 @@ public class Mekanism
 	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
 	public static boolean enableSounds = true;
+	public static boolean fancyUniversalCableRender = true;
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
@@ -1169,6 +1173,9 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketStatusUpdate.class);
 		PacketHandler.registerPacket(PacketDigitUpdate.class);
 		PacketHandler.registerPacket(PacketPortableTeleport.class);
+		
+		//Donators
+		donators.add("mrgreaper");
 		
 		//Load proxy
 		proxy.registerRenderInformation();

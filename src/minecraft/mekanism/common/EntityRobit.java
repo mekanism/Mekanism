@@ -25,12 +25,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
-import codechicken.core.alg.MathHelper;
 
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {

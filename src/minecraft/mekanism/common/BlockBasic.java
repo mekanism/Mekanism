@@ -153,18 +153,13 @@ public class BlockBasic extends Block
 	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-		if(world.isRemote)
-		{
-			return true;
-		}
-		
     	int metadata = world.getBlockMetadata(x, y, z);
     	
     	if(metadata == 2)
     	{
     		if(entityplayer.isSneaking())
     		{
-    			entityplayer.openGui(Mekanism.instance, 19, world, x, y, z);
+    			entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
     			return true;
     		}
     	}
@@ -176,7 +171,13 @@ public class BlockBasic extends Block
     			return true;
     		}
     	}
-    	else if(metadata == 9 || metadata == 10 || metadata == 11)
+    	
+    	if(world.isRemote)
+    	{
+    		return true;
+    	}
+    	
+    	if(metadata == 9 || metadata == 10 || metadata == 11)
     	{
 			if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getBlockTileEntity(x, y, z)).structure != null)
 			{

@@ -71,6 +71,7 @@ public class ClientProxy extends CommonProxy
 		
 		Mekanism.configuration.load();
 		Mekanism.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
+		Mekanism.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		Mekanism.configuration.save();
 	}
 	
