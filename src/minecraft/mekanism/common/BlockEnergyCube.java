@@ -314,4 +314,16 @@ public class BlockEnergyCube extends BlockContainer
         
         return itemStack;
 	}
+	
+    public boolean hasComparatorInputOverride()
+    {
+        return true;
+    }
+
+    public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+    {
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+        return tileEntity.getRedstoneLevel();
+    }
+
 }
