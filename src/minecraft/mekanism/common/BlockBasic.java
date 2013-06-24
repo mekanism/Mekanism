@@ -62,7 +62,7 @@ public class BlockBasic extends Block
 	{
 		if(!world.isRemote)
 		{
-			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityDynamicTank)
+			if(id == blockID && world.getBlockTileEntity(x, y, z) instanceof TileEntityDynamicTank)
 			{
 				TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
 				

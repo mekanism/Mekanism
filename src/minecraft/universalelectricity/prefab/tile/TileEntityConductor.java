@@ -93,9 +93,10 @@ public abstract class TileEntityConductor extends TileEntityAdvanced implements 
 	}
 
 	@Override
-	public void initiate()
+	public void validate()
 	{
 		this.updateAdjacentConnections();
+		super.validate();
 	}
 
 	@Override
@@ -110,17 +111,9 @@ public abstract class TileEntityConductor extends TileEntityAdvanced implements 
 	}
 
 	@Override
-	public void updateEntity()
+	public boolean canUpdate()
 	{
-		super.updateEntity();
-
-		if (!this.worldObj.isRemote)
-		{
-			if (this.ticks % 300 == 0)
-			{
-				this.updateAdjacentConnections();
-			}
-		}
+		return false;
 	}
 
 	@Override

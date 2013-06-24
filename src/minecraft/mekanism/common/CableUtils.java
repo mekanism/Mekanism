@@ -5,6 +5,8 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
@@ -52,7 +54,7 @@ public final class CableUtils
     	{
 			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(cable instanceof IUniversalCable && ((IUniversalCable)cable).canTransferEnergy(tileEntity))
+			if(cable instanceof IUniversalCable && ((IUniversalCable)cable).canTransferEnergy())
 			{
 				cables[orientation.ordinal()] = cable;
 			}
@@ -140,7 +142,12 @@ public final class CableUtils
     	
     	if(pointer instanceof IUniversalCable)
     	{
-	    	return new EnergyTransferProtocol(pointer, sender, amount, new ArrayList()).calculate();
+    		IUniversalCable cable = (IUniversalCable)pointer;
+    		
+    		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
+    		ignored.add(sender);
+    		
+    		return cable.getNetwork().emit(amount, ignored);
     	}
     	
     	return amount;
@@ -150,30 +157,38 @@ public final class CableUtils
      * Emits energy from all sides of a TileEntity.
      * @param amount - amount to send
      * @param pointer - sending TileEntity
-     * @return rejected energy
-     */
-    public static double emitEnergyFromAllSides(double amount, TileEntity pointer)
-    {
-    	if(pointer != null)
-    	{
-    		return new EnergyTransferProtocol(pointer, pointer, amount, new ArrayList()).calculate();
-    	}
-    	
-    	return amount;
-    }
-    
-    /**
-     * Emits energy from all sides of a TileEntity, while ignoring specific acceptors.
-     * @param amount - amount to send
-     * @param pointer - sending TileEntity
      * @param ignored - ignored acceptors
      * @return rejected energy
      */
-    public static double emitEnergyFromAllSidesIgnore(double amount, TileEntity pointer, ArrayList ignored)
+    public static double emitEnergyFromAllSides(double amount, TileEntity pointer, ArrayList ignored)
     {
     	if(pointer != null)
     	{
-    		return new EnergyTransferProtocol(pointer, pointer, amount, ignored).calculate();
+    		Set<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
+    		double totalRemaining = 0;
+    		
+    		ignored.add(pointer);
+    		
+    		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+    		{
+    			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
+    			
+    			if(sideTile instanceof IUniversalCable)
+    			{
+    				networks.add(((IUniversalCable)sideTile).getNetwork());
+    			}
+    		}
+    		
+    		double splitEnergy = amount/(double)networks.size();
+    		double remaining = amount%(double)networks.size();
+    		
+    		for(EnergyNetwork network : networks)
+    		{
+    			totalRemaining += network.emit(splitEnergy+remaining, ignored);
+    			remaining = 0;
+    		}
+    		
+    		return totalRemaining;
     	}
     	
     	return amount;

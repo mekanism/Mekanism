@@ -77,7 +77,10 @@ public final class MekanismHooks
 			{
 				if(!Recipe.ENRICHMENT_CHAMBER.get().containsKey(entry.getKey()))
 				{
-					RecipeHandler.addEnrichmentChamberRecipe(entry.getKey(), entry.getValue());
+					if(MekanismUtils.getName(entry.getKey()).startsWith("ore"))
+					{
+						RecipeHandler.addEnrichmentChamberRecipe(entry.getKey(), entry.getValue());
+					}
 				}
 			}
 			
@@ -119,7 +122,10 @@ public final class MekanismHooks
 				{
 					if(!Recipe.ENRICHMENT_CHAMBER.get().containsKey(recipe.getInput()))
 					{
-						RecipeHandler.addEnrichmentChamberRecipe(recipe.getInput(), recipe.getPrimaryOutput());
+						if(MekanismUtils.getName(recipe.getInput()).startsWith("ore"))
+						{
+							RecipeHandler.addEnrichmentChamberRecipe(recipe.getInput(), recipe.getPrimaryOutput());
+						}
 					}
 				}
 			}

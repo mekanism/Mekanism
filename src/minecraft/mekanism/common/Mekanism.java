@@ -5,7 +5,6 @@ import ic2.api.recipe.Recipes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -17,7 +16,6 @@ import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
-import mekanism.common.EnergyTransferProtocol.EnergyTransferEvent;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.LiquidTransferProtocol.LiquidTransferEvent;
 import mekanism.common.PacketHandler.Transmission;
@@ -1147,6 +1145,7 @@ public class Mekanism
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
+		MinecraftForge.EVENT_BUS.register(new EnergyNetwork.NetworkLoader());
 		
 		//Load configuration
 		proxy.loadConfiguration();
@@ -1198,11 +1197,5 @@ public class Mekanism
 	public void onLiquidTransferred(LiquidTransferEvent event)
 	{
 		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.LIQUID, event.transferProtocol.pointer, event.liquidSent));
-	}
-	
-	@ForgeSubscribe
-	public void onEnergyTransferred(EnergyTransferEvent event)
-	{
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.ENERGY, event.transferProtocol.pointer));
 	}
 }

@@ -5,13 +5,16 @@ import java.util.List;
 
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
+import mekanism.api.IUniversalCable;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -51,20 +54,106 @@ public class BlockTransmitter extends Block
 	}
 	
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisalignedbb, List list, Entity entity) 
+	{
+		boolean[] connectable = getConnectable(world, x, y, z);
+		
+		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+		super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+
+		if(connectable[4]) 
+		{
+			setBlockBounds(0.0F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+		}
+
+		if(connectable[5]) 
+		{
+			setBlockBounds(0.3F, 0.3F, 0.3F, 1.0F, 0.7F, 0.7F);
+			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+		}
+
+		if(connectable[0]) 
+		{
+			setBlockBounds(0.3F, 0.0F, 0.3F, 0.7F, 0.7F, 0.7F);
+			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+		}
+
+		if(connectable[1])
+		{
+			setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 1.0F, 0.7F);
+			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+		}
+
+		if(connectable[2])
+		{
+			setBlockBounds(0.3F, 0.3F, 0.0F, 0.7F, 0.7F, 0.7F);
+			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+		}
+
+		if(connectable[3])
+		{
+			setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 1.0F);
+			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
+		}
+
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) 
+	{
+		boolean[] connectable = getConnectable(world, x, y, z);
+		
+		if(connectable != null)
+		{
+			float minX = 0.3F;
+			float minY = 0.3F;
+			float minZ = 0.3F;
+			float maxX = 0.7F;
+			float maxY = 0.7F;
+			float maxZ = 0.7F;
+	
+			if(connectable[0])
+			{
+				minY = 0.0F;
+			}
+			if(connectable[1])
+			{
+				maxY = 1.0F;
+			}
+			if(connectable[2])
+			{
+				minZ = 0.0F;
+			}
+			if(connectable[3])
+			{
+				maxZ = 1.0F;
+			}
+			if(connectable[4])
+			{
+				minX = 0.0F;
+			}
+			if(connectable[5])
+			{
+				maxX = 1.0F;
+			}
+	
+			return AxisAlignedBB.getBoundingBox(x + minX, y + minY, z + minZ, x + maxX, y + maxY, z + maxZ);
+		}
+		
+		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
+	}
+	
+	public boolean[] getConnectable(IBlockAccess world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		float minX = 0.3F;
-		float minY = 0.3F;
-		float minZ = 0.3F;
-		float maxX = 0.7F;
-		float maxY = 0.7F;
-		float maxZ = 0.7F;
+		boolean[] connectable = null;
 		
 		if(tileEntity != null)
-		{
-			boolean[] connectable = new boolean[] {false, false, false, false, false, false};
+		{	
+			connectable = new boolean[] {false, false, false, false, false, false};
 			
 			if(world.getBlockMetadata(x, y, z) == 0)
 			{
@@ -151,7 +240,27 @@ public class BlockTransmitter extends Block
 					}
 				}
 			}
+		}
+		
+		return connectable;
+	}
+	
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		
+		float minX = 0.3F;
+		float minY = 0.3F;
+		float minZ = 0.3F;
+		float maxX = 0.7F;
+		float maxY = 0.7F;
+		float maxZ = 0.7F;
+		
+		boolean[] connectable = getConnectable(world, x, y, z);
 			
+		if(connectable != null)
+		{
 			if(connectable[0])
 			{
 				minY = 0.0F;
@@ -178,6 +287,34 @@ public class BlockTransmitter extends Block
 			}
 			
 			setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
+		}
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			if(tileEntity instanceof IUniversalCable)
+			{
+				((IUniversalCable)tileEntity).refreshNetwork();
+			}
+		}
+	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			if(tileEntity instanceof IUniversalCable)
+			{
+				((IUniversalCable)tileEntity).refreshNetwork();
+			}
 		}
 	}
 	

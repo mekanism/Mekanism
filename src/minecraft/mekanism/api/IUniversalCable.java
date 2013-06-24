@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import mekanism.common.EnergyNetwork;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -13,10 +14,22 @@ public interface IUniversalCable
 	 * Whether or not this cable can transfer energy.
 	 * @return if the cable can transfer energy
 	 */
-	public boolean canTransferEnergy(TileEntity fromTile);
+	public boolean canTransferEnergy();
 	
 	/**
-	 * Called when energy is transferred through this cable.
+	 * Gets the EnergyNetwork currently in use by this cable segment.
+	 * @return EnergyNetwork this cable is using
 	 */
-	public void onTransfer();
+	public EnergyNetwork getNetwork();
+	
+	/**
+	 * Sets this cable segment's EnergyNetwork to a new value.
+	 * @param network - EnergyNetwork to set to
+	 */
+	public void setNetwork(EnergyNetwork network);
+	
+	/**
+	 * Refreshes the cable's EnergyNetwork.
+	 */
+	public void refreshNetwork();
 }

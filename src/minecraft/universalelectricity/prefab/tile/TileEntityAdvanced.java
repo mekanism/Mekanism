@@ -31,7 +31,9 @@ public abstract class TileEntityAdvanced extends TileEntity
 
 	/**
 	 * Called on the TileEntity's first tick.
+	 * DEPRECATED: Use validate instead!
 	 */
+	@Deprecated
 	public void initiate()
 	{
 	}

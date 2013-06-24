@@ -23,6 +23,17 @@ public class TileEntityMulti extends TileEntity implements IPacketReceiver
 {
 	// The the position of the main block
 	public Vector3 mainBlockPosition;
+	public String channel;
+
+	public TileEntityMulti()
+	{
+
+	}
+
+	public TileEntityMulti(String channel)
+	{
+		this.channel = channel;
+	}
 
 	public void setMainBlock(Vector3 mainBlock)
 	{
@@ -30,7 +41,7 @@ public class TileEntityMulti extends TileEntity implements IPacketReceiver
 
 		if (!this.worldObj.isRemote)
 		{
-			PacketManager.sendPacketToClients(this.getDescriptionPacket());
+			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 		}
 	}
 
@@ -39,14 +50,21 @@ public class TileEntityMulti extends TileEntity implements IPacketReceiver
 	{
 		if (this.mainBlockPosition != null)
 		{
-			return PacketManager.getPacket("BasicComponents", this, this.mainBlockPosition.intX(), this.mainBlockPosition.intY(), this.mainBlockPosition.intZ());
+			if (this.channel == null || this.channel == "" && this.getBlockType() instanceof BlockMulti)
+			{
+				this.channel = ((BlockMulti) this.getBlockType()).channel;
+			}
+
+			return PacketManager.getPacket(this.channel, this, this.mainBlockPosition.intX(), this.mainBlockPosition.intY(), this.mainBlockPosition.intZ());
+
 		}
+
 		return null;
 	}
 
 	public void onBlockRemoval()
 	{
-		if (mainBlockPosition != null)
+		if (this.mainBlockPosition != null)
 		{
 			TileEntity tileEntity = this.worldObj.getBlockTileEntity(this.mainBlockPosition.intX(), this.mainBlockPosition.intY(), this.mainBlockPosition.intZ());
 

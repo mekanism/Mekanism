@@ -88,7 +88,7 @@ public abstract class OreGenBase
 	private static boolean shouldGenerateOre(Configuration configuration, String oreName)
 	{
 		configuration.load();
-		boolean shouldGenerate = configuration.get("Ore Generation", "Generate " + oreName, true).getBoolean(true);
+		boolean shouldGenerate = configuration.get("Ore_Generation", "Generate " + oreName, true).getBoolean(true);
 		configuration.save();
 		return shouldGenerate;
 	}

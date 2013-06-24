@@ -47,7 +47,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
-
+		
 		TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tileEntity);
 		TileEntity[] connectedCables = CableUtils.getConnectedCables(tileEntity);
 		TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tileEntity);
@@ -82,32 +82,37 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			}
 		}
 		
-		for(int i = 0; i < 6; i++)
+		if(tileEntity.canTransferEnergy())
 		{
-			if(connectable[i])
+			for(int i = 0; i < 6; i++)
 			{
-				model.renderSide(ForgeDirection.getOrientation(i));
+				if(connectable[i])
+				{
+					model.renderSide(ForgeDirection.getOrientation(i));
+				}
 			}
 		}
 		
 		model.Center.render(0.0625F);
 		GL11.glPopMatrix();
 		
-		if(tileEntity.energyScale > 0 && Mekanism.fancyUniversalCableRender)
+		if(Mekanism.fancyUniversalCableRender)
 		{
 			push();
 			MekanismRenderer.glowOn();
 			
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.energyScale);
 			bindTextureByName("/mods/mekanism/textures/items/LiquidEnergy.png");
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			for(int i = 0; i < 6; i++)
+			if(tileEntity.canTransferEnergy())
 			{
-				if(connectable[i])
+				for(int i = 0; i < 6; i++)
 				{
-					int displayList = getListAndRender(ForgeDirection.getOrientation(i)).display;
-					GL11.glCallList(displayList);
+					if(connectable[i])
+					{
+						int displayList = getListAndRender(ForgeDirection.getOrientation(i)).display;
+						GL11.glCallList(displayList);
+					}
 				}
 			}
 			

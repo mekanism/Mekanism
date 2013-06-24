@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransferProtocol;
-import mekanism.common.EnergyTransferProtocol;
 import mekanism.common.LiquidTransferProtocol;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -38,8 +37,6 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		
 		switch(activeType)
 		{
-			case ENERGY:
-				break;
 			case GAS:
 				gasName = ((EnumGas)data[2]).name;
 				break;
@@ -62,15 +59,6 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		
 	    if(transmitterType == 0)
 	    {
-    		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    		
-    		if(tileEntity != null)
-    		{
-    			new EnergyTransferProtocol(tileEntity, null, new ArrayList()).clientUpdate();
-    		}
-	    }
-	    else if(transmitterType == 1)
-	    {
     		EnumGas type = EnumGas.getFromName(dataStream.readUTF());
     		
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
@@ -80,7 +68,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
     			new GasTransferProtocol(tileEntity, null, type, 0).clientUpdate();
     		}
 	    }
-	    else if(transmitterType == 2)
+	    else if(transmitterType == 1)
 	    {
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		LiquidStack liquidStack = new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
@@ -103,8 +91,6 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		
 		switch(activeType)
 		{
-			case ENERGY:
-				break;
 			case GAS:
 				dataStream.writeUTF(gasName);
 				break;
@@ -118,7 +104,6 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	
 	public static enum TransmitterTransferType
 	{
-		ENERGY,
 		GAS,
 		LIQUID
 	}

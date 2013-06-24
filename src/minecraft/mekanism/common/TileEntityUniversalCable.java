@@ -18,8 +18,8 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	/** A fake power provider used to initiate energy transfer calculations. */
 	public CablePowerProvider powerProvider;
 	
-	/** The scale of the energy (0F -> 1F) currently inside this cable. */
-	public float energyScale;
+	/** The energy network currently in use by this cable segment. */
+	public EnergyNetwork energyNetwork;
 	
 	public TileEntityUniversalCable()
 	{
@@ -28,33 +28,67 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 	
 	@Override
-	public void updateEntity()
+	public boolean canUpdate()
 	{
-		if(worldObj.isRemote)
+		return false;
+	}
+	
+	@Override
+	public EnergyNetwork getNetwork()
+	{
+		if(energyNetwork == null)
 		{
-			if(energyScale > 0)
+			energyNetwork = new EnergyNetwork(this);
+		}
+		
+		return energyNetwork;
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		if(!worldObj.isRemote)
+		{
+			getNetwork().split(this);
+		}
+		
+		super.invalidate();
+	}
+
+	@Override
+	public void setNetwork(EnergyNetwork network)
+	{
+		energyNetwork = network;
+	}
+	
+	public void refreshTile(TileEntity tileEntity)
+	{
+		if(tileEntity instanceof IUniversalCable)
+		{
+			getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
+		}
+	}
+
+	@Override
+	public void refreshNetwork() 
+	{
+		if(!worldObj.isRemote)
+		{
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				energyScale -= .01;
+				refreshTile(Object3D.get(this).getFromSide(side).getTileEntity(worldObj));
 			}
+			
+			getNetwork().refresh();
+			
+			System.out.println(getNetwork());
 		}
 	}
 	
 	@Override
-	public boolean canTransferEnergy(TileEntity fromTile)
+	public boolean canTransferEnergy()
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
-	}
-	
-	@Override
-	public void onTransfer()
-	{
-		energyScale = Math.min(1, energyScale+.02F);
-	}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
 	}
 
 	@Override
@@ -74,7 +108,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
 		ignored.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-		return canTransferEnergy(Object3D.get(this).getFromSide(from).getTileEntity(worldObj)) ? (int)Math.min(100, new EnergyTransferProtocol(this, this, ignored).neededEnergy()*Mekanism.TO_BC) : 0;
+		return canTransferEnergy() ? (int)Math.min(100, getNetwork().getEnergyNeeded(ignored)*Mekanism.TO_BC) : 0;
 	}
 	
 	@Override
@@ -99,6 +133,6 @@ class CablePowerProvider extends PowerProvider
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
 		ignored.add(Object3D.get(tileEntity).getFromSide(from).getTileEntity(tileEntity.worldObj));
-		CableUtils.emitEnergyFromAllSidesIgnore(quantity*Mekanism.FROM_BC, tileEntity, ignored);
+		CableUtils.emitEnergyFromAllSides(quantity*Mekanism.FROM_BC, tileEntity, ignored);
 	}
 }

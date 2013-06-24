@@ -45,26 +45,29 @@ public class ClientTickHandler implements ITickHandler
 			{
 				String oldCloak = player.cloakUrl;
                 
-                if(player.cloakUrl.startsWith("http://skins.minecraft.net/MinecraftCloaks/"))
-                {
-                    if(StringUtils.stripControlCodes(player.username).equals("mikeacttck"))
-                    {
-                        player.cloakUrl = MIKE_CAPE;
-                    }
-                    else if(StringUtils.stripControlCodes(player.username).equals("aidancbrady"))
-                    {
-                    	player.cloakUrl = AIDAN_CAPE;
-                    }
-                    else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.username)))
-                    {
-                    	player.cloakUrl = DONATE_CAPE;
-                    }
-                    
-                    if(!oldCloak.equals(player.cloakUrl))
-                    {
-                        mc.renderEngine.obtainImageData(player.cloakUrl, new CapeBufferDownload());
-                    }
-                }
+				if(player != null && player.cloakUrl != null)
+				{
+	                if(player.cloakUrl.startsWith("http://skins.minecraft.net/MinecraftCloaks/"))
+	                {
+	                    if(StringUtils.stripControlCodes(player.username).equals("mikeacttck"))
+	                    {
+	                        player.cloakUrl = MIKE_CAPE;
+	                    }
+	                    else if(StringUtils.stripControlCodes(player.username).equals("aidancbrady"))
+	                    {
+	                    	player.cloakUrl = AIDAN_CAPE;
+	                    }
+	                    else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.username)))
+	                    {
+	                    	player.cloakUrl = DONATE_CAPE;
+	                    }
+	                    
+	                    if(!oldCloak.equals(player.cloakUrl))
+	                    {
+	                        mc.renderEngine.obtainImageData(player.cloakUrl, new CapeBufferDownload());
+	                    }
+	                }
+				}
 			}
 		}
 	}

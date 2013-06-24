@@ -17,7 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMulti extends BlockContainer
 {
-	public String textureName;
+	public String textureName = null;
+	public String channel = "";
 
 	public BlockMulti(int id)
 	{
@@ -26,16 +27,22 @@ public class BlockMulti extends BlockContainer
 		this.setUnlocalizedName("multiBlock");
 	}
 
-	public void makeFakeBlock(World worldObj, Vector3 position, Vector3 mainBlock)
+	public BlockMulti setChannel(String channel)
 	{
-		worldObj.setBlock(position.intX(), position.intY(), position.intZ(), this.blockID);
-		((TileEntityMulti) worldObj.getBlockTileEntity(position.intX(), position.intY(), position.intZ())).setMainBlock(mainBlock);
+		this.channel = channel;
+		return this;
 	}
 
 	public BlockMulti setTextureName(String name)
 	{
 		this.textureName = name;
 		return this;
+	}
+
+	public void makeFakeBlock(World worldObj, Vector3 position, Vector3 mainBlock)
+	{
+		worldObj.setBlock(position.intX(), position.intY(), position.intZ(), this.blockID);
+		((TileEntityMulti) worldObj.getBlockTileEntity(position.intX(), position.intY(), position.intZ())).setMainBlock(mainBlock);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -107,7 +114,7 @@ public class BlockMulti extends BlockContainer
 	@Override
 	public TileEntity createNewTileEntity(World var1)
 	{
-		return new TileEntityMulti();
+		return new TileEntityMulti(this.channel);
 	}
 
 	@Override

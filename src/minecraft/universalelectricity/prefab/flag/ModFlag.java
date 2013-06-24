@@ -30,25 +30,28 @@ public class ModFlag extends FlagBase
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		// A list containing all dimension ID and data within it.
-		Iterator dimensions = nbt.getTags().iterator();
-
-		while (dimensions.hasNext())
+		if (nbt != null)
 		{
-			NBTTagCompound dimensionCompound = (NBTTagCompound) dimensions.next();
+			// A list containing all dimension ID and data within it.
+			Iterator dimensions = nbt.getTags().iterator();
 
-			try
+			while (dimensions.hasNext())
 			{
-				int dimensionID = Integer.parseInt(dimensionCompound.getName().replace("dim_", ""));
-				World world = DimensionManager.getWorld(dimensionID);
-				FlagWorld flagWorld = new FlagWorld(world);
-				flagWorld.readFromNBT(dimensionCompound);
-				this.flagWorlds.add(flagWorld);
-			}
-			catch (Exception e)
-			{
-				System.out.println("Mod Flag: Failed to read dimension data: " + dimensionCompound.getName());
-				e.printStackTrace();
+				NBTTagCompound dimensionCompound = (NBTTagCompound) dimensions.next();
+
+				try
+				{
+					int dimensionID = Integer.parseInt(dimensionCompound.getName().replace("dim_", ""));
+					World world = DimensionManager.getWorld(dimensionID);
+					FlagWorld flagWorld = new FlagWorld(world);
+					flagWorld.readFromNBT(dimensionCompound);
+					this.flagWorlds.add(flagWorld);
+				}
+				catch (Exception e)
+				{
+					System.out.println("Mod Flag: Failed to read dimension data: " + dimensionCompound.getName());
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -56,16 +59,19 @@ public class ModFlag extends FlagBase
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		for (FlagWorld worldData : this.flagWorlds)
+		if (nbt != null)
 		{
-			try
+			for (FlagWorld worldData : this.flagWorlds)
 			{
-				nbt.setTag("dim_" + worldData.world.provider.dimensionId, worldData.getNBT());
-			}
-			catch (Exception e)
-			{
-				System.out.println("Mod Flag: Failed to save world flag data: " + worldData.world);
-				e.printStackTrace();
+				try
+				{
+					nbt.setTag("dim_" + worldData.world.provider.dimensionId, worldData.getNBT());
+				}
+				catch (Exception e)
+				{
+					System.out.println("Mod Flag: Failed to save world flag data: " + worldData.world);
+					e.printStackTrace();
+				}
 			}
 		}
 	}

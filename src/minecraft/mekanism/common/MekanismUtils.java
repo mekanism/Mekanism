@@ -759,7 +759,7 @@ public final class MekanismUtils
      * Grabs an inventory from the world's caches, and removes all the world's references to it.
      * @param world - world the cache is stored in
      * @param id - inventory ID to pull
-     * @return
+     * @return correct Dynamic Tank inventory cache
      */
     public static DynamicTankCache pullInventory(World world, int id)
     {
@@ -784,10 +784,10 @@ public final class MekanismUtils
     
     /**
      * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
-     * @param inventoryID
-     * @param liquid
-     * @param inventory
-     * @param tileEntity
+     * @param inventoryID - inventory ID of the dynamic tank
+     * @param liquid - cached liquid of the dynamic tank
+     * @param inventory - inventory of the dynamic tank
+     * @param tileEntity - dynamic tank TileEntity
      */
     public static void updateCache(int inventoryID, LiquidStack liquid, ItemStack[] inventory, TileEntityDynamicTank tileEntity)
     {
@@ -830,5 +830,15 @@ public final class MekanismUtils
     		
     		return id;
     	}
+    }
+    
+    /**
+     * Gets the OreDictionary-registered name of an ItemStack.
+     * @param itemStack - ItemStack to check
+     * @return name of the ItemStack
+     */
+    public static String getName(ItemStack itemStack)
+    {
+    	return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
 }
