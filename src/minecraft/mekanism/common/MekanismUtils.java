@@ -8,12 +8,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.InfuseObject;
 import mekanism.api.Object3D;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.PacketHandler.Transmission;

@@ -10,9 +10,9 @@ import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.TileEntityDynamicTank;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -48,7 +48,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			
 			bindTextureByName(tileEntity.structure.liquidStored.canonical().getTextureSheet());
 			
-			if(data.location != null && data.height > 0)
+			if(data.location != null && data.height > 0 && Item.itemsList[tileEntity.structure.liquidStored.itemID] != null)
 			{
 				push();
 				
@@ -122,6 +122,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			cachedCenterLiquids.put(data, map);
 		}
 		
+	    int color = stack.asItemStack().getItem().getColorFromItemStack(stack.asItemStack(), 0);
+	    float cR = (color >> 16 & 0xFF) / 255.0F;
+	    float cG = (color >> 8 & 0xFF) / 255.0F;
+	    float cB = (color & 0xFF) / 255.0F;
+	    GL11.glColor4f(cR, cG, cB, 1.0F);
+		
 		for(int i = 0; i < stages; i++)
 		{
 			displays[i] = GLAllocation.generateDisplayLists(1);
@@ -138,6 +144,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			MekanismRenderer.renderObject(toReturn);
 			GL11.glEndList();
 		}
+		
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		
 		return displays;
 	}

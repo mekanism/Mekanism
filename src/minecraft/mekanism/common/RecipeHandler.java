@@ -159,6 +159,27 @@ public final class RecipeHandler
 			recipes.put(input, output);
 		}
 		
+		public boolean containsRecipe(ItemStack input)
+		{
+			for(Object obj : get().entrySet())
+			{
+				if(obj instanceof Map.Entry)
+				{
+					Map.Entry entry = (Map.Entry)obj;
+					
+					if(entry.getKey() instanceof ItemStack)
+					{
+						if(((ItemStack)entry.getKey()).isItemEqual(input))
+						{
+							return true;
+						}
+					}
+				}
+			}
+			
+			return false;
+		}
+		
 		public HashMap get()
 		{
 			return recipes;

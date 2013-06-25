@@ -60,14 +60,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		energyNetwork = network;
 	}
-	
-	public void refreshTile(TileEntity tileEntity)
-	{
-		if(tileEntity instanceof IUniversalCable)
-		{
-			getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
-		}
-	}
 
 	@Override
 	public void refreshNetwork() 
@@ -76,12 +68,15 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 		{
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				refreshTile(Object3D.get(this).getFromSide(side).getTileEntity(worldObj));
+				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+				
+				if(tileEntity instanceof IUniversalCable)
+				{
+					getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
+				}
 			}
 			
 			getNetwork().refresh();
-			
-			System.out.println(getNetwork());
 		}
 	}
 	

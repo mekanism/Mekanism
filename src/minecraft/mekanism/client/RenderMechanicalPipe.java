@@ -168,6 +168,12 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			cachedLiquids.put(side, map);
 		}
 		
+	    int color = stack.asItemStack().getItem().getColorFromItemStack(stack.asItemStack(), 0);
+	    float cR = (color >> 16 & 0xFF) / 255.0F;
+	    float cG = (color >> 8 & 0xFF) / 255.0F;
+	    float cB = (color & 0xFF) / 255.0F;
+	    GL11.glColor4f(cR, cG, cB, 1.0F);
+		
 		switch(side)
 		{
 			case UNKNOWN:
@@ -318,6 +324,8 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 				return displays;
 			}
 		}
+		
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		
 		return null;
 	}

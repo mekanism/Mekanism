@@ -52,8 +52,10 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("Forestry")) ForestryLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
-		if(Loader.isModLoaded("Metallurgy3Core")) {
+		if(Loader.isModLoaded("Metallurgy3Core"))
+		{
 			MetallurgyCoreLoaded = true;
+			
 			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
 		}
 		
@@ -75,11 +77,18 @@ public final class MekanismHooks
 			
 			for(Map.Entry<ItemStack, ItemStack> entry : Recipes.macerator.getRecipes().entrySet())
 			{
-				if(!Recipe.ENRICHMENT_CHAMBER.get().containsKey(entry.getKey()))
+				if(MekanismUtils.getName(entry.getKey()).startsWith("ore"))
 				{
-					if(MekanismUtils.getName(entry.getKey()).startsWith("ore"))
+					if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey()))
 					{
 						RecipeHandler.addEnrichmentChamberRecipe(entry.getKey(), entry.getValue());
+					}
+				}
+				else if(MekanismUtils.getName(entry.getKey()).startsWith("ingot"))
+				{
+					if(!Recipe.CRUSHER.containsRecipe(entry.getKey()))
+					{
+						RecipeHandler.addCrusherRecipe(entry.getKey(), entry.getValue());
 					}
 				}
 			}
@@ -88,6 +97,7 @@ public final class MekanismHooks
 			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
 		}
+		
 		if(BasicComponentsLoaded)
 		{
 			if(Mekanism.disableBCSteelCrafting)
@@ -104,27 +114,37 @@ public final class MekanismHooks
 			
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
 		}
+		
 		if(BuildCraftLoaded)
 		{
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
+		
 		if(ForestryLoaded)
 		{
 			ForestryBiofuelID = getForestryItem("liquidBiofuel").itemID;
 			ForestryBiofuelBucket = getForestryItem("bucketBiofuel");
 			System.out.println("[Mekanism] Hooked into Forestry successfully.");
 		}
+		
 		if(TELoaded)
 		{
 			for(IPulverizerRecipe recipe : CraftingManagers.pulverizerManager.getRecipeList())
 			{
 				if(recipe.getSecondaryOutput() == null)
 				{
-					if(!Recipe.ENRICHMENT_CHAMBER.get().containsKey(recipe.getInput()))
+					if(MekanismUtils.getName(recipe.getInput()).startsWith("ore"))
 					{
-						if(MekanismUtils.getName(recipe.getInput()).startsWith("ore"))
+						if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(recipe.getInput()))
 						{
 							RecipeHandler.addEnrichmentChamberRecipe(recipe.getInput(), recipe.getPrimaryOutput());
+						}
+					}
+					else if(MekanismUtils.getName(recipe.getInput()).startsWith("ingot"))
+					{
+						if(!Recipe.CRUSHER.containsRecipe(recipe.getInput()))
+						{
+							RecipeHandler.addCrusherRecipe(recipe.getInput(), recipe.getPrimaryOutput());
 						}
 					}
 				}
