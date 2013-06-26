@@ -5,7 +5,6 @@ import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
 
-import mekanism.api.IUniversalCable;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

@@ -8,11 +8,28 @@ public interface IPressurizedTube
 	 * Whether or not this tube can transfer gas.
 	 * @return if the tube can transfer gas
 	 */
-	public boolean canTransferGas(TileEntity fromTile);
+	public boolean canTransferGas();
 	
 	/**
 	 * Called when a gas is transferred through this tube.
 	 * @param type - the type of gas transferred
 	 */
 	public void onTransfer(EnumGas type);
+	
+	/**
+	 * Gets the GasNetwork currently in use by this cable segment.
+	 * @return GasNetwork this cable is using
+	 */
+	public GasNetwork getNetwork();
+	
+	/**
+	 * Sets this cable segment's GasNetwork to a new value.
+	 * @param network - GasNetwork to set to
+	 */
+	public void setNetwork(GasNetwork network);
+	
+	/**
+	 * Refreshes the cable's GasNetwork.
+	 */
+	public void refreshNetwork();
 }

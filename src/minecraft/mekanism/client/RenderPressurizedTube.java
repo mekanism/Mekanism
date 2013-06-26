@@ -41,7 +41,6 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
-		GL11.glDisable(GL11.GL_CULL_FACE);
 		
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
@@ -60,11 +59,14 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			}
 		}
 		
-		for(int i = 0; i < 6; i++)
+		if(tileEntity.canTransferGas())
 		{
-			if(connectable[i])
+			for(int i = 0; i < 6; i++)
 			{
-				model.renderSide(ForgeDirection.getOrientation(i));
+				if(connectable[i])
+				{
+					model.renderSide(ForgeDirection.getOrientation(i));
+				}
 			}
 		}
 		
@@ -79,12 +81,15 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			bindTextureByName(tileEntity.refGas.texturePath);
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			for(int i = 0; i < 6; i++)
+			if(tileEntity.canTransferGas())
 			{
-				if(connectable[i])
+				for(int i = 0; i < 6; i++)
 				{
-					int displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).display;
-					GL11.glCallList(displayList);
+					if(connectable[i])
+					{
+						int displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).display;
+						GL11.glCallList(displayList);
+					}
 				}
 			}
 			
@@ -120,7 +125,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.texture = type.gasIcon;
+		toReturn.setTexture(type.gasIcon);
 		
 		DisplayInteger display = new DisplayInteger();
 		

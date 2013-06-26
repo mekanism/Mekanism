@@ -1,6 +1,5 @@
-package mekanism.api;
+package mekanism.common;
 
-import mekanism.common.EnergyNetwork;
 import net.minecraft.tileentity.TileEntity;
 
 /**

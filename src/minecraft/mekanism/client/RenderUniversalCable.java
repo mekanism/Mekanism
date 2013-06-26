@@ -1,15 +1,10 @@
 package mekanism.client;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
-import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.CableUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.TileEntityUniversalCable;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -25,8 +20,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderUniversalCable extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
-	
-	private HashMap<ForgeDirection, DisplayInteger> cachedLiquids = new HashMap<ForgeDirection, DisplayInteger>();
 	
 	private Icon renderIcon = FMLClientHandler.instance().getClient().renderEngine.textureMapItems.registerIcon("mekanism:LiquidEnergy");
 	
@@ -44,43 +37,8 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
-		GL11.glDisable(GL11.GL_CULL_FACE);
 		
-		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
-		
-		TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tileEntity);
-		TileEntity[] connectedCables = CableUtils.getConnectedCables(tileEntity);
-		TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tileEntity);
-		
-		for(TileEntity tile : connectedAcceptors)
-		{
-			int side = Arrays.asList(connectedAcceptors).indexOf(tile);
-			
-			if(CableUtils.canConnectToAcceptor(ForgeDirection.getOrientation(side), tileEntity))
-			{
-				connectable[side] = true;
-			}
-		}
-		
-		for(TileEntity tile : connectedOutputters)
-		{
-			if(tile != null)
-			{
-				int side = Arrays.asList(connectedOutputters).indexOf(tile);
-				
-				connectable[side] = true;
-			}
-		}
-		
-		for(TileEntity tile : connectedCables)
-		{
-			if(tile != null)
-			{
-				int side = Arrays.asList(connectedCables).indexOf(tile);
-				
-				connectable[side] = true;
-			}
-		}
+		boolean[] connectable = CableUtils.getConnections(tileEntity);
 		
 		if(tileEntity.canTransferEnergy())
 		{
@@ -94,6 +52,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		}
 		
 		model.Center.render(0.0625F);
+		
 		GL11.glPopMatrix();
 		
 		if(Mekanism.fancyUniversalCableRender)
@@ -110,14 +69,12 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 				{
 					if(connectable[i])
 					{
-						int displayList = getListAndRender(ForgeDirection.getOrientation(i)).display;
-						GL11.glCallList(displayList);
+						renderEnergy(ForgeDirection.getOrientation(i));
 					}
 				}
 			}
 			
-			int displayList = getListAndRender(ForgeDirection.UNKNOWN).display;
-			GL11.glCallList(displayList);
+			renderEnergy(ForgeDirection.UNKNOWN);
 			
 			MekanismRenderer.glowOff();
 			pop();
@@ -140,23 +97,11 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private DisplayInteger getListAndRender(ForgeDirection side)
+	private void renderEnergy(ForgeDirection side)
 	{
-		if(cachedLiquids.containsKey(side))
-		{
-			return cachedLiquids.get(side);
-		}
-		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.texture = renderIcon;
-		
-		DisplayInteger display = new DisplayInteger();
-		
-		cachedLiquids.put(side, display);
-		
-		display.display = GLAllocation.generateDisplayLists(1);
-		GL11.glNewList(display.display, 4864);
+		toReturn.setTexture(renderIcon);
 		
 		switch(side)
 		{
@@ -240,8 +185,5 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.renderObject(toReturn);
-		GL11.glEndList();
-		
-		return display;
 	}
 }

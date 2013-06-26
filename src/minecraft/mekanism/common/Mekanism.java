@@ -9,15 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import mekanism.api.GasTransferProtocol.GasTransferEvent;
+import mekanism.api.GasTransmission;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfuseRegistry;
 import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
+import mekanism.api.GasNetwork.GasTransferEvent;
 import mekanism.client.SoundHandler;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.LiquidTransferProtocol.LiquidTransferEvent;
+import mekanism.common.LiquidNetwork.LiquidTransferEvent;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
@@ -1146,6 +1147,10 @@ public class Mekanism
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
 		MinecraftForge.EVENT_BUS.register(new EnergyNetwork.NetworkLoader());
+		MinecraftForge.EVENT_BUS.register(new LiquidNetwork.NetworkLoader());
+		
+		//Register with GasTransmission
+		GasTransmission.register();
 		
 		//Load configuration
 		proxy.loadConfiguration();
@@ -1190,12 +1195,12 @@ public class Mekanism
 	@ForgeSubscribe
 	public void onGasTransferred(GasTransferEvent event)
 	{
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.GAS, event.transferProtocol.pointer, event.transferProtocol.transferType));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.GAS, event.gasNetwork.tubes.iterator().next(), event.transferType));
 	}
 	
 	@ForgeSubscribe
 	public void onLiquidTransferred(LiquidTransferEvent event)
 	{
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.LIQUID, event.transferProtocol.pointer, event.liquidSent));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.LIQUID, event.liquidNetwork.pipes.iterator().next(), event.liquidSent));
 	}
 }

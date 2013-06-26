@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.IUniversalCable;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
@@ -70,8 +70,6 @@ public class EnergyNetwork
 		{
 			availableAcceptors.remove(tile);
 		}
-		
-		double prevSending = energyToSend;
 		
 		if(!availableAcceptors.isEmpty())
 		{
@@ -296,7 +294,10 @@ public class EnergyNetwork
 		
 		public void loopThrough(Object3D location)
 		{
-			iterated.add(location);
+			if(location.getTileEntity(worldObj) instanceof IUniversalCable && ((IUniversalCable)location.getTileEntity(worldObj)).canTransferEnergy())
+			{
+				iterated.add(location);
+			}
 			
 			if(iterated.contains(toFind))
 			{

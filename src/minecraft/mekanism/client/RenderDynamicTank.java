@@ -13,7 +13,10 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidStack;
@@ -102,7 +105,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.texture = stack.getRenderingIcon();
+		toReturn.setTexture(stack.getRenderingIcon());
 		
 		if(stack.itemID < Block.blocksList.length && Block.blocksList[stack.itemID] != null) 
 		{
@@ -150,6 +153,33 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		return displays;
 	}
 	
+	private void setFlowingTexture(LiquidStack liquid, Model3D model)
+	{
+		if((liquid == null) || (liquid.amount <= 0) || (liquid.itemID <= 0)) 
+		{
+			return;
+		}
+
+		ItemStack stack = liquid.asItemStack();
+		LiquidStack canon = liquid.canonical();
+		
+		String texturePath = canon.getTextureSheet();
+		
+		Icon top = canon.getRenderingIcon();
+		Icon side = top;
+		
+		if((stack.getItem() instanceof ItemBlock))
+		{
+			top = Block.blocksList[stack.itemID].getIcon(0, 0);
+			side = Block.blocksList[stack.itemID].getIcon(2, 0);
+			texturePath = "/terrain.png";
+		}
+		
+		model.setTextures(top, top, side, side, side, side);
+		
+		bindTextureByName(texturePath);
+	}
+	
 	private DisplayInteger getValveDisplay(ValveRenderData data, LiquidStack stack, World world)
 	{
 		if(cachedValveLiquids.containsKey(data) && cachedValveLiquids.get(data).containsKey(stack))
@@ -159,7 +189,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.texture = stack.getRenderingIcon();
+		setFlowingTexture(stack, toReturn);
 		
 		if(stack.itemID < Block.blocksList.length && Block.blocksList[stack.itemID] != null) 
 		{
@@ -177,6 +207,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			map.put(stack, display);
 			cachedValveLiquids.put(data, map);
 		}
+		
+	    int color = stack.asItemStack().getItem().getColorFromItemStack(stack.asItemStack(), 0);
+	    float cR = (color >> 16 & 0xFF) / 255.0F;
+	    float cG = (color >> 8 & 0xFF) / 255.0F;
+	    float cB = (color & 0xFF) / 255.0F;
+	    GL11.glColor4f(cR, cG, cB, 1.0F);
 		
 		display.display = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(display.display, 4864);

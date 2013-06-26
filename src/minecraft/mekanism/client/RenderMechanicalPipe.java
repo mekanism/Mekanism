@@ -46,7 +46,6 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
-		GL11.glDisable(GL11.GL_CULL_FACE);
 		
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
@@ -80,11 +79,14 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			}
 		}
 		
-		for(int i = 0; i < 6; i++)
+		if(tileEntity.canTransferLiquids())
 		{
-			if(connectable[i])
+			for(int i = 0; i < 6; i++)
 			{
-				model.renderSide(ForgeDirection.getOrientation(i));
+				if(connectable[i])
+				{
+					model.renderSide(ForgeDirection.getOrientation(i));
+				}
 			}
 		}
 		
@@ -103,12 +105,15 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			bindTextureByName(tileEntity.refLiquid.getTextureSheet());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			for(int i = 0; i < 6; i++)
+			if(tileEntity.canTransferLiquids())
 			{
-				if(connectable[i])
+				for(int i = 0; i < 6; i++)
 				{
-					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid, tileEntity.worldObj);
-					GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+					if(connectable[i])
+					{
+						int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid, tileEntity.worldObj);
+						GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+					}
 				}
 			}
 			
@@ -149,7 +154,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.texture = stack.getRenderingIcon();
+		toReturn.setTexture(stack.getRenderingIcon());
 		
 		if(stack.itemID < Block.blocksList.length && Block.blocksList[stack.itemID] != null) 
 		{

@@ -15,7 +15,6 @@ import java.util.HashSet;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.IUniversalCable;
 import mekanism.api.Object3D;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.Item;

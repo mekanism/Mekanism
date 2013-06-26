@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import java.util.Arrays;
+
 import mekanism.common.ISpecialBounds;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -15,9 +17,6 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/*
- * Credit to BuildCraft
- */
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
 {
@@ -35,11 +34,11 @@ public class MekanismRenderer
 		public double maxY;
 		public double maxZ;
 		
+		public Icon[] textures = new Icon[6];
+		
 		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true};
 
 		public Block baseBlock = Block.sand;
-
-		public Icon texture = null;
 		
 	    public final void setBlockBounds(float xNeg, float yNeg, float zNeg, float xPos, float yPos, float zPos)
 	    {
@@ -63,18 +62,22 @@ public class MekanismRenderer
 
 		public Icon getBlockTextureFromSide(int i) 
 		{
-			if(texture == null)
-			{
-				return baseBlock.getBlockTextureFromSide(i);
-			}
-			else {
-				return texture;
-			}
+			return textures[i];
 		}
-
-		public float getBlockBrightness(IBlockAccess iblockaccess, int i, int j, int k)
+		
+		public void setTexture(Icon tex)
 		{
-			return baseBlock.getBlockBrightness(iblockaccess, i, j, k);
+			Arrays.fill(textures, tex);
+		}
+		
+		public void setTextures(Icon down, Icon up, Icon north, Icon south, Icon west, Icon east)
+		{
+			textures[0] = down;
+			textures[1] = up;
+			textures[2] = north;
+			textures[3] = south;
+			textures[4] = west;
+			textures[5] = east;
 		}
 	}
 	
@@ -86,11 +89,10 @@ public class MekanismRenderer
         renderBlocks.renderMinY = object.minY;
         renderBlocks.renderMaxZ = object.maxZ;
         renderBlocks.renderMinZ = object.minZ;
-
+        
         renderBlocks.enableAO = false;
 
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
+		Tessellator.instance.startDrawingQuads();
 
 		if(object.shouldSideRender(ForgeDirection.DOWN))
 		{
@@ -122,7 +124,10 @@ public class MekanismRenderer
 			renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
 		}
 		
-		tessellator.draw();
+		if(Tessellator.instance.isDrawing)
+		{
+			Tessellator.instance.draw();
+		}
 	}
 	
     public static void glowOn() 

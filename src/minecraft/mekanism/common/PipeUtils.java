@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import mekanism.api.IMechanicalPipe;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -17,14 +16,17 @@ public final class PipeUtils
     {
     	TileEntity[] pipes = new TileEntity[] {null, null, null, null, null, null};
     	
-    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+    	if(!(tileEntity instanceof IMechanicalPipe) || ((IMechanicalPipe)tileEntity).canTransferLiquids())
     	{
-			TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-			
-			if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).canTransferLiquids(tileEntity))
-			{
-				pipes[orientation.ordinal()] = pipe;
-			}
+	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+	    	{
+				TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+				
+				if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).canTransferLiquids())
+				{
+					pipes[orientation.ordinal()] = pipe;
+				}
+	    	}
     	}
     	
     	return pipes;
@@ -38,15 +40,18 @@ public final class PipeUtils
     public static ITankContainer[] getConnectedAcceptors(TileEntity tileEntity)
     {
     	ITankContainer[] acceptors = new ITankContainer[] {null, null, null, null, null, null};
-    	
-    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+
+    	if(!(tileEntity instanceof IMechanicalPipe) || ((IMechanicalPipe)tileEntity).canTransferLiquids())
     	{
-			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-			
-			if(acceptor instanceof ITankContainer)
-			{
-				acceptors[orientation.ordinal()] = (ITankContainer)acceptor;
-			}
+	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+	    	{
+				TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+				
+				if(acceptor instanceof ITankContainer && !(acceptor instanceof IMechanicalPipe))
+				{
+					acceptors[orientation.ordinal()] = (ITankContainer)acceptor;
+				}
+	    	}
     	}
     	
     	return acceptors;

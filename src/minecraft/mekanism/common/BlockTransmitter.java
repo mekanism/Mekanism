@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.GasTransmission;
+import mekanism.api.IPressurizedTube;
 import mekanism.api.ITubeConnection;
-import mekanism.api.IUniversalCable;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -174,39 +174,7 @@ public class BlockTransmitter extends Block
 			}
 			else if(world.getBlockMetadata(x, y, z) == 1)
 			{
-				TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tileEntity);
-				TileEntity[] connectedCables = CableUtils.getConnectedCables(tileEntity);
-				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tileEntity);
-				
-				for(TileEntity tile : connectedAcceptors)
-				{
-					int side = Arrays.asList(connectedAcceptors).indexOf(tile);
-					
-					if(CableUtils.canConnectToAcceptor(ForgeDirection.getOrientation(side), tileEntity))
-					{
-						connectable[side] = true;
-					}
-				}
-				
-				for(TileEntity tile : connectedOutputters)
-				{
-					if(tile != null)
-					{
-						int side = Arrays.asList(connectedOutputters).indexOf(tile);
-						
-						connectable[side] = true;
-					}
-				}
-				
-				for(TileEntity tile : connectedCables)
-				{
-					if(tile != null)
-					{
-						int side = Arrays.asList(connectedCables).indexOf(tile);
-						
-						connectable[side] = true;
-					}
-				}
+				connectable = CableUtils.getConnections(tileEntity);
 			}
 			else if(world.getBlockMetadata(x, y, z) == 2)
 			{
@@ -301,6 +269,14 @@ public class BlockTransmitter extends Block
 			{
 				((IUniversalCable)tileEntity).refreshNetwork();
 			}
+			else if(tileEntity instanceof IMechanicalPipe)
+			{
+				((IMechanicalPipe)tileEntity).refreshNetwork();
+			}
+			else if(tileEntity instanceof IPressurizedTube)
+			{
+				((IPressurizedTube)tileEntity).refreshNetwork();
+			}
 		}
 	}
 	
@@ -314,6 +290,14 @@ public class BlockTransmitter extends Block
 			if(tileEntity instanceof IUniversalCable)
 			{
 				((IUniversalCable)tileEntity).refreshNetwork();
+			}
+			else if(tileEntity instanceof IMechanicalPipe)
+			{
+				((IMechanicalPipe)tileEntity).refreshNetwork();
+			}
+			else if(tileEntity instanceof IPressurizedTube)
+			{
+				((IPressurizedTube)tileEntity).refreshNetwork();
 			}
 		}
 	}

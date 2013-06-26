@@ -1,11 +1,10 @@
 package mekanism.common.network;
 
 import java.io.DataOutputStream;
-import java.util.ArrayList;
 
 import mekanism.api.EnumGas;
-import mekanism.api.GasTransferProtocol;
-import mekanism.common.LiquidTransferProtocol;
+import mekanism.client.GasClientUpdate;
+import mekanism.client.LiquidClientUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -65,7 +64,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			new GasTransferProtocol(tileEntity, null, type, 0).clientUpdate();
+    			new GasClientUpdate(tileEntity, type).clientUpdate();
     		}
 	    }
 	    else if(transmitterType == 1)
@@ -75,7 +74,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			new LiquidTransferProtocol(tileEntity, null, liquidStack).clientUpdate();
+    			new LiquidClientUpdate(tileEntity, liquidStack).clientUpdate();
     		}
 	    }
 	}

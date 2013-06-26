@@ -131,7 +131,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.stone;
-		toReturn.texture = coloredOverlays[color.ordinal()];
+		toReturn.setTexture(coloredOverlays[color.ordinal()]);
 		
 		DisplayInteger display = new DisplayInteger();
 		

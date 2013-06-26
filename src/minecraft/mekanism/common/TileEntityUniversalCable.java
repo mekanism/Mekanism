@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.util.ArrayList;
 
-import mekanism.api.IUniversalCable;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -66,17 +65,23 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		if(!worldObj.isRemote)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			if(canTransferEnergy())
 			{
-				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-				
-				if(tileEntity instanceof IUniversalCable)
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
-					getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
+					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+					
+					if(tileEntity instanceof IUniversalCable && ((IUniversalCable)tileEntity).canTransferEnergy())
+					{
+						getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
+					}
 				}
+				
+				getNetwork().refresh();
 			}
-			
-			getNetwork().refresh();
+			else {
+				getNetwork().split(this);
+			}
 		}
 	}
 	

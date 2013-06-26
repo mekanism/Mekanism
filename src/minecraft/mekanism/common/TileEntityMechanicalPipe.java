@@ -3,7 +3,6 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import mekanism.api.IMechanicalPipe;
 import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
@@ -30,6 +29,9 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	/** The LiquidStack displayed on this pipe. */
 	public LiquidStack refLiquid = null;
 	
+	/** The liquid network currently in use by this pipe segment. */
+	public LiquidNetwork liquidNetwork;
+	
 	/** This pipe's active state. */
 	public boolean isActive = false;
 	
@@ -37,7 +39,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	public float liquidScale;
 	
 	@Override
-	public boolean canTransferLiquids(TileEntity fromTile)
+	public boolean canTransferLiquids()
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
@@ -53,6 +55,59 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 		{
 			refLiquid = liquidStack.copy();
 			liquidScale += Math.min(1, ((float)liquidStack.amount/50F));
+		}
+	}
+	
+	@Override
+	public LiquidNetwork getNetwork()
+	{
+		if(liquidNetwork == null)
+		{
+			liquidNetwork = new LiquidNetwork(this);
+		}
+		
+		return liquidNetwork;
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		if(!worldObj.isRemote)
+		{
+			getNetwork().split(this);
+		}
+		
+		super.invalidate();
+	}
+	
+	@Override
+	public void setNetwork(LiquidNetwork network)
+	{
+		liquidNetwork = network;
+	}
+	
+	@Override
+	public void refreshNetwork() 
+	{
+		if(!worldObj.isRemote)
+		{
+			if(canTransferLiquids())
+			{
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+					
+					if(tileEntity instanceof IMechanicalPipe && ((IMechanicalPipe)tileEntity).canTransferLiquids())
+					{
+						getNetwork().merge(((IMechanicalPipe)tileEntity).getNetwork());
+					}
+				}
+				
+				getNetwork().refresh();
+			}
+			else {
+				getNetwork().split(this);
+			}
 		}
 	}
 	
@@ -84,7 +139,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side, new LiquidTransferProtocol(this, Object3D.get(this).getFromSide(side).getTileEntity(worldObj), received).calculate(), true);
+							container.drain(side, getNetwork().emit(received, true, Object3D.get(this).getFromSide(side).getTileEntity(worldObj)), true);
 						}
 					}
 				}
@@ -150,7 +205,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(!isActive)
 		{
-			return new LiquidTransferProtocol(this, Object3D.get(this).getFromSide(from).getTileEntity(worldObj), resource).calculate();
+			return getNetwork().emit(resource, doFill, Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
 		}
 		
 		return 0;
@@ -161,7 +216,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(!isActive)
 		{
-			return new LiquidTransferProtocol(this, null, resource).calculate();
+			return getNetwork().emit(resource, doFill, null);
 		}
 		
 		return 0;

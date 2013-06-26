@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.ICableOutputter;
-import mekanism.api.IUniversalCable;
 import mekanism.api.Object3D;
 import mekanism.client.IHasSound;
 import mekanism.common.CableUtils;
 import mekanism.common.IActiveState;
+import mekanism.common.IUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
