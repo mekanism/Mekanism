@@ -95,6 +95,12 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
+
+    @Override
+    public boolean canTransferGasToTube(TileEntity tile)
+    {
+        return this.canTransferGas();
+    }
 	
 	@Override
 	public void onTransfer(EnumGas type)

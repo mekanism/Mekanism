@@ -46,9 +46,16 @@ public final class GasTransmission
 	    	{
 				TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 				
-				if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
+				if (tileEntity instanceof IPressurizedTube)
 				{
-					tubes[orientation.ordinal()] = tube;
+				    if (((IPressurizedTube)tileEntity).canTransferGasToTube(tube))
+				    {
+	                    tubes[orientation.ordinal()] = tube;
+				    }
+				}
+				else if (tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
+				{
+                    tubes[orientation.ordinal()] = tube;
 				}
 	    	}
     	}
