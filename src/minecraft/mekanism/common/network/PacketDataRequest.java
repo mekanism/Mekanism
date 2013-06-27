@@ -7,7 +7,9 @@ import mekanism.api.Object3D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.TileEntityDynamicTank;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -45,6 +47,13 @@ public class PacketDataRequest implements IMekanismPacket
 		
 		if(worldServer != null && worldServer.getBlockTileEntity(x, y, z) instanceof ITileNetwork)
 		{
+			TileEntity tileEntity = worldServer.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityDynamicTank)
+			{
+				((TileEntityDynamicTank)tileEntity).sendStructure = true;
+			}
+			
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
 		}
 	}

@@ -53,13 +53,16 @@ public class MekanismGenerators implements IModule
 	//Block IDs
 	public static int generatorID = 3005;
 	
-	//Configuration
+	//Generation Configuration
 	public static double advancedSolarGeneration;
 	public static double bioGeneration;
 	public static double heatGeneration;
 	public static double hydrogenGeneration;
 	public static double solarGeneration;
 	public static double windGeneration;
+	
+	//Usage Configuration
+	public static double electrolyticSeparatorUsage;
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)

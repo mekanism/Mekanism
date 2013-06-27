@@ -46,6 +46,7 @@ public class GeneratorsCommonProxy
 	  	MekanismGenerators.hydrogenGeneration = Mekanism.configuration.get("generation", "HydrogenGeneration", 300).getDouble(300);
 	  	MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 30).getDouble(30);
 	  	MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 30).getDouble(30);
+	  	MekanismGenerators.electrolyticSeparatorUsage = Mekanism.configuration.get("usage", "ElectrolyticSeparatorUsage", 50).getDouble(50);
 		Mekanism.configuration.save();
 	}
 	

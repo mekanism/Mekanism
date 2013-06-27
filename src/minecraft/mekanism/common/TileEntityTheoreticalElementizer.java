@@ -16,7 +16,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 {
 	public TileEntityTheoreticalElementizer()
 	{
-		super("Elementizer.ogg", "Theoretical Elementizer", "/mods/mekanism/gui/GuiElementizer.png", 24, 1, 1000, MachineType.THEORETICAL_ELEMENTIZER.baseEnergy, 1000);
+		super("Elementizer.ogg", "Theoretical Elementizer", "/mods/mekanism/gui/GuiElementizer.png", Mekanism.theoreticalElementizerUsage, 1, 1000, MachineType.THEORETICAL_ELEMENTIZER.baseEnergy, 1000);
 	}
 	
 	@Override

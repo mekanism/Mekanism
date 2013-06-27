@@ -1,9 +1,12 @@
 package mekanism.common;
 
+import java.util.Arrays;
+
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidStack;
 
 public final class PipeUtils 
 {
@@ -30,6 +33,48 @@ public final class PipeUtils
     	}
     	
     	return pipes;
+    }
+
+    /**
+     * Gets all the adjacent connections to a TileEntity.
+     * @param tileEntity - center TileEntity
+     * @return boolean[] of adjacent connections
+     */
+    public static boolean[] getConnections(TileEntity tileEntity)
+    {
+		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
+		
+		TileEntity[] connectedPipes = PipeUtils.getConnectedPipes(tileEntity);
+		ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tileEntity);
+		
+		for(ITankContainer container : connectedAcceptors)
+		{
+			if(container != null)
+			{
+				int side = Arrays.asList(connectedAcceptors).indexOf(container);
+				
+				if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
+				{
+					connectable[side] = true;
+				}
+				else if(container.getTank(ForgeDirection.getOrientation(side).getOpposite(), new LiquidStack(-1, 1000)) != null)
+				{
+					connectable[side] = true;
+				}
+			}
+		}
+		
+		for(TileEntity tile : connectedPipes)
+		{
+			if(tile != null)
+			{
+				int side = Arrays.asList(connectedPipes).indexOf(tile);
+				
+				connectable[side] = true;
+			}
+		}
+		
+		return connectable;
     }
     
     /**

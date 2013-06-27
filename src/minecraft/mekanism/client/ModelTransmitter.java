@@ -75,7 +75,7 @@ public class ModelTransmitter extends ModelBase
 
 		Center.render(0.0625F);
 
-		for (ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
+		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
 		{
 			renderSide(orientation);
 		}

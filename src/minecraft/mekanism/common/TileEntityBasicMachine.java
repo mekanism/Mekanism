@@ -72,7 +72,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 * @param ticksRequired - how many ticks it takes to run a cycle
 	 * @param maxEnergy - how much energy this machine can store
 	 */
-	public TileEntityBasicMachine(String soundPath, String name, String path, int perTick, int ticksRequired, double maxEnergy)
+	public TileEntityBasicMachine(String soundPath, String name, String path, double perTick, int ticksRequired, double maxEnergy)
 	{
 		super(name, maxEnergy);
 		ENERGY_PER_TICK = perTick;

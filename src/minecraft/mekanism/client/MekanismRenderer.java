@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.LiquidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -208,6 +208,17 @@ public class MekanismRenderer
         renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
         tessellator.draw();
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+	}
+	
+	public static void colorLiquid(LiquidStack liquidStack)
+	{
+	    int color = liquidStack.asItemStack().getItem().getColorFromItemStack(liquidStack.asItemStack(), 0);
+	    
+	    float cR = (color >> 16 & 0xFF) / 255.0F;
+	    float cG = (color >> 8 & 0xFF) / 255.0F;
+	    float cB = (color & 0xFF) / 255.0F;
+	    
+	    GL11.glColor4f(cR, cG, cB, 1.0F);
 	}
     
     public static class DisplayInteger

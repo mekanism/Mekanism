@@ -9,7 +9,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 {
 	public TileEntityCrusher()
 	{
-		super("Crusher.ogg", "Crusher", "/mods/mekanism/gui/GuiCrusher.png", 50, 200, MachineType.CRUSHER.baseEnergy);
+		super("Crusher.ogg", "Crusher", "/mods/mekanism/gui/GuiCrusher.png", Mekanism.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
 	}
 	
 	@Override

@@ -66,11 +66,6 @@ public class EnergyNetwork
 		
 		Collections.shuffle(availableAcceptors);
 		
-		for(TileEntity tile : ignored)
-		{
-			availableAcceptors.remove(tile);
-		}
-		
 		if(!availableAcceptors.isEmpty())
 		{
 			int divider = availableAcceptors.size();
@@ -79,7 +74,7 @@ public class EnergyNetwork
 			
 			for(Object obj : availableAcceptors)
 			{
-				if(obj instanceof TileEntity)
+				if(obj instanceof TileEntity && !ignored.contains(obj))
 				{
 					TileEntity acceptor = (TileEntity)obj;
 					double currentSending = sending+remaining;

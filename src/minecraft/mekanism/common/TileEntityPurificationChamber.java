@@ -18,7 +18,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "Purification Chamber", "/mods/mekanism/gui/GuiPurificationChamber.png", 50, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy, 1200);
+		super("PurificationChamber.ogg", "Purification Chamber", "/mods/mekanism/gui/GuiPurificationChamber.png", Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy, 1200);
 	}
 	
 	@Override

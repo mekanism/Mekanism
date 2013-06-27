@@ -48,7 +48,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int TICKS_REQUIRED = 200;
 	
 	/** How much energy each operation consumes per tick. */
-	public int ENERGY_PER_TICK = 50;
+	public double ENERGY_PER_TICK = Mekanism.factoryUsage;
 	
 	/** This machine's speed multiplier. */
 	public int speedMultiplier;

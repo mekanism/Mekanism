@@ -173,7 +173,7 @@ public class Mekanism
 	public static Item Clump;
 	public static Item DirtyDust;
 	
-	//Config Values
+	//General Configuration
 	public static boolean extrasEnabled = true;
 	public static boolean osmiumGenerationEnabled = true;
 	public static boolean disableBCBronzeCrafting = true;
@@ -191,6 +191,17 @@ public class Mekanism
 	public static double FROM_IC2;
 	public static double FROM_BC;
 	public static double ENERGY_PER_REDSTONE = 10000;
+	
+	//Usage Configuration
+	public static double enrichmentChamberUsage;
+	public static double osmiumCompressorUsage;
+	public static double combinerUsage;
+	public static double crusherUsage;
+	public static double theoreticalElementizerUsage;
+	public static double factoryUsage;
+	public static double metallurgicInfuserUsage;
+	public static double purificationChamberUsage;
+	public static double energizedSmelterUsage;
 	
 	/** Total ticks passed since thePlayer joined theWorld */
 	public static int ticksPassed = 0;

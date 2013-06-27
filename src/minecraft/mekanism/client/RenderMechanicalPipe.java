@@ -47,37 +47,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 		
-		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
-		
-		TileEntity[] connectedPipes = PipeUtils.getConnectedPipes(tileEntity);
-		ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tileEntity);
-		
-		for(ITankContainer container : connectedAcceptors)
-		{
-			if(container != null)
-			{
-				int side = Arrays.asList(connectedAcceptors).indexOf(container);
-				
-				if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
-				{
-					connectable[side] = true;
-				}
-				else if(container.getTank(ForgeDirection.getOrientation(side).getOpposite(), new LiquidStack(-1, 1000)) != null)
-				{
-					connectable[side] = true;
-				}
-			}
-		}
-		
-		for(TileEntity tile : connectedPipes)
-		{
-			if(tile != null)
-			{
-				int side = Arrays.asList(connectedPipes).indexOf(tile);
-				
-				connectable[side] = true;
-			}
-		}
+		boolean[] connectable = PipeUtils.getConnections(tileEntity);
 		
 		if(tileEntity.canTransferLiquids())
 		{
@@ -173,21 +143,17 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			cachedLiquids.put(side, map);
 		}
 		
-	    int color = stack.asItemStack().getItem().getColorFromItemStack(stack.asItemStack(), 0);
-	    float cR = (color >> 16 & 0xFF) / 255.0F;
-	    float cG = (color >> 8 & 0xFF) / 255.0F;
-	    float cB = (color & 0xFF) / 255.0F;
-	    GL11.glColor4f(cR, cG, cB, 1.0F);
+		MekanismRenderer.colorLiquid(stack);
 		
-		switch(side)
+		for(int i = 0; i < stages; i++)
 		{
-			case UNKNOWN:
+			displays[i] = GLAllocation.generateDisplayLists(1);
+			GL11.glNewList(displays[i], 4864);
+			
+			switch(side)
 			{
-				for(int i = 0; i < stages; i++)
+				case UNKNOWN:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.3 + offset;
 					toReturn.minY = 0.3 + offset;
 					toReturn.minZ = 0.3 + offset;
@@ -195,20 +161,10 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 0.7 - offset;
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
-			}
-			case DOWN:
-			{
-				for(int i = 0; i < stages; i++)
+				case DOWN:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
 					toReturn.minY = 0.0;
 					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
@@ -216,20 +172,10 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
 					toReturn.maxY = 0.3 + offset;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
-			}
-			case UP:
-			{
-				for(int i = 0; i < stages; i++)
+				case UP:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
 					toReturn.minY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
@@ -237,20 +183,10 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
 					toReturn.maxY = 1.0;
 					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
-			}
-			case NORTH:
-			{
-				for(int i = 0; i < stages; i++)
+				case NORTH:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.3 + offset;
 					toReturn.minY = 0.3 + offset;
 					toReturn.minZ = 0.0;
@@ -258,20 +194,10 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 0.7 - offset;
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.3 + offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
-			}
-			case SOUTH:
-			{
-				for(int i = 0; i < stages; i++)
+				case SOUTH:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.3 + offset;
 					toReturn.minY = 0.3 + offset;
 					toReturn.minZ = 0.7 - offset;
@@ -279,20 +205,10 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 0.7 - offset;
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 1.0;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
-			}
-			case WEST:
-			{
-				for(int i = 0; i < stages; i++)
+				case WEST:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.0;
 					toReturn.minY = 0.3 + offset;
 					toReturn.minZ = 0.3 + offset;
@@ -300,20 +216,10 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 0.3 + offset;
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
-			}
-			case EAST:
-			{
-				for(int i = 0; i < stages; i++)
+				case EAST:
 				{
-					displays[i] = GLAllocation.generateDisplayLists(1);
-					GL11.glNewList(displays[i], 4864);
-					
 					toReturn.minX = 0.7 - offset;
 					toReturn.minY = 0.3 + offset;
 					toReturn.minZ = 0.3 + offset;
@@ -321,17 +227,16 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					toReturn.maxX = 1.0;
 					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
 					toReturn.maxZ = 0.7 - offset;
-					
-					MekanismRenderer.renderObject(toReturn);
-					GL11.glEndList();
+					break;
 				}
-				
-				return displays;
 			}
+			
+			MekanismRenderer.renderObject(toReturn);
+			GL11.glEndList();
 		}
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		
-		return null;
+		return displays;
 	}
 }

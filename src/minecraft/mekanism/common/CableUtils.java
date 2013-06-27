@@ -69,6 +69,11 @@ public final class CableUtils
     	return cables;
     }
     
+    /**
+     * Gets all the adjacent connections to a TileEntity.
+     * @param tileEntity - center TileEntity
+     * @return boolean[] of adjacent connections
+     */
     public static boolean[] getConnections(TileEntity tileEntity)
     {
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};

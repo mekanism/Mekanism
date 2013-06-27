@@ -170,7 +170,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getLiquid() != null && waterTank.getLiquid().amount-2 >= 0 && electricityStored-100 > 0)
 			{
 				waterTank.drain(2, true);
-				setEnergy(electricityStored - 50);
+				setEnergy(electricityStored - MekanismGenerators.electrolyticSeparatorUsage);
 				setGas(EnumGas.OXYGEN, oxygenStored + 1);
 				setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 			}

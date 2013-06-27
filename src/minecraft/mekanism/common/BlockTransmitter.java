@@ -118,22 +118,27 @@ public class BlockTransmitter extends Block
 			{
 				minY = 0.0F;
 			}
+			
 			if(connectable[1])
 			{
 				maxY = 1.0F;
 			}
+			
 			if(connectable[2])
 			{
 				minZ = 0.0F;
 			}
+			
 			if(connectable[3])
 			{
 				maxZ = 1.0F;
 			}
+			
 			if(connectable[4])
 			{
 				minX = 0.0F;
 			}
+			
 			if(connectable[5])
 			{
 				maxX = 1.0F;
@@ -178,35 +183,7 @@ public class BlockTransmitter extends Block
 			}
 			else if(world.getBlockMetadata(x, y, z) == 2)
 			{
-				TileEntity[] connectedPipes = PipeUtils.getConnectedPipes(tileEntity);
-				ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tileEntity);
-				
-				for(ITankContainer container : connectedAcceptors)
-				{
-					if(container != null)
-					{
-						int side = Arrays.asList(connectedAcceptors).indexOf(container);
-						
-						if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
-						{
-							connectable[side] = true;
-						}
-						else if(container.getTank(ForgeDirection.getOrientation(side).getOpposite(), new LiquidStack(-1, 1000)) != null)
-						{
-							connectable[side] = true;
-						}
-					}
-				}
-				
-				for(TileEntity tile : connectedPipes)
-				{
-					if(tile != null)
-					{
-						int side = Arrays.asList(connectedPipes).indexOf(tile);
-						
-						connectable[side] = true;
-					}
-				}
+				connectable = PipeUtils.getConnections(tileEntity);
 			}
 		}
 		
@@ -233,22 +210,27 @@ public class BlockTransmitter extends Block
 			{
 				minY = 0.0F;
 			}
+			
 			if(connectable[1])
 			{
 				maxY = 1.0F;
 			}
+			
 			if(connectable[2])
 			{
 				minZ = 0.0F;
 			}
+			
 			if(connectable[3])
 			{
 				maxZ = 1.0F;
 			}
+			
 			if(connectable[4])
 			{
 				minX = 0.0F;
 			}
+			
 			if(connectable[5])
 			{
 				maxX = 1.0F;

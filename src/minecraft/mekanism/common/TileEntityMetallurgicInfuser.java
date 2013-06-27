@@ -49,7 +49,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 	
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = 50;
+	public double ENERGY_PER_TICK = Mekanism.metallurgicInfuserUsage;
 	
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;

@@ -12,7 +12,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 {
 	public TileEntityCombiner()
 	{
-		super("Combiner.ogg", "Combiner", "/mods/mekanism/gui/GuiCombiner.png", 50, 1, 200, MachineType.COMBINER.baseEnergy, 200);
+		super("Combiner.ogg", "Combiner", "/mods/mekanism/gui/GuiCombiner.png", Mekanism.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy, 200);
 	}
 	
 	@Override

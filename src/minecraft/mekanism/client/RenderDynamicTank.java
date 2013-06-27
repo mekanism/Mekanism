@@ -125,11 +125,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			cachedCenterLiquids.put(data, map);
 		}
 		
-	    int color = stack.asItemStack().getItem().getColorFromItemStack(stack.asItemStack(), 0);
-	    float cR = (color >> 16 & 0xFF) / 255.0F;
-	    float cG = (color >> 8 & 0xFF) / 255.0F;
-	    float cB = (color & 0xFF) / 255.0F;
-	    GL11.glColor4f(cR, cG, cB, 1.0F);
+		MekanismRenderer.colorLiquid(stack);
 		
 		for(int i = 0; i < stages; i++)
 		{
@@ -153,29 +149,27 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		return displays;
 	}
 	
-	private void setFlowingTexture(LiquidStack liquid, Model3D model)
+	private void setFlowingTexture(LiquidStack liquidStack, Model3D model)
 	{
-		if((liquid == null) || (liquid.amount <= 0) || (liquid.itemID <= 0)) 
+		if((liquidStack == null) || (liquidStack.amount <= 0) || (liquidStack.itemID <= 0)) 
 		{
 			return;
 		}
 
-		ItemStack stack = liquid.asItemStack();
-		LiquidStack canon = liquid.canonical();
+		ItemStack itemStack = liquidStack.asItemStack();
+		String texturePath = liquidStack.canonical().getTextureSheet();
 		
-		String texturePath = canon.getTextureSheet();
+		Icon flatIcon = liquidStack.canonical().getRenderingIcon();
+		Icon sideIcon = flatIcon;
 		
-		Icon top = canon.getRenderingIcon();
-		Icon side = top;
-		
-		if((stack.getItem() instanceof ItemBlock))
+		if((itemStack.getItem() instanceof ItemBlock))
 		{
-			top = Block.blocksList[stack.itemID].getIcon(0, 0);
-			side = Block.blocksList[stack.itemID].getIcon(2, 0);
+			flatIcon = Block.blocksList[itemStack.itemID].getIcon(0, 0);
+			sideIcon = Block.blocksList[itemStack.itemID].getIcon(2, 0);
 			texturePath = "/terrain.png";
 		}
 		
-		model.setTextures(top, top, side, side, side, side);
+		model.setTextures(flatIcon, flatIcon, sideIcon, sideIcon, sideIcon, sideIcon);
 		
 		bindTextureByName(texturePath);
 	}
@@ -208,11 +202,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			cachedValveLiquids.put(data, map);
 		}
 		
-	    int color = stack.asItemStack().getItem().getColorFromItemStack(stack.asItemStack(), 0);
-	    float cR = (color >> 16 & 0xFF) / 255.0F;
-	    float cG = (color >> 8 & 0xFF) / 255.0F;
-	    float cB = (color & 0xFF) / 255.0F;
-	    GL11.glColor4f(cR, cG, cB, 1.0F);
+		MekanismRenderer.colorLiquid(stack);
 		
 		display.display = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(display.display, 4864);
@@ -293,6 +283,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		
 		MekanismRenderer.renderObject(toReturn);
 		GL11.glEndList();
+		
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		
 		return display;
 	}
