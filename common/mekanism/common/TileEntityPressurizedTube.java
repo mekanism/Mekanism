@@ -68,35 +68,26 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public void refreshNetwork() 
 	{
-        if (!worldObj.isRemote)
-        {
-            if (canTransferGas())
-            {
-                for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-                {
-                    TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-                    
-                    if (tileEntity instanceof IPressurizedTube)
-                    {
-                        if (((IPressurizedTube)tileEntity).canTransferGasToTube(this) && this.canTransferGasToTube(tileEntity))
-                        {
-                            this.getNetwork().merge(((IPressurizedTube)tileEntity).getNetwork());
-                        }
-                        else
-                        {
-                            ((IPressurizedTube) tileEntity).getNetwork().split(this);
-                            this.getNetwork().split(((IPressurizedTube) tileEntity));
-                        }
-                    }
-                }
-
-                this.getNetwork().refresh();
-            }
-            else 
-            {
-                this.getNetwork().split(this);
-            }
-        }
+		if(!worldObj.isRemote)
+		{
+			if(canTransferGas())
+			{
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+					
+					if(tileEntity instanceof IPressurizedTube && ((IPressurizedTube)tileEntity).canTransferGas())
+					{
+						getNetwork().merge(((IPressurizedTube)tileEntity).getNetwork());
+					}
+				}
+				
+				getNetwork().refresh();
+			}
+			else {
+				getNetwork().split(this);
+			}
+		}
 	}
 	
 	@Override
