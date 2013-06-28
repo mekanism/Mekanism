@@ -34,10 +34,10 @@
 		<mkdir dir="toolsContents"/>
 		<mkdir dir="mdkContents"/>
 
-		<replace dir="${dir.mcp}common" token="@MAJOR@" value="${version.mod.major}"/>
-		<replace dir="${dir.mcp}common" token="@MINOR@" value="${version.mod.minor}"/>
-		<replace dir="${dir.mcp}common" token="@REVIS@" value="${version.mod.revis}"/>
-		<replace dir="${dir.mcp}common" token="@BUILD@" value="${env.BUILD_NUMBER}"/>
+		<replace dir="${dir.mcp}/src/minecraft" token="@MAJOR@" value="${version.mod.major}"/>
+		<replace dir="${dir.mcp}/src/minecraft" token="@MINOR@" value="${version.mod.minor}"/>
+		<replace dir="${dir.mcp}/src/minecraft" token="@REVIS@" value="${version.mod.revis}"/>
+		<replace dir="${dir.mcp}/src/minecraft" token="@BUILD@" value="${env.BUILD_NUMBER}"/>
 
 		<exec dir="${dir.mcp}" executable="cmd" osfamily="windows">
 			<arg line="recompile.bat"/>
