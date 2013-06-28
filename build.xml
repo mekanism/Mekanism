@@ -21,9 +21,9 @@
 			<fileset dir="../NEI/"/>
 		</copy>
 
-		<copy todir="${dir.mcp}common">
+		<copy todir="${dir.mcp}/src/minecraft">
 
-			<fileset dir="${dir.development}src">
+			<fileset dir="${dir.development}common">
 				<exclude name=".git/**"/>
 				<exclude name="**/*.xml"/>
 			</fileset>
