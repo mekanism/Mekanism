@@ -108,7 +108,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
     @Override
     public boolean canTransferGasToTube(TileEntity tile)
     {
-        return this.canTransferGas();
+        return canTransferGas();
     }
 	
 	@Override

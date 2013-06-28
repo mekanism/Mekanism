@@ -6,8 +6,10 @@ import java.util.HashMap;
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
+import mekanism.api.Object3D;
 import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
+import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
@@ -35,6 +37,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		renderAModelAt((TileEntityPressurizedTube)tileEntity, x, y, z, partialTick);
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderAModelAt(TileEntityPressurizedTube tileEntity, double x, double y, double z, float partialTick)
 	{
 		bindTextureByName("/mods/mekanism/render/PressurizedTube.png");
@@ -65,7 +68,39 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			{
 				if(connectable[i])
 				{
-					model.renderSide(ForgeDirection.getOrientation(i));
+					TileEntity sideTile = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getTileEntity(tileEntity.worldObj);
+					
+					if(sideTile instanceof TileEntityGasTank && i != 0 && i != 1)
+					{
+						GL11.glPushMatrix();
+						
+						switch(ForgeDirection.getOrientation(i))
+						{
+							case NORTH:
+								GL11.glScalef(1, 1, 1.63f);
+								GL11.glTranslatef(0, 0, -.073f);
+								break;
+							case SOUTH:
+								GL11.glScalef(1, 1, 1.63f);
+								GL11.glTranslatef(0, 0, .073f);
+								break;
+							case WEST:
+								GL11.glScalef(1.63f, 1, 1);
+								GL11.glTranslatef(.073f, 0, 0);
+								break;
+							case EAST:
+								GL11.glScalef(1.63f, 1, 1);
+								GL11.glTranslatef(-.073f, 0, 0);
+								break;
+						}
+						
+						model.renderSide(ForgeDirection.getOrientation(i));
+						
+						GL11.glPopMatrix();
+					}
+					else {
+						model.renderSide(ForgeDirection.getOrientation(i));
+					}
 				}
 			}
 		}

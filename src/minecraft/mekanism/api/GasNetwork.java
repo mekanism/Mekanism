@@ -246,11 +246,15 @@ public class GasNetwork
 				
 				if(!iterated.contains(obj) && !toIgnore.contains(obj))
 				{
-					TileEntity tileEntity = obj.getTileEntity(worldObj);
+					TileEntity tileEntity = location.getTileEntity(worldObj);
+					TileEntity sideTile = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IPressurizedTube && ((IPressurizedTube)tileEntity).canTransferGas())
+					if(sideTile instanceof IPressurizedTube && ((IPressurizedTube)sideTile).canTransferGas())
 					{
-						loopThrough(obj);
+						if(((IPressurizedTube)sideTile).canTransferGasToTube(tileEntity) && ((IPressurizedTube)tileEntity).canTransferGasToTube(sideTile))
+						{
+							loopThrough(obj);
+						}
 					}
 				}
 			}
