@@ -1,16 +1,14 @@
 package mekanism.common;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectricMachine
 {

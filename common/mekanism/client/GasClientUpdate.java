@@ -1,17 +1,11 @@
 package mekanism.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
 import mekanism.api.IPressurizedTube;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * The actual protocol gas goes through when it is transferred via Pressurized Tubes.

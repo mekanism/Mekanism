@@ -18,8 +18,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiWeatherOrb extends GuiScreen 
 {
 	private static EntityPlayer player;
-	private int xSize = 176;
-	private int ySize = 166;
 
 	public GuiWeatherOrb(EntityPlayer entityplayer)
 	{

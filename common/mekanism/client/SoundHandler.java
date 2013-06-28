@@ -10,6 +10,7 @@ import java.util.Random;
 import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,7 +44,7 @@ public class SoundHandler
 	 */
 	public SoundHandler()
 	{
-		soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
+		soundSystem = SoundManager.sndSystem;
 		MinecraftForge.EVENT_BUS.register(this);
 		System.out.println("[Mekanism] Successfully set up SoundHandler.");
 	}
@@ -57,7 +58,7 @@ public class SoundHandler
 		{
 			if(soundSystem == null)
 			{
-				soundSystem = FMLClientHandler.instance().instance().getClient().sndManager.sndSystem;
+				soundSystem = SoundManager.sndSystem;
 			}
 			
 			if(soundSystem != null)

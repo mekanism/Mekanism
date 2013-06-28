@@ -2,12 +2,11 @@ package mekanism.client;
 
 import java.util.ArrayList;
 
-import mekanism.api.InfuseType;
 import mekanism.api.Object3D;
 import mekanism.common.ContainerMetallurgicInfuser;
 import mekanism.common.PacketHandler;
-import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.network.PacketTileEntity;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,7 +15,6 @@ import org.lwjgl.opengl.GL11;
 
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

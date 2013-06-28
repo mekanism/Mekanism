@@ -254,7 +254,6 @@ public class ElectricityNetwork implements IElectricityNetwork
 					ElectricityPack totalRequest = this.getRequestWithoutReduction();
 					totalElectricity.amperes *= (tileRequest.amperes / totalRequest.amperes);
 
-					int distance = this.conductors.size();
 					double ampsReceived = totalElectricity.amperes - (totalElectricity.amperes * totalElectricity.amperes * this.getTotalResistance()) / totalElectricity.voltage;
 					double voltsReceived = totalElectricity.voltage - (totalElectricity.amperes * this.getTotalResistance());
 

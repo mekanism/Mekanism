@@ -1,26 +1,11 @@
 package mekanism.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import mekanism.api.GasTransmission;
-import mekanism.api.IGasAcceptor;
-import mekanism.api.IGasStorage;
 import mekanism.common.IMechanicalPipe;
 import mekanism.common.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
 
 public class LiquidClientUpdate
 {

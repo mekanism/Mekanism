@@ -35,7 +35,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockEnergyCube extends BlockContainer
 {
 	public Icon[][] icons = new Icon[256][256];
-	private Random powerRand = new Random();
 	
 	public BlockEnergyCube(int id)
 	{

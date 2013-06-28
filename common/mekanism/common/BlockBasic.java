@@ -1,9 +1,7 @@
 package mekanism.common;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
@@ -22,7 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import cpw.mods.fml.relauncher.Side;
@@ -215,8 +212,6 @@ public class BlockBasic extends Block
 					{
 						if(itemStack.stackSize > 1)
 						{
-							boolean didMove = false;
-							
 							for(int i = 0; i < player.inventory.mainInventory.length; i++)
 							{
 								if(player.inventory.mainInventory[i] == null)

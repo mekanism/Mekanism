@@ -1,11 +1,8 @@
 package mekanism.client;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import mekanism.client.MekanismRenderer.Model3D;
-import mekanism.common.CableUtils;
-import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
 import mekanism.common.TileEntityMechanicalPipe;
 import net.minecraft.block.Block;
@@ -14,8 +11,6 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 
 import org.lwjgl.opengl.GL11;

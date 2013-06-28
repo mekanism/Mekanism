@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import net.minecraft.tileentity.TileEntity;
-
 /**
  * Implement this in your TileEntity class if the block can transfer energy as a Universal Cable.
  * @author AidanBrady

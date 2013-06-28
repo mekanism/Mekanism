@@ -4,7 +4,6 @@ import java.io.DataOutputStream;
 
 import mekanism.common.ItemElectricBow;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 

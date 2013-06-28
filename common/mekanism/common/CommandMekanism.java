@@ -3,8 +3,6 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import mekanism.api.EnumColor;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

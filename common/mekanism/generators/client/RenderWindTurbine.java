@@ -2,13 +2,10 @@ package mekanism.generators.client;
 
 import mekanism.common.Mekanism;
 import mekanism.generators.common.TileEntityWindTurbine;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class RenderWindTurbine extends TileEntitySpecialRenderer
 {

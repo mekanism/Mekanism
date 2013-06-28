@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 /**

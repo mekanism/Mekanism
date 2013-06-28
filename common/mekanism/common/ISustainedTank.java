@@ -1,8 +1,6 @@
 package mekanism.common;
 
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
 
 /**
  * Internal interface used in blocks and items that are capable of storing sustained tanks.

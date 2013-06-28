@@ -20,16 +20,11 @@ import cpw.mods.fml.common.Loader;
  */
 public final class MekanismHooks 
 {
-	private Class IC2;
-	
-	private Class Railcraft;
-	
 	private Class BasicComponents;
 	
 	private Class BuildCraftEnergy;
 	
 	private Class ForestryItem;
-	private Class Forestry;
 	
 	public int ForestryBiofuelID = 5013;
 	public ItemStack ForestryBiofuelBucket;
