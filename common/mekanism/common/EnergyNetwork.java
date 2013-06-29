@@ -288,7 +288,7 @@ public class EnergyNetwork
 		
 		public void loopThrough(Object3D location)
 		{
-			if(location.getTileEntity(worldObj) instanceof IUniversalCable && ((IUniversalCable)location.getTileEntity(worldObj)).canTransferEnergy())
+			if(location.getTileEntity(worldObj) instanceof IUniversalCable)
 			{
 				iterated.add(location);
 			}
@@ -306,7 +306,7 @@ public class EnergyNetwork
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IUniversalCable && ((IUniversalCable)tileEntity).canTransferEnergy())
+					if(tileEntity instanceof IUniversalCable)
 					{
 						loopThrough(obj);
 					}

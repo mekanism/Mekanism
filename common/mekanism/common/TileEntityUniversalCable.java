@@ -65,30 +65,18 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		if(!worldObj.isRemote)
 		{
-			if(canTransferEnergy())
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-				{
-					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-					
-					if(tileEntity instanceof IUniversalCable && ((IUniversalCable)tileEntity).canTransferEnergy())
-					{
-						getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
-					}
-				}
+				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				getNetwork().refresh();
+				if(tileEntity instanceof IUniversalCable)
+				{
+					getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
+				}
 			}
-			else {
-				getNetwork().split(this);
-			}
+			
+			getNetwork().refresh();
 		}
-	}
-	
-	@Override
-	public boolean canTransferEnergy()
-	{
-		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
 
 	@Override
@@ -108,7 +96,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
 		ignored.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-		return canTransferEnergy() ? (int)Math.min(100, getNetwork().getEnergyNeeded(ignored)*Mekanism.TO_BC) : 0;
+		return (int)Math.min(100, getNetwork().getEnergyNeeded(ignored)*Mekanism.TO_BC);
 	}
 	
 	@Override

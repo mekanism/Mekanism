@@ -44,14 +44,11 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		
 		boolean[] connectable = PipeUtils.getConnections(tileEntity);
 		
-		if(tileEntity.canTransferLiquids())
+		for(int i = 0; i < 6; i++)
 		{
-			for(int i = 0; i < 6; i++)
+			if(connectable[i])
 			{
-				if(connectable[i])
-				{
-					model.renderSide(ForgeDirection.getOrientation(i));
-				}
+				model.renderSide(ForgeDirection.getOrientation(i));
 			}
 		}
 		
@@ -70,15 +67,12 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			bindTextureByName(tileEntity.refLiquid.getTextureSheet());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			if(tileEntity.canTransferLiquids())
+			for(int i = 0; i < 6; i++)
 			{
-				for(int i = 0; i < 6; i++)
+				if(connectable[i])
 				{
-					if(connectable[i])
-					{
-						int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid, tileEntity.worldObj);
-						GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
-					}
+					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid, tileEntity.worldObj);
+					GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
 				}
 			}
 			

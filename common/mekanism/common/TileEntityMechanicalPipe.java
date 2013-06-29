@@ -39,12 +39,6 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	public float liquidScale;
 	
 	@Override
-	public boolean canTransferLiquids()
-	{
-		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
-	}
-	
-	@Override
 	public void onTransfer(LiquidStack liquidStack)
 	{
 		if(liquidStack.isLiquidEqual(refLiquid))
@@ -91,23 +85,17 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(!worldObj.isRemote)
 		{
-			if(canTransferLiquids())
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-				{
-					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-					
-					if(tileEntity instanceof IMechanicalPipe && ((IMechanicalPipe)tileEntity).canTransferLiquids())
-					{
-						getNetwork().merge(((IMechanicalPipe)tileEntity).getNetwork());
-					}
-				}
+				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				getNetwork().refresh();
+				if(tileEntity instanceof IMechanicalPipe)
+				{
+					getNetwork().merge(((IMechanicalPipe)tileEntity).getNetwork());
+				}
 			}
-			else {
-				getNetwork().split(this);
-			}
+			
+			getNetwork().refresh();
 		}
 	}
 	

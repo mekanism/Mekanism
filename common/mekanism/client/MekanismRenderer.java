@@ -83,6 +83,11 @@ public class MekanismRenderer
 	
 	public static void renderObject(Model3D object)
 	{
+		if(object == null)
+		{
+			return;
+		}
+		
         renderBlocks.renderMaxX = object.maxX;
         renderBlocks.renderMinX = object.minX;
         renderBlocks.renderMaxY = object.maxY;

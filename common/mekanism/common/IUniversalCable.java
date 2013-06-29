@@ -8,12 +8,6 @@ package mekanism.common;
 public interface IUniversalCable 
 {
 	/**
-	 * Whether or not this cable can transfer energy.
-	 * @return if the cable can transfer energy
-	 */
-	public boolean canTransferEnergy();
-	
-	/**
 	 * Gets the EnergyNetwork currently in use by this cable segment.
 	 * @return EnergyNetwork this cable is using
 	 */

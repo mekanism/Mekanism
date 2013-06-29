@@ -28,17 +28,14 @@ public final class CableUtils
     {
     	TileEntity[] acceptors = new TileEntity[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IUniversalCable) || ((IUniversalCable)tileEntity).canTransferEnergy())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || (acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded))
-				{
-					acceptors[orientation.ordinal()] = acceptor;
-				}
-	    	}
+			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || (acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded))
+			{
+				acceptors[orientation.ordinal()] = acceptor;
+			}
     	}
     	
     	return acceptors;
@@ -53,17 +50,14 @@ public final class CableUtils
     {
     	TileEntity[] cables = new TileEntity[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IUniversalCable) || ((IUniversalCable)tileEntity).canTransferEnergy())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(cable instanceof IUniversalCable && ((IUniversalCable)cable).canTransferEnergy())
-				{
-					cables[orientation.ordinal()] = cable;
-				}
-	    	}
+			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(cable instanceof IUniversalCable)
+			{
+				cables[orientation.ordinal()] = cable;
+			}
     	}
     	
     	return cables;
@@ -124,17 +118,14 @@ public final class CableUtils
     {
     	TileEntity[] outputters = new TileEntity[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IUniversalCable) || ((IUniversalCable)tileEntity).canTransferEnergy())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity outputter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite()) || outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, MekanismUtils.toIC2Direction(orientation.getOpposite())))
-				{
-					outputters[orientation.ordinal()] = outputter;
-				}
-	    	}
+			TileEntity outputter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite()) || outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, MekanismUtils.toIC2Direction(orientation.getOpposite())))
+			{
+				outputters[orientation.ordinal()] = outputter;
+			}
     	}
     	
     	return outputters;

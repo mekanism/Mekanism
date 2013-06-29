@@ -19,17 +19,14 @@ public final class PipeUtils
     {
     	TileEntity[] pipes = new TileEntity[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IMechanicalPipe) || ((IMechanicalPipe)tileEntity).canTransferLiquids())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).canTransferLiquids())
-				{
-					pipes[orientation.ordinal()] = pipe;
-				}
-	    	}
+			TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(pipe instanceof IMechanicalPipe)
+			{
+				pipes[orientation.ordinal()] = pipe;
+			}
     	}
     	
     	return pipes;
@@ -86,17 +83,14 @@ public final class PipeUtils
     {
     	ITankContainer[] acceptors = new ITankContainer[] {null, null, null, null, null, null};
 
-    	if(!(tileEntity instanceof IMechanicalPipe) || ((IMechanicalPipe)tileEntity).canTransferLiquids())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(acceptor instanceof ITankContainer && !(acceptor instanceof IMechanicalPipe))
-				{
-					acceptors[orientation.ordinal()] = (ITankContainer)acceptor;
-				}
-	    	}
+			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(acceptor instanceof ITankContainer && !(acceptor instanceof IMechanicalPipe))
+			{
+				acceptors[orientation.ordinal()] = (ITankContainer)acceptor;
+			}
     	}
     	
     	return acceptors;

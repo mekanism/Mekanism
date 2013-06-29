@@ -40,14 +40,11 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		boolean[] connectable = CableUtils.getConnections(tileEntity);
 		
-		if(tileEntity.canTransferEnergy())
+		for(int i = 0; i < 6; i++)
 		{
-			for(int i = 0; i < 6; i++)
+			if(connectable[i])
 			{
-				if(connectable[i])
-				{
-					model.renderSide(ForgeDirection.getOrientation(i));
-				}
+				model.renderSide(ForgeDirection.getOrientation(i));
 			}
 		}
 		
@@ -63,14 +60,11 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			bindTextureByName("/mods/mekanism/textures/items/LiquidEnergy.png");
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			if(tileEntity.canTransferEnergy())
+			for(int i = 0; i < 6; i++)
 			{
-				for(int i = 0; i < 6; i++)
+				if(connectable[i])
 				{
-					if(connectable[i])
-					{
-						renderEnergy(ForgeDirection.getOrientation(i));
-					}
+					renderEnergy(ForgeDirection.getOrientation(i));
 				}
 			}
 			

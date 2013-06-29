@@ -250,7 +250,7 @@ public class LiquidNetwork
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IMechanicalPipe && ((IMechanicalPipe)tileEntity).canTransferLiquids())
+					if(tileEntity instanceof IMechanicalPipe)
 					{
 						loopThrough(obj);
 					}

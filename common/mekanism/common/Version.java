@@ -92,7 +92,6 @@ public class Version
 		
 		if(split.length != 3)
 		{
-			System.out.println(split.length);
 			return null;
 		}
 		
