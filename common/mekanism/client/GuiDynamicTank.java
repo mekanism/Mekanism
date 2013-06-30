@@ -35,7 +35,12 @@ public class GuiDynamicTank extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString("Volume: " + tileEntity.clientCapacity/16000, 53, 26, 0x00CD00);
-        fontRenderer.drawString(tileEntity.structure.liquidStored != null ? LiquidDictionary.findLiquidName(tileEntity.structure.liquidStored) + ": " + tileEntity.structure.liquidStored.amount : "No liquid.", 53, 35, 0x00CD00);
+        fontRenderer.drawString(tileEntity.structure.liquidStored != null ? LiquidDictionary.findLiquidName(tileEntity.structure.liquidStored) + ":" : "No liquid.", 53, 44, 0x00CD00);
+        
+        if(tileEntity.structure.liquidStored != null)
+        {
+	        fontRenderer.drawString(tileEntity.structure.liquidStored.amount + "mB", 53, 53, 0x00CD00);
+        }
         
         
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)

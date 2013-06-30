@@ -71,13 +71,21 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			{
 				if(connectable[i])
 				{
-					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid, tileEntity.worldObj);
-					GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid);
+					
+					if(displayList != null)
+					{
+						GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+					}
 				}
 			}
 			
-			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid, tileEntity.worldObj);
-			GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid);
+			
+			if(displayList != null)
+			{
+				GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+			}
 			
 			if(tileEntity.refLiquid.itemID == Block.lavaStill.blockID)
 			{
@@ -104,8 +112,13 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private int[] getListAndRender(ForgeDirection side, LiquidStack stack, World world)
+	private int[] getListAndRender(ForgeDirection side, LiquidStack stack)
 	{
+		if(side == null || stack == null || stack.getRenderingIcon() == null)
+		{
+			return null;
+		}
+		
 		if(cachedLiquids.containsKey(side) && cachedLiquids.get(side).containsKey(stack))
 		{
 			return cachedLiquids.get(side).get(stack);
