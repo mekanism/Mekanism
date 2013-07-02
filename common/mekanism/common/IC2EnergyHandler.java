@@ -36,7 +36,7 @@ public class IC2EnergyHandler
 					{
 						IEnergySource source = (IEnergySource)tileEntity;
 						
-						if(!source.emitsEnergyTo(tile, MekanismUtils.toIC2Direction(orientation.getOpposite())))
+						if(!source.emitsEnergyTo(tile, MekanismUtils.toIC2Direction(orientation)))
 						{
 							ignoredTiles.add(tile);
 						}

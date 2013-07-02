@@ -51,7 +51,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void onUpdate()
 	{
-		if(!initialized && worldObj != null)
+		if(!initialized && worldObj != null && !worldObj.isRemote)
 		{
 			if(Mekanism.hooks.IC2Loaded)
 			{
@@ -146,7 +146,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		ElectricityNetworkHelper.invalidate(this);
 		
-		if(initialized)
+		if(initialized && !worldObj.isRemote)
 		{
 			if(Mekanism.hooks.IC2Loaded)
 			{

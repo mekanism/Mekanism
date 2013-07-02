@@ -206,7 +206,7 @@ public final class CableUtils
      * @param ignored - ignored acceptors
      * @return rejected energy
      */
-    public static double emitEnergyFromAllSides(double amount, TileEntity pointer, ArrayList ignored)
+    public static double emitEnergyFromAllSides(double amount, TileEntity pointer, ArrayList<TileEntity> ignored)
     {
     	if(pointer != null)
     	{
@@ -219,10 +219,15 @@ public final class CableUtils
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(sideTile instanceof IUniversalCable)
+    			if(sideTile instanceof IUniversalCable && !ignored.contains(sideTile))
     			{
     				networks.add(((IUniversalCable)sideTile).getNetwork());
     			}
+    		}
+    		
+    		if(networks.size() == 0)
+    		{
+    			return amount;
     		}
     		
     		double remaining = amount%networks.size();

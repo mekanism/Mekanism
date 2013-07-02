@@ -36,6 +36,7 @@ import mekanism.common.TileEntityPurificationChamber;
 import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import mekanism.common.TileEntityUniversalCable;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -83,7 +84,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSound(TileEntity tileEntity) 
 	{
-		if(Mekanism.enableSounds && FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+		if(Mekanism.enableSounds && SoundManager.sndSystem != null)
 		{
 			synchronized(Mekanism.audioHandler.sounds)
 			{
@@ -95,7 +96,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unregisterSound(TileEntity tileEntity) 
 	{
-		if(Mekanism.enableSounds && FMLClientHandler.instance().getClient().sndManager.sndSystem != null)
+		if(Mekanism.enableSounds && SoundManager.sndSystem != null)
 		{
 			synchronized(Mekanism.audioHandler.sounds)
 			{
