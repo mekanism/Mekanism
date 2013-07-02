@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import mekanism.api.GasNetwork.GasTransferEvent;
 import mekanism.api.GasTransmission;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfuseRegistry;
 import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
-import mekanism.api.GasNetwork.GasTransferEvent;
 import mekanism.client.SoundHandler;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.LiquidNetwork.LiquidTransferEvent;
@@ -156,6 +156,7 @@ public class Mekanism
 	public static Item PortableTeleporter;
 	public static Item TeleportationCore;
 	public static Item Configurator;
+	public static Item EnergyMeter;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -486,6 +487,7 @@ public class Mekanism
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
+		LanguageRegistry.addName(EnergyMeter, "EnergyMeter");
 		
 		//Localization for BasicBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
@@ -604,6 +606,7 @@ public class Mekanism
 		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
+		EnergyMeter = new ItemEnergyMeter(configuration.getItem("EnergyMeter", 11222).getInt()).setUnlocalizedName("EnergyMeter");
 		configuration.save();
 		
 		//Registrations
@@ -633,6 +636,7 @@ public class Mekanism
 		GameRegistry.registerItem(Clump, "Clump");
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
+		GameRegistry.registerItem(EnergyMeter, "EnergyMeter");
 	}
 	
 	/**
