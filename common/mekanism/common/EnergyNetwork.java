@@ -5,12 +5,18 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
@@ -21,16 +27,20 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
 
-public class EnergyNetwork
+public class EnergyNetwork implements ITickHandler
 {
 	public Set<IUniversalCable> cables = new HashSet<IUniversalCable>();
 	
 	public Set<TileEntity> possibleAcceptors = new HashSet<TileEntity>();
 	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
 	
+	private double joulesTransmitted = 0;
+	private double joulesLastTick = 0;
+	
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
 		cables.addAll(Arrays.asList(varCables));
+		TickRegistry.registerTickHandler(this, Side.SERVER);
 	}
 	
 	public double getEnergyNeeded(ArrayList<TileEntity> ignored)
@@ -61,16 +71,18 @@ public class EnergyNetwork
 	
 	public double emit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
+		double energyAvailable = energyToSend;		
+		double sent;		
 		List availableAcceptors = Arrays.asList(getEnergyAcceptors().toArray());
-		
+
 		Collections.shuffle(availableAcceptors);
-		
+
 		if(!availableAcceptors.isEmpty())
 		{
 			int divider = availableAcceptors.size();
 			double remaining = energyToSend % divider;
 			double sending = (energyToSend-remaining)/divider;
-			
+
 			for(Object obj : availableAcceptors)
 			{
 				if(obj instanceof TileEntity && !ignored.contains(obj))
@@ -99,6 +111,8 @@ public class EnergyNetwork
 					}
 				}
 			}
+			sent = energyAvailable - energyToSend;
+			joulesTransmitted += sent;
 		}
 		
 		return energyToSend;
@@ -344,10 +358,40 @@ public class EnergyNetwork
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
+	}
+
+	public double getPower()
+	{
+		return joulesTransmitted * 20;
+	}
+
+	@Override
+	public void tickStart(EnumSet<TickType> type, Object... tickData)
+	{
+		return;
+	}
+
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	{
+		joulesLastTick = joulesTransmitted;
+		joulesTransmitted = 0;
+	}
+
+	@Override
+	public EnumSet<TickType> ticks()
+	{
+		return EnumSet.of(TickType.SERVER);
+	}
+
+	@Override
+	public String getLabel()
+	{
+		return toString();
 	}
 }
