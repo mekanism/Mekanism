@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mekanism.api.IEnergizedItem;
+import mekanism.api.IUpgradeManagement;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -152,6 +153,27 @@ public class MekanismRecipe implements IRecipe
     		}
     		
     		((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, Math.min(((IEnergizedItem)toReturn.getItem()).getMaxEnergy(toReturn), energyFound));
+    	}
+    	
+    	if(toReturn.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)toReturn.getItem()).supportsUpgrades(toReturn))
+    	{
+    		int speedUpgrades = 0;
+    		int energyUpgrades = 0;
+    		
+    		for(ItemStack itemstack : inv.stackList)
+    		{
+    			if(itemstack != null)
+    			{
+    				if(itemstack.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)itemstack.getItem()).supportsUpgrades(toReturn))
+    				{
+    					speedUpgrades = Math.min(8, speedUpgrades + ((IUpgradeManagement)itemstack.getItem()).getSpeedMultiplier(itemstack));
+    					energyUpgrades = Math.min(8, energyUpgrades + ((IUpgradeManagement)itemstack.getItem()).getEnergyMultiplier(itemstack));
+    				}
+    			}
+    		}
+    		
+    		((IUpgradeManagement)toReturn.getItem()).setSpeedMultiplier(speedUpgrades, toReturn);
+    		((IUpgradeManagement)toReturn.getItem()).setEnergyMultiplier(energyUpgrades, toReturn);
     	}
     	
     	return toReturn;

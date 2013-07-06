@@ -17,4 +17,10 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	{
 		return Recipe.CRUSHER.get();
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 0.5F;
+	}
 }
