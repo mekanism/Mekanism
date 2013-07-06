@@ -216,6 +216,7 @@ public class EnergyNetwork implements ITickHandler
 			cables.remove(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
+			boolean[] dealtWith = {false, false, false, false, false, false};
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -231,51 +232,36 @@ public class EnergyNetwork implements ITickHandler
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof IUniversalCable)
+				if(connectedBlockA instanceof IUniversalCable && !dealtWith[countOne])
 				{
-					for(int countTwo = 0; countTwo < connectedBlocks.length; countTwo++)
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					List<Object3D> partNetwork = finder.findNetwork();
+					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
-
-						if(connectedBlockA != connectedBlockB && connectedBlockB instanceof IUniversalCable)
+						if(connectedBlockB instanceof IUniversalCable && !dealtWith[countTwo])
 						{
-							NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockB), Object3D.get((TileEntity)splitPoint));
-
-							if(finder.foundTarget(Object3D.get(connectedBlockA)))
+							if (partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
-								for(Object3D node : finder.iterated)
-								{
-									TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
-									if(nodeTile instanceof IUniversalCable)
-									{
-										if(nodeTile != splitPoint)
-										{
-											((IUniversalCable)nodeTile).setNetwork(this);
-										}
-									}
-								}
-							}
-							else {
-								EnergyNetwork newNetwork = new EnergyNetwork();
-
-								for(Object3D node : finder.iterated)
-								{
-									TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
-									if(nodeTile instanceof IUniversalCable)
-									{
-										if(nodeTile != splitPoint)
-										{
-											newNetwork.cables.add((IUniversalCable)nodeTile);
-										}
-									}
-								}
-
-								newNetwork.refresh();
+								dealtWith[countTwo] = true;
 							}
 						}
 					}
+					EnergyNetwork newNetwork = new EnergyNetwork();
+					if (finder != null) {
+					for(Object3D node : finder.iterated)
+					{
+						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
+
+						if(nodeTile instanceof IUniversalCable)
+						{
+							if(nodeTile != splitPoint)
+							{
+								newNetwork.cables.add((IUniversalCable)nodeTile);
+							}
+						}
+					}}
+					newNetwork.refresh();
 				}
 			}
 		}
@@ -284,32 +270,27 @@ public class EnergyNetwork implements ITickHandler
 	public static class NetworkFinder
 	{
 		public World worldObj;
-		public Object3D toFind;
+		public Object3D start;
 		
 		public List<Object3D> iterated = new ArrayList<Object3D>();
 		public List<Object3D> toIgnore = new ArrayList<Object3D>();
 		
-		public NetworkFinder(World world, Object3D target, Object3D... ignore)
+		public NetworkFinder(World world, Object3D location, Object3D... ignore)
 		{
 			worldObj = world;
-			toFind = target;
+			start = location;
 			
 			if(ignore != null)
 			{
 				toIgnore = Arrays.asList(ignore);
 			}
 		}
-		
-		public void loopThrough(Object3D location)
+
+		public void loopAll(Object3D location)
 		{
 			if(location.getTileEntity(worldObj) instanceof IUniversalCable)
 			{
 				iterated.add(location);
-			}
-			
-			if(iterated.contains(toFind))
-			{
-				return;
 			}
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
@@ -322,17 +303,17 @@ public class EnergyNetwork implements ITickHandler
 					
 					if(tileEntity instanceof IUniversalCable)
 					{
-						loopThrough(obj);
+						loopAll(obj);
 					}
 				}
 			}
 		}
-		
-		public boolean foundTarget(Object3D start)
+
+		public List<Object3D> findNetwork()
 		{
-			loopThrough(start);
+			loopAll(start);
 			
-			return iterated.contains(toFind);
+			return iterated;
 		}
 	}
 	
