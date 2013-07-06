@@ -13,11 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
-
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
@@ -27,7 +22,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
 
-public class EnergyNetwork implements ITickHandler
+public class EnergyNetwork
 {
 	public Set<IUniversalCable> cables = new HashSet<IUniversalCable>();
 	
@@ -40,7 +35,7 @@ public class EnergyNetwork implements ITickHandler
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
 		cables.addAll(Arrays.asList(varCables));
-		TickRegistry.registerTickHandler(this, Side.SERVER);
+		EnergyNetworkRegistry.getInstance().registerNetwork(this);
 	}
 	
 	public double getEnergyNeeded(ArrayList<TileEntity> ignored)
@@ -200,11 +195,14 @@ public class EnergyNetwork implements ITickHandler
 
 	public void merge(EnergyNetwork network)
 	{
+		EnergyNetworkRegistry registry = EnergyNetworkRegistry.getInstance();
 		if(network != null && network != this)
 		{
 			EnergyNetwork newNetwork = new EnergyNetwork();
 			newNetwork.cables.addAll(cables);
+			registry.removeNetwork(this);
 			newNetwork.cables.addAll(network.cables);
+			registry.removeNetwork(network);
 			newNetwork.refresh();
 		}
 	}
@@ -248,7 +246,6 @@ public class EnergyNetwork implements ITickHandler
 						}
 					}
 					EnergyNetwork newNetwork = new EnergyNetwork();
-					if (finder != null) {
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
@@ -260,10 +257,11 @@ public class EnergyNetwork implements ITickHandler
 								newNetwork.cables.add((IUniversalCable)nodeTile);
 							}
 						}
-					}}
+					}
 					newNetwork.refresh();
 				}
 			}
+			EnergyNetworkRegistry.getInstance().removeNetwork(this);
 		}
 	}
 	
@@ -346,33 +344,14 @@ public class EnergyNetwork implements ITickHandler
 		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
 	}
 
-	public double getPower()
-	{
-		return joulesTransmitted * 20;
-	}
-
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		return;
-	}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	public void clearJoulesTransmitted()
 	{
 		joulesLastTick = joulesTransmitted;
 		joulesTransmitted = 0;
 	}
-
-	@Override
-	public EnumSet<TickType> ticks()
+	
+	public double getPower()
 	{
-		return EnumSet.of(TickType.SERVER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return toString();
+		return joulesTransmitted * 20;
 	}
 }
