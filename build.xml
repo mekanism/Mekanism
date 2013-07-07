@@ -23,7 +23,7 @@
 
 		<copy todir="${dir.mcp}/src/minecraft">
 
-			<fileset dir="${dir.development}src">
+			<fileset dir="${dir.development}common">
 				<exclude name=".git/**"/>
 				<exclude name="**/*.xml"/>
 			</fileset>
@@ -59,7 +59,7 @@
 				<exclude name="**/mekanism/tools/**"/>
 			</fileset>
 
-			<fileset dir="${dir.development}bin/minecraft"/>
+			<fileset dir="${dir.development}resources"/>
 
 			<fileset dir="${dir.development}etc/core"/>
 		</copy>
@@ -81,7 +81,7 @@
 		</copy>
 
 		<copy todir="mdkContents">
-			<fileset dir="${dir.development}src/minecraft">
+			<fileset dir="${dir.development}common">
 				<include name = "**/mekanism/api/**"/>
 			</fileset>
 		</copy>
