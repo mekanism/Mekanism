@@ -42,12 +42,6 @@ public class GuiWindTurbine extends GuiContainer
         
         int size = 44;
         
-        if(!tileEntity.checkBounds())
-        {
-        	size += 9;
-            fontRenderer.drawString(EnumColor.DARK_RED + "Invalid bounds", 51, size, 0x00CD00);
-        }
-        
         if(!tileEntity.worldObj.canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
         {
         	size += 9;

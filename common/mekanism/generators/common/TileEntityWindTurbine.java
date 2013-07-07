@@ -4,7 +4,6 @@ import mekanism.api.Object3D;
 import mekanism.common.ChargeUtils;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.MekanismUtils;
-import mekanism.common.TileEntityBoundingBlock;
 import net.minecraft.item.ItemStack;
 import dan200.computer.api.IComputerAccess;
 
@@ -72,40 +71,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	@Override
 	public boolean canOperate() 
 	{
-		return electricityStored < MAX_ELECTRICITY && getMultiplier() > 0 && checkBounds();
-	}
-	
-	public boolean checkBounds()
-	{
-		Object3D obj = new Object3D(xCoord, yCoord+4, zCoord);
-		
-		for(int x = obj.xCoord-2; x <= obj.xCoord+2; x++)
-		{
-			for(int y = obj.yCoord-2; y <= obj.yCoord+2; y++)
-			{
-				for(int z = obj.zCoord-2; z <= obj.zCoord+2; z++)
-				{
-					if(worldObj.isAirBlock(x, y, z))
-					{
-						continue;
-					}
-					
-					if(worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityBoundingBlock)
-					{
-						TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)worldObj.getBlockTileEntity(x, y, z);
-						
-						if(tileEntity.mainX == xCoord && tileEntity.mainY == yCoord && tileEntity.mainZ == zCoord)
-						{
-							continue;
-						}
-					}
-					
-					return false;
-				}
-			}
-		}
-		
-		return true;
+		return electricityStored < MAX_ELECTRICITY && getMultiplier() > 0;
 	}
 
 	@Override
