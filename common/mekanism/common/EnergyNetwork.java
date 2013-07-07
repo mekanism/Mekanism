@@ -5,7 +5,6 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -196,6 +195,7 @@ public class EnergyNetwork
 	public void merge(EnergyNetwork network)
 	{
 		EnergyNetworkRegistry registry = EnergyNetworkRegistry.getInstance();
+		
 		if(network != null && network != this)
 		{
 			EnergyNetwork newNetwork = new EnergyNetwork();
@@ -234,18 +234,22 @@ public class EnergyNetwork
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.findNetwork();
+					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
+						
 						if(connectedBlockB instanceof IUniversalCable && !dealtWith[countTwo])
 						{
-							if (partNetwork.contains(Object3D.get(connectedBlockB)))
+							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
 								dealtWith[countTwo] = true;
 							}
 						}
 					}
+					
 					EnergyNetwork newNetwork = new EnergyNetwork();
+					
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
@@ -258,9 +262,11 @@ public class EnergyNetwork
 							}
 						}
 					}
+					
 					newNetwork.refresh();
 				}
 			}
+			
 			EnergyNetworkRegistry.getInstance().removeNetwork(this);
 		}
 	}

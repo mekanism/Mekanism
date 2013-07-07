@@ -213,6 +213,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements ITank
 	{
 		return bioFuelSlot.liquidStored*i / bioFuelSlot.MAX_LIQUID;
 	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+	}
 
 	@Override
 	public int getStartInventorySide(ForgeDirection side) 

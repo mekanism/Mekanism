@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
@@ -42,6 +43,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
+	
+	/** The redstone level this Energy Cube is outputting at. */
+	public int currentRedstoneLevel;
 	
 	/**
 	 * A block used to store and transfer electricity.
@@ -431,5 +435,25 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public boolean canOutputTo(ForgeDirection side)
 	{
 		return side == ForgeDirection.getOrientation(facing);
+	}
+	
+	@Override
+	public void setEnergy(double energy) 
+	{
+	    super.setEnergy(energy);
+	    
+	    int newRedstoneLevel = getRedstoneLevel();
+	    
+	    if(newRedstoneLevel != currentRedstoneLevel)
+	    {
+	        onInventoryChanged();
+	        currentRedstoneLevel = newRedstoneLevel;
+	    }
+	}
+
+	public int getRedstoneLevel()
+	{
+        double fractionFull = getEnergy()/getMaxEnergy();
+        return MathHelper.floor_float((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 }

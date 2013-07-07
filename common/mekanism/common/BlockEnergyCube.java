@@ -45,6 +45,8 @@ public class BlockEnergyCube extends BlockContainer
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
+	
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
@@ -313,4 +315,17 @@ public class BlockEnergyCube extends BlockContainer
         
         return itemStack;
 	}
+	
+	@Override
+	public boolean hasComparatorInputOverride()
+    {
+        return true;
+    }
+
+	@Override
+    public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+    {	
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+        return tileEntity.getRedstoneLevel();
+    }
 }
