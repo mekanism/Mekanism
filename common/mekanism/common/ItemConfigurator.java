@@ -6,7 +6,6 @@ import java.util.Random;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.IUpgradeManagement;
 import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
@@ -148,37 +147,6 @@ public class ItemConfigurator extends ItemEnergized
     		}
     		else if(getState(stack) == 2)
     		{
-    			if(world.getBlockTileEntity(x, y, z) instanceof IUpgradeManagement)
-    			{
-    				Random random = new Random();
-    				IUpgradeManagement management = (IUpgradeManagement)world.getBlockTileEntity(x, y, z);
-    				ItemStack[] upgradeStacks = new ItemStack[] {new ItemStack(Mekanism.SpeedUpgrade, management.getSpeedMultiplier()), new ItemStack(Mekanism.EnergyUpgrade, management.getEnergyMultiplier())};
-    				
-    				for(ItemStack upgrade : upgradeStacks)
-    				{
-    					if(upgrade.stackSize > 0)
-    					{
-    						float xRandom = random.nextFloat() * 0.8F + 0.1F;
-    	                    float yRandom = random.nextFloat() * 0.8F + 0.1F;
-    	                    float zRandom = random.nextFloat() * 0.8F + 0.1F;
-    	                    
-    	                    EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, upgrade);
-    	                    
-                            float k = 0.05F;
-	                        item.motionX = random.nextGaussian() * k;
-	                        item.motionY = random.nextGaussian() * k + 0.2F;
-	                        item.motionZ = random.nextGaussian() * k;
-	                        world.spawnEntityInWorld(item);
-    					}
-    				}
-    				
-    				management.setSpeedMultiplier(0);
-    				management.setEnergyMultiplier(0);
-    				return true;
-    			}
-    		}
-    		else if(getState(stack) == 3)
-    		{
     			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     			
     			if(tileEntity instanceof TileEntityBasicBlock)
@@ -217,8 +185,6 @@ public class ItemConfigurator extends ItemEnergized
     		case 1:
     			return "empty";
     		case 2:
-    			return "upgrade dump";
-    		case 3:
     			return "wrench";
     	}
     	
@@ -235,8 +201,6 @@ public class ItemConfigurator extends ItemEnergized
     			return EnumColor.AQUA;
     		case 2:
     			return EnumColor.YELLOW;
-    		case 3:
-    			return EnumColor.ORANGE;
     	}
     	
     	return EnumColor.GREY;

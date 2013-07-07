@@ -1,9 +1,13 @@
 package mekanism.client;
 
+import mekanism.api.Object3D;
 import mekanism.common.ContainerFactory;
-import mekanism.common.TileEntityFactory;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.TileEntityFactory;
+import mekanism.common.network.PacketRemoveUpgrade;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -11,7 +15,6 @@ import org.lwjgl.opengl.GL11;
 
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -42,6 +45,16 @@ public class GuiFactory extends GuiContainer
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
+		{
+			drawCreativeTabHoveringText("Remove speed upgrade", xAxis, yAxis);
+		}
+		
+		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
+		{
+			drawCreativeTabHoveringText("Remove energy upgrade", xAxis, yAxis);
 		}
     }
 
@@ -96,4 +109,28 @@ public class GuiFactory extends GuiContainer
         	}
         }
     }
+    
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (mouseX - (width - xSize) / 2);
+			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)0));
+			}
+			
+			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)1));
+			}
+		}
+	}
 }

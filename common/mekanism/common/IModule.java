@@ -5,7 +5,7 @@ package mekanism.common;
  * @author aidancbrady
  *
  */
-public interface IModule 
+public interface IModule
 {
 	/**
 	 * Gets the version of the module.
