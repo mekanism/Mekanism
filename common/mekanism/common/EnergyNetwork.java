@@ -5,6 +5,7 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,9 +29,13 @@ public class EnergyNetwork
 	public Set<TileEntity> possibleAcceptors = new HashSet<TileEntity>();
 	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
 	
+	private double joulesTransmitted = 0;
+	private double joulesLastTick = 0;
+	
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
 		cables.addAll(Arrays.asList(varCables));
+		EnergyNetworkRegistry.getInstance().registerNetwork(this);
 	}
 	
 	public double getEnergyNeeded(ArrayList<TileEntity> ignored)
@@ -61,16 +66,18 @@ public class EnergyNetwork
 	
 	public double emit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
+		double energyAvailable = energyToSend;		
+		double sent;		
 		List availableAcceptors = Arrays.asList(getEnergyAcceptors().toArray());
-		
+
 		Collections.shuffle(availableAcceptors);
-		
+
 		if(!availableAcceptors.isEmpty())
 		{
 			int divider = availableAcceptors.size();
 			double remaining = energyToSend % divider;
 			double sending = (energyToSend-remaining)/divider;
-			
+
 			for(Object obj : availableAcceptors)
 			{
 				if(obj instanceof TileEntity && !ignored.contains(obj))
@@ -99,6 +106,8 @@ public class EnergyNetwork
 					}
 				}
 			}
+			sent = energyAvailable - energyToSend;
+			joulesTransmitted += sent;
 		}
 		
 		return energyToSend;
@@ -186,11 +195,14 @@ public class EnergyNetwork
 
 	public void merge(EnergyNetwork network)
 	{
+		EnergyNetworkRegistry registry = EnergyNetworkRegistry.getInstance();
 		if(network != null && network != this)
 		{
 			EnergyNetwork newNetwork = new EnergyNetwork();
 			newNetwork.cables.addAll(cables);
+			registry.removeNetwork(this);
 			newNetwork.cables.addAll(network.cables);
+			registry.removeNetwork(network);
 			newNetwork.refresh();
 		}
 	}
@@ -202,6 +214,7 @@ public class EnergyNetwork
 			cables.remove(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
+			boolean[] dealtWith = {false, false, false, false, false, false};
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -217,85 +230,65 @@ public class EnergyNetwork
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof IUniversalCable)
+				if(connectedBlockA instanceof IUniversalCable && !dealtWith[countOne])
 				{
-					for(int countTwo = 0; countTwo < connectedBlocks.length; countTwo++)
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					List<Object3D> partNetwork = finder.findNetwork();
+					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
-
-						if(connectedBlockA != connectedBlockB && connectedBlockB instanceof IUniversalCable)
+						if(connectedBlockB instanceof IUniversalCable && !dealtWith[countTwo])
 						{
-							NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockB), Object3D.get((TileEntity)splitPoint));
-
-							if(finder.foundTarget(Object3D.get(connectedBlockA)))
+							if (partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
-								for(Object3D node : finder.iterated)
-								{
-									TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
-									if(nodeTile instanceof IUniversalCable)
-									{
-										if(nodeTile != splitPoint)
-										{
-											((IUniversalCable)nodeTile).setNetwork(this);
-										}
-									}
-								}
-							}
-							else {
-								EnergyNetwork newNetwork = new EnergyNetwork();
-
-								for(Object3D node : finder.iterated)
-								{
-									TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
-									if(nodeTile instanceof IUniversalCable)
-									{
-										if(nodeTile != splitPoint)
-										{
-											newNetwork.cables.add((IUniversalCable)nodeTile);
-										}
-									}
-								}
-
-								newNetwork.refresh();
+								dealtWith[countTwo] = true;
 							}
 						}
 					}
+					EnergyNetwork newNetwork = new EnergyNetwork();
+					for(Object3D node : finder.iterated)
+					{
+						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
+
+						if(nodeTile instanceof IUniversalCable)
+						{
+							if(nodeTile != splitPoint)
+							{
+								newNetwork.cables.add((IUniversalCable)nodeTile);
+							}
+						}
+					}
+					newNetwork.refresh();
 				}
 			}
+			EnergyNetworkRegistry.getInstance().removeNetwork(this);
 		}
 	}
 	
 	public static class NetworkFinder
 	{
 		public World worldObj;
-		public Object3D toFind;
+		public Object3D start;
 		
 		public List<Object3D> iterated = new ArrayList<Object3D>();
 		public List<Object3D> toIgnore = new ArrayList<Object3D>();
 		
-		public NetworkFinder(World world, Object3D target, Object3D... ignore)
+		public NetworkFinder(World world, Object3D location, Object3D... ignore)
 		{
 			worldObj = world;
-			toFind = target;
+			start = location;
 			
 			if(ignore != null)
 			{
 				toIgnore = Arrays.asList(ignore);
 			}
 		}
-		
-		public void loopThrough(Object3D location)
+
+		public void loopAll(Object3D location)
 		{
 			if(location.getTileEntity(worldObj) instanceof IUniversalCable)
 			{
 				iterated.add(location);
-			}
-			
-			if(iterated.contains(toFind))
-			{
-				return;
 			}
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
@@ -308,17 +301,17 @@ public class EnergyNetwork
 					
 					if(tileEntity instanceof IUniversalCable)
 					{
-						loopThrough(obj);
+						loopAll(obj);
 					}
 				}
 			}
 		}
-		
-		public boolean foundTarget(Object3D start)
+
+		public List<Object3D> findNetwork()
 		{
-			loopThrough(start);
+			loopAll(start);
 			
-			return iterated.contains(toFind);
+			return iterated;
 		}
 	}
 	
@@ -344,10 +337,21 @@ public class EnergyNetwork
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
+	}
+
+	public void clearJoulesTransmitted()
+	{
+		joulesLastTick = joulesTransmitted;
+		joulesTransmitted = 0;
+	}
+	
+	public double getPower()
+	{
+		return joulesTransmitted * 20;
 	}
 }
