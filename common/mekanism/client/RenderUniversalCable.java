@@ -124,7 +124,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			case UP:
 			{
 				toReturn.minX = 0.3 + offset;
-				toReturn.minY = 0.3 - offset;
+				toReturn.minY = 0.7 - offset;
 				toReturn.minZ = 0.3 + offset;
 				
 				toReturn.maxX = 0.7 - offset;
