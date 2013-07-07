@@ -18,4 +18,10 @@ public interface IActiveState
 	 * @param active - new active state
 	 */
 	public void setActive(boolean active);
+	
+	/**
+	 * Whether or not this block has a visual effect when it is on it's active state. Used for rendering.
+	 * @return if the block has a visual effect in it's active state
+	 */
+	public boolean hasVisual();
 }

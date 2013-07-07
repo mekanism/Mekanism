@@ -792,4 +792,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		return 1;
 	}
+	
+	@Override
+	public boolean hasVisual()
+	{
+		return true;
+	}
 }

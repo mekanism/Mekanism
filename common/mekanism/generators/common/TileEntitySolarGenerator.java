@@ -184,4 +184,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		data.add(seesSun);
 		return data;
 	}
+	
+	@Override
+	public boolean hasVisual()
+	{
+		return false;
+	}
 }

@@ -393,4 +393,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		return 1;
 	}
+	
+	@Override
+	public boolean hasVisual()
+	{
+		return true;
+	}
 }

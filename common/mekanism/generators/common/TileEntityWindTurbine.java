@@ -127,4 +127,10 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 		
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
+	
+	@Override
+	public boolean hasVisual()
+	{
+		return false;
+	}
 }

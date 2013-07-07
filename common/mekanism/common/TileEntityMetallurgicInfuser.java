@@ -683,4 +683,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		return 1;
 	}
+	
+	@Override
+	public boolean hasVisual()
+	{
+		return true;
+	}
 }

@@ -289,4 +289,10 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	{
 		return 0.7F;
 	}
+	
+	@Override
+	public boolean hasVisual()
+	{
+		return true;
+	}
 }
