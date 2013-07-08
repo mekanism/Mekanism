@@ -332,6 +332,7 @@ public class BlockBasic extends Block
     public int getLightValue(IBlockAccess world, int x, int y, int z) 
     {
         int metadata = world.getBlockMetadata(x, y, z);
+        
         switch(metadata)
         {
         	case 2:
@@ -341,6 +342,7 @@ public class BlockBasic extends Block
         	case 7:
         		return 12;
         }
+        
         return 0;
     }
 	

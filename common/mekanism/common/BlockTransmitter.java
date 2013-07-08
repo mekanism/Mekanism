@@ -347,9 +347,11 @@ public class BlockTransmitter extends Block
 		    		{
 		    			dismantleBlock(world, x, y, z, false);
 		    		}
+		    		
 		    		return true;
 	    	}
     	}
+    	
     	return false;
     }
     
