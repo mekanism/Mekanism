@@ -3,6 +3,9 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
+import universalelectricity.prefab.implement.IToolConfigurator;
+import buildcraft.api.tools.IToolWrench;
+
 import mekanism.api.GasTransmission;
 import mekanism.api.IPressurizedTube;
 import mekanism.api.ITubeConnection;
@@ -12,6 +15,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -322,4 +328,50 @@ public class BlockTransmitter extends Block
 				return null;
 		}
 	}
+	
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+    {
+    	if(world.isRemote)
+    	{
+    		return true;
+    	}
+    	
+    	if(entityplayer.getCurrentEquippedItem() != null)
+    	{
+    		Item tool = entityplayer.getCurrentEquippedItem().getItem();
+	    	if((tool instanceof IToolConfigurator && ((IToolConfigurator)tool).canWrench(entityplayer, x, y, z))
+	    			||(tool instanceof IToolWrench && ((IToolWrench)tool).canWrench(entityplayer, x, y, z)))
+	    	{
+		    		if(entityplayer.isSneaking())
+		    		{
+		    			dismantleBlock(world, x, y, z, false);
+		    		}
+		    		return true;
+	    	}
+    	}
+    	return false;
+    }
+    
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
+	{
+		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+        
+        world.setBlockToAir(x, y, z);
+        
+        if(!returnBlock)
+        {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+	        
+            world.spawnEntityInWorld(entityItem);
+        }
+        
+        return itemStack;
+	}
+	
 }
