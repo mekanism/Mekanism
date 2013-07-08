@@ -10,7 +10,6 @@ import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -139,9 +138,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-		int id = worldObj.getBlockId(xCoord, yCoord, zCoord);
-		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-		ItemStack drop = new ItemStack(id, 1, meta);
-		return drop;
+		return getBlockType().getPickBlock(null, worldObj, xCoord, yCoord, zCoord);
 	}
 }
