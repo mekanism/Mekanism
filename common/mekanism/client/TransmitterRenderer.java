@@ -36,9 +36,12 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
     			break;
     	}
     	
-    	transmitter.Center.render(0.0625F);
-    	transmitter.Up.render(0.0625F);
-    	transmitter.Down.render(0.0625F);
+    	transmitter.UpOn.render(0.0625F);
+    	transmitter.DownOn.render(0.0625F);
+    	transmitter.BackOff.render(0.0625F);
+    	transmitter.FrontOff.render(0.0625F);
+    	transmitter.LeftOff.render(0.0625F);
+    	transmitter.RightOff.render(0.0625F);
 	}
 
 	@Override
