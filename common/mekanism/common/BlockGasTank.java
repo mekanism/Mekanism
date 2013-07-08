@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -161,63 +162,70 @@ public class BlockGasTank extends BlockContainer
     	
     	if(entityplayer.getCurrentEquippedItem() != null)
     	{
-	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
+    		Item tool = entityplayer.getCurrentEquippedItem().getItem();
+	    	if(tool instanceof IToolConfigurator)
 	    	{
-	    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
-	    		
-	    		int change = 0;
-	    		
-	    		switch(tileEntity.facing)
+	    		if(((IToolConfigurator)tool).canWrench(entityplayer, x, y, z))
 	    		{
-	    			case 3:
-	    				change = 5;
-	    				break;
-	    			case 5:
-	    				change = 2;
-	    				break;
-	    			case 2:
-	    				change = 4;
-	    				break;
-	    			case 4:
-	    				change = 3;
-	    				break;
+		    		((IToolConfigurator)tool).wrenchUsed(entityplayer, x, y, z);
+		    		
+		    		int change = 0;
+		    		
+		    		switch(tileEntity.facing)
+		    		{
+		    			case 3:
+		    				change = 5;
+		    				break;
+		    			case 5:
+		    				change = 2;
+		    				break;
+		    			case 2:
+		    				change = 4;
+		    				break;
+		    			case 4:
+		    				change = 3;
+		    				break;
+		    		}
+		    		
+		    		tileEntity.setFacing((short)change);
+		    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+		    		return true;
 	    		}
-	    		
-	    		tileEntity.setFacing((short)change);
-	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-	    		return true;
 	    	}
-	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
+	    	else if(tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
 	    	{
-	    		if(entityplayer.isSneaking())
+	    		if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 	    		{
-	    			dismantleBlock(world, x, y, z, false);
-	    			return true;
+		    		if(entityplayer.isSneaking())
+		    		{
+		    			dismantleBlock(world, x, y, z, false);
+		    			return true;
+		    		}
+		    		
+		    		((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+		    		
+		    		int change = 0;
+		    		
+		    		switch(tileEntity.facing)
+		    		{
+		    			case 3:
+		    				change = 5;
+		    				break;
+		    			case 5:
+		    				change = 2;
+		    				break;
+		    			case 2:
+		    				change = 4;
+		    				break;
+		    			case 4:
+		    				change = 3;
+		    				break;
+		    		}
+		    		
+		    		tileEntity.setFacing((short)change);
+		    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+		    		return true;
 	    		}
-	    		
-	    		((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
-	    		
-	    		int change = 0;
-	    		
-	    		switch(tileEntity.facing)
-	    		{
-	    			case 3:
-	    				change = 5;
-	    				break;
-	    			case 5:
-	    				change = 2;
-	    				break;
-	    			case 2:
-	    				change = 4;
-	    				break;
-	    			case 4:
-	    				change = 3;
-	    				break;
-	    		}
-	    		
-	    		tileEntity.setFacing((short)change);
-	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-	    		return true;
 	    	}
     	}
     	
