@@ -139,6 +139,9 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-        return Block.blocksList[getBlockType().blockID].getPickBlock(null, worldObj, xCoord, yCoord, zCoord);
+		int id = worldObj.getBlockId(xCoord, yCoord, zCoord);
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		ItemStack drop = new ItemStack(id, 1, meta);
+		return drop;
 	}
 }
