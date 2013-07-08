@@ -189,7 +189,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int getOutput() 
 	{
-		return tier.OUTPUT;
+		return (int)(tier.OUTPUT*Mekanism.TO_IC2);
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int getMaxEnergyOutput()
 	{
-		return tier.OUTPUT;
+		return (int)(tier.OUTPUT*Mekanism.TO_IC2);
 	}
 
 	@Override

@@ -217,7 +217,7 @@ public class LiquidNetwork
 	public static class NetworkFinder
 	{
 		public World worldObj;
-		public Object3D toFind;
+		public Object3D start;
 		
 		public List<Object3D> iterated = new ArrayList<Object3D>();
 		public List<Object3D> toIgnore = new ArrayList<Object3D>();
@@ -225,7 +225,7 @@ public class LiquidNetwork
 		public NetworkFinder(World world, Object3D target, Object3D... ignore)
 		{
 			worldObj = world;
-			toFind = target;
+			start = target;
 			
 			if(ignore != null)
 			{
@@ -237,7 +237,7 @@ public class LiquidNetwork
 		{
 			iterated.add(location);
 			
-			if(iterated.contains(toFind))
+			if(iterated.contains(start))
 			{
 				return;
 			}
@@ -262,7 +262,7 @@ public class LiquidNetwork
 		{
 			loopThrough(start);
 			
-			return iterated.contains(toFind);
+			return iterated.contains(start);
 		}
 	}
 	

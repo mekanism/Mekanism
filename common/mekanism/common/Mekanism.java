@@ -337,7 +337,7 @@ public class Mekanism
 			"OOO", "OGO", "OOO", Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('G'), "ingotRefinedGlowstone"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 8, 0), new Object[] {
-			"OGO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), Block.glass
+			"SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 8), new Object[] {
 			" S ", "SPS", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('P'), "ingotOsmium"
@@ -346,7 +346,7 @@ public class Mekanism
 			"SCS", "GIG", "SCS", Character.valueOf('S'), Block.cobblestone, Character.valueOf('C'), ControlCircuit, Character.valueOf('G'), Block.glass, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 8, 1), new Object[] {
-			"ORO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('R'), Item.redstone
+			"SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Item.redstone
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 12), new Object[] {
 			" B ", "ECE", "OOO", Character.valueOf('B'), Item.bucketEmpty, Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('O'), "ingotOsmium"
@@ -355,7 +355,7 @@ public class Mekanism
 			"SGS", "CcC", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass, Character.valueOf('C'), Block.chest, Character.valueOf('c'), ControlCircuit
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 8, 2), new Object[] {
-			"OBO", Character.valueOf('O'), "ingotOsmium", Character.valueOf('B'), Item.bucketEmpty
+			"SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Item.bucketEmpty
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 8, 9), new Object[] {
 			" I ", "ISI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('S'), Block.cobblestone

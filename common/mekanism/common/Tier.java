@@ -14,14 +14,14 @@ public final class Tier
 	 */
 	public static enum EnergyCubeTier
 	{
-		BASIC("Basic", 2000000, 120, 200),
-		ADVANCED("Advanced", 8000000, 240, 800),
-		ELITE("Elite", 32000000, 240, 3200),
-		ULTIMATE("Ultimate", 128000000, 480, 12800);
+		BASIC("Basic", 2000000, 120, 800),
+		ADVANCED("Advanced", 8000000, 240, 3200),
+		ELITE("Elite", 32000000, 240, 12800),
+		ULTIMATE("Ultimate", 128000000, 480, 51200);
 		
 		public double MAX_ELECTRICITY;
 		public double VOLTAGE;
-		public int OUTPUT;
+		public double OUTPUT;
 		public String name;
 		
 		public static EnergyCubeTier getFromName(String tierName)

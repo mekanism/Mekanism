@@ -22,6 +22,7 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
     	GL11.glTranslated(0.0F, -1.0F, 0.0F);
+    	GL11.glDisable(GL11.GL_CULL_FACE);
     	
     	switch(metadata)
     	{
