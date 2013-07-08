@@ -46,13 +46,9 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		
 		for(int i = 0; i < 6; i++)
 		{
-			if(connectable[i])
-			{
-				model.renderSide(ForgeDirection.getOrientation(i));
-			}
+			model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
 		}
 		
-		model.Center.render(0.0625F);
 		GL11.glPopMatrix();
 		
 		if(tileEntity.liquidScale > 0 && tileEntity.refLiquid != null)
