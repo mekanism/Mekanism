@@ -355,7 +355,8 @@ public class BlockTransmitter extends Block
     
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		int meta = world.getBlockMetadata(x, y, z);
+		ItemStack itemStack = new ItemStack(blockID, 1, meta);
         
         world.setBlockToAir(x, y, z);
         
