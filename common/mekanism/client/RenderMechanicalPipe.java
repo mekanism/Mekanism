@@ -59,14 +59,14 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 				MekanismRenderer.glowOn();
 			}
 			
-			bindTextureByName(tileEntity.refLiquid.getTextureSheet());
+			bindTextureByName(tileEntity.refLiquid.canonical().getTextureSheet());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			for(int i = 0; i < 6; i++)
 			{
 				if(connectable[i])
 				{
-					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid);
+					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid.canonical());
 					
 					if(displayList != null)
 					{
@@ -75,7 +75,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 				}
 			}
 			
-			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid);
+			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid.canonical());
 			
 			if(displayList != null)
 			{
