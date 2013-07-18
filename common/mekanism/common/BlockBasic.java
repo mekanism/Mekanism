@@ -269,7 +269,7 @@ public class BlockBasic extends Block
 				LiquidStack itemLiquid = LiquidContainerRegistry.getLiquidForFilledItem(itemStack);
 				int max = tileEntity.structure.volume*16000;
 				
-				if(tileEntity.structure.liquidStored == null || (tileEntity.structure.liquidStored.amount+itemLiquid.amount <= max))
+				if(tileEntity.structure.liquidStored == null || (tileEntity.structure.liquidStored.isLiquidEqual(itemLiquid) && (tileEntity.structure.liquidStored.amount+itemLiquid.amount <= max)))
 				{
 					if(LiquidContainerRegistry.isBucket(itemStack))
 					{
