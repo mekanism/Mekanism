@@ -141,6 +141,13 @@ public class ModelBioGenerator extends ModelBase
       	PISTON_BODY.setTextureSize(128, 128);
      	PISTON_BODY.mirror = true;
      	setRotation(PISTON_BODY, 0F, 0F, 0F);
+     	PISTON_HEAD_MOVES = new ModelRenderer(this, 8, 50);
+     	PISTON_HEAD_MOVES.addBox(0F, 0F, 0F, 4, 2, 4);
+     	PISTON_HEAD_MOVES.setRotationPoint(-2F, 13F, -7F);
+     	PISTON_HEAD_MOVES.setTextureSize(128, 128);
+     	PISTON_HEAD_MOVES.mirror = true;
+     	setRotation(PISTON_HEAD_MOVES, 0F, 0F, 0F);
+
     }
 
     public void render(float size, float depth)
@@ -162,12 +169,7 @@ public class ModelBioGenerator extends ModelBase
     	FUEL_OUTLET_2.render(size);
     	PLUG_PANEL.render(size);
     	
-      	PISTON_HEAD_MOVES = new ModelRenderer(this, 8, 50);
-      	PISTON_HEAD_MOVES.addBox(0F, depth, 0F, 4, 2, 4);
-      	PISTON_HEAD_MOVES.setRotationPoint(-2F, 13F, -7F);
-      	PISTON_HEAD_MOVES.setTextureSize(128, 128);
-      	PISTON_HEAD_MOVES.mirror = true;
-      	setRotation(PISTON_HEAD_MOVES, 0F, 0F, 0F);
+      	PISTON_HEAD_MOVES.setRotationPoint(-2F, 13F+depth, -7F);
     	
     	PISTON_HEAD_MOVES.render(size);
     	PISTON_ARM_MOVES.render(size);
