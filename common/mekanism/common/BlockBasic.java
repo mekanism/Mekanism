@@ -11,7 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -21,8 +21,8 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -203,11 +203,11 @@ public class BlockBasic extends Block
 		
 		if(itemStack != null && tileEntity.structure != null)
 		{
-			if(LiquidContainerRegistry.isEmptyContainer(itemStack))
+			if(FluidContainerRegistry.isEmptyContainer(itemStack))
 			{
-				if(tileEntity.structure.liquidStored != null && tileEntity.structure.liquidStored.amount >= LiquidContainerRegistry.BUCKET_VOLUME)
+				if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
-					ItemStack filled = LiquidContainerRegistry.fillLiquidContainer(tileEntity.structure.liquidStored, itemStack);
+					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.structure.fluidStored, itemStack);
 					
 					if(filled != null)
 					{
@@ -220,11 +220,11 @@ public class BlockBasic extends Block
 									player.inventory.mainInventory[i] = filled;
 									itemStack.stackSize--;
 									
-									tileEntity.structure.liquidStored.amount -= LiquidContainerRegistry.getLiquidForFilledItem(filled).amount;
+									tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 									
-									if(tileEntity.structure.liquidStored.amount == 0)
+									if(tileEntity.structure.fluidStored.amount == 0)
 									{
-										tileEntity.structure.liquidStored = null;
+										tileEntity.structure.fluidStored = null;
 									}
 									
 									return true;
@@ -236,11 +236,11 @@ public class BlockBasic extends Block
 										player.inventory.mainInventory[i].stackSize++;
 										itemStack.stackSize--;
 										
-										tileEntity.structure.liquidStored.amount -= LiquidContainerRegistry.getLiquidForFilledItem(filled).amount;
+										tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 										
-										if(tileEntity.structure.liquidStored.amount == 0)
+										if(tileEntity.structure.fluidStored.amount == 0)
 										{
-											tileEntity.structure.liquidStored = null;
+											tileEntity.structure.fluidStored = null;
 										}
 										
 										return true;
@@ -252,11 +252,11 @@ public class BlockBasic extends Block
 						{
 							player.setCurrentItemOrArmor(0, filled);
 							
-							tileEntity.structure.liquidStored.amount -= LiquidContainerRegistry.getLiquidForFilledItem(filled).amount;
+							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 							
-							if(tileEntity.structure.liquidStored.amount == 0)
+							if(tileEntity.structure.fluidStored.amount == 0)
 							{
-								tileEntity.structure.liquidStored = null;
+								tileEntity.structure.fluidStored = null;
 							}
 							
 							return true;
@@ -264,21 +264,21 @@ public class BlockBasic extends Block
 					}
 				}
 			}
-			else if(LiquidContainerRegistry.isFilledContainer(itemStack))
+			else if(FluidContainerRegistry.isFilledContainer(itemStack))
 			{
-				LiquidStack itemLiquid = LiquidContainerRegistry.getLiquidForFilledItem(itemStack);
+				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
 				int max = tileEntity.structure.volume*16000;
 				
-				if(tileEntity.structure.liquidStored == null || (tileEntity.structure.liquidStored.amount+itemLiquid.amount <= max))
+				if(tileEntity.structure.fluidStored == null || (tileEntity.structure.fluidStored.amount+itemFluid.amount <= max))
 				{
-					if(LiquidContainerRegistry.isBucket(itemStack))
+					if(FluidContainerRegistry.isBucket(itemStack))
 					{
-						if(tileEntity.structure.liquidStored == null)
+						if(tileEntity.structure.fluidStored == null)
 						{
-							tileEntity.structure.liquidStored = itemLiquid;
+							tileEntity.structure.fluidStored = itemFluid;
 						}
 						else {
-							tileEntity.structure.liquidStored.amount += itemLiquid.amount;
+							tileEntity.structure.fluidStored.amount += itemFluid.amount;
 						}
 						
 						player.setCurrentItemOrArmor(0, new ItemStack(Item.bucketEmpty));
@@ -292,12 +292,12 @@ public class BlockBasic extends Block
 							player.setCurrentItemOrArmor(0, null);
 						}
 						
-						if(tileEntity.structure.liquidStored == null)
+						if(tileEntity.structure.fluidStored == null)
 						{
-							tileEntity.structure.liquidStored = itemLiquid;
+							tileEntity.structure.fluidStored = itemFluid;
 						}
 						else {
-							tileEntity.structure.liquidStored.amount += itemLiquid.amount;
+							tileEntity.structure.fluidStored.amount += itemFluid.amount;
 						}
 						
 						return true;
@@ -371,7 +371,7 @@ public class BlockBasic extends Block
 	}
 	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);

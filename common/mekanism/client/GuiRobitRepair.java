@@ -4,7 +4,9 @@ import java.util.List;
 
 import mekanism.common.ContainerRobitRepair;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
@@ -16,6 +18,7 @@ import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -183,7 +186,7 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiRobitRepair.png");
+        mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitRepair.png"));
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);

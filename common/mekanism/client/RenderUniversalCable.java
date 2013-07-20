@@ -3,7 +3,9 @@ package mekanism.client;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.CableUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityUniversalCable;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +23,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
 	
-	private Icon renderIcon = FMLClientHandler.instance().getClient().renderEngine.textureMapItems.registerIcon("mekanism:LiquidEnergy");
+	private Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
 	
 	private static final double offset = 0.015;
 	
@@ -33,7 +35,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityUniversalCable tileEntity, double x, double y, double z, float partialTick)
 	{
-		bindTextureByName("/mods/mekanism/render/UniversalCable.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
@@ -52,7 +54,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			push();
 			MekanismRenderer.glowOn();
 			
-			bindTextureByName("/mods/mekanism/textures/items/LiquidEnergy.png");
+			func_110628_a(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			for(int i = 0; i < 6; i++)

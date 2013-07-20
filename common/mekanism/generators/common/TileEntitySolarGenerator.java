@@ -52,12 +52,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
-	}
-	
-	@Override
 	public boolean canSetFacing(int facing)
 	{
 		return facing != 0 && facing != 1;
@@ -120,7 +114,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{

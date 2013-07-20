@@ -81,11 +81,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, 0, 1, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 1, 1, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 4, 3, new int[] {4, 5, 6}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 7, 3, new int[] {7, 8, 9}));
+		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {4, 5, 6}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {7, 8, 9}));
 		
 		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}
@@ -309,7 +309,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(tier == FactoryTier.BASIC)
 		{
@@ -443,18 +443,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         else {
             inventory[outputSlot].stackSize += itemstack.stackSize;
         }
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotStart;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotAmount;
 	}
 	
 	@Override

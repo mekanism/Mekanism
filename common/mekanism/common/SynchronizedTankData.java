@@ -6,7 +6,7 @@ import java.util.Set;
 import mekanism.api.Object3D;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData 
 {
@@ -20,7 +20,7 @@ public class SynchronizedTankData
 	
 	public int volume;
 	
-	public LiquidStack liquidStored;
+	public FluidStack fluidStored;
 	
 	public ItemStack[] inventory = new ItemStack[2];
 	
@@ -76,7 +76,7 @@ public class SynchronizedTankData
 	{
 		public ForgeDirection side;
 		public Object3D location;
-		public boolean serverLiquid;
+		public boolean serverFluid;
 		
 		@Override
 		public int hashCode()

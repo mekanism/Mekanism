@@ -1,9 +1,12 @@
 package mekanism.generators.client;
 
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.generators.common.ContainerHeatGenerator;
 import mekanism.generators.common.TileEntityHeatGenerator;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -36,7 +39,7 @@ public class GuiHeatGenerator extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
-        fontRenderer.drawString("Fuel: " + (tileEntity.lavaTank.getLiquid() != null ? tileEntity.lavaTank.getLiquid().amount : 0), 51, 35, 0x00CD00);
+        fontRenderer.drawString("Fuel: " + (tileEntity.lavaTank.getFluid() != null ? tileEntity.lavaTank.getFluid().amount : 0), 51, 35, 0x00CD00);
         fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
         
     	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
@@ -48,7 +51,7 @@ public class GuiHeatGenerator extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-		mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiHeatGenerator.png");
+		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;

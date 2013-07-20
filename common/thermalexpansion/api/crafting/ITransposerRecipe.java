@@ -7,7 +7,7 @@
 package thermalexpansion.api.crafting;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public interface ITransposerRecipe {
 
@@ -15,7 +15,7 @@ public interface ITransposerRecipe {
 
     public ItemStack getOutput();
 
-    public LiquidStack getLiquid();
+    public FluidStack getLiquid();
 
     public int getEnergy();
 

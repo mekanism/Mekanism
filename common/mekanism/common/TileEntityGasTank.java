@@ -151,7 +151,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -168,23 +168,6 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return side == 1 ? new int[] {0} : new int[] {1};
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == ForgeDirection.getOrientation(1))
-		{
-			return 0;
-		}
-		
-		return 1;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
 	}
 
 	@Override

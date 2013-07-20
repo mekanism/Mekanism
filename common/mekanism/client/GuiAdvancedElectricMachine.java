@@ -58,7 +58,7 @@ public class GuiAdvancedElectricMachine extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-    	mc.renderEngine.bindTexture(tileEntity.guiTexturePath);
+    	mc.renderEngine.func_110577_a(tileEntity.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

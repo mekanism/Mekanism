@@ -141,8 +141,10 @@ public class MekanismRecipe implements IRecipe
     	{
     		double energyFound = 0;
     		
-    		for(ItemStack itemstack : inv.stackList)
+    		for(int i = 0; i < 9; i++)
     		{
+    			ItemStack itemstack = inv.getStackInSlot(i);
+    			
     			if(itemstack != null)
     			{
 	    			if(itemstack.getItem() instanceof IEnergizedItem)
@@ -160,8 +162,10 @@ public class MekanismRecipe implements IRecipe
     		int speedUpgrades = 0;
     		int energyUpgrades = 0;
     		
-    		for(ItemStack itemstack : inv.stackList)
+    		for(int i = 0; i < 9; i++)
     		{
+    			ItemStack itemstack = inv.getStackInSlot(i);
+    			
     			if(itemstack != null)
     			{
     				if(itemstack.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)itemstack.getItem()).supportsUpgrades(toReturn))

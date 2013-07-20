@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import net.minecraft.util.ResourceLocation;
+
 /**
  * Tier information for Mekanism.  This currently includes tiers for Energy Cubes and Smelting Factories.
  * @author aidancbrady
@@ -54,12 +56,12 @@ public final class Tier
 	 */
 	public static enum FactoryTier
 	{
-		BASIC("Basic", 3, "GuiBasicFactory.png"),
-		ADVANCED("Advanced", 5, "GuiAdvancedFactory.png"),
-		ELITE("Elite", 7, "GuiEliteFactory.png");
+		BASIC("Basic", 3, new ResourceLocation("mekanism", "gui/GuiBasicFactory.png")),
+		ADVANCED("Advanced", 5, new ResourceLocation("mekanism", "gui/GuiAdvancedFactory.png")),
+		ELITE("Elite", 7, new ResourceLocation("mekanism", "gui/GuiEliteFactory.png"));
 		
 		public int processes;
-		public String guiTexturePath;
+		public ResourceLocation guiLocation;
 		public String name;
 		
 		public static FactoryTier getFromName(String tierName)
@@ -76,11 +78,11 @@ public final class Tier
 			return BASIC;
 		}
 		
-		private FactoryTier(String s, int process, String gui)
+		private FactoryTier(String s, int process, ResourceLocation gui)
 		{
 			name = s;
 			processes = process;
-			guiTexturePath = gui;
+			guiLocation = gui;
 		}
 	}
 }

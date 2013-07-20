@@ -7,7 +7,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import universalelectricity.core.item.IItemElectric;
 
 public class ContainerDynamicTank extends Container
@@ -39,9 +39,9 @@ public class ContainerDynamicTank extends Container
     }
     
     @Override
-    public void onCraftGuiClosed(EntityPlayer entityplayer)
+    public void onContainerClosed(EntityPlayer entityplayer)
     {
-		super.onCraftGuiClosed(entityplayer);
+		super.onContainerClosed(entityplayer);
 		tileEntity.playersUsing.remove(entityplayer);
 		tileEntity.closeChest();
     }
@@ -80,7 +80,7 @@ public class ContainerDynamicTank extends Container
 	            	}
 	            }
             }
-            else if(LiquidContainerRegistry.isEmptyContainer(slotStack) || LiquidContainerRegistry.isFilledContainer(slotStack))
+            else if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
             {
             	if(slotID != 0 && slotID != 1)
             	{

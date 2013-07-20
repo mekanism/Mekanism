@@ -17,8 +17,9 @@ import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
+import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.LiquidNetwork.LiquidTransferEvent;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
@@ -52,12 +53,8 @@ import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import thermalexpansion.api.crafting.CraftingManagers;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.Mod.ServerStarting;
-import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -428,7 +425,7 @@ public class Mekanism
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.dyePowder, 16, 4), new ItemStack(Block.oreLapis));
 		
 		//Osmium Compressor Recipes
-		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Item.lightStoneDust), new ItemStack(Ingot, 1, 3));
+		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Item.glowstone), new ItemStack(Ingot, 1, 3));
 		
 		//Crusher Recipes
 		RecipeHandler.addCrusherRecipe(new ItemStack(Item.diamond), new ItemStack(Dust, 1, 4));
@@ -722,7 +719,7 @@ public class Mekanism
 			
 			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.Dust, 1, 2), false);
 			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 0), new ItemStack(Mekanism.Dust, 1, 3), false);
-			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.lightStoneDust), false);
+			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.glowstone), false);
 			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 4), new ItemStack(Mekanism.Dust, 1, 5), false);
 			
 			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 0), new ItemStack(DirtyDust, 1, 0), false);
@@ -888,7 +885,7 @@ public class Mekanism
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotRefinedGlowstone"))
 		{
-			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Item.lightStoneDust));
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Item.glowstone));
 		}
 		
 		try {
@@ -1095,20 +1092,20 @@ public class Mekanism
 		proxy.registerSpecialTileEntities();
 	}
 	
-	@ServerStarting
+	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new CommandMekanism());
 	}
 	
-	@ServerStopping
+	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
 		teleporters.clear();
 		dynamicInventories.clear();
 	}
 	
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		File config = event.getSuggestedConfigurationFile();
@@ -1126,12 +1123,12 @@ public class Mekanism
 		}
 		
 		//Register infuses
-        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", "/mods/mekanism/infuse/Infusions.png", 0, 0));
-        InfuseRegistry.registerInfuseType(new InfuseType("TIN", "/mods/mekanism/infuse/Infusions.png", 4, 0));
-        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", "/mods/mekanism/infuse/Infusions.png", 8, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("CARBON", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 0, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("TIN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 4, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 8, 0));
 	}
 	
-	@PostInit
+	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		hooks = new MekanismHooks();
@@ -1144,7 +1141,7 @@ public class Mekanism
 		proxy.loadSoundHandler();
 	}
 	
-	@Init
+	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
 		//Register the mod's ore handler
@@ -1163,7 +1160,7 @@ public class Mekanism
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
 		MinecraftForge.EVENT_BUS.register(new EnergyNetwork.NetworkLoader());
-		MinecraftForge.EVENT_BUS.register(new LiquidNetwork.NetworkLoader());
+		MinecraftForge.EVENT_BUS.register(new FluidNetwork.NetworkLoader());
 		
 		//Register with GasTransmission
 		GasTransmission.register();
@@ -1218,10 +1215,10 @@ public class Mekanism
 	}
 	
 	@ForgeSubscribe
-	public void onLiquidTransferred(LiquidTransferEvent event)
+	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.LIQUID, event.liquidNetwork.pipes.iterator().next(), event.liquidSent));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.FLUID, event.fluidNetwork.pipes.iterator().next(), event.fluidSent));
 		} catch(Exception e) {}
 	}
 }

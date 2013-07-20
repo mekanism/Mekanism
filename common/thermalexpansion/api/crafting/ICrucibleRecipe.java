@@ -7,13 +7,13 @@
 package thermalexpansion.api.crafting;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public interface ICrucibleRecipe {
 
     public ItemStack getInput();
 
-    public LiquidStack getOutput();
+    public FluidStack getOutput();
 
     public int getEnergy();
 }

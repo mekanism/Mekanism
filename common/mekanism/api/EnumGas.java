@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * The gasses currently available in Mekanism.
@@ -15,7 +16,7 @@ public enum EnumGas
 	
 	public String name;
 	public Icon gasIcon;
-	public String texturePath;
+	public ResourceLocation texturePath;
 	
 	public static EnumGas getFromName(String gasName)
 	{
@@ -36,7 +37,7 @@ public enum EnumGas
 		return gasIcon != null && texturePath != null;
 	}
 	
-	private EnumGas(String s, Icon icon, String path)
+	private EnumGas(String s, Icon icon, ResourceLocation path)
 	{
 		name = s;
 		gasIcon = icon;

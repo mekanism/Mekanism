@@ -4,7 +4,9 @@ import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -54,7 +56,7 @@ public class RenderObsidianTNT extends Render
         }
 
         float f3 = (1.0F - ((entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
-        loadTexture("/terrain.png");
+        func_110777_b(entityobsidiantnt);
         blockRenderer.renderBlockAsItem(Mekanism.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
 
         if(entityobsidiantnt.fuse / 5 % 2 == 0)
@@ -73,4 +75,10 @@ public class RenderObsidianTNT extends Render
 
         GL11.glPopMatrix();
     }
+
+	@Override
+	protected ResourceLocation func_110775_a(Entity entity) 
+	{
+		return TextureMap.field_110575_b;
+	}
 }

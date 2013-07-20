@@ -149,16 +149,11 @@ public final class NetworkHelper {
 	 * This method doesn't do anything if executed on the server.
 	 *
 	 * @param dataProvider Object implementing the INetworkDataProvider interface
+	 * 
+	 * @deprecated no need to call this anymore, IC2 initiates it automatically
 	 */
+	@Deprecated
 	public static void requestInitialData(INetworkDataProvider dataProvider) {
-		try {
-			if (NetworkManager_requestInitialData == null) NetworkManager_requestInitialData = Class.forName(getPackage() + ".core.network.NetworkManager").getMethod("requestInitialData", INetworkDataProvider.class);
-			if (instance == null) instance = getInstance();
-
-			NetworkManager_requestInitialData.invoke(instance, dataProvider);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
@@ -236,7 +231,6 @@ public final class NetworkHelper {
 	private static Method NetworkManager_initiateTileEntityEvent;
 	private static Method NetworkManager_initiateItemEvent;
 	private static Method NetworkManager_announceBlockUpdate;
-	private static Method NetworkManager_requestInitialData;
 	private static Method NetworkManager_initiateClientTileEntityEvent;
 	private static Method NetworkManager_initiateClientItemEvent;
 }

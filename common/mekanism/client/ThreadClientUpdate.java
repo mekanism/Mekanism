@@ -45,7 +45,7 @@ public class ThreadClientUpdate extends Thread
 	@Override
 	public void run()
 	{
-		File download = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append(File.separator + "mods" + File.separator + "Mekanism" + moduleName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
+		File download = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods" + File.separator + "Mekanism" + moduleName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
 		try {
 			prepareForDownload();
 			download.createNewFile();
@@ -82,7 +82,7 @@ public class ThreadClientUpdate extends Thread
 	 */
 	public void prepareForDownload()
 	{
-		File[] modsList = new File(new StringBuilder().append(Minecraft.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
+		File[] modsList = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
 		
 		for(File file : modsList)
 		{

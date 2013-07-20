@@ -7,12 +7,13 @@ import java.util.Map;
 import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.ResourceLocation;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 {
 	public TileEntityEnergizedSmelter()
 	{
-		super("Smelter.ogg", "Energized Smelter", "/mods/mekanism/gui/GuiEnergizedSmelter.png", Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
+		super("Smelter.ogg", "Energized Smelter", new ResourceLocation("mekanism", "gui/GuiEnergizedSmelter.png"), Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
 	}
 	
 	@Override

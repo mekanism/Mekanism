@@ -1,11 +1,14 @@
 package mekanism.generators.client;
 
 import mekanism.api.EnumColor;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.generators.common.ContainerWindTurbine;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.TileEntityWindTurbine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -57,7 +60,7 @@ public class GuiWindTurbine extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-		mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiWindTurbine.png");
+		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;

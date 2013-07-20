@@ -7,6 +7,8 @@ import mekanism.common.IModule;
 import mekanism.common.ItemMekanism;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismRecipe;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
@@ -18,9 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -64,14 +65,14 @@ public class MekanismGenerators implements IModule
 	//Usage Configuration
 	public static double electrolyticSeparatorUsage;
 	
-	@PreInit
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		//Register infuses
-        InfuseRegistry.registerInfuseType(new InfuseType("BIO", "/mods/mekanism/infuse/Infusions.png", 12, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("BIO", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 12, 0));
 	}
 	
-	@Init
+	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		//Add this module to the core list

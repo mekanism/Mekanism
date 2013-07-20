@@ -3,7 +3,9 @@ package mekanism.client;
 import mekanism.common.ContainerRobitMain;
 import mekanism.common.EntityRobit;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
@@ -11,6 +13,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -143,7 +146,7 @@ public class GuiRobitMain extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
     {
-        mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiRobitMain.png");
+    	mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

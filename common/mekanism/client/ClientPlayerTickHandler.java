@@ -11,6 +11,7 @@ import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
 
 import org.lwjgl.input.Keyboard;
 
@@ -49,7 +50,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 		    			{
 			    			item.setState(stack, (byte)(item.getState(stack) < 2 ? item.getState(stack)+1 : 0));
 			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
-			    			entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack)));
+			    			entityPlayer.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack))));
 			    			lastTickConfiguratorChange = true;
 		    			}
 		    		}
@@ -67,7 +68,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 						{
 							item.setFireState(stack, !item.getFireState(stack));
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
-							entityPlayer.sendChatToPlayer(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF")));
+							entityPlayer.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
 							lastTickElectricBowChange = true;
 						}
 					}

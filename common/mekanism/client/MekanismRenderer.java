@@ -1,16 +1,23 @@
 package mekanism.client;
 
 import java.util.Arrays;
+import java.util.List;
 
 import mekanism.common.ISpecialBounds;
+import mekanism.common.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Timer;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
@@ -215,9 +222,9 @@ public class MekanismRenderer
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 	
-	public static void colorLiquid(LiquidStack liquidStack)
+	public static void colorFluid(Fluid fluid)
 	{
-	    int color = liquidStack.asItemStack().getItem().getColorFromItemStack(liquidStack.asItemStack(), 0);
+	    int color = fluid.getColor();
 	    
 	    float cR = (color >> 16 & 0xFF) / 255.0F;
 	    float cG = (color >> 8 & 0xFF) / 255.0F;
@@ -243,5 +250,40 @@ public class MekanismRenderer
     	{
     		return obj instanceof DisplayInteger && ((DisplayInteger)obj).display == display;
     	}
+    }
+    
+    public static TextureMap getTextureMap(int type)
+    {
+    	try {
+    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, "field_110583_b");
+    		
+    		for(Object obj : l)
+    		{
+    			if(obj instanceof TextureMap)
+    			{
+    				if(((TextureMap)obj).textureType == type)
+    				{
+    					return (TextureMap)obj;
+    				}
+    			}
+    		}
+    	} catch(Exception e) {}
+    	
+    	return null;
+    }
+    
+    public static float getPartialTicks()
+    {
+    	try {
+    		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, "timer");
+    		return t.renderPartialTicks;
+    	} catch(Exception e) {}
+    	
+    	return 0;
+    }
+    
+    public static ResourceLocation getLiquidTexture()
+    {
+    	return TextureMap.field_110575_b;
     }
 }

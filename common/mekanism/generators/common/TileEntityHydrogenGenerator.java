@@ -99,7 +99,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -118,23 +118,6 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == MekanismUtils.getRight(facing))
-		{
-			return 1;
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
 	}
     
     @Override

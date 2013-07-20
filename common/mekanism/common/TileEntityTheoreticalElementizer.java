@@ -7,6 +7,7 @@ import mekanism.common.BlockMachine.MachineType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -14,7 +15,7 @@ public class TileEntityTheoreticalElementizer extends TileEntityAdvancedElectric
 {
 	public TileEntityTheoreticalElementizer()
 	{
-		super("Elementizer.ogg", "Theoretical Elementizer", "/mods/mekanism/gui/GuiElementizer.png", Mekanism.theoreticalElementizerUsage, 1, 1000, MachineType.THEORETICAL_ELEMENTIZER.baseEnergy, 1000);
+		super("Elementizer.ogg", "Theoretical Elementizer", new ResourceLocation("mekanism", "gui/GuiElementizer.png"), Mekanism.theoreticalElementizerUsage, 1, 1000, MachineType.THEORETICAL_ELEMENTIZER.baseEnergy, 1000);
 	}
 	
 	@Override

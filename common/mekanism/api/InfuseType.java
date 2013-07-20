@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import net.minecraft.util.ResourceLocation;
+
 /**
  * The types of infuse currently available in Mekanism.
  * @author AidanBrady
@@ -11,7 +13,7 @@ public final class InfuseType
 	public String name;
 	
 	/** The location of this infuse's GUI texture */
-	public String texture;
+	public ResourceLocation texture;
 	
 	/** The infuse's GUI texture X offset. */
 	public int texX;
@@ -19,10 +21,10 @@ public final class InfuseType
 	/** The infuse's GUI texture Y offset. */
 	public int texY;
 	
-	public InfuseType(String s, String s1, int x, int y)
+	public InfuseType(String s, ResourceLocation location, int x, int y)
 	{
 		name = s;
-		texture = s1;
+		texture = location;
 		texX = x;
 		texY = y;
 	}

@@ -4,7 +4,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +34,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
     
     @Override
-    public boolean hitEntity(ItemStack itemstack, EntityLiving hitEntity, EntityLiving player)
+    public boolean hitEntity(ItemStack itemstack, EntityLivingBase hitEntity, EntityLivingBase player)
     {
     	if(getEnergy(itemstack) > 0)
     	{
@@ -54,7 +54,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack itemstack, World world, int id, int x, int y, int z, EntityLiving entityliving)
+    public boolean onBlockDestroyed(ItemStack itemstack, World world, int id, int x, int y, int z, EntityLivingBase entityliving)
     {
         if(Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
         {

@@ -70,9 +70,9 @@ public class ContainerElectricChest extends Container
     }
     
     @Override
-    public void onCraftGuiClosed(EntityPlayer entityplayer)
+    public void onContainerClosed(EntityPlayer entityplayer)
     {
-		super.onCraftGuiClosed(entityplayer);
+		super.onContainerClosed(entityplayer);
 		
 		if(isBlock)
 		{

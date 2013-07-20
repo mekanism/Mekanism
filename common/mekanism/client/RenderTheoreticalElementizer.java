@@ -1,6 +1,8 @@
 package mekanism.client;
 
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityTheoreticalElementizer;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -24,7 +26,7 @@ public class RenderTheoreticalElementizer extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTextureByName("/mods/mekanism/render/TheoreticalElementizer.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "TheoreticalElementizer.png"));
 		
 	    switch(tileEntity.facing)
 	    {

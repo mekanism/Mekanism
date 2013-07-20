@@ -5,15 +5,15 @@ import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
 import mekanism.common.SlotEnergy.SlotDischarge;
 import mekanism.common.SlotStorageTank;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import universalelectricity.core.item.IItemElectric;
 
 public class ContainerElectrolyticSeparator extends Container
@@ -47,9 +47,9 @@ public class ContainerElectrolyticSeparator extends Container
     }
     
     @Override
-    public void onCraftGuiClosed(EntityPlayer entityplayer)
+    public void onContainerClosed(EntityPlayer entityplayer)
     {
-		super.onCraftGuiClosed(entityplayer);
+		super.onContainerClosed(entityplayer);
 		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
     }
@@ -165,11 +165,11 @@ public class ContainerElectrolyticSeparator extends Container
     
     public boolean isWater(ItemStack itemStack)
     {
-    	LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(itemStack);
+    	FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
     	
-    	if(liquid != null)
+    	if(fluid != null)
     	{
-    		if(liquid.itemID == Block.waterStill.blockID)
+    		if(fluid.getFluid() == FluidRegistry.WATER)
     		{
     			return true;
     		}

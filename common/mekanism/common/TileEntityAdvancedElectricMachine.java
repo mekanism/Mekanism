@@ -11,6 +11,7 @@ import mekanism.api.SideData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -35,23 +36,23 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 * 
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
-	 * @param path - GUI texture path of this machine
+	 * @param location - GUI texture path of this machine
 	 * @param perTick - how much energy this machine uses per tick.
 	 * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
 	 * @param ticksRequired - how many ticks it takes to smelt an item.
 	 * @param maxEnergy - maximum amount of energy this machine can hold.
 	 * @param maxSecondaryEnergy - maximum amount of secondary energy (fuel) this machine can hold.
 	 */
-	public TileEntityAdvancedElectricMachine(String soundPath, String name, String path, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy, int maxSecondaryEnergy)
+	public TileEntityAdvancedElectricMachine(String soundPath, String name, ResourceLocation location, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy, int maxSecondaryEnergy)
 	{
-		super(soundPath, name, path, perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, 0, 0, new int[0]));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, 0, 1, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, 1, 1, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, 2, 1, new int[] {2}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, 3, 1, new int[] {3}));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, 4, 1, new int[] {4}));
+		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
+		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {1}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2}));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {3}));
+		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {4}));
 		
 		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
 		
@@ -186,7 +187,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     }
     
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 2)
 		{

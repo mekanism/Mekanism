@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.io.File;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -239,6 +241,15 @@ public class CommonProxy
 				return new ContainerRobitRepair(player.inventory, world);
 		}
 		
+		return null;
+	}
+	
+	/**
+	 * Gets the Minecraft base directory.
+	 * @return base directory
+	 */
+	public File getMinecraftDir()
+	{
 		return null;
 	}
 }

@@ -5,7 +5,9 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityChargepad;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -24,7 +26,7 @@ public class RenderChargepad extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTextureByName("/mods/mekanism/render/Chargepad.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
 
 	    switch(tileEntity.facing)
 	    {

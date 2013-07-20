@@ -12,6 +12,7 @@ import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
 import micdoodle8.mods.galacticraft.API.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -49,17 +50,15 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		super(world);
 		
 		setSize(0.5F, 0.5F);
-		moveSpeed = 0.3F;
-		texture = "/mods/mekanism/render/Robit.png";
 		
 		getNavigator().setAvoidsWater(true);
 		
-		tasks.addTask(1, new RobitAIFollow(this, moveSpeed, 5.0F, 2.0F));
+		tasks.addTask(1, new RobitAIFollow(this, 0.3F, 5.0F, 2.0F));
 		tasks.addTask(2, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(2, new EntityAILookIdle(this));
 		tasks.addTask(3, new EntityAISwimming(this));
 		
-		func_94061_f(true);
+		setAlwaysRenderNameTag(true);
 	}
 	
 	public EntityRobit(World world, double x, double y, double z)
@@ -72,6 +71,15 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		prevPosY = y;
 		prevPosZ = z;
 	}
+	
+	@Override
+    protected void func_110147_ax()
+    {
+        super.func_110147_ax();
+        
+        func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.3);
+        func_110148_a(SharedMonsterAttributes.field_111267_a).func_111128_a(1);
+    }
 	
 	@Override
 	public boolean isAIEnabled()
@@ -461,7 +469,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 	
 	@Override
-    protected void damageEntity(DamageSource damageSource, int amount)
+    protected void damageEntity(DamageSource damageSource, float amount)
     {
         amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
         
@@ -472,10 +480,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         
         amount = applyArmorCalculations(damageSource, amount);
         amount = applyPotionDamageCalculations(damageSource, amount);
-        int j = getHealth();
+        float j = func_110143_aJ();
         
         setEnergy(Math.max(0, getEnergy() - (amount*1000)));
-        field_94063_bt.func_94547_a(damageSource, j, amount);
+        func_110142_aN().func_94547_a(damageSource, j, amount);
     }
 	
 	@Override
@@ -545,12 +553,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void setDropPickup(boolean pickup)
 	{
 		dataWatcher.updateObject(15, pickup ? (byte)1 : (byte)0);
-	}
-
-	@Override
-	public int getMaxHealth() 
-	{
-		return 1;
 	}
 
 	@Override
@@ -653,7 +655,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void closeChest() {}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) 
 	{
 		return true;
 	}

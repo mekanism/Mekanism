@@ -5,8 +5,8 @@ import java.util.Arrays;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public final class PipeUtils 
 {
@@ -42,19 +42,15 @@ public final class PipeUtils
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
 		TileEntity[] connectedPipes = PipeUtils.getConnectedPipes(tileEntity);
-		ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tileEntity);
+		IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tileEntity);
 		
-		for(ITankContainer container : connectedAcceptors)
+		for(IFluidHandler container : connectedAcceptors)
 		{
 			if(container != null)
 			{
 				int side = Arrays.asList(connectedAcceptors).indexOf(container);
 				
-				if(container.getTanks(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTanks(ForgeDirection.getOrientation(side).getOpposite()).length != 0)
-				{
-					connectable[side] = true;
-				}
-				else if(container.getTank(ForgeDirection.getOrientation(side).getOpposite(), new LiquidStack(-1, 1000)) != null)
+				if(container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()).length > 0)
 				{
 					connectable[side] = true;
 				}
@@ -77,19 +73,19 @@ public final class PipeUtils
     /**
      * Gets all the acceptors around a tile entity.
      * @param tileEntity - center tile entity
-     * @return array of ITankContainers
+     * @return array of IFluidHandlers
      */
-    public static ITankContainer[] getConnectedAcceptors(TileEntity tileEntity)
+    public static IFluidHandler[] getConnectedAcceptors(TileEntity tileEntity)
     {
-    	ITankContainer[] acceptors = new ITankContainer[] {null, null, null, null, null, null};
+    	IFluidHandler[] acceptors = new IFluidHandler[] {null, null, null, null, null, null};
 
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
 			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(acceptor instanceof ITankContainer && !(acceptor instanceof IMechanicalPipe))
+			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IMechanicalPipe))
 			{
-				acceptors[orientation.ordinal()] = (ITankContainer)acceptor;
+				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
 			}
     	}
     	

@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.TileEntityElectricChest;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -26,7 +28,7 @@ public class RenderElectricChest extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x, (float)y + 1.0F, (float)z);
 		GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
-		bindTextureByName("/mods/mekanism/render/ElectricChest.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
 		
 	    switch(tileEntity.facing)
 	    {

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
 
 import mekanism.api.EnumGas;
@@ -18,7 +19,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "Purification Chamber", "/mods/mekanism/gui/GuiPurificationChamber.png", Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy, 1200);
+		super("PurificationChamber.ogg", "Purification Chamber", new ResourceLocation("mekanism", "gui/GuiPurificationChamber.png"), Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy, 1200);
 	}
 	
 	@Override

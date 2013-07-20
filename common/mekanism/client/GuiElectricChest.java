@@ -6,6 +6,8 @@ import mekanism.api.Object3D;
 import mekanism.common.ContainerElectricChest;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricChest;
@@ -127,7 +129,7 @@ public class GuiElectricChest extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-        mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiElectricChest.png");
+		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricChest.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

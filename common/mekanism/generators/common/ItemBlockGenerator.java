@@ -19,8 +19,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Keyboard;
 
@@ -116,9 +116,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 			
 			if(hasTank(itemstack))
 			{
-				if(getLiquidStack(itemstack) != null)
+				if(getFluidStack(itemstack) != null)
 				{
-					list.add(EnumColor.PINK + LiquidDictionary.findLiquidName(getLiquidStack(itemstack)) + ": " + EnumColor.GREY + getLiquidStack(itemstack).amount + "mB");
+					list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
 				}
 			}
 			
@@ -246,9 +246,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
     		
     		if(tileEntity instanceof ISustainedTank)
     		{
-    			if(hasTank(stack) && getLiquidStack(stack) != null)
+    			if(hasTank(stack) && getFluidStack(stack) != null)
     			{
-    				((ISustainedTank)tileEntity).setLiquidStack(getLiquidStack(stack), stack);
+    				((ISustainedTank)tileEntity).setFluidStack(getFluidStack(stack), stack);
     			}
     		}
     		
@@ -379,9 +379,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	}
 	
 	@Override
-	public void setLiquidStack(LiquidStack liquidStack, Object... data) 
+	public void setFluidStack(FluidStack fluidStack, Object... data) 
 	{
-		if(liquidStack == null || liquidStack.amount == 0 || liquidStack.itemID == 0)
+		if(fluidStack == null || fluidStack.amount == 0 || fluidStack.fluidID == 0)
 		{
 			return;
 		}
@@ -395,12 +395,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 			
-			itemStack.stackTagCompound.setTag("liquidTank", liquidStack.writeToNBT(new NBTTagCompound()));
+			itemStack.stackTagCompound.setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	@Override
-	public LiquidStack getLiquidStack(Object... data) 
+	public FluidStack getFluidStack(Object... data) 
 	{
 		if(data[0] instanceof ItemStack)
 		{
@@ -411,9 +411,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 				return null; 
 			}
 			
-			if(itemStack.stackTagCompound.hasKey("liquidTank"))
+			if(itemStack.stackTagCompound.hasKey("fluidTank"))
 			{
-				return LiquidStack.loadLiquidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("liquidTank"));
+				return FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank"));
 			}
 		}
 		

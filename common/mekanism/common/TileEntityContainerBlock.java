@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements net.minecraftforge.common.ISidedInventory, ISidedInventory, IInventory, ISustainedInventory
+public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, IInventory, ISustainedInventory
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
@@ -65,18 +65,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
         nbtTags.setTag("Items", tagList);
     }
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-        return 0;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 0;
-	}
 
 	@Override
 	public int getSizeInventory() 
@@ -175,7 +163,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		return true;
 	}
@@ -183,7 +171,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
 	{
-		return isStackValidForSlot(slotID, itemstack);
+		return isItemValidForSlot(slotID, itemstack);
 	}
 	
 	@Override

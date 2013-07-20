@@ -15,6 +15,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -61,7 +62,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public boolean prevActive;
 	
 	/** The GUI texture path for this machine. */
-	public String guiTexturePath;
+	public ResourceLocation guiLocation;
 	
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -72,13 +73,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 * @param ticksRequired - how many ticks it takes to run a cycle
 	 * @param maxEnergy - how much energy this machine can store
 	 */
-	public TileEntityBasicMachine(String soundPath, String name, String path, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
 	{
 		super(name, maxEnergy);
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = ticksRequired;
 		soundURL = soundPath;
-		guiTexturePath = path;
+		guiLocation = location;
 		isActive = false;
 	}
 	
@@ -210,18 +211,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return true;
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotStart;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side.ordinal(), facing)]).slotAmount;
 	}
 	
 	/**

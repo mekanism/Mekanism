@@ -30,11 +30,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -42,10 +45,10 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, ITankContainer, IPeripheral, ITubeConnection, IStrictEnergyAcceptor, ISustainedTank
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IFluidHandler, IPeripheral, ITubeConnection, IStrictEnergyAcceptor, ISustainedTank
 {
 	/** This separator's water slot. */
-	public LiquidTank waterTank = new LiquidTank(24000);
+	public FluidTank waterTank = new FluidTank(24000);
 	
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 2400;
@@ -84,13 +87,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			
 			if(inventory[0] != null)
 			{
-				LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
+				FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 				
-				if(liquid != null && liquid.itemID == Block.waterStill.blockID)
+				if(fluid != null && fluid.getFluid() == FluidRegistry.WATER)
 				{
-					if(waterTank.getLiquid() == null || waterTank.getLiquid().amount+liquid.amount <= waterTank.getCapacity())
+					if(waterTank.getFluid() == null || waterTank.getFluid().amount+fluid.amount <= waterTank.getCapacity())
 					{
-						waterTank.fill(liquid, true);
+						waterTank.fill(fluid, true);
 						
 						if(inventory[0].isItemEqual(new ItemStack(Item.bucketWater)))
 						{
@@ -167,7 +170,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				}
 			}
 			
-			if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getLiquid() != null && waterTank.getLiquid().amount-2 >= 0 && electricityStored-100 > 0)
+			if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getFluid() != null && waterTank.getFluid().amount-2 >= 0 && electricityStored-100 > 0)
 			{
 				waterTank.drain(2, true);
 				setEnergy(electricityStored - MekanismGenerators.electrolyticSeparatorUsage);
@@ -245,7 +248,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 0)
 		{
-			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+			return FluidContainerRegistry.isEmptyContainer(itemstack);
 		}
 		else if(slotID == 1)
 		{
@@ -260,11 +263,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
-			return LiquidContainerRegistry.getLiquidForFilledItem(itemstack) != null && LiquidContainerRegistry.getLiquidForFilledItem(itemstack).itemID == Block.waterStill.blockID;
+			return FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.WATER;
 		}
 		else if(slotID == 1)
 		{
@@ -296,32 +299,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		
 		return new int[] {0};
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == MekanismUtils.getLeft(facing))
-		{
-			return 3;
-		}
-		else if(side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return 1;
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		if(side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return 2;
-		}
-		
-		return 1;
 	}
 	
 	@Override
@@ -375,7 +352,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	 */
 	public int getScaledWaterLevel(int i)
 	{
-		return waterTank.getLiquid() != null ? waterTank.getLiquid().amount*i / waterTank.getCapacity() : 0;
+		return waterTank.getFluid() != null ? waterTank.getFluid().amount*i / waterTank.getCapacity() : 0;
 	}
 	
 	/**
@@ -413,10 +390,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		if(amount != 0)
 		{
-			waterTank.setLiquid(new LiquidStack(Block.waterStill.blockID, amount, 0));
+			waterTank.setFluid(new FluidStack(FluidRegistry.WATER, amount));
 		}
 		else {
-			waterTank.setLiquid(null);
+			waterTank.setFluid(null);
 		}
 		
 		oxygenStored = dataStream.readInt();
@@ -430,9 +407,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		super.getNetworkedData(data);
 		
-		if(waterTank.getLiquid() != null)
+		if(waterTank.getFluid() != null)
 		{
-			data.add(waterTank.getLiquid().amount);
+			data.add(waterTank.getFluid().amount);
 		}
 		else {
 			data.add(0);
@@ -514,47 +491,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
 	}
-
-	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
-	{
-		return fill(0, resource, doFill);
-	}
-
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
-	{
-		if(resource.itemID == Block.waterStill.blockID && tankIndex == 0)
-		{
-			return waterTank.fill(resource, doFill);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-
-	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-
-	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) 
-	{
-		return new ILiquidTank[] {waterTank};
-	}
-	
-	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
-	{
-		return waterTank;
-	}
 	
 	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
@@ -581,7 +517,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         nbtTags.setInteger("hydrogenStored", hydrogenStored);
         nbtTags.setInteger("oxygenStored", oxygenStored);
         
-        if(waterTank.getLiquid() != null)
+        if(waterTank.getFluid() != null)
         {
         	nbtTags.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
         }
@@ -616,9 +552,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			case 3:
 				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
 			case 4:
-				return new Object[] {waterTank.getLiquid() != null ? waterTank.getLiquid().amount : 0};
+				return new Object[] {waterTank.getFluid() != null ? waterTank.getFluid().amount : 0};
 			case 5:
-				return new Object[] {waterTank.getLiquid() != null ? (waterTank.getCapacity()-waterTank.getLiquid().amount) : 0};
+				return new Object[] {waterTank.getFluid() != null ? (waterTank.getCapacity()-waterTank.getFluid().amount) : 0};
 			case 6:
 				return new Object[] {hydrogenStored};
 			case 7:
@@ -652,20 +588,61 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public void setLiquidStack(LiquidStack liquidStack, Object... data) 
+	public void setFluidStack(FluidStack fluidStack, Object... data) 
 	{
-		waterTank.setLiquid(liquidStack);
+		waterTank.setFluid(fluidStack);
 	}
 
 	@Override
-	public LiquidStack getLiquidStack(Object... data) 
+	public FluidStack getFluidStack(Object... data) 
 	{
-		return waterTank.getLiquid();
+		return waterTank.getFluid();
 	}
 
 	@Override
 	public boolean hasTank(Object... data) 
 	{
 		return true;
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	{
+		return fluid == FluidRegistry.WATER;
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	{
+		return false;
+	}
+	
+	@Override
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	{
+		if(resource.getFluid() == FluidRegistry.WATER)
+		{
+			return waterTank.fill(resource, doFill);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	{
+		return null;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	{
+		return new FluidTankInfo[] {waterTank.getInfo()};
 	}
 }

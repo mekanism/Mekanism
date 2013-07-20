@@ -1,8 +1,11 @@
 package mekanism.client;
 
 import mekanism.common.BlockMachine.MachineType;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
@@ -41,7 +44,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, -0.8F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/TheoreticalElementizer.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "TheoreticalElementizer.png"));
     	    	theoreticalElementizer.render(0.0560F);
     		}
     		else if(metadata == MachineType.ELECTRIC_PUMP.meta)
@@ -49,7 +52,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, -0.85F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricPump.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
     	    	electricPump.render(0.0560F);
     		}
     		else if(metadata == MachineType.METALLURGIC_INFUSER.meta)
@@ -57,22 +60,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/MetallurgicInfuser.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
     	    	metallurgicInfuser.render(0.0625F);
-    		}
-    		else if(metadata == MachineType.ELECTRIC_CHEST.meta)
-    		{
-                GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-                GL11.glTranslatef(0, 1.0F, 1.0F);
-                GL11.glScalef(1.0F, -1F, -1F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricChest.png"));
-    	    	electricChest.renderAll();
     		}
     		else if(metadata == MachineType.CHARGEPAD.meta)
     		{
     			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
     			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
-    			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/Chargepad.png"));
+    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
     			chargepad.render(0.0625F);
     		}
     		else {

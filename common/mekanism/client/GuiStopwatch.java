@@ -2,11 +2,13 @@ package mekanism.client;
 
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTime;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,7 +41,7 @@ public class GuiStopwatch extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiStopwatch.png");
+        mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiStopwatch.png"));
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
         drawString(fontRenderer, "Steve's Stopwatch", width / 2 - 60, height / 2 - 95, 0xffffff);
         super.drawScreen(i, j, f);

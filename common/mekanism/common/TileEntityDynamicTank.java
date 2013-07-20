@@ -14,8 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -39,10 +40,10 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	/** Whether or not this tank has it's structure, for the client side mechanics. */
 	public boolean clientHasStructure;
 	
-	/** The cached liquid this tank segment contains. */
-	public LiquidStack cachedLiquid;
+	/** The cached fluid this tank segment contains. */
+	public FluidStack cachedFluid;
 	
-	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering liquids. */
+	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
 	
 	/** The capacity this tank has on the client-side. */
@@ -136,7 +137,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			
 			if(inventoryID != -1 && structure == null)
 			{
-				MekanismUtils.updateCache(inventoryID, cachedLiquid, inventory, this);
+				MekanismUtils.updateCache(inventoryID, cachedFluid, inventory, this);
 			}
 			
 			if(structure == null && packetTick == 5)
@@ -170,9 +171,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				
 				if(inventoryID != -1)
 				{
-					MekanismUtils.updateCache(inventoryID, structure.liquidStored, structure.inventory, this);
+					MekanismUtils.updateCache(inventoryID, structure.fluidStored, structure.inventory, this);
 					
-					cachedLiquid = structure.liquidStored;
+					cachedFluid = structure.fluidStored;
 					inventory = structure.inventory;
 				}
 				
@@ -194,11 +195,11 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 		
 		if(structure.inventory[0] != null)
 		{
-			if(LiquidContainerRegistry.isEmptyContainer(structure.inventory[0]))
+			if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]))
 			{
-				if(structure.liquidStored != null && structure.liquidStored.amount >= LiquidContainerRegistry.BUCKET_VOLUME)
+				if(structure.fluidStored != null && structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
-					ItemStack filled = LiquidContainerRegistry.fillLiquidContainer(structure.liquidStored, structure.inventory[0]);
+					ItemStack filled = FluidContainerRegistry.fillFluidContainer(structure.fluidStored, structure.inventory[0]);
 					
 					if(filled != null)
 					{
@@ -219,11 +220,11 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.inventory[1].stackSize++;
 							}
 							
-							structure.liquidStored.amount -= LiquidContainerRegistry.getLiquidForFilledItem(filled).amount;
+							structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 							
-							if(structure.liquidStored.amount == 0)
+							if(structure.fluidStored.amount == 0)
 							{
-								structure.liquidStored = null;
+								structure.fluidStored = null;
 							}
 							
 							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
@@ -231,18 +232,18 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					}
 				}
 			}
-			else if(LiquidContainerRegistry.isFilledContainer(structure.inventory[0]))
+			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]))
 			{
-				LiquidStack itemLiquid = LiquidContainerRegistry.getLiquidForFilledItem(structure.inventory[0]);
+				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(structure.inventory[0]);
 				
-				if((structure.liquidStored == null && itemLiquid.amount <= max) || structure.liquidStored.amount+itemLiquid.amount <= max)
+				if((structure.fluidStored == null && itemFluid.amount <= max) || structure.fluidStored.amount+itemFluid.amount <= max)
 				{
-					if(structure.liquidStored != null && !structure.liquidStored.isLiquidEqual(itemLiquid))
+					if(structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid))
 					{
 						return;
 					}
 					
-					ItemStack bucket = LiquidContainerRegistry.isBucket(structure.inventory[0]) ? new ItemStack(Item.bucketEmpty) : null;
+					ItemStack bucket = FluidContainerRegistry.isBucket(structure.inventory[0]) ? new ItemStack(Item.bucketEmpty) : null;
 					
 					boolean filled = false;
 					
@@ -276,12 +277,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					
 					if(filled)
 					{
-						if(structure.liquidStored == null)
+						if(structure.fluidStored == null)
 						{
-							structure.liquidStored = itemLiquid.copy();
+							structure.fluidStored = itemFluid.copy();
 						}
 						else {
-							structure.liquidStored.amount += itemLiquid.amount;
+							structure.fluidStored.amount += itemFluid.amount;
 						}
 					}
 					
@@ -300,12 +301,11 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 		data.add(structure != null);
 		data.add(structure != null ? structure.volume*16000 : 0);
 		
-		if(structure != null && structure.liquidStored != null)
+		if(structure != null && structure.fluidStored != null)
 		{
 			data.add(1);
-			data.add(structure.liquidStored.itemID);
-			data.add(structure.liquidStored.amount);
-			data.add(structure.liquidStored.itemMeta);
+			data.add(structure.fluidStored.fluidID);
+			data.add(structure.fluidStored.amount);
 		}
 		else {
 			data.add(0);
@@ -339,7 +339,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				data.add(valveData.location.zCoord);
 				
 				data.add(valveData.side.ordinal());
-				data.add(valveData.serverLiquid);
+				data.add(valveData.serverFluid);
 			}
 		}
 		
@@ -363,10 +363,10 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 		
 		if(dataStream.readInt() == 1)
 		{
-			structure.liquidStored = new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
 		}
 		else {
-			structure.liquidStored = null;
+			structure.fluidStored = null;
 		}
 		
 		if(clientHasStructure && isRendering)
@@ -429,14 +429,14 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 		}
 	}
 	
-	public int getScaledLiquidLevel(int i)
+	public int getScaledFluidLevel(int i)
 	{
-		if(clientCapacity == 0 || structure.liquidStored == null)
+		if(clientCapacity == 0 || structure.fluidStored == null)
 		{
 			return 0;
 		}
 		
-		return structure.liquidStored.amount*i / clientCapacity;
+		return structure.fluidStored.amount*i / clientCapacity;
 	}
 	
 	@Override
@@ -470,9 +470,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	
 	        if(inventoryID != -1)
 	        {
-		        if(nbtTags.hasKey("cachedLiquid"))
+		        if(nbtTags.hasKey("cachedFluid"))
 		        {
-		        	cachedLiquid = LiquidStack.loadLiquidStackFromNBT(nbtTags.getCompoundTag("cachedLiquid"));
+		        	cachedFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
 		        }
 	        }
         }
@@ -485,9 +485,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
         
         nbtTags.setInteger("inventoryID", inventoryID);
         
-        if(cachedLiquid != null)
+        if(cachedFluid != null)
         {
-        	nbtTags.setTag("cachedLiquid", cachedLiquid.writeToNBT(new NBTTagCompound()));
+        	nbtTags.setTag("cachedFluid", cachedFluid.writeToNBT(new NBTTagCompound()));
         }
     }
 	

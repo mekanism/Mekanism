@@ -1,9 +1,12 @@
 package mekanism.generators.client;
 
 import mekanism.client.MekanismRenderer;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
@@ -37,7 +40,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/BioGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
     	    	bioGenerator.render(0.0625F, 0.0F);
     		}
     		else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
@@ -45,7 +48,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
-    	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/AdvancedSolarGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
     	        advancedSolarGenerator.render(0.0F, 0.022F);
     		}
     		else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
@@ -53,7 +56,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/HeatGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
     	    	heatGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
@@ -61,14 +64,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
     			GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/HydrogenGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
     	    	hydrogenGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.ELECTROLYTIC_SEPARATOR.meta)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectrolyticSeparatorHydrogen.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparatorHydrogen.png"));
     	    	electrolyticSeparator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.WIND_TURBINE.meta)
@@ -76,7 +79,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.35F, 0.0F);
-    	        GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/WindTurbine.png"));
+    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
     	        windTurbine.render(0.018F, 0);
     		}
     		else {

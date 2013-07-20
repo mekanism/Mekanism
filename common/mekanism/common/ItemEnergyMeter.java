@@ -9,6 +9,7 @@ import mekanism.api.EnumColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 
 public class ItemEnergyMeter extends ItemEnergized
@@ -35,12 +36,12 @@ public class ItemEnergyMeter extends ItemEnergized
     				
 	    			IUniversalCable cable = (IUniversalCable)tileEntity;
 	    			
-	    			player.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
-	                player.sendChatToPlayer(EnumColor.GREY + " *Cables: " + EnumColor.DARK_GREY + cable.getNetwork().cables.size());
-	                player.sendChatToPlayer(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + cable.getNetwork().possibleAcceptors.size());
-	                player.sendChatToPlayer(EnumColor.GREY + " *Needed energy: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay(cable.getNetwork().getEnergyNeeded(new ArrayList()), ElectricUnit.JOULES));
-	                player.sendChatToPlayer(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay(cable.getNetwork().getPower(), ElectricUnit.WATT));
-	                player.sendChatToPlayer(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
+	    			player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Cables: " + EnumColor.DARK_GREY + cable.getNetwork().cables.size()));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + cable.getNetwork().possibleAcceptors.size()));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Needed energy: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay(cable.getNetwork().getEnergyNeeded(new ArrayList()), ElectricUnit.JOULES)));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay(cable.getNetwork().getPower(), ElectricUnit.WATT)));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     			}
     		}
     	}

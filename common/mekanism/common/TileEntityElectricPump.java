@@ -21,19 +21,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements ITankContainer, ISustainedTank, IEnergySink, IStrictEnergyAcceptor
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IEnergySink, IStrictEnergyAcceptor
 {
 	/** This pump's tank */
-	public LiquidTank liquidTank;
+	public FluidTank fluidTank;
 	
 	/** The nodes that have full sources near them or in them */
 	public Set<Object3D> recurringNodes = new HashSet<Object3D>();
@@ -44,7 +45,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public TileEntityElectricPump()
 	{
 		super("Electric Pump", 10000);
-		liquidTank = new LiquidTank(10000);
+		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[3];
 	}
 	
@@ -55,17 +56,17 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		if(inventory[0] != null)
 		{
-			if(liquidTank.getLiquid() != null && liquidTank.getLiquid().amount >= LiquidContainerRegistry.BUCKET_VOLUME)
+			if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
 			{
-				if(LiquidContainerRegistry.isEmptyContainer(inventory[0]))
+				if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
 				{
-					ItemStack tempStack = LiquidContainerRegistry.fillLiquidContainer(liquidTank.getLiquid(), inventory[0]);
+					ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
 					
 					if(tempStack != null)
 					{
 						if(inventory[1] == null)
 						{
-							liquidTank.drain(LiquidContainerRegistry.BUCKET_VOLUME, true);
+							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 							
 							inventory[1] = tempStack;
 							inventory[0].stackSize--;
@@ -77,7 +78,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						}
 						else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
 						{
-							liquidTank.drain(LiquidContainerRegistry.BUCKET_VOLUME, true);
+							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 							
 							inventory[1].stackSize++;
 							inventory[0].stackSize--;
@@ -94,7 +95,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{
-			if(electricityStored >= 100 && (liquidTank.getLiquid() == null || liquidTank.getLiquid().amount+LiquidContainerRegistry.BUCKET_VOLUME <= 10000))
+			if(electricityStored >= 100 && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= 10000))
 			{
 				if(suck(true))
 				{
@@ -107,17 +108,17 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		super.onUpdate();
 		
-		if(liquidTank.getLiquid() != null) 
+		if(fluidTank.getFluid() != null) 
 		{
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(orientation).getTileEntity(worldObj);
 
-				if(tileEntity instanceof ITankContainer) 
+				if(tileEntity instanceof IFluidHandler) 
 				{
-					liquidTank.drain(((ITankContainer)tileEntity).fill(orientation.getOpposite(), liquidTank.getLiquid(), true), true);
+					fluidTank.drain(((IFluidHandler)tileEntity).fill(orientation.getOpposite(), fluidTank.getFluid(), true), true);
 					
-					if(liquidTank.getLiquid() == null || liquidTank.getLiquid().amount <= 0) 
+					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount <= 0) 
 					{
 						break;
 					}
@@ -135,15 +136,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			Object3D wrapper = Object3D.get(this).getFromSide(orientation);
 			
-			if(MekanismUtils.isLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isLiquidEqual(liquidTank.getLiquid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(electricityStored - 100);
 						recurringNodes.add(new Object3D(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord));
-						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 					
@@ -154,14 +155,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		for(Object3D wrapper : cleaningNodes)
 		{
-			if(MekanismUtils.isLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(liquidTank.getLiquid() != null && MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isLiquidEqual(liquidTank.getLiquid()))
+				if(fluidTank.getFluid() != null && MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(electricityStored - 100);
-						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 					
@@ -172,14 +173,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		for(Object3D wrapper : tempPumpList)
 		{
-			if(MekanismUtils.isLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isLiquidEqual(liquidTank.getLiquid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(electricityStored - 100);
-						liquidTank.fill(MekanismUtils.getLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 					
@@ -193,15 +194,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				
 				if(Object3D.get(this).distanceTo(side) <= 80)
 				{
-					if(MekanismUtils.isLiquid(worldObj, side.xCoord, side.yCoord, side.zCoord))
+					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
 					{
-						if(liquidTank.getLiquid() == null || MekanismUtils.getLiquid(worldObj, side.xCoord, side.yCoord, side.zCoord).isLiquidEqual(liquidTank.getLiquid()))
+						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord).isFluidEqual(fluidTank.getFluid()))
 						{
 							if(take)
 							{
 								setEnergy(electricityStored - 100);
 								recurringNodes.add(side);
-								liquidTank.fill(MekanismUtils.getLiquid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
+								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
 							}
 							
@@ -225,9 +226,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			for(Object3D wrapper : cleaningNodes)
 			{
-				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
-					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == liquidTank.getLiquid().itemID)
+					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
 						if(take)
@@ -240,9 +241,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			
 			for(Object3D wrapper : recurringNodes)
 			{
-				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
-					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == liquidTank.getLiquid().itemID)
+					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
 						if(take)
@@ -257,9 +258,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				Object3D wrapper = Object3D.get(this).getFromSide(orientation);
 				
-				if(MekanismUtils.isDeadLiquid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
-					if(liquidTank.getLiquid() != null && MekanismUtils.getLiquidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == liquidTank.getLiquid().itemID)
+					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
 						if(take)
@@ -281,10 +282,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		if(dataStream.readInt() == 1)
 		{
-			liquidTank.setLiquid(new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
 		}
 		else {
-			liquidTank.setLiquid(null);
+			fluidTank.setFluid(null);
 		}
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
@@ -295,12 +296,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		super.getNetworkedData(data);
 		
-		if(liquidTank.getLiquid() != null)
+		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(liquidTank.getLiquid().itemID);
-			data.add(liquidTank.getLiquid().amount);
-			data.add(liquidTank.getLiquid().itemMeta);
+			data.add(fluidTank.getFluid().fluidID);
+			data.add(fluidTank.getFluid().amount);
 		}
 		else {
 			data.add(0);
@@ -314,9 +314,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		return (int)(electricityStored*i / MAX_ELECTRICITY);
 	}
 	
-	public int getScaledLiquidLevel(int i)
+	public int getScaledFluidLevel(int i)
 	{
-		return liquidTank.getLiquid() != null ? liquidTank.getLiquid().amount*i / 10000 : 0;
+		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
 	}
 	
     @Override
@@ -324,9 +324,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     {
         super.writeToNBT(nbtTags);
         
-        if(liquidTank.getLiquid() != null)
+        if(fluidTank.getFluid() != null)
         {
-        	nbtTags.setTag("liquidTank", liquidTank.writeToNBT(new NBTTagCompound()));
+        	nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
         }
         
         NBTTagList recurringList = new NBTTagList();
@@ -338,7 +338,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         	recurringList.appendTag(tagCompound);
         }
         
-        if(!recurringList.tagList.isEmpty())
+        if(recurringList.tagCount() != 0)
         {
         	nbtTags.setTag("recurringNodes", recurringList);
         }
@@ -352,7 +352,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         	cleaningList.appendTag(tagCompound);
         }
         
-        if(!cleaningList.tagList.isEmpty())
+        if(cleaningList.tagCount() != 0)
         {
         	nbtTags.setTag("cleaningNodes", cleaningList);
         }
@@ -363,9 +363,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     {
     	super.readFromNBT(nbtTags);
     	
-    	if(nbtTags.hasKey("liquidTank"))
+    	if(nbtTags.hasKey("fluidTank"))
     	{
-    		liquidTank.readFromNBT(nbtTags.getCompoundTag("liquidTank"));
+    		fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
     	}
     	
     	if(nbtTags.hasKey("recurringNodes"))
@@ -390,7 +390,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
     
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 1)
 		{
@@ -398,7 +398,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		}
 		else if(slotID == 0)
 		{
-			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+			return FluidContainerRegistry.isEmptyContainer(itemstack);
 		}
 		else if(slotID == 2)
 		{
@@ -486,24 +486,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
 	}
-
-	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
-	{
-		return 0;
-	}
-
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
-	{
-		return 0;
-	}
-
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
-	{
-		return drain(0, maxDrain, doDrain);
-	}
 	
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
@@ -522,42 +504,60 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction) 
 	{
-		if(tankIndex == 0)
-		{
-			return liquidTank.drain(maxDrain, doDrain);
-		}
-		
-		return null;
+		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}
 
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) 
+	public void setFluidStack(FluidStack fluidStack, Object... data) 
 	{
-		return new ILiquidTank[] {liquidTank};
+		fluidTank.setFluid(fluidStack);
 	}
 
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
+	public FluidStack getFluidStack(Object... data) 
 	{
-		return liquidTank;
-	}
-
-	@Override
-	public void setLiquidStack(LiquidStack liquidStack, Object... data) 
-	{
-		liquidTank.setLiquid(liquidStack);
-	}
-
-	@Override
-	public LiquidStack getLiquidStack(Object... data) 
-	{
-		return liquidTank.getLiquid();
+		return fluidTank.getFluid();
 	}
 
 	@Override
 	public boolean hasTank(Object... data) 
+	{
+		return true;
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	{
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() != resource.getFluid())
+		{
+			return drain(from, resource.amount, doDrain);
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	{
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	{
+		return fluidTank.drain(maxDrain, doDrain);
+	}
+
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) 
 	{
 		return true;
 	}

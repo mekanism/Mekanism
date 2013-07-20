@@ -1,6 +1,9 @@
 package mekanism.client;
 
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
@@ -26,13 +29,13 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
     	switch(metadata)
     	{
     		case 0:
-    			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/PressurizedTube.png"));
+    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
     			break;
     		case 1:
-    			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/UniversalCable.png"));
+    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
     			break;
     		case 2:
-    			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/MechanicalPipe.png"));
+    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe.png"));
     			break;
     	}
     	

@@ -1,11 +1,14 @@
 package mekanism.client;
 
 import mekanism.common.ContainerDynamicTank;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.TileEntityDynamicTank;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -35,42 +38,42 @@ public class GuiDynamicTank extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString("Volume: " + tileEntity.clientCapacity/16000, 53, 26, 0x00CD00);
-        fontRenderer.drawString(tileEntity.structure.liquidStored != null ? LiquidDictionary.findLiquidName(tileEntity.structure.liquidStored) + ":" : "No liquid.", 53, 44, 0x00CD00);
+        fontRenderer.drawString(tileEntity.structure.fluidStored != null ? FluidRegistry.getFluidName(tileEntity.structure.fluidStored) + ":" : "No fluid.", 53, 44, 0x00CD00);
         
-        if(tileEntity.structure.liquidStored != null)
+        if(tileEntity.structure.fluidStored != null)
         {
-	        fontRenderer.drawString(tileEntity.structure.liquidStored.amount + "mB", 53, 53, 0x00CD00);
+	        fontRenderer.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
         }
         
         
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.structure.liquidStored != null ? LiquidDictionary.findLiquidName(tileEntity.structure.liquidStored) + ": " + tileEntity.structure.liquidStored.amount + "mB" : "Empty", xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? FluidRegistry.getFluidName(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB" : "Empty", xAxis, yAxis);
 		}
     }
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-		mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiDynamicTank.png");
+		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        if(tileEntity.getScaledLiquidLevel(58) > 0) 
+        if(tileEntity.getScaledFluidLevel(58) > 0) 
         {
-			displayGauge(guiWidth, guiHeight, 7, 14, tileEntity.getScaledLiquidLevel(58), tileEntity.structure.liquidStored, 0);
-			displayGauge(guiWidth, guiHeight, 23, 14, tileEntity.getScaledLiquidLevel(58), tileEntity.structure.liquidStored, 1);
+			displayGauge(guiWidth, guiHeight, 7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 0);
+			displayGauge(guiWidth, guiHeight, 23, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 1);
 		}
     }
 	
 	/*
 	 * Credit to BuildCraft for both the gauge texture and parts of the code.
 	 */
-	public void displayGauge(int width, int height, int xPos, int yPos, int scale, LiquidStack liquid, int side /*0-left, 1-right*/)
+	public void displayGauge(int width, int height, int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/)
 	{
-	    if(liquid == null)
+	    if(fluid == null)
 	    {
 	        return;
 	    }
@@ -91,8 +94,8 @@ public class GuiDynamicTank extends GuiContainer
 				scale = 0;
 			}
 
-			mc.renderEngine.bindTexture(liquid.canonical().getTextureSheet());
-			drawTexturedModelRectFromIcon(width + xPos, height + yPos + 58 - renderRemaining - start, liquid.canonical().getRenderingIcon(), 16, 16 - (16 - renderRemaining));
+			mc.renderEngine.func_110577_a(MekanismRenderer.getLiquidTexture());
+			drawTexturedModelRectFromIcon(width + xPos, height + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)
@@ -101,7 +104,7 @@ public class GuiDynamicTank extends GuiContainer
 			}
 		}
 
-		mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiDynamicTank.png");
+		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
 		
 		drawTexturedModalRect(width + xPos, height + yPos, 176, side == 0 ? 0 : 54, 16, 54);
 	}

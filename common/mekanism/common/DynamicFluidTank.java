@@ -2,22 +2,23 @@ package mekanism.common;
 
 import mekanism.api.Object3D;
 import mekanism.common.SynchronizedTankData.ValveData;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 
-public class DynamicLiquidTank implements ILiquidTank
+public class DynamicFluidTank implements IFluidTank
 {
 	public TileEntityDynamicTank dynamicTank;
 	
-	public DynamicLiquidTank(TileEntityDynamicTank tileEntity)
+	public DynamicFluidTank(TileEntityDynamicTank tileEntity)
 	{
 		dynamicTank = tileEntity;
 	}
 
 	@Override
-	public LiquidStack getLiquid() 
+	public FluidStack getFluid() 
 	{
-		return dynamicTank.structure != null ? dynamicTank.structure.liquidStored : null;
+		return dynamicTank.structure != null ? dynamicTank.structure.fluidStored : null;
 	}
 
 	@Override
@@ -27,22 +28,22 @@ public class DynamicLiquidTank implements ILiquidTank
 	}
 
     @Override
-    public int fill(LiquidStack resource, boolean doFill)
+    public int fill(FluidStack resource, boolean doFill)
     {
     	if(dynamicTank.structure != null && !dynamicTank.worldObj.isRemote)
     	{
-	        if(resource == null || resource.itemID <= 0) 
+	        if(resource == null || resource.fluidID <= 0) 
         	{
 	        	return 0;
         	}
 	
-	        if(dynamicTank.structure.liquidStored == null || dynamicTank.structure.liquidStored.itemID <= 0)
+	        if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.fluidID <= 0)
 	        {
 	            if(resource.amount <= getCapacity())
 	            {
 	                if(doFill)
 	                {
-	                	 dynamicTank.structure.liquidStored = resource.copy();
+	                	 dynamicTank.structure.fluidStored = resource.copy();
 	                }
 	                
 	    	        if(resource.amount > 0 && doFill)
@@ -57,8 +58,8 @@ public class DynamicLiquidTank implements ILiquidTank
 	            else {
 	                if(doFill)
 	                {
-	                    dynamicTank.structure.liquidStored = resource.copy();
-	                    dynamicTank.structure.liquidStored.amount = getCapacity();
+	                    dynamicTank.structure.fluidStored = resource.copy();
+	                    dynamicTank.structure.fluidStored.amount = getCapacity();
 	                }
 	                
 	    	        if(getCapacity() > 0 && doFill)
@@ -72,18 +73,18 @@ public class DynamicLiquidTank implements ILiquidTank
 	            }
 	        }
 	
-	        if(!dynamicTank.structure.liquidStored.isLiquidEqual(resource)) 
+	        if(!dynamicTank.structure.fluidStored.isFluidEqual(resource)) 
 	        {
 	        	return 0;
 	        }
 	
-	        int space = getCapacity() - dynamicTank.structure.liquidStored.amount;
+	        int space = getCapacity() - dynamicTank.structure.fluidStored.amount;
 	        
 	        if(resource.amount <= space)
 	        {
 	            if(doFill)
 	            {
-	            	dynamicTank.structure.liquidStored.amount += resource.amount;
+	            	dynamicTank.structure.fluidStored.amount += resource.amount;
 	            }
 	            
 		        if(resource.amount > 0 && doFill)
@@ -98,7 +99,7 @@ public class DynamicLiquidTank implements ILiquidTank
 	        else {
 	            if(doFill)
 	            {
-	            	dynamicTank.structure.liquidStored.amount = getCapacity();
+	            	dynamicTank.structure.fluidStored.amount = getCapacity();
 	            }
 	            
 		        if(space > 0 && doFill)
@@ -123,44 +124,44 @@ public class DynamicLiquidTank implements ILiquidTank
     		{
     			if(data.location.equals(Object3D.get(dynamicTank)))
     			{
-    				data.serverLiquid = value;
+    				data.serverFluid = value;
     			}
     		}
     	}
     }
 
     @Override
-    public LiquidStack drain(int maxDrain, boolean doDrain)
+    public FluidStack drain(int maxDrain, boolean doDrain)
     {
     	if(dynamicTank.structure != null && !dynamicTank.worldObj.isRemote)
     	{
-	        if(dynamicTank.structure.liquidStored == null || dynamicTank.structure.liquidStored.itemID <= 0)
+	        if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.fluidID <= 0)
         	{
 	        	return null;
         	}
 	        
-	        if(dynamicTank.structure.liquidStored.amount <= 0)
+	        if(dynamicTank.structure.fluidStored.amount <= 0)
 	        {
 	        	return null;
 	        }
 	
 	        int used = maxDrain;
 	        
-	        if(dynamicTank.structure.liquidStored.amount < used)
+	        if(dynamicTank.structure.fluidStored.amount < used)
         	{
-	        	used = dynamicTank.structure.liquidStored.amount;
+	        	used = dynamicTank.structure.fluidStored.amount;
         	}
 	
 	        if(doDrain)
 	        {
-	        	dynamicTank.structure.liquidStored.amount -= used;
+	        	dynamicTank.structure.fluidStored.amount -= used;
 	        }
 	
-	        LiquidStack drained = new LiquidStack(dynamicTank.structure.liquidStored.itemID, used, dynamicTank.structure.liquidStored.itemMeta);
+	        FluidStack drained = new FluidStack(dynamicTank.structure.fluidStored.fluidID, used);
 	
-	        if(dynamicTank.structure.liquidStored.amount <= 0)
+	        if(dynamicTank.structure.fluidStored.amount <= 0)
         	{
-	        	dynamicTank.structure.liquidStored = null;
+	        	dynamicTank.structure.fluidStored = null;
         	}
 	        
 	        if(drained.amount > 0 && doDrain)
@@ -175,8 +176,19 @@ public class DynamicLiquidTank implements ILiquidTank
     }
 
 	@Override
-	public int getTankPressure() 
+	public int getFluidAmount() 
 	{
+		if(dynamicTank.structure != null)
+		{
+			return dynamicTank.structure.fluidStored.amount;
+		}
+		
 		return 0;
+	}
+
+	@Override
+	public FluidTankInfo getInfo() 
+	{
+		return new FluidTankInfo(this);
 	}
 }

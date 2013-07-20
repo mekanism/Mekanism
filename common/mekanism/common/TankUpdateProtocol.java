@@ -396,7 +396,7 @@ public class TankUpdateProtocol
 				idFound = MekanismUtils.getUniqueInventoryID();
 			}
 			
-			structureFound.liquidStored = cache.liquid;
+			structureFound.fluidStored = cache.fluid;
 			structureFound.inventory = cache.inventory;
 			
 			for(Object3D obj : structureFound.locations)
@@ -405,7 +405,7 @@ public class TankUpdateProtocol
 				
 				tileEntity.inventoryID = idFound;
 				tileEntity.structure = structureFound;
-				tileEntity.cachedLiquid = cache.liquid;
+				tileEntity.cachedFluid = cache.fluid;
 				tileEntity.inventory = cache.inventory;
 			}
 		}

@@ -58,7 +58,7 @@ public class ItemBlockTransmitter extends ItemBlock
 			else if(itemstack.getItemDamage() == 2)
 			{
 				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-				list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(Liquid Dictionary)");
+				list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");
 			}
 		}
 	}

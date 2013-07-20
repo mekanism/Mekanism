@@ -9,8 +9,10 @@ import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
 import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityPressurizedTube;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -40,7 +42,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	@SuppressWarnings("incomplete-switch")
 	public void renderAModelAt(TileEntityPressurizedTube tileEntity, double x, double y, double z, float partialTick)
 	{
-		bindTextureByName("/mods/mekanism/render/PressurizedTube.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
@@ -109,7 +111,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			push();
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.gasScale);
-			bindTextureByName(tileEntity.refGas.texturePath);
+			func_110628_a(tileEntity.refGas.texturePath);
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			if(tileEntity.canTransferGas())

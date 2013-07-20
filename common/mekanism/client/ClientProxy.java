@@ -1,6 +1,7 @@
 package mekanism.client;
 
 
+import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.EnumGas;
@@ -11,6 +12,8 @@ import mekanism.common.IElectricChest;
 import mekanism.common.InventoryElectricChest;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.TileEntityAdvancedElectricMachine;
 import mekanism.common.TileEntityAdvancedFactory;
 import mekanism.common.TileEntityChargepad;
@@ -36,7 +39,7 @@ import mekanism.common.TileEntityPurificationChamber;
 import mekanism.common.TileEntityTeleporter;
 import mekanism.common.TileEntityTheoreticalElementizer;
 import mekanism.common.TileEntityUniversalCable;
-import net.minecraft.client.audio.SoundManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -84,7 +87,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSound(TileEntity tileEntity) 
 	{
-		if(Mekanism.enableSounds && SoundManager.sndSystem != null)
+		if(Mekanism.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
 		{
 			synchronized(Mekanism.audioHandler.sounds)
 			{
@@ -96,7 +99,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unregisterSound(TileEntity tileEntity) 
 	{
-		if(Mekanism.enableSounds && SoundManager.sndSystem != null)
+		if(Mekanism.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
 		{
 			synchronized(Mekanism.audioHandler.sounds)
 			{
@@ -205,14 +208,14 @@ public class ClientProxy extends CommonProxy
 		
 		if(!EnumGas.HYDROGEN.hasTexture())
 		{
-			EnumGas.HYDROGEN.gasIcon = FMLClientHandler.instance().getClient().renderEngine.textureMapItems.registerIcon("mekanism:LiquidHydrogen");
-			EnumGas.HYDROGEN.texturePath = "/mods/mekanism/textures/items/LiquidHydrogen.png";
+			EnumGas.HYDROGEN.gasIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidHydrogen");
+			EnumGas.HYDROGEN.texturePath = MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidHydrogen.png");
 		}
 		
 		if(!EnumGas.OXYGEN.hasTexture())
 		{
-			EnumGas.OXYGEN.gasIcon = FMLClientHandler.instance().getClient().renderEngine.textureMapItems.registerIcon("mekanism:LiquidOxygen");
-			EnumGas.OXYGEN.texturePath = "/mods/mekanism/textures/items/LiquidOxygen.png";
+			EnumGas.OXYGEN.gasIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidOxygen");
+			EnumGas.OXYGEN.texturePath = MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidOxygen.png");
 		}
 		
 		System.out.println("[Mekanism] Render registrations complete.");
@@ -363,5 +366,11 @@ public class ClientProxy extends CommonProxy
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public File getMinecraftDir()
+	{
+		return Minecraft.getMinecraft().mcDataDir;
 	}
 }

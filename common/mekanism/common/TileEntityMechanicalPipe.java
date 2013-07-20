@@ -10,57 +10,58 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalPipe, ITankContainer, ITileNetwork
+public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalPipe, IFluidHandler, ITileNetwork
 {
-	/** The fake tank used for liquid transfer calculations. */
-	public LiquidTank dummyTank = new LiquidTank(LiquidContainerRegistry.BUCKET_VOLUME);
+	/** The fake tank used for fluid transfer calculations. */
+	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 	
-	/** The LiquidStack displayed on this pipe. */
-	public LiquidStack refLiquid = null;
+	/** The FluidStack displayed on this pipe. */
+	public FluidStack refFluid = null;
 	
-	/** The liquid network currently in use by this pipe segment. */
-	public LiquidNetwork liquidNetwork;
+	/** The fluid network currently in use by this pipe segment. */
+	public FluidNetwork fluidNetwork;
 	
 	/** This pipe's active state. */
 	public boolean isActive = false;
 	
-	/** The scale (0F -> 1F) of this pipe's liquid level. */
-	public float liquidScale;
+	/** The scale (0F -> 1F) of this pipe's fluid level. */
+	public float fluidScale;
 	
 	@Override
-	public void onTransfer(LiquidStack liquidStack)
+	public void onTransfer(FluidStack fluidStack)
 	{
-		if(liquidStack.isLiquidEqual(refLiquid))
+		if(fluidStack.isFluidEqual(refFluid))
 		{
-			liquidScale = Math.min(1, liquidScale+((float)liquidStack.amount/50F));
+			fluidScale = Math.min(1, fluidScale+((float)fluidStack.amount/50F));
 		}
-		else if(refLiquid == null)
+		else if(refFluid == null)
 		{
-			refLiquid = liquidStack.copy();
-			liquidScale += Math.min(1, ((float)liquidStack.amount/50F));
+			refFluid = fluidStack.copy();
+			fluidScale += Math.min(1, ((float)fluidStack.amount/50F));
 		}
 	}
 	
 	@Override
-	public LiquidNetwork getNetwork()
+	public FluidNetwork getNetwork()
 	{
-		if(liquidNetwork == null)
+		if(fluidNetwork == null)
 		{
-			liquidNetwork = new LiquidNetwork(this);
+			fluidNetwork = new FluidNetwork(this);
 		}
 		
-		return liquidNetwork;
+		return fluidNetwork;
 	}
 	
 	@Override
@@ -75,9 +76,9 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 	
 	@Override
-	public void setNetwork(LiquidNetwork network)
+	public void setNetwork(FluidNetwork network)
 	{
-		liquidNetwork = network;
+		fluidNetwork = network;
 	}
 	
 	@Override
@@ -104,26 +105,26 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(worldObj.isRemote)
 		{
-			if(liquidScale > 0)
+			if(fluidScale > 0)
 			{
-				liquidScale -= .01;
+				fluidScale -= .01;
 			}
 			else {
-				refLiquid = null;
+				refFluid = null;
 			}
 		}	
 		else {		
 			if(isActive)
 			{
-				ITankContainer[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);
+				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);
 				
-				for(ITankContainer container : connectedAcceptors)
+				for(IFluidHandler container : connectedAcceptors)
 				{
 					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container));
 					
 					if(container != null)
 					{
-						LiquidStack received = container.drain(side, 100, false);
+						FluidStack received = container.drain(side, 100, false);
 						
 						if(received != null && received.amount != 0)
 						{
@@ -189,7 +190,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		if(!isActive)
 		{
@@ -200,37 +201,32 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
-	{
-		if(!isActive)
-		{
-			return getNetwork().emit(resource, doFill, null);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
 		return null;
 	}
 
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
 	{
 		return null;
 	}
 
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) 
+	public boolean canFill(ForgeDirection from, Fluid fluid) 
 	{
-		return new ILiquidTank[] {dummyTank};
+		return true;
 	}
 
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
+	public boolean canDrain(ForgeDirection from, Fluid fluid) 
 	{
-		return dummyTank;
+		return true;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	{
+		return new FluidTankInfo[] {dummyTank.getInfo()};
 	}
 }

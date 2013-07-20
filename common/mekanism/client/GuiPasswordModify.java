@@ -3,7 +3,9 @@ package mekanism.client;
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.IElectricChest;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricChest;
 import mekanism.common.network.PacketElectricChest;
@@ -12,6 +14,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -187,7 +190,7 @@ public class GuiPasswordModify extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiPasswordEnter.png");
+        mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiPasswordModify.png"));
         
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

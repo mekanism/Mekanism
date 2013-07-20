@@ -76,7 +76,7 @@ public class CommonWorldTickHandler implements ITickHandler
 						
 						if(dynamicTank != null)
 						{
-							dynamicTank.cachedLiquid = null;
+							dynamicTank.cachedFluid = null;
 							dynamicTank.inventory = new ItemStack[2];
 							dynamicTank.inventoryID = -1;
 						}

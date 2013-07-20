@@ -1,34 +1,34 @@
 package mekanism.common;
 
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
- * Implement this in your TileEntity class if the block can transfer liquid as a Mechanical Pipe.
+ * Implement this in your TileEntity class if the block can transfer fluid as a Mechanical Pipe.
  * @author AidanBrady
  *
  */
 public interface IMechanicalPipe 
 {
 	/**
-	 * Called when liquid is transferred through this pipe.
-	 * @param liquidStack - the liquid transferred
+	 * Called when fluid is transferred through this pipe.
+	 * @param fluidStack - the fluid transferred
 	 */
-	public void onTransfer(LiquidStack liquidStack);
+	public void onTransfer(FluidStack fluidStack);
 	
 	/**
-	 * Gets the LiquidNetwork currently in use by this cable segment.
-	 * @return LiquidNetwork this cable is using
+	 * Gets the FluidNetwork currently in use by this cable segment.
+	 * @return FluidNetwork this cable is using
 	 */
-	public LiquidNetwork getNetwork();
+	public FluidNetwork getNetwork();
 	
 	/**
-	 * Sets this cable segment's LiquidNetwork to a new value.
-	 * @param network - LiquidNetwork to set to
+	 * Sets this cable segment's FluidNetwork to a new value.
+	 * @param network - FluidNetwork to set to
 	 */
-	public void setNetwork(LiquidNetwork network);
+	public void setNetwork(FluidNetwork network);
 	
 	/**
-	 * Refreshes the cable's LiquidNetwork.
+	 * Refreshes the cable's FluidNetwork.
 	 */
 	public void refreshNetwork();
 }

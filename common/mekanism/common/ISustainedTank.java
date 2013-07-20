@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Internal interface used in blocks and items that are capable of storing sustained tanks.
@@ -14,14 +14,14 @@ public interface ISustainedTank
 	 * @param nbtTags - NBTTagList value to set
 	 * @param data - ItemStack parameter if using on item
 	 */
-	public void setLiquidStack(LiquidStack liquidStack, Object... data);
+	public void setFluidStack(FluidStack fluidStack, Object... data);
 	
 	/**
 	 * Gets the tank tag list from an item or block.
 	 * @param data - ItemStack parameter if using on item
 	 * @return inventory tag list
 	 */
-	public LiquidStack getLiquidStack(Object... data);
+	public FluidStack getFluidStack(Object... data);
 	
 	/**
 	 * Whether or not this block or item has an internal tank.

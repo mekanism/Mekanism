@@ -1,6 +1,6 @@
 package ic2.api.item;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -70,7 +70,7 @@ public interface IElectricItemManager {
 	 * @param entity entity holding the item
 	 * @return true if the operation succeeded
 	 */
-	boolean use(ItemStack itemStack, int amount, EntityLiving entity);
+	boolean use(ItemStack itemStack, int amount, EntityLivingBase entity);
 
 	/**
 	 * Charge an item from the BatPack a player is wearing.
@@ -80,7 +80,7 @@ public interface IElectricItemManager {
 	 * @param itemStack electric item's stack
 	 * @param entity entity holding the item
 	 */
-	void chargeFromArmor(ItemStack itemStack, EntityLiving entity);
+	void chargeFromArmor(ItemStack itemStack, EntityLivingBase entity);
 
 	/**
 	 * Get the tool tip to display for electric items.

@@ -5,6 +5,7 @@ import ic2.api.Direction;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,12 +27,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquid;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.network.PacketDispatcher;
@@ -596,27 +600,27 @@ public final class MekanismUtils
     }
     
     /**
-     * Whether or not a certain block is considered a liquid.
+     * Whether or not a certain block is considered a fluid.
      * @param world - world the block is in
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
-     * @return if the block is a liquid
+     * @return if the block is a fluid
      */
-    public static boolean isLiquid(World world, int x, int y, int z)
+    public static boolean isFluid(World world, int x, int y, int z)
     {
-    	return getLiquid(world, x, y, z) != null;
+    	return getFluid(world, x, y, z) != null;
     }
     
     /**
-     * Gets a liquid from a certain location.
+     * Gets a fluid from a certain location.
      * @param world - world the block is in
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
-     * @return the liquid at the certain location, null if it doesn't exist
+     * @return the fluid at the certain location, null if it doesn't exist
      */
-    public static LiquidStack getLiquid(World world, int x, int y, int z)
+    public static FluidStack getFluid(World world, int x, int y, int z)
     {
     	int id = world.getBlockId(x, y, z);
     	int meta = world.getBlockMetadata(x, y, z);
@@ -628,23 +632,19 @@ public final class MekanismUtils
     	
     	if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta == 0)
     	{
-    		return new LiquidStack(Block.waterStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    		return new FluidStack(Block.waterStill.blockID, FluidContainerRegistry.BUCKET_VOLUME);
     	}
     	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta == 0)
     	{
-    		return new LiquidStack(Block.lavaStill.blockID, LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    		return new FluidStack(Block.lavaStill.blockID, FluidContainerRegistry.BUCKET_VOLUME);
     	}
-    	else if(Block.blocksList[id] instanceof ILiquid)
+    	else if(Block.blocksList[id] instanceof IFluidBlock)
     	{
-    		ILiquid liquid = (ILiquid)Block.blocksList[id];
+    		IFluidBlock fluid = (IFluidBlock)Block.blocksList[id];
     	
-    		if(liquid.isMetaSensitive())
+    		if(meta == 0)
     		{
-    			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, liquid.stillLiquidMeta());
-    		}
-    		else if(meta == 0)
-    		{
-    			return new LiquidStack(liquid.stillLiquidId(), LiquidContainerRegistry.BUCKET_VOLUME, 0);
+    			return new FluidStack(fluid.getFluid(), FluidContainerRegistry.BUCKET_VOLUME);
     		}
     	}
     	
@@ -652,14 +652,14 @@ public final class MekanismUtils
     }
     
     /**
-     * Gets the liquid ID at a certain location, 0 if there isn't one
+     * Gets the fluid ID at a certain location, 0 if there isn't one
      * @param world - world the block is in
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
-     * @return liquid ID
+     * @return fluid ID
      */
-    public static int getLiquidId(World world, int x, int y, int z)
+    public static int getFluidId(World world, int x, int y, int z)
     {
     	int id = world.getBlockId(x, y, z);
     	int meta = world.getBlockMetadata(x, y, z);
@@ -669,33 +669,35 @@ public final class MekanismUtils
     		return 0;
     	}
     	
-    	if(id == Block.waterStill.blockID || id == Block.waterMoving.blockID)
+    	if(id == Block.waterMoving.blockID)
     	{
-    		return Block.waterStill.blockID;
+    		return FluidRegistry.WATER.getID();
     	}
-    	else if(id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID)
+    	else if(id == Block.lavaMoving.blockID)
     	{
-    		return Block.lavaStill.blockID;
+    		return FluidRegistry.LAVA.getID();
     	}
-    	else if(Block.blocksList[id] instanceof ILiquid)
-    	{
-    		ILiquid liquid = (ILiquid)Block.blocksList[id];
     	
-			return liquid.stillLiquidId();
+    	for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
+    	{
+    		if(fluid.getBlockID() == id)
+    		{
+    			return fluid.getID();
+    		}
     	}
     	
     	return 0;
     }
     
     /**
-     * Whether or not a block is a dead liquid.
+     * Whether or not a block is a dead fluid.
      * @param world - world the block is in
      * @param x - x coordinate
      * @param y - y coordinate
      * @param z - z coordinate
-     * @return if the block is a dead liquid
+     * @return if the block is a dead fluid
      */
-    public static boolean isDeadLiquid(World world, int x, int y, int z)
+    public static boolean isDeadFluid(World world, int x, int y, int z)
     {
     	int id = world.getBlockId(x, y, z);
     	int meta = world.getBlockMetadata(x, y, z);
@@ -713,15 +715,11 @@ public final class MekanismUtils
     	{
     		return true;
     	}
-    	else if(Block.blocksList[id] instanceof ILiquid)
+    	else if(Block.blocksList[id] instanceof IFluidBlock)
     	{
-    		ILiquid liquid = (ILiquid)Block.blocksList[id];
+    		IFluidBlock fluid = (IFluidBlock)Block.blocksList[id];
     	
-    		if(liquid.isMetaSensitive())
-    		{
-    			return liquid.stillLiquidMeta() != meta || liquid.stillLiquidId() != id;
-    		}
-    		else if(meta != 0)
+    		if(meta != 0)
     		{
     			return true;
     		}
@@ -741,7 +739,7 @@ public final class MekanismUtils
     public static void openElectricChestGui(EntityPlayerMP player, TileEntityElectricChest tileEntity, IInventory inventory, boolean isBlock)
     {
 		player.incrementWindowID();
-		player.closeInventory();
+		player.closeContainer();
 		int id = player.currentWindowId;
 		
 		if(isBlock)
@@ -773,7 +771,7 @@ public final class MekanismUtils
     		
     		if(tileEntity != null)
     		{
-    			tileEntity.cachedLiquid = null;
+    			tileEntity.cachedFluid = null;
     			tileEntity.inventory = new ItemStack[2];
     			tileEntity.inventoryID = -1;
     		}
@@ -787,17 +785,17 @@ public final class MekanismUtils
     /**
      * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
      * @param inventoryID - inventory ID of the dynamic tank
-     * @param liquid - cached liquid of the dynamic tank
+     * @param fluid - cached fluid of the dynamic tank
      * @param inventory - inventory of the dynamic tank
      * @param tileEntity - dynamic tank TileEntity
      */
-    public static void updateCache(int inventoryID, LiquidStack liquid, ItemStack[] inventory, TileEntityDynamicTank tileEntity)
+    public static void updateCache(int inventoryID, FluidStack fluid, ItemStack[] inventory, TileEntityDynamicTank tileEntity)
     {
     	if(!Mekanism.dynamicInventories.containsKey(inventoryID))
     	{
     		DynamicTankCache cache = new DynamicTankCache();
     		cache.inventory = inventory;
-    		cache.liquid = liquid;
+    		cache.fluid = fluid;
     		cache.locations.add(Object3D.get(tileEntity));
     		
     		Mekanism.dynamicInventories.put(inventoryID, cache);
@@ -806,7 +804,7 @@ public final class MekanismUtils
     	}
     	
     	Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
-    	Mekanism.dynamicInventories.get(inventoryID).liquid = liquid;
+    	Mekanism.dynamicInventories.get(inventoryID).fluid = fluid;
     	
 		Mekanism.dynamicInventories.get(inventoryID).locations.add(Object3D.get(tileEntity));
     }
@@ -842,5 +840,52 @@ public final class MekanismUtils
     public static String getName(ItemStack itemStack)
     {
     	return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
+    }
+    
+    public static Object getPrivateValue(Object obj, Class c, String field)
+    {
+    	try {
+	    	Field f = c.getDeclaredField(field);
+	    	f.setAccessible(true);
+	    	return f.get(obj);
+    	} catch(Exception e) {
+    		return null;
+    	}
+    }
+    
+    public static void setPrivateValue(Object obj, Object value, Class c, String field)
+    {
+    	try {
+    		Field f = c.getDeclaredField(field);
+    		f.setAccessible(true);
+    		f.set(obj, value);
+    	} catch(Exception e) {}
+    }
+    
+    public static ResourceLocation getResource(ResourceType type, String name)
+    {
+    	return new ResourceLocation("mekanism", type.getPrefix() + name);
+    }
+    
+    public static enum ResourceType
+    {
+    	GUI("gui"),
+    	SOUND("sound"),
+    	RENDER("render"),
+    	TEXTURE_BLOCKS("textures/blocks"),
+    	TEXTURE_ITEMS("textures/items"),
+    	INFUSE("infuse");
+    	
+    	private String prefix;
+    	
+    	private ResourceType(String s)
+    	{
+    		prefix = s;
+    	}
+    	
+    	public String getPrefix()
+    	{
+    		return prefix + "/";
+    	}
     }
 }

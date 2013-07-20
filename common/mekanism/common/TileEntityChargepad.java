@@ -10,10 +10,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import thermalexpansion.api.item.IChargeableItem;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
-
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IEnergizedItem;
 import mekanism.api.IStrictEnergyAcceptor;
@@ -22,12 +18,16 @@ import mekanism.client.IHasSound;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import thermalexpansion.api.item.IChargeableItem;
+import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -56,7 +56,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			
 			List<EntityLiving> entities = worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
 			
-			for(EntityLiving entity : entities)
+			for(EntityLivingBase entity : entities)
 			{
 				if(entity instanceof EntityPlayer || entity instanceof EntityRobit)
 				{

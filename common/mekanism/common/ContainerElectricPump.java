@@ -8,7 +8,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import universalelectricity.core.item.IItemElectric;
 
 public class ContainerElectricPump extends Container
@@ -41,9 +41,9 @@ public class ContainerElectricPump extends Container
     }
     
     @Override
-    public void onCraftGuiClosed(EntityPlayer entityplayer)
+    public void onContainerClosed(EntityPlayer entityplayer)
     {
-		super.onCraftGuiClosed(entityplayer);
+		super.onContainerClosed(entityplayer);
 		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
     }
@@ -82,7 +82,7 @@ public class ContainerElectricPump extends Container
 	            	}
 	            }
             }
-            else if(LiquidContainerRegistry.isEmptyContainer(slotStack))
+            else if(FluidContainerRegistry.isEmptyContainer(slotStack))
             {
             	if(slotID != 0)
             	{

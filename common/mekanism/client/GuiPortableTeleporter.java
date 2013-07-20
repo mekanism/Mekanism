@@ -1,7 +1,9 @@
 package mekanism.client;
 
 import mekanism.common.ItemPortableTeleporter;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketPortableTeleport;
@@ -9,6 +11,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -45,7 +48,7 @@ public class GuiPortableTeleporter extends GuiScreen
     		itemStack = mc.thePlayer.getCurrentEquippedItem();
     	}
         
-    	mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiPortableTeleporter.png");
+    	mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTeleporter.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

@@ -1,5 +1,7 @@
 package mekanism.generators.client;
 
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.generators.common.TileEntityHydrogenGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +26,7 @@ public class RenderHydrogenGenerator extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTextureByName("/mods/mekanism/render/HydrogenGenerator.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
 		
 	    switch(tileEntity.facing)
 	    {

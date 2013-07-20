@@ -37,9 +37,9 @@ public class ContainerWindTurbine extends Container
     }
     
     @Override
-    public void onCraftGuiClosed(EntityPlayer entityplayer)
+    public void onContainerClosed(EntityPlayer entityplayer)
     {
-		super.onCraftGuiClosed(entityplayer);
+		super.onContainerClosed(entityplayer);
 		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +20,10 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		super(id, 100000, 120);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
 	public ElectricityPack getProvideRequest(ItemStack itemStack)

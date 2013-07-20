@@ -1,9 +1,12 @@
 package mekanism.client;
 
 import mekanism.common.ContainerGasTank;
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityGasTank;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -38,7 +41,7 @@ public class GuiGasTank extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-		mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiGasTank.png");
+		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
         guiWidth = (width - xSize) / 2;

@@ -3,7 +3,9 @@ package mekanism.client;
 import mekanism.api.EnumColor;
 import mekanism.api.IAccessibleGui;
 import mekanism.api.Object3D;
+import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityControlPanel;
 import mekanism.common.network.PacketControlPanel;
@@ -11,6 +13,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -63,7 +66,7 @@ public class GuiControlPanel extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture("/mods/mekanism/gui/GuiControlPanel.png");
+        mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiControlPanel.png"));
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
         xField.drawTextBox();
         yField.drawTextBox();

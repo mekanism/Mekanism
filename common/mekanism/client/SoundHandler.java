@@ -10,6 +10,7 @@ import java.util.Random;
 import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -17,6 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,9 +32,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler 
 {
-	/** The PaulsCode SoundSystem */
-	public SoundSystem soundSystem;
-	
 	/** All the sound references in the Minecraft game. */
 	public Map<TileEntity, Sound> sounds = Collections.synchronizedMap(new HashMap<TileEntity, Sound>());
 	
@@ -44,7 +43,6 @@ public class SoundHandler
 	 */
 	public SoundHandler()
 	{
-		soundSystem = SoundManager.sndSystem;
 		MinecraftForge.EVENT_BUS.register(this);
 		System.out.println("[Mekanism] Successfully set up SoundHandler.");
 	}
@@ -56,12 +54,7 @@ public class SoundHandler
 	{
 		synchronized(sounds)
 		{
-			if(soundSystem == null)
-			{
-				soundSystem = SoundManager.sndSystem;
-			}
-			
-			if(soundSystem != null)
+			if(getSoundSystem() != null)
 			{
 				if(!Mekanism.proxy.isPaused())
 				{
@@ -196,15 +189,20 @@ public class SoundHandler
 	 */
 	public void quickPlay(String soundPath, World world, Object3D object)
 	{
-		URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + soundPath);
+		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + soundPath);
 		
 		if(url == null)
 		{
 			System.out.println("[Mekanism] Invalid sound file: " + soundPath);
 		}
 		
-		String s = soundSystem.quickPlay(false, url, soundPath, false, object.xCoord, object.yCoord, object.zCoord, 0, 16F);
-		soundSystem.setVolume(s, masterVolume);
+		String s = getSoundSystem().quickPlay(false, url, soundPath, false, object.xCoord, object.yCoord, object.zCoord, 0, 16F);
+		getSoundSystem().setVolume(s, masterVolume);
+	}
+	
+	public static SoundSystem getSoundSystem()
+	{
+		return Minecraft.getMinecraft().sndManager.sndSystem;
 	}
 	
 	@ForgeSubscribe

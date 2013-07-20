@@ -12,21 +12,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements ITankContainer
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler
 {
-	/** The LiquidTank for this generator. */
-	public LiquidTank lavaTank = new LiquidTank(24000);
+	/** The FluidTank for this generator. */
+	public FluidTank lavaTank = new FluidTank(24000);
 	
 	public TileEntityHeatGenerator()
 	{
@@ -45,15 +48,15 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			
 			if(inventory[0] != null)
 			{
-				LiquidStack liquid = LiquidContainerRegistry.getLiquidForFilledItem(inventory[0]);
+				FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 				
-				if(liquid != null && liquid.itemID == Block.lavaStill.blockID)
+				if(fluid != null && fluid.fluidID == FluidRegistry.LAVA.getID())
 				{
-					if(lavaTank.getLiquid() == null || lavaTank.getLiquid().amount+liquid.amount <= lavaTank.getCapacity())
+					if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
 					{
-						lavaTank.fill(liquid, true);
+						lavaTank.fill(fluid, true);
 						
-						if(LiquidContainerRegistry.isBucket(inventory[0]))
+						if(FluidContainerRegistry.isBucket(inventory[0]))
 						{
 							inventory[0] = new ItemStack(Item.bucketEmpty);
 						}
@@ -72,11 +75,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 					
 					if(fuel > 0)
 					{
-						int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0);
+						int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0);
 						
 						if(fuel <= fuelNeeded)
 						{
-							lavaTank.fill(new LiquidStack(Block.lavaStill.blockID, fuel), true);
+							lavaTank.fill(new FluidStack(Block.lavaStill.blockID, fuel), true);
 							inventory[0].stackSize--;
 						}
 						
@@ -104,11 +107,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
-			return getFuel(itemstack) > 0 || (LiquidContainerRegistry.getLiquidForFilledItem(itemstack) != null && LiquidContainerRegistry.getLiquidForFilledItem(itemstack).itemID == Block.lavaStill.blockID);
+			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).fluidID == FluidRegistry.LAVA.getID());
 		}
 		else if(slotID == 1)
 		{
@@ -122,7 +125,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && lavaTank.getLiquid() != null && lavaTank.getLiquid().amount >= 10;
+		return electricityStored < MAX_ELECTRICITY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10;
 	}
 	
 	@Override
@@ -141,7 +144,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
     {
         super.writeToNBT(nbtTags);
         
-        if(lavaTank.getLiquid() != null)
+        if(lavaTank.getFluid() != null)
         {
         	nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
         }
@@ -158,7 +161,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		}
 		else if(slotID == 0)
 		{
-			return LiquidContainerRegistry.isEmptyContainer(itemstack);
+			return FluidContainerRegistry.isEmptyContainer(itemstack);
 		}
 		
 		return false;
@@ -201,23 +204,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == MekanismUtils.getRight(facing))
-		{
-			return 1;
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
-	}
-	
 	/**
 	 * Gets the scaled fuel level for the GUI.
 	 * @param i - multiplier
@@ -225,7 +211,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	 */
 	public int getScaledFuelLevel(int i)
 	{
-		return (lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0)*i / lavaTank.getCapacity();
+		return (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)*i / lavaTank.getCapacity();
 	}
 	
 	@Override
@@ -237,10 +223,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 		
 		if(amount != 0)
 		{
-			lavaTank.setLiquid(new LiquidStack(Block.lavaStill.blockID, amount, 0));
+			lavaTank.setFluid(new FluidStack(Block.lavaStill.blockID, amount));
 		}
 		else {
-			lavaTank.setLiquid(null);
+			lavaTank.setFluid(null);
 		}
 	}
 	
@@ -249,9 +235,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	{
 		super.getNetworkedData(data);
 		
-		if(lavaTank.getLiquid() != null)
+		if(lavaTank.getFluid() != null)
 		{
-			data.add(lavaTank.getLiquid().amount);
+			data.add(lavaTank.getFluid().amount);
 		}
 		else {
 			data.add(0);
@@ -280,9 +266,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 			case 3:
 				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
 			case 4:
-				return new Object[] {lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0};
+				return new Object[] {lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
 			case 5:
-				return new Object[] {lavaTank.getCapacity()-(lavaTank.getLiquid() != null ? lavaTank.getLiquid().amount : 0)};
+				return new Object[] {lavaTank.getCapacity()-(lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
@@ -290,20 +276,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	}
 
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
 	{
-		if(from != ForgeDirection.getOrientation(facing))
-		{
-			return fill(0, resource, doFill);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
-	{
-		if(resource.itemID == Block.lavaStill.blockID && tankIndex == 0)
+		if(resource.fluidID == FluidRegistry.LAVA.getID() && from != ForgeDirection.getOrientation(facing))
 		{
 			return lavaTank.fill(resource, doFill);
 		}
@@ -312,26 +287,32 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements ITan
 	}
 
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
 		return null;
 	}
 
 	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
 	{
 		return null;
 	}
 
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) 
+	public boolean canFill(ForgeDirection from, Fluid fluid) 
 	{
-		return new ILiquidTank[] {lavaTank};
+		return fluid == FluidRegistry.LAVA;
 	}
-	
+
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public boolean canDrain(ForgeDirection from, Fluid fluid) 
 	{
-		return lavaTank;
+		return false;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	{
+		return new FluidTankInfo[] {lavaTank.getInfo()};
 	}
 }

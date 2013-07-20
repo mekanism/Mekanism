@@ -9,6 +9,7 @@ import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.ItemConfigurator;
 import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -44,7 +45,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		{
 			coloredOverlays = new Icon[16];
 			
-			TextureMap registrar = mc.renderEngine.textureMapBlocks;
+			TextureMap registrar = MekanismRenderer.getTextureMap(0);
 			
 			coloredOverlays[0] = registrar.registerIcon("mekanism:OverlayBlack");
 			coloredOverlays[1] = registrar.registerIcon("mekanism:OverlayDarkBlue");
@@ -95,7 +96,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 				
-				bindTextureByName("/mods/mekanism/textures/blocks/Overlay" + color.friendlyName.replace(" ", "") + ".png");
+				func_110628_a(MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "Overlay" + color.friendlyName.replace(" ", "") + ".png"));
 				GL11.glTranslatef((float)x, (float)y, (float)z);
 				
 				int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), color).display;

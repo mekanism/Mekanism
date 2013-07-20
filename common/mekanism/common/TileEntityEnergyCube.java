@@ -136,7 +136,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -284,23 +284,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		}
 		
 		return false;
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-		if(side == ForgeDirection.getOrientation(1))
-		{
-			return 0;
-		}
-		
-		return 1;
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
 	}
 
 	@Override

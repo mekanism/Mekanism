@@ -122,7 +122,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 54)
 		{
@@ -171,30 +171,6 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 		}
 		else {
 			return true;
-		}
-	}
-	
-	@Override
-	public int getStartInventorySide(ForgeDirection side) 
-	{
-        if(side == ForgeDirection.DOWN)
-        {
-        	return 54;
-        }
-        else {
-        	return 0;
-        }
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		if(side == ForgeDirection.DOWN)
-		{
-			return 1;
-		}
-		else {
-			return 54;
 		}
 	}
 	

@@ -4,11 +4,11 @@ import java.io.DataOutputStream;
 
 import mekanism.api.EnumGas;
 import mekanism.client.GasClientUpdate;
-import mekanism.client.LiquidClientUpdate;
+import mekanism.client.FluidClientUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -20,7 +20,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	
 	public String gasName;
 	
-	public LiquidStack liquidStack;
+	public FluidStack fluidStack;
 	
 	@Override
 	public String getName() 
@@ -39,8 +39,8 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 			case GAS:
 				gasName = ((EnumGas)data[2]).name;
 				break;
-			case LIQUID:
-				liquidStack = (LiquidStack)data[2];
+			case FLUID:
+				fluidStack = (FluidStack)data[2];
 				break;
 		}
 		
@@ -70,11 +70,11 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	    else if(transmitterType == 1)
 	    {
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    		LiquidStack liquidStack = new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+    		FluidStack fluidStack = new FluidStack(dataStream.readInt(), dataStream.readInt());
     		
     		if(tileEntity != null)
     		{
-    			new LiquidClientUpdate(tileEntity, liquidStack).clientUpdate();
+    			new FluidClientUpdate(tileEntity, fluidStack).clientUpdate();
     		}
 	    }
 	}
@@ -93,10 +93,9 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 			case GAS:
 				dataStream.writeUTF(gasName);
 				break;
-			case LIQUID:
-				dataStream.writeInt(liquidStack.itemID);
-				dataStream.writeInt(liquidStack.amount);
-				dataStream.writeInt(liquidStack.itemMeta);
+			case FLUID:
+				dataStream.writeInt(fluidStack.fluidID);
+				dataStream.writeInt(fluidStack.amount);
 				break;
 		}
 	}
@@ -104,6 +103,6 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	public static enum TransmitterTransferType
 	{
 		GAS,
-		LIQUID
+		FLUID
 	}
 }

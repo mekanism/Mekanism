@@ -5,13 +5,14 @@ import java.util.Map;
 import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine
 {
 	public TileEntityOsmiumCompressor()
 	{
-		super("Compressor.ogg", "Osmium Compressor", "/mods/mekanism/gui/GuiCompressor.png", Mekanism.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy, 200);
+		super("Compressor.ogg", "Osmium Compressor", new ResourceLocation("mekanism", "gui/GuiCompressor.png"), Mekanism.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy, 200);
 	}
 	
 	@Override

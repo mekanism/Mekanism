@@ -1,73 +1,63 @@
 package mekanism.common;
 
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements ITankContainer
+public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandler
 {
-	public DynamicLiquidTank liquidTank;
+	public DynamicFluidTank fluidTank;
 	
 	public TileEntityDynamicValve()
 	{
 		super("Dynamic Valve");
-		liquidTank = new DynamicLiquidTank(this);
+		fluidTank = new DynamicFluidTank(this);
+	}
+	
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	{
+		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}
 
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
 	{
-		return fill(0, resource, doFill);
+		return fluidTank.fill(resource, doFill);
 	}
 
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(tankIndex == 0)
+		if(fluidTank.dynamicTank.structure != null)
 		{
-			return liquidTank.fill(resource, doFill);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
-	{
-		return drain(0, maxDrain, doDrain);
-	}
-
-	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) 
-	{
-		if(tankIndex == 0)
-		{
-			return liquidTank.drain(maxDrain, doDrain);
+			if(resource.getFluid() == fluidTank.dynamicTank.structure.fluidStored.getFluid())
+			{
+				return fluidTank.drain(resource.amount, doDrain);
+			}
 		}
 		
 		return null;
 	}
 
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
-		{
-			return new ILiquidTank[] {liquidTank};
-		}
-		
-		return null;
+		return fluidTank.drain(maxDrain, doDrain);
 	}
 
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
+	public boolean canFill(ForgeDirection from, Fluid fluid) 
 	{
-		if((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure))
-		{
-			return liquidTank;
-		}
-		
-		return null;
+		return true;
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	{
+		return true;
 	}
 }

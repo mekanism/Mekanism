@@ -1,6 +1,8 @@
 package mekanism.client;
 
+import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityMetallurgicInfuser;
+import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -24,7 +26,7 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTextureByName("/mods/mekanism/render/MetallurgicInfuser.png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
 		
 	    switch(tileEntity.facing)
 	    {

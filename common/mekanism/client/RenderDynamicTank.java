@@ -12,14 +12,11 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
@@ -29,8 +26,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderDynamicTank extends TileEntitySpecialRenderer
 {
-	private static Map<RenderData, HashMap<LiquidStack, int[]>> cachedCenterLiquids = new HashMap<RenderData, HashMap<LiquidStack, int[]>>();
-	private static Map<ValveRenderData, HashMap<LiquidStack, DisplayInteger>> cachedValveLiquids = new HashMap<ValveRenderData, HashMap<LiquidStack, DisplayInteger>>();
+	private static Map<RenderData, HashMap<Fluid, int[]>> cachedCenterFluids = new HashMap<RenderData, HashMap<Fluid, int[]>>();
+	private static Map<ValveRenderData, HashMap<Fluid, DisplayInteger>> cachedValveFluids = new HashMap<ValveRenderData, HashMap<Fluid, DisplayInteger>>();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -40,7 +37,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	
 	public void renderAModelAt(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick)
 	{		
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.liquidStored != null && tileEntity.structure.liquidStored.amount != 0)
+		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
 		{
 			RenderData data = new RenderData();
 			
@@ -49,16 +46,16 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			data.length = tileEntity.structure.volLength;
 			data.width = tileEntity.structure.volWidth;
 			
-			bindTextureByName(tileEntity.structure.liquidStored.canonical().getTextureSheet());
+			func_110628_a(MekanismRenderer.getLiquidTexture());
 			
-			if(data.location != null && data.height > 0 && Item.itemsList[tileEntity.structure.liquidStored.itemID] != null)
+			if(data.location != null && data.height > 0 && tileEntity.structure.fluidStored.getFluid() != null)
 			{
 				push();
 				
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 				
-				int[] displayList = getListAndRender(data, tileEntity.structure.liquidStored.canonical(), tileEntity.worldObj);
-				GL11.glCallList(displayList[(int)(((float)tileEntity.structure.liquidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
+				int[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
+				GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
 				
 				pop();
 				
@@ -70,7 +67,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 						
-						int display = getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.liquidStored, tileEntity.worldObj).display;
+						int display = getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).display;
 						GL11.glCallList(display);
 						
 						pop();
@@ -96,36 +93,31 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private int[] getListAndRender(RenderData data, LiquidStack stack, World world)
+	private int[] getListAndRender(RenderData data, Fluid fluid, World world)
 	{
-		if(cachedCenterLiquids.containsKey(data) && cachedCenterLiquids.get(data).containsKey(stack))
+		if(cachedCenterFluids.containsKey(data) && cachedCenterFluids.get(data).containsKey(fluid))
 		{
-			return cachedCenterLiquids.get(data).get(stack);
+			return cachedCenterFluids.get(data).get(fluid);
 		}
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.setTexture(stack.getRenderingIcon());
-		
-		if(stack.itemID < Block.blocksList.length && Block.blocksList[stack.itemID] != null) 
-		{
-			toReturn.baseBlock = Block.blocksList[stack.itemID];
-		}
+		toReturn.setTexture(fluid.getIcon());
 		
 		final int stages = getStages(data.height);
 		int[] displays = new int[stages];
 		
-		if(cachedCenterLiquids.containsKey(data))
+		if(cachedCenterFluids.containsKey(data))
 		{
-			cachedCenterLiquids.get(data).put(stack, displays);
+			cachedCenterFluids.get(data).put(fluid, displays);
 		}
 		else {
-			HashMap<LiquidStack, int[]> map = new HashMap<LiquidStack, int[]>();
-			map.put(stack, displays);
-			cachedCenterLiquids.put(data, map);
+			HashMap<Fluid, int[]> map = new HashMap<Fluid, int[]>();
+			map.put(fluid, displays);
+			cachedCenterFluids.put(data, map);
 		}
 		
-		MekanismRenderer.colorLiquid(stack);
+		MekanismRenderer.colorFluid(fluid);
 		
 		for(int i = 0; i < stages; i++)
 		{
@@ -149,60 +141,30 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		return displays;
 	}
 	
-	private void setFlowingTexture(LiquidStack liquidStack, Model3D model)
+	private DisplayInteger getValveDisplay(ValveRenderData data, Fluid fluid, World world)
 	{
-		if((liquidStack == null) || (liquidStack.amount <= 0) || (liquidStack.itemID <= 0)) 
+		if(cachedValveFluids.containsKey(data) && cachedValveFluids.get(data).containsKey(fluid))
 		{
-			return;
-		}
-
-		ItemStack itemStack = liquidStack.asItemStack();
-		String texturePath = liquidStack.canonical().getTextureSheet();
-		
-		Icon flatIcon = liquidStack.canonical().getRenderingIcon();
-		Icon sideIcon = flatIcon;
-		
-		if((itemStack.getItem() instanceof ItemBlock))
-		{
-			flatIcon = Block.blocksList[itemStack.itemID].getIcon(0, 0);
-			sideIcon = Block.blocksList[itemStack.itemID].getIcon(2, 0);
-			texturePath = "/terrain.png";
-		}
-		
-		model.setTextures(flatIcon, flatIcon, sideIcon, sideIcon, sideIcon, sideIcon);
-		
-		bindTextureByName(texturePath);
-	}
-	
-	private DisplayInteger getValveDisplay(ValveRenderData data, LiquidStack stack, World world)
-	{
-		if(cachedValveLiquids.containsKey(data) && cachedValveLiquids.get(data).containsKey(stack))
-		{
-			return cachedValveLiquids.get(data).get(stack);
+			return cachedValveFluids.get(data).get(fluid);
 		}
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		setFlowingTexture(stack, toReturn);
-		
-		if(stack.itemID < Block.blocksList.length && Block.blocksList[stack.itemID] != null) 
-		{
-			toReturn.baseBlock = Block.blocksList[stack.itemID];
-		}
+		toReturn.setTexture(fluid.getFlowingIcon());
 		
 		DisplayInteger display = new DisplayInteger();
 		
-		if(cachedValveLiquids.containsKey(data))
+		if(cachedValveFluids.containsKey(data))
 		{
-			cachedValveLiquids.get(data).put(stack, display);
+			cachedValveFluids.get(data).put(fluid, display);
 		}
 		else {
-			HashMap<LiquidStack, DisplayInteger> map = new HashMap<LiquidStack, DisplayInteger>();
-			map.put(stack, display);
-			cachedValveLiquids.put(data, map);
+			HashMap<Fluid, DisplayInteger> map = new HashMap<Fluid, DisplayInteger>();
+			map.put(fluid, display);
+			cachedValveFluids.put(data, map);
 		}
 		
-		MekanismRenderer.colorLiquid(stack);
+		MekanismRenderer.colorFluid(fluid);
 		
 		display.display = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(display.display, 4864);
@@ -234,7 +196,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			case NORTH:
 			{
 				toReturn.minX = .3;
-				toReturn.minY = -(getValveLiquidHeight(data)) + .01;
+				toReturn.minY = -(getValveFluidHeight(data)) + .01;
 				toReturn.minZ = 1 + .02;
 				
 				toReturn.maxX = .7;
@@ -245,7 +207,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			case SOUTH:
 			{
 				toReturn.minX = .3;
-				toReturn.minY = -(getValveLiquidHeight(data)) + .01;
+				toReturn.minY = -(getValveFluidHeight(data)) + .01;
 				toReturn.minZ = -.4;
 				
 				toReturn.maxX = .7;
@@ -256,7 +218,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			case WEST:
 			{
 				toReturn.minX = 1 + .02;
-				toReturn.minY = -(getValveLiquidHeight(data)) + .01;
+				toReturn.minY = -(getValveFluidHeight(data)) + .01;
 				toReturn.minZ = .3;
 				
 				toReturn.maxX = 1.4;
@@ -267,7 +229,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			case EAST:
 			{
 				toReturn.minX = -.4;
-				toReturn.minY = -(getValveLiquidHeight(data)) + .01;
+				toReturn.minY = -(getValveFluidHeight(data)) + .01;
 				toReturn.minZ = .3;
 				
 				toReturn.maxX = -.02;
@@ -289,7 +251,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		return display;
 	}
 	
-	private int getValveLiquidHeight(ValveRenderData data)
+	private int getValveFluidHeight(ValveRenderData data)
 	{
 		return data.valveLocation.yCoord - data.location.yCoord;
 	}

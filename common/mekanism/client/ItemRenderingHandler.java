@@ -6,6 +6,8 @@ import mekanism.common.IEnergyCube;
 import mekanism.common.ItemBlockMachine;
 import mekanism.common.ItemRobit;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -63,9 +65,10 @@ public class ItemRenderingHandler implements IItemRenderer
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
             GL11.glTranslatef(0, 1.0F, 1.0F);
             GL11.glScalef(1.0F, -1F, -1F);
-	    	GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/ElectricChest.png"));
+            
+            Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
 	    	
-			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * Minecraft.getMinecraft().timer.renderPartialTicks;
+			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * MekanismRenderer.getPartialTicks();
 	        lidangle = 1.0F - lidangle;
 	        lidangle = 1.0F - lidangle * lidangle * lidangle;
 	        electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
@@ -77,7 +80,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.5F, 0.0F);
-			GL11.glBindTexture(3553, FMLClientHandler.instance().getClient().renderEngine.getTexture("/mods/mekanism/render/Robit.png"));
+			 Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
 		}
 		else {

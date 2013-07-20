@@ -101,7 +101,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -212,12 +212,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
 			}
 		}
-	}
-
-	@Override
-	public int getSizeInventorySide(ForgeDirection side)
-	{
-		return 1;
 	}
 	
 	@Override

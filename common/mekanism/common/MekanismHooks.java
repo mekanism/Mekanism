@@ -60,7 +60,7 @@ public final class MekanismHooks
 			
 			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.Dust, 1, 2));
 			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 0), new ItemStack(Mekanism.Dust, 1, 3));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.lightStoneDust));
+			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.glowstone));
 			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 4), new ItemStack(Mekanism.Dust, 1, 5));
 			
 			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 0), new ItemStack(Mekanism.DirtyDust, 1, 0));

@@ -3,6 +3,7 @@ package mekanism.client;
 import java.net.URL;
 
 import mekanism.common.Mekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -46,18 +47,18 @@ public class Sound
 			identifier = id;
 			tileEntity = tileentity;
 			
-			URL url = getClass().getClassLoader().getResource("mods/mekanism/sound/" + sound);
+			URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
 			
 			if(url == null)
 			{
 				System.out.println("[Mekanism] Invalid sound file: " + sound);
 			}
 			
-			if(Mekanism.audioHandler.soundSystem != null)
+			if(SoundHandler.getSoundSystem() != null)
 			{
-				Mekanism.audioHandler.soundSystem.newSource(false, id, url, sound, true, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 0, 16F);
-				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
-				Mekanism.audioHandler.soundSystem.activate(id);
+				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 0, 16F);
+				updateVolume(Minecraft.getMinecraft().thePlayer);
+				SoundHandler.getSoundSystem().activate(id);
 			}
 			
 			Mekanism.audioHandler.sounds.put(tileEntity, this);
@@ -76,10 +77,10 @@ public class Sound
 				return;
 			}
 			
-			if(Mekanism.audioHandler.soundSystem != null)
+			if(SoundHandler.getSoundSystem() != null)
 			{
-				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
-				Mekanism.audioHandler.soundSystem.play(identifier);
+				updateVolume(Minecraft.getMinecraft().thePlayer);
+				SoundHandler.getSoundSystem().play(identifier);
 			}
 			
 			isPlaying = true;
@@ -98,10 +99,10 @@ public class Sound
 				return;
 			}
 			
-			if(Mekanism.audioHandler.soundSystem != null)
+			if(SoundHandler.getSoundSystem() != null)
 			{
-				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
-				Mekanism.audioHandler.soundSystem.stop(identifier);
+				updateVolume(Minecraft.getMinecraft().thePlayer);
+				SoundHandler.getSoundSystem().stop(identifier);
 			}
 			
 			isPlaying = false;
@@ -122,10 +123,10 @@ public class Sound
 			
 			Mekanism.audioHandler.sounds.remove(tileEntity);
 			
-			if(Mekanism.audioHandler.soundSystem != null)
+			if(SoundHandler.getSoundSystem() != null)
 			{
-				updateVolume(FMLClientHandler.instance().getClient().thePlayer);
-				Mekanism.audioHandler.soundSystem.removeSource(identifier);
+				updateVolume(Minecraft.getMinecraft().thePlayer);
+				SoundHandler.getSoundSystem().removeSource(identifier);
 			}
 		}
 	}
@@ -147,9 +148,9 @@ public class Sound
 		        double distance = entityplayer.getDistance(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
 		
-		        if(Mekanism.audioHandler.soundSystem != null)
+		        if(SoundHandler.getSoundSystem() != null)
 		        {
-		        	Mekanism.audioHandler.soundSystem.setVolume(identifier, volume);
+		        	SoundHandler.getSoundSystem().setVolume(identifier, volume);
 		        }
 			}
 		}

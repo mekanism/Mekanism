@@ -3,14 +3,18 @@ package mekanism.client;
 import java.util.HashMap;
 
 import mekanism.client.MekanismRenderer.Model3D;
+import mekanism.common.MekanismUtils;
+import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PipeUtils;
 import mekanism.common.TileEntityMechanicalPipe;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -22,7 +26,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
 	
-	private HashMap<ForgeDirection, HashMap<LiquidStack, int[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<LiquidStack, int[]>>();
+	private HashMap<ForgeDirection, HashMap<Fluid, int[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, int[]>>();
 	
 	private static final int stages = 40;
 	
@@ -36,7 +40,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityMechanicalPipe tileEntity, double x, double y, double z, float partialTick)
 	{
-		bindTextureByName("/mods/mekanism/render/MechanicalPipe" + (tileEntity.isActive ? "Active" : "") + ".png");
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe" + (tileEntity.isActive ? "Active" : "") + ".png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
@@ -50,39 +54,39 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		
 		GL11.glPopMatrix();
 		
-		if(tileEntity.liquidScale > 0 && tileEntity.refLiquid != null)
+		if(tileEntity.fluidScale > 0 && tileEntity.refFluid != null)
 		{
 			push();
 			
-			if(tileEntity.refLiquid.itemID == Block.lavaStill.blockID)
+			if(tileEntity.refFluid.getFluid() == FluidRegistry.LAVA)
 			{
 				MekanismRenderer.glowOn();
 			}
 			
-			bindTextureByName(tileEntity.refLiquid.getTextureSheet());
+			func_110628_a(MekanismRenderer.getLiquidTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			for(int i = 0; i < 6; i++)
 			{
 				if(connectable[i])
 				{
-					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refLiquid);
+					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refFluid.getFluid());
 					
 					if(displayList != null)
 					{
-						GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+						GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))]);
 					}
 				}
 			}
 			
-			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refLiquid);
+			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refFluid.getFluid());
 			
 			if(displayList != null)
 			{
-				GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.liquidScale*(stages-1)))]);
+				GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))]);
 			}
 			
-			if(tileEntity.refLiquid.itemID == Block.lavaStill.blockID)
+			if(tileEntity.refFluid.getFluid() == FluidRegistry.LAVA)
 			{
 				MekanismRenderer.glowOff();
 			}
@@ -107,40 +111,35 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private int[] getListAndRender(ForgeDirection side, LiquidStack stack)
+	private int[] getListAndRender(ForgeDirection side, Fluid fluid)
 	{
-		if(side == null || stack == null || stack.getRenderingIcon() == null)
+		if(side == null || fluid == null || fluid.getIcon() == null)
 		{
 			return null;
 		}
 		
-		if(cachedLiquids.containsKey(side) && cachedLiquids.get(side).containsKey(stack))
+		if(cachedLiquids.containsKey(side) && cachedLiquids.get(side).containsKey(fluid))
 		{
-			return cachedLiquids.get(side).get(stack);
+			return cachedLiquids.get(side).get(fluid);
 		}
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.setTexture(stack.getRenderingIcon());
-		
-		if(stack.itemID < Block.blocksList.length && Block.blocksList[stack.itemID] != null) 
-		{
-			toReturn.baseBlock = Block.blocksList[stack.itemID];
-		}
+		toReturn.setTexture(fluid.getIcon());
 		
 		int[] displays = new int[stages];
 		
 		if(cachedLiquids.containsKey(side))
 		{
-			cachedLiquids.get(side).put(stack, displays);
+			cachedLiquids.get(side).put(fluid, displays);
 		}
 		else {
-			HashMap<LiquidStack, int[]> map = new HashMap<LiquidStack, int[]>();
-			map.put(stack, displays);
+			HashMap<Fluid, int[]> map = new HashMap<Fluid, int[]>();
+			map.put(fluid, displays);
 			cachedLiquids.put(side, map);
 		}
 		
-		MekanismRenderer.colorLiquid(stack);
+		MekanismRenderer.colorFluid(fluid);
 		
 		for(int i = 0; i < stages; i++)
 		{

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import mekanism.common.IMechanicalPipe;
 import mekanism.common.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
 
-public class LiquidClientUpdate
+public class FluidClientUpdate
 {
 	/** List of iterated pipes, to prevent infinite loops. */
 	public ArrayList<TileEntity> iteratedPipes = new ArrayList<TileEntity>();
@@ -15,13 +15,13 @@ public class LiquidClientUpdate
 	/** Pointer pipe of this calculation */
 	public TileEntity pointer;
 	
-	/** Type of liquid to distribute */
-	public LiquidStack liquidToSend;
+	/** Type of fluid to distribute */
+	public FluidStack fluidToSend;
 
-	public LiquidClientUpdate(TileEntity head, LiquidStack liquid)
+	public FluidClientUpdate(TileEntity head, FluidStack fluid)
 	{
 		pointer = head;
-		liquidToSend = liquid;
+		fluidToSend = fluid;
 	}
 
 	public void loopThrough(TileEntity tile)
@@ -53,7 +53,7 @@ public class LiquidClientUpdate
 		{
 			if(tileEntity instanceof IMechanicalPipe)
 			{
-				((IMechanicalPipe)tileEntity).onTransfer(liquidToSend);
+				((IMechanicalPipe)tileEntity).onTransfer(fluidToSend);
 			}
 		}
 	}

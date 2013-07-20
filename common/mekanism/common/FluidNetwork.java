@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -20,40 +18,41 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public class LiquidNetwork
+public class FluidNetwork
 {
 	public Set<IMechanicalPipe> pipes = new HashSet<IMechanicalPipe>();
 	
-	public Set<ITankContainer> possibleAcceptors = new HashSet<ITankContainer>();
-	public Map<ITankContainer, ForgeDirection> acceptorDirections = new HashMap<ITankContainer, ForgeDirection>();
+	public Set<IFluidHandler> possibleAcceptors = new HashSet<IFluidHandler>();
+	public Map<IFluidHandler, ForgeDirection> acceptorDirections = new HashMap<IFluidHandler, ForgeDirection>();
 	
-	public LiquidNetwork(IMechanicalPipe... varPipes)
+	public FluidNetwork(IMechanicalPipe... varPipes)
 	{
 		pipes.addAll(Arrays.asList(varPipes));
 	}
 	
-	public int emit(LiquidStack liquidToSend, boolean doTransfer, TileEntity emitter)
+	public int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
 	{
-		List availableAcceptors = Arrays.asList(getLiquidAcceptors(liquidToSend).toArray());
+		List availableAcceptors = Arrays.asList(getFluidAcceptors(fluidToSend).toArray());
 		
 		Collections.shuffle(availableAcceptors);
 		
-		int liquidSent = 0;
+		int fluidSent = 0;
 		
 		if(!availableAcceptors.isEmpty())
 		{
 			int divider = availableAcceptors.size();
-			int remaining = liquidToSend.amount % divider;
-			int sending = (liquidToSend.amount-remaining)/divider;
+			int remaining = fluidToSend.amount % divider;
+			int sending = (fluidToSend.amount-remaining)/divider;
 			
 			for(Object obj : availableAcceptors)
 			{
-				if(obj instanceof ITankContainer && obj != emitter)
+				if(obj instanceof IFluidHandler && obj != emitter)
 				{
-					ITankContainer acceptor = (ITankContainer)obj;
+					IFluidHandler acceptor = (IFluidHandler)obj;
 					int currentSending = sending;
 					
 					if(remaining > 0)
@@ -62,30 +61,33 @@ public class LiquidNetwork
 						remaining--;
 					}
 					
-					liquidSent += acceptor.fill(acceptorDirections.get(acceptor), new LiquidStack(liquidToSend.itemID, currentSending, liquidToSend.itemMeta), doTransfer);
+					fluidSent += acceptor.fill(acceptorDirections.get(acceptor), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
 				}
 			}
 		}
 		
-		if(doTransfer && liquidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			LiquidStack sendStack = liquidToSend.copy();
-			sendStack.amount = liquidSent;
-			MinecraftForge.EVENT_BUS.post(new LiquidTransferEvent(this, sendStack));
+			FluidStack sendStack = fluidToSend.copy();
+			sendStack.amount = fluidSent;
+			MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, sendStack));
 		}
 		
-		return liquidSent;
+		return fluidSent;
 	}
 	
-	public Set<ITankContainer> getLiquidAcceptors(LiquidStack liquidToSend)
+	public Set<IFluidHandler> getFluidAcceptors(FluidStack fluidToSend)
 	{
-		Set<ITankContainer> toReturn = new HashSet<ITankContainer>();
+		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
 		
-		for(ITankContainer acceptor : possibleAcceptors)
+		for(IFluidHandler acceptor : possibleAcceptors)
 		{
-			if(acceptor.fill(acceptorDirections.get(acceptor).getOpposite(), liquidToSend, false) > 0)
+			if(acceptor.canFill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend.getFluid()))
 			{
-				toReturn.add(acceptor);
+				if(acceptor.fill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend, false) > 0)
+				{
+					toReturn.add(acceptor);
+				}
 			}
 		}
 		
@@ -118,9 +120,9 @@ public class LiquidNetwork
 		
 		for(IMechanicalPipe pipe : pipes)
 		{
-			ITankContainer[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
+			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
 		
-			for(ITankContainer acceptor : acceptors)
+			for(IFluidHandler acceptor : acceptors)
 			{
 				if(acceptor != null && !(acceptor instanceof IMechanicalPipe))
 				{
@@ -131,11 +133,11 @@ public class LiquidNetwork
 		}
 	}
 
-	public void merge(LiquidNetwork network)
+	public void merge(FluidNetwork network)
 	{
 		if(network != null && network != this)
 		{
-			LiquidNetwork newNetwork = new LiquidNetwork();
+			FluidNetwork newNetwork = new FluidNetwork();
 			newNetwork.pipes.addAll(pipes);
 			newNetwork.pipes.addAll(network.pipes);
 			newNetwork.refresh();
@@ -190,7 +192,7 @@ public class LiquidNetwork
 								}
 							}
 							else {
-								LiquidNetwork newNetwork = new LiquidNetwork();
+								FluidNetwork newNetwork = new FluidNetwork();
 
 								for(Object3D node : finder.iterated)
 								{
@@ -266,16 +268,16 @@ public class LiquidNetwork
 		}
 	}
 	
-	public static class LiquidTransferEvent extends Event
+	public static class FluidTransferEvent extends Event
 	{
-		public final LiquidNetwork liquidNetwork;
+		public final FluidNetwork fluidNetwork;
 		
-		public final LiquidStack liquidSent;
+		public final FluidStack fluidSent;
 		
-		public LiquidTransferEvent(LiquidNetwork network, LiquidStack liquid)
+		public FluidTransferEvent(FluidNetwork network, FluidStack fluid)
 		{
-			liquidNetwork = network;
-			liquidSent = liquid;
+			fluidNetwork = network;
+			fluidSent = fluid;
 		}
 	}
 	
@@ -305,6 +307,6 @@ public class LiquidNetwork
 	@Override
 	public String toString()
 	{
-		return "[LiquidNetwork] " + pipes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+		return "[FluidNetwork] " + pipes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
 	}
 }
