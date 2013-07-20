@@ -28,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemRenderingHandler implements IItemRenderer
 {
 	public ModelRobit robit = new ModelRobit();
+	public ModelChest electricChest = new ModelChest();
 	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -59,7 +60,6 @@ public class ItemRenderingHandler implements IItemRenderer
 		else if(item.getItem() instanceof ItemBlockMachine && item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
 		{
 			IElectricChest chest = (IElectricChest)item.getItem();
-			ModelChest electricChest = new ModelChest();
 			
 			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
             GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
