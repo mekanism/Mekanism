@@ -106,7 +106,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
         
     	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
 		}
     }
 

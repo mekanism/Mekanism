@@ -18,7 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -136,7 +136,7 @@ public class MekanismTools implements IModule
 	public static Item SteelLeggings;
 	public static Item SteelBoots;
 	
-	@Init
+	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		//Add this module to the core list

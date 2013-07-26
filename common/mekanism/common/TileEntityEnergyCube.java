@@ -6,7 +6,6 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
-import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
 import mekanism.common.Tier.EnergyCubeTier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -25,11 +23,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
-import universalelectricity.core.block.IElectricityStorage;
-import universalelectricity.core.block.IVoltage;
-import universalelectricity.core.electricity.ElectricityNetworkHelper;
-import universalelectricity.core.electricity.IElectricityNetwork;
-import universalelectricity.core.item.IItemElectric;
+import universalelectricity.core.block.IElectricalStorage;
+import universalelectricity.core.electricity.ElectricityHelper;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;
@@ -39,7 +36,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IElectricityStorage, IVoltage, IPeripheral, ICableOutputter, IStrictEnergyAcceptor
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, ICableOutputter, IStrictEnergyAcceptor
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -100,35 +97,22 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			if(tileEntity instanceof IConductor)
 			{
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-				
-				ArrayList<IElectricityNetwork> inputNetworks = new ArrayList<IElectricityNetwork>();
-				
-				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+				float provide = getProvide(outputDirection);
+	
+				if(provide > 0)
 				{
-					if(direction != outputDirection)
+					IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
+		
+					if(outputNetwork != null)
 					{
-						IElectricityNetwork network = ElectricityNetworkHelper.getNetworkFromTileEntity(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj), direction);
+						ElectricityPack request = outputNetwork.getRequest(this);
 						
-						if(network != null)
+						if(request.getWatts() > 0)
 						{
-							inputNetworks.add(network);
+							ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(getEnergyStored(), getVoltage()), ElectricityPack.getFromWatts(provide, getVoltage()));
+							float rejectedPower = outputNetwork.produce(sendPack, this);
+							setEnergyStored(getEnergyStored() - (sendPack.getWatts() - rejectedPower));
 						}
-					}
-				}
-	
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
-	
-				if(outputNetwork != null && !inputNetworks.contains(outputNetwork))
-				{
-					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getEnergy(), 10000));
-	
-					if(getEnergy() > 0 && outputWatts > 0 && getEnergy()-outputWatts >= 0)
-					{
-						outputNetwork.startProducing(this, Math.min(outputWatts, getEnergy()) / getVoltage(), getVoltage());
-						setEnergy(electricityStored - outputWatts);
-					}
-					else {
-						outputNetwork.stopProducing(this);
 					}
 				}
 			}
@@ -140,15 +124,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		if(slotID == 0)
 		{
-			return itemstack.getItem() instanceof IElectricItem || 
-					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+			return MekanismUtils.canBeCharged(itemstack);
 		}
 		else if(slotID == 1)
 		{
-			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
-					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
-					itemstack.itemID == Item.redstone.itemID;
+			return MekanismUtils.canBeDischarged(itemstack);
 		}
+		
 		return true;
 	}
 	
@@ -167,11 +149,23 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		
 		return EnumSet.copyOf(set);
 	}
+	
+	@Override
+	protected EnumSet<ForgeDirection> getOutputtingSides()
+	{
+		return EnumSet.of(ForgeDirection.getOrientation(facing));
+	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
 	{
 		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
+	}
+	
+	@Override
+	public float getProvide(ForgeDirection direction)
+	{
+		return getOutputtingSides().contains(direction) ? (float)Math.min(getMaxEnergy()-getEnergy(), tier.OUTPUT) : 0;
 	}
 
 	@Override
@@ -271,23 +265,18 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		if(slotID == 1)
 		{
-			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0) ||
-					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
-							(!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).getWatts() == 0));
+			return MekanismUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 0)
 		{
-			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
-					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+			return MekanismUtils.canBeOutputted(itemstack, true);
 		}
 		
 		return false;
 	}
 
 	@Override
-	public double getVoltage() 
+	public float getVoltage() 
 	{
 		return tier.VOLTAGE;
 	}

@@ -141,12 +141,6 @@ public class ItemElectricBow extends ItemEnergized
 		
 		return state;
     }
-    
-	@Override
-	public ElectricityPack getProvideRequest(ItemStack itemStack)
-	{
-		return new ElectricityPack();
-	}
 	
 	@Override
 	public boolean canSend(ItemStack itemStack)

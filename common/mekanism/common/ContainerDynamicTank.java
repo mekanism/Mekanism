@@ -63,24 +63,7 @@ public class ContainerDynamicTank extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
-            {
-	            if(slotID != 2)
-	            {
-	                if (!mergeItemStack(slotStack, 2, 3, false))
-	                {
-	                	return null;
-	                }
-	            }
-	            else if(slotID == 2)
-	            {
-	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
-	            	{
-	            		return null;
-	            	}
-	            }
-            }
-            else if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+            if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
             {
             	if(slotID != 0 && slotID != 1)
             	{
@@ -90,29 +73,29 @@ public class ContainerDynamicTank extends Container
             		}
             	}
             	else {
-            	 	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            	 	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
             	}
             }
             else {
-	        	if(slotID >= 3 && slotID <= 29)
+	        	if(slotID >= 2 && slotID <= 8)
 	        	{
-	        		if(!mergeItemStack(slotStack, 30, inventorySlots.size(), false))
+	        		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
 	        		{
 	        			return null;
 	        		}
 	        	}
 	        	else if(slotID > 28)
 	        	{
-	        		if(!mergeItemStack(slotStack, 3, 29, false))
+	        		if(!mergeItemStack(slotStack, 2, 28, false))
 	        		{
 	        			return null;
 	        		}
 	        	}
 	        	else {
-            		if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
             		{
             			return null;
             		}

@@ -44,7 +44,7 @@ public class PacketPortableTeleport implements IMekanismPacket
 			{
 				Object3D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
 				
-				item.onProvide(new ElectricityPack(item.calculateEnergyCost(player, coords)/120, 120), itemstack);
+				item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
 				
 				if(world.provider.dimensionId != coords.dimensionId)
 				{

@@ -13,16 +13,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IElectricityStorage;
-import universalelectricity.core.block.IVoltage;
-import universalelectricity.core.electricity.ElectricityNetworkHelper;
+import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.block.IElectricalStorage;
 import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector, IStrictEnergyStorage
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -60,12 +59,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			
 			initialized = true;
 		}
-		
-		if(!worldObj.isRemote)
-		{
-			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getConsumingSides(), getRequest());
-			setEnergy(getEnergy()+electricityPack.getWatts());
-		}
 	}
 
 	protected EnumSet<ForgeDirection> getConsumingSides()
@@ -73,15 +66,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		return EnumSet.allOf(ForgeDirection.class);
 	}
 	
+	protected EnumSet<ForgeDirection> getOutputtingSides()
+	{
+		return EnumSet.noneOf(ForgeDirection.class);
+	}
+	
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return true;
-	}
-	
-	public ElectricityPack getRequest()
-	{
-		return new ElectricityPack((getMaxEnergy() - getEnergy()) / getVoltage(), getVoltage());
+		return getConsumingSides().contains(direction) || getOutputtingSides().contains(direction);
 	}
 	
 	@Override
@@ -103,25 +96,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public double getMaxJoules() 
-	{
-		return getMaxEnergy();
-	}
-	
-	@Override
-	public double getJoules() 
-	{
-		return getEnergy();
-	}
-
-	@Override
-	public void setJoules(double joules)
-	{
-		setEnergy(joules);
-	}
-	
-	@Override
-	public double getVoltage()
+	public float getVoltage()
 	{
 		return 120;
 	}
@@ -144,8 +119,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void invalidate()
 	{
-		ElectricityNetworkHelper.invalidate(this);
-		
 		if(initialized && !worldObj.isRemote)
 		{
 			if(Mekanism.hooks.IC2Loaded)
@@ -191,9 +164,68 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int powerRequest(ForgeDirection side) 
 	{
-		return (int)Math.min(((MAX_ELECTRICITY-electricityStored)*Mekanism.TO_BC), 100);
+		return (int)Math.min(((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 100);
 	}
 	
 	@Override
 	public void doWork() {}
+	
+	@Override
+	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive) 
+	{
+		if(getConsumingSides().contains(from))
+		{
+			float toAdd = (float)Math.min(getMaxEnergy()-getEnergy(), receive.getWatts());
+			
+			if(doReceive)
+			{
+				setEnergy(getEnergy() + toAdd);
+			}
+			
+			return toAdd;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
+	{
+		return null;
+	}
+
+	@Override
+	public float getRequest(ForgeDirection direction) 
+	{
+		if(getConsumingSides().contains(direction))
+		{
+			return (float)(getMaxEnergy()-getEnergy());
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public float getProvide(ForgeDirection direction) 
+	{
+		return 0;
+	}
+	
+	@Override
+	public void setEnergyStored(float energy)
+	{
+		setEnergy(energy);
+	}
+
+	@Override
+	public float getEnergyStored() 
+	{
+		return (float)getEnergy();
+	}
+
+	@Override
+	public float getMaxEnergyStored() 
+	{
+		return (float)getMaxEnergy();
+	}
 }

@@ -28,8 +28,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
-import universalelectricity.core.electricity.ElectricityNetworkHelper;
-import universalelectricity.core.electricity.IElectricityNetwork;
+import universalelectricity.core.electricity.ElectricityHelper;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerProvider;
@@ -114,23 +115,25 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				}
 			}
 			
-			if(!worldObj.isRemote && tileEntity instanceof IConductor)
+			if(tileEntity instanceof IConductor)
 			{
 				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
+				float provide = getProvide(outputDirection);
 	
-				IElectricityNetwork outputNetwork = ElectricityNetworkHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
-	
-				if(outputNetwork != null)
+				if(provide > 0)
 				{
-					double outputWatts = Math.min(outputNetwork.getRequest().getWatts(), Math.min(getEnergy(), 10000));
-	
-					if(getEnergy() > 0 && outputWatts > 0 && getEnergy()-outputWatts >= 0)
+					IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
+		
+					if(outputNetwork != null)
 					{
-						outputNetwork.startProducing(this, outputWatts / getVoltage(), getVoltage());
-						setEnergy(electricityStored - outputWatts);
-					}
-					else {
-						outputNetwork.stopProducing(this);
+						ElectricityPack request = outputNetwork.getRequest(this);
+						
+						if(request.getWatts() > 0)
+						{
+							ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(getEnergyStored(), getVoltage()), ElectricityPack.getFromWatts(provide, getVoltage()));
+							float rejectedPower = outputNetwork.produce(sendPack, this);
+							setEnergyStored(getEnergyStored() - (sendPack.getWatts() - rejectedPower));
+						}
 					}
 				}
 			}
@@ -144,9 +147,21 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection direction)
+	protected EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return direction == ForgeDirection.getOrientation(facing);
+		return EnumSet.of(ForgeDirection.getOrientation(facing));
+	}
+	
+	@Override
+	public float getRequest(ForgeDirection direction)
+	{
+		return 0;
+	}
+	
+	@Override
+	public float getProvide(ForgeDirection direction)
+	{
+		return getOutputtingSides().contains(direction) ? (float)Math.min(getMaxEnergy()-getEnergy(), output) : 0;
 	}
 	
 	@Override

@@ -151,7 +151,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				list.add(EnumColor.INDIGO + "Locked: " + EnumColor.GREY + getLocked(itemstack));
 			}
 			
-			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getJoules(itemstack), ElectricUnit.JOULES));
+			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort((float)getEnergy(itemstack), ElectricUnit.JOULES));
 			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 			
 			if(hasTank(itemstack))
@@ -176,59 +176,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	}
 
 	@Override
-	public double getJoules(ItemStack itemStack)
-	{
-		return getEnergy(itemStack);
-	}
-
-	@Override
-	public void setJoules(double wattHours, ItemStack itemStack)
-	{
-		setEnergy(itemStack, wattHours);
-	}
-
-	@Override
-	public double getMaxJoules(ItemStack itemStack)
-	{
-		return getMaxEnergy(itemStack);
-	}
-
-	@Override
-	public double getVoltage(ItemStack itemStack) 
+	public float getVoltage(ItemStack itemStack) 
 	{
 		return 120;
-	}
-
-	@Override
-	public ElectricityPack onReceive(ElectricityPack electricityPack, ItemStack itemStack)
-	{
-		double rejectedElectricity = Math.max((getJoules(itemStack) + electricityPack.getWatts()) - getMaxJoules(itemStack), 0);
-		double joulesToStore = electricityPack.getWatts() - rejectedElectricity;
-		this.setJoules(getJoules(itemStack) + joulesToStore, itemStack);
-		return ElectricityPack.getFromWatts(joulesToStore, getVoltage(itemStack));
-	}
-
-	@Override
-	public ElectricityPack onProvide(ElectricityPack electricityPack, ItemStack itemStack)
-	{
-		return new ElectricityPack();
-	}
-
-	@Override
-	public ElectricityPack getReceiveRequest(ItemStack itemStack)
-	{
-		return ElectricityPack.getFromWatts(Math.min(getMaxJoules(itemStack) - getJoules(itemStack), getTransferRate(itemStack)), getVoltage(itemStack));
-	}
-
-	@Override
-	public ElectricityPack getProvideRequest(ItemStack itemStack)
-	{
-		return new ElectricityPack();
-	}
-	
-	public double getTransferRate(ItemStack itemStack)
-	{
-		return getMaxTransfer(itemStack);
 	}
 	
 	@Override
@@ -268,7 +218,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
-    		tileEntity.electricityStored = getJoules(stack);
+    		tileEntity.electricityStored = getEnergy(stack);
     	}
     	
     	return place;
@@ -277,15 +227,20 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
-		double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-		double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
-		
-		if(!simulate)
+		if(canReceive(itemStack))
 		{
-			setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
+			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
+			double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
+			
+			if(!simulate)
+			{
+				setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
+			}
+			
+			return (int)(energyToStore*Mekanism.TO_IC2);
 		}
 		
-		return (int)(energyToStore*Mekanism.TO_IC2);
+		return 0;
 	}
 	
 	@Override
@@ -297,7 +252,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public boolean canUse(ItemStack itemStack, int amount)
 	{
-		return getJoules(itemStack) >= amount*Mekanism.FROM_IC2;
+		return getEnergy(itemStack) >= amount*Mekanism.FROM_IC2;
 	}
 	
 	@Override
@@ -477,7 +432,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		 		{
 		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
 		 		}
-		 		else if(getLocked(itemstack) && getJoules(itemstack) > 0)
+		 		else if(getLocked(itemstack) && getEnergy(itemstack) > 0)
 		 		{
 		 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
 		 		}
@@ -758,7 +713,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		double electricityStored = Math.max(Math.min(amount, getMaxJoules(itemStack)), 0);
+		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
 		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
 	}
 
@@ -789,15 +744,20 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
 	{
-		double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-		double toReceive = Math.min(energy*Mekanism.FROM_BC, energyNeeded);
-		
-		if(doReceive)
+		if(canReceive(theItem))
 		{
-			setEnergy(theItem, getEnergy(theItem) + toReceive);
+			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
+			double toReceive = Math.min(energy*Mekanism.FROM_BC, energyNeeded);
+			
+			if(doReceive)
+			{
+				setEnergy(theItem, getEnergy(theItem) + toReceive);
+			}
+			
+			return (float)(toReceive*Mekanism.TO_BC);
 		}
 		
-		return (float)(toReceive*Mekanism.TO_BC);
+		return 0;
 	}
 
 	@Override
@@ -822,5 +782,41 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	public boolean isMetadataSpecific()
 	{
 		return true;
+	}
+	
+	@Override
+	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
+	{
+		return receiveEnergy(itemStack, energy, doRecharge);
+	}
+
+	@Override
+	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
+	{
+		return transferEnergy(itemStack, energy, doDischarge);
+	}
+
+	@Override
+	public float getElectricityStored(ItemStack theItem) 
+	{
+		return (float)getEnergy(theItem);
+	}
+
+	@Override
+	public float getMaxElectricityStored(ItemStack theItem) 
+	{
+		return (float)getMaxEnergy(theItem);
+	}
+
+	@Override
+	public void setElectricity(ItemStack itemStack, float joules) 
+	{
+		setEnergy(itemStack, joules);
+	}
+
+	@Override
+	public float getTransfer(ItemStack itemStack)
+	{
+		return (float)getMaxTransfer(itemStack);
 	}
 }

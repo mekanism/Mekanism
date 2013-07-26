@@ -86,11 +86,11 @@ public class ContainerEnergyCube extends Container
             	else {
 		            if(slotID != 1 && slotID != 0)
 		            {
-		            	if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
+		            	if(MekanismUtils.canBeDischarged(slotStack))
 		            	{
 			                if(!mergeItemStack(slotStack, 1, 2, false))
 			                {
-			                	if((slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getReceiveRequest(slotStack).amperes != 0) || (slotStack.getItem() instanceof IElectricItem && (!(slotStack.getItem() instanceof IItemElectric) || ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes == 0)))
+			                	if(canTransfer(slotStack))
 			                	{
 			                		if(!mergeItemStack(slotStack, 0, 1, false))
 			                		{
@@ -99,7 +99,7 @@ public class ContainerEnergyCube extends Container
 			                	}
 			                }
 		            	}
-		            	else if((slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getReceiveRequest(slotStack).amperes != 0) || (slotStack.getItem() instanceof IElectricItem && (!(slotStack.getItem() instanceof IItemElectric) || ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes == 0)))
+		            	else if(canTransfer(slotStack))
 		            	{
 		              		if(!mergeItemStack(slotStack, 0, 1, false))
 	                		{
@@ -109,7 +109,7 @@ public class ContainerEnergyCube extends Container
 		            }
 		            else if(slotID == 1)
 		            {
-		            	if((slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getReceiveRequest(slotStack).amperes != 0) || (slotStack.getItem() instanceof IElectricItem && (!(slotStack.getItem() instanceof IItemElectric) || ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes == 0)))
+		            	if(canTransfer(slotStack))
 		            	{
 			            	if(!mergeItemStack(slotStack, 0, 1, false))
 			            	{
@@ -176,4 +176,12 @@ public class ContainerEnergyCube extends Container
 
         return stack;
     }
+	
+	private boolean canTransfer(ItemStack slotStack)
+	{
+		return (slotStack.getItem() instanceof IItemElectric && 
+				((IItemElectric)slotStack.getItem()).recharge(slotStack, 1, false) != 0) || 
+				(slotStack.getItem() instanceof IElectricItem && (!(slotStack.getItem() instanceof IItemElectric) || 
+						((IItemElectric)slotStack.getItem()).discharge(slotStack, 1, false) == 0));
+	}
 }

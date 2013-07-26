@@ -161,7 +161,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				}
 				else if(inventory[27].getItem() instanceof IItemElectric)
 				{
-					setEnergy(getEnergy() + ElectricItemHelper.dechargeItem(inventory[27], MAX_ELECTRICITY - getEnergy(), 120/*VOLTAGE*/));
+					setEnergy(getEnergy() + ElectricItemHelper.dischargeItem(inventory[27], (float)(MAX_ELECTRICITY - getEnergy())));
 				}
 				else if(Mekanism.hooks.IC2Loaded && inventory[27].getItem() instanceof IElectricItem)
 				{

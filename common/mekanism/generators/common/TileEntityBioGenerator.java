@@ -156,8 +156,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IElectricItem || 
-					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+			return MekanismUtils.canBeCharged(itemstack);
 		}
 
 		return true;

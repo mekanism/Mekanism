@@ -26,12 +26,6 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	public void registerIcons(IconRegister register) {}
 	
 	@Override
-	public ElectricityPack getProvideRequest(ItemStack itemStack)
-	{
-		return new ElectricityPack();
-	}
-	
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{	

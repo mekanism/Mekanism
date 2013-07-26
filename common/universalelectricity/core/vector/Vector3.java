@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -22,6 +21,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class Vector3 implements Cloneable
 {
+
 	public double x;
 	public double y;
 	public double z;
@@ -190,7 +190,7 @@ public class Vector3 implements Cloneable
 		double var2 = par1.x - par2.x;
 		double var4 = par1.y - par2.y;
 		double var6 = par1.z - par2.z;
-		return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
+		return Math.sqrt(var2 * var2 + var4 * var4 + var6 * var6);
 	}
 
 	public double distanceTo(Vector3 vector3)
@@ -198,7 +198,7 @@ public class Vector3 implements Cloneable
 		double var2 = vector3.x - this.x;
 		double var4 = vector3.y - this.y;
 		double var6 = vector3.z - this.z;
-		return MathHelper.sqrt_double(var2 * var2 + var4 * var4 + var6 * var6);
+		return Math.sqrt(var2 * var2 + var4 * var4 + var6 * var6);
 	}
 
 	public Vector3 add(Vector3 par1)
@@ -290,6 +290,30 @@ public class Vector3 implements Cloneable
 		return new Vector3(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
 	}
 
+	public Vector3 toRound()
+	{
+		this.x = Math.round(this.x);
+		this.y = Math.round(this.y);
+		this.z = Math.round(this.z);
+		return this;
+	}
+
+	public Vector3 toCeil()
+	{
+		this.x = Math.ceil(this.x);
+		this.y = Math.ceil(this.y);
+		this.z = Math.ceil(this.z);
+		return this;
+	}
+
+	public Vector3 toFloor()
+	{
+		this.x = Math.floor(this.x);
+		this.y = Math.floor(this.y);
+		this.z = Math.floor(this.z);
+		return this;
+	}
+
 	/**
 	 * Gets all entities inside of this position in block space.
 	 */
@@ -361,6 +385,36 @@ public class Vector3 implements Cloneable
 		par1NBTTagCompound.setDouble("y", this.y);
 		par1NBTTagCompound.setDouble("z", this.z);
 		return par1NBTTagCompound;
+	}
+
+	public static Vector3 UP()
+	{
+		return new Vector3(0, 1, 0);
+	}
+
+	public static Vector3 DOWN()
+	{
+		return new Vector3(0, -1, 0);
+	}
+
+	public static Vector3 NORTH()
+	{
+		return new Vector3(0, 0, -1);
+	}
+
+	public static Vector3 SOUTH()
+	{
+		return new Vector3(0, 0, 1);
+	}
+
+	public static Vector3 WEST()
+	{
+		return new Vector3(-1, 0, 0);
+	}
+
+	public static Vector3 EAST()
+	{
+		return new Vector3(1, 0, 0);
 	}
 
 	@Override

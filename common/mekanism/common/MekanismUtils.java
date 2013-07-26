@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import ic2.api.Direction;
+import ic2.api.item.IElectricItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -23,8 +25,10 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -38,6 +42,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import universalelectricity.core.item.IItemElectric;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -632,11 +637,11 @@ public final class MekanismUtils
     	
     	if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta == 0)
     	{
-    		return new FluidStack(Block.waterStill.blockID, FluidContainerRegistry.BUCKET_VOLUME);
+    		return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
     	}
     	else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta == 0)
     	{
-    		return new FluidStack(Block.lavaStill.blockID, FluidContainerRegistry.BUCKET_VOLUME);
+    		return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
     	}
     	else if(Block.blocksList[id] instanceof IFluidBlock)
     	{
@@ -866,6 +871,66 @@ public final class MekanismUtils
     {
     	return new ResourceLocation("mekanism", type.getPrefix() + name);
     }
+    
+    public static boolean canBeDischarged(ItemStack itemstack)
+    {
+		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) != 0) || 
+				itemstack.itemID == Item.redstone.itemID;
+    }
+    
+    public static boolean canBeCharged(ItemStack itemstack)
+    {
+		return itemstack.getItem() instanceof IElectricItem || 
+				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) != 0);
+    }
+    
+    public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot)
+    {
+    	if(chargeSlot)
+    	{
+	    	return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0));
+    	}
+    	else {
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0));
+    	}
+    }
+    
+    public static boolean removeRecipes(ItemStack... itemStacks)
+	{
+		boolean didRemove = false;
+
+		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
+		{
+			Object obj = itr.next();
+
+			if(obj != null)
+			{
+				if(obj instanceof IRecipe)
+				{
+					if(((IRecipe)obj).getRecipeOutput() != null)
+					{
+						for(ItemStack itemStack : itemStacks)
+						{
+							if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
+							{
+								itr.remove();
+								didRemove = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return didRemove;
+	}
     
     public static enum ResourceType
     {

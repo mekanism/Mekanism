@@ -38,13 +38,13 @@ public class GuiSolarGenerator extends GuiContainer
 		
         fontRenderer.drawString(tileEntity.fullName, tileEntity.fullName != "Advanced Solar Generator" ? 45 : 30, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
+        fontRenderer.drawString(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), 51, 26, 0x00CD00);
         fontRenderer.drawString("Sun: " + tileEntity.seesSun, 51, 35, 0x00CD00);
         fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
         
     	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
 		}
     }
 

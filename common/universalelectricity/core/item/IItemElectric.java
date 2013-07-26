@@ -1,40 +1,56 @@
 package universalelectricity.core.item;
 
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.electricity.ElectricityPack;
 
-/**
- * An interface applied to all electrical items. Should be applied to the Item class.
- * 
- * @author Calclavia
- * 
- */
-public interface IItemElectric extends IItemElectricityStorage, IItemVoltage
+public interface IItemElectric
 {
 	/**
-	 * Called when this item receives electricity; being charged.
+	 * Adds energy to an item. Returns the quantity of energy that was accepted. This should always
+	 * return 0 if the item cannot be externally charged.
 	 * 
-	 * @return The amount of electricity that was added to the electric item.
+	 * @param itemStack ItemStack to be charged.
+	 * @param energy Maximum amount of energy to be sent into the item.
+	 * @param doRecharge If false, the charge will only be simulated.
+	 * @return Amount of energy that was accepted by the item.
 	 */
-	public ElectricityPack onReceive(ElectricityPack electricityPack, ItemStack itemStack);
+	public float recharge(ItemStack itemStack, float energy, boolean doRecharge);
 
 	/**
-	 * Called when something requests electricity from this item; being decharged.
+	 * Removes energy from an item. Returns the quantity of energy that was removed. This should
+	 * always return 0 if the item cannot be externally discharged.
 	 * 
-	 * @return - The amount of electricity that was removed from the electric item.
+	 * @param itemStack ItemStack to be discharged.
+	 * @param energy Maximum amount of energy to be removed from the item.
+	 * @param doDischarge If false, the discharge will only be simulated.
+	 * @return Amount of energy that was removed from the item.
 	 */
-	public ElectricityPack onProvide(ElectricityPack electricityPack, ItemStack itemStack);
+	public float discharge(ItemStack itemStack, float energy, boolean doDischarge);
 
 	/**
-	 * @return How much electricity does this item want to receive/take? This will affect the speed
-	 * in which items get charged per tick.
+	 * Get the amount of energy currently stored in the item.
 	 */
-	public ElectricityPack getReceiveRequest(ItemStack itemStack);
+	public float getElectricityStored(ItemStack theItem);
 
 	/**
-	 * 
-	 * @return How much electricity does this item want to provide/give out? This will affect the
-	 * speed in which items get decharged per tick.
+	 * Get the max amount of energy that can be stored in the item.
 	 */
-	public ElectricityPack getProvideRequest(ItemStack itemStack);
+	public float getMaxElectricityStored(ItemStack theItem);
+
+	/**
+	 * Sets the amount of energy in the ItemStack.
+	 * 
+	 * @param itemStack - the ItemStack.
+	 * @param joules - Amount of electrical energy.
+	 */
+	public void setElectricity(ItemStack itemStack, float joules);
+
+	/**
+	 * @return the energy request this ItemStack demands.
+	 */
+	public float getTransfer(ItemStack itemStack);
+
+	/**
+	 * @return The voltage in which this item runs on.
+	 */
+	public float getVoltage(ItemStack itemStack);
 }

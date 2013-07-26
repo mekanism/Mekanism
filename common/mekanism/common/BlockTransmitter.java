@@ -3,7 +3,6 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
-import universalelectricity.prefab.implement.IToolConfigurator;
 import buildcraft.api.tools.IToolWrench;
 
 import mekanism.api.GasTransmission;
@@ -340,15 +339,15 @@ public class BlockTransmitter extends Block
     	if(entityplayer.getCurrentEquippedItem() != null)
     	{
     		Item tool = entityplayer.getCurrentEquippedItem().getItem();
-	    	if((tool instanceof IToolConfigurator && ((IToolConfigurator)tool).canWrench(entityplayer, x, y, z))
-	    			||(tool instanceof IToolWrench && ((IToolWrench)tool).canWrench(entityplayer, x, y, z)))
+    		
+	    	if(tool instanceof IToolWrench && ((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 	    	{
-		    		if(entityplayer.isSneaking())
-		    		{
-		    			dismantleBlock(world, x, y, z, false);
-		    		}
-		    		
-		    		return true;
+	    		if(entityplayer.isSneaking())
+	    		{
+	    			dismantleBlock(world, x, y, z, false);
+	    		}
+	    		
+	    		return true;
 	    	}
     	}
     	

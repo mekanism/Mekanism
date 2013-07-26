@@ -34,7 +34,7 @@ public class GuiEnergyCube extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String capacityInfo = ElectricityDisplay.getDisplayShort(tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort(tileEntity.tier.MAX_ELECTRICITY, ElectricUnit.JOULES);
+		String capacityInfo = ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort((float)tileEntity.tier.MAX_ELECTRICITY, ElectricUnit.JOULES);
 		String outputInfo = "Voltage: " + tileEntity.getVoltage() + "v";
 		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);

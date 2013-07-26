@@ -39,8 +39,8 @@ public class ItemEnergyMeter extends ItemEnergized
 	    			player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Cables: " + EnumColor.DARK_GREY + cable.getNetwork().cables.size()));
 	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + cable.getNetwork().possibleAcceptors.size()));
-	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Needed energy: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay(cable.getNetwork().getEnergyNeeded(new ArrayList()), ElectricUnit.JOULES)));
-	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay(cable.getNetwork().getPower(), ElectricUnit.WATT)));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Needed energy: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay((float)cable.getNetwork().getEnergyNeeded(new ArrayList()), ElectricUnit.JOULES)));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + ElectricityDisplay.getDisplay((float)cable.getNetwork().getPower(), ElectricUnit.WATT)));
 	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     			}
     		}

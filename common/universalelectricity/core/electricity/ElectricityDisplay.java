@@ -8,6 +8,11 @@ package universalelectricity.core.electricity;
 
 public class ElectricityDisplay
 {
+	/**
+	 * Universal Electricity's units are in KILOJOULES, KILOWATTS and KILOVOLTS. Try to make your
+	 * energy ratio as close to real life as possible.
+	 * 
+	 */
 	public static enum ElectricUnit
 	{
 		AMPERE("Amp", "I"), AMP_HOUR("Amp Hour", "Ah"), VOLTAGE("Volt", "V"), WATT("Watt", "W"),
@@ -32,7 +37,7 @@ public class ElectricityDisplay
 	public static enum MeasurementUnit
 	{
 		MICRO("Micro", "mi", 0.000001), MILLI("Milli", "m", 0.001), KILO("Kilo", "k", 1000),
-		MEGA("Mega", "M", 1000000);
+		MEGA("Mega", "M", 1000000), GIGA("Giga", "G", 1000000000);
 
 		public String name;
 		public String symbol;
@@ -64,10 +69,20 @@ public class ElectricityDisplay
 	}
 
 	/**
+	 * By default, mods should store energy in Kilo-Joules, hence a multiplier of 1/1000.
+	 */
+	public static String getDisplay(float value, ElectricUnit unit, int decimalPlaces, boolean isShort)
+	{
+		return getDisplay(value, unit, decimalPlaces, isShort, 1000);
+	}
+
+	/**
 	 * Displays the unit as text. Works only for positive numbers.
 	 */
-	public static String getDisplay(double value, ElectricUnit unit, int decimalPlaces, boolean isShort)
+	public static String getDisplay(float value, ElectricUnit unit, int decimalPlaces, boolean isShort, float multiplier)
 	{
+		value *= multiplier;
+
 		String unitName = unit.name;
 
 		if (isShort)
@@ -107,22 +122,22 @@ public class ElectricityDisplay
 		return roundDecimals(value, decimalPlaces) + " " + unitName;
 	}
 
-	public static String getDisplay(double value, ElectricUnit unit)
+	public static String getDisplay(float value, ElectricUnit unit)
 	{
 		return getDisplay(value, unit, 2, false);
 	}
 
-	public static String getDisplayShort(double value, ElectricUnit unit)
+	public static String getDisplayShort(float value, ElectricUnit unit)
 	{
 		return getDisplay(value, unit, 2, true);
 	}
 
-	public static String getDisplayShort(double value, ElectricUnit unit, int decimalPlaces)
+	public static String getDisplayShort(float value, ElectricUnit unit, int decimalPlaces)
 	{
 		return getDisplay(value, unit, decimalPlaces, true);
 	}
 
-	public static String getDisplaySimple(double value, ElectricUnit unit, int decimalPlaces)
+	public static String getDisplaySimple(float value, ElectricUnit unit, int decimalPlaces)
 	{
 		if (value > 1)
 		{

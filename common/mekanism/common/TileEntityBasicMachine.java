@@ -176,12 +176,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-	
-	@Override
 	public int demandsEnergy() 
 	{
 		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2);
@@ -321,6 +315,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int powerRequest(ForgeDirection side) 
 	{
 		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
+	}
+	
+	@Override
+	public int getMaxSafeInput()
+	{
+		return 2048;
 	}
 	
 	@Override

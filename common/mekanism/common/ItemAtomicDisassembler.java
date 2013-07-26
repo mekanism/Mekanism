@@ -73,12 +73,6 @@ public class ItemAtomicDisassembler extends ItemEnergized
         return true;
     }
     
-	@Override
-	public ElectricityPack getProvideRequest(ItemStack itemStack)
-	{
-		return new ElectricityPack();
-	}
-    
     @Override
     public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
     {

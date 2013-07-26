@@ -1,6 +1,6 @@
 package universalelectricity.core.block;
 
-import universalelectricity.core.electricity.IElectricityNetwork;
+import universalelectricity.core.grid.IElectricityNetwork;
 
 /**
  * Applied to TileEntities that has an instance of an electricity network.

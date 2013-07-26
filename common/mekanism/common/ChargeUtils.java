@@ -27,7 +27,7 @@ public final class ChargeUtils
 			}
 			else if(storer.inventory[slotID].getItem() instanceof IItemElectric)
 			{
-				storer.setEnergy(storer.getEnergy() + ElectricItemHelper.dechargeItem(storer.inventory[slotID], storer.getMaxEnergy() - storer.getEnergy(), storer.getVoltage()));
+				storer.setEnergy(storer.getEnergy() + ElectricItemHelper.dischargeItem(storer.inventory[slotID], (float)(storer.getMaxEnergy() - storer.getEnergy())));
 			}
 			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
@@ -78,7 +78,7 @@ public final class ChargeUtils
 			}
 			else if(storer.inventory[slotID].getItem() instanceof IItemElectric)
 			{
-				storer.setEnergy(storer.getEnergy() - ElectricItemHelper.chargeItem(storer.inventory[slotID], storer.getEnergy(), storer.getVoltage()));
+				storer.setEnergy(storer.getEnergy() - ElectricItemHelper.chargeItem(storer.inventory[slotID], (float)storer.getEnergy()));
 			}
 			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{

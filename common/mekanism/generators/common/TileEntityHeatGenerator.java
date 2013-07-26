@@ -115,8 +115,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IElectricItem || 
-					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+			return MekanismUtils.canBeCharged(itemstack);
 		}
 		
 		return true;
@@ -155,9 +154,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 1)
 		{
-			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
-					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+			return MekanismUtils.canBeOutputted(itemstack, true);
 		}
 		else if(slotID == 0)
 		{

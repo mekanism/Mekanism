@@ -10,7 +10,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thermalexpansion.api.crafting.CraftingManagers;
 import thermalexpansion.api.crafting.IPulverizerRecipe;
-import universalelectricity.prefab.RecipeHelper;
 import cpw.mods.fml.common.Loader;
 
 /**
@@ -97,14 +96,14 @@ public final class MekanismHooks
 		{
 			if(Mekanism.disableBCSteelCrafting)
 			{
-				RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelDust"));
-				RecipeHelper.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
+				MekanismUtils.removeRecipes(getBasicComponentsItem("itemSteelDust"));
+				MekanismUtils.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
 			}
 			
 			if(Mekanism.disableBCBronzeCrafting)
 			{
-				RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
-				RecipeHelper.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
+				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
+				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
 			}
 			
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");

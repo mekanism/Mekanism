@@ -2,6 +2,7 @@ package mekanism.generators.common;
 
 import ic2.api.item.IElectricItem;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismUtils;
 import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -63,11 +64,11 @@ public class ContainerBioGenerator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if((slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getReceiveRequest(slotStack).amperes != 0) || slotStack.getItem() instanceof IElectricItem)
+            if(MekanismUtils.canBeCharged(slotStack))
             {
 	            if(slotID != 1)
 	            {
-	                if (!mergeItemStack(slotStack, 1, 2, false))
+	                if(!mergeItemStack(slotStack, 1, 2, false))
 	                {
 	                	return null;
 	                }

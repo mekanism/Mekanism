@@ -72,7 +72,7 @@ public class ContainerElectricMachine extends Container
             		return null;
             	}
             }
-        	else if((slotStack.getItem() instanceof IElectricItem && ((IElectricItem)slotStack.getItem()).canProvideEnergy(slotStack)) || (slotStack.getItem() instanceof IItemElectric && ((IItemElectric)slotStack.getItem()).getProvideRequest(slotStack).amperes != 0) || slotStack.itemID == Item.redstone.itemID)
+        	else if(MekanismUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 1)
 	            {

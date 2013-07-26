@@ -1,7 +1,5 @@
 package universalelectricity.core.vector;
 
-import net.minecraft.util.MathHelper;
-
 /**
  * Vector2 Class is used for defining objects in a 2D space.
  * 
@@ -52,7 +50,7 @@ public class Vector2 implements Cloneable
 	{
 		double xDifference = point1.x - point2.x;
 		double yDiference = point1.y - point2.y;
-		return MathHelper.sqrt_double(xDifference * xDifference + yDiference * yDiference);
+		return Math.sqrt(xDifference * xDifference + yDiference * yDiference);
 	}
 
 	public static double slope(Vector2 point1, Vector2 point2)
@@ -66,7 +64,7 @@ public class Vector2 implements Cloneable
 	{
 		double xDifference = this.x - target.x;
 		double yDifference = this.y - target.y;
-		return MathHelper.sqrt_double(xDifference * xDifference + yDifference * yDifference);
+		return Math.sqrt(xDifference * xDifference + yDifference * yDifference);
 	}
 
 	public Vector2 add(Vector2 par1)

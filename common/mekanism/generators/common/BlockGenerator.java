@@ -30,7 +30,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.prefab.implement.IToolConfigurator;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -364,33 +363,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         
     	if(entityplayer.getCurrentEquippedItem() != null)
     	{
-	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolConfigurator)
-	    	{
-	    		((IToolConfigurator)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
-	    		
-	    		int change = 0;
-	    		
-	    		switch(tileEntity.facing)
-	    		{
-	    			case 3:
-	    				change = 5;
-	    				break;
-	    			case 5:
-	    				change = 2;
-	    				break;
-	    			case 2:
-	    				change = 4;
-	    				break;
-	    			case 4:
-	    				change = 3;
-	    				break;
-	    		}
-	    		
-	    		tileEntity.setFacing((short)change);
-	    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-	    		return true;
-	    	}
-	    	else if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
+	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
 	    	{
 	    		if(entityplayer.isSneaking())
 	    		{

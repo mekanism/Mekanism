@@ -19,8 +19,7 @@ public class SlotEnergy
 		@Override
 		public boolean isItemValid(ItemStack itemstack)
 		{
-			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0) || 
-					itemstack.getItem() instanceof IElectricItem;
+			return MekanismUtils.canBeCharged(itemstack);
 		}
 	}
 	
@@ -34,9 +33,7 @@ public class SlotEnergy
 		@Override
 		public boolean isItemValid(ItemStack itemstack)
 		{
-			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
-					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getProvideRequest(itemstack).amperes != 0) || 
-					itemstack.itemID == Item.redstone.itemID;
+			return MekanismUtils.canBeDischarged(itemstack);
 		}
 	}
 }

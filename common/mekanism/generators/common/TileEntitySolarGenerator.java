@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Object3D;
 import mekanism.common.ChargeUtils;
+import mekanism.common.MekanismUtils;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.API.ISolarLevel;
 import net.minecraft.block.Block;
@@ -105,9 +106,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		if(slotID == 0)
 		{
-			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0) ||
-					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).getWatts() == 0));
+			return MekanismUtils.canBeOutputted(itemstack, true);
 		}
 		
 		return false;
@@ -118,8 +117,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		if(slotID == 0)
 		{
-			return itemstack.getItem() instanceof IElectricItem || 
-					(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).getReceiveRequest(itemstack).amperes != 0);
+			return MekanismUtils.canBeCharged(itemstack);
 		}
 		
 		return true;

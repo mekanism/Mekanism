@@ -130,7 +130,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			}
 			else if(itemstack.getItem() instanceof IItemElectric)
 			{
-				setEnergy(getEnergy() - ElectricItemHelper.chargeItem(itemstack, getEnergy(), getVoltage()));
+				setEnergy(getEnergy() - ElectricItemHelper.chargeItem(itemstack, (float)getEnergy()));
 			}
 			else if(Mekanism.hooks.IC2Loaded && itemstack.getItem() instanceof IElectricItem)
 			{

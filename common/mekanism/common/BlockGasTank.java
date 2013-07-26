@@ -16,7 +16,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import universalelectricity.prefab.implement.IToolConfigurator;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -162,36 +161,8 @@ public class BlockGasTank extends BlockContainer
     	if(entityplayer.getCurrentEquippedItem() != null)
     	{
     		Item tool = entityplayer.getCurrentEquippedItem().getItem();
-	    	if(tool instanceof IToolConfigurator)
-	    	{
-	    		if(((IToolConfigurator)tool).canWrench(entityplayer, x, y, z))
-	    		{
-		    		((IToolConfigurator)tool).wrenchUsed(entityplayer, x, y, z);
-		    		
-		    		int change = 0;
-		    		
-		    		switch(tileEntity.facing)
-		    		{
-		    			case 3:
-		    				change = 5;
-		    				break;
-		    			case 5:
-		    				change = 2;
-		    				break;
-		    			case 2:
-		    				change = 4;
-		    				break;
-		    			case 4:
-		    				change = 3;
-		    				break;
-		    		}
-		    		
-		    		tileEntity.setFacing((short)change);
-		    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-		    		return true;
-	    		}
-	    	}
-	    	else if(tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+    		
+	    	if(tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
 	    	{
 	    		if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 	    		{

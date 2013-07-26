@@ -22,7 +22,7 @@ public final class Tier
 		ULTIMATE("Ultimate", 128000000, 480, 51200);
 		
 		public double MAX_ELECTRICITY;
-		public double VOLTAGE;
+		public float VOLTAGE;
 		public double OUTPUT;
 		public String name;
 		
@@ -40,7 +40,7 @@ public final class Tier
 			return BASIC;
 		}
 		
-		private EnergyCubeTier(String s, double maxEnergy, double voltage, int out)
+		private EnergyCubeTier(String s, double maxEnergy, float voltage, int out)
 		{
 			name = s;
 			MAX_ELECTRICITY = maxEnergy;

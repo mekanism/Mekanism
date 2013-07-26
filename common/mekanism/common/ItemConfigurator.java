@@ -99,13 +99,17 @@ public class ItemConfigurator extends ItemEnergized
     				
     				if(!(tileEntity instanceof TileEntityElectricChest) || (((TileEntityElectricChest)tileEntity).canAccess()))
     				{
-	    				for(int i = 0; i < tileEntity.getSizeInventory(); ++i)
+	    				for(int i = 0; i < tileEntity.getSizeInventory(); i++)
 	    	            {
 	    	                ItemStack slotStack = tileEntity.getStackInSlot(i);
-	    	                itemAmount += slotStack != null ? slotStack.stackSize : 0;
 	
 	    	                if(slotStack != null)
 	    	                {
+	    	                    if(getEnergy(stack) < ENERGY_PER_ITEM_DUMP)
+		    	                {
+		    	                	break;
+		    	                }
+	    	                    
 	    	                    float xRandom = random.nextFloat() * 0.8F + 0.1F;
 	    	                    float yRandom = random.nextFloat() * 0.8F + 0.1F;
 	    	                    float zRandom = random.nextFloat() * 0.8F + 0.1F;
@@ -132,12 +136,13 @@ public class ItemConfigurator extends ItemEnergized
 	    	                        item.motionY = random.nextGaussian() * k + 0.2F;
 	    	                        item.motionZ = random.nextGaussian() * k;
 	    	                        world.spawnEntityInWorld(item);
+	    	                        
+	    	                        tileEntity.inventory[i] = null;
+	    	                        setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
 	    	                    }
 	    	                }
 	    	            }
 	    				
-	    				tileEntity.inventory = new ItemStack[tileEntity.getSizeInventory()];
-	    				onProvide(new ElectricityPack((ENERGY_PER_ITEM_DUMP*itemAmount)/120, 120), stack);
 	    				return true;
     				}
     				else {
@@ -233,12 +238,6 @@ public class ItemConfigurator extends ItemEnergized
 		
 		return state;
     }
-    
-	@Override
-	public ElectricityPack getProvideRequest(ItemStack itemStack)
-	{
-		return new ElectricityPack();
-	}
 	
 	@Override
 	public boolean canSend(ItemStack itemStack)

@@ -14,7 +14,6 @@ import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConnectionProvider;
 import buildcraft.api.power.IPowerReceptor;
 
 public final class CableUtils
@@ -142,11 +141,6 @@ public final class CableUtils
     	TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
     	
     	if(tileEntity instanceof IStrictEnergyAcceptor && ((IStrictEnergyAcceptor)tileEntity).canReceiveEnergy(side.getOpposite()))
-    	{
-    		return true;
-    	}
-    	
-    	if(tileEntity instanceof IConnectionProvider && ((IConnectionProvider)tileEntity).canConnect(side.getOpposite()))
     	{
     		return true;
     	}

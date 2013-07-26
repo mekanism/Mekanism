@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IConductor;
-import universalelectricity.core.block.IConnectionProvider;
+import universalelectricity.core.block.INetworkConnection;
 import universalelectricity.core.vector.Vector3;
 
 /**
@@ -19,7 +19,7 @@ import universalelectricity.core.vector.Vector3;
  */
 public class PathfinderChecker extends Pathfinder
 {
-	public PathfinderChecker(final World world, final IConnectionProvider targetConnector, final IConnectionProvider... ignoreConnector)
+	public PathfinderChecker(final World world, final INetworkConnection targetConnector, final INetworkConnection... ignoreConnector)
 	{
 		super(new IPathCallBack()
 		{
