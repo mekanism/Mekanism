@@ -744,26 +744,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
 	{
-		if(canReceive(theItem))
-		{
-			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*Mekanism.FROM_BC, energyNeeded);
-			
-			if(doReceive)
-			{
-				setEnergy(theItem, getEnergy(theItem) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_BC);
-		}
-		
-		return 0;
+		return (float)(recharge(theItem, (float)(energy*Mekanism.FROM_BC), doReceive)*Mekanism.TO_BC);
 	}
 
 	@Override
 	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
 	{
-		return 0;
+		return (float)(discharge(theItem, (float)(energy*Mekanism.FROM_BC), doTransfer)*Mekanism.TO_BC);
 	}
 
 	@Override
@@ -787,13 +774,39 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
 	{
-		return receiveEnergy(itemStack, energy, doRecharge);
+		if(canReceive(itemStack))
+		{
+			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
+			double toReceive = Math.min(energy, energyNeeded);
+			
+			if(doRecharge)
+			{
+				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
+			}
+			
+			return (float)toReceive;
+		}
+		
+		return 0;
 	}
 
 	@Override
 	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
 	{
-		return transferEnergy(itemStack, energy, doDischarge);
+		if(canSend(itemStack))
+		{
+			double energyRemaining = getEnergy(itemStack);
+			double toSend = Math.min(energy, energyRemaining);
+			
+			if(doDischarge)
+			{
+				setEnergy(itemStack, getEnergy(itemStack) - toSend);
+			}
+			
+			return (float)toSend;
+		}
+		
+		return 0;
 	}
 
 	@Override

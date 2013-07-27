@@ -84,10 +84,7 @@ public class FluidNetwork
 		{
 			if(acceptor.canFill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend.getFluid()))
 			{
-				if(acceptor.fill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend, false) > 0)
-				{
-					toReturn.add(acceptor);
-				}
+				toReturn.add(acceptor);
 			}
 		}
 		
