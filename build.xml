@@ -18,7 +18,7 @@
 		<delete dir="${dir.development}/forge"/>
 
 		<copy todir="${dir.development}">
-			<fileset dir="../NEI/"/>
+			<fileset dir="../Minecraft Forge Latest/"/>
 		</copy>
 
 		<copy todir="${dir.mcp}/src/minecraft">
@@ -86,6 +86,7 @@
 			</fileset>
 		</copy>
 
+		<!-- Artifacts -->
 		<jar destfile="output/${file.core}">
 			<fileset dir="coreContents"/>
 		</jar>
@@ -101,11 +102,22 @@
 		<zip destfile="output/${file.mdk}">
 			<fileset dir="mdkContents"/>
 		</zip>
+		
+		<!-- Latest Artifacts -->
+		<jar destfile="Mekanism.jar">
+			<fileset dir="coreContents"/>
+		</jar>
 
-		<echo file="${env.JENKINS_HOME}/jobs/${env.JOB_NAME}/info.txt" append="true">
-			@ ${env.BUILD_NUMBER} ${version.minecraft} ${file.core} ${file.generators} ${file.tools} ${file.mdk}
-		</echo>
+		<jar destfile="Mekanism_Generators.jar">
+			<fileset dir="generatorsContents"/>
+		</jar>
 
-		<copy todir="output" file="build.properties"/>
+		<jar destfile="Mekanism_Tools.jar">
+			<fileset dir="toolsContents"/>
+		</jar>
+
+		<zip destfile="MDK.zip">
+			<fileset dir="mdkContents"/>
+		</zip>
 	</target>
 </project>
