@@ -146,7 +146,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 			return new int[] {54};
 		}
 		else {
-			int[] ret = new int[54];
+			int[] ret = new int[55];
 			
 			for(int i = 0; i <= ret.length; i++)
 			{
