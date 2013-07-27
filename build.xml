@@ -18,7 +18,7 @@
 		<delete dir="${dir.development}/forge"/>
 
 		<copy todir="${dir.development}">
-			<fileset dir="../NEI/"/>
+			<fileset dir="../Minecraft Forge Latest/"/>
 		</copy>
 
 		<copy todir="${dir.mcp}/src/minecraft">
