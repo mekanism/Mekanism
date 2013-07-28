@@ -358,6 +358,6 @@ public class EnergyNetwork
 	
 	public double getPower()
 	{
-		return joulesTransmitted * 20;
+		return joulesLastTick * 20;
 	}
 }
