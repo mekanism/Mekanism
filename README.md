@@ -27,9 +27,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 # Developers & Credits #
 
-**Head Developer:** aidancbrady
+**Lead Developer:** aidancbrady
 
-**Contributors:** viper283, Condo97
+**Co-developer:** unpairedbracket
+
+**Contributors:** micdoodle, Calclavia
 
 **Credits:**
 
