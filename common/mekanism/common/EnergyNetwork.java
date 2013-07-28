@@ -23,17 +23,33 @@ import buildcraft.api.power.IPowerReceptor;
 
 public class EnergyNetwork
 {
-	public Set<IUniversalCable> cables = new HashSet<IUniversalCable>();
+	public HashSet<IUniversalCable> cables = new HashSet<IUniversalCable>();
 	
 	public Set<TileEntity> possibleAcceptors = new HashSet<TileEntity>();
 	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
 	
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
+	private int ticksSinceCreate = 0;
+	private boolean fixed = false;
 	
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
 		cables.addAll(Arrays.asList(varCables));
+		EnergyNetworkRegistry.getInstance().registerNetwork(this);
+	}
+	
+	public EnergyNetwork(Set<EnergyNetwork> networks)
+	{
+		for (EnergyNetwork net : networks)
+		{
+			if(net != null)
+			{
+				addAllCables(net.cables);
+				net.deregister();
+			}
+		}
+		refresh();
 		EnergyNetworkRegistry.getInstance().registerNetwork(this);
 	}
 	
@@ -155,7 +171,8 @@ public class EnergyNetwork
 
 	public void refresh()
 	{
-		Iterator it = cables.iterator();
+		Set<IUniversalCable> iterCables = (Set<IUniversalCable>) cables.clone();
+		Iterator<IUniversalCable> it = iterCables.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
@@ -164,20 +181,17 @@ public class EnergyNetwork
 		{
 			IUniversalCable conductor = (IUniversalCable)it.next();
 
-			if(conductor == null)
+			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-			}
-			else if(((TileEntity)conductor).isInvalid())
-			{
-				it.remove();
+				cables.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
 			}
 		}
 		
-		for(IUniversalCable cable : cables)
+		for(IUniversalCable cable : iterCables)
 		{
 			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)cable);
 		
@@ -194,24 +208,26 @@ public class EnergyNetwork
 
 	public void merge(EnergyNetwork network)
 	{
-		EnergyNetworkRegistry registry = EnergyNetworkRegistry.getInstance();
-		
 		if(network != null && network != this)
 		{
-			EnergyNetwork newNetwork = new EnergyNetwork();
-			newNetwork.cables.addAll(cables);
-			registry.removeNetwork(this);
-			newNetwork.cables.addAll(network.cables);
-			registry.removeNetwork(network);
+			Set<EnergyNetwork> networks = new HashSet();
+			networks.add(this);
+			networks.add(network);
+			EnergyNetwork newNetwork = new EnergyNetwork(networks);
 			newNetwork.refresh();
 		}
+	}
+	
+	public void addAllCables(Set<IUniversalCable> newCables)
+	{
+		cables.addAll(newCables);
 	}
 
 	public void split(IUniversalCable splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			cables.remove(splitPoint);
+			removeCable(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
@@ -233,7 +249,7 @@ public class EnergyNetwork
 				if(connectedBlockA instanceof IUniversalCable && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
-					List<Object3D> partNetwork = finder.findNetwork();
+					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
@@ -267,8 +283,48 @@ public class EnergyNetwork
 				}
 			}
 			
-			EnergyNetworkRegistry.getInstance().removeNetwork(this);
+			deregister();
 		}
+	}
+	
+	public void fixMessedUpNetwork(IUniversalCable cable)
+	{
+		System.out.println("Fixing Network");
+		if(cable instanceof TileEntity)
+		{
+			NetworkFinder finder = new NetworkFinder(((TileEntity) cable).getWorldObj(), Object3D.get((TileEntity)cable), null);
+			List<Object3D> partNetwork = finder.exploreNetwork();
+			Set<IUniversalCable> newCables = new HashSet<IUniversalCable>();
+			for(Object3D node : partNetwork)
+			{
+				TileEntity nodeTile = node.getTileEntity(((TileEntity)cable).worldObj);
+
+				if(nodeTile instanceof IUniversalCable)
+				{
+					((IUniversalCable) nodeTile).removeFromNetwork();
+					newCables.add((IUniversalCable)nodeTile);
+				}
+			}
+			EnergyNetwork newNetwork = new EnergyNetwork(newCables.toArray(new IUniversalCable[0]));
+			newNetwork.refresh();
+			newNetwork.fixed = true;
+			deregister();
+		}
+	}
+	
+	public void removeCable(IUniversalCable cable)
+	{
+		cables.remove(cable);
+		if(cables.size() == 0)
+		{
+			deregister();
+		}
+	}
+	
+	public void deregister()
+	{
+		cables.clear();
+		EnergyNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
@@ -313,7 +369,7 @@ public class EnergyNetwork
 			}
 		}
 
-		public List<Object3D> findNetwork()
+		public List<Object3D> exploreNetwork()
 		{
 			loopAll(start);
 			
@@ -350,6 +406,22 @@ public class EnergyNetwork
 		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
 	}
 
+	
+	public void tick()
+	{
+		clearJoulesTransmitted();
+		//Fix weird behaviour periodically.
+		if(!fixed)
+		{
+			++ticksSinceCreate;
+			if(ticksSinceCreate > 1200)
+			{
+				ticksSinceCreate = 0;
+				fixMessedUpNetwork(cables.toArray(new IUniversalCable[0])[0]);
+			}
+		}
+	}
+	
 	public void clearJoulesTransmitted()
 	{
 		joulesLastTick = joulesTransmitted;
