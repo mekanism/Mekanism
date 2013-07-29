@@ -289,7 +289,6 @@ public class EnergyNetwork
 	
 	public void fixMessedUpNetwork(IUniversalCable cable)
 	{
-		System.out.println("Fixing Network");
 		if(cable instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity) cable).getWorldObj(), Object3D.get((TileEntity)cable), null);
