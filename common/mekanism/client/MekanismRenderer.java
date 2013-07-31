@@ -31,7 +31,8 @@ public class MekanismRenderer
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
-	
+	private static boolean optifineBreak = false;
+    
 	public static class Model3D
 	{
 		public double minX;
@@ -145,15 +146,29 @@ public class MekanismRenderer
     public static void glowOn() 
     {
         GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-        lightmapLastX = OpenGlHelper.lastBrightnessX;
-        lightmapLastY = OpenGlHelper.lastBrightnessY;
+        try
+        {
+        	lightmapLastX = OpenGlHelper.lastBrightnessX;
+        	lightmapLastY = OpenGlHelper.lastBrightnessY;
+        } 
+        catch(NoSuchFieldError e)
+        {
+        	optifineBreak = true;
+        }
         RenderHelper.disableStandardItemLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+        if(!optifineBreak)
+        {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);        	
+        }
+        
     }
 
     public static void glowOff() 
     {
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+    	if(!optifineBreak)
+    	{
+    		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+    	}
         GL11.glPopAttrib();
     }
     

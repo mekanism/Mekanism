@@ -1,4 +1,4 @@
-# Mekanism for Minecraft 1.5.2 #
+# Mekanism for Minecraft 1.6.2 #
 
 Source code.  More information can be found on the mod's forum post.
 
@@ -27,9 +27,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 # Developers & Credits #
 
-**Head Developer:** aidancbrady
+**Lead Developer:** aidancbrady
 
-**Contributors:** viper283, Condo97
+**Co-developer:** unpairedbracket
+
+**Contributors:** micdoodle, Calclavia
 
 **Credits:**
 

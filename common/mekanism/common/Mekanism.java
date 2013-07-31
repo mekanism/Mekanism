@@ -731,7 +731,7 @@ public class Mekanism
 			System.out.println("[Mekanism] Hooked into Thermal Expansion successfully.");
 		} catch(Exception e) {}
 		
-		if(controlCircuitOreDict || (!controlCircuitOreDict && !hooks.BasicComponentsLoaded))
+		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
 		{
 			OreDictionary.registerOre("circuitBasic", new ItemStack(ControlCircuit));
 		}
