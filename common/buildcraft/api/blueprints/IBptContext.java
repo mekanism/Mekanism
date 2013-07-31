@@ -9,10 +9,10 @@
 
 package buildcraft.api.blueprints;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import buildcraft.api.core.IBox;
 import buildcraft.api.core.Position;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 /**
  * This interface provide contextual information when building or initializing blueprint slots.

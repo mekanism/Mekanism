@@ -603,12 +603,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     }
 	
 	@Override
-	public int powerRequest(ForgeDirection side) 
-	{
-		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
-	}
-	
-	@Override
 	public ArrayList<SideData> getSideData()
 	{
 		return sideOutputs;

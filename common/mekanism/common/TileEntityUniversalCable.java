@@ -5,25 +5,26 @@ import java.util.ArrayList;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerProvider;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
 {
-	/** A fake power provider used to initiate energy transfer calculations. */
-	public CablePowerProvider powerProvider;
+	/** A fake power handler used to initiate energy transfer calculations. */
+	public PowerHandler powerHandler;
 	
 	/** The energy network currently in use by this cable segment. */
 	public EnergyNetwork energyNetwork;
 	
 	public TileEntityUniversalCable()
 	{
-		powerProvider = new CablePowerProvider(this);
-		powerProvider.configure(0, 0, 100, 0, 100);
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configure(0, 100, 0, 100);
 	}
 	
 	@Override
@@ -80,47 +81,24 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 
 	@Override
-	public void setPowerProvider(IPowerProvider provider) {}
-
-	@Override
-	public IPowerProvider getPowerProvider() 
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
-		return powerProvider;
+		return powerHandler.getPowerReceiver();
+	}
+	
+	@Override
+	public World getWorld()
+	{
+		return worldObj;
 	}
 
 	@Override
-	public void doWork() {}
-
-	@Override
-	public int powerRequest(ForgeDirection from)
-	{
-		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		ignored.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-		return (int)Math.min(100, getNetwork().getEnergyNeeded(ignored)*Mekanism.TO_BC);
-	}
+	public void doWork(PowerHandler workProvider) {}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
-	}
-}
-
-class CablePowerProvider extends PowerProvider
-{
-	public TileEntity tileEntity;
-	
-	public CablePowerProvider(TileEntity tile)
-	{
-		tileEntity = tile;
-	}
-	
-	@Override
-	public void receiveEnergy(float quantity, ForgeDirection from)
-	{
-		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		ignored.add(Object3D.get(tileEntity).getFromSide(from).getTileEntity(tileEntity.worldObj));
-		CableUtils.emitEnergyFromAllSides(quantity*Mekanism.FROM_BC, tileEntity, ignored);
 	}
 }

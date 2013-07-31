@@ -1,7 +1,6 @@
 package buildcraft.api.transport;
 
 import java.lang.reflect.Method;
-
 import net.minecraft.item.ItemStack;
 
 /**

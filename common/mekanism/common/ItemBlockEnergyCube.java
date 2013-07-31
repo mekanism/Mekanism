@@ -91,10 +91,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
-    		if(tileEntity.powerProvider != null)
-    		{
-    			tileEntity.powerProvider.configure(0, 0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
-    		}
+			tileEntity.powerHandler.configure(0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
     		
     		if(!world.isRemote)
     		{

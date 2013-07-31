@@ -10,14 +10,16 @@ import java.util.EnumSet;
 
 import mekanism.api.IStrictEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConnector;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.block.IElectricalStorage;
 import universalelectricity.core.electricity.ElectricityPack;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -29,8 +31,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	/** Maximum amount of energy this machine can hold. */
 	public double MAX_ELECTRICITY;
 	
-	/** BuildCraft power provider. */
-	public IPowerProvider powerProvider;
+	/** BuildCraft power handler. */
+	public PowerHandler powerHandler;
 	
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
@@ -43,21 +45,29 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
 		
-		powerProvider = new LinkedPowerProvider(this);
-		powerProvider.configure(0, 0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
+		powerHandler = new PowerHandler(this, PowerHandler.Type.MACHINE);
+		powerHandler.configure(0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		if(!initialized && worldObj != null && !worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			if(Mekanism.hooks.IC2Loaded)
+			if(!initialized)
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				if(Mekanism.hooks.IC2Loaded)
+				{
+					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				}
+				
+				initialized = true;
 			}
 			
-			initialized = true;
+			if(getEnergy() < getMaxEnergy() && powerHandler.getEnergyStored() > 0)
+			{
+				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			}
 		}
 	}
 
@@ -153,22 +163,19 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public void setPowerProvider(IPowerProvider provider) {}
-	
-	@Override
-	public IPowerProvider getPowerProvider() 
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
-		return powerProvider;
+		return powerHandler.getPowerReceiver();
 	}
 	
 	@Override
-	public int powerRequest(ForgeDirection side) 
-	{
-		return (int)Math.min(((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 100);
-	}
+	public void doWork(PowerHandler workProvider) {}
 	
 	@Override
-	public void doWork() {}
+	public World getWorld()
+	{
+		return worldObj;
+	}
 	
 	@Override
 	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive) 

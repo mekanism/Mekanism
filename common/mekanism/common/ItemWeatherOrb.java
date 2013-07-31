@@ -1,7 +1,7 @@
 package mekanism.common;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -37,7 +37,7 @@ public class ItemWeatherOrb extends ItemMekanism
 	{
 		if(itemstack.getItemDamage() > 0)
 		{
-			itemstack.damageItem(-1, (EntityLiving)entity);
+			itemstack.damageItem(-1, (EntityLivingBase)entity);
 		}
 	}
 }
