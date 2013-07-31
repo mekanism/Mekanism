@@ -39,14 +39,17 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		
 		boolean[] connectable = CableUtils.getConnections(tileEntity);
 		
+		model.renderCenter(connectable);
 		for(int i = 0; i < 6; i++)
 		{
 			model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
 		}
 		
+		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 		
 		if(Mekanism.fancyUniversalCableRender)
