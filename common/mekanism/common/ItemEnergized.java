@@ -39,7 +39,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort((float)getEnergy(itemstack), ElectricUnit.JOULES));
+		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getElectricityStored(itemstack), ElectricUnit.JOULES));
 		list.add(EnumColor.AQUA + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 	}
 	

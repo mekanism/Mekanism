@@ -21,6 +21,9 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -91,11 +94,19 @@ public class GuiElectricChest extends GuiContainer
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2)
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         fontRenderer.drawString("Electric Chest", 8, 6, 0x404040);
         fontRenderer.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        
+    	if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
+		{
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)(getEnergy()*Mekanism.TO_UE), ElectricUnit.JOULES), xAxis, yAxis);
+		}
     }
 	
 	@Override
@@ -171,6 +182,18 @@ public class GuiElectricChest extends GuiContainer
 		else {
 			ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
 			return (int)(((IEnergizedItem)stack.getItem()).getEnergy(stack)*52 / ((IEnergizedItem)stack.getItem()).getMaxEnergy(stack));
+		}
+	}
+	
+	public double getEnergy()
+	{
+		if(isBlock)
+		{
+			return tileEntity.getEnergy();
+		}
+		else {
+			ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
+			return ((IEnergizedItem)stack.getItem()).getEnergy(stack);
 		}
 	}
 }
