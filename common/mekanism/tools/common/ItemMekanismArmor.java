@@ -36,6 +36,6 @@ public class ItemMekanismArmor extends ItemArmor
 	@Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer)
     {
-		return "/assets/mekanism/armor/" + material.name().toLowerCase() + "_" + layer + ".png";
+		return "mekanism:armor/" + material.name().toLowerCase() + "_" + layer + ".png";
     }
 }
