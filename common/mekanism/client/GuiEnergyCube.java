@@ -1,21 +1,20 @@
 package mekanism.client;
 
 import mekanism.common.ContainerEnergyCube;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.TileEntityEnergyCube;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyCube extends GuiContainer
@@ -34,7 +33,7 @@ public class GuiEnergyCube extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		String capacityInfo = ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort((float)tileEntity.tier.MAX_ELECTRICITY, ElectricUnit.JOULES);
+		String capacityInfo = ElectricityDisplay.getDisplayShort((float)(tileEntity.getEnergyStored()), ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort((float)(tileEntity.getMaxEnergyStored()), ElectricUnit.JOULES);
 		String outputInfo = "Voltage: " + tileEntity.getVoltage() + "v";
 		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);

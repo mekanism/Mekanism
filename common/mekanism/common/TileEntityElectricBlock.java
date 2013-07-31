@@ -182,14 +182,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(from))
 		{
-			float toAdd = (float)Math.min(getMaxEnergy()-getEnergy(), receive.getWatts());
+			double toAdd = (float)Math.min(getMaxEnergy()-getEnergy(), receive.getWatts()*Mekanism.FROM_UE);
 			
 			if(doReceive)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 			
-			return toAdd;
+			return (float)(toAdd*Mekanism.TO_UE);
 		}
 		
 		return 0;
@@ -206,7 +206,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(direction))
 		{
-			return (float)(getMaxEnergy()-getEnergy());
+			return (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_UE);
 		}
 		
 		return 0;
@@ -221,18 +221,18 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void setEnergyStored(float energy)
 	{
-		setEnergy(energy);
+		setEnergy(energy*Mekanism.FROM_UE);
 	}
 
 	@Override
 	public float getEnergyStored() 
 	{
-		return (float)getEnergy();
+		return (float)(getEnergy()*Mekanism.TO_UE);
 	}
 
 	@Override
 	public float getMaxEnergyStored() 
 	{
-		return (float)getMaxEnergy();
+		return (float)(getMaxEnergy()*Mekanism.TO_UE);
 	}
 }

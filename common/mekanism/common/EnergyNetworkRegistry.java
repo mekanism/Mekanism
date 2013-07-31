@@ -38,7 +38,8 @@ public class EnergyNetworkRegistry implements ITickHandler
 		}
 	}
 	
-	public void pruneEmptyNetworks() {
+	public void pruneEmptyNetworks()
+	{
 		for(EnergyNetwork e : networks)
 		{
 			if(e.cables.size() == 0)

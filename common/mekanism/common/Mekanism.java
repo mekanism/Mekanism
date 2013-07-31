@@ -189,6 +189,8 @@ public class Mekanism
 	public static double TO_BC;
 	public static double FROM_IC2;
 	public static double FROM_BC;
+	public static double TO_UE = .001;
+	public static double FROM_UE = 1000;
 	public static double ENERGY_PER_REDSTONE = 10000;
 	
 	//Usage Configuration

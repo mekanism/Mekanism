@@ -43,7 +43,7 @@ public class EnergyNetwork
 	
 	public EnergyNetwork(Set<EnergyNetwork> networks)
 	{
-		for (EnergyNetwork net : networks)
+		for(EnergyNetwork net : networks)
 		{
 			if(net != null)
 			{
@@ -51,6 +51,7 @@ public class EnergyNetwork
 				net.deregister();
 			}
 		}
+		
 		refresh();
 		EnergyNetworkRegistry.getInstance().registerNetwork(this);
 	}
@@ -123,6 +124,7 @@ public class EnergyNetwork
 					}
 				}
 			}
+			
 			sent = energyAvailable - energyToSend;
 			joulesTransmitted += sent;
 		}
@@ -293,9 +295,10 @@ public class EnergyNetwork
 	{
 		if(cable instanceof TileEntity)
 		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity) cable).getWorldObj(), Object3D.get((TileEntity)cable), null);
+			NetworkFinder finder = new NetworkFinder(((TileEntity)cable).getWorldObj(), Object3D.get((TileEntity)cable), null);
 			List<Object3D> partNetwork = finder.exploreNetwork();
 			Set<IUniversalCable> newCables = new HashSet<IUniversalCable>();
+			
 			for(Object3D node : partNetwork)
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)cable).worldObj);
@@ -306,6 +309,7 @@ public class EnergyNetwork
 					newCables.add((IUniversalCable)nodeTile);
 				}
 			}
+			
 			EnergyNetwork newNetwork = new EnergyNetwork(newCables.toArray(new IUniversalCable[0]));
 			newNetwork.refresh();
 			newNetwork.fixed = true;
@@ -411,6 +415,7 @@ public class EnergyNetwork
 	public void tick()
 	{
 		clearJoulesTransmitted();
+		
 		//Fix weird behaviour periodically.
 		if(!fixed)
 		{
