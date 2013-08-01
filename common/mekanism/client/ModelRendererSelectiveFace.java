@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mekanism.client.MekanismRenderer.BooleanArray;
+import mekanism.client.MekanismRenderer.DisplayInteger;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.renderer.GLAllocation;
@@ -35,7 +37,7 @@ public class ModelRendererSelectiveFace
     private int textureOffsetX;
     private int textureOffsetY;
     private ModelBase baseModel;
-    private Map<BooleanArray, Integer> displayLists = new HashMap<BooleanArray, Integer>();
+    private Map<BooleanArray, DisplayInteger> displayLists = new HashMap<BooleanArray, DisplayInteger>();
     
 
     public ModelRendererSelectiveFace(ModelBase modelBase)
@@ -80,7 +82,7 @@ public class ModelRendererSelectiveFace
         {
             if (showModel)
             {
-            	Integer currentDisplayList = displayLists.get(new BooleanArray(dontRender));
+            	DisplayInteger currentDisplayList = displayLists.get(new BooleanArray(dontRender));
                 if (currentDisplayList == null)
                 {
                     currentDisplayList = compileDisplayList(dontRender, scaleFactor);
@@ -93,12 +95,12 @@ public class ModelRendererSelectiveFace
                 {
                     if (rotationPointX == 0.0F && rotationPointY == 0.0F && rotationPointZ == 0.0F)
                     {
-                        GL11.glCallList(currentDisplayList);
+                        currentDisplayList.render();
                     }
                     else
                     {
                         GL11.glTranslatef(rotationPointX * scaleFactor, rotationPointY * scaleFactor, rotationPointZ * scaleFactor);
-                        GL11.glCallList(currentDisplayList);
+                        currentDisplayList.render();
                         GL11.glTranslatef(-rotationPointX * scaleFactor, -rotationPointY * scaleFactor, -rotationPointZ * scaleFactor);
                     }
                 }
@@ -122,7 +124,7 @@ public class ModelRendererSelectiveFace
                         GL11.glRotatef(rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
                     }
 
-                    GL11.glCallList(currentDisplayList);
+                    currentDisplayList.render();
                     GL11.glPopMatrix();
                 }
 
@@ -132,10 +134,9 @@ public class ModelRendererSelectiveFace
     }
 
     @SideOnly(Side.CLIENT)
-    private int compileDisplayList(boolean[] dontRender, float scaleFactor)
+    private DisplayInteger compileDisplayList(boolean[] dontRender, float scaleFactor)
     {
-        int displayList = GLAllocation.generateDisplayLists(1);
-        GL11.glNewList(displayList, GL11.GL_COMPILE);
+        DisplayInteger displayList = DisplayInteger.createAndStart();
         Tessellator tessellator = Tessellator.instance;
 
         for (int i = 0; i < cubeList.size(); ++i)
@@ -143,7 +144,7 @@ public class ModelRendererSelectiveFace
             cubeList.get(i).render(tessellator, dontRender, scaleFactor);
         }
 
-        GL11.glEndList();
+        displayList.endList();
         displayLists.put(new BooleanArray(dontRender), displayList);
         return displayList;
     }
@@ -153,40 +154,5 @@ public class ModelRendererSelectiveFace
         textureWidth = (float)sizeX;
         textureHeight = (float)sizeY;
         return this;
-    }
-    
-    private class BooleanArray
-    {
-    	private final boolean[] boolArray;
-    	
-    	public BooleanArray(boolean[] array)
-		{
-			boolArray = array.clone();
-		}
-    	
-    	@Override
-    	public boolean equals(Object o)
-    	{
-    		if(o instanceof BooleanArray)
-    		{
-    			return Arrays.equals(boolArray, ((BooleanArray)o).boolArray);
-    		}
-    		else if(o instanceof boolean[]) 
-    		{
-    			return Arrays.equals(boolArray, (boolean[])o);
-    		}
-    		else
-    		{
-    			return false;
-    		}
-    	}
-    	
-    	@Override
-    	public int hashCode()
-    	{
-    		return Arrays.hashCode(boolArray);
-    	}
-    	
-    	
     }
 }

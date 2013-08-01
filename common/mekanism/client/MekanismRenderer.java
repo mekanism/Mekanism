@@ -45,7 +45,7 @@ public class MekanismRenderer
 		
 		public Icon[] textures = new Icon[6];
 		
-		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true};
+		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
 		public Block baseBlock = Block.sand;
 		
@@ -304,6 +304,39 @@ public class MekanismRenderer
     	} catch(Exception e) {}
     	
     	return null;
+    }
+    
+    public static class BooleanArray
+    {
+    	private final boolean[] boolArray;
+    	
+    	public BooleanArray(boolean[] array)
+		{
+			boolArray = array.clone();
+		}
+    	
+    	@Override
+    	public boolean equals(Object o)
+    	{
+    		if(o instanceof BooleanArray)
+    		{
+    			return Arrays.equals(boolArray, ((BooleanArray)o).boolArray);
+    		}
+    		else if(o instanceof boolean[]) 
+    		{
+    			return Arrays.equals(boolArray, (boolean[])o);
+    		}
+    		else
+    		{
+    			return false;
+    		}
+    	}
+    	
+    	@Override
+    	public int hashCode()
+    	{
+    		return Arrays.hashCode(boolArray);
+    	}
     }
     
     public static float getPartialTicks()

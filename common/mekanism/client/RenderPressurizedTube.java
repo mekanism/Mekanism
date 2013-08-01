@@ -7,6 +7,7 @@ import mekanism.api.EnumGas;
 import mekanism.api.GasTransmission;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
+import mekanism.client.MekanismRenderer.BooleanArray;
 import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.MekanismUtils;
@@ -29,7 +30,10 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
 	
-	private HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>> cachedGasses = new HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>>();
+	private boolean[] connectable;
+	
+	private HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>> cachedSideGasses = new HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>>();
+	private HashMap<BooleanArray, HashMap<EnumGas, DisplayInteger>> cachedCenterGasses = new HashMap<BooleanArray, HashMap<EnumGas, DisplayInteger>>();
 	
 	private static final double offset = 0.015;
 	
@@ -48,7 +52,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glScalef(1.0F, -1F, -1F);
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		
-		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
+		connectable = new boolean[] {false, false, false, false, false, false};
 		
 		ITubeConnection[] connections = GasTransmission.getConnections(tileEntity);
 		
@@ -124,14 +128,12 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				{
 					if(connectable[i])
 					{
-						int displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).display;
-						GL11.glCallList(displayList);
+						getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).render();
 					}
 				}
 			}
 			
-			int displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refGas).display;
-			GL11.glCallList(displayList);
+			getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refGas).render();
 			
 			pop();
 		}
@@ -155,43 +157,70 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	
 	private DisplayInteger getListAndRender(ForgeDirection side, EnumGas type)
 	{
-		if(cachedGasses.containsKey(side) && cachedGasses.get(side).containsKey(type))
+		if(side == ForgeDirection.UNKNOWN)
 		{
-			return cachedGasses.get(side).get(type);
+			if(cachedCenterGasses.containsKey(side) && cachedCenterGasses.get(side).containsKey(type))
+			{
+				return cachedCenterGasses.get(new BooleanArray(connectable)).get(type);
+			}
+			
+			Model3D toReturn = new Model3D();
+			toReturn.baseBlock = Block.waterStill;
+			toReturn.setTexture(type.gasIcon);
+			toReturn.minX = 0.3 + offset;
+			toReturn.minY = 0.3 + offset;
+			toReturn.minZ = 0.3 + offset;
+			
+			toReturn.maxX = 0.7 - offset;
+			toReturn.maxY = 0.7 - offset;
+			toReturn.maxZ = 0.7 - offset;
+			
+			for(ForgeDirection face : ForgeDirection.VALID_DIRECTIONS)
+			{
+				toReturn.setSideRender(face, !connectable[face.ordinal()]);
+			}
+			
+			DisplayInteger display = DisplayInteger.createAndStart();
+			MekanismRenderer.renderObject(toReturn);
+			DisplayInteger.endList();
+			
+			if(cachedCenterGasses.containsKey(side))
+			{
+				cachedCenterGasses.get(side).put(type, display);
+			}
+			else {
+				HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
+				map.put(type, display);
+				cachedCenterGasses.put(new BooleanArray(connectable), map);
+			}
+			return display;
+		}
+		if(cachedSideGasses.containsKey(side) && cachedSideGasses.get(side).containsKey(type))
+		{
+			return cachedSideGasses.get(side).get(type);
 		}
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.setTexture(type.gasIcon);
 		
-		DisplayInteger display = new DisplayInteger();
+		toReturn.setSideRender(side, false);
+		toReturn.setSideRender(side.getOpposite(), false);
 		
-		if(cachedGasses.containsKey(side))
+		DisplayInteger display = DisplayInteger.createAndStart();
+		
+		if(cachedSideGasses.containsKey(side))
 		{
-			cachedGasses.get(side).put(type, display);
+			cachedSideGasses.get(side).put(type, display);
 		}
 		else {
 			HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
 			map.put(type, display);
-			cachedGasses.put(side, map);
+			cachedSideGasses.put(side, map);
 		}
-		
-		display.display = GLAllocation.generateDisplayLists(1);
-		GL11.glNewList(display.display, 4864);
-		
+				
 		switch(side)
 		{
-			case UNKNOWN:
-			{
-				toReturn.minX = 0.3 + offset;
-				toReturn.minY = 0.3 + offset;
-				toReturn.minZ = 0.3 + offset;
-				
-				toReturn.maxX = 0.7 - offset;
-				toReturn.maxY = 0.7 - offset;
-				toReturn.maxZ = 0.7 - offset;
-				break;
-			}
 			case DOWN:
 			{
 				toReturn.minX = 0.3 + offset;
@@ -206,7 +235,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			case UP:
 			{
 				toReturn.minX = 0.3 + offset;
-				toReturn.minY = 0.3 - offset;
+				toReturn.minY = 0.7 - offset;
 				toReturn.minZ = 0.3 + offset;
 				
 				toReturn.maxX = 0.7 - offset;
@@ -261,7 +290,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.renderObject(toReturn);
-		GL11.glEndList();
+		DisplayInteger.endList();
 		
 		return display;
 	}

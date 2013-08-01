@@ -2,6 +2,7 @@ package mekanism.client;
 
 import java.util.HashMap;
 
+import mekanism.client.MekanismRenderer.DisplayInteger;
 import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.common.MekanismUtils;
 import mekanism.common.MekanismUtils.ResourceType;
@@ -26,7 +27,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
 	
-	private HashMap<ForgeDirection, HashMap<Fluid, int[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, int[]>>();
+	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	
 	private static final int stages = 40;
 	
@@ -73,20 +74,20 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			{
 				if(connectable[i])
 				{
-					int[] displayList = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refFluid.getFluid());
+					DisplayInteger[] displayLists = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refFluid.getFluid());
 					
-					if(displayList != null)
+					if(displayLists != null)
 					{
-						GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))]);
+						displayLists[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
 					}
 				}
 			}
 			
-			int[] displayList = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refFluid.getFluid());
+			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refFluid.getFluid());
 			
-			if(displayList != null)
+			if(displayLists != null)
 			{
-				GL11.glCallList(displayList[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))]);
+				displayLists[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
 			}
 			
 			if(tileEntity.refFluid.getFluid() == FluidRegistry.LAVA)
@@ -114,7 +115,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private int[] getListAndRender(ForgeDirection side, Fluid fluid)
+	private DisplayInteger[] getListAndRender(ForgeDirection side, Fluid fluid)
 	{
 		if(side == null || fluid == null || fluid.getIcon() == null)
 		{
@@ -130,14 +131,17 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.setTexture(fluid.getIcon());
 		
-		int[] displays = new int[stages];
+		toReturn.setSideRender(side, false);
+		toReturn.setSideRender(side.getOpposite(), false);
+		
+		DisplayInteger[] displays = new DisplayInteger[stages];
 		
 		if(cachedLiquids.containsKey(side))
 		{
 			cachedLiquids.get(side).put(fluid, displays);
 		}
 		else {
-			HashMap<Fluid, int[]> map = new HashMap<Fluid, int[]>();
+			HashMap<Fluid, DisplayInteger[]> map = new HashMap<Fluid, DisplayInteger[]>();
 			map.put(fluid, displays);
 			cachedLiquids.put(side, map);
 		}
@@ -146,8 +150,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		
 		for(int i = 0; i < stages; i++)
 		{
-			displays[i] = GLAllocation.generateDisplayLists(1);
-			GL11.glNewList(displays[i], 4864);
+			displays[i] = DisplayInteger.createAndStart();
 			
 			switch(side)
 			{
@@ -231,7 +234,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			}
 			
 			MekanismRenderer.renderObject(toReturn);
-			GL11.glEndList();
+			DisplayInteger.endList();
 		}
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
