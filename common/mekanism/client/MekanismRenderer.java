@@ -7,6 +7,7 @@ import mekanism.common.ISpecialBounds;
 import mekanism.common.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -264,6 +265,24 @@ public class MekanismRenderer
     	public boolean equals(Object obj)
     	{
     		return obj instanceof DisplayInteger && ((DisplayInteger)obj).display == display;
+    	}
+    	
+    	public static DisplayInteger createAndStart()
+    	{
+    		DisplayInteger newInteger = new DisplayInteger();
+    		newInteger.display =  GLAllocation.generateDisplayLists(1);
+    		GL11.glNewList(newInteger.display, GL11.GL_COMPILE);
+    		return newInteger;
+    	}
+    	
+    	public static void endList()
+    	{
+    		GL11.glEndList();
+    	}
+    	
+    	public void render()
+    	{
+    		GL11.glCallList(display);
     	}
     }
     
