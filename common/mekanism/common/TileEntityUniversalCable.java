@@ -108,7 +108,10 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public void removeFromNetwork()
 	{
-		energyNetwork.removeCable(this);
+		if(energyNetwork != null)
+		{
+			energyNetwork.removeCable(this);
+		}
 	}
 
 	@Override
