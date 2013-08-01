@@ -20,37 +20,46 @@ public class ModelRendererSelectiveFace
     public float offsetX;
     public float offsetY;
     public float offsetZ;
+    
     public float rotationPointX;
     public float rotationPointY;
     public float rotationPointZ;
+    
     public float rotateAngleX;
     public float rotateAngleY;
     public float rotateAngleZ;
+    
     public boolean[] connectedFaces;
+    
     public boolean mirror;
     public boolean showModel;
     public boolean isHidden;
+    
     public List cubeList;
+    
     private int textureOffsetX;
     private int textureOffsetY;
+    
     private int displayList;
+    
     private boolean compiled;
     private ModelBase baseModel;
     
 
-    public ModelRendererSelectiveFace(ModelBase par1ModelBase)
+    public ModelRendererSelectiveFace(ModelBase modelBase)
     {
         textureWidth = 64.0F;
         textureHeight = 32.0F;
         showModel = true;
         cubeList = new ArrayList();
-        baseModel = par1ModelBase;
-        setTextureSize(par1ModelBase.textureWidth, par1ModelBase.textureHeight);
+        baseModel = modelBase;
+        
+        setTextureSize(modelBase.textureWidth, modelBase.textureHeight);
     }
 
-    public ModelRendererSelectiveFace(ModelBase par1ModelBase, int par2, int par3)
+    public ModelRendererSelectiveFace(ModelBase modelBase, int par2, int par3)
     {
-        this(par1ModelBase);
+        this(modelBase);
         setTextureOffset(par2, par3);
     }
 
@@ -58,6 +67,7 @@ public class ModelRendererSelectiveFace
     {
         textureOffsetX = par1;
         textureOffsetY = par2;
+        
         return this;
     }
 
@@ -77,11 +87,11 @@ public class ModelRendererSelectiveFace
     @SideOnly(Side.CLIENT)
     public void render(boolean[] connected, float par1)
     {
-        if (!isHidden)
+        if(!isHidden)
         {
-            if (showModel)
+            if(showModel)
             {
-                if (!(compiled && Arrays.areEqual(connected, connectedFaces)))
+                if(!(compiled && Arrays.areEqual(connected, connectedFaces)))
                 {
                 	connectedFaces = connected;
                     compileDisplayList(par1);
@@ -90,9 +100,9 @@ public class ModelRendererSelectiveFace
                 GL11.glTranslatef(offsetX, offsetY, offsetZ);
                 int i;
 
-                if (rotateAngleX == 0.0F && rotateAngleY == 0.0F && rotateAngleZ == 0.0F)
+                if(rotateAngleX == 0.0F && rotateAngleY == 0.0F && rotateAngleZ == 0.0F)
                 {
-                    if (rotationPointX == 0.0F && rotationPointY == 0.0F && rotationPointZ == 0.0F)
+                    if(rotationPointX == 0.0F && rotationPointY == 0.0F && rotationPointZ == 0.0F)
                     {
                         GL11.glCallList(displayList);
                     }
@@ -108,17 +118,17 @@ public class ModelRendererSelectiveFace
                     GL11.glPushMatrix();
                     GL11.glTranslatef(rotationPointX * par1, rotationPointY * par1, rotationPointZ * par1);
 
-                    if (rotateAngleZ != 0.0F)
+                    if(rotateAngleZ != 0.0F)
                     {
                         GL11.glRotatef(rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
                     }
 
-                    if (rotateAngleY != 0.0F)
+                    if(rotateAngleY != 0.0F)
                     {
                         GL11.glRotatef(rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
                     }
 
-                    if (rotateAngleX != 0.0F)
+                    if(rotateAngleX != 0.0F)
                     {
                         GL11.glRotatef(rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
                     }
@@ -133,25 +143,26 @@ public class ModelRendererSelectiveFace
     }
 
     @SideOnly(Side.CLIENT)
-    private void compileDisplayList(float par1)
+    private void compileDisplayList(float size)
     {
         displayList = GLAllocation.generateDisplayLists(1);
         GL11.glNewList(displayList, GL11.GL_COMPILE);
         Tessellator tessellator = Tessellator.instance;
 
-        for (int i = 0; i < cubeList.size(); ++i)
+        for(int i = 0; i < cubeList.size(); i++)
         {
-            ((ModelBoxSelectiveFace)cubeList.get(i)).render(tessellator, connectedFaces, par1);
+            ((ModelBoxSelectiveFace)cubeList.get(i)).render(tessellator, connectedFaces, size);
         }
 
         GL11.glEndList();
         compiled = true;
     }
 
-    public ModelRendererSelectiveFace setTextureSize(int par1, int par2)
+    public ModelRendererSelectiveFace setTextureSize(int width, int height)
     {
-        textureWidth = (float)par1;
-        textureHeight = (float)par2;
+        textureWidth = width;
+        textureHeight = height;
+        
         return this;
     }
 }

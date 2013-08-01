@@ -18,6 +18,7 @@ public class ModelTransmitter extends ModelBase
 			{true, true, false, false, false, false},
 			{true, true, false, false, false, false},
 		};
+	
 	ModelRendererSelectiveFace Center;
 	ModelRendererSelectiveFace Up;
 	ModelRendererSelectiveFace Down;
