@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -33,9 +34,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public float crushMatrix = 0;
 
 	/** The FluidSlot biofuel instance for this generator. */
-	public FluidSlot bioFuelSlot = new FluidSlot(24000, Mekanism.hooks.ForestryBiofuelID);
-	
-	public int FLUID_MULTIPLIER = 16;
+	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
 
 	public TileEntityBioGenerator()
 	{
@@ -78,15 +77,16 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		{
 			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 
-			if(fluid != null)
+			if(fluid != null && FluidRegistry.isFluidRegistered("bioethanol"))
 			{
-				if(fluid.fluidID == Mekanism.hooks.ForestryBiofuelID)
+				if(fluid.getFluid() == FluidRegistry.getFluid("bioethanol"))
 				{
-					int fluidToAdd = fluid.amount*FLUID_MULTIPLIER;
+					int fluidToAdd = fluid.amount;
 
 					if(bioFuelSlot.fluidStored+fluidToAdd <= bioFuelSlot.MAX_FLUID)
 					{
 						bioFuelSlot.setFluid(bioFuelSlot.fluidStored+fluidToAdd);
+						
 						if(FluidContainerRegistry.isBucket(inventory[0]))
 						{
 							inventory[0] = new ItemStack(Item.bucketEmpty);
@@ -105,6 +105,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			else {
 				int fuel = getFuel(inventory[0]);
 				ItemStack prevStack = inventory[0].copy();
+				
 				if(fuel > 0)
 				{
 					int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
@@ -133,6 +134,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			{
 				setActive(true);
 			}
+			
 			bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
 			setEnergy(electricityStored + MekanismGenerators.bioGeneration);
 		}
@@ -149,7 +151,24 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		if(slotID == 0)
 		{
-			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).fluidID == Mekanism.hooks.ForestryBiofuelID);
+			if(getFuel(itemstack ) > 0)
+			{
+				return true;
+			}
+			else {
+				if(FluidRegistry.isFluidRegistered("bioethanol"))
+				{
+					if(FluidContainerRegistry.getFluidForFilledItem(itemstack) != null)
+					{
+						if(FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.getFluid("bioethanol"))
+						{
+							return true;
+						}
+					}
+				}
+				
+				return false;
+			}
 		}
 		else if(slotID == 1)
 		{
@@ -261,9 +280,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
 	{
-		if(from != ForgeDirection.getOrientation(facing))
+		if(FluidRegistry.isFluidRegistered("bioethanol") && from != ForgeDirection.getOrientation(facing))
 		{
-			if(resource.fluidID == Mekanism.hooks.ForestryBiofuelID)
+			if(resource.getFluid() == FluidRegistry.getFluid("bioethanol"))
 			{
 				int fuelTransfer = 0;
 				int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
@@ -304,7 +323,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) 
 	{
-		return fluid.getID() == Mekanism.hooks.ForestryBiofuelID;
+		return FluidRegistry.isFluidRegistered("bioethanol") && fluid == FluidRegistry.getFluid("bioethanol");
 	}
 
 	@Override

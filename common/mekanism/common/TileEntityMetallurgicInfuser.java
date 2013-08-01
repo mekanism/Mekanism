@@ -75,8 +75,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** Whether or not this machine is in it's active state. */
 	public boolean isActive;
 	
-	/** This machine's previous active state, used for tick callbacks. */
-	public boolean prevActive;
+	/** The client's current active state. */
+	public boolean clientActive;
+	
+	/** How many ticks must pass until this block's active state can sync with the client. */
+	public int updateDelay;
 	
 	public TileEntityMetallurgicInfuser()
 	{
@@ -106,6 +109,16 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		if(!worldObj.isRemote)
 		{
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+					
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+				}
+			}
+			
 			ChargeUtils.discharge(4, this);
 			
 			if(inventory[0] != null)
@@ -370,7 +383,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	
     	speedMultiplier = nbtTags.getInteger("speedMultiplier");
     	energyMultiplier = nbtTags.getInteger("energyMultiplier");
-    	isActive = nbtTags.getBoolean("isActive");
+    	clientActive = isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
     	type = InfuseRegistry.get(nbtTags.getString("type"));
@@ -556,12 +569,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
     	isActive = active;
     	
-    	if(prevActive != active)
+    	if(clientActive != active && updateDelay == 0)
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		updateDelay = 10;
+    		clientActive = active;
     	}
-    	
-    	prevActive = active;
     }
     
     @Override

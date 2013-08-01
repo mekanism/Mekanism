@@ -206,7 +206,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(direction))
 		{
-			return (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_UE);
+			return getMaxEnergyStored()-getEnergyStored();
 		}
 		
 		return 0;

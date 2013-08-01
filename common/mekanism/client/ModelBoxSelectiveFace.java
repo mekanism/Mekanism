@@ -9,10 +9,13 @@ import net.minecraft.client.renderer.Tessellator;
 public class ModelBoxSelectiveFace
 {
     private PositionTextureVertex[] vertexPositions;
+    
     private TexturedQuad[] quadList;
+    
     public final float posX1;
     public final float posY1;
     public final float posZ1;
+    
     public final float posX2;
     public final float posY2;
     public final float posZ2;
@@ -22,22 +25,28 @@ public class ModelBoxSelectiveFace
         posX1 = xMin;
         posY1 = yMin;
         posZ1 = zMin;
-        posX2 = xMin + (float)xSize;
-        posY2 = yMin + (float)ySize;
-        posZ2 = zMin + (float)zSize;
+        
+        posX2 = xMin + xSize;
+        posY2 = yMin + ySize;
+        posZ2 = zMin + zSize;
+        
         vertexPositions = new PositionTextureVertex[8];
+        
         quadList = new TexturedQuad[6];
-        float xMax = xMin + (float)xSize;
-        float yMax = yMin + (float)ySize;
-        float zMax = zMin + (float)zSize;
+        
+        float xMax = xMin + xSize;
+        float yMax = yMin + ySize;
+        float zMax = zMin + zSize;
+        
         xMin -= scaleFactor;
         yMin -= scaleFactor;
         zMin -= scaleFactor;
+        
         xMax += scaleFactor;
         yMax += scaleFactor;
         zMax += scaleFactor;
 
-        if (modelRenderer.mirror)
+        if(modelRenderer.mirror)
         {
             float placeholder = xMax;
             xMax = xMin;
@@ -52,6 +61,7 @@ public class ModelBoxSelectiveFace
         PositionTextureVertex positiontexturevertex5 = new PositionTextureVertex(xMax, yMin, zMax, 0.0F, 8.0F);
         PositionTextureVertex positiontexturevertex6 = new PositionTextureVertex(xMax, yMax, zMax, 8.0F, 8.0F);
         PositionTextureVertex positiontexturevertex7 = new PositionTextureVertex(xMin, yMax, zMax, 8.0F, 0.0F);
+        
         vertexPositions[0] = positiontexturevertex0;
         vertexPositions[1] = positiontexturevertex1;
         vertexPositions[2] = positiontexturevertex2;
@@ -60,6 +70,7 @@ public class ModelBoxSelectiveFace
         vertexPositions[5] = positiontexturevertex5;
         vertexPositions[6] = positiontexturevertex6;
         vertexPositions[7] = positiontexturevertex7;
+        
         quadList[0] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex2, positiontexturevertex3, positiontexturevertex7, positiontexturevertex6}, textureOffsetU + zSize + xSize, textureOffsetV + zSize, textureOffsetU + zSize + xSize + xSize, textureOffsetV, modelRenderer.textureWidth, modelRenderer.textureHeight);
         quadList[1] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex5, positiontexturevertex4, positiontexturevertex0, positiontexturevertex1}, textureOffsetU + zSize, textureOffsetV, textureOffsetU + zSize + xSize, textureOffsetV + zSize, modelRenderer.textureWidth, modelRenderer.textureHeight);
         quadList[2] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex4, positiontexturevertex5, positiontexturevertex6, positiontexturevertex7}, textureOffsetU + zSize + xSize + zSize, textureOffsetV + zSize, textureOffsetU + zSize + xSize + zSize + xSize, textureOffsetV + zSize + ySize, modelRenderer.textureWidth, modelRenderer.textureHeight);
@@ -67,24 +78,21 @@ public class ModelBoxSelectiveFace
         quadList[4] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex0, positiontexturevertex4, positiontexturevertex7, positiontexturevertex3}, textureOffsetU, textureOffsetV + zSize, textureOffsetU + zSize, textureOffsetV + zSize + ySize, modelRenderer.textureWidth, modelRenderer.textureHeight);
         quadList[5] = new TexturedQuad(new PositionTextureVertex[] {positiontexturevertex5, positiontexturevertex1, positiontexturevertex2, positiontexturevertex6}, textureOffsetU + zSize + xSize, textureOffsetV + zSize, textureOffsetU + zSize + xSize + zSize, textureOffsetV + zSize + ySize, modelRenderer.textureWidth, modelRenderer.textureHeight);
 
-        if (modelRenderer.mirror)
+        if(modelRenderer.mirror)
         {
-            for (int j1 = 0; j1 < quadList.length; ++j1)
+            for(int quad = 0; quad < quadList.length; quad++)
             {
-                quadList[j1].flipFace();
+                quadList[quad].flipFace();
             }
         }
     }
 
-    /**
-     * Draw the faces of this ModelBox whose ordinal ForgeDirections are false in skippedFaces
-     */
     @SideOnly(Side.CLIENT)
     public void render(Tessellator tessellator, boolean[] skippedFaces, float scaleFactor)
     {
     	if(skippedFaces.length == quadList.length)
 		{
-	        for (int i = 0; i < skippedFaces.length; ++i)
+	        for(int i = 0; i < skippedFaces.length; ++i)
 	        {
 	        	if(!skippedFaces[i])
 	        	{
