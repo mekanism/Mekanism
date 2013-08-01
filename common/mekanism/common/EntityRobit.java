@@ -101,11 +101,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super.entityInit();
 		
-		dataWatcher.addObject(11, new String("")); /* Electricity */
-		dataWatcher.addObject(12, new String("")); /* Owner */
-		dataWatcher.addObject(13, new Byte((byte)0)); /* Follow */
-		dataWatcher.addObject(14, new String("")); /* Name */
-		dataWatcher.addObject(15, new Byte((byte)0)); /* Drop Pickup */
+		dataWatcher.addObject(12, new String("")); /* Electricity */
+		dataWatcher.addObject(13, new String("")); /* Owner */
+		dataWatcher.addObject(14, new Byte((byte)0)); /* Follow */
+		dataWatcher.addObject(15, new String("")); /* Name */
+		dataWatcher.addObject(16, new Byte((byte)0)); /* Drop Pickup */
 	}
 	
 	public double getRoundedTravelEnergy()
@@ -502,12 +502,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	
 	public double getEnergy()
 	{
-		return Double.parseDouble(dataWatcher.getWatchableObjectString(11));
+		return Double.parseDouble(dataWatcher.getWatchableObjectString(12));
 	}
 	
 	public void setEnergy(double energy)
 	{
-		dataWatcher.updateObject(11, Double.toString(Math.max(Math.min(energy, MAX_ELECTRICITY), 0)));
+		dataWatcher.updateObject(12, Double.toString(Math.max(Math.min(energy, MAX_ELECTRICITY), 0)));
 	}
 	
 	public EntityPlayer getOwner()
@@ -517,42 +517,42 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	
 	public String getOwnerName()
 	{
-		return dataWatcher.getWatchableObjectString(12);
+		return dataWatcher.getWatchableObjectString(13);
 	}
 	
 	public void setOwner(String username)
 	{
-		dataWatcher.updateObject(12, username);
+		dataWatcher.updateObject(13, username);
 	}
 	
 	public boolean getFollowing()
 	{
-		return dataWatcher.getWatchableObjectByte(13) == 1;
+		return dataWatcher.getWatchableObjectByte(14) == 1;
 	}
 	
 	public void setFollowing(boolean follow)
 	{
-		dataWatcher.updateObject(13, follow ? (byte)1 : (byte)0);
+		dataWatcher.updateObject(14, follow ? (byte)1 : (byte)0);
 	}
 	
 	public String getName()
 	{
-		return dataWatcher.getWatchableObjectString(14);
+		return dataWatcher.getWatchableObjectString(15);
 	}
 	
 	public void setName(String name)
 	{
-		dataWatcher.updateObject(14, name);
+		dataWatcher.updateObject(15, name);
 	}
 	
 	public boolean getDropPickup()
 	{
-		return dataWatcher.getWatchableObjectByte(15) == 1;
+		return dataWatcher.getWatchableObjectByte(16) == 1;
 	}
 	
 	public void setDropPickup(boolean pickup)
 	{
-		dataWatcher.updateObject(15, pickup ? (byte)1 : (byte)0);
+		dataWatcher.updateObject(16, pickup ? (byte)1 : (byte)0);
 	}
 
 	@Override
