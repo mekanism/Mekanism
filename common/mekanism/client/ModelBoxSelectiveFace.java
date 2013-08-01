@@ -26,20 +26,22 @@ public class ModelBoxSelectiveFace
         posY1 = yMin;
         posZ1 = zMin;
         
-        posX2 = xMin + (float)xSize;
-        posY2 = yMin + (float)ySize;
-        posZ2 = zMin + (float)zSize;
+        posX2 = xMin + xSize;
+        posY2 = yMin + ySize;
+        posZ2 = zMin + zSize;
         
         vertexPositions = new PositionTextureVertex[8];
+        
         quadList = new TexturedQuad[6];
         
-        float xMax = xMin + (float)xSize;
-        float yMax = yMin + (float)ySize;
-        float zMax = zMin + (float)zSize;
+        float xMax = xMin + xSize;
+        float yMax = yMin + ySize;
+        float zMax = zMin + zSize;
         
         xMin -= scaleFactor;
         yMin -= scaleFactor;
         zMin -= scaleFactor;
+        
         xMax += scaleFactor;
         yMax += scaleFactor;
         zMax += scaleFactor;
@@ -86,15 +88,15 @@ public class ModelBoxSelectiveFace
     }
 
     @SideOnly(Side.CLIENT)
-    public void render(Tessellator tessellator, boolean[] connected, float f)
+    public void render(Tessellator tessellator, boolean[] skippedFaces, float scaleFactor)
     {
-    	if(connected.length == quadList.length)
+    	if(skippedFaces.length == quadList.length)
 		{
-	        for(int i = 0; i < connected.length; ++i)
+	        for(int i = 0; i < skippedFaces.length; ++i)
 	        {
-	        	if(!connected[i])
+	        	if(!skippedFaces[i])
 	        	{
-	        		quadList[i].draw(tessellator, f);
+	        		quadList[i].draw(tessellator, scaleFactor);
 	        	}
 	        }
 		}

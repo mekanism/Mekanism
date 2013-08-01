@@ -3,20 +3,23 @@ package mekanism.client;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 
-import org.bouncycastle.util.Arrays;
 import org.lwjgl.opengl.GL11;
 
 public class ModelRendererSelectiveFace
 {
     public float textureWidth;
     public float textureHeight;
+    
     public float offsetX;
     public float offsetY;
     public float offsetZ;
@@ -29,21 +32,18 @@ public class ModelRendererSelectiveFace
     public float rotateAngleY;
     public float rotateAngleZ;
     
-    public boolean[] connectedFaces;
-    
     public boolean mirror;
     public boolean showModel;
     public boolean isHidden;
     
-    public List cubeList;
+    public List<ModelBoxSelectiveFace> cubeList = new ArrayList<ModelBoxSelectiveFace>();
     
     private int textureOffsetX;
     private int textureOffsetY;
     
-    private int displayList;
-    
-    private boolean compiled;
     private ModelBase baseModel;
+    
+    private Map<BooleanArray, Integer> displayLists = new HashMap<BooleanArray, Integer>();
     
 
     public ModelRendererSelectiveFace(ModelBase modelBase)
@@ -51,22 +51,21 @@ public class ModelRendererSelectiveFace
         textureWidth = 64.0F;
         textureHeight = 32.0F;
         showModel = true;
-        cubeList = new ArrayList();
         baseModel = modelBase;
         
         setTextureSize(modelBase.textureWidth, modelBase.textureHeight);
     }
 
-    public ModelRendererSelectiveFace(ModelBase modelBase, int par2, int par3)
+    public ModelRendererSelectiveFace(ModelBase modelBase, int offsetX, int offsetY)
     {
         this(modelBase);
-        setTextureOffset(par2, par3);
+        setTextureOffset(offsetX, offsetY);
     }
 
-    public ModelRendererSelectiveFace setTextureOffset(int par1, int par2)
+    public ModelRendererSelectiveFace setTextureOffset(int offsetX, int offsetY)
     {
-        textureOffsetX = par1;
-        textureOffsetY = par2;
+        textureOffsetX = offsetX;
+        textureOffsetY = offsetY;
         
         return this;
     }
@@ -85,38 +84,39 @@ public class ModelRendererSelectiveFace
     }
     
     @SideOnly(Side.CLIENT)
-    public void render(boolean[] connected, float par1)
+    public void render(boolean[] dontRender, float scaleFactor)
     {
         if(!isHidden)
         {
             if(showModel)
             {
-                if(!(compiled && Arrays.areEqual(connected, connectedFaces)))
+            	Integer currentDisplayList = displayLists.get(new BooleanArray(dontRender));
+            	
+                if(currentDisplayList == null)
                 {
-                	connectedFaces = connected;
-                    compileDisplayList(par1);
+                    currentDisplayList = compileDisplayList(dontRender, scaleFactor);
                 }
 
                 GL11.glTranslatef(offsetX, offsetY, offsetZ);
+                
                 int i;
 
                 if(rotateAngleX == 0.0F && rotateAngleY == 0.0F && rotateAngleZ == 0.0F)
                 {
                     if(rotationPointX == 0.0F && rotationPointY == 0.0F && rotationPointZ == 0.0F)
                     {
-                        GL11.glCallList(displayList);
+                        GL11.glCallList(currentDisplayList);
                     }
-                    else
-                    {
-                        GL11.glTranslatef(rotationPointX * par1, rotationPointY * par1, rotationPointZ * par1);
-                        GL11.glCallList(displayList);
-                        GL11.glTranslatef(-rotationPointX * par1, -rotationPointY * par1, -rotationPointZ * par1);
+                    else {
+                        GL11.glTranslatef(rotationPointX * scaleFactor, rotationPointY * scaleFactor, rotationPointZ * scaleFactor);
+                        GL11.glCallList(currentDisplayList);
+                        GL11.glTranslatef(-rotationPointX * scaleFactor, -rotationPointY * scaleFactor, -rotationPointZ * scaleFactor);
                     }
                 }
                 else
                 {
                     GL11.glPushMatrix();
-                    GL11.glTranslatef(rotationPointX * par1, rotationPointY * par1, rotationPointZ * par1);
+                    GL11.glTranslatef(rotationPointX * scaleFactor, rotationPointY * scaleFactor, rotationPointZ * scaleFactor);
 
                     if(rotateAngleZ != 0.0F)
                     {
@@ -133,7 +133,7 @@ public class ModelRendererSelectiveFace
                         GL11.glRotatef(rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
                     }
 
-                    GL11.glCallList(displayList);
+                    GL11.glCallList(currentDisplayList);
                     GL11.glPopMatrix();
                 }
 
@@ -143,26 +143,60 @@ public class ModelRendererSelectiveFace
     }
 
     @SideOnly(Side.CLIENT)
-    private void compileDisplayList(float size)
+    private int compileDisplayList(boolean[] dontRender, float scaleFactor)
     {
-        displayList = GLAllocation.generateDisplayLists(1);
+        int displayList = GLAllocation.generateDisplayLists(1);
         GL11.glNewList(displayList, GL11.GL_COMPILE);
         Tessellator tessellator = Tessellator.instance;
 
-        for(int i = 0; i < cubeList.size(); i++)
+        for(int i = 0; i < cubeList.size(); ++i)
         {
-            ((ModelBoxSelectiveFace)cubeList.get(i)).render(tessellator, connectedFaces, size);
+            cubeList.get(i).render(tessellator, dontRender, scaleFactor);
         }
 
         GL11.glEndList();
-        compiled = true;
+        displayLists.put(new BooleanArray(dontRender), displayList);
+        
+        return displayList;
     }
 
-    public ModelRendererSelectiveFace setTextureSize(int width, int height)
+    public ModelRendererSelectiveFace setTextureSize(int sizeX, int sizeY)
     {
-        textureWidth = width;
-        textureHeight = height;
+        textureWidth = sizeX;
+        textureHeight = sizeY;
         
         return this;
+    }
+    
+    private class BooleanArray
+    {
+    	private final boolean[] boolArray;
+    	
+    	public BooleanArray(boolean[] array)
+		{
+			boolArray = array.clone();
+		}
+    	
+    	@Override
+    	public boolean equals(Object o)
+    	{
+    		if(o instanceof BooleanArray)
+    		{
+    			return Arrays.equals(boolArray, ((BooleanArray)o).boolArray);
+    		}
+    		else if(o instanceof boolean[]) 
+    		{
+    			return Arrays.equals(boolArray, (boolean[])o);
+    		}
+    		else {
+    			return false;
+    		}
+    	}
+    	
+    	@Override
+    	public int hashCode()
+    	{
+    		return Arrays.hashCode(boolArray);
+    	}
     }
 }
