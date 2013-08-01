@@ -56,9 +56,9 @@ public final class Tier
 	 */
 	public static enum FactoryTier
 	{
-		BASIC("Basic", 3, new ResourceLocation("mekanism", "gui/GuiBasicFactory.png")),
-		ADVANCED("Advanced", 5, new ResourceLocation("mekanism", "gui/GuiAdvancedFactory.png")),
-		ELITE("Elite", 7, new ResourceLocation("mekanism", "gui/GuiEliteFactory.png"));
+		BASIC("Basic", 3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png")),
+		ADVANCED("Advanced", 5, new ResourceLocation("mekanism", "gui/factory/GuiAdvancedFactory.png")),
+		ELITE("Elite", 7, new ResourceLocation("mekanism", "gui/factory/GuiEliteFactory.png"));
 		
 		public int processes;
 		public ResourceLocation guiLocation;

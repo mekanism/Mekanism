@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -25,6 +26,7 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
     	GL11.glTranslated(0.0F, -1.0F, 0.0F);
+    	GL11.glDisable(GL11.GL_CULL_FACE);
     	
     	switch(metadata)
     	{
@@ -39,12 +41,11 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
     			break;
     	}
     	
-    	transmitter.UpOn.render(0.0625F);
-    	transmitter.DownOn.render(0.0625F);
-    	transmitter.BackOff.render(0.0625F);
-    	transmitter.FrontOff.render(0.0625F);
-    	transmitter.LeftOff.render(0.0625F);
-    	transmitter.RightOff.render(0.0625F);
+    	transmitter.renderSide(ForgeDirection.UP, true);
+    	transmitter.renderSide(ForgeDirection.DOWN, true);
+    	transmitter.renderCenter(new boolean[]{true, true, false, false, false, false});
+    	
+    	GL11.glEnable(GL11.GL_CULL_FACE);
 	}
 
 	@Override

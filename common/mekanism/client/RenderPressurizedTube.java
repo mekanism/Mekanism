@@ -46,6 +46,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
@@ -63,6 +64,8 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				}
 			}
 		}
+		
+		model.renderCenter(connectable);
 		
 		if(tileEntity.canTransferGas())
 		{
@@ -104,6 +107,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			}
 		}
 		
+		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 	
 		if(tileEntity.gasScale > 0 && tileEntity.refGas != null && tileEntity.refGas.hasTexture())
