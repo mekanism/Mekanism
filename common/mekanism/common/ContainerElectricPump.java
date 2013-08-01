@@ -65,7 +65,7 @@ public class ContainerElectricPump extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if(MekanismUtils.canBeDischarged(slotStack))
+            if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 2)
 	            {

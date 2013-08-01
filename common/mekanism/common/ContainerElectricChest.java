@@ -106,7 +106,7 @@ public class ContainerElectricChest extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-        	if(MekanismUtils.canBeDischarged(slotStack))
+        	if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 54)
 	            {

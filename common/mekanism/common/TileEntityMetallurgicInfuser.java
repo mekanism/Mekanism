@@ -221,7 +221,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		if(slotID == 4)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 3)
 		{
@@ -268,7 +268,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 4)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;

@@ -1,6 +1,6 @@
 package mekanism.generators.common;
 
-import mekanism.common.MekanismUtils;
+import mekanism.common.ChargeUtils;
 import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -60,7 +60,7 @@ public class ContainerSolarGenerator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if(MekanismUtils.canBeCharged(slotStack))
+            if(ChargeUtils.canBeCharged(slotStack))
             {
 	            if(slotID != 0)
 	            {

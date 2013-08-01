@@ -90,7 +90,7 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
             	}
             }
-            else if(MekanismUtils.canBeDischarged(slotStack))
+            else if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 	            {

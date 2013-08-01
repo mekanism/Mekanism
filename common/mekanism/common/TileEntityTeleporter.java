@@ -105,7 +105,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	{
 		if(slotID == 0)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;
@@ -361,7 +361,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		return MekanismUtils.canBeOutputted(itemstack, false);
+		return ChargeUtils.canBeOutputted(itemstack, false);
 	}
 	
 	@Override

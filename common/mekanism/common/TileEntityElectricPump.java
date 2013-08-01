@@ -402,7 +402,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		}
 		else if(slotID == 2)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;
@@ -413,7 +413,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		if(slotID == 2)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 1)
 		{

@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import ic2.api.item.IElectricItem;
-
 import java.util.ArrayList;
 
 import mekanism.client.Sound;
@@ -18,7 +16,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -156,7 +153,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 
 		return true;

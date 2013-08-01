@@ -287,7 +287,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		if(slotID == 1)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(tier == FactoryTier.BASIC && slotID >= 7 && slotID <= 9)
 		{
@@ -348,7 +348,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;

@@ -142,7 +142,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;
@@ -201,7 +201,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		if(slotID == 1)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 2)
 		{

@@ -195,7 +195,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 3)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		else if(slotID == 1)
 		{
@@ -309,7 +309,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	{
 		if(slotID == 3)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 2)
 		{

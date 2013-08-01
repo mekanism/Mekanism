@@ -115,7 +115,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 		
 		return true;
@@ -154,7 +154,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 1)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, true);
+			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
 		else if(slotID == 0)
 		{

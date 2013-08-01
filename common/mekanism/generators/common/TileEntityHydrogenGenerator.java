@@ -86,7 +86,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		if(slotID == 1)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, true);
+			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
 		else if(slotID == 0)
 		{
@@ -105,7 +105,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 		
 		return true;
