@@ -128,6 +128,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				name = "Unknown";
 				break;
 		}
+		
 		return getUnlocalizedName() + "." + name;
 	}
 	
