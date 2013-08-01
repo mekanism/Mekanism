@@ -77,18 +77,18 @@ public class ModelBoxSelectiveFace
     }
 
     /**
-     * Draw the six sided box defined by this ModelBox
+     * Draw the faces of this ModelBox whose ordinal ForgeDirections are false in skippedFaces
      */
     @SideOnly(Side.CLIENT)
-    public void render(Tessellator par1Tessellator, boolean[] connected, float par2)
+    public void render(Tessellator tessellator, boolean[] skippedFaces, float scaleFactor)
     {
-    	if(connected.length == quadList.length)
+    	if(skippedFaces.length == quadList.length)
 		{
-	        for (int i = 0; i < connected.length; ++i)
+	        for (int i = 0; i < skippedFaces.length; ++i)
 	        {
-	        	if(!connected[i])
+	        	if(!skippedFaces[i])
 	        	{
-	        		quadList[i].draw(par1Tessellator, par2);
+	        		quadList[i].draw(tessellator, scaleFactor);
 	        	}
 	        }
 		}
