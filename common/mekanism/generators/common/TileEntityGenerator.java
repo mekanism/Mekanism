@@ -50,8 +50,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
 	
-	/** The previous active state for this block. */
-	public boolean prevActive;
+	/** The client's current active state. */
+	public boolean clientActive;
+	
+	/** How many ticks must pass until this block's active state can sync with the client. */
+	public int updateDelay;
 	
 	/**
 	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
@@ -78,9 +81,20 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		{
 			Mekanism.proxy.registerSound(this);
 		}
-		
+			
 		if(!worldObj.isRemote)
 		{
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					clientActive = isActive;
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+				}
+			}
+			
 			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
 			if(electricityStored > 0)
@@ -223,12 +237,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     {
     	isActive = active;
     	
-    	if(prevActive != active)
+    	if(clientActive != active && updateDelay == 0)
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		updateDelay = 10;
+    		clientActive = active;
     	}
-    	
-    	prevActive = active;
     }
 	
 	@Override
@@ -333,7 +348,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
     }
 
 	@Override

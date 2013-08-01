@@ -185,6 +185,7 @@ public class Mekanism
 	public static boolean dynamicTankEasterEgg = false;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
+	public static int UPDATE_DELAY = 10;
 	public static double TO_IC2;
 	public static double TO_BC;
 	public static double FROM_IC2;

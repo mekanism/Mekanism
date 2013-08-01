@@ -55,11 +55,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
 	
+	/** How many ticks must pass until this block's active state can sync with the client. */
+	public int updateDelay;
+	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
 	
-	/** The previous active state for this block. */
-	public boolean prevActive;
+	/** The client's current active state. */
+	public boolean clientActive;
 	
 	/** The GUI texture path for this machine. */
 	public ResourceLocation guiLocation;
@@ -92,6 +95,19 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		{
 			Mekanism.proxy.registerSound(this);
 		}
+		
+		if(!worldObj.isRemote)
+		{
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -100,7 +116,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         super.readFromNBT(nbtTags);
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
         speedMultiplier = nbtTags.getInteger("speedMultiplier");
         energyMultiplier = nbtTags.getInteger("energyMultiplier");
         upgradeTicks = nbtTags.getInteger("upgradeTicks");
@@ -249,12 +265,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     {
     	isActive = active;
     	
-    	if(prevActive != active)
+    	if(clientActive != active && updateDelay == 0)
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		updateDelay = 10;
+    		clientActive = active;
     	}
-    	
-    	prevActive = active;
     }
 	
 	@Override
