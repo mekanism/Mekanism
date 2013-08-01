@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -53,7 +54,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		
 		getNavigator().setAvoidsWater(true);
 		
-		tasks.addTask(1, new RobitAIFollow(this, 0.3F, 5.0F, 2.0F));
+		tasks.addTask(1, new RobitAIFollow(this, 1.0F, 10.0F, 2.0F));
 		tasks.addTask(2, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(2, new EntityAILookIdle(this));
 		tasks.addTask(3, new EntityAISwimming(this));
@@ -140,7 +141,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				return;
 			}
 			
-			if(!(homeLocation.getTileEntity(worldObj) instanceof TileEntityChargepad))
+			if(!(homeLocation.getTileEntity(MinecraftServer.getServer().worldServerForDimension(homeLocation.dimensionId)) instanceof TileEntityChargepad))
 			{
 				drop();
 				setDead();
@@ -292,6 +293,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void goHome()
 	{
 		setFollowing(false);
+		
+		if(worldObj.provider.dimensionId != homeLocation.dimensionId)
+		{
+			travelToDimension(homeLocation.dimensionId);
+		}
+		
 		setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
 		
 		motionX = 0;
