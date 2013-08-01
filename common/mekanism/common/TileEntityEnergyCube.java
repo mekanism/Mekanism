@@ -164,7 +164,25 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getOutputtingSides().contains(direction) ? (float)Math.min(getMaxEnergy()-getEnergy(), tier.OUTPUT) : 0;
+		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(tier.OUTPUT*Mekanism.TO_UE)) : 0;
+	}
+	
+	@Override
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
+	{
+		if(getOutputtingSides().contains(from))
+		{
+			double toSend = Math.min(getEnergy(), Math.min(tier.OUTPUT, request.getWatts()*Mekanism.FROM_UE));
+			
+			if(doProvide)
+			{
+				setEnergy(getEnergy() - toSend);
+			}
+			
+			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
+		}
+		
+		return new ElectricityPack();
 	}
 
 	@Override
