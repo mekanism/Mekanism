@@ -126,7 +126,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && seesSun;
+		return electricityStored < MAX_ELECTRICITY && seesSun && MekanismUtils.canFunction(this);
 	}
 	
 	@Override

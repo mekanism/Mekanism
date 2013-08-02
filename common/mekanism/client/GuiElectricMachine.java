@@ -20,12 +20,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiElectricMachine extends GuiContainer
 {
     public TileEntityElectricMachine tileEntity;
+    
+    public GuiRedstoneControl redstoneControl;
 
     public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tentity)
     {
         super(new ContainerElectricMachine(inventory, tentity));
         xSize+=26;
         tileEntity = tentity;
+        redstoneControl = new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation);
     }
 
     @Override
@@ -53,16 +56,22 @@ public class GuiElectricMachine extends GuiContainer
 		{
 			drawCreativeTabHoveringText("Remove energy upgrade", xAxis, yAxis);
 		}
+		
+		redstoneControl.renderForeground(xAxis, yAxis);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
     {
     	mc.renderEngine.func_110577_a(tileEntity.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+        int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
@@ -73,6 +82,8 @@ public class GuiElectricMachine extends GuiContainer
         
         displayInt = tileEntity.getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 59, 10, displayInt);
+        
+        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
     
 	@Override
@@ -84,6 +95,8 @@ public class GuiElectricMachine extends GuiContainer
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			redstoneControl.mouseClicked(xAxis, yAxis);
 			
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 			{

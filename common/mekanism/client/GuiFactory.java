@@ -22,12 +22,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiFactory extends GuiContainer
 {
     public TileEntityFactory tileEntity;
+    
+    public GuiRedstoneControl redstoneControl;
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
         super(new ContainerFactory(inventory, tentity));
         xSize+=26;
         tileEntity = tentity;
+        redstoneControl = new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation);
     }
 
     @Override
@@ -56,16 +59,21 @@ public class GuiFactory extends GuiContainer
 		{
 			drawCreativeTabHoveringText("Remove energy upgrade", xAxis, yAxis);
 		}
+		
+		redstoneControl.renderForeground(xAxis, yAxis);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
     {
     	mc.renderEngine.func_110577_a(tileEntity.tier.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+        int xAxis = (mouseX - (width - xSize) / 2);
+ 		int yAxis = (mouseY - (height - ySize) / 2);
         
         int displayInt;
         
@@ -82,32 +90,34 @@ public class GuiFactory extends GuiContainer
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
-        		int xAxis = 59 + (i*38);
+        		int xPos = 59 + (i*38);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ADVANCED)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
-        		int xAxis = 39 + (i*26);
+        		int xPos = 39 + (i*26);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ELITE)
         {
         	for(int i = 0; i < tileEntity.tier.processes; i++)
         	{
-        		int xAxis = 33 + (i*19);
+        		int xPos = 33 + (i*19);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xAxis, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
+        
+        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
     
 	@Override
@@ -119,6 +129,8 @@ public class GuiFactory extends GuiContainer
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			redstoneControl.mouseClicked(xAxis, yAxis);
 			
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 			{

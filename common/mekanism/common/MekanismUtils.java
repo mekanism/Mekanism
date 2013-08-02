@@ -15,6 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
@@ -924,6 +925,38 @@ public final class MekanismUtils
 
 		return didRemove;
 	}
+    
+    /**
+     * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements
+     * IRedstoneControl.
+     * @param tileEntity - TileEntity to check
+     * @return if the TileEntity can function with redstone logic
+     */
+    public static boolean canFunction(TileEntity tileEntity)
+    {
+    	if(!(tileEntity instanceof IRedstoneControl))
+    	{
+    		return true;
+    	}
+    	
+    	World world = tileEntity.worldObj;
+    	IRedstoneControl control = (IRedstoneControl)tileEntity;
+    	
+    	if(control.getControlType() == RedstoneControl.DISABLED)
+    	{
+    		return true;
+    	}
+    	else if(control.getControlType() == RedstoneControl.HIGH)
+    	{
+    		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) > 0;
+    	}
+    	else if(control.getControlType() == RedstoneControl.LOW)
+    	{
+    		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) == 0;
+    	}
+    	
+    	return false;
+    }
     
     public static enum ResourceType
     {

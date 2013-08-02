@@ -181,7 +181,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && bioFuelSlot.fluidStored > 0;
+		return electricityStored < MAX_ELECTRICITY && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
 	}
 
 	@Override

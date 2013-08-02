@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.item.IElectricItem;
 
 import java.util.ArrayList;
 
@@ -19,22 +18,21 @@ import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.common.BlockMachine.MachineType;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.network.PacketTileEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
@@ -81,6 +79,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
 	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType;
+	
 	public TileEntityMetallurgicInfuser()
 	{
 		super("Metallurgic Infuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
@@ -95,6 +96,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
 		
 		inventory = new ItemStack[5];
+		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -192,20 +194,25 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 			
-			if(electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 			{
-				if(canOperate() && (operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				setActive(true);
+				
+				if((operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operatingTicks++;
 					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 				}
-				else if(canOperate() && (operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
 					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 				}
+			}
+			else {
+				setActive(false);
 			}
 			
 			if(!canOperate())
@@ -217,14 +224,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			{
 				infuseStored = 0;
 				type = null;
-			}
-			
-			if(canOperate() && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
-			{
-				setActive(true);
-			}
-			else {
-				setActive(false);
 			}
 		}
 	}
@@ -386,6 +385,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	clientActive = isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
+    	controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     	type = InfuseRegistry.get(nbtTags.getString("type"));
     	
         if(nbtTags.hasKey("sideDataStored"))
@@ -431,6 +431,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setInteger("infuseStored", infuseStored);
+        nbtTags.setInteger("controlType", controlType.ordinal());
         
         if(type != null)
         {
@@ -458,11 +459,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		
 		super.handlePacketData(dataStream);
+		
 		speedMultiplier = dataStream.readInt();
 		energyMultiplier = dataStream.readInt();
 		isActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 		type = InfuseRegistry.get(dataStream.readUTF());
 		
 		for(int i = 0; i < 6; i++)
@@ -477,11 +480,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(speedMultiplier);
 		data.add(energyMultiplier);
 		data.add(isActive);
 		data.add(operatingTicks);
 		data.add(infuseStored);
+		data.add(controlType.ordinal());
 		
 		if(type != null)
 		{
@@ -680,5 +685,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public boolean hasVisual()
 	{
 		return true;
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
 	}
 }

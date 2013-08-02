@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.item.IElectricItem;
 
 import java.util.ArrayList;
 
@@ -15,22 +14,21 @@ import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.network.PacketTileEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
+public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -80,6 +78,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	/** This machine's recipe type. */
 	public int recipeType;
 	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType;
+	
 	public TileEntityFactory()
 	{
 		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
@@ -100,6 +101,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		inventory = new ItemStack[4+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
+		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -234,14 +236,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 				{
-					if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+					if((progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 					{
 						progress[process]++;
 						electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
 					}
-					else if(canOperate(getInputSlot(process), getOutputSlot(process)) && (progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+					else if((progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
 						
@@ -269,7 +271,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 					}
 				}
 				
-				if(hasOperation && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+				if(MekanismUtils.canFunction(this) && hasOperation && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
 				{
 					setActive(true);
 				}
@@ -464,6 +466,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		recipeType = dataStream.readInt();
 		upgradeTicks = dataStream.readInt();
 		recipeTicks = dataStream.readInt();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -489,6 +492,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         recipeType = nbtTags.getInteger("recipeType");
         upgradeTicks = nbtTags.getInteger("upgradeTicks");
         recipeTicks = nbtTags.getInteger("recipeTicks");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -515,6 +519,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         nbtTags.setInteger("recipeType", recipeType);
         nbtTags.setInteger("upgradeTicks", upgradeTicks);
         nbtTags.setInteger("recipeTicks", recipeTicks);
+        nbtTags.setInteger("controlType", controlType.ordinal());
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -533,14 +538,17 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(speedMultiplier);
 		data.add(energyMultiplier);
 		data.add(isActive);
 		data.add(recipeType);
 		data.add(upgradeTicks);
 		data.add(recipeTicks);
+		data.add(controlType.ordinal());
 		data.add(progress);
 		data.add(sideConfig);
+		
 		return data;
 	}
 
@@ -789,5 +797,17 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public boolean hasVisual()
 	{
 		return true;
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
 	}
 }

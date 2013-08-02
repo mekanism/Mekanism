@@ -140,7 +140,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && hydrogenStored-2 > -1;
+		return electricityStored < MAX_ELECTRICITY && hydrogenStored-2 >= 0 && MekanismUtils.canFunction(this);
 	}
 	
 	/**

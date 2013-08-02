@@ -9,6 +9,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityMetallurgicInfuser;
+import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketTileEntity;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -26,35 +27,14 @@ public class GuiMetallurgicInfuser extends GuiContainer
 {
 	public TileEntityMetallurgicInfuser tileEntity;
 	
-	private int guiWidth;
-	private int guiHeight;
+	public GuiRedstoneControl redstoneControl;
 	
 	public GuiMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
     {
         super(new ContainerMetallurgicInfuser(inventory, tentity));
         xSize+=26;
         tileEntity = tentity;
-    }
-	
-	@Override
-    protected void mouseClicked(int x, int y, int button)
-    {
-		super.mouseClicked(x, y, button);
-		
-		if(button == 0)
-		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
-			
-			if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-			}
-		}
+        redstoneControl = new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
     }
 
 	@Override
@@ -72,16 +52,21 @@ public class GuiMetallurgicInfuser extends GuiContainer
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
 		}
+		
+		redstoneControl.renderForeground(xAxis, yAxis);
     }
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
     {
 		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        guiWidth = (width - xSize) / 2;
-        guiHeight = (height - ySize) / 2;
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+        int xAxis = (mouseX - (width - xSize) / 2);
+ 		int yAxis = (mouseY - (height - ySize) / 2);
         
         int displayInt;
         
@@ -100,5 +85,42 @@ public class GuiMetallurgicInfuser extends GuiContainer
 	        mc.renderEngine.func_110577_a(tileEntity.type.texture);
 	        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
         }
+        
+        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
+    }
+	
+	@Override
+    protected void mouseClicked(int x, int y, int button)
+    {
+		super.mouseClicked(x, y, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (x - (width - xSize) / 2);
+			int yAxis = (y - (height - ySize) / 2);
+			
+			redstoneControl.mouseClicked(xAxis, yAxis);
+			
+			if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+			
+			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)0));
+			}
+			
+			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)1));
+			}
+		}
     }
 }

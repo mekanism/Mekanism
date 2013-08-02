@@ -31,6 +31,7 @@ import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketPortableTeleport;
 import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketStatusUpdate;
@@ -1197,6 +1198,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketDigitUpdate.class);
 		PacketHandler.registerPacket(PacketPortableTeleport.class);
 		PacketHandler.registerPacket(PacketRemoveUpgrade.class);
+		PacketHandler.registerPacket(PacketRedstoneControl.class);
 		
 		//Donators
 		donators.add("mrgreaper");
