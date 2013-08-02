@@ -40,6 +40,12 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 		return getNetwork(true);
 	}
 	
+	public float getEnergyScale()
+	{
+		//TODO: Let the client know how much power's being transferred
+		return 1.F;
+	}
+	
 	@Override
 	public EnergyNetwork getNetwork(boolean createIfNull)
 	{
@@ -102,7 +108,10 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public void removeFromNetwork()
 	{
-		energyNetwork.removeCable(this);
+		if(energyNetwork != null)
+		{
+			energyNetwork.removeCable(this);
+		}
 	}
 
 	@Override
