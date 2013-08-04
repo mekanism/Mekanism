@@ -22,6 +22,8 @@ import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.electricity.ElectricityPack;
 
 public class EnergyNetwork
 {
@@ -76,6 +78,10 @@ public class EnergyNetwork
 				{
 					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC);
 				}
+				else if(acceptor instanceof IElectrical)
+				{
+					totalNeeded += ((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor))*Mekanism.FROM_UE;
+				}
 			}
 		}
 		
@@ -85,7 +91,8 @@ public class EnergyNetwork
 	public double emit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
 		double energyAvailable = energyToSend;		
-		double sent;		
+		double sent;
+		
 		List availableAcceptors = Arrays.asList(getEnergyAcceptors().toArray());
 
 		Collections.shuffle(availableAcceptors);
@@ -121,6 +128,12 @@ public class EnergyNetwork
 		            	double transferEnergy = Math.min(electricityNeeded, currentSending);
 		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
 		            	energyToSend -= transferEnergy;
+					}
+					else if(acceptor instanceof IElectrical)
+					{
+						double toSend = Math.min(currentSending, ((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_UE);
+						ElectricityPack pack = ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), ((IElectrical)acceptor).getVoltage());
+						energyToSend -= ((IElectrical)acceptor).receiveElectricity(acceptorDirections.get(acceptor).getOpposite(), pack, true)*Mekanism.FROM_UE;
 					}
 				}
 			}
@@ -163,6 +176,16 @@ public class EnergyNetwork
 				if(((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()) != null)
 				{
 					if((((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
+					{
+						toReturn.add(acceptor);
+					}
+				}
+			}
+			else if(acceptor instanceof IElectrical)
+			{
+				if(((IElectrical)acceptor).canConnect(acceptorDirections.get(acceptor).getOpposite()))
+				{
+					if(((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor).getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}
@@ -305,7 +328,7 @@ public class EnergyNetwork
 
 				if(nodeTile instanceof IUniversalCable)
 				{
-					((IUniversalCable) nodeTile).removeFromNetwork();
+					((IUniversalCable)nodeTile).removeFromNetwork();
 					newCables.add((IUniversalCable)nodeTile);
 				}
 			}
@@ -320,6 +343,7 @@ public class EnergyNetwork
 	public void removeCable(IUniversalCable cable)
 	{
 		cables.remove(cable);
+		
 		if(cables.size() == 0)
 		{
 			deregister();

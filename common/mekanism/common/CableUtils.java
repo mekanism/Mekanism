@@ -15,6 +15,7 @@ import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerReceptor;
+import universalelectricity.core.block.IElectrical;
 
 public final class CableUtils
 {
@@ -31,7 +32,10 @@ public final class CableUtils
     	{
 			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || (acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded))
+			if(acceptor instanceof IStrictEnergyAcceptor || 
+					acceptor instanceof IEnergySink || 
+					(acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded) ||
+					acceptor instanceof IElectrical)
 			{
 				acceptors[orientation.ordinal()] = acceptor;
 			}
@@ -71,15 +75,15 @@ public final class CableUtils
     {
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
-		TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tileEntity);
-		TileEntity[] connectedCables = CableUtils.getConnectedCables(tileEntity);
-		TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tileEntity);
+		TileEntity[] connectedAcceptors = getConnectedEnergyAcceptors(tileEntity);
+		TileEntity[] connectedCables = getConnectedCables(tileEntity);
+		TileEntity[] connectedOutputters = getConnectedOutputters(tileEntity);
 		
 		for(TileEntity tile : connectedAcceptors)
 		{
 			int side = Arrays.asList(connectedAcceptors).indexOf(tile);
 			
-			if(CableUtils.canConnectToAcceptor(ForgeDirection.getOrientation(side), tileEntity))
+			if(canConnectToAcceptor(ForgeDirection.getOrientation(side), tileEntity))
 			{
 				connectable[side] = true;
 			}
@@ -121,7 +125,9 @@ public final class CableUtils
     	{
 			TileEntity outputter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite()) || outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, MekanismUtils.toIC2Direction(orientation.getOpposite())))
+			if((outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite())) || 
+					(outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, MekanismUtils.toIC2Direction(orientation.getOpposite()))) ||
+					(outputter instanceof IElectrical && ((IElectrical)outputter).canConnect(orientation.getOpposite())))
 			{
 				outputters[orientation.ordinal()] = outputter;
 			}
@@ -151,6 +157,11 @@ public final class CableUtils
     	}
     	
     	if(tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite()))
+    	{
+    		return true;
+    	}
+    	
+    	if(tileEntity instanceof IElectrical && ((IElectrical)tileEntity).canConnect(side.getOpposite()))
     	{
     		return true;
     	}

@@ -532,6 +532,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.PressurizedTube.name", "Pressurized Tube");
 		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.UniversalCable.name", "Universal Cable");
 		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.MechanicalPipe.name", "Mechanical Pipe");
+		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.LogisticalTransporter.name", "Logistical Transporter");
 		
 		//Localization for EnergyCube
 		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Basic.name", "Basic Energy Cube");

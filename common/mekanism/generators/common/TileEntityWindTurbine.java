@@ -53,13 +53,28 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	@Override
 	public String[] getMethodNames() 
 	{
-		return null;
+		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
 	{
-		return null;
+		switch(method)
+		{
+			case 0:
+				return new Object[] {electricityStored};
+			case 1:
+				return new Object[] {output};
+			case 2:
+				return new Object[] {MAX_ELECTRICITY};
+			case 3:
+				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+			case 4:
+				return new Object[] {getMultiplier()};
+			default:
+				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				return null;
+		}
 	}
 
 	@Override

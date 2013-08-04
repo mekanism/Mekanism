@@ -26,6 +26,15 @@ import net.minecraftforge.common.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Block class for handling multiple transmitter IDs.
+ * 0: Pressurized Tube
+ * 1: Universal Cable
+ * 2: Mechanical Pipe
+ * 3: Logistical Transporter
+ * @author AidanBrady
+ *
+ */
 public class BlockTransmitter extends Block
 {
 	public BlockTransmitter(int id)
@@ -48,6 +57,7 @@ public class BlockTransmitter extends Block
 		list.add(new ItemStack(i, 1, 0));
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
+		list.add(new ItemStack(i, 1, 3));
 	}
 	
 	@Override
@@ -323,6 +333,8 @@ public class BlockTransmitter extends Block
 				return new TileEntityUniversalCable();
 			case 2:
 				return new TileEntityMechanicalPipe();
+			case 3:
+				return new TileEntityLogisticalTransporter();
 			default:
 				return null;
 		}
