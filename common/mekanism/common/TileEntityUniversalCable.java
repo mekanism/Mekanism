@@ -1,9 +1,9 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -60,13 +60,13 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 					connectedNets.add(((IUniversalCable)cable).getNetwork());
 				}
 			}
-			if(connectedNets.size() == 0)
+			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
 				energyNetwork = new EnergyNetwork(this);
 			}
 			else if(connectedNets.size() == 1)
 			{
-				energyNetwork = (EnergyNetwork)connectedNets.toArray()[0];
+				energyNetwork = connectedNets.iterator().next();
 				energyNetwork.cables.add(this);
 			}
 			else {
@@ -159,6 +159,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	public void onChunkUnload() 
 	{
 		invalidate();
-		EnergyNetworkRegistry.getInstance().pruneEmptyNetworks();
+		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 	}
 }

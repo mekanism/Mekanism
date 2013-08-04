@@ -40,7 +40,7 @@ public class EnergyNetwork implements ITransmitterNetwork
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
 		cables.addAll(Arrays.asList(varCables));
-		EnergyNetworkRegistry.getInstance().registerNetwork(this);
+		register();
 	}
 	
 	public EnergyNetwork(Set<EnergyNetwork> networks)
@@ -55,7 +55,7 @@ public class EnergyNetwork implements ITransmitterNetwork
 		}
 		
 		refresh();
-		EnergyNetworkRegistry.getInstance().registerNetwork(this);
+		register();
 	}
 	
 	public double getEnergyNeeded(ArrayList<TileEntity> ignored)
@@ -216,7 +216,7 @@ public class EnergyNetwork implements ITransmitterNetwork
 	{
 		if(network != null && network != this)
 		{
-			Set<EnergyNetwork> networks = new HashSet();
+			Set<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
 			networks.add(this);
 			networks.add(network);
 			EnergyNetwork newNetwork = new EnergyNetwork(networks);
@@ -270,8 +270,7 @@ public class EnergyNetwork implements ITransmitterNetwork
 						}
 					}
 					
-					EnergyNetwork newNetwork = new EnergyNetwork();
-					
+					Set<IUniversalCable> newNetCables= new HashSet<IUniversalCable>();
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
@@ -280,11 +279,12 @@ public class EnergyNetwork implements ITransmitterNetwork
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetwork.cables.add((IUniversalCable)nodeTile);
+								newNetCables.add((IUniversalCable)nodeTile);
 							}
 						}
 					}
 					
+					EnergyNetwork newNetwork = new EnergyNetwork(newNetCables.toArray(new IUniversalCable[0]));					
 					newNetwork.refresh();
 				}
 			}
@@ -328,10 +328,19 @@ public class EnergyNetwork implements ITransmitterNetwork
 		}
 	}
 	
+	public void register()
+	{
+		IUniversalCable aCable = cables.iterator().next();
+		if(aCable instanceof TileEntity && !((TileEntity)aCable).worldObj.isRemote)
+		{
+			TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+		}
+	}
+	
 	public void deregister()
 	{
 		cables.clear();
-		EnergyNetworkRegistry.getInstance().removeNetwork(this);
+		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
@@ -413,7 +422,6 @@ public class EnergyNetwork implements ITransmitterNetwork
 		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
 	}
 
-	
 	public void tick()
 	{
 		clearJoulesTransmitted();
@@ -425,7 +433,7 @@ public class EnergyNetwork implements ITransmitterNetwork
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(cables.toArray(new IUniversalCable[0])[0]);
+				fixMessedUpNetwork(cables.iterator().next());
 			}
 		}
 	}

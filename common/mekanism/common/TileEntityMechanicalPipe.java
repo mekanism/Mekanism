@@ -2,8 +2,10 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,6 +67,44 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 	
 	@Override
+	public FluidNetwork getNetwork(boolean createIfNull)
+	{
+		if(fluidNetwork == null && createIfNull)
+		{
+			TileEntity[] adjacentCables = CableUtils.getConnectedCables(this);
+			HashSet<FluidNetwork> connectedNets = new HashSet<FluidNetwork>();
+			for(TileEntity pipe : adjacentCables)
+			{
+				if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).getNetwork(false) != null)
+				{
+					connectedNets.add(((IMechanicalPipe)pipe).getNetwork());
+				}
+			}
+			if(connectedNets.size() == 0 || worldObj.isRemote)
+			{
+				fluidNetwork = new FluidNetwork(this);
+			}
+			else if(connectedNets.size() == 1)
+			{
+				fluidNetwork = connectedNets.iterator().next();
+				fluidNetwork.pipes.add(this);
+			}
+			else {
+				fluidNetwork = new FluidNetwork(connectedNets);
+				fluidNetwork.pipes.add(this);
+			}
+		}
+		
+		return fluidNetwork;
+	}
+
+	@Override
+	public void fixNetwork()
+	{
+		getNetwork().fixMessedUpNetwork(this);
+	}
+	
+	@Override
 	public void invalidate()
 	{
 		if(!worldObj.isRemote)
@@ -78,9 +118,22 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	@Override
 	public void setNetwork(FluidNetwork network)
 	{
-		fluidNetwork = network;
+		if(network != fluidNetwork)
+		{
+			removeFromNetwork();
+			fluidNetwork = network;
+		}
 	}
 	
+	@Override
+	public void removeFromNetwork()
+	{
+		if(fluidNetwork != null)
+		{
+			fluidNetwork.removePipe(this);
+		}
+	}
+
 	@Override
 	public void refreshNetwork() 
 	{
@@ -98,6 +151,13 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 			
 			getNetwork().refresh();
 		}
+	}
+	
+	@Override
+	public void onChunkUnload() 
+	{
+		invalidate();
+		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 	}
 	
 	@Override

@@ -24,10 +24,19 @@ public interface IPressurizedTube
 	public void onTransfer(EnumGas type);
 	
 	/**
-	 * Gets the GasNetwork currently in use by this cable segment.
+	 * Gets the GasNetwork currently in use by this tube segment.
 	 * @return GasNetwork this cable is using
 	 */
 	public GasNetwork getNetwork();
+	
+	/**
+	 * Gets the GasNetwork currently in use by this tube segment.
+	 * @param createIfNull - If true, the tube will try and connect to an
+	 * adjacent network, merging several if necessary, or creating a new one
+	 * if none is available
+	 * @return GasNetwork this cable is using
+	 */
+	public GasNetwork getNetwork(boolean createIfNull);
 	
 	/**
 	 * Sets this cable segment's GasNetwork to a new value.
@@ -36,7 +45,18 @@ public interface IPressurizedTube
 	public void setNetwork(GasNetwork network);
 	
 	/**
-	 * Refreshes the cable's GasNetwork.
+	 * Refreshes the tube's GasNetwork.
 	 */
 	public void refreshNetwork();
+
+	/**
+	 * Remove a tube from its network.
+	 */
+	public void removeFromNetwork();
+
+	/**
+	 * Call this if you're worried a tube's network is messed up and you want
+	 * it to try and fix itself.
+	 */
+	public void fixNetwork();
 }

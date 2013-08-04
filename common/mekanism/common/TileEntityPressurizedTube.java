@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.HashSet;
+
 import mekanism.api.EnumGas;
 import mekanism.api.GasNetwork;
 import mekanism.api.IPressurizedTube;
@@ -40,14 +42,47 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public GasNetwork getNetwork()
 	{
-		if(gasNetwork == null)
+		return getNetwork(true);
+	}
+	
+	@Override
+	public GasNetwork getNetwork(boolean createIfNull)
+	{
+		if(gasNetwork == null && createIfNull)
 		{
-			gasNetwork = new GasNetwork(this);
+			TileEntity[] adjacentPipes = PipeUtils.getConnectedPipes(this);
+			HashSet<GasNetwork> connectedNets = new HashSet<GasNetwork>();
+			for(TileEntity cable : adjacentPipes)
+			{
+				if(cable instanceof IPressurizedTube && ((IPressurizedTube)cable).getNetwork(false) != null)
+				{
+					connectedNets.add(((IPressurizedTube)cable).getNetwork());
+				}
+			}
+			if(connectedNets.size() == 0 || worldObj.isRemote)
+			{
+				gasNetwork = new GasNetwork(this);
+			}
+			else if(connectedNets.size() == 1)
+			{
+				gasNetwork = (GasNetwork)connectedNets.iterator().next();
+				gasNetwork.tubes.add(this);
+			}
+			else {
+				gasNetwork = new GasNetwork(connectedNets);
+				gasNetwork.tubes.add(this);
+			}
 		}
 		
 		return gasNetwork;
 	}
-	
+
+	@Override
+	public void fixNetwork()
+	{
+		getNetwork().fixMessedUpNetwork(this);
+	}
+
 	@Override
 	public void invalidate()
 	{
@@ -62,7 +97,20 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public void setNetwork(GasNetwork network)
 	{
-		gasNetwork = network;
+		if(network != gasNetwork)
+		{
+			removeFromNetwork();
+			gasNetwork = network;			
+		}
+	}
+	
+	@Override
+	public void removeFromNetwork()
+	{
+		if(gasNetwork != null)
+		{
+			gasNetwork.removeTube(this);
+		}
 	}
 	
 	@Override
