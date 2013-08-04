@@ -17,6 +17,7 @@ import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
+import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.MekanismUtils.ResourceType;
@@ -1212,6 +1213,14 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
+	}
+	
+	@ForgeSubscribe
+	public void onEnergyTransferred(EnergyTransferEvent event)
+	{
+		try {
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.ENERGY, event.energyNetwork.cables.iterator().next(), event.power));
+		} catch(Exception e) {}
 	}
 	
 	@ForgeSubscribe

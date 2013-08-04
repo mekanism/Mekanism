@@ -4,6 +4,10 @@ import java.util.HashSet;
 
 import mekanism.api.Object3D;
 import mekanism.api.TransmitterNetworkRegistry;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -22,6 +26,8 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	/** The energy network currently in use by this cable segment. */
 	public EnergyNetwork energyNetwork;
 	
+	public double energyScale;
+	
 	public TileEntityUniversalCable()
 	{
 		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
@@ -38,12 +44,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	public EnergyNetwork getNetwork()
 	{
 		return getNetwork(true);
-	}
-	
-	public float getEnergyScale()
-	{
-		//TODO: Let the client know how much power's being transferred
-		return 1.F;
 	}
 	
 	@Override
@@ -160,5 +160,30 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		invalidate();
 		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+	}
+	
+	@Override
+	public void setEnergyScale(double scale)
+	{
+		energyScale = scale;
+	}
+
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		energyScale = getNetwork().getPowerScale();
+		NBTTagCompound nbtTag = new NBTTagCompound();
+		nbtTag.setDouble("energyScale", energyScale);
+		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
+	}
+
+	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet)
+	{
+		setEnergyScale(packet.customParam1.getDouble("energyScale"));
+	}
+	
+	public float getEnergyScale()
+	{
+		return (float)energyScale;
 	}
 }

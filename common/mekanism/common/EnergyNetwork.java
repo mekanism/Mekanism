@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
@@ -19,6 +21,8 @@ import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
@@ -32,9 +36,11 @@ public class EnergyNetwork implements ITransmitterNetwork
 	public Set<TileEntity> possibleAcceptors = new HashSet<TileEntity>();
 	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
 	
+	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	private int ticksSinceCreate = 0;
+	private int ticksSinceSecond = 0;
 	private boolean fixed = false;
 	
 	public EnergyNetwork(IUniversalCable... varCables)
@@ -209,6 +215,14 @@ public class EnergyNetwork implements ITransmitterNetwork
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 				}
 			}
+		}
+		
+		double currentPowerScale = getPowerScale();
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			lastPowerScale = currentPowerScale;
+
+			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
 		}
 	}
 
@@ -393,6 +407,19 @@ public class EnergyNetwork implements ITransmitterNetwork
 		}
 	}
 	
+	public static class EnergyTransferEvent extends Event
+	{
+		public final EnergyNetwork energyNetwork;
+		
+		public final double power;
+		
+		public EnergyTransferEvent(EnergyNetwork network, double currentPower)
+		{
+			energyNetwork = network;
+			power = currentPower;
+		}
+	}
+	
 	public static class NetworkLoader
 	{
 		@ForgeSubscribe
@@ -436,6 +463,19 @@ public class EnergyNetwork implements ITransmitterNetwork
 				fixMessedUpNetwork(cables.iterator().next());
 			}
 		}
+		
+		double currentPowerScale = getPowerScale();
+		if(currentPowerScale != lastPowerScale && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			lastPowerScale = currentPowerScale;
+
+			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+		}
+	}
+	
+	public double getPowerScale()
+	{
+		return joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1);
 	}
 	
 	public void clearJoulesTransmitted()

@@ -45,4 +45,6 @@ public interface IUniversalCable
 	 */
 	public void fixNetwork();
 
+	public void setEnergyScale(double energyScale);
+
 }
