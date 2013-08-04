@@ -19,7 +19,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork 
+public class GasNetwork implements ITransmitterNetwork
 {
 	public Set<IPressurizedTube> tubes = new HashSet<IPressurizedTube>();
 	
@@ -308,5 +308,15 @@ public class GasNetwork
 	public String toString()
 	{
 		return "[GasNetwork] " + tubes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+	}
+
+	public void tick()
+	{		
+	}
+
+	@Override
+	public int getSize()
+	{
+		return tubes.size();
 	}
 }

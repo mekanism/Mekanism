@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -23,7 +25,7 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
 
-public class EnergyNetwork
+public class EnergyNetwork implements ITransmitterNetwork
 {
 	public HashSet<IUniversalCable> cables = new HashSet<IUniversalCable>();
 	
@@ -437,5 +439,11 @@ public class EnergyNetwork
 	public double getPower()
 	{
 		return joulesLastTick * 20;
+	}
+	
+	@Override
+	public int getSize()
+	{
+		return cables.size();
 	}
 }

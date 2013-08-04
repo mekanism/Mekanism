@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -22,7 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork
+public class FluidNetwork implements ITransmitterNetwork
 {
 	public Set<IMechanicalPipe> pipes = new HashSet<IMechanicalPipe>();
 	
@@ -301,9 +303,19 @@ public class FluidNetwork
 		}
 	}
 	
+	public void tick()
+	{
+	}
+		
 	@Override
 	public String toString()
 	{
 		return "[FluidNetwork] " + pipes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+	}
+
+	@Override
+	public int getSize()
+	{
+		return pipes.size();
 	}
 }
