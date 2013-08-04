@@ -12,11 +12,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
@@ -25,22 +31,24 @@ import buildcraft.api.power.PowerHandler.Type;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
 
-public class EnergyNetwork
+public class EnergyNetwork implements ITransmitterNetwork
 {
 	public HashSet<IUniversalCable> cables = new HashSet<IUniversalCable>();
 	
 	public Set<TileEntity> possibleAcceptors = new HashSet<TileEntity>();
 	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
 	
+	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	private int ticksSinceCreate = 0;
+	private int ticksSinceSecond = 0;
 	private boolean fixed = false;
 	
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
 		cables.addAll(Arrays.asList(varCables));
-		EnergyNetworkRegistry.getInstance().registerNetwork(this);
+		register();
 	}
 	
 	public EnergyNetwork(Set<EnergyNetwork> networks)
@@ -55,7 +63,7 @@ public class EnergyNetwork
 		}
 		
 		refresh();
-		EnergyNetworkRegistry.getInstance().registerNetwork(this);
+		register();
 	}
 	
 	public double getEnergyNeeded(ArrayList<TileEntity> ignored)
@@ -231,13 +239,21 @@ public class EnergyNetwork
 				}
 			}
 		}
+		
+		double currentPowerScale = getPowerScale();
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			lastPowerScale = currentPowerScale;
+
+			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+		}
 	}
 
 	public void merge(EnergyNetwork network)
 	{
 		if(network != null && network != this)
 		{
-			Set<EnergyNetwork> networks = new HashSet();
+			Set<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
 			networks.add(this);
 			networks.add(network);
 			EnergyNetwork newNetwork = new EnergyNetwork(networks);
@@ -291,8 +307,7 @@ public class EnergyNetwork
 						}
 					}
 					
-					EnergyNetwork newNetwork = new EnergyNetwork();
-					
+					Set<IUniversalCable> newNetCables= new HashSet<IUniversalCable>();
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
@@ -301,11 +316,12 @@ public class EnergyNetwork
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetwork.cables.add((IUniversalCable)nodeTile);
+								newNetCables.add((IUniversalCable)nodeTile);
 							}
 						}
 					}
 					
+					EnergyNetwork newNetwork = new EnergyNetwork(newNetCables.toArray(new IUniversalCable[0]));					
 					newNetwork.refresh();
 				}
 			}
@@ -350,10 +366,19 @@ public class EnergyNetwork
 		}
 	}
 	
+	public void register()
+	{
+		IUniversalCable aCable = cables.iterator().next();
+		if(aCable instanceof TileEntity && !((TileEntity)aCable).worldObj.isRemote)
+		{
+			TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+		}
+	}
+	
 	public void deregister()
 	{
 		cables.clear();
-		EnergyNetworkRegistry.getInstance().removeNetwork(this);
+		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
@@ -406,6 +431,19 @@ public class EnergyNetwork
 		}
 	}
 	
+	public static class EnergyTransferEvent extends Event
+	{
+		public final EnergyNetwork energyNetwork;
+		
+		public final double power;
+		
+		public EnergyTransferEvent(EnergyNetwork network, double currentPower)
+		{
+			energyNetwork = network;
+			power = currentPower;
+		}
+	}
+	
 	public static class NetworkLoader
 	{
 		@ForgeSubscribe
@@ -435,7 +473,6 @@ public class EnergyNetwork
 		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
 	}
 
-	
 	public void tick()
 	{
 		clearJoulesTransmitted();
@@ -447,9 +484,22 @@ public class EnergyNetwork
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(cables.toArray(new IUniversalCable[0])[0]);
+				fixMessedUpNetwork(cables.iterator().next());
 			}
 		}
+		
+		double currentPowerScale = getPowerScale();
+		if(currentPowerScale != lastPowerScale && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			lastPowerScale = currentPowerScale;
+
+			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+		}
+	}
+	
+	public double getPowerScale()
+	{
+		return joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1);
 	}
 	
 	public void clearJoulesTransmitted()
@@ -461,5 +511,11 @@ public class EnergyNetwork
 	public double getPower()
 	{
 		return joulesLastTick * 20;
+	}
+	
+	@Override
+	public int getSize()
+	{
+		return cables.size();
 	}
 }

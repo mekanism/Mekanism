@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.api;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -9,28 +9,28 @@ import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-public class EnergyNetworkRegistry implements ITickHandler
+public class TransmitterNetworkRegistry implements ITickHandler
 {
-	private static EnergyNetworkRegistry INSTANCE = new EnergyNetworkRegistry();
+	private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
 	
-	private HashSet<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
+	private HashSet<ITransmitterNetwork> networks = new HashSet<ITransmitterNetwork>();
 	
-	public EnergyNetworkRegistry()
+	public TransmitterNetworkRegistry()
 	{
 		TickRegistry.registerTickHandler(this, Side.SERVER);
 	}
 	
-	public static EnergyNetworkRegistry getInstance()
+	public static TransmitterNetworkRegistry getInstance()
 	{
 		return INSTANCE;
 	}
-	
-	public void registerNetwork(EnergyNetwork network)
+		
+	public void registerNetwork(ITransmitterNetwork network)
 	{
 		networks.add(network);
 	}
 	
-	public void removeNetwork(EnergyNetwork network)
+	public void removeNetwork(ITransmitterNetwork network)
 	{
 		if(networks.contains(network))
 		{
@@ -40,14 +40,13 @@ public class EnergyNetworkRegistry implements ITickHandler
 	
 	public void pruneEmptyNetworks()
 	{
-		for(EnergyNetwork e : networks)
+		for(ITransmitterNetwork e : networks)
 		{
-			if(e.cables.size() == 0)
+			if(e.getSize() == 0)
 			{
 				removeNetwork(e);
 			}
 		}
-		
 	}
 	
 	@Override
@@ -55,12 +54,12 @@ public class EnergyNetworkRegistry implements ITickHandler
 	{
 		return;
 	}
-
+	
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
-		Set<EnergyNetwork> iterNetworks = (Set<EnergyNetwork>) networks.clone();
-		for(EnergyNetwork net : iterNetworks)
+		Set<ITransmitterNetwork> iterNetworks = (Set<ITransmitterNetwork>) networks.clone();
+		for(ITransmitterNetwork net : iterNetworks)
 		{
 			if(networks.contains(net))
 			{
@@ -84,6 +83,6 @@ public class EnergyNetworkRegistry implements ITickHandler
 	@Override
 	public String toString() 
 	{
-		return networks.toString();
+		return "Network Registry:\n" + networks;
 	}
 }

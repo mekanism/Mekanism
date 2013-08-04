@@ -16,19 +16,39 @@ public interface IMechanicalPipe
 	public void onTransfer(FluidStack fluidStack);
 	
 	/**
-	 * Gets the FluidNetwork currently in use by this cable segment.
-	 * @return FluidNetwork this cable is using
+	 * Gets the FluidNetwork currently in use by this pipe segment.
+	 * @return FluidNetwork this pipe is using
 	 */
 	public FluidNetwork getNetwork();
 	
 	/**
-	 * Sets this cable segment's FluidNetwork to a new value.
+	 * Gets the FluidNetwork currently in use by this pipe segment.
+	 * @param createIfNull - If true, the pipe will try and connect to an
+	 * adjacent network, merging several if necessary, or creating a new one
+	 * if none is available
+	 * @return FluidNetwork this pipe is using
+	 */
+	public FluidNetwork getNetwork(boolean createIfNull);
+	
+	/**
+	 * Sets this pipe segment's FluidNetwork to a new value.
 	 * @param network - FluidNetwork to set to
 	 */
 	public void setNetwork(FluidNetwork network);
 	
 	/**
-	 * Refreshes the cable's FluidNetwork.
+	 * Refreshes the pipe's FluidNetwork.
 	 */
 	public void refreshNetwork();
+	
+	/**
+	 * Remove a pipe from its network.
+	 */
+	public void removeFromNetwork();
+
+	/**
+	 * Call this if you're worried a pipe's network is messed up and you want
+	 * it to try and fix itself.
+	 */
+	public void fixNetwork();
 }

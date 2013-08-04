@@ -3,6 +3,7 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.api.EnumGas;
+import mekanism.client.EnergyClientUpdate;
 import mekanism.client.GasClientUpdate;
 import mekanism.client.FluidClientUpdate;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +18,8 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	public TransmitterTransferType activeType;
 	
 	public TileEntity tileEntity;
+	
+	public double power;
 	
 	public String gasName;
 	
@@ -36,6 +39,9 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		
 		switch(activeType)
 		{
+			case ENERGY:
+				power = (double)data[2];
+				break;
 			case GAS:
 				gasName = ((EnumGas)data[2]).name;
 				break;
@@ -56,7 +62,18 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		int y = dataStream.readInt();
 		int z = dataStream.readInt();
 		
-	    if(transmitterType == 0)
+		if(transmitterType == 0)
+		{
+			double powerLevel = dataStream.readDouble();
+			
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity != null)
+			{
+				new EnergyClientUpdate(tileEntity, powerLevel).clientUpdate();
+			}
+		}
+		else if(transmitterType == 1)
 	    {
     		EnumGas type = EnumGas.getFromName(dataStream.readUTF());
     		
@@ -67,7 +84,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
     			new GasClientUpdate(tileEntity, type).clientUpdate();
     		}
 	    }
-	    else if(transmitterType == 1)
+	    else if(transmitterType == 2)
 	    {
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		FluidStack fluidStack = new FluidStack(dataStream.readInt(), dataStream.readInt());
@@ -90,6 +107,9 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		
 		switch(activeType)
 		{
+			case ENERGY:
+				dataStream.writeDouble(power);
+				break;
 			case GAS:
 				dataStream.writeUTF(gasName);
 				break;
@@ -102,6 +122,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	
 	public static enum TransmitterTransferType
 	{
+		ENERGY,
 		GAS,
 		FLUID
 	}
