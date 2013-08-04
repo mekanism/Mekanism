@@ -40,7 +40,7 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		switch(activeType)
 		{
 			case ENERGY:
-				power = (double)data[2];
+				power = (Double)data[2];
 				break;
 			case GAS:
 				gasName = ((EnumGas)data[2]).name;
