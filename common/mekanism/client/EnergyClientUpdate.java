@@ -22,7 +22,6 @@ public class EnergyClientUpdate
 		worldObj = head.worldObj;
 		energyScale = power;
 		finder = new NetworkFinder(head.worldObj, Object3D.get(head));
-		System.out.println(power);
 	}
 	
 	public void clientUpdate()
