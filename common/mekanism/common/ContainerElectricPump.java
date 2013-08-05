@@ -114,7 +114,7 @@ public class ContainerElectricPump extends Container
 	        			return null;
 	        		}
 	        	}
-	        	else if(slotID > 28)
+	        	else if(slotID > 29)
 	        	{
 	        		if(!mergeItemStack(slotStack, 3, 29, false))
 	        		{
