@@ -163,23 +163,9 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 	
 	@Override
-	public void setEnergyScale(double scale)
+	public void setCachedEnergy(double scale)
 	{
 		energyScale = scale;
-	}
-
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		energyScale = getNetwork().getPowerScale();
-		NBTTagCompound nbtTag = new NBTTagCompound();
-		nbtTag.setDouble("energyScale", energyScale);
-		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
-	}
-
-	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet)
-	{
-		setEnergyScale(packet.customParam1.getDouble("energyScale"));
 	}
 	
 	public float getEnergyScale()

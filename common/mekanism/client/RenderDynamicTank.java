@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -54,8 +55,18 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 				
+				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
+				{
+					MekanismRenderer.glowOn();
+				}
+				
 				int[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
 				GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
+				
+				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
+				{
+					MekanismRenderer.glowOff();
+				}
 				
 				pop();
 				
@@ -67,8 +78,18 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 						
+						if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
+						{
+							MekanismRenderer.glowOn();
+						}
+						
 						int display = getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).display;
 						GL11.glCallList(display);
+						
+						if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
+						{
+							MekanismRenderer.glowOff();
+						}
 						
 						pop();
 					}

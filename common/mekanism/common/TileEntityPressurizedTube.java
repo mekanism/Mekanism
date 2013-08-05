@@ -25,21 +25,6 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	public GasNetwork gasNetwork;
 	
 	@Override
-	public void updateEntity()
-	{
-		if(worldObj.isRemote)
-		{
-			if(gasScale > 0)
-			{
-				gasScale -= .01;
-			}
-			else {
-				refGas = null;
-			}
-		}
-	}
-	
-	@Override
 	public GasNetwork getNetwork()
 	{
 		return getNetwork(true);
@@ -52,6 +37,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 		{
 			TileEntity[] adjacentPipes = PipeUtils.getConnectedPipes(this);
 			HashSet<GasNetwork> connectedNets = new HashSet<GasNetwork>();
+			
 			for(TileEntity cable : adjacentPipes)
 			{
 				if(cable instanceof IPressurizedTube && ((IPressurizedTube)cable).getNetwork(false) != null)
@@ -59,6 +45,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 					connectedNets.add(((IPressurizedTube)cable).getNetwork());
 				}
 			}
+			
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
 				gasNetwork = new GasNetwork(this);
@@ -173,7 +160,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public boolean canUpdate()
 	{
-		return true;
+		return false;
 	}
 	
 	@Override

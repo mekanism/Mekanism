@@ -45,6 +45,9 @@ public interface IUniversalCable
 	 */
 	public void fixNetwork();
 
-	public void setEnergyScale(double energyScale);
-
+	/**
+	 * Sets a Universal Cable's energy scale to a new value.
+	 * @param energyScale - energy scale to set
+	 */
+	public void setCachedEnergy(double energyScale);
 }

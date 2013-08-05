@@ -50,6 +50,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		boolean[] connectable = PipeUtils.getConnections(tileEntity);
 		
 		model.renderCenter(connectable);
+		
 		for(int i = 0; i < 6; i++)
 		{
 			model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);

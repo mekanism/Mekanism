@@ -42,7 +42,7 @@ public class GuiEnergyCube extends GuiContainer
 		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
 		fontRenderer.drawString(outputInfo, 45, 49, 0x00CD00);
-		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x00CD00);
+		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 		
 		redstoneControl.renderForeground(xAxis, yAxis);
 	}
@@ -59,8 +59,8 @@ public class GuiEnergyCube extends GuiContainer
         int xAxis = (mouseX - (width - xSize) / 2);
  		int yAxis = (mouseY - (height - ySize) / 2);
         
-        int scale = (int)(((double)tileEntity.electricityStored / tileEntity.tier.MAX_ELECTRICITY) * 72);
-        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
+        int scale = (int)((tileEntity.electricityStored / tileEntity.tier.MAX_ELECTRICITY) * 72);
+        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
         
         redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }

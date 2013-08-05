@@ -1,71 +1,40 @@
 package mekanism.client;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.EnumGas;
-import mekanism.api.GasTransmission;
+import mekanism.api.GasNetwork.NetworkFinder;
 import mekanism.api.IPressurizedTube;
+import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
-/**
- * The actual protocol gas goes through when it is transferred via Pressurized Tubes.
- * @author AidanBrady
- *
- */
 public class GasClientUpdate
 {
-	/** List of iterated tubes, to prevent infinite loops. */
-	public ArrayList<TileEntity> iteratedTubes = new ArrayList<TileEntity>();
+	public NetworkFinder finder;
 	
-	/** Pointer tube of this calculation */
-	public TileEntity pointer;
+	public World worldObj;
 	
-	/** Type of gas to distribute */
-	public EnumGas transferType;
-	
-	/**
-	 * GasTransferProtocol -- a calculation used to distribute gasses through a tube network.
-	 * @param head - pointer tile entity
-	 * @param orig - original outputter
-	 * @param type - type of gas being transferred
-	 * @param amount - amount of gas to distribute
-	 */
+	public EnumGas gasType;
+
 	public GasClientUpdate(TileEntity head, EnumGas type)
 	{
-		pointer = head;
-		transferType = type;
-	}
-	
-	public void loopThrough(TileEntity tile)
-	{
-		if(!iteratedTubes.contains(tile))
-		{
-			iteratedTubes.add(tile);
-		}
-		
-		TileEntity[] tubes = GasTransmission.getConnectedTubes(tile);
-		
-		for(TileEntity tube : tubes)
-		{
-			if(tube != null)
-			{
-				if(!iteratedTubes.contains(tube))
-				{
-					loopThrough(tube);
-				}
-			}
-		}
+		worldObj = head.worldObj;
+		gasType = type;
+		finder = new NetworkFinder(head.worldObj, Object3D.get(head));
 	}
 	
 	public void clientUpdate()
 	{
-		loopThrough(pointer);
+		List<Object3D> found = finder.exploreNetwork();
 		
-		for(TileEntity tileEntity : iteratedTubes)
+		for(Object3D object : found)
 		{
+			TileEntity tileEntity = object.getTileEntity(worldObj);
+			
 			if(tileEntity instanceof IPressurizedTube)
 			{
-				((IPressurizedTube)tileEntity).onTransfer(transferType);
+				((IPressurizedTube)tileEntity).onTransfer(gasType);
 			}
 		}
 	}

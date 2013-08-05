@@ -31,9 +31,10 @@ public class EnergyClientUpdate
 		for(Object3D object : found)
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
+			
 			if(tileEntity instanceof IUniversalCable)
 			{
-				((IUniversalCable)tileEntity).setEnergyScale(energyScale);
+				((IUniversalCable)tileEntity).setCachedEnergy(energyScale);
 			}
 		}
 	}

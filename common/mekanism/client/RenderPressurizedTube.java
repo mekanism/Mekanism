@@ -122,6 +122,14 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			func_110628_a(tileEntity.refGas.texturePath);
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
+			if(tileEntity.gasScale > 0)
+			{
+				tileEntity.gasScale = Math.max(0, tileEntity.gasScale - .008F);
+			}
+			else {
+				tileEntity.refGas = null;
+			}
+			
 			if(tileEntity.canTransferGas())
 			{
 				for(int i = 0; i < 6; i++)
@@ -166,7 +174,9 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			
 			Model3D toReturn = new Model3D();
 			toReturn.baseBlock = Block.waterStill;
+			
 			toReturn.setTexture(type.gasIcon);
+			
 			toReturn.minX = 0.3 + offset;
 			toReturn.minY = 0.3 + offset;
 			toReturn.minZ = 0.3 + offset;
@@ -191,10 +201,13 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			else {
 				HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
 				map.put(type, display);
+				
 				cachedCenterGasses.put(new BooleanArray(connectable), map);
 			}
+			
 			return display;
 		}
+		
 		if(cachedSideGasses.containsKey(side) && cachedSideGasses.get(side).containsKey(type))
 		{
 			return cachedSideGasses.get(side).get(type);
