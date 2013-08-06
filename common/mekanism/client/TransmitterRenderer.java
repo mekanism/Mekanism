@@ -39,6 +39,9 @@ public class TransmitterRenderer implements ISimpleBlockRenderingHandler
     		case 2:
     			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe.png"));
     			break;
+    		case 3:
+    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
+    			break;
     	}
     	
     	transmitter.renderSide(ForgeDirection.UP, true);

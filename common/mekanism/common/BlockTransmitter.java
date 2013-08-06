@@ -198,6 +198,10 @@ public class BlockTransmitter extends Block
 			{
 				connectable = PipeUtils.getConnections(tileEntity);
 			}
+			else if(world.getBlockMetadata(x, y, z) == 3)
+			{
+				connectable = TransporterUtils.getConnections(tileEntity);
+			}
 		}
 		
 		return connectable;
@@ -387,5 +391,4 @@ public class BlockTransmitter extends Block
         
         return itemStack;
 	}
-	
 }
