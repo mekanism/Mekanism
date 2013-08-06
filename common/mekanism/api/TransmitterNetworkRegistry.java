@@ -58,7 +58,8 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
-		Set<ITransmitterNetwork> iterNetworks = (Set<ITransmitterNetwork>) networks.clone();
+		Set<ITransmitterNetwork> iterNetworks = (Set<ITransmitterNetwork>)networks.clone();
+		
 		for(ITransmitterNetwork net : iterNetworks)
 		{
 			if(networks.contains(net))
@@ -77,7 +78,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	@Override
 	public String getLabel()
 	{
-		return "Mekanism Energy Networks";
+		return "Mekanism Transmitter Networks";
 	}
 	
 	@Override

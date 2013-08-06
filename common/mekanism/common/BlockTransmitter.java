@@ -276,6 +276,10 @@ public class BlockTransmitter extends Block
 			{
 				((IPressurizedTube)tileEntity).refreshNetwork();
 			}
+			else if(tileEntity instanceof ILogisticalTransporter)
+			{
+				((ILogisticalTransporter)tileEntity).refreshNetwork();
+			}
 		}
 	}
 	
@@ -297,6 +301,10 @@ public class BlockTransmitter extends Block
 			else if(tileEntity instanceof IPressurizedTube)
 			{
 				((IPressurizedTube)tileEntity).refreshNetwork();
+			}
+			else if(tileEntity instanceof ILogisticalTransporter)
+			{
+				((ILogisticalTransporter)tileEntity).refreshNetwork();
 			}
 		}
 	}

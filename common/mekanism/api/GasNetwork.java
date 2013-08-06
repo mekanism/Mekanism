@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
@@ -264,11 +265,14 @@ public class GasNetwork implements ITransmitterNetwork
 	
 	public void register()
 	{
-		IPressurizedTube aTube = tubes.iterator().next();
-		if(aTube instanceof TileEntity && !((TileEntity)aTube).worldObj.isRemote)
-		{
-			TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
-		}
+		try {
+			IPressurizedTube aTube = tubes.iterator().next();
+			
+			if(aTube instanceof TileEntity && !((TileEntity)aTube).worldObj.isRemote)
+			{
+				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+			}
+		} catch(NoSuchElementException e) {}
 	}
 	
 	public void deregister()

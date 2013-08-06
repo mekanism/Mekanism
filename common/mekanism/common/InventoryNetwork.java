@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,41 +13,37 @@ import java.util.Set;
 import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
 import mekanism.api.TransmitterNetworkRegistry;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork implements ITransmitterNetwork
+public class InventoryNetwork implements ITransmitterNetwork
 {
-	public HashSet<IMechanicalPipe> pipes = new HashSet<IMechanicalPipe>();
+	public HashSet<ILogisticalTransporter> transporters = new HashSet<ILogisticalTransporter>();
 	
-	public Set<IFluidHandler> possibleAcceptors = new HashSet<IFluidHandler>();
-	public Map<IFluidHandler, ForgeDirection> acceptorDirections = new HashMap<IFluidHandler, ForgeDirection>();
+	public Set<IInventory> possibleAcceptors = new HashSet<IInventory>();
+	public Map<IInventory, ForgeDirection> acceptorDirections = new HashMap<IInventory, ForgeDirection>();
 	
 	private int ticksSinceCreate = 0;
 	private int ticksSinceSecond = 0;
 	private boolean fixed = false;
 	
-	public FluidNetwork(IMechanicalPipe... varPipes)
+	public InventoryNetwork(ILogisticalTransporter... varTransporters)
 	{
-		pipes.addAll(Arrays.asList(varPipes));
+		transporters.addAll(Arrays.asList(varTransporters));
 		register();
 	}
 	
-	public FluidNetwork(Set<FluidNetwork> networks)
+	public InventoryNetwork(Set<InventoryNetwork> networks)
 	{
-		for(FluidNetwork net : networks)
+		for(InventoryNetwork net : networks)
 		{
 			if(net != null)
 			{
-				addAllPipes(net.pipes);
+				addAllTransporters(net.transporters);
 				net.deregister();
 			}
 		}
@@ -56,67 +51,10 @@ public class FluidNetwork implements ITransmitterNetwork
 		refresh();
 		register();
 	}
-	
-	public int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
-	{
-		List availableAcceptors = Arrays.asList(getFluidAcceptors(fluidToSend).toArray());
-		
-		Collections.shuffle(availableAcceptors);
-		
-		int fluidSent = 0;
-		
-		if(!availableAcceptors.isEmpty())
-		{
-			int divider = availableAcceptors.size();
-			int remaining = fluidToSend.amount % divider;
-			int sending = (fluidToSend.amount-remaining)/divider;
-			
-			for(Object obj : availableAcceptors)
-			{
-				if(obj instanceof IFluidHandler && obj != emitter)
-				{
-					IFluidHandler acceptor = (IFluidHandler)obj;
-					int currentSending = sending;
-					
-					if(remaining > 0)
-					{
-						currentSending++;
-						remaining--;
-					}
-					
-					fluidSent += acceptor.fill(acceptorDirections.get(acceptor), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
-				}
-			}
-		}
-		
-		if(doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			FluidStack sendStack = fluidToSend.copy();
-			sendStack.amount = fluidSent;
-			MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, sendStack));
-		}
-		
-		return fluidSent;
-	}
-	
-	public Set<IFluidHandler> getFluidAcceptors(FluidStack fluidToSend)
-	{
-		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
-		
-		for(IFluidHandler acceptor : possibleAcceptors)
-		{
-			if(acceptor.canFill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend.getFluid()))
-			{
-				toReturn.add(acceptor);
-			}
-		}
-		
-		return toReturn;
-	}
 
 	public void refresh()
 	{
-		Set<IMechanicalPipe> iterPipes = (Set<IMechanicalPipe>) pipes.clone();
+		Set<ILogisticalTransporter> iterPipes = (Set<ILogisticalTransporter>)transporters.clone();
 		Iterator it = iterPipes.iterator();
 		
 		possibleAcceptors.clear();
@@ -124,55 +62,55 @@ public class FluidNetwork implements ITransmitterNetwork
 
 		while(it.hasNext())
 		{
-			IMechanicalPipe conductor = (IMechanicalPipe)it.next();
+			ILogisticalTransporter conductor = (ILogisticalTransporter)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-				pipes.remove(conductor);
+				transporters.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
 			}
 		}
 		
-		for(IMechanicalPipe pipe : iterPipes)
+		for(ILogisticalTransporter pipe : iterPipes)
 		{
-			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
+			IInventory[] inventories = TransporterUtils.getConnectedInventories((TileEntity)pipe);
 		
-			for(IFluidHandler acceptor : acceptors)
+			for(IInventory inventory : inventories)
 			{
-				if(acceptor != null && !(acceptor instanceof IMechanicalPipe))
+				if(inventory != null && !(inventory instanceof ILogisticalTransporter))
 				{
-					possibleAcceptors.add(acceptor);
-					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+					possibleAcceptors.add(inventory);
+					acceptorDirections.put(inventory, ForgeDirection.getOrientation(Arrays.asList(inventories).indexOf(inventory)));
 				}
 			}
 		}
 	}
 
-	public void merge(FluidNetwork network)
+	public void merge(InventoryNetwork network)
 	{
 		if(network != null && network != this)
 		{
-			Set<FluidNetwork> networks = new HashSet<FluidNetwork>();
+			Set<InventoryNetwork> networks = new HashSet<InventoryNetwork>();
 			networks.add(this);
 			networks.add(network);
-			FluidNetwork newNetwork = new FluidNetwork(networks);
+			InventoryNetwork newNetwork = new InventoryNetwork(networks);
 			newNetwork.refresh();
 		}
 	}
 	
-	public void addAllPipes(Set<IMechanicalPipe> newPipes)
+	public void addAllTransporters(Set<ILogisticalTransporter> newPipes)
 	{
-		pipes.addAll(newPipes);
+		transporters.addAll(newPipes);
 	}
 
-	public void split(IMechanicalPipe splitPoint)
+	public void split(ILogisticalTransporter splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			removePipe(splitPoint);
+			removeTransporter(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
@@ -191,7 +129,7 @@ public class FluidNetwork implements ITransmitterNetwork
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof IMechanicalPipe && !dealtWith[countOne])
+				if(connectedBlockA instanceof ILogisticalTransporter && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -200,7 +138,7 @@ public class FluidNetwork implements ITransmitterNetwork
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(connectedBlockB instanceof IMechanicalPipe && !dealtWith[countTwo])
+						if(connectedBlockB instanceof ILogisticalTransporter && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -209,21 +147,22 @@ public class FluidNetwork implements ITransmitterNetwork
 						}
 					}
 					
-					Set<IMechanicalPipe> newNetPipes= new HashSet<IMechanicalPipe>();
+					Set<ILogisticalTransporter> newNetTransporters= new HashSet<ILogisticalTransporter>();
+					
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(nodeTile instanceof IMechanicalPipe)
+						if(nodeTile instanceof ILogisticalTransporter)
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetPipes.add((IMechanicalPipe)nodeTile);
+								newNetTransporters.add((ILogisticalTransporter)nodeTile);
 							}
 						}
 					}
 					
-					FluidNetwork newNetwork = new FluidNetwork(newNetPipes.toArray(new IMechanicalPipe[0]));					
+					InventoryNetwork newNetwork = new InventoryNetwork(newNetTransporters.toArray(new ILogisticalTransporter[0]));					
 					newNetwork.refresh();
 				}
 			}
@@ -232,36 +171,36 @@ public class FluidNetwork implements ITransmitterNetwork
 		}
 	}
 	
-	public void fixMessedUpNetwork(IMechanicalPipe pipe)
+	public void fixMessedUpNetwork(ILogisticalTransporter pipe)
 	{
 		if(pipe instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity)pipe).getWorldObj(), Object3D.get((TileEntity)pipe), null);
 			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<IMechanicalPipe> newPipes = new HashSet<IMechanicalPipe>();
+			Set<ILogisticalTransporter> newTransporters = new HashSet<ILogisticalTransporter>();
 			
 			for(Object3D node : partNetwork)
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)pipe).worldObj);
 
-				if(nodeTile instanceof IMechanicalPipe)
+				if(nodeTile instanceof ILogisticalTransporter)
 				{
-					((IMechanicalPipe) nodeTile).removeFromNetwork();
-					newPipes.add((IMechanicalPipe)nodeTile);
+					((ILogisticalTransporter)nodeTile).removeFromNetwork();
+					newTransporters.add((ILogisticalTransporter)nodeTile);
 				}
 			}
 			
-			FluidNetwork newNetwork = new FluidNetwork(newPipes.toArray(new IMechanicalPipe[0]));
+			InventoryNetwork newNetwork = new InventoryNetwork(newTransporters.toArray(new ILogisticalTransporter[0]));
 			newNetwork.refresh();
 			newNetwork.fixed = true;
 			deregister();
 		}
 	}
 	
-	public void removePipe(IMechanicalPipe pipe)
+	public void removeTransporter(ILogisticalTransporter pipe)
 	{
-		pipes.remove(pipe);
-		if(pipes.size() == 0)
+		transporters.remove(pipe);
+		if(transporters.size() == 0)
 		{
 			deregister();
 		}
@@ -270,9 +209,9 @@ public class FluidNetwork implements ITransmitterNetwork
 	public void register()
 	{
 		try {
-			IMechanicalPipe aPipe = pipes.iterator().next();
+			ILogisticalTransporter aTransporter = transporters.iterator().next();
 			
-			if(aPipe instanceof TileEntity && !((TileEntity)aPipe).worldObj.isRemote)
+			if(aTransporter instanceof TileEntity && !((TileEntity)aTransporter).worldObj.isRemote)
 			{
 				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
 			}
@@ -281,7 +220,8 @@ public class FluidNetwork implements ITransmitterNetwork
 	
 	public void deregister()
 	{
-		pipes.clear();
+		transporters.clear();
+		
 		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
@@ -306,7 +246,7 @@ public class FluidNetwork implements ITransmitterNetwork
 
 		public void loopAll(Object3D location)
 		{
-			if(location.getTileEntity(worldObj) instanceof IMechanicalPipe)
+			if(location.getTileEntity(worldObj) instanceof ILogisticalTransporter)
 			{
 				iterated.add(location);
 			}
@@ -319,7 +259,7 @@ public class FluidNetwork implements ITransmitterNetwork
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IMechanicalPipe)
+					if(tileEntity instanceof ILogisticalTransporter)
 					{
 						loopAll(obj);
 					}
@@ -332,19 +272,6 @@ public class FluidNetwork implements ITransmitterNetwork
 			loopAll(start);
 			
 			return iterated;
-		}
-	}
-	
-	public static class FluidTransferEvent extends Event
-	{
-		public final FluidNetwork fluidNetwork;
-		
-		public final FluidStack fluidSent;
-		
-		public FluidTransferEvent(FluidNetwork network, FluidStack fluid)
-		{
-			fluidNetwork = network;
-			fluidSent = fluid;
 		}
 	}
 	
@@ -361,9 +288,9 @@ public class FluidNetwork implements ITransmitterNetwork
 					{
 						TileEntity tileEntity = (TileEntity)obj;
 						
-						if(tileEntity instanceof IMechanicalPipe)
+						if(tileEntity instanceof ILogisticalTransporter)
 						{
-							((IMechanicalPipe)tileEntity).refreshNetwork();
+							((ILogisticalTransporter)tileEntity).refreshNetwork();
 						}
 					}
 				}
@@ -380,7 +307,7 @@ public class FluidNetwork implements ITransmitterNetwork
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(pipes.iterator().next());
+				fixMessedUpNetwork(transporters.iterator().next());
 			}
 		}
 	}
@@ -388,12 +315,12 @@ public class FluidNetwork implements ITransmitterNetwork
 	@Override
 	public String toString()
 	{
-		return "[FluidNetwork] " + pipes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+		return "[InventoryNetwork] " + transporters.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	@Override
 	public int getSize()
 	{
-		return pipes.size();
+		return transporters.size();
 	}
 }

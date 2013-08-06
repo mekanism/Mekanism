@@ -71,15 +71,17 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(fluidNetwork == null && createIfNull)
 		{
-			TileEntity[] adjacentCables = CableUtils.getConnectedCables(this);
+			TileEntity[] adjacentPipes = PipeUtils.getConnectedPipes(this);
 			HashSet<FluidNetwork> connectedNets = new HashSet<FluidNetwork>();
-			for(TileEntity pipe : adjacentCables)
+			
+			for(TileEntity pipe : adjacentPipes)
 			{
 				if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).getNetwork(false) != null)
 				{
 					connectedNets.add(((IMechanicalPipe)pipe).getNetwork());
 				}
 			}
+			
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
 				fluidNetwork = new FluidNetwork(this);

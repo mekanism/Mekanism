@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import mekanism.api.EnumGas;
 import mekanism.api.GasNetwork;
+import mekanism.api.GasTransmission;
 import mekanism.api.IPressurizedTube;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
@@ -35,14 +36,14 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	{
 		if(gasNetwork == null && createIfNull)
 		{
-			TileEntity[] adjacentPipes = PipeUtils.getConnectedPipes(this);
+			TileEntity[] adjacentTubes = GasTransmission.getConnectedTubes(this);
 			HashSet<GasNetwork> connectedNets = new HashSet<GasNetwork>();
 			
-			for(TileEntity cable : adjacentPipes)
+			for(TileEntity tube : adjacentTubes)
 			{
-				if(cable instanceof IPressurizedTube && ((IPressurizedTube)cable).getNetwork(false) != null)
+				if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).getNetwork(false) != null)
 				{
-					connectedNets.add(((IPressurizedTube)cable).getNetwork());
+					connectedNets.add(((IPressurizedTube)tube).getNetwork());
 				}
 			}
 			

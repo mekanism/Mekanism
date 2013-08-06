@@ -23,7 +23,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 	@SuppressWarnings("incomplete-switch")
 	public void renderAModelAt(TileEntityLogisticalTransporter tileEntity, double x, double y, double z, float partialTick)
 	{
-		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
+		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter" + (tileEntity.isActive ? "Active" : "") + ".png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);

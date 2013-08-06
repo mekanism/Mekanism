@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -368,11 +369,14 @@ public class EnergyNetwork implements ITransmitterNetwork
 	
 	public void register()
 	{
-		IUniversalCable aCable = cables.iterator().next();
-		if(aCable instanceof TileEntity && !((TileEntity)aCable).worldObj.isRemote)
-		{
-			TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
-		}
+		try {
+			IUniversalCable aCable = cables.iterator().next();
+			
+			if(aCable instanceof TileEntity && !((TileEntity)aCable).worldObj.isRemote)
+			{
+				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+			}
+		} catch(NoSuchElementException e) {}
 	}
 	
 	public void deregister()

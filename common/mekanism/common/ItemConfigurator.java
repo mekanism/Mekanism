@@ -17,7 +17,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.electricity.ElectricityPack;
 
 public class ItemConfigurator extends ItemEnergized
 {
@@ -46,6 +45,13 @@ public class ItemConfigurator extends ItemEnergized
 	    		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityMechanicalPipe)
 	    		{
 	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
+	    			tileEntity.isActive = !tileEntity.isActive;
+	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+	    			return true;
+	    		}
+	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
+	    		{
+	    			TileEntityLogisticalTransporter tileEntity = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
 	    			tileEntity.isActive = !tileEntity.isActive;
 	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 	    			return true;
