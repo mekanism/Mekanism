@@ -126,7 +126,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	{
 		if(slotID == 54)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		else {
 			return true;
@@ -146,7 +146,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 			return new int[] {54};
 		}
 		else {
-			int[] ret = new int[54];
+			int[] ret = new int[55];
 			
 			for(int i = 0; i <= ret.length; i++)
 			{
@@ -162,7 +162,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	{
 		if(slotID == 54)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else {
 			return true;

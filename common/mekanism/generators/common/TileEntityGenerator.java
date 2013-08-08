@@ -15,10 +15,12 @@ import mekanism.api.Object3D;
 import mekanism.client.IHasSound;
 import mekanism.common.CableUtils;
 import mekanism.common.IActiveState;
+import mekanism.common.IRedstoneControl;
 import mekanism.common.IUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.common.network.PacketTileEntity;
@@ -42,7 +44,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter, IRedstoneControl
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -50,8 +52,14 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
 	
-	/** The previous active state for this block. */
-	public boolean prevActive;
+	/** The client's current active state. */
+	public boolean clientActive;
+	
+	/** How many ticks must pass until this block's active state can sync with the client. */
+	public int updateDelay;
+	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType;
 	
 	/**
 	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
@@ -63,10 +71,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super(name, maxEnergy);
 		
-		powerProvider.configure(0, 0, 0, 0, (int)(maxEnergy*Mekanism.TO_BC));
+		powerHandler.configure(0, 0, 0, (int)(maxEnergy*Mekanism.TO_BC));
 		
 		output = out;
 		isActive = false;
+		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -78,9 +87,20 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		{
 			Mekanism.proxy.registerSound(this);
 		}
-		
+			
 		if(!worldObj.isRemote)
 		{
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					clientActive = isActive;
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+				}
+			}
+			
 			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
 			if(electricityStored > 0)
@@ -158,7 +178,25 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getOutputtingSides().contains(direction) ? (float)Math.min(getMaxEnergy()-getEnergy(), output) : 0;
+		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(output*Mekanism.TO_UE)) : 0;
+	}
+	
+	@Override
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
+	{
+		if(getOutputtingSides().contains(from))
+		{
+			double toSend = Math.min(getEnergy(), Math.min(output, request.getWatts()*Mekanism.FROM_UE));
+			
+			if(doProvide)
+			{
+				setEnergy(getEnergy() - toSend);
+			}
+			
+			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
+		}
+		
+		return new ElectricityPack();
 	}
 	
 	@Override
@@ -205,12 +243,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     {
     	isActive = active;
     	
-    	if(prevActive != active)
+    	if(clientActive != active && updateDelay == 0)
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		updateDelay = 10;
+    		clientActive = active;
     	}
-    	
-    	prevActive = active;
     }
 	
 	@Override
@@ -298,7 +337,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
 		isActive = dataStream.readBoolean();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
+		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
@@ -306,7 +348,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(isActive);
+		data.add(controlType.ordinal());
+		
 		return data;
 	}
 	
@@ -315,7 +360,8 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
 	@Override
@@ -324,6 +370,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
         super.writeToNBT(nbtTags);
         
         nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("controlType", controlType.ordinal());
     }
 	
 	@Override
@@ -355,5 +402,17 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public boolean hasVisual()
 	{
 		return true;
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
 	}
 }

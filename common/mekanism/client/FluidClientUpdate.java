@@ -1,59 +1,41 @@
 package mekanism.client;
 
-import java.util.ArrayList;
+import java.util.List;
 
+import mekanism.api.Object3D;
+import mekanism.common.FluidNetwork.NetworkFinder;
 import mekanism.common.IMechanicalPipe;
-import mekanism.common.PipeUtils;
+import mekanism.common.IUniversalCable;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidClientUpdate
 {
-	/** List of iterated pipes, to prevent infinite loops. */
-	public ArrayList<TileEntity> iteratedPipes = new ArrayList<TileEntity>();
+	public NetworkFinder finder;
 	
-	/** Pointer pipe of this calculation */
-	public TileEntity pointer;
+	public World worldObj;
 	
-	/** Type of fluid to distribute */
-	public FluidStack fluidToSend;
+	public FluidStack fluidStack;
 
 	public FluidClientUpdate(TileEntity head, FluidStack fluid)
 	{
-		pointer = head;
-		fluidToSend = fluid;
+		worldObj = head.worldObj;
+		fluidStack = fluid;
+		finder = new NetworkFinder(head.worldObj, Object3D.get(head));
 	}
-
-	public void loopThrough(TileEntity tile)
-	{
-		if(!iteratedPipes.contains(tile))
-		{
-			iteratedPipes.add(tile);
-		}
-		
-		TileEntity[] pipes = PipeUtils.getConnectedPipes(tile);
-		
-		for(TileEntity pipe : pipes)
-		{
-			if(pipe != null)
-			{
-				if(!iteratedPipes.contains(pipe))
-				{
-					loopThrough(pipe);
-				}
-			}
-		}
-	}
-
+	
 	public void clientUpdate()
 	{
-		loopThrough(pointer);
+		List<Object3D> found = finder.exploreNetwork();
 		
-		for(TileEntity tileEntity : iteratedPipes)
+		for(Object3D object : found)
 		{
+			TileEntity tileEntity = object.getTileEntity(worldObj);
+			
 			if(tileEntity instanceof IMechanicalPipe)
 			{
-				((IMechanicalPipe)tileEntity).onTransfer(fluidToSend);
+				((IMechanicalPipe)tileEntity).onTransfer(fluidStack);
 			}
 		}
 	}

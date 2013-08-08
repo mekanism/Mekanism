@@ -19,6 +19,7 @@ import net.minecraft.util.Icon;
  * 0: Pressurized Tube
  * 1: Universal Cable
  * 2: Mechanical Pipe
+ * 3: Logistical Transporter
  * @author AidanBrady
  *
  */
@@ -60,6 +61,12 @@ public class ItemBlockTransmitter extends ItemBlock
 				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 				list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");
 			}
+			else if(itemstack.getItemDamage() == 3)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "Items (universal)");
+				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+			}
 		}
 	}
 	
@@ -89,6 +96,9 @@ public class ItemBlockTransmitter extends ItemBlock
 				break;
 			case 2:
 				name = "MechanicalPipe";
+				break;
+			case 3:
+				name = "LogisticalTransporter";
 				break;
 			default:
 				name = "Unknown";

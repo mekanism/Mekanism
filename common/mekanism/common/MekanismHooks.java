@@ -23,16 +23,10 @@ public final class MekanismHooks
 	
 	private Class BuildCraftEnergy;
 	
-	private Class ForestryItem;
-	
-	public int ForestryBiofuelID = 5013;
-	public ItemStack ForestryBiofuelBucket;
-	
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
 	public boolean BasicComponentsLoaded = false;
 	public boolean BuildCraftLoaded = false;
-	public boolean ForestryLoaded = false;
 	public boolean TELoaded = false;
 	
 	public boolean MetallurgyCoreLoaded = false;
@@ -44,8 +38,8 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
 		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
 		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
-		if(Loader.isModLoaded("Forestry")) ForestryLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
+		
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{
 			MetallurgyCoreLoaded = true;
@@ -114,13 +108,6 @@ public final class MekanismHooks
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
 		
-		if(ForestryLoaded)
-		{
-			ForestryBiofuelID = getForestryItem("liquidBiofuel").itemID;
-			ForestryBiofuelBucket = getForestryItem("bucketBiofuel");
-			System.out.println("[Mekanism] Hooked into Forestry successfully.");
-		}
-		
 		if(TELoaded)
 		{
 			for(IPulverizerRecipe recipe : CraftingManagers.pulverizerManager.getRecipeList())
@@ -166,30 +153,6 @@ public final class MekanismHooks
 			}
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve BuildCraft item " + name + ".");
-			return null;
-		}
-	}
-	
-	public ItemStack getForestryItem(String name)
-	{
-		try {
-			if(ForestryItem == null) ForestryItem = Class.forName("forestry.core.config.ForestryItem");
-			if(ForestryItem == null) ForestryItem = Class.forName("net.minecraft.src.forestry.core.config.ForestryItem");
-			Object ret = ForestryItem.getField(name).get(null);
-			
-			if(ret instanceof Item)
-			{
-				return new ItemStack((Item)ret);
-			}
-			else if(ret instanceof Block)
-			{
-				return new ItemStack((Block)ret);
-			}
-			else {
-				throw new Exception("not instanceof ItemStack");
-			}
-		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to retrieve Forestry item " + name + ".");
 			return null;
 		}
 	}

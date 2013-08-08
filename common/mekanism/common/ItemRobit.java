@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import universalelectricity.core.electricity.ElectricityPack;
 import cpw.mods.fml.relauncher.Side;
@@ -38,17 +39,18 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	@Override
     public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float posX, float posY, float posZ)
     {
-		TileEntityChargepad tileEntity = (TileEntityChargepad)world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		if(tileEntity != null)
+		if(tileEntity instanceof TileEntityChargepad)
 		{
-			if(!tileEntity.isActive)
+			TileEntityChargepad chargepad = (TileEntityChargepad)tileEntity;
+			if(!chargepad.isActive)
 			{
 				if(!world.isRemote)
 				{
 					EntityRobit robit = new EntityRobit(world, x+0.5, y+0.1, z+0.5);
 					
-					robit.setHome(Object3D.get(tileEntity));
+					robit.setHome(Object3D.get(chargepad));
 					robit.setEnergy(getEnergy(itemstack));
 					robit.setOwner(entityplayer.username);
 					robit.setInventory(getInventory(itemstack));

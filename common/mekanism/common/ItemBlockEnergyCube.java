@@ -52,7 +52,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
 		}
 		else {
-			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort((float)getEnergy(itemstack), ElectricUnit.JOULES));
+			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getElectricityStored(itemstack), ElectricUnit.JOULES));
 			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
@@ -91,7 +91,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
-			tileEntity.powerProvider.configure(0, 0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
+			tileEntity.powerHandler.configure(0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
     		
     		if(!world.isRemote)
     		{
@@ -303,13 +303,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	@Override
 	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
 	{
-		return (float)(recharge(theItem, (float)(energy*Mekanism.FROM_BC), doReceive)*Mekanism.TO_BC);
+		return (float)(recharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doReceive)*Mekanism.TO_BC);
 	}
 
 	@Override
 	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
 	{
-		return (float)(discharge(theItem, (float)(energy*Mekanism.FROM_BC), doTransfer)*Mekanism.TO_BC);
+		return (float)(discharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doTransfer)*Mekanism.TO_BC);
 	}
 
 	@Override
@@ -336,14 +336,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 		if(canReceive(itemStack))
 		{
 			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy, energyNeeded);
+			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
 			
 			if(doRecharge)
 			{
 				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
 			}
 			
-			return (float)toReceive;
+			return (float)(toReceive*Mekanism.TO_UE);
 		}
 		
 		return 0;
@@ -355,14 +355,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 		if(canSend(itemStack))
 		{
 			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min(energy, energyRemaining);
+			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
 			
 			if(doDischarge)
 			{
 				setEnergy(itemStack, getEnergy(itemStack) - toSend);
 			}
 			
-			return (float)toSend;
+			return (float)(toSend*Mekanism.TO_UE);
 		}
 		
 		return 0;
@@ -371,24 +371,24 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	@Override
 	public float getElectricityStored(ItemStack theItem) 
 	{
-		return (float)getEnergy(theItem);
+		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
 	}
 
 	@Override
 	public float getMaxElectricityStored(ItemStack theItem) 
 	{
-		return (float)getMaxEnergy(theItem);
+		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
 	}
 
 	@Override
 	public void setElectricity(ItemStack itemStack, float joules) 
 	{
-		setEnergy(itemStack, joules);
+		setEnergy(itemStack, joules*Mekanism.TO_UE);
 	}
 
 	@Override
 	public float getTransfer(ItemStack itemStack)
 	{
-		return (float)getMaxTransfer(itemStack);
+		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
 	}
 }

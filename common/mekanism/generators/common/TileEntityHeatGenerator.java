@@ -79,7 +79,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						
 						if(fuel <= fuelNeeded)
 						{
-							lavaTank.fill(new FluidStack(Block.lavaStill.blockID, fuel), true);
+							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
 							inventory[0].stackSize--;
 						}
 						
@@ -115,7 +115,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 		
 		return true;
@@ -124,7 +124,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10;
+		return electricityStored < MAX_ELECTRICITY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
 	}
 	
 	@Override
@@ -154,7 +154,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 1)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, true);
+			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
 		else if(slotID == 0)
 		{
@@ -220,7 +220,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		
 		if(amount != 0)
 		{
-			lavaTank.setFluid(new FluidStack(Block.lavaStill.blockID, amount));
+			lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
 		}
 		else {
 			lavaTank.setFluid(null);

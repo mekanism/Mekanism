@@ -20,12 +20,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiAdvancedElectricMachine extends GuiContainer
 {
     public TileEntityAdvancedElectricMachine tileEntity;
+    
+    public GuiRedstoneControl redstoneControl;
 
     public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
     {
         super(new ContainerAdvancedElectricMachine(inventory, tentity));
         xSize+=26;
         tileEntity = tentity;
+        redstoneControl = new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class GuiAdvancedElectricMachine extends GuiContainer
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
@@ -53,16 +56,22 @@ public class GuiAdvancedElectricMachine extends GuiContainer
 		{
 			drawCreativeTabHoveringText("Remove energy upgrade", xAxis, yAxis);
 		}
+		
+		redstoneControl.renderForeground(xAxis, yAxis);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
     {
     	mc.renderEngine.func_110577_a(tileEntity.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+    	int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
@@ -76,6 +85,8 @@ public class GuiAdvancedElectricMachine extends GuiContainer
         
         displayInt = tileEntity.getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 71, 10, displayInt);
+        
+        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
     
 	@Override
@@ -87,6 +98,8 @@ public class GuiAdvancedElectricMachine extends GuiContainer
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			redstoneControl.mouseClicked(xAxis, yAxis);
 			
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 			{

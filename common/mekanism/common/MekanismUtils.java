@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import ic2.api.Direction;
-import ic2.api.item.IElectricItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
@@ -25,7 +25,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -42,7 +41,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import universalelectricity.core.item.IItemElectric;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -847,6 +845,13 @@ public final class MekanismUtils
     	return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
     
+    /**
+     * Retrieves a private value from a defined class and field.
+     * @param obj - the Object to retrieve the value from, null if static
+     * @param c - Class to retrieve field value from
+     * @param field - name of declared field
+     * @return value as an Object, cast as necessary
+     */
     public static Object getPrivateValue(Object obj, Class c, String field)
     {
     	try {
@@ -858,6 +863,13 @@ public final class MekanismUtils
     	}
     }
     
+    /**
+     * Sets a private value from a defined class and field to a new value.
+     * @param obj - the Object to perform the operation on, null if static
+     * @param value - value to set the field to
+     * @param c - Class the operation will be performed on
+     * @param field - name of declared field
+     */
     public static void setPrivateValue(Object obj, Object value, Class c, String field)
     {
     	try {
@@ -867,40 +879,22 @@ public final class MekanismUtils
     	} catch(Exception e) {}
     }
     
+    /**
+     * Gets a ResourceLocation with a defined resource type and name.
+     * @param type - type of resource to retrieve
+     * @param name - simple name of file to retrieve as a ResourceLocation
+     * @return the corresponding ResourceLocation
+     */
     public static ResourceLocation getResource(ResourceType type, String name)
     {
     	return new ResourceLocation("mekanism", type.getPrefix() + name);
     }
     
-    public static boolean canBeDischarged(ItemStack itemstack)
-    {
-		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
-				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) != 0) || 
-				itemstack.itemID == Item.redstone.itemID;
-    }
-    
-    public static boolean canBeCharged(ItemStack itemstack)
-    {
-		return itemstack.getItem() instanceof IElectricItem || 
-				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) != 0);
-    }
-    
-    public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot)
-    {
-    	if(chargeSlot)
-    	{
-	    	return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0) ||
-					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0));
-    	}
-    	else {
-			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0) ||
-					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
-							(!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0));
-    	}
-    }
-    
+    /**
+     * Removes all recipes that are used to create the defined ItemStacks.
+     * @param itemStacks - ItemStacks to perform the operation on
+     * @return if any recipes were removed
+     */
     public static boolean removeRecipes(ItemStack... itemStacks)
 	{
 		boolean didRemove = false;
@@ -931,6 +925,38 @@ public final class MekanismUtils
 
 		return didRemove;
 	}
+    
+    /**
+     * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements
+     * IRedstoneControl.
+     * @param tileEntity - TileEntity to check
+     * @return if the TileEntity can function with redstone logic
+     */
+    public static boolean canFunction(TileEntity tileEntity)
+    {
+    	if(!(tileEntity instanceof IRedstoneControl))
+    	{
+    		return true;
+    	}
+    	
+    	World world = tileEntity.worldObj;
+    	IRedstoneControl control = (IRedstoneControl)tileEntity;
+    	
+    	if(control.getControlType() == RedstoneControl.DISABLED)
+    	{
+    		return true;
+    	}
+    	else if(control.getControlType() == RedstoneControl.HIGH)
+    	{
+    		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) > 0;
+    	}
+    	else if(control.getControlType() == RedstoneControl.LOW)
+    	{
+    		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) == 0;
+    	}
+    	
+    	return false;
+    }
     
     public static enum ResourceType
     {

@@ -20,7 +20,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return new FluidTankInfo[] {fluidTank.getInfo()};
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : null;
 	}
 
 	@Override
@@ -46,7 +46,12 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
-		return fluidTank.drain(maxDrain, doDrain);
+		if(fluidTank.dynamicTank.structure != null)
+		{
+			return fluidTank.drain(maxDrain, doDrain);
+		}
+		
+		return null;
 	}
 
 	@Override

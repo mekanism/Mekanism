@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
@@ -19,16 +20,35 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork 
+public class GasNetwork implements ITransmitterNetwork
 {
-	public Set<IPressurizedTube> tubes = new HashSet<IPressurizedTube>();
+	public HashSet<IPressurizedTube> tubes = new HashSet<IPressurizedTube>();
 	
 	public Set<IGasAcceptor> possibleAcceptors = new HashSet<IGasAcceptor>();
 	public Map<IGasAcceptor, ForgeDirection> acceptorDirections = new HashMap<IGasAcceptor, ForgeDirection>();
 	
+	private int ticksSinceCreate = 0;
+	private boolean fixed = false;
+	
 	public GasNetwork(IPressurizedTube... varPipes)
 	{
 		tubes.addAll(Arrays.asList(varPipes));
+		register();
+	}
+	
+	public GasNetwork(Set<GasNetwork> networks)
+	{
+		for(GasNetwork net : networks)
+		{
+			if(net != null)
+			{
+				addAllTubes(net.tubes);
+				net.deregister();
+			}
+		}
+		
+		refresh();
+		register();
 	}
 	
 	public int emit(int gasToSend, EnumGas transferType, TileEntity emitter)
@@ -92,7 +112,8 @@ public class GasNetwork
 
 	public void refresh()
 	{
-		Iterator it = tubes.iterator();
+		Set<IPressurizedTube> iterTubes = (Set<IPressurizedTube>) tubes.clone();
+		Iterator<IPressurizedTube> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
@@ -101,13 +122,10 @@ public class GasNetwork
 		{
 			IPressurizedTube conductor = (IPressurizedTube)it.next();
 
-			if(conductor == null)
+			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-			}
-			else if(((TileEntity)conductor).isInvalid())
-			{
-				it.remove();
+				tubes.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
@@ -133,20 +151,27 @@ public class GasNetwork
 	{
 		if(network != null && network != this)
 		{
-			GasNetwork newNetwork = new GasNetwork();
-			newNetwork.tubes.addAll(tubes);
-			newNetwork.tubes.addAll(network.tubes);
+			Set<GasNetwork> networks = new HashSet();
+			networks.add(this);
+			networks.add(network);
+			GasNetwork newNetwork = new GasNetwork(networks);
 			newNetwork.refresh();
 		}
+	}
+
+	public void addAllTubes(Set<IPressurizedTube> newTubes)
+	{
+		tubes.addAll(newTubes);
 	}
 
 	public void split(IPressurizedTube splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			tubes.remove(splitPoint);
+			removeTube(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
+			boolean[] dealtWith = {false, false, false, false, false, false};
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -162,68 +187,112 @@ public class GasNetwork
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof IPressurizedTube)
+				if(connectedBlockA instanceof IPressurizedTube && !dealtWith[countOne])
 				{
-					for(int countTwo = 0; countTwo < connectedBlocks.length; countTwo++)
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					List<Object3D> partNetwork = finder.exploreNetwork();
+					
+					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 
-						if(connectedBlockA != connectedBlockB && connectedBlockB instanceof IPressurizedTube)
+						if(connectedBlockB instanceof IPressurizedTube && !dealtWith[countTwo])
 						{
-							NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockB), Object3D.get((TileEntity)splitPoint));
-
-							if(finder.foundTarget(Object3D.get(connectedBlockA)))
+							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
-								for(Object3D node : finder.iterated)
-								{
-									TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
-									if(nodeTile instanceof IPressurizedTube)
-									{
-										if(nodeTile != splitPoint)
-										{
-											((IPressurizedTube)nodeTile).setNetwork(this);
-										}
-									}
-								}
-							}
-							else {
-								GasNetwork newNetwork = new GasNetwork();
-
-								for(Object3D node : finder.iterated)
-								{
-									TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
-									if(nodeTile instanceof IPressurizedTube)
-									{
-										if(nodeTile != splitPoint)
-										{
-											newNetwork.tubes.add((IPressurizedTube)nodeTile);
-										}
-									}
-								}
-
-								newNetwork.refresh();
+								dealtWith[countTwo] = true;
 							}
 						}
 					}
+					
+					GasNetwork newNetwork = new GasNetwork();
+					
+					for(Object3D node : finder.iterated)
+					{
+						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
+
+						if(nodeTile instanceof IPressurizedTube)
+						{
+							if(nodeTile != splitPoint)
+							{
+								newNetwork.tubes.add((IPressurizedTube)nodeTile);
+							}
+						}
+					}
+					
+					newNetwork.refresh();
 				}
 			}
+			
+			deregister();
 		}
+	}
+	
+	public void fixMessedUpNetwork(IPressurizedTube tube)
+	{
+		if(tube instanceof TileEntity)
+		{
+			NetworkFinder finder = new NetworkFinder(((TileEntity)tube).getWorldObj(), Object3D.get((TileEntity)tube), null);
+			List<Object3D> partNetwork = finder.exploreNetwork();
+			Set<IPressurizedTube> newTubes = new HashSet<IPressurizedTube>();
+			
+			for(Object3D node : partNetwork)
+			{
+				TileEntity nodeTile = node.getTileEntity(((TileEntity)tube).worldObj);
+
+				if(nodeTile instanceof IPressurizedTube)
+				{
+					((IPressurizedTube) nodeTile).removeFromNetwork();
+					newTubes.add((IPressurizedTube)nodeTile);
+				}
+			}
+			
+			GasNetwork newNetwork = new GasNetwork(newTubes.toArray(new IPressurizedTube[0]));
+			newNetwork.refresh();
+			newNetwork.fixed = true;
+			deregister();
+		}
+	}
+	
+	public void removeTube(IPressurizedTube tube)
+	{
+		tubes.remove(tube);
+		if(tubes.size() == 0)
+		{
+			deregister();
+		}
+	}
+	
+	public void register()
+	{
+		try {
+			IPressurizedTube aTube = tubes.iterator().next();
+			
+			if(aTube instanceof TileEntity && !((TileEntity)aTube).worldObj.isRemote)
+			{
+				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+			}
+		} catch(NoSuchElementException e) {}
+	}
+	
+	public void deregister()
+	{
+		tubes.clear();
+		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
 	{
 		public World worldObj;
-		public Object3D toFind;
+		public Object3D start;
 		
 		public List<Object3D> iterated = new ArrayList<Object3D>();
 		public List<Object3D> toIgnore = new ArrayList<Object3D>();
 		
-		public NetworkFinder(World world, Object3D target, Object3D... ignore)
+		public NetworkFinder(World world, Object3D location, Object3D... ignore)
 		{
 			worldObj = world;
-			toFind = target;
+			start = location;
 			
 			if(ignore != null)
 			{
@@ -231,13 +300,11 @@ public class GasNetwork
 			}
 		}
 		
-		public void loopThrough(Object3D location)
+		public void loopAll(Object3D location)
 		{
-			iterated.add(location);
-			
-			if(iterated.contains(toFind))
+			if(location.getTileEntity(worldObj) instanceof IPressurizedTube)
 			{
-				return;
+				iterated.add(location);
 			}
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
@@ -246,25 +313,21 @@ public class GasNetwork
 				
 				if(!iterated.contains(obj) && !toIgnore.contains(obj))
 				{
-					TileEntity tileEntity = location.getTileEntity(worldObj);
-					TileEntity sideTile = obj.getTileEntity(worldObj);
+					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(sideTile instanceof IPressurizedTube && ((IPressurizedTube)sideTile).canTransferGas())
+					if(tileEntity instanceof IPressurizedTube)
 					{
-						if(((IPressurizedTube)sideTile).canTransferGasToTube(tileEntity) && ((IPressurizedTube)tileEntity).canTransferGasToTube(sideTile))
-						{
-							loopThrough(obj);
-						}
+						loopAll(obj);
 					}
 				}
 			}
 		}
 		
-		public boolean foundTarget(Object3D start)
+		public List<Object3D> exploreNetwork()
 		{
-			loopThrough(start);
+			loopAll(start);
 			
-			return iterated.contains(toFind);
+			return iterated;
 		}
 	}
 	
@@ -308,5 +371,25 @@ public class GasNetwork
 	public String toString()
 	{
 		return "[GasNetwork] " + tubes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+	}
+
+	public void tick()
+	{		
+		//Fix weird behaviour periodically.
+		if(!fixed)
+		{
+			++ticksSinceCreate;
+			if(ticksSinceCreate > 1200)
+			{
+				ticksSinceCreate = 0;
+				fixMessedUpNetwork(tubes.iterator().next());
+			}
+		}
+	}
+
+	@Override
+	public int getSize()
+	{
+		return tubes.size();
 	}
 }

@@ -31,8 +31,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	/** Maximum amount of energy this machine can hold. */
 	public double MAX_ELECTRICITY;
 	
-	/** BuildCraft power provider. */
-	public IPowerProvider powerProvider;
+	/** BuildCraft power handler. */
+	public PowerHandler powerHandler;
 	
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
@@ -45,21 +45,29 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
 		
-		powerProvider = new LinkedPowerProvider(this);
-		powerProvider.configure(0, 0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
+		powerHandler = new PowerHandler(this, PowerHandler.Type.MACHINE);
+		powerHandler.configure(0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
 	}
 	
 	@Override
 	public void onUpdate()
 	{
-		if(!initialized && worldObj != null && !worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			if(Mekanism.hooks.IC2Loaded)
+			if(!initialized)
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				if(Mekanism.hooks.IC2Loaded)
+				{
+					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				}
+				
+				initialized = true;
 			}
 			
-			initialized = true;
+			if(getEnergy() < getMaxEnergy() && powerHandler.getEnergyStored() > 0)
+			{
+				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			}
 		}
 	}
 
@@ -157,7 +165,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
-		return powerProvider;
+		return powerHandler.getPowerReceiver();
 	}
 	
 	@Override
@@ -174,14 +182,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(from))
 		{
-			float toAdd = (float)Math.min(getMaxEnergy()-getEnergy(), receive.getWatts());
+			double toAdd = (float)Math.min(getMaxEnergy()-getEnergy(), receive.getWatts()*Mekanism.FROM_UE);
 			
 			if(doReceive)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 			
-			return toAdd;
+			return (float)(toAdd*Mekanism.TO_UE);
 		}
 		
 		return 0;
@@ -198,7 +206,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(direction))
 		{
-			return (float)(getMaxEnergy()-getEnergy());
+			return getMaxEnergyStored()-getEnergyStored();
 		}
 		
 		return 0;
@@ -213,18 +221,18 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void setEnergyStored(float energy)
 	{
-		setEnergy(energy);
+		setEnergy(energy*Mekanism.FROM_UE);
 	}
 
 	@Override
 	public float getEnergyStored() 
 	{
-		return (float)getEnergy();
+		return (float)(getEnergy()*Mekanism.TO_UE);
 	}
 
 	@Override
 	public float getMaxEnergyStored() 
 	{
-		return (float)getMaxEnergy();
+		return (float)(getMaxEnergy()*Mekanism.TO_UE);
 	}
 }

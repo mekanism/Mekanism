@@ -241,7 +241,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(slotID == 3)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 0)
 		{
@@ -276,7 +276,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 3)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;

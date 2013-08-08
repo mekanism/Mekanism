@@ -2,7 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
-import mekanism.common.MekanismUtils;
+import mekanism.common.ChargeUtils;
 import mekanism.common.SlotEnergy.SlotDischarge;
 import mekanism.common.SlotStorageTank;
 import net.minecraft.entity.player.EntityPlayer;
@@ -105,7 +105,7 @@ public class ContainerElectrolyticSeparator extends Container
             			}
             		}
             	}
-            	else if(MekanismUtils.canBeDischarged(slotStack))
+            	else if(ChargeUtils.canBeDischarged(slotStack))
             	{
             		if(!mergeItemStack(slotStack, 3, 4, false))
             		{

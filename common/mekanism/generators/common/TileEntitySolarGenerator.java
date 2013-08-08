@@ -106,7 +106,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		if(slotID == 0)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, true);
+			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
 		
 		return false;
@@ -117,7 +117,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		if(slotID == 0)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 		
 		return true;
@@ -126,7 +126,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && seesSun;
+		return electricityStored < MAX_ELECTRICITY && seesSun && MekanismUtils.canFunction(this);
 	}
 	
 	@Override

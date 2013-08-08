@@ -7,6 +7,7 @@ import mekanism.common.ISpecialBounds;
 import mekanism.common.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -31,7 +32,8 @@ public class MekanismRenderer
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
-	
+	private static boolean optifineBreak = false;
+    
 	public static class Model3D
 	{
 		public double minX;
@@ -43,7 +45,7 @@ public class MekanismRenderer
 		
 		public Icon[] textures = new Icon[6];
 		
-		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true};
+		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
 		public Block baseBlock = Block.sand;
 		
@@ -145,15 +147,29 @@ public class MekanismRenderer
     public static void glowOn() 
     {
         GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-        lightmapLastX = OpenGlHelper.lastBrightnessX;
-        lightmapLastY = OpenGlHelper.lastBrightnessY;
+        try
+        {
+        	lightmapLastX = OpenGlHelper.lastBrightnessX;
+        	lightmapLastY = OpenGlHelper.lastBrightnessY;
+        } 
+        catch(NoSuchFieldError e)
+        {
+        	optifineBreak = true;
+        }
         RenderHelper.disableStandardItemLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+        if(!optifineBreak)
+        {
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);        	
+        }
+        
     }
 
     public static void glowOff() 
     {
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+    	if(!optifineBreak)
+    	{
+    		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
+    	}
         GL11.glPopAttrib();
     }
     
@@ -250,6 +266,24 @@ public class MekanismRenderer
     	{
     		return obj instanceof DisplayInteger && ((DisplayInteger)obj).display == display;
     	}
+    	
+    	public static DisplayInteger createAndStart()
+    	{
+    		DisplayInteger newInteger = new DisplayInteger();
+    		newInteger.display =  GLAllocation.generateDisplayLists(1);
+    		GL11.glNewList(newInteger.display, GL11.GL_COMPILE);
+    		return newInteger;
+    	}
+    	
+    	public static void endList()
+    	{
+    		GL11.glEndList();
+    	}
+    	
+    	public void render()
+    	{
+    		GL11.glCallList(display);
+    	}
     }
     
     public static TextureMap getTextureMap(int type)
@@ -270,6 +304,39 @@ public class MekanismRenderer
     	} catch(Exception e) {}
     	
     	return null;
+    }
+    
+    public static class BooleanArray
+    {
+    	private final boolean[] boolArray;
+    	
+    	public BooleanArray(boolean[] array)
+		{
+			boolArray = array.clone();
+		}
+    	
+    	@Override
+    	public boolean equals(Object o)
+    	{
+    		if(o instanceof BooleanArray)
+    		{
+    			return Arrays.equals(boolArray, ((BooleanArray)o).boolArray);
+    		}
+    		else if(o instanceof boolean[]) 
+    		{
+    			return Arrays.equals(boolArray, (boolean[])o);
+    		}
+    		else
+    		{
+    			return false;
+    		}
+    	}
+    	
+    	@Override
+    	public int hashCode()
+    	{
+    		return Arrays.hashCode(boolArray);
+    	}
     }
     
     public static float getPartialTicks()

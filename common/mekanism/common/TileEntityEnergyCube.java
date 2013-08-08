@@ -15,6 +15,7 @@ import java.util.HashSet;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,13 +36,16 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, ICableOutputter, IStrictEnergyAcceptor
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, ICableOutputter, IStrictEnergyAcceptor, IRedstoneControl
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
 	
 	/** The redstone level this Energy Cube is outputting at. */
 	public int currentRedstoneLevel;
+	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType;
 	
 	/**
 	 * A block used to store and transfer electricity.
@@ -53,6 +57,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		super("Energy Cube", 0);
 		
 		inventory = new ItemStack[2];
+		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -63,7 +68,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		ChargeUtils.charge(0, this);
 		ChargeUtils.discharge(1, this);
 		
-		if(!worldObj.isRemote)
+		if(!worldObj.isRemote && MekanismUtils.canFunction(this))
 		{
 			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
@@ -123,11 +128,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		if(slotID == 0)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 		else if(slotID == 1)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
 		return true;
@@ -164,7 +169,25 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getOutputtingSides().contains(direction) ? (float)Math.min(getMaxEnergy()-getEnergy(), tier.OUTPUT) : 0;
+		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(tier.OUTPUT*Mekanism.TO_UE)) : 0;
+	}
+	
+	@Override
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
+	{
+		if(getOutputtingSides().contains(from))
+		{
+			double toSend = Math.min(getEnergy(), Math.min(tier.OUTPUT, request.getWatts()*Mekanism.FROM_UE));
+			
+			if(doProvide)
+			{
+				setEnergy(getEnergy() - toSend);
+			}
+			
+			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
+		}
+		
+		return new ElectricityPack();
 	}
 
 	@Override
@@ -264,11 +287,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		if(slotID == 1)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, false);
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		else if(slotID == 0)
 		{
-			return MekanismUtils.canBeOutputted(itemstack, true);
+			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
 		
 		return false;
@@ -327,7 +350,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
 		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
+		controlType = RedstoneControl.values()[dataStream.readInt()];
+		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
@@ -335,7 +361,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(tier.name);
+		data.add(controlType.ordinal());
+		
 		return data;
 	}
 	
@@ -345,6 +374,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
         super.readFromNBT(nbtTags);
 
         tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
 	@Override
@@ -353,6 +383,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
         super.writeToNBT(nbtTags);
         
         nbtTags.setString("tier", tier.name);
+        nbtTags.setInteger("controlType", controlType.ordinal());
     }
 	
 	@Override
@@ -403,6 +434,18 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public int getRedstoneLevel()
 	{
         double fractionFull = getEnergy()/getMaxEnergy();
-        return MathHelper.floor_float((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
 	}
 }

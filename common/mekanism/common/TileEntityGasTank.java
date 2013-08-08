@@ -9,6 +9,7 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -16,7 +17,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor, ITubeConnection
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor, ITubeConnection, IRedstoneControl
 {
 	/** The type of gas stored in this tank. */
 	public EnumGas gasType;
@@ -30,11 +31,15 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	/** How fast this tank can output gas. */
 	public int output = 16;
 	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType;
+	
 	public TileEntityGasTank()
 	{
 		super("Gas Tank");
 		gasType = EnumGas.NONE;
 		inventory = new ItemStack[2];
+		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -49,7 +54,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 					IStorageTank item = (IStorageTank)inventory[0].getItem();
 					
 					if(gasType == EnumGas.NONE)
+					{
 						gasType = item.getGasType(inventory[0]);
+					}
 					
 					if(item.canReceiveGas(inventory[0], gasType))
 					{
@@ -80,12 +87,15 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 					IStorageTank item = (IStorageTank)inventory[1].getItem();
 					
 					if(gasType == EnumGas.NONE)
+					{
 						gasType = item.getGasType(inventory[1]);
+					}
 					
 					if(item.canProvideGas(inventory[1], gasType))
 					{
 						int received = 0;
 						int gasNeeded = MAX_GAS - gasStored;
+						
 						if(item.getRate() <= gasNeeded)
 						{
 							received = item.removeGas(inventory[1], gasType, item.getRate());
@@ -106,7 +116,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 			gasType = EnumGas.NONE;
 		}
 		
-		if(gasStored > 0 && !worldObj.isRemote)
+		if(!worldObj.isRemote && gasStored > 0 && MekanismUtils.canFunction(this))
 		{
 			setGas(gasType, gasStored - (Math.min(gasStored, output) - GasTransmission.emitGasToNetwork(gasType, Math.min(gasStored, output), this, ForgeDirection.getOrientation(facing))));
 			
@@ -117,6 +127,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 				if(((IGasAcceptor)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), gasType))
 				{
 					int sendingGas = 0;
+					
 					if(getGas(gasType) >= output)
 					{
 						sendingGas = output;
@@ -161,6 +172,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		{
 			return itemstack.getItem() instanceof IStorageTank && (gasType == EnumGas.NONE || ((IStorageTank)itemstack.getItem()).canProvideGas(itemstack, gasType));
 		}
+		
 		return true;
 	}
 	
@@ -202,10 +214,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		if(type == gasType || gasType == EnumGas.NONE)
 		{
 			if(gasType == EnumGas.NONE)
+			{
 				gasType = type;
+			}
 			
 	    	int rejects = 0;
 	    	int neededGas = MAX_GAS-gasStored;
+	    	
 	    	if(amount <= neededGas)
 	    	{
 	    		gasStored += amount;
@@ -218,6 +233,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	    	
 	    	return rejects;
 		}
+		
 		return amount;
 	}
 
@@ -234,6 +250,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		
 		gasStored = dataStream.readInt();
 		gasType = EnumGas.getFromName(dataStream.readUTF());
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
@@ -245,6 +262,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 
         gasStored = nbtTags.getInteger("gasStored");
         gasType = EnumGas.getFromName(nbtTags.getString("gasType"));
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
 	@Override
@@ -254,14 +272,18 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
         
         nbtTags.setInteger("gasStored", gasStored);
         nbtTags.setString("gasType", gasType.name);
+        nbtTags.setInteger("controlType", controlType.ordinal());
     }
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(gasStored);
 		data.add(gasType.name);
+		data.add(controlType.ordinal());
+		
 		return data;
 	}
 
@@ -269,5 +291,17 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	public boolean canTubeConnect(ForgeDirection side) 
 	{
 		return true;
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
 	}
 }

@@ -19,7 +19,7 @@ public class SlotEnergy
 		@Override
 		public boolean isItemValid(ItemStack itemstack)
 		{
-			return MekanismUtils.canBeCharged(itemstack);
+			return ChargeUtils.canBeCharged(itemstack);
 		}
 	}
 	
@@ -33,7 +33,7 @@ public class SlotEnergy
 		@Override
 		public boolean isItemValid(ItemStack itemstack)
 		{
-			return MekanismUtils.canBeDischarged(itemstack);
+			return ChargeUtils.canBeDischarged(itemstack);
 		}
 	}
 }

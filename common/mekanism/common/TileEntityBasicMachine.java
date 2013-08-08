@@ -11,6 +11,7 @@ import mekanism.api.IUpgradeManagement;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.client.IHasSound;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +24,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
@@ -55,14 +56,20 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
 	
+	/** How many ticks must pass until this block's active state can sync with the client. */
+	public int updateDelay;
+	
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
 	
-	/** The previous active state for this block. */
-	public boolean prevActive;
+	/** The client's current active state. */
+	public boolean clientActive;
 	
 	/** The GUI texture path for this machine. */
 	public ResourceLocation guiLocation;
+	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType;
 	
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -81,6 +88,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		soundURL = soundPath;
 		guiLocation = location;
 		isActive = false;
+		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -92,6 +100,19 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		{
 			Mekanism.proxy.registerSound(this);
 		}
+		
+		if(!worldObj.isRemote)
+		{
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -100,10 +121,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         super.readFromNBT(nbtTags);
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
         speedMultiplier = nbtTags.getInteger("speedMultiplier");
         energyMultiplier = nbtTags.getInteger("energyMultiplier");
         upgradeTicks = nbtTags.getInteger("upgradeTicks");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         if(nbtTags.hasKey("sideDataStored"))
         {
@@ -124,6 +146,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         nbtTags.setInteger("speedMultiplier", speedMultiplier);
         nbtTags.setInteger("energyMultiplier", energyMultiplier);
         nbtTags.setInteger("upgradeTicks", upgradeTicks);
+        nbtTags.setInteger("controlType", controlType.ordinal());
         
         nbtTags.setBoolean("sideDataStored", true);
         
@@ -142,6 +165,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		speedMultiplier = dataStream.readInt();
 		energyMultiplier = dataStream.readInt();
 		upgradeTicks = dataStream.readInt();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		for(int i = 0; i < 6; i++)
 		{
@@ -160,6 +184,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		data.add(speedMultiplier);
 		data.add(energyMultiplier);
 		data.add(upgradeTicks);
+		data.add(controlType.ordinal());
 		data.add(sideConfig);
 		return data;
 	}
@@ -249,12 +274,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     {
     	isActive = active;
     	
-    	if(prevActive != active)
+    	if(clientActive != active && updateDelay == 0)
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		updateDelay = 10;
+    		clientActive = active;
     	}
-    	
-    	prevActive = active;
     }
 	
 	@Override
@@ -309,12 +335,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
-	}
-	
-	@Override
-	public int powerRequest(ForgeDirection side) 
-	{
-		return (int)Math.min(((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)*Mekanism.TO_BC), 100);
 	}
 	
 	@Override
@@ -387,5 +407,17 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public boolean hasVisual()
 	{
 		return true;
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
 	}
 }

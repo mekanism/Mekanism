@@ -17,6 +17,7 @@ import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
 import mekanism.client.SoundHandler;
+import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.MekanismUtils.ResourceType;
@@ -31,6 +32,7 @@ import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketPortableTeleport;
 import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketStatusUpdate;
@@ -185,10 +187,13 @@ public class Mekanism
 	public static boolean dynamicTankEasterEgg = false;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
+	public static int UPDATE_DELAY = 10;
 	public static double TO_IC2;
 	public static double TO_BC;
 	public static double FROM_IC2;
 	public static double FROM_BC;
+	public static double TO_UE = .001;
+	public static double FROM_UE = 1000;
 	public static double ENERGY_PER_REDSTONE = 10000;
 	
 	//Usage Configuration
@@ -369,6 +374,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(Robit.getUnchargedItem(), new Object[] {
 			" S ", "ECE", "OIO", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), AtomicCore, Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('I'), new ItemStack(MachineBlock, 1, 13)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(EnergyMeter), new Object[] {
+			" G ", "AEA", " I ", Character.valueOf('G'), Block.glass, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), "ingotSteel"
+		}));
 		
 		//Factory Recipes
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, RecipeType.SMELTING), new Object[] {
@@ -525,6 +533,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.PressurizedTube.name", "Pressurized Tube");
 		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.UniversalCable.name", "Universal Cable");
 		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.MechanicalPipe.name", "Mechanical Pipe");
+		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.LogisticalTransporter.name", "Logistical Transporter");
 		
 		//Localization for EnergyCube
 		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Basic.name", "Basic Energy Cube");
@@ -731,7 +740,7 @@ public class Mekanism
 			System.out.println("[Mekanism] Hooked into Thermal Expansion successfully.");
 		} catch(Exception e) {}
 		
-		if(controlCircuitOreDict || (!controlCircuitOreDict && !hooks.BasicComponentsLoaded))
+		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
 		{
 			OreDictionary.registerOre("circuitBasic", new ItemStack(ControlCircuit));
 		}
@@ -1191,6 +1200,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketDigitUpdate.class);
 		PacketHandler.registerPacket(PacketPortableTeleport.class);
 		PacketHandler.registerPacket(PacketRemoveUpgrade.class);
+		PacketHandler.registerPacket(PacketRedstoneControl.class);
 		
 		//Donators
 		donators.add("mrgreaper");
@@ -1204,6 +1214,14 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
+	}
+	
+	@ForgeSubscribe
+	public void onEnergyTransferred(EnergyTransferEvent event)
+	{
+		try {
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.ENERGY, event.energyNetwork.cables.iterator().next(), event.power));
+		} catch(Exception e) {}
 	}
 	
 	@ForgeSubscribe

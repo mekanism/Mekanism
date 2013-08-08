@@ -31,6 +31,7 @@ import mekanism.common.TileEntityEnergyCube;
 import mekanism.common.TileEntityEnrichmentChamber;
 import mekanism.common.TileEntityFactory;
 import mekanism.common.TileEntityGasTank;
+import mekanism.common.TileEntityLogisticalTransporter;
 import mekanism.common.TileEntityMechanicalPipe;
 import mekanism.common.TileEntityMetallurgicInfuser;
 import mekanism.common.TileEntityOsmiumCompressor;
@@ -187,6 +188,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
+		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
 	}
 	
 	@Override

@@ -29,6 +29,7 @@ public class ItemStopwatch extends ItemMekanism
 		{
 			entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
 		}
+		
 		return itemstack;
 	}
 	

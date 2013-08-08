@@ -55,6 +55,10 @@ public class RobitAIFollow extends EntityAIBase
         {
             return false;
         }
+        else if(theRobit.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
+        {
+        	return false;
+        }
         else if(!theRobit.getFollowing())
         {
             return false;
@@ -76,7 +80,7 @@ public class RobitAIFollow extends EntityAIBase
     @Override
     public boolean continueExecuting()
     {
-        return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0;
+        return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
     }
 
     @Override

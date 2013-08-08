@@ -1,15 +1,15 @@
 package mekanism.generators.common;
 
-import ic2.api.item.IElectricItem;
+import mekanism.common.ChargeUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
 import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class ContainerBioGenerator extends Container
 {
@@ -64,7 +64,7 @@ public class ContainerBioGenerator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if(MekanismUtils.canBeCharged(slotStack))
+            if(ChargeUtils.canBeCharged(slotStack))
             {
 	            if(slotID != 1)
 	            {
@@ -81,7 +81,7 @@ public class ContainerBioGenerator extends Container
 	            	}
 	            }
             }
-        	else if(tileEntity.getFuel(slotStack) > 0 || (Mekanism.hooks.ForestryLoaded && slotStack.itemID == Mekanism.hooks.ForestryBiofuelBucket.itemID))
+        	else if(tileEntity.getFuel(slotStack) > 0 || isBiofuel(slotStack))
         	{
             	if(slotID != 0 && slotID != 1)
             	{
@@ -137,5 +137,21 @@ public class ContainerBioGenerator extends Container
         }
 
         return stack;
+    }
+    
+    private boolean isBiofuel(ItemStack itemStack)
+    {
+    	if(FluidRegistry.isFluidRegistered("bioethanol"))
+    	{
+    		if(FluidContainerRegistry.getFluidForFilledItem(itemStack) != null)
+    		{
+    			if(FluidContainerRegistry.getFluidForFilledItem(itemStack).getFluid() == FluidRegistry.getFluid("bioethanol"))
+    			{
+    				return true;
+    			}
+    		}
+    	}
+    	
+    	return false;
     }
 }

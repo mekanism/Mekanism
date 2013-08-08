@@ -1,16 +1,14 @@
 package mekanism.generators.common;
 
-import ic2.api.item.IElectricItem;
 import mekanism.api.EnumGas;
 import mekanism.api.IStorageTank;
-import mekanism.common.MekanismUtils;
+import mekanism.common.ChargeUtils;
 import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
 
 public class ContainerHydrogenGenerator extends Container
 {
@@ -65,7 +63,7 @@ public class ContainerHydrogenGenerator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if(MekanismUtils.canBeCharged(slotStack))
+            if(ChargeUtils.canBeCharged(slotStack))
             {
 	            if(slotID != 1)
 	            {

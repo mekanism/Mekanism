@@ -1,10 +1,16 @@
 package mekanism.common;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
@@ -14,16 +20,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
 {
-	/** A fake power provider used to initiate energy transfer calculations. */
-	public CablePowerProvider powerProvider;
+	/** A fake power handler used to initiate energy transfer calculations. */
+	public PowerHandler powerHandler;
 	
 	/** The energy network currently in use by this cable segment. */
 	public EnergyNetwork energyNetwork;
 	
+	public double energyScale;
+	
 	public TileEntityUniversalCable()
 	{
-		powerProvider = new CablePowerProvider(this);
-		powerProvider.configure(0, 0, 100, 0, 100);
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configure(0, 100, 0, 100);
 	}
 	
 	@Override
@@ -35,12 +43,45 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public EnergyNetwork getNetwork()
 	{
-		if(energyNetwork == null)
+		return getNetwork(true);
+	}
+	
+	@Override
+	public EnergyNetwork getNetwork(boolean createIfNull)
+	{
+		if(energyNetwork == null && createIfNull)
 		{
-			energyNetwork = new EnergyNetwork(this);
+			TileEntity[] adjacentCables = CableUtils.getConnectedCables(this);
+			HashSet<EnergyNetwork> connectedNets = new HashSet<EnergyNetwork>();
+			for(TileEntity cable : adjacentCables)
+			{
+				if(cable instanceof IUniversalCable && ((IUniversalCable)cable).getNetwork(false) != null)
+				{
+					connectedNets.add(((IUniversalCable)cable).getNetwork());
+				}
+			}
+			if(connectedNets.size() == 0 || worldObj.isRemote)
+			{
+				energyNetwork = new EnergyNetwork(this);
+			}
+			else if(connectedNets.size() == 1)
+			{
+				energyNetwork = connectedNets.iterator().next();
+				energyNetwork.cables.add(this);
+			}
+			else {
+				energyNetwork = new EnergyNetwork(connectedNets);
+				energyNetwork.cables.add(this);
+			}
 		}
 		
 		return energyNetwork;
+	}
+	
+	@Override
+	public void fixNetwork()
+	{
+		getNetwork().fixMessedUpNetwork(this);
 	}
 	
 	@Override
@@ -57,7 +98,20 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	@Override
 	public void setNetwork(EnergyNetwork network)
 	{
-		energyNetwork = network;
+		if(network != energyNetwork)
+		{
+			removeFromNetwork();
+			energyNetwork = network;
+		}
+	}
+	
+	@Override
+	public void removeFromNetwork()
+	{
+		if(energyNetwork != null)
+		{
+			energyNetwork.removeCable(this);
+		}
 	}
 
 	@Override
@@ -80,21 +134,19 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 
 	@Override
-	public PowerReceiver getPowerReceiver() 
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
-		return powerProvider;
+		return powerHandler.getPowerReceiver();
+	}
+	
+	@Override
+	public World getWorld()
+	{
+		return worldObj;
 	}
 
 	@Override
 	public void doWork(PowerHandler workProvider) {}
-
-	@Override
-	public int powerRequest(ForgeDirection from)
-	{
-		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		ignored.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-		return (int)Math.min(100, getNetwork().getEnergyNeeded(ignored)*Mekanism.TO_BC);
-	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -102,22 +154,22 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		return INFINITE_EXTENT_AABB;
 	}
-}
-
-class CablePowerProvider extends PowerProvider
-{
-	public TileEntity tileEntity;
 	
-	public CablePowerProvider(TileEntity tile)
+	@Override
+	public void onChunkUnload() 
 	{
-		tileEntity = tile;
+		invalidate();
+		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 	}
 	
 	@Override
-	public void receiveEnergy(float quantity, ForgeDirection from)
+	public void setCachedEnergy(double scale)
 	{
-		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		ignored.add(Object3D.get(tileEntity).getFromSide(from).getTileEntity(tileEntity.worldObj));
-		CableUtils.emitEnergyFromAllSides(quantity*Mekanism.FROM_BC, tileEntity, ignored);
+		energyScale = scale;
+	}
+	
+	public float getEnergyScale()
+	{
+		return (float)energyScale;
 	}
 }

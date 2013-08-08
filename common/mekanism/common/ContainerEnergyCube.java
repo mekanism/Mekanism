@@ -86,7 +86,7 @@ public class ContainerEnergyCube extends Container
             	else {
 		            if(slotID != 1 && slotID != 0)
 		            {
-		            	if(MekanismUtils.canBeDischarged(slotStack))
+		            	if(ChargeUtils.canBeDischarged(slotStack))
 		            	{
 			                if(!mergeItemStack(slotStack, 1, 2, false))
 			                {

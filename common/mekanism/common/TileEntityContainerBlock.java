@@ -38,9 +38,9 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
             NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
 
-            if(slotID >= 0 && slotID < inventory.length)
+            if(slotID >= 0 && slotID < getSizeInventory())
             {
-                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+                setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
             }
         }
     }
@@ -52,13 +52,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         
         NBTTagList tagList = new NBTTagList();
 
-        for(int slotCount = 0; slotCount < inventory.length; slotCount++)
+        for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
         {
-            if(inventory[slotCount] != null)
+            if(getStackInSlot(slotCount) != null)
             {
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 tagCompound.setByte("Slot", (byte)slotCount);
-                inventory[slotCount].writeToNBT(tagCompound);
+                getStackInSlot(slotCount).writeToNBT(tagCompound);
                 tagList.appendTag(tagCompound);
             }
         }

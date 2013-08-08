@@ -8,9 +8,16 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.server.MinecraftServer;
 
 public class CommandMekanism extends CommandBase
 {
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	{
+		return MinecraftServer.getServer().isSinglePlayer() || super.canCommandSenderUseCommand(sender);
+	}
+	
 	@Override
     public String getCommandName()
     {

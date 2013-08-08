@@ -1,7 +1,10 @@
 package mekanism.common;
 
+import java.util.HashSet;
+
 import mekanism.api.EnumGas;
 import mekanism.api.GasNetwork;
+import mekanism.api.GasTransmission;
 import mekanism.api.IPressurizedTube;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
@@ -23,31 +26,51 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	public GasNetwork gasNetwork;
 	
 	@Override
-	public void updateEntity()
+	public GasNetwork getNetwork()
 	{
-		if(worldObj.isRemote)
-		{
-			if(gasScale > 0)
-			{
-				gasScale -= .01;
-			}
-			else {
-				refGas = null;
-			}
-		}
+		return getNetwork(true);
 	}
 	
 	@Override
-	public GasNetwork getNetwork()
+	public GasNetwork getNetwork(boolean createIfNull)
 	{
-		if(gasNetwork == null)
+		if(gasNetwork == null && createIfNull)
 		{
-			gasNetwork = new GasNetwork(this);
+			TileEntity[] adjacentTubes = GasTransmission.getConnectedTubes(this);
+			HashSet<GasNetwork> connectedNets = new HashSet<GasNetwork>();
+			
+			for(TileEntity tube : adjacentTubes)
+			{
+				if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).getNetwork(false) != null)
+				{
+					connectedNets.add(((IPressurizedTube)tube).getNetwork());
+				}
+			}
+			
+			if(connectedNets.size() == 0 || worldObj.isRemote)
+			{
+				gasNetwork = new GasNetwork(this);
+			}
+			else if(connectedNets.size() == 1)
+			{
+				gasNetwork = (GasNetwork)connectedNets.iterator().next();
+				gasNetwork.tubes.add(this);
+			}
+			else {
+				gasNetwork = new GasNetwork(connectedNets);
+				gasNetwork.tubes.add(this);
+			}
 		}
 		
 		return gasNetwork;
 	}
-	
+
+	@Override
+	public void fixNetwork()
+	{
+		getNetwork().fixMessedUpNetwork(this);
+	}
+
 	@Override
 	public void invalidate()
 	{
@@ -62,7 +85,20 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public void setNetwork(GasNetwork network)
 	{
-		gasNetwork = network;
+		if(network != gasNetwork)
+		{
+			removeFromNetwork();
+			gasNetwork = network;			
+		}
+	}
+	
+	@Override
+	public void removeFromNetwork()
+	{
+		if(gasNetwork != null)
+		{
+			gasNetwork.removeTube(this);
+		}
 	}
 	
 	@Override
@@ -125,7 +161,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	@Override
 	public boolean canUpdate()
 	{
-		return true;
+		return false;
 	}
 	
 	@Override

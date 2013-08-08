@@ -27,7 +27,7 @@ public final class ChargeUtils
 			}
 			else if(storer.inventory[slotID].getItem() instanceof IItemElectric)
 			{
-				storer.setEnergy(storer.getEnergy() + ElectricItemHelper.dischargeItem(storer.inventory[slotID], (float)(storer.getMaxEnergy() - storer.getEnergy())));
+				storer.setEnergy(storer.getEnergy() + ElectricItemHelper.dischargeItem(storer.inventory[slotID], (float)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_UE)));
 			}
 			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
@@ -78,7 +78,7 @@ public final class ChargeUtils
 			}
 			else if(storer.inventory[slotID].getItem() instanceof IItemElectric)
 			{
-				storer.setEnergy(storer.getEnergy() - ElectricItemHelper.chargeItem(storer.inventory[slotID], (float)storer.getEnergy()));
+				storer.setEnergy(storer.getEnergy() - ElectricItemHelper.chargeItem(storer.inventory[slotID], (float)(storer.getEnergy()*Mekanism.TO_UE)));
 			}
 			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
@@ -96,6 +96,54 @@ public final class ChargeUtils
 				item.receiveEnergy(itemStack, toTransfer, true);
 				storer.setEnergy(storer.getEnergy() - (toTransfer*Mekanism.FROM_BC));
 			}
+		}
+	}
+
+	/**
+	 * Whether or not a defined ItemStack can be discharged for energy in some way.
+	 * @param itemstack - ItemStack to check
+	 * @return if the ItemStack can be discharged
+	 */
+	public static boolean canBeDischarged(ItemStack itemstack)
+	{
+		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) != 0) || 
+				(itemstack.getItem() instanceof IChargeableItem && ((IChargeableItem)itemstack.getItem()).transferEnergy(itemstack, 1, false) != 0) ||
+				itemstack.itemID == Item.redstone.itemID;
+	}
+
+	/**
+	 * Whether or not a defined ItemStack can be charged with energy in some way.
+	 * @param itemstack - ItemStack to check
+	 * @return if the ItemStack can be discharged
+	 */
+	public static boolean canBeCharged(ItemStack itemstack)
+	{
+		return itemstack.getItem() instanceof IElectricItem || 
+				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) != 0) ||
+				(itemstack.getItem() instanceof IChargeableItem && ((IChargeableItem)itemstack.getItem()).receiveEnergy(itemstack, 1, false) != 0);
+	}
+
+	/**
+	 * Whether or not a defined deemed-electrical ItemStack can be outputted out of a slot.
+	 * This puts into account whether or not that slot is used for charging or discharging.
+	 * @param itemstack - ItemStack to perform the check on
+	 * @param chargeSlot - whether or not the outputting slot is for charging or discharging
+	 * @return if the ItemStack can be outputted
+	 */
+	public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot)
+	{
+		if(chargeSlot)
+		{
+	    	return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0));
+		}
+		else {
+			return (itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0) ||
+					(itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
+							(!(itemstack.getItem() instanceof IItemElectric) || 
+							((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0));
 		}
 	}
 }

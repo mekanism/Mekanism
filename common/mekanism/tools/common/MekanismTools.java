@@ -466,10 +466,10 @@ public class MekanismTools implements IModule
 		BronzeSword = new ItemMekanismSword(Mekanism.configuration.getItem("BronzeSword", 11409).getInt(), toolBRONZE).setUnlocalizedName("BronzeSword");
 		
 		//Osmium
-		OsmiumHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumHelmet", 11410).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
-		OsmiumChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumChestplate", 11411).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 1)).setUnlocalizedName("OsmiumChestplate");
-		OsmiumLeggings = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumLeggings", 11412).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 2)).setUnlocalizedName("OsmiumLeggings");
-		OsmiumBoots = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumBoots", 11413).getInt(), EnumArmorMaterial.DIAMOND, Mekanism.proxy.getArmorIndex("osmium"), 3)).setUnlocalizedName("OsmiumBoots");
+		OsmiumHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumHelmet", 11410).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
+		OsmiumChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumChestplate", 11411).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 1)).setUnlocalizedName("OsmiumChestplate");
+		OsmiumLeggings = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumLeggings", 11412).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 2)).setUnlocalizedName("OsmiumLeggings");
+		OsmiumBoots = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumBoots", 11413).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 3)).setUnlocalizedName("OsmiumBoots");
 		OsmiumPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("OsmiumPaxel", 11414).getInt(), toolOSMIUM2).setUnlocalizedName("OsmiumPaxel");
 		OsmiumPickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("OsmiumPickaxe", 11415).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumPickaxe");
 		OsmiumAxe = new ItemMekanismAxe(Mekanism.configuration.getItem("OsmiumAxe", 11416).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumAxe");

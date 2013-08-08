@@ -140,7 +140,7 @@ public class ContainerFactory extends Container
             		return null;
             	}
             }
-        	else if(MekanismUtils.canBeDischarged(slotStack))
+        	else if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 1)
 	            {

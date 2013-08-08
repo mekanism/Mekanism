@@ -5,7 +5,7 @@ import java.util.Arrays;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public final class PipeUtils 
@@ -52,7 +52,21 @@ public final class PipeUtils
 				
 				if(container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()).length > 0)
 				{
-					connectable[side] = true;
+					boolean notNull = false;
+					
+					for(FluidTankInfo info : container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()))
+					{
+						if(info != null)
+						{
+							notNull = true;
+							break;
+						}
+					}
+					
+					if(notNull)
+					{
+						connectable[side] = true;
+					}
 				}
 			}
 		}

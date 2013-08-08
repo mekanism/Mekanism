@@ -65,7 +65,7 @@ public class ContainerElectricPump extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if(MekanismUtils.canBeDischarged(slotStack))
+            if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 2)
 	            {
@@ -114,7 +114,7 @@ public class ContainerElectricPump extends Container
 	        			return null;
 	        		}
 	        	}
-	        	else if(slotID > 28)
+	        	else if(slotID > 29)
 	        	{
 	        		if(!mergeItemStack(slotStack, 3, 29, false))
 	        		{

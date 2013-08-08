@@ -65,7 +65,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	
 	public void update()
 	{
-		if(!worldObj.isRemote && structure == null || !structure.didTick)
+		if(!worldObj.isRemote && (structure == null || !structure.didTick))
 		{
 			new TankUpdateProtocol(this).updateTanks();
 			
