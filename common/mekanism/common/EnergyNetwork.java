@@ -20,6 +20,8 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import buildcraft.api.power.PowerHandler.Type;
 
 public class EnergyNetwork
 {
@@ -55,7 +57,7 @@ public class EnergyNetwork
 				}
 				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
-					totalNeeded += (((IPowerReceptor)acceptor).powerRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_BC);
+					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC);
 				}
 			}
 		}
@@ -97,11 +99,11 @@ public class EnergyNetwork
 					}
 					else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 					{
-						IPowerReceptor receptor = (IPowerReceptor)acceptor;
-		            	double electricityNeeded = Math.min(receptor.powerRequest(acceptorDirections.get(acceptor).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-		            	float transferEnergy = (float)Math.min(electricityNeeded, currentSending);
-		            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
-						energyToSend -= transferEnergy;
+						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite());
+		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
+		            	double transferEnergy = Math.min(electricityNeeded, currentSending);
+		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
+		            	energyToSend -= transferEnergy;
 					}
 				}
 			}
@@ -140,9 +142,9 @@ public class EnergyNetwork
 			}
 			else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 			{
-				if(((IPowerReceptor)acceptor).getPowerProvider() != null)
+				if(((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()) != null)
 				{
-					if((((IPowerReceptor)acceptor).powerRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_BC) > 0)
+					if((((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
 						toReturn.add(acceptor);
 					}

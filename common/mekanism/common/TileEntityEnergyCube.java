@@ -23,13 +23,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
-import universalelectricity.core.block.IElectricalStorage;
 import universalelectricity.core.electricity.ElectricityHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerProvider;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import buildcraft.api.power.PowerHandler.Type;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -84,12 +83,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 						setEnergy(electricityStored - (tier.OUTPUT - (event.amount*Mekanism.FROM_IC2)));
 					}
 				}
-				else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
+				else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
-					IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-	            	double electricityNeeded = Math.min(receptor.powerRequest(ForgeDirection.getOrientation(facing).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-	            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
-	            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+					PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
+	            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
+	            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
+	            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
 	            	setEnergy(electricityStored - transferEnergy);
 				}
 			}
@@ -280,22 +279,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		return tier.VOLTAGE;
 	}
-	
-	/**
-	 * Whether or not the declared Tile Entity is an instance of a BuildCraft power receptor.
-	 * @param tileEntity - tile entity to check
-	 * @return if the tile entity is a power receptor
-	 */
-	public boolean isPowerReceptor(TileEntity tileEntity)
-	{
-		if(tileEntity instanceof IPowerReceptor) 
-		{
-			IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-			IPowerProvider provider = receptor.getPowerProvider();
-			return provider != null && provider.getClass().getSuperclass().equals(PowerProvider.class);
-		}
-		return false;
-	}
 
 	@Override
 	public String getType() 
@@ -395,12 +378,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	public boolean isTeleporterCompatible(Direction side) 
 	{
 		return true;
-	}
-	
-	@Override
-	public int powerRequest(ForgeDirection side) 
-	{
-		return side != ForgeDirection.getOrientation(facing) ? Math.min(100, (int)(tier.MAX_ELECTRICITY-electricityStored)) : 0;
 	}
 	
 	@Override

@@ -10,14 +10,16 @@ import java.util.EnumSet;
 
 import mekanism.api.IStrictEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConnector;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.block.IElectricalStorage;
 import universalelectricity.core.electricity.ElectricityPack;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -153,22 +155,19 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public void setPowerProvider(IPowerProvider provider) {}
-	
-	@Override
-	public IPowerProvider getPowerProvider() 
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
 		return powerProvider;
 	}
 	
 	@Override
-	public int powerRequest(ForgeDirection side) 
-	{
-		return (int)Math.min(((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 100);
-	}
+	public void doWork(PowerHandler workProvider) {}
 	
 	@Override
-	public void doWork() {}
+	public World getWorld()
+	{
+		return worldObj;
+	}
 	
 	@Override
 	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive) 

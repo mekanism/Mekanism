@@ -1,38 +1,47 @@
 package buildcraft.api.gates;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.core.IIconProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 
 public interface ITrigger {
 
-	public abstract int getId();
+	/**
+	 * Return your ID from the old API here, this is only used to convert old
+	 * saves to the new format.
+	 */
+	int getLegacyId();
 
-	public int getIconIndex();
-    
-    @SideOnly(Side.CLIENT)
-    public IIconProvider getIconProvider();
+	String getUniqueTag();
+
+	@SideOnly(Side.CLIENT)
+	Icon getIcon();
+
+	@SideOnly(Side.CLIENT)
+	void registerIcons(IconRegister iconRegister);
 
 	/**
 	 * Return true if this trigger can accept parameters
 	 */
-	public boolean hasParameter();
+	boolean hasParameter();
 
 	/**
 	 * Return the trigger description in the UI
 	 */
-	public String getDescription();
+	String getDescription();
 
 	/**
-	 * Return true if the tile given in parameter activates the trigger, given the parameters.
+	 * Return true if the tile given in parameter activates the trigger, given
+	 * the parameters.
 	 */
-	public abstract boolean isTriggerActive(ForgeDirection side, TileEntity tile, ITriggerParameter parameter);
+	boolean isTriggerActive(ForgeDirection side, TileEntity tile, ITriggerParameter parameter);
 
 	/**
-	 * Create parameters for the trigger. As for now, there is only one kind of trigger parameter available so this subprogram is final.
+	 * Create parameters for the trigger. As for now, there is only one kind of
+	 * trigger parameter available so this subprogram is final.
 	 */
-	public ITriggerParameter createParameter();
-
+	ITriggerParameter createParameter();
 }

@@ -36,7 +36,7 @@ public interface IPipe {
 
 	public boolean isWired(WireColor color);
 
-	public boolean hasInterface();
+	public boolean hasGate();
 
 	public TileEntity getContainer();
 

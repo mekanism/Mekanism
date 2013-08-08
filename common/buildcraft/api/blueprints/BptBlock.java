@@ -9,15 +9,14 @@
 
 package buildcraft.api.blueprints;
 
+import buildcraft.api.core.BuildCraftAPI;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import buildcraft.api.core.BuildCraftAPI;
 
 /**
  * This class allow to specify specific behavior for blocks stored in blueprints:

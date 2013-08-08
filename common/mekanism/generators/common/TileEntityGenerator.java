@@ -31,9 +31,9 @@ import universalelectricity.core.block.IConductor;
 import universalelectricity.core.electricity.ElectricityHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerProvider;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import buildcraft.api.power.PowerHandler.Type;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -63,10 +63,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super(name, maxEnergy);
 		
-		if(powerProvider != null)
-		{
-			powerProvider.configure(0, 0, 0, 0, (int)(maxEnergy*Mekanism.TO_BC));
-		}
+		powerProvider.configure(0, 0, 0, 0, (int)(maxEnergy*Mekanism.TO_BC));
 		
 		output = out;
 		isActive = false;
@@ -104,12 +101,12 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 							setEnergy(electricityStored - (output - (event.amount*Mekanism.FROM_IC2)));
 						}
 					}
-					else if(isPowerReceptor(tileEntity) && Mekanism.hooks.BuildCraftLoaded)
+					else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 					{
-						IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-		            	double electricityNeeded = Math.min(receptor.powerRequest(ForgeDirection.getOrientation(facing).getOpposite()), receptor.getPowerProvider().getMaxEnergyStored() - receptor.getPowerProvider().getEnergyStored())*Mekanism.FROM_BC;
-		            	float transferEnergy = (float)Math.min(electricityStored, Math.min(electricityNeeded, output));
-		            	receptor.getPowerProvider().receiveEnergy((float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+						PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
+		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
+		            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, output));
+		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
 		            	setEnergy(electricityStored - transferEnergy);
 					}
 				}
@@ -186,22 +183,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 * @return if the generator can operate
 	 */
 	public abstract boolean canOperate();
-	
-	/**
-	 * Whether or not the declared Tile Entity is an instance of a BuildCraft power receptor.
-	 * @param tileEntity - tile entity to check
-	 * @return if the tile entity is a power receptor
-	 */
-	public boolean isPowerReceptor(TileEntity tileEntity)
-	{
-		if(tileEntity instanceof IPowerReceptor) 
-		{
-			IPowerReceptor receptor = (IPowerReceptor)tileEntity;
-			IPowerProvider provider = receptor.getPowerProvider();
-			return provider != null && provider.getClass().getSuperclass().equals(PowerProvider.class);
-		}
-		return false;
-	}
 	
 	/**
 	 * Gets the scaled energy level for the GUI.
@@ -344,12 +325,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
         
         nbtTags.setBoolean("isActive", isActive);
     }
-	
-	@Override
-	public int powerRequest(ForgeDirection side) 
-	{
-		return 0;
-	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)

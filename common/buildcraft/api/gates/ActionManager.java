@@ -1,16 +1,16 @@
 package buildcraft.api.gates;
 
+import buildcraft.api.transport.IPipe;
+import java.util.HashMap;
 import java.util.LinkedList;
-
+import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
-import buildcraft.api.transport.IPipe;
 
 public class ActionManager {
 
-	public static ITrigger[] triggers = new ITrigger[1024];
-	public static IAction[] actions = new IAction[1024];
-
+	public static Map<String, ITrigger> triggers = new HashMap<String, ITrigger>();
+	public static Map<String, IAction> actions = new HashMap<String, IAction>();
 	private static LinkedList<ITriggerProvider> triggerProviders = new LinkedList<ITriggerProvider>();
 	private static LinkedList<IActionProvider> actionProviders = new LinkedList<IActionProvider>();
 
@@ -18,6 +18,14 @@ public class ActionManager {
 		if (provider != null && !triggerProviders.contains(provider)) {
 			triggerProviders.add(provider);
 		}
+	}
+	
+	public static void registerTrigger(ITrigger trigger){
+		triggers.put(trigger.getUniqueTag(), trigger);
+	}
+	
+	public static void registerAction(IAction action){
+		actions.put(action.getUniqueTag(), action);
 	}
 
 	public static LinkedList<ITrigger> getNeighborTriggers(Block block, TileEntity entity) {
@@ -79,5 +87,20 @@ public class ActionManager {
 
 		return triggers;
 	}
-
+	
+	public static ITrigger getTriggerFromLegacyId(int legacyId){
+		for(ITrigger trigger : triggers.values()){
+			if(trigger.getLegacyId() == legacyId)
+				return trigger;
+		}
+		return null;
+	}
+	
+	public static IAction getActionFromLegacyId(int legacyId){
+		for(IAction action : actions.values()){
+			if(action.getLegacyId() == legacyId)
+				return action;
+		}
+		return null;
+	}
 }

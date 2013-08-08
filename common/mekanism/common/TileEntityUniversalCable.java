@@ -6,9 +6,9 @@ import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerProvider;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -80,16 +80,13 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 
 	@Override
-	public void setPowerProvider(IPowerProvider provider) {}
-
-	@Override
-	public IPowerProvider getPowerProvider() 
+	public PowerReceiver getPowerReceiver() 
 	{
 		return powerProvider;
 	}
 
 	@Override
-	public void doWork() {}
+	public void doWork(PowerHandler workProvider) {}
 
 	@Override
 	public int powerRequest(ForgeDirection from)

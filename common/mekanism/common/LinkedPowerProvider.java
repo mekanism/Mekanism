@@ -2,7 +2,6 @@ package mekanism.common;
 
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerProvider;
 
 public class LinkedPowerProvider extends PowerProvider
 {

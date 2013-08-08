@@ -17,5 +17,5 @@ public interface IExtractionHandler {
 	 * Can this pipe extract liquids from the block located at these coordinates?
 	 * param extractor can be null
 	 */
-	boolean canExtractLiquids(Object extractor, World world, int i, int j, int k);
+	boolean canExtractFluids(Object extractor, World world, int i, int j, int k);
 }
