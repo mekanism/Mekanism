@@ -128,6 +128,30 @@ public class Mekanism
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
     
+	//Item IDs
+	public static int electricBowID = 11200;
+	public static int stopwatchID = 11202;
+	public static int weatherOrbID = 11203;
+	public static int dustID = 11204;
+	public static int ingotID = 11205;
+	public static int energyTabletID = 11206;
+	public static int speedUpgradeID = 11207;
+	public static int energyUpgradeID = 11208;
+	public static int robitID = 11209;
+	public static int atomicDisassemblerID = 11210;
+	public static int atomicCoreID = 11211;
+	public static int enrichedAlloyID = 11212;
+	public static int storageTankID = 11213;
+	public static int controlCircuitID = 11214;
+	public static int enrichedIronID = 11215;
+	public static int compressedCarbonID = 11216;
+	public static int portableTeleporterID = 11217;
+	public static int teleportationCoreID = 11218;
+	public static int clumpID = 11219;
+	public static int dirtyDustID = 11220;
+	public static int configuratorID = 11221;
+	public static int energyMeterID = 11222;
+	
 	//Block IDs
     public static int basicBlockID = 3000;
     public static int machineBlockID = 3001;
@@ -587,33 +611,33 @@ public class Mekanism
 	{	
 		//Declarations
 		configuration.load();
-		ElectricBow = (ItemElectricBow) new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
+		ElectricBow = (ItemElectricBow) new ItemElectricBow(configuration.getItem("ElectricBow", electricBowID).getInt()).setUnlocalizedName("ElectricBow");
 		
 		if(extrasEnabled == true)
 		{
-			Stopwatch = new ItemStopwatch(configuration.getItem("Stopwatch", 11202).getInt()).setUnlocalizedName("Stopwatch");
-			WeatherOrb = new ItemWeatherOrb(configuration.getItem("WeatherOrb", 11203).getInt()).setUnlocalizedName("WeatherOrb");
+			Stopwatch = new ItemStopwatch(configuration.getItem("Stopwatch", stopwatchID).getInt()).setUnlocalizedName("Stopwatch");
+			WeatherOrb = new ItemWeatherOrb(configuration.getItem("WeatherOrb", weatherOrbID).getInt()).setUnlocalizedName("WeatherOrb");
 		}
 		
-		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
-		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
-		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt(), 0, 150).setUnlocalizedName("SpeedUpgrade");
-		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt(), 1000, 0).setUnlocalizedName("EnergyUpgrade");
-		Robit = (ItemRobit) new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
-		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
-		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
-		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
-		StorageTank = (ItemStorageTank) new ItemStorageTank(configuration.getItem("StorageTank", 11213).getInt(), 1600, 16).setUnlocalizedName("StorageTank");
-		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", 11214).getInt()).setUnlocalizedName("ControlCircuit");
-		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", 11215).getInt()).setUnlocalizedName("EnrichedIron");
-		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", 11216).getInt()).setUnlocalizedName("CompressedCarbon");
-		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", 11217).getInt()).setUnlocalizedName("PortableTeleporter");
-		TeleportationCore = new ItemMekanism(configuration.getItem("TeleportationCore", 11218).getInt()).setUnlocalizedName("TeleportationCore");
-		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
-		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
-		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
-		EnergyMeter = new ItemEnergyMeter(configuration.getItem("EnergyMeter", 11222).getInt()).setUnlocalizedName("EnergyMeter");
+		Dust = new ItemDust(configuration.getItem("Dust", dustID).getInt()-256);
+		Ingot = new ItemIngot(configuration.getItem("Ingot", ingotID).getInt()-256);
+		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", energyTabletID).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
+		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", speedUpgradeID).getInt(), 0, 150).setUnlocalizedName("SpeedUpgrade");
+		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", energyUpgradeID).getInt(), 1000, 0).setUnlocalizedName("EnergyUpgrade");
+		Robit = (ItemRobit) new ItemRobit(configuration.getItem("Robit", robitID).getInt()).setUnlocalizedName("Robit");
+		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", atomicDisassemblerID).getInt()).setUnlocalizedName("AtomicDisassembler");
+		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", atomicCoreID).getInt()).setUnlocalizedName("AtomicCore");
+		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", enrichedAlloyID).getInt()).setUnlocalizedName("EnrichedAlloy");
+		StorageTank = (ItemStorageTank) new ItemStorageTank(configuration.getItem("StorageTank", storageTankID).getInt(), 1600, 16).setUnlocalizedName("StorageTank");
+		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", controlCircuitID).getInt()).setUnlocalizedName("ControlCircuit");
+		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", enrichedIronID).getInt()).setUnlocalizedName("EnrichedIron");
+		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", compressedCarbonID).getInt()).setUnlocalizedName("CompressedCarbon");
+		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", portableTeleporterID).getInt()).setUnlocalizedName("PortableTeleporter");
+		TeleportationCore = new ItemMekanism(configuration.getItem("TeleportationCore", teleportationCoreID).getInt()).setUnlocalizedName("TeleportationCore");
+		Clump = new ItemClump(configuration.getItem("Clump", clumpID).getInt()-256);
+		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", dirtyDustID).getInt()-256);
+		Configurator = new ItemConfigurator(configuration.getItem("Configurator", configuratorID).getInt()).setUnlocalizedName("Configurator");
+		EnergyMeter = new ItemEnergyMeter(configuration.getItem("EnergyMeter", energyMeterID).getInt()).setUnlocalizedName("EnergyMeter");
 		configuration.save();
 		
 		//Registrations
