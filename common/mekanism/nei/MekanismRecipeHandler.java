@@ -28,6 +28,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 		if(outputId.equals("crafting") && getClass() == MekanismRecipeHandler.class)
 		{
 			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+			
 			for(IRecipe irecipe : allrecipes)
 			{
 				if(irecipe instanceof MekanismRecipe)
@@ -47,6 +48,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+		
 		for(IRecipe irecipe : allrecipes)
 		{
 			if(irecipe instanceof MekanismRecipe && areItemsEqual(irecipe.getRecipeOutput(), result))
@@ -62,6 +64,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+		
 		for(IRecipe irecipe : allrecipes)
 		{
 			if(irecipe instanceof MekanismRecipe)
@@ -187,6 +190,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 					}
 				}
 			}
+			
 			return false;
 		}
 	}

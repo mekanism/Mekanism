@@ -18,7 +18,7 @@ import static codechicken.core.gui.GuiDraw.*;
 
 public abstract class MachineRecipeHandler extends TemplateRecipeHandler
 {
-	int ticksPassed;
+	private int ticksPassed;
 
 	public abstract String getRecipeId();
 
