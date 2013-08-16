@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
 import mekanism.api.TransmitterNetworkRegistry;
@@ -25,16 +26,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork implements ITransmitterNetwork
+public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 {
 	public HashSet<IMechanicalPipe> pipes = new HashSet<IMechanicalPipe>();
 	
 	public Set<IFluidHandler> possibleAcceptors = new HashSet<IFluidHandler>();
 	public Map<IFluidHandler, ForgeDirection> acceptorDirections = new HashMap<IFluidHandler, ForgeDirection>();
-	
-	private int ticksSinceCreate = 0;
-	private int ticksSinceSecond = 0;
-	private boolean fixed = false;
 	
 	public FluidNetwork(IMechanicalPipe... varPipes)
 	{

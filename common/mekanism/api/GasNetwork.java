@@ -20,15 +20,12 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork implements ITransmitterNetwork
+public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 {
 	public HashSet<IPressurizedTube> tubes = new HashSet<IPressurizedTube>();
 	
 	public Set<IGasAcceptor> possibleAcceptors = new HashSet<IGasAcceptor>();
 	public Map<IGasAcceptor, ForgeDirection> acceptorDirections = new HashMap<IGasAcceptor, ForgeDirection>();
-	
-	private int ticksSinceCreate = 0;
-	private boolean fixed = false;
 	
 	public GasNetwork(IPressurizedTube... varPipes)
 	{
@@ -370,7 +367,7 @@ public class GasNetwork implements ITransmitterNetwork
 	@Override
 	public String toString()
 	{
-		return "[GasNetwork] " + tubes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+		return "[GasNetwork] " + tubes.size() + " tubes, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	public void tick()

@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
+import mekanism.api.DynamicNetwork;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
@@ -26,13 +25,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
+import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public class EnergyNetwork implements ITransmitterNetwork
+public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 {
 	public HashSet<IUniversalCable> cables = new HashSet<IUniversalCable>();
 	
@@ -42,9 +42,6 @@ public class EnergyNetwork implements ITransmitterNetwork
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
-	private int ticksSinceCreate = 0;
-	private int ticksSinceSecond = 0;
-	private boolean fixed = false;
 	
 	public EnergyNetwork(IUniversalCable... varCables)
 	{

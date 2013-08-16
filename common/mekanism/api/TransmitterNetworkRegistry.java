@@ -12,7 +12,6 @@ import cpw.mods.fml.relauncher.Side;
 public class TransmitterNetworkRegistry implements ITickHandler
 {
 	private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
-	
 	private HashSet<ITransmitterNetwork> networks = new HashSet<ITransmitterNetwork>();
 	
 	public TransmitterNetworkRegistry()
@@ -78,7 +77,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	@Override
 	public String getLabel()
 	{
-		return "Mekanism Transmitter Networks";
+		return "MekanismNetworks";
 	}
 	
 	@Override

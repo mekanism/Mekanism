@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
 import mekanism.api.TransmitterNetworkRegistry;
@@ -20,16 +21,12 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 
-public class InventoryNetwork implements ITransmitterNetwork
+public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetwork
 {
 	public HashSet<ILogisticalTransporter> transporters = new HashSet<ILogisticalTransporter>();
 	
 	public Set<IInventory> possibleAcceptors = new HashSet<IInventory>();
 	public Map<IInventory, ForgeDirection> acceptorDirections = new HashMap<IInventory, ForgeDirection>();
-	
-	private int ticksSinceCreate = 0;
-	private int ticksSinceSecond = 0;
-	private boolean fixed = false;
 	
 	public InventoryNetwork(ILogisticalTransporter... varTransporters)
 	{
@@ -315,7 +312,7 @@ public class InventoryNetwork implements ITransmitterNetwork
 	@Override
 	public String toString()
 	{
-		return "[InventoryNetwork] " + transporters.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
+		return "[InventoryNetwork] " + transporters.size() + " transporters, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	@Override
