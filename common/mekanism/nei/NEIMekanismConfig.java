@@ -1,5 +1,7 @@
 package mekanism.nei;
 
+import java.util.ArrayList;
+
 import mekanism.client.GuiCombiner;
 import mekanism.client.GuiCrusher;
 import mekanism.client.GuiEnrichmentChamber;
@@ -17,16 +19,22 @@ public class NEIMekanismConfig implements IConfigureNEI
 	{
 		API.registerRecipeHandler(new EnrichmentChamberRecipeHandler());
 		API.registerUsageHandler(new EnrichmentChamberRecipeHandler());
+		
 		API.registerRecipeHandler(new OsmiumCompressorRecipeHandler());
 		API.registerUsageHandler(new OsmiumCompressorRecipeHandler());
+		
 		API.registerRecipeHandler(new CrusherRecipeHandler());
 		API.registerUsageHandler(new CrusherRecipeHandler());
+		
 		API.registerRecipeHandler(new CombinerRecipeHandler());
 		API.registerUsageHandler(new CombinerRecipeHandler());
+		
 		API.registerRecipeHandler(new MetallurgicInfuserRecipeHandler());
 		API.registerUsageHandler(new MetallurgicInfuserRecipeHandler());
+		
 		API.registerRecipeHandler(new PurificationChamberRecipeHandler());
 		API.registerUsageHandler(new PurificationChamberRecipeHandler());
+		
 		API.registerRecipeHandler(new MekanismRecipeHandler());
 		API.registerUsageHandler(new MekanismRecipeHandler());
 		

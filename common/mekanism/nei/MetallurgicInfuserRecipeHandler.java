@@ -188,6 +188,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		public CachedIORecipe(ItemStack input, ItemStack output, ItemStack infuse, InfuseType type)
 		{
 			super();
+			
 			inputStack = new PositionedStack(input, 46, 28);
 			outputStack = new PositionedStack(output, 104, 28);
 			
