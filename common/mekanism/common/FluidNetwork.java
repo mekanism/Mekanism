@@ -26,16 +26,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
+public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 {
-	public HashSet<IMechanicalPipe> pipes = new HashSet<IMechanicalPipe>();
-	
-	public Set<IFluidHandler> possibleAcceptors = new HashSet<IFluidHandler>();
-	public Map<IFluidHandler, ForgeDirection> acceptorDirections = new HashMap<IFluidHandler, ForgeDirection>();
-	
 	public FluidNetwork(IMechanicalPipe... varPipes)
 	{
-		pipes.addAll(Arrays.asList(varPipes));
+		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
@@ -45,7 +40,7 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 		{
 			if(net != null)
 			{
-				addAllPipes(net.pipes);
+				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
 		}
@@ -113,7 +108,7 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 
 	public void refresh()
 	{
-		Set<IMechanicalPipe> iterPipes = (Set<IMechanicalPipe>) pipes.clone();
+		Set<IMechanicalPipe> iterPipes = (Set<IMechanicalPipe>) transmitters.clone();
 		Iterator it = iterPipes.iterator();
 		
 		possibleAcceptors.clear();
@@ -126,7 +121,7 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-				pipes.remove(conductor);
+				transmitters.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
@@ -159,17 +154,12 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 			newNetwork.refresh();
 		}
 	}
-	
-	public void addAllPipes(Set<IMechanicalPipe> newPipes)
-	{
-		pipes.addAll(newPipes);
-	}
 
 	public void split(IMechanicalPipe splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			removePipe(splitPoint);
+			removeTransmitter(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
@@ -253,33 +243,6 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 			newNetwork.fixed = true;
 			deregister();
 		}
-	}
-	
-	public void removePipe(IMechanicalPipe pipe)
-	{
-		pipes.remove(pipe);
-		if(pipes.size() == 0)
-		{
-			deregister();
-		}
-	}
-	
-	public void register()
-	{
-		try {
-			IMechanicalPipe aPipe = pipes.iterator().next();
-			
-			if(aPipe instanceof TileEntity && !((TileEntity)aPipe).worldObj.isRemote)
-			{
-				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
-			}
-		} catch(NoSuchElementException e) {}
-	}
-	
-	public void deregister()
-	{
-		pipes.clear();
-		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
@@ -377,7 +340,7 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(pipes.iterator().next());
+				fixMessedUpNetwork(transmitters.iterator().next());
 			}
 		}
 	}
@@ -385,12 +348,6 @@ public class FluidNetwork extends DynamicNetwork implements ITransmitterNetwork
 	@Override
 	public String toString()
 	{
-		return "[FluidNetwork] " + pipes.size() + " pipes, " + possibleAcceptors.size() + " acceptors.";
-	}
-
-	@Override
-	public int getSize()
-	{
-		return pipes.size();
+		return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 }

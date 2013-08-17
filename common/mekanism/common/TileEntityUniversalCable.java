@@ -67,11 +67,11 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 			else if(connectedNets.size() == 1)
 			{
 				energyNetwork = connectedNets.iterator().next();
-				energyNetwork.cables.add(this);
+				energyNetwork.transmitters.add(this);
 			}
 			else {
 				energyNetwork = new EnergyNetwork(connectedNets);
-				energyNetwork.cables.add(this);
+				energyNetwork.transmitters.add(this);
 			}
 		}
 		
@@ -110,7 +110,7 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	{
 		if(energyNetwork != null)
 		{
-			energyNetwork.removeCable(this);
+			energyNetwork.removeTransmitter(this);
 		}
 	}
 

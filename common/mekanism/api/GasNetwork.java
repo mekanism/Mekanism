@@ -20,16 +20,11 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
+public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 {
-	public HashSet<IPressurizedTube> tubes = new HashSet<IPressurizedTube>();
-	
-	public Set<IGasAcceptor> possibleAcceptors = new HashSet<IGasAcceptor>();
-	public Map<IGasAcceptor, ForgeDirection> acceptorDirections = new HashMap<IGasAcceptor, ForgeDirection>();
-	
 	public GasNetwork(IPressurizedTube... varPipes)
 	{
-		tubes.addAll(Arrays.asList(varPipes));
+		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
@@ -39,7 +34,7 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 		{
 			if(net != null)
 			{
-				addAllTubes(net.tubes);
+				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
 		}
@@ -109,7 +104,7 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 
 	public void refresh()
 	{
-		Set<IPressurizedTube> iterTubes = (Set<IPressurizedTube>) tubes.clone();
+		Set<IPressurizedTube> iterTubes = (Set<IPressurizedTube>) transmitters.clone();
 		Iterator<IPressurizedTube> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
@@ -122,14 +117,14 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-				tubes.remove(conductor);
+				transmitters.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
 			}
 		}
 		
-		for(IPressurizedTube pipe : tubes)
+		for(IPressurizedTube pipe : transmitters)
 		{
 			IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
 		
@@ -156,16 +151,11 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 		}
 	}
 
-	public void addAllTubes(Set<IPressurizedTube> newTubes)
-	{
-		tubes.addAll(newTubes);
-	}
-
 	public void split(IPressurizedTube splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			removeTube(splitPoint);
+			removeTransmitter(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
@@ -212,7 +202,7 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetwork.tubes.add((IPressurizedTube)nodeTile);
+								newNetwork.transmitters.add((IPressurizedTube)nodeTile);
 							}
 						}
 					}
@@ -249,33 +239,6 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 			newNetwork.fixed = true;
 			deregister();
 		}
-	}
-	
-	public void removeTube(IPressurizedTube tube)
-	{
-		tubes.remove(tube);
-		if(tubes.size() == 0)
-		{
-			deregister();
-		}
-	}
-	
-	public void register()
-	{
-		try {
-			IPressurizedTube aTube = tubes.iterator().next();
-			
-			if(aTube instanceof TileEntity && !((TileEntity)aTube).worldObj.isRemote)
-			{
-				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
-			}
-		} catch(NoSuchElementException e) {}
-	}
-	
-	public void deregister()
-	{
-		tubes.clear();
-		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
@@ -367,7 +330,7 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 	@Override
 	public String toString()
 	{
-		return "[GasNetwork] " + tubes.size() + " tubes, " + possibleAcceptors.size() + " acceptors.";
+		return "[GasNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	public void tick()
@@ -379,14 +342,8 @@ public class GasNetwork extends DynamicNetwork implements ITransmitterNetwork
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(tubes.iterator().next());
+				fixMessedUpNetwork(transmitters.iterator().next());
 			}
 		}
-	}
-
-	@Override
-	public int getSize()
-	{
-		return tubes.size();
 	}
 }

@@ -21,16 +21,11 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 
-public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetwork
+public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IInventory>
 {
-	public HashSet<ILogisticalTransporter> transporters = new HashSet<ILogisticalTransporter>();
-	
-	public Set<IInventory> possibleAcceptors = new HashSet<IInventory>();
-	public Map<IInventory, ForgeDirection> acceptorDirections = new HashMap<IInventory, ForgeDirection>();
-	
 	public InventoryNetwork(ILogisticalTransporter... varTransporters)
 	{
-		transporters.addAll(Arrays.asList(varTransporters));
+		transmitters.addAll(Arrays.asList(varTransporters));
 		register();
 	}
 	
@@ -40,7 +35,7 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 		{
 			if(net != null)
 			{
-				addAllTransporters(net.transporters);
+				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
 		}
@@ -51,7 +46,7 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 
 	public void refresh()
 	{
-		Set<ILogisticalTransporter> iterPipes = (Set<ILogisticalTransporter>)transporters.clone();
+		Set<ILogisticalTransporter> iterPipes = (Set<ILogisticalTransporter>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
 		
 		possibleAcceptors.clear();
@@ -64,7 +59,7 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-				transporters.remove(conductor);
+				transmitters.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
@@ -97,17 +92,12 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 			newNetwork.refresh();
 		}
 	}
-	
-	public void addAllTransporters(Set<ILogisticalTransporter> newPipes)
-	{
-		transporters.addAll(newPipes);
-	}
 
 	public void split(ILogisticalTransporter splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			removeTransporter(splitPoint);
+			removeTransmitter(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
@@ -194,34 +184,6 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 		}
 	}
 	
-	public void removeTransporter(ILogisticalTransporter pipe)
-	{
-		transporters.remove(pipe);
-		if(transporters.size() == 0)
-		{
-			deregister();
-		}
-	}
-	
-	public void register()
-	{
-		try {
-			ILogisticalTransporter aTransporter = transporters.iterator().next();
-			
-			if(aTransporter instanceof TileEntity && !((TileEntity)aTransporter).worldObj.isRemote)
-			{
-				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
-			}
-		} catch(NoSuchElementException e) {}
-	}
-	
-	public void deregister()
-	{
-		transporters.clear();
-		
-		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
-	}
-	
 	public static class NetworkFinder
 	{
 		public World worldObj;
@@ -304,7 +266,7 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(transporters.iterator().next());
+				fixMessedUpNetwork(transmitters.iterator().next());
 			}
 		}
 	}
@@ -312,12 +274,6 @@ public class InventoryNetwork extends DynamicNetwork implements ITransmitterNetw
 	@Override
 	public String toString()
 	{
-		return "[InventoryNetwork] " + transporters.size() + " transporters, " + possibleAcceptors.size() + " acceptors.";
-	}
-
-	@Override
-	public int getSize()
-	{
-		return transporters.size();
+		return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 }

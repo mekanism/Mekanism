@@ -89,11 +89,11 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 			else if(connectedNets.size() == 1)
 			{
 				fluidNetwork = connectedNets.iterator().next();
-				fluidNetwork.pipes.add(this);
+				fluidNetwork.transmitters.add(this);
 			}
 			else {
 				fluidNetwork = new FluidNetwork(connectedNets);
-				fluidNetwork.pipes.add(this);
+				fluidNetwork.transmitters.add(this);
 			}
 		}
 		
@@ -132,7 +132,7 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	{
 		if(fluidNetwork != null)
 		{
-			fluidNetwork.removePipe(this);
+			fluidNetwork.removeTransmitter(this);
 		}
 	}
 

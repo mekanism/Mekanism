@@ -54,11 +54,11 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 			else if(connectedNets.size() == 1)
 			{
 				gasNetwork = (GasNetwork)connectedNets.iterator().next();
-				gasNetwork.tubes.add(this);
+				gasNetwork.transmitters.add(this);
 			}
 			else {
 				gasNetwork = new GasNetwork(connectedNets);
-				gasNetwork.tubes.add(this);
+				gasNetwork.transmitters.add(this);
 			}
 		}
 		
@@ -97,7 +97,7 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	{
 		if(gasNetwork != null)
 		{
-			gasNetwork.removeTube(this);
+			gasNetwork.removeTransmitter(this);
 		}
 	}
 	

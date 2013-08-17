@@ -58,11 +58,11 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ILogi
 			else if(connectedNets.size() == 1)
 			{
 				inventoryNetwork = connectedNets.iterator().next();
-				inventoryNetwork.transporters.add(this);
+				inventoryNetwork.transmitters.add(this);
 			}
 			else {
 				inventoryNetwork = new InventoryNetwork(connectedNets);
-				inventoryNetwork.transporters.add(this);
+				inventoryNetwork.transmitters.add(this);
 			}
 		}
 		
@@ -101,7 +101,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ILogi
 	{
 		if(inventoryNetwork != null)
 		{
-			inventoryNetwork.removeTransporter(this);
+			inventoryNetwork.removeTransmitter(this);
 		}
 	}
 

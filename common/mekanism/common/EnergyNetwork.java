@@ -32,20 +32,15 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
-{
-	public HashSet<IUniversalCable> cables = new HashSet<IUniversalCable>();
-	
-	public Set<TileEntity> possibleAcceptors = new HashSet<TileEntity>();
-	public Map<TileEntity, ForgeDirection> acceptorDirections = new HashMap<TileEntity, ForgeDirection>();
-	
+public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
+{	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	
 	public EnergyNetwork(IUniversalCable... varCables)
 	{
-		cables.addAll(Arrays.asList(varCables));
+		transmitters.addAll(Arrays.asList(varCables));
 		register();
 	}
 	
@@ -55,7 +50,7 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 		{
 			if(net != null)
 			{
-				addAllCables(net.cables);
+				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
 		}
@@ -204,7 +199,7 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 
 	public void refresh()
 	{
-		Set<IUniversalCable> iterCables = (Set<IUniversalCable>) cables.clone();
+		Set<IUniversalCable> iterCables = (Set<IUniversalCable>) transmitters.clone();
 		Iterator<IUniversalCable> it = iterCables.iterator();
 		
 		possibleAcceptors.clear();
@@ -217,7 +212,7 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
-				cables.remove(conductor);
+				transmitters.remove(conductor);
 			}
 			else {
 				conductor.setNetwork(this);
@@ -258,17 +253,12 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 			newNetwork.refresh();
 		}
 	}
-	
-	public void addAllCables(Set<IUniversalCable> newCables)
-	{
-		cables.addAll(newCables);
-	}
 
 	public void split(IUniversalCable splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
-			removeCable(splitPoint);
+			removeTransmitter(splitPoint);
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
@@ -352,34 +342,6 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 			newNetwork.fixed = true;
 			deregister();
 		}
-	}
-	
-	public void removeCable(IUniversalCable cable)
-	{
-		cables.remove(cable);
-		
-		if(cables.size() == 0)
-		{
-			deregister();
-		}
-	}
-	
-	public void register()
-	{
-		try {
-			IUniversalCable aCable = cables.iterator().next();
-			
-			if(aCable instanceof TileEntity && !((TileEntity)aCable).worldObj.isRemote)
-			{
-				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
-			}
-		} catch(NoSuchElementException e) {}
-	}
-	
-	public void deregister()
-	{
-		cables.clear();
-		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 	}
 	
 	public static class NetworkFinder
@@ -471,7 +433,7 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 	@Override
 	public String toString()
 	{
-		return "[EnergyNetwork] " + cables.size() + " cables, " + possibleAcceptors.size() + " acceptors.";
+		return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	public void tick()
@@ -485,7 +447,7 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
-				fixMessedUpNetwork(cables.iterator().next());
+				fixMessedUpNetwork(transmitters.iterator().next());
 			}
 		}
 		
@@ -512,11 +474,5 @@ public class EnergyNetwork extends DynamicNetwork implements ITransmitterNetwork
 	public double getPower()
 	{
 		return joulesLastTick * 20;
-	}
-	
-	@Override
-	public int getSize()
-	{
-		return cables.size();
 	}
 }
