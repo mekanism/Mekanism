@@ -18,13 +18,10 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityUniversalCable extends TileEntity implements IUniversalCable, IPowerReceptor
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IUniversalCable, IPowerReceptor
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
-	
-	/** The energy network currently in use by this cable segment. */
-	public EnergyNetwork energyNetwork;
 	
 	public double energyScale;
 	
@@ -41,18 +38,13 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 	}
 	
 	@Override
-	public EnergyNetwork getNetwork()
-	{
-		return getNetwork(true);
-	}
-	
-	@Override
 	public EnergyNetwork getNetwork(boolean createIfNull)
 	{
-		if(energyNetwork == null && createIfNull)
+		if(theNetwork == null && createIfNull)
 		{
 			TileEntity[] adjacentCables = CableUtils.getConnectedCables(this);
 			HashSet<EnergyNetwork> connectedNets = new HashSet<EnergyNetwork>();
+			
 			for(TileEntity cable : adjacentCables)
 			{
 				if(cable instanceof IUniversalCable && ((IUniversalCable)cable).getNetwork(false) != null)
@@ -60,22 +52,23 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 					connectedNets.add(((IUniversalCable)cable).getNetwork());
 				}
 			}
+			
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
-				energyNetwork = new EnergyNetwork(this);
+				theNetwork = new EnergyNetwork(this);
 			}
 			else if(connectedNets.size() == 1)
 			{
-				energyNetwork = connectedNets.iterator().next();
-				energyNetwork.transmitters.add(this);
+				theNetwork = connectedNets.iterator().next();
+				theNetwork.transmitters.add(this);
 			}
 			else {
-				energyNetwork = new EnergyNetwork(connectedNets);
-				energyNetwork.transmitters.add(this);
+				theNetwork = new EnergyNetwork(connectedNets);
+				theNetwork.transmitters.add(this);
 			}
 		}
 		
-		return energyNetwork;
+		return theNetwork;
 	}
 	
 	@Override
@@ -94,23 +87,13 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 		
 		super.invalidate();
 	}
-
-	@Override
-	public void setNetwork(EnergyNetwork network)
-	{
-		if(network != energyNetwork)
-		{
-			removeFromNetwork();
-			energyNetwork = network;
-		}
-	}
 	
 	@Override
 	public void removeFromNetwork()
 	{
-		if(energyNetwork != null)
+		if(theNetwork != null)
 		{
-			energyNetwork.removeTransmitter(this);
+			theNetwork.removeTransmitter(this);
 		}
 	}
 
@@ -147,20 +130,6 @@ public class TileEntityUniversalCable extends TileEntity implements IUniversalCa
 
 	@Override
 	public void doWork(PowerHandler workProvider) {}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		return INFINITE_EXTENT_AABB;
-	}
-	
-	@Override
-	public void onChunkUnload() 
-	{
-		invalidate();
-		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
-	}
 	
 	@Override
 	public void setCachedEnergy(double scale)

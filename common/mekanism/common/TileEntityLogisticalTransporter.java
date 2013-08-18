@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import mekanism.api.Object3D;
-import mekanism.api.TransmitterNetworkRegistry;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,29 +16,15 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntity implements ILogisticalTransporter, ITileNetwork
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ILogisticalTransporter, ITileNetwork
 {
-	/** The inventory network currently in use by this transporter segment. */
-	public InventoryNetwork inventoryNetwork;
-	
 	/** This transporter's active state. */
 	public boolean isActive = false;
 	
 	@Override
-	public InventoryNetwork getNetwork()
-	{
-		if(inventoryNetwork == null)
-		{
-			inventoryNetwork = new InventoryNetwork(this);
-		}
-		
-		return inventoryNetwork;
-	}
-	
-	@Override
 	public InventoryNetwork getNetwork(boolean createIfNull)
 	{
-		if(inventoryNetwork == null && createIfNull)
+		if(theNetwork == null && createIfNull)
 		{
 			TileEntity[] adjacentTransporters = CableUtils.getConnectedCables(this);
 			HashSet<InventoryNetwork> connectedNets = new HashSet<InventoryNetwork>();
@@ -53,20 +38,20 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ILogi
 			}
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
-				inventoryNetwork = new InventoryNetwork(this);
+				theNetwork = new InventoryNetwork(this);
 			}
 			else if(connectedNets.size() == 1)
 			{
-				inventoryNetwork = connectedNets.iterator().next();
-				inventoryNetwork.transmitters.add(this);
+				theNetwork = connectedNets.iterator().next();
+				theNetwork.transmitters.add(this);
 			}
 			else {
-				inventoryNetwork = new InventoryNetwork(connectedNets);
-				inventoryNetwork.transmitters.add(this);
+				theNetwork = new InventoryNetwork(connectedNets);
+				theNetwork.transmitters.add(this);
 			}
 		}
 		
-		return inventoryNetwork;
+		return theNetwork;
 	}
 
 	@Override
@@ -87,21 +72,11 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ILogi
 	}
 	
 	@Override
-	public void setNetwork(InventoryNetwork network)
-	{
-		if(network != inventoryNetwork)
-		{
-			removeFromNetwork();
-			inventoryNetwork = network;
-		}
-	}
-	
-	@Override
 	public void removeFromNetwork()
 	{
-		if(inventoryNetwork != null)
+		if(theNetwork != null)
 		{
-			inventoryNetwork.removeTransmitter(this);
+			theNetwork.removeTransmitter(this);
 		}
 	}
 
@@ -125,16 +100,9 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ILogi
 	}
 	
 	@Override
-	public void onChunkUnload() 
-	{
-		invalidate();
-		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
-	}
-	
-	@Override
 	public boolean canUpdate()
 	{
-		return true;
+		return false;
 	}
 	
 	@Override

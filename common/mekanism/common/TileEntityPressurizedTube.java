@@ -9,12 +9,9 @@ import mekanism.api.IPressurizedTube;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityPressurizedTube extends TileEntity implements IPressurizedTube, ITubeConnection
+public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements IPressurizedTube, ITubeConnection
 {
 	/** The gas currently displayed in this tube. */
 	public EnumGas refGas = null;
@@ -22,19 +19,10 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	/** The scale of the gas (0F -> 1F) currently inside this tube. */
 	public float gasScale;
 	
-	/** The gas network currently in use by this tube segment. */
-	public GasNetwork gasNetwork;
-	
-	@Override
-	public GasNetwork getNetwork()
-	{
-		return getNetwork(true);
-	}
-	
 	@Override
 	public GasNetwork getNetwork(boolean createIfNull)
 	{
-		if(gasNetwork == null && createIfNull)
+		if(theNetwork == null && createIfNull)
 		{
 			TileEntity[] adjacentTubes = GasTransmission.getConnectedTubes(this);
 			HashSet<GasNetwork> connectedNets = new HashSet<GasNetwork>();
@@ -49,20 +37,20 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 			
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
-				gasNetwork = new GasNetwork(this);
+				theNetwork = new GasNetwork(this);
 			}
 			else if(connectedNets.size() == 1)
 			{
-				gasNetwork = (GasNetwork)connectedNets.iterator().next();
-				gasNetwork.transmitters.add(this);
+				theNetwork = (GasNetwork)connectedNets.iterator().next();
+				theNetwork.transmitters.add(this);
 			}
 			else {
-				gasNetwork = new GasNetwork(connectedNets);
-				gasNetwork.transmitters.add(this);
+				theNetwork = new GasNetwork(connectedNets);
+				theNetwork.transmitters.add(this);
 			}
 		}
 		
-		return gasNetwork;
+		return theNetwork;
 	}
 
 	@Override
@@ -83,21 +71,11 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	}
 	
 	@Override
-	public void setNetwork(GasNetwork network)
-	{
-		if(network != gasNetwork)
-		{
-			removeFromNetwork();
-			gasNetwork = network;			
-		}
-	}
-	
-	@Override
 	public void removeFromNetwork()
 	{
-		if(gasNetwork != null)
+		if(theNetwork != null)
 		{
-			gasNetwork.removeTransmitter(this);
+			theNetwork.removeTransmitter(this);
 		}
 	}
 	
@@ -162,12 +140,5 @@ public class TileEntityPressurizedTube extends TileEntity implements IPressurize
 	public boolean canUpdate()
 	{
 		return false;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		return INFINITE_EXTENT_AABB;
 	}
 }

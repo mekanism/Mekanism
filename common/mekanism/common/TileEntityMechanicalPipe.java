@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import mekanism.api.Object3D;
-import mekanism.api.TransmitterNetworkRegistry;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,16 +23,13 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalPipe, IFluidHandler, ITileNetwork
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IMechanicalPipe, IFluidHandler, ITileNetwork
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 	
 	/** The FluidStack displayed on this pipe. */
 	public FluidStack refFluid = null;
-	
-	/** The fluid network currently in use by this pipe segment. */
-	public FluidNetwork fluidNetwork;
 	
 	/** This pipe's active state. */
 	public boolean isActive = false;
@@ -56,20 +52,9 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 	
 	@Override
-	public FluidNetwork getNetwork()
-	{
-		if(fluidNetwork == null)
-		{
-			fluidNetwork = new FluidNetwork(this);
-		}
-		
-		return fluidNetwork;
-	}
-	
-	@Override
 	public FluidNetwork getNetwork(boolean createIfNull)
 	{
-		if(fluidNetwork == null && createIfNull)
+		if(theNetwork == null && createIfNull)
 		{
 			TileEntity[] adjacentPipes = PipeUtils.getConnectedPipes(this);
 			HashSet<FluidNetwork> connectedNets = new HashSet<FluidNetwork>();
@@ -84,20 +69,20 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 			
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
-				fluidNetwork = new FluidNetwork(this);
+				theNetwork = new FluidNetwork(this);
 			}
 			else if(connectedNets.size() == 1)
 			{
-				fluidNetwork = connectedNets.iterator().next();
-				fluidNetwork.transmitters.add(this);
+				theNetwork = connectedNets.iterator().next();
+				theNetwork.transmitters.add(this);
 			}
 			else {
-				fluidNetwork = new FluidNetwork(connectedNets);
-				fluidNetwork.transmitters.add(this);
+				theNetwork = new FluidNetwork(connectedNets);
+				theNetwork.transmitters.add(this);
 			}
 		}
 		
-		return fluidNetwork;
+		return theNetwork;
 	}
 
 	@Override
@@ -118,21 +103,11 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 	}
 	
 	@Override
-	public void setNetwork(FluidNetwork network)
-	{
-		if(network != fluidNetwork)
-		{
-			removeFromNetwork();
-			fluidNetwork = network;
-		}
-	}
-	
-	@Override
 	public void removeFromNetwork()
 	{
-		if(fluidNetwork != null)
+		if(theNetwork != null)
 		{
-			fluidNetwork.removeTransmitter(this);
+			theNetwork.removeTransmitter(this);
 		}
 	}
 
@@ -153,13 +128,6 @@ public class TileEntityMechanicalPipe extends TileEntity implements IMechanicalP
 			
 			getNetwork().refresh();
 		}
-	}
-	
-	@Override
-	public void onChunkUnload() 
-	{
-		invalidate();
-		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 	}
 	
 	@Override
