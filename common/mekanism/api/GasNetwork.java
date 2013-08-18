@@ -20,7 +20,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
+public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, GasNetwork>
 {
 	public GasNetwork(IPressurizedTube... varPipes)
 	{
@@ -45,7 +45,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 	
 	public int emit(int gasToSend, EnumGas transferType, TileEntity emitter)
 	{
-		List availableAcceptors = Arrays.asList(getGasAcceptors(transferType).toArray());
+		List availableAcceptors = Arrays.asList(getAcceptors(transferType).toArray());
 		
 		Collections.shuffle(availableAcceptors);
 		
@@ -84,8 +84,10 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 		return gasToSend;
 	}
 	
-	public Set<IGasAcceptor> getGasAcceptors(EnumGas transferType)
+	@Override
+	public Set<IGasAcceptor> getAcceptors(Object... data)
 	{
+		EnumGas transferType = (EnumGas)data[0];
 		Set<IGasAcceptor> toReturn = new HashSet<IGasAcceptor>();
 		
 		for(IGasAcceptor acceptor : possibleAcceptors)
@@ -102,6 +104,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 		return toReturn;
 	}
 
+	@Override
 	public void refresh()
 	{
 		Set<IPressurizedTube> iterTubes = (Set<IPressurizedTube>) transmitters.clone();
@@ -139,6 +142,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 		}
 	}
 
+	@Override
 	public void merge(GasNetwork network)
 	{
 		if(network != null && network != this)
@@ -151,6 +155,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 		}
 	}
 
+	@Override
 	public void split(IPressurizedTube splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
@@ -215,6 +220,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 		}
 	}
 	
+	@Override
 	public void fixMessedUpNetwork(IPressurizedTube tube)
 	{
 		if(tube instanceof TileEntity)
@@ -304,46 +310,9 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor>
 		}
 	}
 	
-	public static class NetworkLoader
-	{
-		@ForgeSubscribe
-		public void onChunkLoad(ChunkEvent.Load event)
-		{
-			if(event.getChunk() != null)
-			{
-				for(Object obj : event.getChunk().chunkTileEntityMap.values())
-				{
-					if(obj instanceof TileEntity)
-					{
-						TileEntity tileEntity = (TileEntity)obj;
-						
-						if(tileEntity instanceof IPressurizedTube)
-						{
-							((IPressurizedTube)tileEntity).refreshNetwork();
-						}
-					}
-				}
-			}
-		}
-	}
-	
 	@Override
 	public String toString()
 	{
 		return "[GasNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
-	}
-
-	public void tick()
-	{		
-		//Fix weird behaviour periodically.
-		if(!fixed)
-		{
-			++ticksSinceCreate;
-			if(ticksSinceCreate > 1200)
-			{
-				ticksSinceCreate = 0;
-				fixMessedUpNetwork(transmitters.iterator().next());
-			}
-		}
 	}
 }

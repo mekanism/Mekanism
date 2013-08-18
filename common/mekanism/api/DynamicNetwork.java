@@ -13,7 +13,7 @@ import mekanism.common.EnergyNetwork;
 import mekanism.common.IMechanicalPipe;
 import mekanism.common.IUniversalCable;
 
-public abstract class DynamicNetwork<T, A> implements ITransmitterNetwork
+public abstract class DynamicNetwork<T, A, N> implements ITransmitterNetwork<T, A, N>
 {
 	public HashSet<T> transmitters = new HashSet<T>();
 	
@@ -30,6 +30,7 @@ public abstract class DynamicNetwork<T, A> implements ITransmitterNetwork
 		transmitters.addAll(newTransmitters);
 	}
 	
+	@Override
 	public void removeTransmitter(T transmitter)
 	{
 		transmitters.remove(transmitter);
@@ -40,6 +41,7 @@ public abstract class DynamicNetwork<T, A> implements ITransmitterNetwork
 		}
 	}
 	
+	@Override
 	public void register()
 	{
 		try {
@@ -52,6 +54,7 @@ public abstract class DynamicNetwork<T, A> implements ITransmitterNetwork
 		} catch(NoSuchElementException e) {}
 	}
 	
+	@Override
 	public void deregister()
 	{
 		transmitters.clear();
@@ -62,5 +65,20 @@ public abstract class DynamicNetwork<T, A> implements ITransmitterNetwork
 	public int getSize()
 	{
 		return transmitters.size();
+	}
+	
+	@Override
+	public void tick()
+	{
+		if(!fixed)
+		{
+			++ticksSinceCreate;
+			
+			if(ticksSinceCreate > 1200)
+			{
+				ticksSinceCreate = 0;
+				fixMessedUpNetwork(transmitters.iterator().next());
+			}
+		}
 	}
 }

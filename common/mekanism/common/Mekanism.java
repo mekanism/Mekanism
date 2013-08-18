@@ -16,6 +16,7 @@ import mekanism.api.InfuseRegistry;
 import mekanism.api.InfuseType;
 import mekanism.api.InfusionInput;
 import mekanism.api.Object3D;
+import mekanism.api.TransmitterNetworkRegistry;
 import mekanism.client.SoundHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
@@ -1168,11 +1169,9 @@ public class Mekanism
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
-		MinecraftForge.EVENT_BUS.register(new EnergyNetwork.NetworkLoader());
-		MinecraftForge.EVENT_BUS.register(new FluidNetwork.NetworkLoader());
 		
-		//Register with GasTransmission
-		GasTransmission.register();
+		//Register with TransmitterNetworkRegistry
+		TransmitterNetworkRegistry.initiate();
 		
 		//Load configuration
 		proxy.loadConfiguration();

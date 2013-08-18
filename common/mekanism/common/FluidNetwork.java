@@ -3,30 +3,23 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import mekanism.api.DynamicNetwork;
-import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
-import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
+public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler, FluidNetwork>
 {
 	public FluidNetwork(IMechanicalPipe... varPipes)
 	{
@@ -51,7 +44,7 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 	
 	public int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
 	{
-		List availableAcceptors = Arrays.asList(getFluidAcceptors(fluidToSend).toArray());
+		List availableAcceptors = Arrays.asList(getAcceptors(fluidToSend).toArray());
 		
 		Collections.shuffle(availableAcceptors);
 		
@@ -91,8 +84,10 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 		return fluidSent;
 	}
 	
-	public Set<IFluidHandler> getFluidAcceptors(FluidStack fluidToSend)
+	@Override
+	public Set<IFluidHandler> getAcceptors(Object... data)
 	{
+		FluidStack fluidToSend = (FluidStack)data[0];
 		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
 		
 		for(IFluidHandler acceptor : possibleAcceptors)
@@ -105,7 +100,8 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 		
 		return toReturn;
 	}
-
+ 
+	@Override
 	public void refresh()
 	{
 		Set<IMechanicalPipe> iterPipes = (Set<IMechanicalPipe>) transmitters.clone();
@@ -143,6 +139,7 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 		}
 	}
 
+	@Override
 	public void merge(FluidNetwork network)
 	{
 		if(network != null && network != this)
@@ -155,6 +152,7 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 		}
 	}
 
+	@Override
 	public void split(IMechanicalPipe splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
@@ -219,6 +217,7 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 		}
 	}
 	
+	@Override
 	public void fixMessedUpNetwork(IMechanicalPipe pipe)
 	{
 		if(pipe instanceof TileEntity)
@@ -305,43 +304,6 @@ public class FluidNetwork extends DynamicNetwork<IMechanicalPipe, IFluidHandler>
 		{
 			fluidNetwork = network;
 			fluidSent = fluid;
-		}
-	}
-	
-	public static class NetworkLoader
-	{
-		@ForgeSubscribe
-		public void onChunkLoad(ChunkEvent.Load event)
-		{
-			if(event.getChunk() != null)
-			{
-				for(Object obj : event.getChunk().chunkTileEntityMap.values())
-				{
-					if(obj instanceof TileEntity)
-					{
-						TileEntity tileEntity = (TileEntity)obj;
-						
-						if(tileEntity instanceof IMechanicalPipe)
-						{
-							((IMechanicalPipe)tileEntity).refreshNetwork();
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	public void tick()
-	{
-		//Fix weird behaviour periodically.
-		if(!fixed)
-		{
-			++ticksSinceCreate;
-			if(ticksSinceCreate > 1200)
-			{
-				ticksSinceCreate = 0;
-				fixMessedUpNetwork(transmitters.iterator().next());
-			}
 		}
 	}
 		

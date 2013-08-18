@@ -21,7 +21,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 
-public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IInventory>
+public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IInventory, InventoryNetwork>
 {
 	public InventoryNetwork(ILogisticalTransporter... varTransporters)
 	{
@@ -43,7 +43,14 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 		refresh();
 		register();
 	}
+	
+	@Override
+	public Set<IInventory> getAcceptors(Object... data) 
+	{
+		return null;
+	}
 
+	@Override
 	public void refresh()
 	{
 		Set<ILogisticalTransporter> iterPipes = (Set<ILogisticalTransporter>)transmitters.clone();
@@ -81,6 +88,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 		}
 	}
 
+	@Override
 	public void merge(InventoryNetwork network)
 	{
 		if(network != null && network != this)
@@ -93,6 +101,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 		}
 	}
 
+	@Override
 	public void split(ILogisticalTransporter splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
@@ -158,6 +167,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 		}
 	}
 	
+	@Override
 	public void fixMessedUpNetwork(ILogisticalTransporter pipe)
 	{
 		if(pipe instanceof TileEntity)
@@ -231,43 +241,6 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 			loopAll(start);
 			
 			return iterated;
-		}
-	}
-	
-	public static class NetworkLoader
-	{
-		@ForgeSubscribe
-		public void onChunkLoad(ChunkEvent.Load event)
-		{
-			if(event.getChunk() != null)
-			{
-				for(Object obj : event.getChunk().chunkTileEntityMap.values())
-				{
-					if(obj instanceof TileEntity)
-					{
-						TileEntity tileEntity = (TileEntity)obj;
-						
-						if(tileEntity instanceof ILogisticalTransporter)
-						{
-							((ILogisticalTransporter)tileEntity).refreshNetwork();
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	public void tick()
-	{
-		//Fix weird behaviour periodically.
-		if(!fixed)
-		{
-			++ticksSinceCreate;
-			if(ticksSinceCreate > 1200)
-			{
-				ticksSinceCreate = 0;
-				fixMessedUpNetwork(transmitters.iterator().next());
-			}
 		}
 	}
 		

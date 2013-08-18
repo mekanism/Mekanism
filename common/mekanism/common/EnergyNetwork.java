@@ -32,7 +32,7 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
+public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, EnergyNetwork>
 {	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
@@ -63,7 +63,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 	{
 		double totalNeeded = 0;
 		
-		for(TileEntity acceptor : getEnergyAcceptors())
+		for(TileEntity acceptor : getAcceptors())
 		{
 			if(!ignored.contains(acceptor))
 			{
@@ -94,7 +94,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		double energyAvailable = energyToSend;		
 		double sent;
 		
-		List availableAcceptors = Arrays.asList(getEnergyAcceptors().toArray());
+		List availableAcceptors = Arrays.asList(getAcceptors().toArray());
 
 		Collections.shuffle(availableAcceptors);
 
@@ -146,7 +146,8 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		return energyToSend;
 	}
 	
-	public Set<TileEntity> getEnergyAcceptors()
+	@Override
+	public Set<TileEntity> getAcceptors(Object... data)
 	{
 		Set<TileEntity> toReturn = new HashSet<TileEntity>();
 		
@@ -197,6 +198,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		return toReturn;
 	}
 
+	@Override
 	public void refresh()
 	{
 		Set<IUniversalCable> iterCables = (Set<IUniversalCable>) transmitters.clone();
@@ -242,6 +244,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		}
 	}
 
+	@Override
 	public void merge(EnergyNetwork network)
 	{
 		if(network != null && network != this)
@@ -254,6 +257,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		}
 	}
 
+	@Override
 	public void split(IUniversalCable splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
@@ -318,6 +322,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		}
 	}
 	
+	@Override
 	public void fixMessedUpNetwork(IUniversalCable cable)
 	{
 		if(cable instanceof TileEntity)
@@ -406,29 +411,6 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 			power = currentPower;
 		}
 	}
-	
-	public static class NetworkLoader
-	{
-		@ForgeSubscribe
-		public void onChunkLoad(ChunkEvent.Load event)
-		{
-			if(event.getChunk() != null)
-			{
-				for(Object obj : event.getChunk().chunkTileEntityMap.values())
-				{
-					if(obj instanceof TileEntity)
-					{
-						TileEntity tileEntity = (TileEntity)obj;
-						
-						if(tileEntity instanceof IUniversalCable)
-						{
-							((IUniversalCable)tileEntity).refreshNetwork();
-						}
-					}
-				}
-			}
-		}
-	}
 
 	@Override
 	public String toString()
@@ -436,22 +418,15 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity>
 		return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 
+	@Override
 	public void tick()
 	{
 		clearJoulesTransmitted();
 		
-		//Fix weird behaviour periodically.
-		if(!fixed)
-		{
-			++ticksSinceCreate;
-			if(ticksSinceCreate > 1200)
-			{
-				ticksSinceCreate = 0;
-				fixMessedUpNetwork(transmitters.iterator().next());
-			}
-		}
+		super.tick();
 		
 		double currentPowerScale = getPowerScale();
+		
 		if(currentPowerScale != lastPowerScale && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			lastPowerScale = currentPowerScale;

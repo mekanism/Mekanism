@@ -5,7 +5,6 @@ import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 
 /**
  * A handy class containing several utilities for efficient gas transfer.
@@ -14,23 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public final class GasTransmission 
 {
-	/** Do not mess with this, used to only register NetworkLoader once. */
-	private static boolean networkLoader_loaded = false;
-	
-	/**
-	 * Call this method in your mod's init phase in order for the GasNetwork to function properly.
-	 */
-	public static void register()
-	{
-		if(!networkLoader_loaded)
-		{
-			MinecraftForge.EVENT_BUS.register(new GasNetwork.NetworkLoader());
-			networkLoader_loaded = true;
-			
-			System.out.println("[Mekanism] Successfully loaded gas transmission NetworkLoader.");
-		}
-	}
-	
     /**
      * Gets all the tubes around a tile entity.
      * @param tileEntity - center tile entity
