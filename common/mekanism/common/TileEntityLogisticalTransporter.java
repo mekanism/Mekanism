@@ -27,7 +27,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	{
 		if(theNetwork == null && createIfNull)
 		{
-			TileEntity[] adjacentTransporters = CableUtils.getConnectedCables(this);
+			TileEntity[] adjacentTransporters = TransporterUtils.getConnectedTransporters(this);
+			
 			HashSet<InventoryNetwork> connectedNets = new HashSet<InventoryNetwork>();
 			
 			for(TileEntity transporter : adjacentTransporters)
@@ -37,6 +38,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getNetwork());
 				}
 			}
+			
 			if(connectedNets.size() == 0 || worldObj.isRemote)
 			{
 				theNetwork = new InventoryNetwork(this);
