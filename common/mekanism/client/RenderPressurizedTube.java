@@ -71,43 +71,40 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		model.renderCenter(connectable);
 		
-		if(tileEntity.canTransferGas())
+		for(int i = 0; i < 6; i++)
 		{
-			for(int i = 0; i < 6; i++)
+			TileEntity sideTile = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getTileEntity(tileEntity.worldObj);
+			
+			if(sideTile instanceof TileEntityGasTank && i != 0 && i != 1)
 			{
-				TileEntity sideTile = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getTileEntity(tileEntity.worldObj);
+				GL11.glPushMatrix();
 				
-				if(sideTile instanceof TileEntityGasTank && i != 0 && i != 1)
+				switch(ForgeDirection.getOrientation(i))
 				{
-					GL11.glPushMatrix();
-					
-					switch(ForgeDirection.getOrientation(i))
-					{
-						case NORTH:
-							GL11.glScalef(1, 1, 1.63f);
-							GL11.glTranslatef(0, 0, -.073f);
-							break;
-						case SOUTH:
-							GL11.glScalef(1, 1, 1.63f);
-							GL11.glTranslatef(0, 0, .073f);
-							break;
-						case WEST:
-							GL11.glScalef(1.63f, 1, 1);
-							GL11.glTranslatef(.073f, 0, 0);
-							break;
-						case EAST:
-							GL11.glScalef(1.63f, 1, 1);
-							GL11.glTranslatef(-.073f, 0, 0);
-							break;
-					}
-					
-					model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
-					
-					GL11.glPopMatrix();
+					case NORTH:
+						GL11.glScalef(1, 1, 1.63f);
+						GL11.glTranslatef(0, 0, -.073f);
+						break;
+					case SOUTH:
+						GL11.glScalef(1, 1, 1.63f);
+						GL11.glTranslatef(0, 0, .073f);
+						break;
+					case WEST:
+						GL11.glScalef(1.63f, 1, 1);
+						GL11.glTranslatef(.073f, 0, 0);
+						break;
+					case EAST:
+						GL11.glScalef(1.63f, 1, 1);
+						GL11.glTranslatef(-.073f, 0, 0);
+						break;
 				}
-				else {
-					model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
-				}
+				
+				model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
+				
+				GL11.glPopMatrix();
+			}
+			else {
+				model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
 			}
 		}
 		
@@ -130,14 +127,11 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				tileEntity.refGas = null;
 			}
 			
-			if(tileEntity.canTransferGas())
+			for(int i = 0; i < 6; i++)
 			{
-				for(int i = 0; i < 6; i++)
+				if(connectable[i])
 				{
-					if(connectable[i])
-					{
-						getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).render();
-					}
+					getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).render();
 				}
 			}
 			

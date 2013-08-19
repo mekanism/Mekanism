@@ -84,35 +84,19 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	{
 		if(!worldObj.isRemote)
 		{
-			if(canTransferGas())
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-				{
-					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-					
-					if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
-					{
-						getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
-					}
-				}
+				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				getNetwork().refresh();
+				if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
+				{
+					getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
+				}
 			}
-			else {
-				getNetwork().split(this);
-			}
+			
+			getNetwork().refresh();
 		}
 	}
-	
-	public boolean canTransferGas()
-	{
-		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
-	}
-
-    public boolean canTransferGasToTube(TileEntity tile)
-    {
-        return canTransferGas();
-    }
 	
 	public void onTransfer(EnumGas type)
 	{
@@ -130,7 +114,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return canTransferGas();
+		return true;
 	}
 	
 	@Override

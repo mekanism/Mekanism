@@ -3,6 +3,7 @@ package mekanism.api;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -26,14 +27,7 @@ public final class GasTransmission
     	{
 			TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(tileEntity instanceof IPressurizedTube)
-			{
-			    if(((IPressurizedTube)tileEntity).canTransferGasToTube(tube))
-			    {
-                    tubes[orientation.ordinal()] = tube;
-			    }
-			}
-			else if(tube instanceof IPressurizedTube)
+			if(MekanismUtils.checkNetwork(tube, GasNetwork.class))
 			{
                 tubes[orientation.ordinal()] = tube;
 			}
@@ -50,18 +44,15 @@ public final class GasTransmission
     public static IGasAcceptor[] getConnectedAcceptors(TileEntity tileEntity)
     {
     	IGasAcceptor[] acceptors = new IGasAcceptor[] {null, null, null, null, null, null};
-    	
-    	if(!(tileEntity instanceof IPressurizedTube))
+   
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(acceptor instanceof IGasAcceptor)
-				{
-					acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
-				}
-	    	}
+			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(acceptor instanceof IGasAcceptor)
+			{
+				acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
+			}
     	}
     	
     	return acceptors;
@@ -75,18 +66,15 @@ public final class GasTransmission
     public static ITubeConnection[] getConnections(TileEntity tileEntity)
     {
     	ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
-    	
-    	if(!(tileEntity instanceof IPressurizedTube))
+   
+		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-    		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity connection = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(connection instanceof ITubeConnection)
-				{
-					connections[orientation.ordinal()] = (ITubeConnection)connection;
-				}
-	    	}
+			TileEntity connection = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(connection instanceof ITubeConnection)
+			{
+				connections[orientation.ordinal()] = (ITubeConnection)connection;
+			}
     	}
     	
     	return connections;
@@ -104,9 +92,9 @@ public final class GasTransmission
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
-    	if(pointer instanceof IPressurizedTube)
+    	if(MekanismUtils.checkNetwork(pointer, GasNetwork.class))
     	{
-	    	return ((IPressurizedTube)pointer).getNetwork().emit(amount, type, sender);
+	    	return ((ITransmitter<GasNetwork>)pointer).getNetwork().emit(amount, type, sender);
     	}
     	
     	return amount;
@@ -130,9 +118,9 @@ public final class GasTransmission
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(sideTile instanceof IPressurizedTube)
+    			if(MekanismUtils.checkNetwork(sideTile, GasNetwork.class))
     			{
-    				networks.add(((IPressurizedTube)sideTile).getNetwork());
+    				networks.add(((ITransmitter<GasNetwork>)sideTile).getNetwork());
     			}
     		}
     		

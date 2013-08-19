@@ -4,8 +4,8 @@ import java.util.List;
 
 import mekanism.api.EnumGas;
 import mekanism.api.GasNetwork.NetworkFinder;
-import mekanism.api.IPressurizedTube;
 import mekanism.api.Object3D;
+import mekanism.common.TileEntityPressurizedTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -32,9 +32,9 @@ public class GasClientUpdate
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
 			
-			if(tileEntity instanceof IPressurizedTube)
+			if(tileEntity instanceof TileEntityPressurizedTube)
 			{
-				((IPressurizedTube)tileEntity).onTransfer(gasType);
+				((TileEntityPressurizedTube)tileEntity).onTransfer(gasType);
 			}
 		}
 	}
