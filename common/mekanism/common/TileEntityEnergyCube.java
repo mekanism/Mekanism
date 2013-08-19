@@ -91,10 +91,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 				else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
 					PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
-	            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-	            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
-	            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-	            	setEnergy(electricityStored - transferEnergy);
+					if(receiver != null)
+					{
+		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
+		            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
+		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+		            	setEnergy(electricityStored - transferEnergy);
+					}
 				}
 			}
 			

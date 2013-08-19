@@ -123,10 +123,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 					else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 					{
 						PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
-		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-		            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, output));
-		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-		            	setEnergy(electricityStored - transferEnergy);
+						if(receiver != null)
+						{
+			            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
+			            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, output));
+			            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
+			            	setEnergy(electricityStored - transferEnergy);
+						}
 					}
 				}
 			}
