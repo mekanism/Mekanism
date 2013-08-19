@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import net.minecraft.tileentity.TileEntity;
+
 public interface ITransmitter<N> 
 {
 	/**
@@ -38,4 +40,6 @@ public interface ITransmitter<N>
 	 * it to try and fix itself.
 	 */
 	public void fixNetwork();
+	
+	public boolean areNetworksEqual(TileEntity tileEntity);
 }

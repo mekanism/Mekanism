@@ -11,11 +11,12 @@ import java.util.Set;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.power.IPowerReceptor;
 import universalelectricity.core.block.IElectrical;
+import buildcraft.api.power.IPowerReceptor;
 
 public final class CableUtils
 {
@@ -34,7 +35,7 @@ public final class CableUtils
 			
 			if(acceptor instanceof IStrictEnergyAcceptor || 
 					acceptor instanceof IEnergySink || 
-					(acceptor instanceof IPowerReceptor && !(acceptor instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded) ||
+					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && Mekanism.hooks.BuildCraftLoaded) ||
 					acceptor instanceof IElectrical)
 			{
 				acceptors[orientation.ordinal()] = acceptor;
@@ -57,7 +58,7 @@ public final class CableUtils
     	{
 			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(cable instanceof IUniversalCable)
+			if(MekanismUtils.checkNetwork(cable, EnergyNetwork.class))
 			{
 				cables[orientation.ordinal()] = cable;
 			}
@@ -166,7 +167,7 @@ public final class CableUtils
     		return true;
     	}
     	
-    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof IUniversalCable) && Mekanism.hooks.BuildCraftLoaded)
+    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof ITransmitter) && Mekanism.hooks.BuildCraftLoaded)
     	{
     		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, MekanismUtils.toIC2Direction(side).getInverse()))
     		{
@@ -191,9 +192,9 @@ public final class CableUtils
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
-    	if(pointer instanceof IUniversalCable)
+    	if(MekanismUtils.checkNetwork(pointer, EnergyNetwork.class))
     	{
-    		IUniversalCable cable = (IUniversalCable)pointer;
+    		ITransmitter<EnergyNetwork> cable = (ITransmitter<EnergyNetwork>)pointer;
     		
     		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
     		ignored.add(sender);
@@ -224,9 +225,9 @@ public final class CableUtils
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(sideTile instanceof IUniversalCable && !ignored.contains(sideTile))
+    			if(MekanismUtils.checkNetwork(sideTile, EnergyNetwork.class) && !ignored.contains(sideTile))
     			{
-    				networks.add(((IUniversalCable)sideTile).getNetwork());
+    				networks.add(((ITransmitter<EnergyNetwork>)sideTile).getNetwork());
     			}
     		}
     		

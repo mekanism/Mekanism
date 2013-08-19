@@ -2,29 +2,32 @@ package mekanism.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
+import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, GasNetwork>
+public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 {
-	public GasNetwork(IPressurizedTube... varPipes)
+	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
+		register();
+	}
+	
+	public GasNetwork(Collection<ITransmitter<GasNetwork>> collection)
+	{
+		transmitters.addAll(collection);
 		register();
 	}
 	
@@ -107,15 +110,15 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 	@Override
 	public void refresh()
 	{
-		Set<IPressurizedTube> iterTubes = (Set<IPressurizedTube>) transmitters.clone();
-		Iterator<IPressurizedTube> it = iterTubes.iterator();
+		Set<ITransmitter<GasNetwork>> iterTubes = (Set<ITransmitter<GasNetwork>>)transmitters.clone();
+		Iterator<ITransmitter<GasNetwork>> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			IPressurizedTube conductor = (IPressurizedTube)it.next();
+			ITransmitter<GasNetwork> conductor = (ITransmitter<GasNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -127,13 +130,13 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 			}
 		}
 		
-		for(IPressurizedTube pipe : transmitters)
+		for(ITransmitter<GasNetwork> pipe : transmitters)
 		{
 			IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
 		
 			for(IGasAcceptor acceptor : acceptors)
 			{
-				if(acceptor != null && !(acceptor instanceof IPressurizedTube))
+				if(acceptor != null && !(acceptor instanceof ITransmitter))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
@@ -156,7 +159,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 	}
 
 	@Override
-	public void split(IPressurizedTube splitPoint)
+	public void split(ITransmitter<GasNetwork> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -179,7 +182,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof IPressurizedTube && !dealtWith[countOne])
+				if(MekanismUtils.checkNetwork(connectedBlockA, GasNetwork.class) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -188,7 +191,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 
-						if(connectedBlockB instanceof IPressurizedTube && !dealtWith[countTwo])
+						if(MekanismUtils.checkNetwork(connectedBlockB, GasNetwork.class) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -203,11 +206,11 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(nodeTile instanceof IPressurizedTube)
+						if(MekanismUtils.checkNetwork(nodeTile, GasNetwork.class))
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetwork.transmitters.add((IPressurizedTube)nodeTile);
+								newNetwork.transmitters.add((ITransmitter<GasNetwork>)nodeTile);
 							}
 						}
 					}
@@ -221,26 +224,26 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 	}
 	
 	@Override
-	public void fixMessedUpNetwork(IPressurizedTube tube)
+	public void fixMessedUpNetwork(ITransmitter<GasNetwork> tube)
 	{
 		if(tube instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity)tube).getWorldObj(), Object3D.get((TileEntity)tube), null);
 			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<IPressurizedTube> newTubes = new HashSet<IPressurizedTube>();
+			Set<ITransmitter<GasNetwork>> newTubes = new HashSet<ITransmitter<GasNetwork>>();
 			
 			for(Object3D node : partNetwork)
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)tube).worldObj);
 
-				if(nodeTile instanceof IPressurizedTube)
+				if(MekanismUtils.checkNetwork(nodeTile, GasNetwork.class))
 				{
-					((IPressurizedTube) nodeTile).removeFromNetwork();
-					newTubes.add((IPressurizedTube)nodeTile);
+					((ITransmitter<GasNetwork>)nodeTile).removeFromNetwork();
+					newTubes.add((ITransmitter<GasNetwork>)nodeTile);
 				}
 			}
 			
-			GasNetwork newNetwork = new GasNetwork(newTubes.toArray(new IPressurizedTube[0]));
+			GasNetwork newNetwork = new GasNetwork();
 			newNetwork.refresh();
 			newNetwork.fixed = true;
 			deregister();
@@ -268,7 +271,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 		
 		public void loopAll(Object3D location)
 		{
-			if(location.getTileEntity(worldObj) instanceof IPressurizedTube)
+			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), GasNetwork.class))
 			{
 				iterated.add(location);
 			}
@@ -281,7 +284,7 @@ public class GasNetwork extends DynamicNetwork<IPressurizedTube, IGasAcceptor, G
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IPressurizedTube)
+					if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
 					{
 						loopAll(obj);
 					}

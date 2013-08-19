@@ -36,6 +36,12 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	}
 	
 	@Override
+	public boolean areNetworksEqual(TileEntity tileEntity)
+	{
+		return tileEntity instanceof ITransmitter && getNetwork().getClass() == ((ITransmitter)tileEntity).getNetwork().getClass();
+	}
+	
+	@Override
 	public N getNetwork()
 	{
 		return getNetwork(true);

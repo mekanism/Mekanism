@@ -5,13 +5,13 @@ import java.util.HashSet;
 import mekanism.api.EnumGas;
 import mekanism.api.GasNetwork;
 import mekanism.api.GasTransmission;
-import mekanism.api.IPressurizedTube;
+import mekanism.api.ITransmitter;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements IPressurizedTube, ITubeConnection
+public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements ITubeConnection
 {
 	/** The gas currently displayed in this tube. */
 	public EnumGas refGas = null;
@@ -29,9 +29,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			
 			for(TileEntity tube : adjacentTubes)
 			{
-				if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).getNetwork(false) != null)
+				if(MekanismUtils.checkNetwork(tube, GasNetwork.class) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
 				{
-					connectedNets.add(((IPressurizedTube)tube).getNetwork());
+					connectedNets.add(((ITransmitter<GasNetwork>)tube).getNetwork());
 				}
 			}
 			
@@ -90,9 +90,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 				{
 					TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IPressurizedTube && ((IPressurizedTube)tileEntity).canTransferGas())
+					if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
 					{
-						getNetwork().merge(((IPressurizedTube)tileEntity).getNetwork());
+						getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
 					}
 				}
 				
@@ -104,19 +104,16 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 		}
 	}
 	
-	@Override
 	public boolean canTransferGas()
 	{
 		return worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
 	}
 
-    @Override
     public boolean canTransferGasToTube(TileEntity tile)
     {
         return canTransferGas();
     }
 	
-	@Override
 	public void onTransfer(EnumGas type)
 	{
 		if(type == refGas)

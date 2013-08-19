@@ -6,6 +6,7 @@ import java.util.Random;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
@@ -66,9 +67,9 @@ public class ItemConfigurator extends ItemEnergized
 	    			return true;
 	    		}
     		}
-    		else if(world.getBlockTileEntity(x, y, z) instanceof IUniversalCable)
+    		else if(world.getBlockTileEntity(x, y, z) instanceof ITransmitter)
     		{
-    			((IUniversalCable)world.getBlockTileEntity(x, y, z)).fixNetwork();
+    			((ITransmitter)world.getBlockTileEntity(x, y, z)).fixNetwork();
     		}
     		
     		if(getState(stack) == 0)

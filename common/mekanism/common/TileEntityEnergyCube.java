@@ -74,7 +74,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			
 			if(electricityStored > 0)
 			{
-				if(tileEntity instanceof IUniversalCable)
+				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
 				{
 					setEnergy(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
 					return;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
@@ -23,7 +24,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IMechanicalPipe, IFluidHandler, ITileNetwork
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IFluidHandler, ITileNetwork
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
@@ -36,8 +37,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	
 	/** The scale (0F -> 1F) of this pipe's fluid level. */
 	public float fluidScale;
-	
-	@Override
+
 	public void onTransfer(FluidStack fluidStack)
 	{
 		if(fluidStack.isFluidEqual(refFluid))
@@ -61,9 +61,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(pipe instanceof IMechanicalPipe && ((IMechanicalPipe)pipe).getNetwork(false) != null)
+				if(MekanismUtils.checkNetwork(pipe, FluidNetwork.class) && ((ITransmitter<FluidNetwork>)pipe).getNetwork(false) != null)
 				{
-					connectedNets.add(((IMechanicalPipe)pipe).getNetwork());
+					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getNetwork());
 				}
 			}
 			
@@ -120,9 +120,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(tileEntity instanceof IMechanicalPipe)
+				if(MekanismUtils.checkNetwork(tileEntity, FluidNetwork.class))
 				{
-					getNetwork().merge(((IMechanicalPipe)tileEntity).getNetwork());
+					getNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getNetwork());
 				}
 			}
 			

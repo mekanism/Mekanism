@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import mekanism.api.GasNetwork.GasTransferEvent;
-import mekanism.api.GasTransmission;
 import mekanism.api.InfuseObject;
 import mekanism.api.InfuseRegistry;
 import mekanism.api.InfuseType;

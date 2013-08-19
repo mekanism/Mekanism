@@ -2,23 +2,16 @@ package mekanism.common;
 
 import java.util.HashSet;
 
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
-import mekanism.api.TransmitterNetworkRegistry;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IUniversalCable, IPowerReceptor
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -47,9 +40,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(cable instanceof IUniversalCable && ((IUniversalCable)cable).getNetwork(false) != null)
+				if(MekanismUtils.checkNetwork(cable, EnergyNetwork.class) && ((ITransmitter<EnergyNetwork>)cable).getNetwork(false) != null)
 				{
-					connectedNets.add(((IUniversalCable)cable).getNetwork());
+					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getNetwork());
 				}
 			}
 			
@@ -106,9 +99,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(tileEntity instanceof IUniversalCable)
+				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
 				{
-					getNetwork().merge(((IUniversalCable)tileEntity).getNetwork());
+					getNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getNetwork());
 				}
 			}
 			
@@ -131,7 +124,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public void doWork(PowerHandler workProvider) {}
 	
-	@Override
 	public void setCachedEnergy(double scale)
 	{
 		energyScale = scale;

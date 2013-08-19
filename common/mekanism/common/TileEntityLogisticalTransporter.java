@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
@@ -16,7 +17,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ILogisticalTransporter, ITileNetwork
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ITileNetwork
 {
 	/** This transporter's active state. */
 	public boolean isActive = false;
@@ -31,9 +32,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			
 			for(TileEntity transporter : adjacentTransporters)
 			{
-				if(transporter instanceof ILogisticalTransporter && ((ILogisticalTransporter)transporter).getNetwork(false) != null)
+				if(MekanismUtils.checkNetwork(transporter, InventoryNetwork.class) && ((ITransmitter<InventoryNetwork>)transporter).getNetwork(false) != null)
 				{
-					connectedNets.add(((ILogisticalTransporter)transporter).getNetwork());
+					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getNetwork());
 				}
 			}
 			if(connectedNets.size() == 0 || worldObj.isRemote)
@@ -89,9 +90,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(tileEntity instanceof ILogisticalTransporter)
+				if(MekanismUtils.checkNetwork(tileEntity, InventoryNetwork.class))
 				{
-					getNetwork().merge(((ILogisticalTransporter)tileEntity).getNetwork());
+					getNetwork().merge(((ITransmitter<InventoryNetwork>)tileEntity).getNetwork());
 				}
 			}
 			

@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.Arrays;
 
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -23,7 +24,7 @@ public final class TransporterUtils
     	{
 			TileEntity transporter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(transporter instanceof ILogisticalTransporter)
+			if(MekanismUtils.checkNetwork(transporter, InventoryNetwork.class))
 			{
 				transporters[orientation.ordinal()] = transporter;
 			}
@@ -98,7 +99,7 @@ public final class TransporterUtils
     	{
 			TileEntity inventory = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(inventory instanceof IInventory && !(inventory instanceof ILogisticalTransporter))
+			if(inventory instanceof IInventory && !(inventory instanceof ITransmitter))
 			{
 				inventories[orientation.ordinal()] = (IInventory)inventory;
 			}

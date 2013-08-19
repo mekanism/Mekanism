@@ -9,13 +9,9 @@ import java.util.Set;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-import mekanism.common.EnergyNetwork;
-import mekanism.common.IMechanicalPipe;
-import mekanism.common.IUniversalCable;
-
-public abstract class DynamicNetwork<T, A, N> implements ITransmitterNetwork<T, A, N>
+public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 {
-	public HashSet<T> transmitters = new HashSet<T>();
+	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
 	
 	public Set<A> possibleAcceptors = new HashSet<A>();
 	public Map<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
@@ -25,13 +21,13 @@ public abstract class DynamicNetwork<T, A, N> implements ITransmitterNetwork<T, 
 	
 	protected boolean fixed = false;
 	
-	public void addAllTransmitters(Set<T> newTransmitters)
+	public void addAllTransmitters(Set<ITransmitter<N>> newTransmitters)
 	{
 		transmitters.addAll(newTransmitters);
 	}
 	
 	@Override
-	public void removeTransmitter(T transmitter)
+	public void removeTransmitter(ITransmitter<N> transmitter)
 	{
 		transmitters.remove(transmitter);
 		
@@ -45,7 +41,7 @@ public abstract class DynamicNetwork<T, A, N> implements ITransmitterNetwork<T, 
 	public void register()
 	{
 		try {
-			T aTransmitter = transmitters.iterator().next();
+			ITransmitter<N> aTransmitter = transmitters.iterator().next();
 			
 			if(aTransmitter instanceof TileEntity && !((TileEntity)aTransmitter).worldObj.isRemote)
 			{

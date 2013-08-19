@@ -13,6 +13,8 @@ import java.util.Iterator;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.ITransmitter;
+import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IRedstoneControl.RedstoneControl;
@@ -953,6 +955,19 @@ public final class MekanismUtils
     	else if(control.getControlType() == RedstoneControl.LOW)
     	{
     		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) == 0;
+    	}
+    	
+    	return false;
+    }
+    
+    public static boolean checkNetwork(TileEntity tileEntity, Class<? extends ITransmitterNetwork> networkClass)
+    {
+    	if(tileEntity instanceof ITransmitter)
+    	{
+    		if(((ITransmitter)tileEntity).getNetwork().getClass() == networkClass)
+    		{
+    			return true;
+    		}
     	}
     	
     	return false;

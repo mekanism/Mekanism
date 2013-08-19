@@ -2,9 +2,7 @@ package mekanism.api;
 
 import java.util.Set;
 
-import mekanism.common.IUniversalCable;
-
-public interface ITransmitterNetwork<T, A, N>
+public interface ITransmitterNetwork<A, N>
 {
 	public void tick();
 	
@@ -12,15 +10,15 @@ public interface ITransmitterNetwork<T, A, N>
 	
 	public Set<A> getAcceptors(Object... data);
 	
-	public void removeTransmitter(T transmitter);
+	public void removeTransmitter(ITransmitter<N> transmitter);
 	
 	public void refresh();
 	
-	public void split(T splitPoint);
+	public void split(ITransmitter<N> splitPoint);
 	
 	public void merge(N network);
 	
-	public void fixMessedUpNetwork(T transmitter);
+	public void fixMessedUpNetwork(ITransmitter<N> transmitter);
 	
 	public void register();
 	

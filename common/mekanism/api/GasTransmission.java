@@ -22,24 +22,21 @@ public final class GasTransmission
     {
     	TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IPressurizedTube) || ((IPressurizedTube)tileEntity).canTransferGas())
+    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-	    	{
-				TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
-				
-				if(tileEntity instanceof IPressurizedTube)
-				{
-				    if(((IPressurizedTube)tileEntity).canTransferGasToTube(tube))
-				    {
-	                    tubes[orientation.ordinal()] = tube;
-				    }
-				}
-				else if(tube instanceof IPressurizedTube && ((IPressurizedTube)tube).canTransferGas())
-				{
+			TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			
+			if(tileEntity instanceof IPressurizedTube)
+			{
+			    if(((IPressurizedTube)tileEntity).canTransferGasToTube(tube))
+			    {
                     tubes[orientation.ordinal()] = tube;
-				}
-	    	}
+			    }
+			}
+			else if(tube instanceof IPressurizedTube)
+			{
+                tubes[orientation.ordinal()] = tube;
+			}
     	}
     	
     	return tubes;
@@ -54,7 +51,7 @@ public final class GasTransmission
     {
     	IGasAcceptor[] acceptors = new IGasAcceptor[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IPressurizedTube) || ((IPressurizedTube)tileEntity).canTransferGas())
+    	if(!(tileEntity instanceof IPressurizedTube))
     	{
 	    	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 	    	{
@@ -79,7 +76,7 @@ public final class GasTransmission
     {
     	ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
     	
-    	if(!(tileEntity instanceof IPressurizedTube) || ((IPressurizedTube)tileEntity).canTransferGas())
+    	if(!(tileEntity instanceof IPressurizedTube))
     	{
     		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 	    	{

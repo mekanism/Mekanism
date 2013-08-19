@@ -2,30 +2,31 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import mekanism.api.DynamicNetwork;
-import mekanism.api.ITransmitterNetwork;
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
-import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.ChunkEvent;
 
-public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IInventory, InventoryNetwork>
+public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
 {
-	public InventoryNetwork(ILogisticalTransporter... varTransporters)
+	public InventoryNetwork(ITransmitter<InventoryNetwork>... varTransporters)
 	{
 		transmitters.addAll(Arrays.asList(varTransporters));
+		register();
+	}
+	
+	public InventoryNetwork(Collection<ITransmitter<InventoryNetwork>> collection)
+	{
+		transmitters.addAll(collection);
 		register();
 	}
 	
@@ -53,15 +54,15 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 	@Override
 	public void refresh()
 	{
-		Set<ILogisticalTransporter> iterPipes = (Set<ILogisticalTransporter>)transmitters.clone();
-		Iterator it = iterPipes.iterator();
+		Set<ITransmitter<InventoryNetwork>> iterTransmitters = (Set<ITransmitter<InventoryNetwork>>)transmitters.clone();
+		Iterator it = iterTransmitters.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ILogisticalTransporter conductor = (ILogisticalTransporter)it.next();
+			ITransmitter<InventoryNetwork> conductor = (ITransmitter<InventoryNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -73,13 +74,13 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 			}
 		}
 		
-		for(ILogisticalTransporter pipe : iterPipes)
+		for(ITransmitter<InventoryNetwork> transmitter : iterTransmitters)
 		{
-			IInventory[] inventories = TransporterUtils.getConnectedInventories((TileEntity)pipe);
+			IInventory[] inventories = TransporterUtils.getConnectedInventories((TileEntity)transmitter);
 		
 			for(IInventory inventory : inventories)
 			{
-				if(inventory != null && !(inventory instanceof ILogisticalTransporter))
+				if(inventory != null && !(inventory instanceof ITransmitter))
 				{
 					possibleAcceptors.add(inventory);
 					acceptorDirections.put(inventory, ForgeDirection.getOrientation(Arrays.asList(inventories).indexOf(inventory)));
@@ -102,7 +103,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 	}
 
 	@Override
-	public void split(ILogisticalTransporter splitPoint)
+	public void split(ITransmitter<InventoryNetwork> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -125,7 +126,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof ILogisticalTransporter && !dealtWith[countOne])
+				if(MekanismUtils.checkNetwork(connectedBlockA, InventoryNetwork.class) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -134,7 +135,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(connectedBlockB instanceof ILogisticalTransporter && !dealtWith[countTwo])
+						if(MekanismUtils.checkNetwork(connectedBlockB, InventoryNetwork.class) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -143,22 +144,22 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 						}
 					}
 					
-					Set<ILogisticalTransporter> newNetTransporters= new HashSet<ILogisticalTransporter>();
+					Set<ITransmitter<InventoryNetwork>> newNetTransporters = new HashSet<ITransmitter<InventoryNetwork>>();
 					
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(nodeTile instanceof ILogisticalTransporter)
+						if(MekanismUtils.checkNetwork(nodeTile, InventoryNetwork.class))
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetTransporters.add((ILogisticalTransporter)nodeTile);
+								newNetTransporters.add((ITransmitter<InventoryNetwork>)nodeTile);
 							}
 						}
 					}
 					
-					InventoryNetwork newNetwork = new InventoryNetwork(newNetTransporters.toArray(new ILogisticalTransporter[0]));					
+					InventoryNetwork newNetwork = new InventoryNetwork(newNetTransporters);					
 					newNetwork.refresh();
 				}
 			}
@@ -168,26 +169,26 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 	}
 	
 	@Override
-	public void fixMessedUpNetwork(ILogisticalTransporter pipe)
+	public void fixMessedUpNetwork(ITransmitter<InventoryNetwork> transmitter)
 	{
-		if(pipe instanceof TileEntity)
+		if(transmitter instanceof TileEntity)
 		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)pipe).getWorldObj(), Object3D.get((TileEntity)pipe), null);
+			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), Object3D.get((TileEntity)transmitter), null);
 			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<ILogisticalTransporter> newTransporters = new HashSet<ILogisticalTransporter>();
+			Set<ITransmitter<InventoryNetwork>> newTransporters = new HashSet<ITransmitter<InventoryNetwork>>();
 			
 			for(Object3D node : partNetwork)
 			{
-				TileEntity nodeTile = node.getTileEntity(((TileEntity)pipe).worldObj);
+				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
 
-				if(nodeTile instanceof ILogisticalTransporter)
+				if(MekanismUtils.checkNetwork(nodeTile, InventoryNetwork.class))
 				{
-					((ILogisticalTransporter)nodeTile).removeFromNetwork();
-					newTransporters.add((ILogisticalTransporter)nodeTile);
+					((ITransmitter<InventoryNetwork>)nodeTile).removeFromNetwork();
+					newTransporters.add((ITransmitter<InventoryNetwork>)nodeTile);
 				}
 			}
 			
-			InventoryNetwork newNetwork = new InventoryNetwork(newTransporters.toArray(new ILogisticalTransporter[0]));
+			InventoryNetwork newNetwork = new InventoryNetwork(newTransporters);
 			newNetwork.refresh();
 			newNetwork.fixed = true;
 			deregister();
@@ -215,7 +216,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 
 		public void loopAll(Object3D location)
 		{
-			if(location.getTileEntity(worldObj) instanceof ILogisticalTransporter)
+			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), InventoryNetwork.class))
 			{
 				iterated.add(location);
 			}
@@ -228,7 +229,7 @@ public class InventoryNetwork extends DynamicNetwork<ILogisticalTransporter, IIn
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof ILogisticalTransporter)
+					if(MekanismUtils.checkNetwork(tileEntity, InventoryNetwork.class))
 					{
 						loopAll(obj);
 					}

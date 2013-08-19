@@ -4,27 +4,22 @@ import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import mekanism.api.DynamicNetwork;
 import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.ITransmitterNetwork;
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
-import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.ChunkEvent;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
@@ -32,15 +27,21 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, EnergyNetwork>
+public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	
-	public EnergyNetwork(IUniversalCable... varCables)
+	public EnergyNetwork(ITransmitter<EnergyNetwork>... varCables)
 	{
 		transmitters.addAll(Arrays.asList(varCables));
+		register();
+	}
+	
+	public EnergyNetwork(Collection<ITransmitter<EnergyNetwork>> collection)
+	{
+		transmitters.addAll(collection);
 		register();
 	}
 	
@@ -201,15 +202,15 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 	@Override
 	public void refresh()
 	{
-		Set<IUniversalCable> iterCables = (Set<IUniversalCable>) transmitters.clone();
-		Iterator<IUniversalCable> it = iterCables.iterator();
+		Set<ITransmitter<EnergyNetwork>> iterCables = (Set<ITransmitter<EnergyNetwork>>) transmitters.clone();
+		Iterator<ITransmitter<EnergyNetwork>> it = iterCables.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			IUniversalCable conductor = (IUniversalCable)it.next();
+			ITransmitter<EnergyNetwork> conductor = (ITransmitter<EnergyNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -221,13 +222,13 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 			}
 		}
 		
-		for(IUniversalCable cable : iterCables)
+		for(ITransmitter<EnergyNetwork> cable : iterCables)
 		{
 			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)cable);
 		
 			for(TileEntity acceptor : acceptors)
 			{
-				if(acceptor != null && !(acceptor instanceof IUniversalCable))
+				if(acceptor != null && !(acceptor instanceof ITransmitter))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
@@ -236,6 +237,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 		}
 		
 		double currentPowerScale = getPowerScale();
+		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			lastPowerScale = currentPowerScale;
@@ -258,7 +260,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 	}
 
 	@Override
-	public void split(IUniversalCable splitPoint)
+	public void split(ITransmitter<EnergyNetwork> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -281,7 +283,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(connectedBlockA instanceof IUniversalCable && !dealtWith[countOne])
+				if(MekanismUtils.checkNetwork(connectedBlockA, EnergyNetwork.class) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -290,7 +292,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(connectedBlockB instanceof IUniversalCable && !dealtWith[countTwo])
+						if(MekanismUtils.checkNetwork(connectedBlockB, EnergyNetwork.class) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -299,21 +301,22 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 						}
 					}
 					
-					Set<IUniversalCable> newNetCables= new HashSet<IUniversalCable>();
+					Set<ITransmitter<EnergyNetwork>> newNetCables = new HashSet<ITransmitter<EnergyNetwork>>();
+					
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(nodeTile instanceof IUniversalCable)
+						if(MekanismUtils.checkNetwork(nodeTile, EnergyNetwork.class))
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetCables.add((IUniversalCable)nodeTile);
+								newNetCables.add((ITransmitter<EnergyNetwork>)nodeTile);
 							}
 						}
 					}
 					
-					EnergyNetwork newNetwork = new EnergyNetwork(newNetCables.toArray(new IUniversalCable[0]));					
+					EnergyNetwork newNetwork = new EnergyNetwork(newNetCables);					
 					newNetwork.refresh();
 				}
 			}
@@ -323,26 +326,26 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 	}
 	
 	@Override
-	public void fixMessedUpNetwork(IUniversalCable cable)
+	public void fixMessedUpNetwork(ITransmitter<EnergyNetwork> cable)
 	{
 		if(cable instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity)cable).getWorldObj(), Object3D.get((TileEntity)cable), null);
 			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<IUniversalCable> newCables = new HashSet<IUniversalCable>();
+			Set<ITransmitter<EnergyNetwork>> newCables = new HashSet<ITransmitter<EnergyNetwork>>();
 			
 			for(Object3D node : partNetwork)
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)cable).worldObj);
 
-				if(nodeTile instanceof IUniversalCable)
+				if(nodeTile instanceof ITransmitter)
 				{
-					((IUniversalCable)nodeTile).removeFromNetwork();
-					newCables.add((IUniversalCable)nodeTile);
+					((ITransmitter<EnergyNetwork>)nodeTile).removeFromNetwork();
+					newCables.add((ITransmitter<EnergyNetwork>)nodeTile);
 				}
 			}
 			
-			EnergyNetwork newNetwork = new EnergyNetwork(newCables.toArray(new IUniversalCable[0]));
+			EnergyNetwork newNetwork = new EnergyNetwork(newCables);
 			newNetwork.refresh();
 			newNetwork.fixed = true;
 			deregister();
@@ -370,7 +373,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 
 		public void loopAll(Object3D location)
 		{
-			if(location.getTileEntity(worldObj) instanceof IUniversalCable)
+			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), EnergyNetwork.class))
 			{
 				iterated.add(location);
 			}
@@ -383,7 +386,7 @@ public class EnergyNetwork extends DynamicNetwork<IUniversalCable, TileEntity, E
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IUniversalCable)
+					if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
 					{
 						loopAll(obj);
 					}

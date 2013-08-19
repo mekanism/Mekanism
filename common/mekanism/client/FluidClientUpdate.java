@@ -4,8 +4,7 @@ import java.util.List;
 
 import mekanism.api.Object3D;
 import mekanism.common.FluidNetwork.NetworkFinder;
-import mekanism.common.IMechanicalPipe;
-import mekanism.common.IUniversalCable;
+import mekanism.common.TileEntityMechanicalPipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,9 +32,9 @@ public class FluidClientUpdate
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
 			
-			if(tileEntity instanceof IMechanicalPipe)
+			if(tileEntity instanceof TileEntityMechanicalPipe)
 			{
-				((IMechanicalPipe)tileEntity).onTransfer(fluidStack);
+				((TileEntityMechanicalPipe)tileEntity).onTransfer(fluidStack);
 			}
 		}
 	}

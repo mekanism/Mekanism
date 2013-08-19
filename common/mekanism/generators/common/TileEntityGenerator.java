@@ -14,13 +14,12 @@ import mekanism.api.ICableOutputter;
 import mekanism.api.Object3D;
 import mekanism.client.IHasSound;
 import mekanism.common.CableUtils;
+import mekanism.common.EnergyNetwork;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.IUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.common.network.PacketTileEntity;
@@ -105,7 +104,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			
 			if(electricityStored > 0)
 			{
-				if(tileEntity instanceof IUniversalCable)
+				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
 				{
 					setEnergy(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
 				}

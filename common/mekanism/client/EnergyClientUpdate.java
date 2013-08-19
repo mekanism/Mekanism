@@ -1,11 +1,10 @@
 package mekanism.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Object3D;
 import mekanism.common.EnergyNetwork.NetworkFinder;
-import mekanism.common.IUniversalCable;
+import mekanism.common.TileEntityUniversalCable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -32,9 +31,9 @@ public class EnergyClientUpdate
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
 			
-			if(tileEntity instanceof IUniversalCable)
+			if(tileEntity instanceof TileEntityUniversalCable)
 			{
-				((IUniversalCable)tileEntity).setCachedEnergy(energyScale);
+				((TileEntityUniversalCable)tileEntity).setCachedEnergy(energyScale);
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.Arrays;
 
+import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -23,7 +24,7 @@ public final class PipeUtils
     	{
 			TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(pipe instanceof IMechanicalPipe)
+			if(MekanismUtils.checkNetwork(pipe, FluidNetwork.class))
 			{
 				pipes[orientation.ordinal()] = pipe;
 			}
@@ -97,7 +98,7 @@ public final class PipeUtils
     	{
 			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IMechanicalPipe))
+			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitter))
 			{
 				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
 			}

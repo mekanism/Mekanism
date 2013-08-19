@@ -3,10 +3,8 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.List;
 
-import buildcraft.api.tools.IToolWrench;
-
 import mekanism.api.GasTransmission;
-import mekanism.api.IPressurizedTube;
+import mekanism.api.ITransmitter;
 import mekanism.api.ITubeConnection;
 import mekanism.client.ClientProxy;
 import net.minecraft.block.Block;
@@ -23,6 +21,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -264,22 +263,7 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			if(tileEntity instanceof IUniversalCable)
-			{
-				((IUniversalCable)tileEntity).refreshNetwork();
-			}
-			else if(tileEntity instanceof IMechanicalPipe)
-			{
-				((IMechanicalPipe)tileEntity).refreshNetwork();
-			}
-			else if(tileEntity instanceof IPressurizedTube)
-			{
-				((IPressurizedTube)tileEntity).refreshNetwork();
-			}
-			else if(tileEntity instanceof ILogisticalTransporter)
-			{
-				((ILogisticalTransporter)tileEntity).refreshNetwork();
-			}
+			((ITransmitter)tileEntity).refreshNetwork();
 		}
 	}
 	
@@ -290,22 +274,7 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			if(tileEntity instanceof IUniversalCable)
-			{
-				((IUniversalCable)tileEntity).refreshNetwork();
-			}
-			else if(tileEntity instanceof IMechanicalPipe)
-			{
-				((IMechanicalPipe)tileEntity).refreshNetwork();
-			}
-			else if(tileEntity instanceof IPressurizedTube)
-			{
-				((IPressurizedTube)tileEntity).refreshNetwork();
-			}
-			else if(tileEntity instanceof ILogisticalTransporter)
-			{
-				((ILogisticalTransporter)tileEntity).refreshNetwork();
-			}
+			((ITransmitter)tileEntity).refreshNetwork();
 		}
 	}
 	
