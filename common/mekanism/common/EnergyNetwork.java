@@ -15,6 +15,7 @@ import mekanism.api.DynamicNetwork;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
