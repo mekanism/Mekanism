@@ -3,6 +3,7 @@ package mekanism.common;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.ITransmitter;
+import mekanism.api.TransmissionType;
 import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -38,7 +39,7 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	@Override
 	public boolean areNetworksEqual(TileEntity tileEntity)
 	{
-		return tileEntity instanceof ITransmitter && getNetwork().getClass() == ((ITransmitter)tileEntity).getNetwork().getClass();
+		return tileEntity instanceof ITransmitter && getTransmissionType() == ((ITransmitter)tileEntity).getTransmissionType();
 	}
 	
 	@Override

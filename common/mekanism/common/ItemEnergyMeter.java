@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.EnumColor;
 import mekanism.api.ITransmitter;
 import mekanism.api.TransmitterNetworkRegistry;
+import mekanism.api.TransmissionType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +30,7 @@ public class ItemEnergyMeter extends ItemEnergized
     	{
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
-    		if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+    		if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
     		{
     			if(getEnergy(stack) >= ENERGY_PER_USE)
     			{

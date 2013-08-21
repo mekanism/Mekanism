@@ -182,7 +182,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, GasNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.GAS) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -191,7 +191,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 
-						if(MekanismUtils.checkNetwork(connectedBlockB, GasNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.GAS) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -206,7 +206,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, GasNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.GAS))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -236,7 +236,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)tube).worldObj);
 
-				if(MekanismUtils.checkNetwork(nodeTile, GasNetwork.class))
+				if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.GAS))
 				{
 					((ITransmitter<GasNetwork>)nodeTile).removeFromNetwork();
 					newTubes.add((ITransmitter<GasNetwork>)nodeTile);
@@ -271,7 +271,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		
 		public void loopAll(Object3D location)
 		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), GasNetwork.class))
+			if(MekanismUtils.checkTransmissionType(location.getTileEntity(worldObj), TransmissionType.GAS))
 			{
 				iterated.add(location);
 			}
@@ -284,7 +284,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
+					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.GAS))
 					{
 						loopAll(obj);
 					}

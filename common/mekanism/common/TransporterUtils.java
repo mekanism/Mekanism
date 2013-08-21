@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +25,7 @@ public final class TransporterUtils
     	{
 			TileEntity transporter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(MekanismUtils.checkNetwork(transporter, InventoryNetwork.class))
+			if(MekanismUtils.checkTransmissionType(transporter, TransmissionType.ITEM))
 			{
 				transporters[orientation.ordinal()] = transporter;
 			}

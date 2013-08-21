@@ -12,6 +12,7 @@ import java.util.Set;
 import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -184,7 +185,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, FluidNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.FLUID) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -193,7 +194,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkNetwork(connectedBlockB, FluidNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.FLUID) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -208,7 +209,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, FluidNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.FLUID))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -239,7 +240,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)pipe).worldObj);
 
-				if(MekanismUtils.checkNetwork(nodeTile, FluidNetwork.class))
+				if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.FLUID))
 				{
 					((ITransmitter<FluidNetwork>)nodeTile).removeFromNetwork();
 					newPipes.add((ITransmitter<FluidNetwork>)nodeTile);
@@ -274,7 +275,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		public void loopAll(Object3D location)
 		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), FluidNetwork.class))
+			if(MekanismUtils.checkTransmissionType(location.getTileEntity(worldObj), TransmissionType.FLUID))
 			{
 				iterated.add(location);
 			}
@@ -287,7 +288,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkNetwork(tileEntity, FluidNetwork.class))
+					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.FLUID))
 					{
 						loopAll(obj);
 					}

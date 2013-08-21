@@ -283,7 +283,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, EnergyNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.ENERGY) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -292,7 +292,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkNetwork(connectedBlockB, EnergyNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.ENERGY) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -307,7 +307,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, EnergyNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.ENERGY))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -373,7 +373,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 		public void loopAll(Object3D location)
 		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), EnergyNetwork.class))
+			if(MekanismUtils.checkTransmissionType(location.getTileEntity(worldObj), TransmissionType.ENERGY))
 			{
 				iterated.add(location);
 			}
@@ -386,7 +386,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 					{
 						loopAll(obj);
 					}

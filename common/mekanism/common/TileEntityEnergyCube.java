@@ -15,6 +15,7 @@ import java.util.HashSet;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.ItemStack;
@@ -74,7 +75,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			
 			if(electricityStored > 0)
 			{
-				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
 					setEnergy(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
 					return;

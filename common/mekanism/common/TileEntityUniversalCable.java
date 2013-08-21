@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -25,6 +26,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	}
 	
 	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.ENERGY;
+	}
+	
+	@Override
 	public boolean canUpdate()
 	{
 		return false;
@@ -40,7 +47,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(MekanismUtils.checkNetwork(cable, EnergyNetwork.class) && ((ITransmitter<EnergyNetwork>)cable).getNetwork(false) != null)
+				if(MekanismUtils.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getNetwork());
 				}
@@ -99,7 +106,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
 					getNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getNetwork());
 				}

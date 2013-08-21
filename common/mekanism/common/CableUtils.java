@@ -13,6 +13,7 @@ import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IElectrical;
@@ -58,7 +59,7 @@ public final class CableUtils
     	{
 			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(MekanismUtils.checkNetwork(cable, EnergyNetwork.class))
+			if(MekanismUtils.checkTransmissionType(cable, TransmissionType.ENERGY))
 			{
 				cables[orientation.ordinal()] = cable;
 			}
@@ -192,7 +193,7 @@ public final class CableUtils
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
-    	if(MekanismUtils.checkNetwork(pointer, EnergyNetwork.class))
+    	if(MekanismUtils.checkTransmissionType(pointer, TransmissionType.ENERGY))
     	{
     		ITransmitter<EnergyNetwork> cable = (ITransmitter<EnergyNetwork>)pointer;
     		
@@ -225,7 +226,7 @@ public final class CableUtils
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(MekanismUtils.checkNetwork(sideTile, EnergyNetwork.class) && !ignored.contains(sideTile))
+    			if(MekanismUtils.checkTransmissionType(sideTile, TransmissionType.ENERGY) && !ignored.contains(sideTile))
     			{
     				networks.add(((ITransmitter<EnergyNetwork>)sideTile).getNetwork());
     			}

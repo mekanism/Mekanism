@@ -12,6 +12,7 @@ import java.util.EnumSet;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.client.IHasSound;
 import mekanism.common.CableUtils;
 import mekanism.common.EnergyNetwork;
@@ -104,7 +105,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			
 			if(electricityStored > 0)
 			{
-				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
 					setEnergy(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
 				}
