@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -31,7 +33,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		{
 			loaderRegistered = true;
 			
-			MinecraftForge.EVENT_BUS.register(getInstance());
+			MinecraftForge.EVENT_BUS.register(new NetworkLoader());
 		}
 	}
 	
@@ -109,7 +111,28 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		{
 			if(event.getChunk() != null)
 			{
-				for(Object obj : event.getChunk().chunkTileEntityMap.values())
+				int x = event.getChunk().xPosition;
+				int z = event.getChunk().zPosition;
+				IChunkProvider cProvider = event.getChunk().worldObj.getChunkProvider();
+				Chunk[] neighbors = new Chunk[5];
+				
+				neighbors[0] = event.getChunk();
+				if(cProvider.chunkExists(x + 1, z)) neighbors[1] = cProvider.provideChunk(x + 1, z);
+				if(cProvider.chunkExists(x - 1, z)) neighbors[2] = cProvider.provideChunk(x - 1, z);
+				if(cProvider.chunkExists(x, z + 1)) neighbors[3] = cProvider.provideChunk(x, z + 1);
+				if(cProvider.chunkExists(x, z - 1)) neighbors[4] = cProvider.provideChunk(x, z - 1);
+				for(Chunk c : neighbors)
+				{
+					refreshChunk(c);
+				}
+			}
+		}
+		
+		public void refreshChunk(Chunk c)
+		{
+			if(c != null)
+			{
+				for(Object obj : c.chunkTileEntityMap.values())
 				{
 					if(obj instanceof TileEntity)
 					{
