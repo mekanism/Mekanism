@@ -60,8 +60,17 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 					MekanismRenderer.glowOn();
 				}
 				
+				boolean gas = tileEntity.structure.fluidStored.getFluid().isGaseous();
+				
 				int[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
-				GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
+				if(gas)
+				{
+					GL11.glColor4f(1.F, 1.F, 1.F, (float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity);
+					GL11.glCallList(displayList[getStages(data.height)-1]);
+				}
+				else {
+					GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
+				}
 				
 				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
 				{
