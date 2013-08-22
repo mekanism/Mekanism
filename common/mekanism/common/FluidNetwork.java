@@ -11,6 +11,7 @@ import java.util.Set;
 import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -182,16 +183,16 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, FluidNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.FLUID) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkNetwork(connectedBlockB, FluidNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.FLUID) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -206,7 +207,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, FluidNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.FLUID))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -259,5 +260,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	protected FluidNetwork create(Set<FluidNetwork> networks) 
 	{
 		return new FluidNetwork(networks);
+	}
+	
+	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.FLUID;
 	}
 }

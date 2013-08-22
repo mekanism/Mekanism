@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,11 +9,10 @@ import java.util.Set;
 
 import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitter;
-import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
@@ -127,16 +125,16 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, InventoryNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.ITEM) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkNetwork(connectedBlockB, InventoryNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.ITEM) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -151,7 +149,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, InventoryNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.ITEM))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -191,5 +189,11 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	protected InventoryNetwork create(Set<InventoryNetwork> networks) 
 	{
 		return new InventoryNetwork(networks);
+	}
+	
+	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.ITEM;
 	}
 }

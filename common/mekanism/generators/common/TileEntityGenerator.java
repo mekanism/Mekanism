@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.tile.IEnergyStorage;
 
@@ -10,9 +8,9 @@ import java.util.EnumSet;
 
 import mekanism.api.ICableOutputter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.client.IHasSound;
 import mekanism.common.CableUtils;
-import mekanism.common.EnergyNetwork;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
@@ -25,7 +23,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
 import universalelectricity.core.electricity.ElectricityHelper;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -104,7 +101,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			{
 				if(!worldObj.isRemote)
 				{
-					if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 					{
 						setEnergy(getEnergy() - (Math.min(getEnergy(), output) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), output), this, ForgeDirection.getOrientation(facing))));
 						return;

@@ -180,16 +180,16 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, GasNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.GAS) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 
-						if(MekanismUtils.checkNetwork(connectedBlockB, GasNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.GAS) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -204,7 +204,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, GasNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.GAS))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -256,5 +256,11 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	protected GasNetwork create(Set<GasNetwork> networks) 
 	{
 		return new GasNetwork(networks);
+	}
+	
+	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.GAS;
 	}
 }

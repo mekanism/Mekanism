@@ -16,6 +16,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.ITransmitter;
 import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
@@ -960,11 +961,11 @@ public final class MekanismUtils
     	return false;
     }
     
-    public static boolean checkNetwork(TileEntity tileEntity, Class<? extends ITransmitterNetwork> networkClass)
+    public static boolean checkTransmissionType(TileEntity tileEntity, TransmissionType type)
     {
     	if(tileEntity instanceof ITransmitter)
     	{
-    		if(((ITransmitter)tileEntity).getNetwork().getClass() == networkClass)
+    		if(((ITransmitter<?>)tileEntity).getTransmissionType() == type)
     		{
     			return true;
     		}

@@ -5,6 +5,13 @@ import net.minecraft.tileentity.TileEntity;
 public interface ITransmitter<N> 
 {
 	/**
+	 * Get the transmitter's transmission type
+	 * 
+	 * @return TransmissionType this transmitter uses
+	 */
+	public TransmissionType getTransmissionType();
+	
+	/**
 	 * Gets the network currently in use by this transmitter segment.
 	 * @return network this transmitter is using
 	 */

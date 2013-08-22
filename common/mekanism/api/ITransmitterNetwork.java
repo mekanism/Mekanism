@@ -25,4 +25,6 @@ public interface ITransmitterNetwork<A, N>
 	public void deregister();
 	
 	public void setFixed(boolean value);
+	
+	public TransmissionType getTransmissionType();
 }

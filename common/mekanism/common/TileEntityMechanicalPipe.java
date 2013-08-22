@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,6 +53,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	}
 	
 	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.FLUID;
+	}
+	
+	@Override
 	public FluidNetwork getNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
@@ -61,7 +68,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(MekanismUtils.checkNetwork(pipe, FluidNetwork.class) && ((ITransmitter<FluidNetwork>)pipe).getNetwork(false) != null)
+				if(MekanismUtils.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getNetwork());
 				}
@@ -120,7 +127,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkNetwork(tileEntity, FluidNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
 					getNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getNetwork());
 				}

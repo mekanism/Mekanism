@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +24,12 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	public boolean isActive = false;
 	
 	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.ITEM;
+	}
+	
+	@Override
 	public InventoryNetwork getNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
@@ -33,7 +40,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			
 			for(TileEntity transporter : adjacentTransporters)
 			{
-				if(MekanismUtils.checkNetwork(transporter, InventoryNetwork.class) && ((ITransmitter<InventoryNetwork>)transporter).getNetwork(false) != null)
+				if(MekanismUtils.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork>)transporter).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getNetwork());
 				}
@@ -92,7 +99,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkNetwork(tileEntity, InventoryNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
 					getNetwork().merge(((ITransmitter<InventoryNetwork>)tileEntity).getNetwork());
 				}

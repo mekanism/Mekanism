@@ -1,8 +1,5 @@
 package mekanism.common;
 
-import ic2.api.Direction;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.tile.IEnergyStorage;
@@ -14,13 +11,13 @@ import java.util.HashSet;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
 import universalelectricity.core.electricity.ElectricityHelper;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -72,7 +69,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			
 			if(getEnergy() > 0)
 			{
-				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
 					setEnergy(getEnergy() - (Math.min(getEnergy(), tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
 					return;

@@ -8,6 +8,7 @@ import mekanism.api.GasTransmission;
 import mekanism.api.ITransmitter;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -20,6 +21,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	public float gasScale;
 	
 	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.ITEM;
+	}
+	
+	@Override
 	public GasNetwork getNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
@@ -29,7 +36,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			
 			for(TileEntity tube : adjacentTubes)
 			{
-				if(MekanismUtils.checkNetwork(tube, GasNetwork.class) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
+				if(MekanismUtils.checkTransmissionType(tube, TransmissionType.GAS) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<GasNetwork>)tube).getNetwork());
 				}
@@ -88,7 +95,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
+				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.GAS))
 				{
 					getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
 				}

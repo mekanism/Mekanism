@@ -97,7 +97,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	{
 		if(transmitter instanceof TileEntity)
 		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), getClass(), Object3D.get((TileEntity)transmitter));
+			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), getTransmissionType(), Object3D.get((TileEntity)transmitter));
 			List<Object3D> partNetwork = finder.exploreNetwork();
 			Set<ITransmitter<N>> newTransporters = new HashSet<ITransmitter<N>>();
 			
@@ -105,7 +105,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
 
-				if(MekanismUtils.checkNetwork(nodeTile, getClass()))
+				if(MekanismUtils.checkTransmissionType(nodeTile, getTransmissionType()))
 				{
 					((ITransmitter<N>)nodeTile).removeFromNetwork();
 					newTransporters.add((ITransmitter<N>)nodeTile);
@@ -127,20 +127,20 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	
 	public static class NetworkFinder
 	{
+		public TransmissionType transmissionType;
+		
 		public World worldObj;
 		public Object3D start;
-		
-		public Class<? extends ITransmitterNetwork> networkClass;
 		
 		public List<Object3D> iterated = new ArrayList<Object3D>();
 		public List<Object3D> toIgnore = new ArrayList<Object3D>();
 		
-		public NetworkFinder(World world, Class<? extends ITransmitterNetwork> network, Object3D location, Object3D... ignore)
+		public NetworkFinder(World world, TransmissionType type, Object3D location, Object3D... ignore)
 		{
 			worldObj = world;
 			start = location;
 			
-			networkClass = network;
+			transmissionType = type;
 			
 			if(ignore != null)
 			{
@@ -150,7 +150,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 
 		public void loopAll(Object3D location)
 		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), networkClass))
+			if(MekanismUtils.checkTransmissionType(location.getTileEntity(worldObj), transmissionType))
 			{
 				iterated.add(location);
 			}
@@ -163,7 +163,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
+					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 					{
 						loopAll(obj);
 					}

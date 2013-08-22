@@ -15,6 +15,7 @@ import mekanism.api.DynamicNetwork;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
+import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -282,16 +283,16 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkNetwork(connectedBlockA, EnergyNetwork.class) && !dealtWith[countOne])
+				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.ENERGY) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkNetwork(connectedBlockB, EnergyNetwork.class) && !dealtWith[countTwo])
+						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.ENERGY) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -306,7 +307,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkNetwork(nodeTile, EnergyNetwork.class))
+						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.ENERGY))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -329,7 +330,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		if(cable instanceof TileEntity)
 		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)cable).getWorldObj(), getClass(), Object3D.get((TileEntity)cable));
+			NetworkFinder finder = new NetworkFinder(((TileEntity)cable).getWorldObj(), getTransmissionType(), Object3D.get((TileEntity)cable));
 			List<Object3D> partNetwork = finder.exploreNetwork();
 			Set<ITransmitter<EnergyNetwork>> newCables = new HashSet<ITransmitter<EnergyNetwork>>();
 			
@@ -419,5 +420,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	protected EnergyNetwork create(Set<EnergyNetwork> networks) 
 	{
 		return new EnergyNetwork(networks);
+	}
+	
+	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.ENERGY;
 	}
 }
