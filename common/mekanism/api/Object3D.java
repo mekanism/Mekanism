@@ -45,7 +45,7 @@ public class Object3D
 	
 	public TileEntity getTileEntity(IBlockAccess world)
 	{
-		if(!(world instanceof World && ((World)world).blockExists(xCoord, yCoord, yCoord)))
+		if(!(world instanceof World && ((World)world).blockExists(xCoord, yCoord, zCoord)))
 			return null;
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
