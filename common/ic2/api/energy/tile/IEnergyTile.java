@@ -1,18 +1,14 @@
 package ic2.api.energy.tile;
 
 /**
- * For internal usage only.
+ * For internal usage only, base class for all energy tiles.
  *
  * @see IEnergySink
  * @see IEnergySource
  * @see IEnergyConductor
+ * 
+ * See ic2/api/energy/usage.txt for an overall description of the energy net api.
  */
 public interface IEnergyTile {
-	/**
-	 * Determine if this tile entity has been added to the energy network
-	 * 
-	 * @return Whether the tile entity has been added
-	 */
-	boolean isAddedToEnergyNet();
 }
 

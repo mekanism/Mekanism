@@ -1,19 +1,19 @@
 package mekanism.common;
 
-import ic2.api.item.IElectricItem;
+import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
 
+import mekanism.api.IStrictEnergyAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.IItemElectric;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityElectricChest extends TileEntityElectricBlock
+public class TileEntityElectricChest extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor
 {
 	public String password = "";
 	
@@ -133,11 +133,6 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 		}
 	}
 	
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / MAX_ELECTRICITY);
-	}
-	
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) 
 	{
@@ -173,5 +168,67 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	public boolean wrenchCanRemove(EntityPlayer entityPlayer) 
 	{
 		return false;
+	}
+
+	@Override
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
+	{
+		return true;
+	}
+
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side) 
+	{
+		return true;
+	}
+
+	@Override
+	public double demandedEnergyUnits() 
+	{
+		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
+	}
+
+	@Override
+    public double injectEnergyUnits(ForgeDirection direction, double i)
+    {
+		double givenEnergy = i*Mekanism.FROM_IC2;
+    	double rejects = 0;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
+    	
+    	if(givenEnergy < neededEnergy)
+    	{
+    		electricityStored += givenEnergy;
+    	}
+    	else if(givenEnergy > neededEnergy)
+    	{
+    		electricityStored += neededEnergy;
+    		rejects = givenEnergy-neededEnergy;
+    	}
+    	
+    	return rejects*Mekanism.TO_IC2;
+    }
+
+	@Override
+	public int getMaxSafeInput() 
+	{
+		return 2048;
 	}
 }

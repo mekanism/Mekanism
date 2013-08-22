@@ -10,6 +10,7 @@ import java.util.Set;
 
 import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitter;
+import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -128,7 +129,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 
 				if(MekanismUtils.checkNetwork(connectedBlockA, InventoryNetwork.class) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
@@ -167,87 +168,28 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			deregister();
 		}
 	}
-	
-	@Override
-	public void fixMessedUpNetwork(ITransmitter<InventoryNetwork> transmitter)
-	{
-		if(transmitter instanceof TileEntity)
-		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), Object3D.get((TileEntity)transmitter), null);
-			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<ITransmitter<InventoryNetwork>> newTransporters = new HashSet<ITransmitter<InventoryNetwork>>();
-			
-			for(Object3D node : partNetwork)
-			{
-				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
-
-				if(MekanismUtils.checkNetwork(nodeTile, InventoryNetwork.class))
-				{
-					((ITransmitter<InventoryNetwork>)nodeTile).removeFromNetwork();
-					newTransporters.add((ITransmitter<InventoryNetwork>)nodeTile);
-				}
-			}
-			
-			InventoryNetwork newNetwork = new InventoryNetwork(newTransporters);
-			newNetwork.refresh();
-			newNetwork.fixed = true;
-			deregister();
-		}
-	}
-	
-	public static class NetworkFinder
-	{
-		public World worldObj;
-		public Object3D start;
-		
-		public List<Object3D> iterated = new ArrayList<Object3D>();
-		public List<Object3D> toIgnore = new ArrayList<Object3D>();
-		
-		public NetworkFinder(World world, Object3D location, Object3D... ignore)
-		{
-			worldObj = world;
-			start = location;
-			
-			if(ignore != null)
-			{
-				toIgnore = Arrays.asList(ignore);
-			}
-		}
-
-		public void loopAll(Object3D location)
-		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), InventoryNetwork.class))
-			{
-				iterated.add(location);
-			}
-			
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Object3D obj = location.getFromSide(direction);
-				
-				if(!iterated.contains(obj) && !toIgnore.contains(obj))
-				{
-					TileEntity tileEntity = obj.getTileEntity(worldObj);
-					
-					if(MekanismUtils.checkNetwork(tileEntity, InventoryNetwork.class))
-					{
-						loopAll(obj);
-					}
-				}
-			}
-		}
-
-		public List<Object3D> exploreNetwork()
-		{
-			loopAll(start);
-			
-			return iterated;
-		}
-	}
 		
 	@Override
 	public String toString()
 	{
 		return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+	}
+
+	@Override
+	protected InventoryNetwork create(ITransmitter<InventoryNetwork>... varTransmitters) 
+	{
+		return new InventoryNetwork(varTransmitters);
+	}
+
+	@Override
+	protected InventoryNetwork create(Collection<ITransmitter<InventoryNetwork>> collection) 
+	{
+		return new InventoryNetwork(collection);
+	}
+
+	@Override
+	protected InventoryNetwork create(Set<InventoryNetwork> networks) 
+	{
+		return new InventoryNetwork(networks);
 	}
 }

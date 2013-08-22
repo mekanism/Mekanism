@@ -16,7 +16,6 @@ import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
@@ -74,7 +73,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				}
 				else if(acceptor instanceof IEnergySink)
 				{
-					totalNeeded += Math.min((((IEnergySink)acceptor).demandsEnergy()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
+					totalNeeded += Math.min((((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
 				}
 				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
@@ -121,7 +120,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					else if(acceptor instanceof IEnergySink)
 					{
 						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
-						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergy(MekanismUtils.toIC2Direction(acceptorDirections.get(acceptor).getOpposite()), (int)(toSend*Mekanism.TO_IC2))*Mekanism.FROM_IC2));
+						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(acceptorDirections.get(acceptor).getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
 					else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 					{
@@ -166,9 +165,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 			else if(acceptor instanceof IEnergySink)
 			{
-				if(((IEnergySink)acceptor).acceptsEnergyFrom(null, MekanismUtils.toIC2Direction(acceptorDirections.get(acceptor)).getInverse()))
+				if(((IEnergySink)acceptor).acceptsEnergyFrom(null, acceptorDirections.get(acceptor).getOpposite()))
 				{
-					if(Math.min((((IEnergySink)acceptor).demandsEnergy()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
+					if(Math.min((((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
 					{
 						toReturn.add(acceptor);
 					}
@@ -285,7 +284,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 				if(MekanismUtils.checkNetwork(connectedBlockA, EnergyNetwork.class) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
@@ -330,7 +329,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		if(cable instanceof TileEntity)
 		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)cable).getWorldObj(), Object3D.get((TileEntity)cable), null);
+			NetworkFinder finder = new NetworkFinder(((TileEntity)cable).getWorldObj(), getClass(), Object3D.get((TileEntity)cable));
 			List<Object3D> partNetwork = finder.exploreNetwork();
 			Set<ITransmitter<EnergyNetwork>> newCables = new HashSet<ITransmitter<EnergyNetwork>>();
 			
@@ -349,56 +348,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			newNetwork.refresh();
 			newNetwork.fixed = true;
 			deregister();
-		}
-	}
-	
-	public static class NetworkFinder
-	{
-		public World worldObj;
-		public Object3D start;
-		
-		public List<Object3D> iterated = new ArrayList<Object3D>();
-		public List<Object3D> toIgnore = new ArrayList<Object3D>();
-		
-		public NetworkFinder(World world, Object3D location, Object3D... ignore)
-		{
-			worldObj = world;
-			start = location;
-			
-			if(ignore != null)
-			{
-				toIgnore = Arrays.asList(ignore);
-			}
-		}
-
-		public void loopAll(Object3D location)
-		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), EnergyNetwork.class))
-			{
-				iterated.add(location);
-			}
-			
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Object3D obj = location.getFromSide(direction);
-				
-				if(!iterated.contains(obj) && !toIgnore.contains(obj))
-				{
-					TileEntity tileEntity = obj.getTileEntity(worldObj);
-					
-					if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
-					{
-						loopAll(obj);
-					}
-				}
-			}
-		}
-
-		public List<Object3D> exploreNetwork()
-		{
-			loopAll(start);
-			
-			return iterated;
 		}
 	}
 	
@@ -452,5 +401,23 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public double getPower()
 	{
 		return joulesLastTick * 20;
+	}
+	
+	@Override
+	protected EnergyNetwork create(ITransmitter<EnergyNetwork>... varTransmitters) 
+	{
+		return new EnergyNetwork(varTransmitters);
+	}
+
+	@Override
+	protected EnergyNetwork create(Collection<ITransmitter<EnergyNetwork>> collection) 
+	{
+		return new EnergyNetwork(collection);
+	}
+
+	@Override
+	protected EnergyNetwork create(Set<EnergyNetwork> networks) 
+	{
+		return new EnergyNetwork(networks);
 	}
 }

@@ -164,7 +164,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 				return 6;
 			}
 			
-			if(electricityStored < electricityNeeded)
+			if(getEnergy() < electricityNeeded)
 			{
 				return 5;
 			}
@@ -194,7 +194,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		
 		for(EntityPlayer entity : entitiesInPortal)
 		{
-			setEnergy(electricityStored - calculateEnergyCost(entity, closestCoords));
+			setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
 			
 			worldObj.playSoundAtEntity((EntityPlayerMP)entity, "mob.endermen.portal", 1.0F, 1.0F);
 			
@@ -269,11 +269,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
 	
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / MAX_ELECTRICITY);
-	}
-	
 	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
@@ -333,6 +328,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		}
 		
 		super.handlePacketData(dataStream);
+		
 		status = dataStream.readUTF().trim();
 		code.digitOne = dataStream.readInt();
 		code.digitTwo = dataStream.readInt();
@@ -344,16 +340,18 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(status);
 		data.add(code.digitOne);
 		data.add(code.digitTwo);
 		data.add(code.digitThree);
 		data.add(code.digitFour);
+		
 		return data;
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		return true;
 	}
@@ -368,7 +366,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededGas = MAX_ELECTRICITY-electricityStored;
+    	double neededGas = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededGas)
     	{
@@ -406,13 +404,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		switch(method)
 		{
 			case 0:
-				return new Object[] {electricityStored};
+				return new Object[] {getEnergy()};
 			case 1:
 				return new Object[] {canTeleport()};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {getMaxEnergy()};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(getMaxEnergy()-getEnergy())};
 			case 4:
 				teleport();
 				return new Object[] {"Attempted to teleport."};
@@ -461,17 +459,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public int demandsEnergy()
+	public double demandedEnergyUnits()
 	{
-		return (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
+		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
 	}
 
 	@Override
-	public int injectEnergy(Direction directionFrom, int amount)
+	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
 		double givenEnergy = amount*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
     	
     	if(givenEnergy < neededEnergy)
     	{
@@ -483,7 +481,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
     		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*Mekanism.TO_IC2);
+    	return rejects*Mekanism.TO_IC2;
 	}
 
 	@Override

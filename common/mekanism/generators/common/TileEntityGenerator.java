@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import ic2.api.Direction;
-import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySource;
@@ -56,7 +54,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
-	
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
 	
@@ -102,23 +100,14 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			
 			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
-			if(electricityStored > 0)
+			if(getEnergy() > 0)
 			{
-				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
-				{
-					setEnergy(electricityStored - (Math.min(electricityStored, output) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, output), this, ForgeDirection.getOrientation(facing))));
-				}
-				
 				if(!worldObj.isRemote)
 				{
-					if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
+					if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
 					{
-						if(electricityStored >= output)
-						{
-							EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, (int)(output*Mekanism.TO_IC2));
-							MinecraftForge.EVENT_BUS.post(event);
-							setEnergy(electricityStored - (output - (event.amount*Mekanism.FROM_IC2)));
-						}
+						setEnergy(getEnergy() - (Math.min(getEnergy(), output) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), output), this, ForgeDirection.getOrientation(facing))));
+						return;
 					}
 					else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 					{
@@ -126,9 +115,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 						if(receiver != null)
 						{
 			            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-			            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, output));
+			            	double transferEnergy = Math.min(getEnergy(), Math.min(electricityNeeded, output));
 			            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-			            	setEnergy(electricityStored - transferEnergy);
+			            	setEnergy(getEnergy() - transferEnergy);
 						}
 					}
 				}
@@ -224,16 +213,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 */
 	public abstract boolean canOperate();
 	
-	/**
-	 * Gets the scaled energy level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / MAX_ELECTRICITY);
-	}
-	
 	@Override
 	public boolean getActive()
 	{
@@ -273,9 +252,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
-	public int getMaxEnergyOutput()
+	public double getOutputEnergyUnitsPerTick()
 	{
-		return (int)(output*Mekanism.TO_IC2);
+		return output*Mekanism.TO_IC2;
 	}
 	
 	@Override
@@ -293,21 +272,21 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
+	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		return direction.toForgeDirection() == ForgeDirection.getOrientation(facing);
+		return direction == ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override
 	public int getStored() 
 	{
-		return (int)(electricityStored*Mekanism.TO_IC2);
+		return (int)(getEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
 	public int getCapacity() 
 	{
-		return (int)(MAX_ELECTRICITY*Mekanism.TO_IC2);
+		return (int)(getMaxEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
@@ -317,22 +296,33 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean isTeleporterCompatible(Direction side) 
+	public boolean isTeleporterCompatible(ForgeDirection side) 
 	{
-		return side.toForgeDirection() == ForgeDirection.getOrientation(facing);
+		return side == ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override
 	public int addEnergy(int amount)
 	{
-		setEnergy(electricityStored + amount*Mekanism.FROM_IC2);
-		return (int)electricityStored;
+		return (int)(getEnergy()*Mekanism.TO_IC2);
 	}
 	
 	@Override
 	public void setStored(int energy)
 	{
 		setEnergy(energy*Mekanism.FROM_IC2);
+	}
+	
+	@Override
+	public double getOfferedEnergy() 
+	{
+		return Math.min(getEnergy()*Mekanism.TO_IC2, getOutput());
+	}
+
+	@Override
+	public void drawEnergy(double amount)
+	{
+		setEnergy(getEnergy()-amount*Mekanism.FROM_IC2);
 	}
 	
 	@Override

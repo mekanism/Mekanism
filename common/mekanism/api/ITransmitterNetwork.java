@@ -23,4 +23,6 @@ public interface ITransmitterNetwork<A, N>
 	public void register();
 	
 	public void deregister();
+	
+	public void setFixed(boolean value);
 }

@@ -115,14 +115,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		electricityStored = dataStream.readDouble();
+		setEnergy(dataStream.readDouble());
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		data.add(electricityStored);
+		data.add(getEnergy());
 		return data;
 	}
 	
@@ -153,14 +153,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setDouble("electricityStored", electricityStored);
+        nbtTags.setDouble("electricityStored", getEnergy());
     }
-	
-	@Override
-	public boolean isAddedToEnergyNet()
-	{
-		return initialized;
-	}
 	
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side) 
@@ -234,5 +228,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public float getMaxEnergyStored() 
 	{
 		return (float)(getMaxEnergy()*Mekanism.TO_UE);
+	}
+	
+	/**
+	 * Gets the scaled energy level for the GUI.
+	 * @param i - multiplier
+	 * @return scaled energy
+	 */
+	public int getScaledEnergyLevel(int i)
+	{
+		return (int)(getEnergy()*i / getMaxEnergy());
 	}
 }

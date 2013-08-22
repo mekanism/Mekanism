@@ -1,5 +1,9 @@
 package mekanism.common;
 
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import mekanism.api.ITransmitter;
@@ -11,7 +15,7 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergyTile, IEnergySink
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -132,5 +136,31 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	public float getEnergyScale()
 	{
 		return (float)energyScale;
+	}
+
+	@Override
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	{
+		return true;
+	}
+
+	@Override
+	public double demandedEnergyUnits()
+	{
+		return getNetwork().getEnergyNeeded(new ArrayList())*Mekanism.TO_IC2;
+	}
+
+	@Override
+    public double injectEnergyUnits(ForgeDirection direction, double i)
+    {
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj));
+    	return getNetwork().emit(i, list);
+    }
+
+	@Override
+	public int getMaxSafeInput()
+	{
+		return 2048;
 	}
 }

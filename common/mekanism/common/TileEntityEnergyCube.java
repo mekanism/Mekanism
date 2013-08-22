@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import ic2.api.Direction;
-import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
@@ -15,7 +14,6 @@ import java.util.HashSet;
 import mekanism.api.ICableOutputter;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Tier.EnergyCubeTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,21 +70,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		{
 			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
-			if(electricityStored > 0)
+			if(getEnergy() > 0)
 			{
 				if(MekanismUtils.checkNetwork(tileEntity, EnergyNetwork.class))
 				{
-					setEnergy(electricityStored - (Math.min(electricityStored, tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(electricityStored, tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
+					setEnergy(getEnergy() - (Math.min(getEnergy(), tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
 					return;
-				}
-				else if((tileEntity instanceof IEnergyConductor || tileEntity instanceof IEnergyAcceptor) && Mekanism.hooks.IC2Loaded)
-				{
-					if(electricityStored >= tier.OUTPUT)
-					{
-						EnergyTileSourceEvent event = new EnergyTileSourceEvent(this, (int)(tier.OUTPUT*Mekanism.TO_IC2));
-						MinecraftForge.EVENT_BUS.post(event);
-						setEnergy(electricityStored - (tier.OUTPUT - (event.amount*Mekanism.FROM_IC2)));
-					}
 				}
 				else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
@@ -94,9 +83,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 					if(receiver != null)
 					{
 		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-		            	double transferEnergy = Math.min(electricityStored, Math.min(electricityNeeded, tier.OUTPUT));
+		            	double transferEnergy = Math.min(getEnergy(), Math.min(electricityNeeded, tier.OUTPUT));
 		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-		            	setEnergy(electricityStored - transferEnergy);
+		            	setEnergy(getEnergy() - transferEnergy);
 					}
 				}
 			}
@@ -164,9 +153,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
+		return direction != ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override
@@ -196,13 +185,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int getStored() 
 	{
-		return (int)(electricityStored*Mekanism.TO_IC2);
+		return (int)(getEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
 	public int getCapacity() 
 	{
-		return (int)(tier.MAX_ELECTRICITY*Mekanism.TO_IC2);
+		return (int)(getMaxEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
@@ -212,17 +201,29 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public int demandsEnergy() 
+	public double demandedEnergyUnits() 
 	{
-		return (int)((tier.MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
+		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
+	}
+	
+	@Override
+	public double getOfferedEnergy() 
+	{
+		return Math.min(getEnergy()*Mekanism.TO_IC2, getOutput());
 	}
 
 	@Override
-    public int injectEnergy(Direction direction, int i)
+	public void drawEnergy(double amount)
+	{
+		setEnergy(getEnergy()-amount*Mekanism.FROM_IC2);
+	}
+
+	@Override
+    public double injectEnergyUnits(ForgeDirection direction, double i)
     {
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = tier.MAX_ELECTRICITY-electricityStored;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
     	
     	if(givenEnergy <= neededEnergy)
     	{
@@ -234,14 +235,14 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
     		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*Mekanism.TO_IC2);
+    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = tier.MAX_ELECTRICITY-electricityStored;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{
@@ -262,15 +263,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, Direction direction)
+	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		return direction.toForgeDirection() == ForgeDirection.getOrientation(facing);
+		return direction == ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
-	public int getMaxEnergyOutput()
+	public double getOutputEnergyUnitsPerTick()
 	{
-		return (int)(tier.OUTPUT*Mekanism.TO_IC2);
+		return tier.OUTPUT*Mekanism.TO_IC2;
 	}
 
 	@Override
@@ -324,13 +325,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		switch(method)
 		{
 			case 0:
-				return new Object[] {electricityStored};
+				return new Object[] {getEnergy()};
 			case 1:
 				return new Object[] {tier.OUTPUT};
 			case 2:
-				return new Object[] {tier.MAX_ELECTRICITY};
+				return new Object[] {getMaxEnergy()};
 			case 3:
-				return new Object[] {(tier.MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(getMaxEnergy()-getEnergy())};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
@@ -404,12 +405,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public int addEnergy(int amount)
 	{
-		setEnergy(electricityStored + amount*Mekanism.FROM_IC2);
-		return (int)electricityStored;
+		setEnergy(getEnergy() + amount*Mekanism.FROM_IC2);
+		return (int)(getEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
-	public boolean isTeleporterCompatible(Direction side) 
+	public boolean isTeleporterCompatible(ForgeDirection side) 
 	{
 		return true;
 	}

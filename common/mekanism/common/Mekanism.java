@@ -752,7 +752,7 @@ public class Mekanism
 		{
 			if(!hooks.RailcraftLoaded)
 			{
-				Recipes.macerator.addRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
+				Recipes.macerator.addRecipe(new ItemStack(Block.obsidian), null, new ItemStack(DirtyDust, 1, 6));
 			}
 		}
 		
@@ -902,7 +902,7 @@ public class Mekanism
 			
 			if(hooks.IC2Loaded)
 			{
-				Recipes.macerator.addRecipe(new ItemStack(Ingot, 1, 2), MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+				Recipes.macerator.addRecipe(new ItemStack(Ingot, 1, 2), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			}
 			if(hooks.TELoaded)
 			{
@@ -1167,7 +1167,6 @@ public class Mekanism
 		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new IC2EnergyHandler());
 		
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();

@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +12,6 @@ import mekanism.api.DynamicNetwork;
 import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
@@ -186,7 +184,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 				if(MekanismUtils.checkNetwork(connectedBlockA, FluidNetwork.class) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
@@ -226,83 +224,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 	}
 	
-	@Override
-	public void fixMessedUpNetwork(ITransmitter<FluidNetwork> pipe)
-	{
-		if(pipe instanceof TileEntity)
-		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)pipe).getWorldObj(), Object3D.get((TileEntity)pipe), null);
-			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<ITransmitter<FluidNetwork>> newPipes = new HashSet<ITransmitter<FluidNetwork>>();
-			
-			for(Object3D node : partNetwork)
-			{
-				TileEntity nodeTile = node.getTileEntity(((TileEntity)pipe).worldObj);
-
-				if(MekanismUtils.checkNetwork(nodeTile, FluidNetwork.class))
-				{
-					((ITransmitter<FluidNetwork>)nodeTile).removeFromNetwork();
-					newPipes.add((ITransmitter<FluidNetwork>)nodeTile);
-				}
-			}
-			
-			FluidNetwork newNetwork = new FluidNetwork(newPipes);
-			newNetwork.refresh();
-			newNetwork.fixed = true;
-			deregister();
-		}
-	}
-	
-	public static class NetworkFinder
-	{
-		public World worldObj;
-		public Object3D start;
-		
-		public List<Object3D> iterated = new ArrayList<Object3D>();
-		public List<Object3D> toIgnore = new ArrayList<Object3D>();
-		
-		public NetworkFinder(World world, Object3D location, Object3D... ignore)
-		{
-			worldObj = world;
-			start = location;
-			
-			if(ignore != null)
-			{
-				toIgnore = Arrays.asList(ignore);
-			}
-		}
-
-		public void loopAll(Object3D location)
-		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), FluidNetwork.class))
-			{
-				iterated.add(location);
-			}
-			
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Object3D obj = location.getFromSide(direction);
-				
-				if(!iterated.contains(obj) && !toIgnore.contains(obj))
-				{
-					TileEntity tileEntity = obj.getTileEntity(worldObj);
-					
-					if(MekanismUtils.checkNetwork(tileEntity, FluidNetwork.class))
-					{
-						loopAll(obj);
-					}
-				}
-			}
-		}
-
-		public List<Object3D> exploreNetwork()
-		{
-			loopAll(start);
-			
-			return iterated;
-		}
-	}
-	
 	public static class FluidTransferEvent extends Event
 	{
 		public final FluidNetwork fluidNetwork;
@@ -320,5 +241,23 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public String toString()
 	{
 		return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+	}
+	
+	@Override
+	protected FluidNetwork create(ITransmitter<FluidNetwork>... varTransmitters) 
+	{
+		return new FluidNetwork(varTransmitters);
+	}
+
+	@Override
+	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork>> collection) 
+	{
+		return new FluidNetwork(collection);
+	}
+
+	@Override
+	protected FluidNetwork create(Set<FluidNetwork> networks) 
+	{
+		return new FluidNetwork(networks);
 	}
 }

@@ -2,14 +2,25 @@ package ic2.api.energy.tile;
 
 /**
  * Allows a tile entity (mostly a generator) to emit energy.
+ * 
+ * See ic2/api/energy/usage.txt for an overall description of the energy net api.
  */
 public interface IEnergySource extends IEnergyEmitter {
 	/**
-	 * Maximum energy output provided by the source.
-	 * If unsure, use Integer.MAX_VALUE.
+	 * Energy output provided by the source this tick.
+	 * This is typically Math.min(stored energy, max output/tick).
 	 * 
-	 * @return Maximum energy output
+	 * @return Energy offered this tick
 	 */
-	int getMaxEnergyOutput();
+	double getOfferedEnergy();
+
+	/**
+	 * Draw energy from this source's buffer.
+	 * 
+	 * If the source doesn't have a buffer, this is a no-op.
+	 * 
+	 * @param amount amount of EU to draw
+	 */
+	void drawEnergy(double amount);
 }
 

@@ -95,7 +95,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		
 		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{
-			if(electricityStored >= 100 && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= 10000))
+			if(getEnergy() >= 100 && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= 10000))
 			{
 				if(suck(true))
 				{
@@ -142,7 +142,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(electricityStored - 100);
+						setEnergy(getEnergy() - 100);
 						recurringNodes.add(new Object3D(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord));
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -161,7 +161,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(electricityStored - 100);
+						setEnergy(getEnergy() - 100);
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -309,11 +309,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		return data;
 	}
 	
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / MAX_ELECTRICITY);
-	}
-	
 	public int getScaledFluidLevel(int i)
 	{
 		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
@@ -427,7 +422,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MAX_ELECTRICITY-electricityStored;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{
@@ -448,9 +443,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public int demandsEnergy() 
+	public double demandedEnergyUnits() 
 	{
-		return (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
+		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
 	}
 	
 	@Override
@@ -460,27 +455,29 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-    public int injectEnergy(Direction direction, int i)
+    public double injectEnergyUnits(ForgeDirection direction, double i)
     {
+		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
-    	if(i <= neededEnergy)
+    	double neededEnergy = getMaxEnergy()-getEnergy();
+    	
+    	if(givenEnergy <= neededEnergy)
     	{
-    		electricityStored += i;
+    		electricityStored += givenEnergy;
     	}
-    	else if(i > neededEnergy)
+    	else if(givenEnergy > neededEnergy)
     	{
     		electricityStored += neededEnergy;
-    		rejects = i-neededEnergy;
+    		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*Mekanism.TO_IC2);
+    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return direction.toForgeDirection() != ForgeDirection.getOrientation(facing);
+		return direction != ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override

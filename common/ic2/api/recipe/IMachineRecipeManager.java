@@ -3,29 +3,31 @@ package ic2.api.recipe;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Recipe manager interface for basic machines.
  * 
- * @author Richard
+ * @author RichardG, Player
  */
-public interface IMachineRecipeManager<V> {
+public interface IMachineRecipeManager {
 	/**
 	 * Adds a recipe to the machine.
 	 * 
 	 * @param input Recipe input
-	 * @param output Recipe output
+	 * @param metadata meta data for additional recipe properties, may be null
+	 * @param outputs Recipe outputs, zero or more depending on the machine
 	 */
-	public void addRecipe(ItemStack input, V output);
-	
+	public void addRecipe(ItemStack input, NBTTagCompound metadata, ItemStack... outputs);
+
 	/**
 	 * Gets the recipe output for the given input.
 	 * 
 	 * @param input Recipe input
 	 * @return Recipe output, or null if none
 	 */
-	public V getOutputFor(ItemStack input, boolean adjustInput);
-	
+	public RecipeOutput getOutputFor(ItemStack input, boolean adjustInput);
+
 	/**
 	 * Gets a list of recipes.
 	 * 
@@ -33,5 +35,5 @@ public interface IMachineRecipeManager<V> {
 	 * 
 	 * @return List of recipes
 	 */
-	public Map<ItemStack, V> getRecipes();
+	public Map<ItemStack, RecipeOutput> getRecipes();
 }

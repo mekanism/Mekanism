@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +10,6 @@ import java.util.Set;
 
 import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
@@ -184,7 +182,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 
 				if(MekanismUtils.checkNetwork(connectedBlockA, GasNetwork.class) && !dealtWith[countOne])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getClass(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
 					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
@@ -223,83 +221,6 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		}
 	}
 	
-	@Override
-	public void fixMessedUpNetwork(ITransmitter<GasNetwork> tube)
-	{
-		if(tube instanceof TileEntity)
-		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)tube).getWorldObj(), Object3D.get((TileEntity)tube), null);
-			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<ITransmitter<GasNetwork>> newTubes = new HashSet<ITransmitter<GasNetwork>>();
-			
-			for(Object3D node : partNetwork)
-			{
-				TileEntity nodeTile = node.getTileEntity(((TileEntity)tube).worldObj);
-
-				if(MekanismUtils.checkNetwork(nodeTile, GasNetwork.class))
-				{
-					((ITransmitter<GasNetwork>)nodeTile).removeFromNetwork();
-					newTubes.add((ITransmitter<GasNetwork>)nodeTile);
-				}
-			}
-			
-			GasNetwork newNetwork = new GasNetwork();
-			newNetwork.refresh();
-			newNetwork.fixed = true;
-			deregister();
-		}
-	}
-	
-	public static class NetworkFinder
-	{
-		public World worldObj;
-		public Object3D start;
-		
-		public List<Object3D> iterated = new ArrayList<Object3D>();
-		public List<Object3D> toIgnore = new ArrayList<Object3D>();
-		
-		public NetworkFinder(World world, Object3D location, Object3D... ignore)
-		{
-			worldObj = world;
-			start = location;
-			
-			if(ignore != null)
-			{
-				toIgnore = Arrays.asList(ignore);
-			}
-		}
-		
-		public void loopAll(Object3D location)
-		{
-			if(MekanismUtils.checkNetwork(location.getTileEntity(worldObj), GasNetwork.class))
-			{
-				iterated.add(location);
-			}
-			
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Object3D obj = location.getFromSide(direction);
-				
-				if(!iterated.contains(obj) && !toIgnore.contains(obj))
-				{
-					TileEntity tileEntity = obj.getTileEntity(worldObj);
-					
-					if(MekanismUtils.checkNetwork(tileEntity, GasNetwork.class))
-					{
-						loopAll(obj);
-					}
-				}
-			}
-		}
-		
-		public List<Object3D> exploreNetwork()
-		{
-			loopAll(start);
-			
-			return iterated;
-		}
-	}
-	
 	public static class GasTransferEvent extends Event
 	{
 		public final GasNetwork gasNetwork;
@@ -317,5 +238,23 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	public String toString()
 	{
 		return "[GasNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+	}
+	
+	@Override
+	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
+	{
+		return new GasNetwork(varTransmitters);
+	}
+
+	@Override
+	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
+	{
+		return new GasNetwork(collection);
+	}
+
+	@Override
+	protected GasNetwork create(Set<GasNetwork> networks) 
+	{
+		return new GasNetwork(networks);
 	}
 }

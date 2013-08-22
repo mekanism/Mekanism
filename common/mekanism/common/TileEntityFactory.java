@@ -385,16 +385,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		return progress[process]*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
 	}
 	
-	/**
-	 * Gets the scaled energy level for the GUI.
-	 * @param i - multiplier
-	 * @return scaled energy
-	 */
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY));
-	}
-	
 	public int getScaledUpgradeProgress(int i)
 	{
 		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
@@ -553,7 +543,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction) 
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
 	{
 		return true;
 	}
@@ -676,9 +666,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 
 	@Override
-	public int demandsEnergy() 
+	public double demandedEnergyUnits() 
 	{
-		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2);
+		return (getMaxEnergy()-getEnergy())*Mekanism.TO_IC2;
 	}
 	
 	@Override
@@ -708,13 +698,13 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 
 	@Override
-    public int injectEnergy(Direction direction, int i)
+    public double injectEnergyUnits(ForgeDirection direction, double i)
     {
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
     	
-    	if(givenEnergy < neededEnergy)
+    	if(givenEnergy <= neededEnergy)
     	{
     		electricityStored += givenEnergy;
     	}
@@ -724,7 +714,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*Mekanism.TO_IC2);
+    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override

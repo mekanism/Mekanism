@@ -243,9 +243,9 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 	
 	@Override
-	public int demandsEnergy() 
+	public double demandedEnergyUnits() 
 	{
-		return (int)((MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2);
+		return (getMaxEnergy()-getEnergy())*Mekanism.TO_IC2;
 	}
 	
 	@Override
@@ -255,27 +255,29 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 
 	@Override
-    public int injectEnergy(Direction direction, int i)
+    public double injectEnergyUnits(ForgeDirection direction, double i)
     {
+		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
-    	if(i <= neededEnergy)
+    	double neededEnergy = getMaxEnergy()-getEnergy();
+    	
+    	if(givenEnergy <= neededEnergy)
     	{
-    		electricityStored += i;
+    		electricityStored += givenEnergy;
     	}
-    	else if(i > neededEnergy)
+    	else if(givenEnergy > neededEnergy)
     	{
     		electricityStored += neededEnergy;
-    		rejects = i-neededEnergy;
+    		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*Mekanism.TO_IC2);
+    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return direction.toForgeDirection() == ForgeDirection.DOWN || direction.toForgeDirection() == ForgeDirection.getOrientation(facing).getOpposite();
+		return direction == ForgeDirection.DOWN || direction == ForgeDirection.getOrientation(facing).getOpposite();
 	}
 
 	@Override

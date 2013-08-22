@@ -349,11 +349,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		return infuseStored*i / MAX_INFUSE;
 	}
 	
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY));
-	}
-	
 	public int getScaledProgress(int i)
 	{
 		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
@@ -401,7 +396,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{
@@ -564,9 +559,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public int demandsEnergy() 
+	public double demandedEnergyUnits() 
 	{
-		return (int)((MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY) - electricityStored)*Mekanism.TO_IC2);
+		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
 	}
 	
 	@Override
@@ -590,7 +585,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     }
     
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction) 
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
 	{
 		return true;
 	}
@@ -602,11 +597,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-    public int injectEnergy(Direction direction, int i)
+    public double injectEnergyUnits(ForgeDirection direction, double i)
     {
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
-    	double neededEnergy = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
     	
     	if(givenEnergy < neededEnergy)
     	{
@@ -618,7 +613,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     		rejects = givenEnergy-neededEnergy;
     	}
     	
-    	return (int)(rejects*Mekanism.TO_IC2);
+    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override

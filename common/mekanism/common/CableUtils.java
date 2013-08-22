@@ -127,7 +127,7 @@ public final class CableUtils
 			TileEntity outputter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if((outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite())) || 
-					(outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, MekanismUtils.toIC2Direction(orientation.getOpposite()))) ||
+					(outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, orientation.getOpposite())) ||
 					(outputter instanceof IElectrical && ((IElectrical)outputter).canConnect(orientation.getOpposite())))
 			{
 				outputters[orientation.ordinal()] = outputter;
@@ -152,7 +152,7 @@ public final class CableUtils
     		return true;
     	}
     	
-    	if(tileEntity instanceof IEnergyAcceptor && ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(tile, MekanismUtils.toIC2Direction(side).getInverse()))
+    	if(tileEntity instanceof IEnergyAcceptor && ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(tile, side.getOpposite()))
     	{
     		return true;
     	}
@@ -169,9 +169,9 @@ public final class CableUtils
     	
     	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof ITransmitter) && Mekanism.hooks.BuildCraftLoaded)
     	{
-    		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, MekanismUtils.toIC2Direction(side).getInverse()))
+    		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, side.getOpposite()))
     		{
-    			if(!(tileEntity instanceof IEnergySource) || ((IEnergySource)tileEntity).emitsEnergyTo(null, MekanismUtils.toIC2Direction(side).getInverse()))
+    			if(!(tileEntity instanceof IEnergySource) || ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite()))
     			{
     				return true;
     			}
