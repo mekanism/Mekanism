@@ -47,7 +47,7 @@ public abstract class ItemElectric extends Item implements IItemElectric
 			color = "\u00a76";
 		}
 
-		list.add(color + ElectricityDisplay.getDisplay(joules, ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplay(this.getMaxElectricityStored(itemStack), ElectricUnit.JOULES));
+		list.add(color + ElectricityDisplay.getDisplayShort(joules, ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort(this.getMaxElectricityStored(itemStack), ElectricUnit.JOULES));
 	}
 
 	/**
@@ -127,7 +127,7 @@ public abstract class ItemElectric extends Item implements IItemElectric
 	{
 		if (itemStack.getTagCompound() == null)
 		{
-			return 0;
+			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		float electricityStored = itemStack.getTagCompound().getFloat("electricity");
