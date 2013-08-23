@@ -163,7 +163,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
+					if(MekanismUtils.checkTransmissionType(tileEntity, transmissionType))
 					{
 						loopAll(obj);
 					}
