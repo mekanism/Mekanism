@@ -78,6 +78,12 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	}
 	
 	@Override
+	public int getAcceptorSize()
+	{
+		return possibleAcceptors.size();
+	}
+	
+	@Override
 	public void tick()
 	{
 		if(!fixed)

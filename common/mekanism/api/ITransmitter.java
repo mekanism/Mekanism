@@ -49,4 +49,12 @@ public interface ITransmitter<N>
 	public void fixNetwork();
 	
 	public boolean areNetworksEqual(TileEntity tileEntity);
+
+	public int getNetworkSize();
+
+	public int getNetworkAcceptorSize();
+
+	public String getNetworkNeeded();
+
+	public String getNetworkFlow();
 }

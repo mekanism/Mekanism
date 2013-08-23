@@ -170,4 +170,28 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		return 2048;
 	}
+
+	@Override
+	public int getNetworkSize()
+	{
+		return getNetwork().getSize();
+	}
+
+	@Override
+	public int getNetworkAcceptorSize()
+	{
+		return getNetwork().getAcceptorSize();
+	}
+
+	@Override
+	public String getNetworkNeeded()
+	{
+		return getNetwork().getNeeded();
+	}
+	
+	@Override
+	public String getNetworkFlow()
+	{
+		return getNetwork().getFlow();
+	}
 }

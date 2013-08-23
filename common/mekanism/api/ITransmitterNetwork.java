@@ -8,6 +8,12 @@ public interface ITransmitterNetwork<A, N>
 	
 	public int getSize();
 	
+	public int getAcceptorSize();
+	
+	public String getNeeded();
+	
+	public String getFlow();
+	
 	public Set<A> getAcceptors(Object... data);
 	
 	public void removeTransmitter(ITransmitter<N> transmitter);

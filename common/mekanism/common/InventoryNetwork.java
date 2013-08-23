@@ -196,4 +196,16 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	{
 		return TransmissionType.ITEM;
 	}
+
+	@Override
+	public String getFlow()
+	{
+		return "Undefined for Inventory networks";
+	}
+
+	@Override
+	public String getNeeded()
+	{
+		return "Undefined for Inventory Networks";
+	}
 }

@@ -21,6 +21,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -60,7 +61,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		register();
 	}
 	
-	public double getEnergyNeeded(ArrayList<TileEntity> ignored)
+	public double getEnergyNeeded(List<TileEntity> ignored)
 	{
 		double totalNeeded = 0;
 		
@@ -426,5 +427,17 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.ENERGY;
+	}
+	
+	@Override
+	public String getNeeded()
+	{
+		return ElectricityDisplay.getDisplay((float) (getEnergyNeeded(new ArrayList<TileEntity>())*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.JOULES);
+	}
+
+	@Override
+	public String getFlow()
+	{
+		return ElectricityDisplay.getDisplay((float) (getPower()*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.WATT);
 	}
 }

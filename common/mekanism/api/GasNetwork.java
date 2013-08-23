@@ -263,4 +263,16 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	{
 		return TransmissionType.GAS;
 	}
+	
+	@Override
+	public String getNeeded()
+	{
+		return "Undefined for Gas networks.";
+	}
+	
+	@Override
+	public String getFlow()
+	{
+		return "Not defined yet for Fluid networks";
+	}
 }

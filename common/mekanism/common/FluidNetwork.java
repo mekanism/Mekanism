@@ -267,4 +267,16 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		return TransmissionType.FLUID;
 	}
+
+	@Override
+	public String getNeeded()
+	{
+		return "Undefined for Fluid networks";
+	}
+	
+	@Override
+	public String getFlow()
+	{
+		return "Not defined yet for Fluid networks";
+	}
 }
