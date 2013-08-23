@@ -9,7 +9,6 @@ import mekanism.api.IGasStorage;
 import mekanism.api.IStorageTank;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

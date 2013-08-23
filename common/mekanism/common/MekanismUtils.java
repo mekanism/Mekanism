@@ -14,7 +14,6 @@ import java.util.Iterator;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.ITransmitter;
-import mekanism.api.ITransmitterNetwork;
 import mekanism.api.Object3D;
 import mekanism.api.TransmissionType;
 import mekanism.common.IFactory.RecipeType;

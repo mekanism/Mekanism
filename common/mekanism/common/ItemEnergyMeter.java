@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-
 import mekanism.api.EnumColor;
 import mekanism.api.ITransmitter;
 import mekanism.api.TransmitterNetworkRegistry;

@@ -6,7 +6,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.ForgeDirection;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, IInventory, ISustainedInventory
 {

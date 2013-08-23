@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import ic2.api.item.IElectricItem;
 import mekanism.api.InfuseRegistry;
 import mekanism.api.InfusionInput;
 import mekanism.common.RecipeHandler.Recipe;
@@ -9,9 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
 
 public class ContainerMetallurgicInfuser extends Container
 {

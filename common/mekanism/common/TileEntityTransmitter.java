@@ -3,7 +3,6 @@ package mekanism.common;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.ITransmitter;
-import mekanism.api.TransmissionType;
 import mekanism.api.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;

@@ -1,12 +1,9 @@
 package mekanism.generators.common;
 
-import ic2.api.item.IElectricItem;
-
 import java.util.ArrayList;
 
 import mekanism.common.ChargeUtils;
 import mekanism.common.MekanismUtils;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,9 +16,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
-import universalelectricity.core.item.IItemElectric;
-
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;

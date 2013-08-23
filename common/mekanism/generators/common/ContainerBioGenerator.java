@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import mekanism.common.ChargeUtils;
-import mekanism.common.Mekanism;
 import mekanism.common.SlotEnergy.SlotCharge;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

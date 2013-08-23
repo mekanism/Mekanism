@@ -7,8 +7,6 @@ import mekanism.generators.common.ContainerBioGenerator;
 import mekanism.generators.common.TileEntityBioGenerator;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 import universalelectricity.core.electricity.ElectricityDisplay;

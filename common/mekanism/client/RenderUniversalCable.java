@@ -12,7 +12,6 @@ import mekanism.common.MekanismUtils;
 import mekanism.common.TileEntityUniversalCable;
 import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -20,7 +19,6 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

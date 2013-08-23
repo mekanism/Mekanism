@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import universalelectricity.core.electricity.ElectricityPack;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {

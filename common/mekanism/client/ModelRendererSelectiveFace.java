@@ -3,7 +3,6 @@ package mekanism.client;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +10,6 @@ import java.util.Map;
 import mekanism.client.MekanismRenderer.BooleanArray;
 import mekanism.client.MekanismRenderer.DisplayInteger;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.TextureOffset;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;

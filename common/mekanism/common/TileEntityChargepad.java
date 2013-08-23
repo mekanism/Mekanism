@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;

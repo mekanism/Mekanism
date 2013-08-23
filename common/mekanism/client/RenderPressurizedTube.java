@@ -15,7 +15,6 @@ import mekanism.common.TileEntityGasTank;
 import mekanism.common.TileEntityPressurizedTube;
 import mekanism.common.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

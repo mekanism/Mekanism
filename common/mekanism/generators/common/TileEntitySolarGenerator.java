@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import ic2.api.item.IElectricItem;
-
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
@@ -11,9 +9,6 @@ import mekanism.generators.common.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.API.ISolarLevel;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.IItemElectric;
-
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;

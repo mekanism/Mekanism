@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import mekanism.common.EnergyNetwork;
-import mekanism.common.InventoryNetwork;
 import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ICustomElectricItem, IChargeableItem

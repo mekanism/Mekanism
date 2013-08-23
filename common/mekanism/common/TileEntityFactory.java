@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import mekanism.api.SideData;
 import mekanism.client.IHasSound;
 import mekanism.common.BlockMachine.MachineType;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.network.PacketTileEntity;

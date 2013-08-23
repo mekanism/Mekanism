@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import mekanism.client.Sound;
 import mekanism.common.ChargeUtils;
 import mekanism.common.FluidSlot;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

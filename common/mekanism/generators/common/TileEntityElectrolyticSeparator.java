@@ -1,9 +1,6 @@
 package mekanism.generators.common;
 
-import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.item.IElectricItem;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -24,7 +21,6 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileEntityElectricBlock;
 import mekanism.generators.common.BlockGenerator.GeneratorType;
 import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,9 +33,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
-import universalelectricity.core.item.IItemElectric;
-
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;

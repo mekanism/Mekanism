@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import mekanism.common.ContainerEnergyCube;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.TileEntityEnergyCube;

@@ -1,7 +1,5 @@
 package mekanism.nei;
 
-import java.util.ArrayList;
-
 import mekanism.client.GuiCombiner;
 import mekanism.client.GuiCrusher;
 import mekanism.client.GuiEnrichmentChamber;

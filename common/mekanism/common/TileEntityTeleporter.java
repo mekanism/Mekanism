@@ -1,9 +1,6 @@
 package mekanism.common;
 
-import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.item.IElectricItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +12,11 @@ import mekanism.common.network.PacketPortalFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.IItemElectric;
-
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;

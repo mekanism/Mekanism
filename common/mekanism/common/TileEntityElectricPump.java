@@ -1,9 +1,6 @@
 package mekanism.common;
 
-import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.item.IElectricItem;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +12,6 @@ import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.Object3D;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,8 +23,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import universalelectricity.core.item.IItemElectric;
-
 import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IEnergySink, IStrictEnergyAcceptor

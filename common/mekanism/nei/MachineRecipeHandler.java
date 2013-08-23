@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
-import codechicken.nei.forge.GuiContainerManager;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 import static codechicken.core.gui.GuiDraw.*;

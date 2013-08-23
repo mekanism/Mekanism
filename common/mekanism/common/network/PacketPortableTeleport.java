@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import universalelectricity.core.electricity.ElectricityPack;
-
 import mekanism.api.Object3D;
 import mekanism.common.ItemPortableTeleporter;
 import mekanism.common.MekanismUtils;
