@@ -23,7 +23,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	@Override
 	public TransmissionType getTransmissionType()
 	{
-		return TransmissionType.ITEM;
+		return TransmissionType.GAS;
 	}
 	
 	@Override
