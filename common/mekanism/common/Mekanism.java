@@ -446,6 +446,9 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         
+        //Purification Chamber Recipes
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
+        
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
         
@@ -559,6 +562,7 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.copperClump.name", "Copper Clump");
 		LanguageRegistry.instance().addStringLocalization("item.tinClump.name", "Tin Clump");
 		LanguageRegistry.instance().addStringLocalization("item.silverClump.name", "Silver Clump");
+		LanguageRegistry.instance().addStringLocalization("item.obsidianClump.name", "Obsidian Clump");
 		
 		//Localization for Dirty Dust
 		LanguageRegistry.instance().addStringLocalization("item.dirtyIronDust.name", "Dirty Iron Dust");
@@ -711,7 +715,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustDirtySilver", new ItemStack(DirtyDust, 1, 5));
 		OreDictionary.registerOre("dustDirtyObsidian", new ItemStack(DirtyDust, 1, 6));
 		
-		//for RailCraft. rc + mek = rawr
+		//for RailCraft/IC2.
 		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
 		
 		OreDictionary.registerOre("clumpIron", new ItemStack(Clump, 1, 0));
@@ -720,6 +724,7 @@ public class Mekanism
 		OreDictionary.registerOre("clumpCopper", new ItemStack(Clump, 1, 3));
 		OreDictionary.registerOre("clumpTin", new ItemStack(Clump, 1, 4));
 		OreDictionary.registerOre("clumpSilver", new ItemStack(Clump, 1, 5));
+		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		
@@ -737,6 +742,7 @@ public class Mekanism
 			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 3), new ItemStack(DirtyDust, 1, 3), false);
 			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 4), new ItemStack(DirtyDust, 1, 4), false);
 			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 5), new ItemStack(DirtyDust, 1, 5), false);
+			
 			System.out.println("[Mekanism] Hooked into Thermal Expansion successfully.");
 		} catch(Exception e) {}
 		
@@ -748,18 +754,14 @@ public class Mekanism
 		OreDictionary.registerOre("itemCompressedCarbon", new ItemStack(CompressedCarbon));
 		OreDictionary.registerOre("itemEnrichedAlloy", new ItemStack(EnrichedAlloy));
 		
-		if(hooks.IC2Loaded)
-		{
-			if(!hooks.RailcraftLoaded)
-			{
-				Recipes.macerator.addRecipe(new ItemStack(Block.obsidian), null, new ItemStack(DirtyDust, 1, 6));
-			}
-		}
-		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
 		{
-			RecipeHandler.addOsmiumCompressorRecipe(MekanismUtils.size(ore, 1), new ItemStack(Ingot, 1, 0));
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 6));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
+		{
+			RecipeHandler.addOsmiumCompressorRecipe(MekanismUtils.size(ore, 2), new ItemStack(Ingot, 1, 0));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("clumpIron"))
@@ -790,6 +792,11 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("clumpSilver"))
 		{
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 5));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("clumpObsidian"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 6));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDirtyIron"))

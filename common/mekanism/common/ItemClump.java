@@ -11,7 +11,8 @@ public class ItemClump extends ItemMekanism
 {
 	public Icon[] icons = new Icon[256];
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
-										"Copper", "Tin", "Silver"};
+										"Copper", "Tin", "Silver",
+										"Obsidian"};
 	
 	public ItemClump(int id)
 	{
@@ -23,7 +24,7 @@ public class ItemClump extends ItemMekanism
 	@Override
 	public void registerIcons(IconRegister register)
 	{
-		for(int i = 0; i <= 5; i++)
+		for(int i = 0; i <= 6; i++)
 		{
 			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Clump");
 		}
@@ -38,7 +39,7 @@ public class ItemClump extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter <= 5; ++counter)
+		for(int counter = 0; counter <= 6; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}
