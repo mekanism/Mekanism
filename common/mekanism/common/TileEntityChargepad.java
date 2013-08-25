@@ -62,17 +62,17 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 					isActive = true;
 				}
 				
-				if(electricityStored > 0)
+				if(getEnergy() > 0)
 				{
 					if(entity instanceof EntityRobit)
 					{
 						EntityRobit robit = (EntityRobit)entity;
 						
-						double canGive = Math.min(electricityStored, 1000);
+						double canGive = Math.min(getEnergy(), 1000);
 						double toGive = Math.min(robit.MAX_ELECTRICITY-robit.getEnergy(), canGive);
 						
 						robit.setEnergy(robit.getEnergy() + toGive);
-						setEnergy(electricityStored - toGive);
+						setEnergy(getEnergy() - toGive);
 					}
 					else if(entity instanceof EntityPlayer)
 					{
@@ -221,7 +221,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MAX_ELECTRICITY-electricityStored;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{

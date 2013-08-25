@@ -21,27 +21,22 @@ public enum TransmissionType
     
     public boolean checkTransmissionType(TileEntity sideTile, TileEntity currentTile)
     {
-        if (sideTile == null)
-        {
-            return false;
-        }
-        
-    	if (sideTile instanceof ITransmitter)
+    	if(sideTile instanceof ITransmitter)
     	{
-    		if(((ITransmitter<?>)sideTile).getTransmissionType() != this)
+    		if(((ITransmitter<?>)sideTile).getTransmissionType() == this)
     		{
-    			return false;
+    			return true;
     		}
     	}
     	
-    	if (this == GAS && currentTile instanceof IGasTransmitter)
+    	if(this == GAS && currentTile instanceof IGasTransmitter)
     	{
-    	    if (!((IGasTransmitter)currentTile).canTransferGasToTube(sideTile))
+    	    if(((IGasTransmitter)currentTile).canTransferGasToTube(sideTile))
     	    {
-    	        return false;
+    	        return true;
     	    }
     	}
     	
-    	return true;
+    	return false;
     }
 }

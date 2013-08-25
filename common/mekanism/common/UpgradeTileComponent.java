@@ -12,6 +12,7 @@ public class UpgradeTileComponent implements ITileComponent
 	/** How long it takes this machine to install an upgrade. */
 	public static int UPGRADE_TICKS_REQUIRED = 40;
 	
+	/** The inventory slot the upgrade slot of this component occupies. */
 	private int upgradeSlot;
 	
 	/** How many upgrade ticks have progressed. */
@@ -23,6 +24,7 @@ public class UpgradeTileComponent implements ITileComponent
 	/** This machine's energy multiplier. */
 	public int energyMultiplier;
 	
+	/** TileEntity implementing this component. */
 	public TileEntityContainerBlock tileEntity;
 	
 	public UpgradeTileComponent(TileEntityContainerBlock tile, int slot)
