@@ -147,6 +147,7 @@ public class MekanismRenderer
     public static void glowOn() 
     {
         GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+        
         try
         {
         	lightmapLastX = OpenGlHelper.lastBrightnessX;
@@ -156,7 +157,9 @@ public class MekanismRenderer
         {
         	optifineBreak = true;
         }
+        
         RenderHelper.disableStandardItemLighting();
+        
         if(!optifineBreak)
         {
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);        	
@@ -170,6 +173,7 @@ public class MekanismRenderer
     	{
     		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightmapLastX, lightmapLastY);
     	}
+    	
         GL11.glPopAttrib();
     }
     
@@ -210,6 +214,7 @@ public class MekanismRenderer
         }
 
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+        
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
@@ -235,6 +240,7 @@ public class MekanismRenderer
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
         renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
         tessellator.draw();
+        
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 	
