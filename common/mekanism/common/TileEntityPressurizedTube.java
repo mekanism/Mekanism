@@ -157,6 +157,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
     @Override
     public boolean canTransferGasToTube(TileEntity tile)
     {
-        return tile != null && tile.getClass().equals(this.getClass());
+        return tile instanceof IGasTransmitter;
     }
 }
