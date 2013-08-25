@@ -42,18 +42,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
 	
-	/** This machine's speed multiplier. */
-	public int speedMultiplier;
-	
-	/** This machine's energy multiplier. */
-	public int energyMultiplier;
-	
-	/** How long it takes this machine to install an upgrade. */
-	public int UPGRADE_TICKS_REQUIRED = 40;
-	
-	/** How many upgrade ticks have progressed. */
-	public int upgradeTicks;
-	
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
 	
@@ -67,7 +55,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public ResourceLocation guiLocation;
 	
 	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType;
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public UpgradeTileComponent upgradeComponent;
 	
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -86,7 +76,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		soundURL = soundPath;
 		guiLocation = location;
 		isActive = false;
-		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -117,12 +106,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
+        
+        upgradeComponent.read(nbtTags);
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
         clientActive = isActive = nbtTags.getBoolean("isActive");
-        speedMultiplier = nbtTags.getInteger("speedMultiplier");
-        energyMultiplier = nbtTags.getInteger("energyMultiplier");
-        upgradeTicks = nbtTags.getInteger("upgradeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         if(nbtTags.hasKey("sideDataStored"))
@@ -139,11 +127,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     {
         super.writeToNBT(nbtTags);
         
+        upgradeComponent.write(nbtTags);
+        
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("speedMultiplier", speedMultiplier);
-        nbtTags.setInteger("energyMultiplier", energyMultiplier);
-        nbtTags.setInteger("upgradeTicks", upgradeTicks);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
         nbtTags.setBoolean("sideDataStored", true);
@@ -158,11 +145,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
+		upgradeComponent.read(dataStream);;
+		
 		operatingTicks = dataStream.readInt();
 		isActive = dataStream.readBoolean();
-		speedMultiplier = dataStream.readInt();
-		energyMultiplier = dataStream.readInt();
-		upgradeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		for(int i = 0; i < 6; i++)
@@ -177,13 +164,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
+		upgradeComponent.write(data);
+		
 		data.add(operatingTicks);
 		data.add(isActive);
-		data.add(speedMultiplier);
-		data.add(energyMultiplier);
-		data.add(upgradeTicks);
 		data.add(controlType.ordinal());
 		data.add(sideConfig);
+		
 		return data;
 	}
 	
@@ -237,18 +225,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
-	}
-	
-	public int getScaledUpgradeProgress(int i)
-	{
-		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
+		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
 	
 	@Override
 	public double getMaxEnergy() 
 	{
-		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
+		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 	
 	@Override
@@ -275,7 +258,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	double neededElectricity = MekanismUtils.getEnergy(getEnergyMultiplier(), getMaxEnergy())-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{
@@ -352,25 +335,25 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public int getEnergyMultiplier(Object... data) 
 	{
-		return energyMultiplier;
+		return upgradeComponent.energyMultiplier;
 	}
 
 	@Override
 	public void setEnergyMultiplier(int multiplier, Object... data) 
 	{
-		energyMultiplier = multiplier;
+		upgradeComponent.energyMultiplier = multiplier;
 	}
 
 	@Override
 	public int getSpeedMultiplier(Object... data) 
 	{
-		return speedMultiplier;
+		return upgradeComponent.speedMultiplier;
 	}
 
 	@Override
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
-		speedMultiplier = multiplier;
+		upgradeComponent.speedMultiplier = multiplier;
 	}
 	
 	@Override

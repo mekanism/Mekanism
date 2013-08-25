@@ -32,7 +32,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public FactoryTier tier;
 	
 	/** This machine's side configuration. */
-	public byte[] sideConfig;
+	public byte[] sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
@@ -45,18 +45,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	/** How much energy each operation consumes per tick. */
 	public double ENERGY_PER_TICK = Mekanism.factoryUsage;
-	
-	/** This machine's speed multiplier. */
-	public int speedMultiplier;
-	
-	/** This machine's energy multiplier. */
-	public int energyMultiplier;
-	
-	/** How long it takes this machine to install an upgrade. */
-	public int UPGRADE_TICKS_REQUIRED = 40;
-	
-	/** How many upgrade ticks have progressed. */
-	public int upgradeTicks;
 	
 	/** How long it takes this factory to switch recipe types. */
 	public int RECIPE_TICKS_REQUIRED = 40;
@@ -77,7 +65,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int recipeType;
 	
 	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType;
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public UpgradeTileComponent upgradeComponent = new UpgradeTileComponent(this, 0);
 	
 	public TileEntityFactory()
 	{
@@ -88,18 +78,16 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {4, 5, 6}));
 		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {7, 8, 9}));
-		
-		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
 	}
 	
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
 		super(type.name + " Factory", machine.baseEnergy);
+		
 		tier = type;
 		inventory = new ItemStack[4+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
-		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -125,54 +113,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			}
 			
 			ChargeUtils.discharge(1, this);
-			
-			if(inventory[0] != null)
-			{
-				if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						energyMultiplier++;
-						
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
-					}
-				}
-				else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						speedMultiplier++;
-						
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
-					}
-				}
-				else {
-					upgradeTicks = 0;
-				}
-			}
-			else {
-				upgradeTicks = 0;
-			}
 			
 			if(inventory[2] != null && inventory[3] == null)
 			{
@@ -234,19 +174,19 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 				{
-					if((progress[process]+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+					if((progress[process]+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 					{
 						progress[process]++;
-						electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+						electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 					}
-					else if((progress[process]+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+					else if((progress[process]+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
 						
 						progress[process] = 0;
-						electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+						electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 					}
 				}
 				
@@ -269,7 +209,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 					}
 				}
 				
-				if(MekanismUtils.canFunction(this) && hasOperation && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+				if(MekanismUtils.canFunction(this) && hasOperation && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 				{
 					setActive(true);
 				}
@@ -380,12 +320,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	
 	public int getScaledProgress(int i, int process)
 	{
-		return progress[process]*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
-	}
-	
-	public int getScaledUpgradeProgress(int i)
-	{
-		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
+		return progress[process]*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
 	
 	public int getScaledRecipeProgress(int i)
@@ -448,11 +383,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		speedMultiplier = dataStream.readInt();
-		energyMultiplier = dataStream.readInt();
+		
+		upgradeComponent.read(dataStream);
+		
 		isActive = dataStream.readBoolean();
 		recipeType = dataStream.readInt();
-		upgradeTicks = dataStream.readInt();
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
@@ -474,11 +409,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     {
         super.readFromNBT(nbtTags);
         
-        speedMultiplier = nbtTags.getInteger("speedMultiplier");
-        energyMultiplier = nbtTags.getInteger("energyMultiplier");
+        upgradeComponent.read(nbtTags);
+        
         clientActive = isActive = nbtTags.getBoolean("isActive");
         recipeType = nbtTags.getInteger("recipeType");
-        upgradeTicks = nbtTags.getInteger("upgradeTicks");
         recipeTicks = nbtTags.getInteger("recipeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
@@ -501,11 +435,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setInteger("speedMultiplier", speedMultiplier);
-        nbtTags.setInteger("energyMultiplier", energyMultiplier);
+        upgradeComponent.write(nbtTags);
+        
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("recipeType", recipeType);
-        nbtTags.setInteger("upgradeTicks", upgradeTicks);
         nbtTags.setInteger("recipeTicks", recipeTicks);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
@@ -527,11 +460,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		super.getNetworkedData(data);
 		
-		data.add(speedMultiplier);
-		data.add(energyMultiplier);
+		upgradeComponent.write(data);
+		
 		data.add(isActive);
 		data.add(recipeType);
-		data.add(upgradeTicks);
 		data.add(recipeTicks);
 		data.add(controlType.ordinal());
 		data.add(progress);
@@ -560,7 +492,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{
@@ -636,9 +568,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				
 				return new Object[] {canOperate(getInputSlot((Integer)arguments[0]), getOutputSlot((Integer)arguments[0]))};
 			case 4:
-				return new Object[] {MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)};
+				return new Object[] {getMaxEnergy()};
 			case 5:
-				return new Object[] {(MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)};
+				return new Object[] {getMaxEnergy()-getEnergy()};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
@@ -660,7 +592,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	@Override
 	public double getMaxEnergy() 
 	{
-		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
+		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 
 	@Override
@@ -742,25 +674,25 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	@Override
 	public int getEnergyMultiplier(Object... data) 
 	{
-		return energyMultiplier;
+		return upgradeComponent.energyMultiplier;
 	}
 
 	@Override
 	public void setEnergyMultiplier(int multiplier, Object... data) 
 	{
-		energyMultiplier = multiplier;
+		upgradeComponent.energyMultiplier = multiplier;
 	}
 
 	@Override
 	public int getSpeedMultiplier(Object... data) 
 	{
-		return speedMultiplier;
+		return upgradeComponent.speedMultiplier;
 	}
 
 	@Override
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
-		speedMultiplier = multiplier;
+		upgradeComponent.speedMultiplier = multiplier;
 	}
 	
 	@Override

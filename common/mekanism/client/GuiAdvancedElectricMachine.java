@@ -39,8 +39,8 @@ public class GuiAdvancedElectricMachine extends GuiContainer
 		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer.drawString("S:" + (tileEntity.speedMultiplier+1) + "x", 179, 47, 0x404040);
-        fontRenderer.drawString("E:" + (tileEntity.energyMultiplier+1) + "x", 179, 57, 0x404040);
+        fontRenderer.drawString("S:" + (tileEntity.getSpeedMultiplier()+1) + "x", 179, 47, 0x404040);
+        fontRenderer.drawString("E:" + (tileEntity.getEnergyMultiplier()+1) + "x", 179, 57, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
@@ -83,7 +83,7 @@ public class GuiAdvancedElectricMachine extends GuiContainer
         displayInt = tileEntity.getScaledProgress(24);
         drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176 + 26, 0, displayInt + 1, 7);
         
-        displayInt = tileEntity.getScaledUpgradeProgress(14);
+        displayInt = tileEntity.upgradeComponent.getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 71, 10, displayInt);
         
         redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);

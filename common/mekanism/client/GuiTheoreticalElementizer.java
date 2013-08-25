@@ -23,11 +23,12 @@ public class GuiTheoreticalElementizer extends GuiAdvancedElectricMachine
     	
         if(tileEntity.isActive)
         {
-        	displayText = "Status: " + (int)(((float)tileEntity.operatingTicks/MekanismUtils.getTicks(tileEntity.speedMultiplier, tileEntity.TICKS_REQUIRED))*100) + "%";
+        	displayText = "Status: " + (int)(((float)tileEntity.operatingTicks/MekanismUtils.getTicks(tileEntity.getSpeedMultiplier(), tileEntity.TICKS_REQUIRED))*100) + "%";
         }
         else {
         	displayText = "Status: " + EnumColor.DARK_RED + "Off";
         }
+        
         fontRenderer.drawString(displayText, 80, 60, 0x404040);
     }
 }

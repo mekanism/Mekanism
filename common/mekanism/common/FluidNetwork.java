@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -47,6 +50,26 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		refresh();
 		register();
+	}
+	
+	public int getTotalNeeded(List<TileEntity> ignored)
+	{
+		int toReturn = 0;
+		
+		for(IFluidHandler handler : possibleAcceptors)
+		{
+			ForgeDirection side = acceptorDirections.get(handler).getOpposite();
+			
+			for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
+			{
+				int filled = handler.fill(side, new FluidStack(fluid, Integer.MAX_VALUE), false);
+				
+				toReturn += filled;
+				break;
+			}
+		}
+		
+		return toReturn;
 	}
 	
 	public int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
@@ -271,7 +294,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getNeeded()
 	{
-		return "Undefined for Fluid networks";
+		return "Fluid needed (any type): " + (float)getTotalNeeded(new ArrayList())/1000F + " buckets";
 	}
 	
 	@Override

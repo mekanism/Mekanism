@@ -9,6 +9,7 @@ import mekanism.api.SideData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
@@ -52,8 +53,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
 		
 		inventory = new ItemStack[5];
+		
 		SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
 		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
+		
+		upgradeComponent = new UpgradeTileComponent(this, 4);
 	}
     
     /**
@@ -72,66 +76,18 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		{
 			ChargeUtils.discharge(3, this);
 			
-			if(inventory[4] != null)
-			{
-				if(inventory[4].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						energyMultiplier++;
-						
-						inventory[4].stackSize--;
-						
-						if(inventory[4].stackSize == 0)
-						{
-							inventory[4] = null;
-						}
-					}
-				}
-				else if(inventory[4].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						speedMultiplier++;
-						
-						inventory[4].stackSize--;
-						
-						if(inventory[4].stackSize == 0)
-						{
-							inventory[4] = null;
-						}
-					}
-				}
-				else {
-					upgradeTicks = 0;
-				}
-			}
-			else {
-				upgradeTicks = 0;
-			}
-			
 			handleSecondaryFuel();
 			
-			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), SECONDARY_ENERGY_PER_TICK))
 			{
 			    setActive(true);
 			    
 				operatingTicks++;
 				
-				secondaryEnergyStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, SECONDARY_ENERGY_PER_TICK);
-				electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+				secondaryEnergyStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), SECONDARY_ENERGY_PER_TICK);
+				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				
-				if((operatingTicks) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				if((operatingTicks) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
 					
@@ -331,7 +287,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		switch(method)
 		{
 			case 0:
-				return new Object[] {electricityStored};
+				return new Object[] {getEnergy()};
 			case 1:
 				return new Object[] {secondaryEnergyStored};
 			case 2:
@@ -343,9 +299,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			case 5:
 				return new Object[] {canOperate()};
 			case 6:
-				return new Object[] {MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)};
+				return new Object[] {MekanismUtils.getEnergy(getEnergyMultiplier(), getMaxEnergy())};
 			case 7:
-				return new Object[] {(MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)};
+				return new Object[] {(MekanismUtils.getEnergy(getEnergyMultiplier(), getMaxEnergy())-getEnergy())};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

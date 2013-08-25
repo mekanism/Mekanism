@@ -31,9 +31,16 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	/** A timer used to send packets to clients. */
 	public int packetTick;
 	
+	public Set<ITileComponent> components = new HashSet<ITileComponent>();
+	
 	@Override
 	public void updateEntity()
 	{
+		for(ITileComponent component : components)
+		{
+			component.tick();
+		}
+		
 		onUpdate();
 		
 		if(!worldObj.isRemote)
