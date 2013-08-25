@@ -1,10 +1,10 @@
 package mekanism.common;
 
 import java.util.HashSet;
-
 import mekanism.api.EnumGas;
 import mekanism.api.GasNetwork;
 import mekanism.api.GasTransmission;
+import mekanism.api.IGasTransmitter;
 import mekanism.api.ITransmitter;
 import mekanism.api.ITubeConnection;
 import mekanism.api.Object3D;
@@ -12,7 +12,7 @@ import mekanism.api.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements ITubeConnection
+public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements ITubeConnection, IGasTransmitter
 {
 	/** The gas currently displayed in this tube. */
 	public EnumGas refGas = null;
@@ -36,7 +36,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			
 			for(TileEntity tube : adjacentTubes)
 			{
-				if(MekanismUtils.checkTransmissionType(tube, TransmissionType.GAS) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, this) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<GasNetwork>)tube).getNetwork());
 				}
@@ -95,7 +95,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.GAS))
+				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
 				{
 					getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
 				}
@@ -153,4 +153,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	{
 		return getNetwork().getFlow();
 	}
+
+    @Override
+    public boolean canTransferGasToTube(TileEntity tile)
+    {
+        return tile instanceof IGasTransmitter;
+    }
 }

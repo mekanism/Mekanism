@@ -33,7 +33,7 @@ import dan200.computer.api.IPeripheral;
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {
 	/** This machine's side configuration. */
-	public byte[] sideConfig;
+	public byte[] sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
 	
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
@@ -49,18 +49,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
-	
-	/** This machine's speed multiplier. */
-	public int speedMultiplier;
-	
-	/** This machine's energy multiplier. */
-	public int energyMultiplier;
-	
-	/** How long it takes this machine to install an upgrade. */
-	public int UPGRADE_TICKS_REQUIRED = 40;
-	
-	/** How many upgrade ticks have progressed. */
-	public int upgradeTicks;
 	
 	/** The amount of infuse this machine has stored. */
 	public int infuseStored;
@@ -78,7 +66,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int updateDelay;
 	
 	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType;
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public UpgradeTileComponent upgradeComponent = new UpgradeTileComponent(this, 0);
 	
 	public TileEntityMetallurgicInfuser()
 	{
@@ -91,10 +81,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {3}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {4}));
 		
-		sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
-		
 		inventory = new ItemStack[5];
-		controlType = RedstoneControl.DISABLED;
 	}
 	
 	@Override
@@ -121,54 +108,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			
 			ChargeUtils.discharge(4, this);
 			
-			if(inventory[0] != null)
-			{
-				if(inventory[0].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						energyMultiplier++;
-						
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
-					}
-				}
-				else if(inventory[0].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						speedMultiplier++;
-						
-						inventory[0].stackSize--;
-						
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
-						}
-					}
-				}
-				else {
-					upgradeTicks = 0;
-				}
-			}
-			else {
-				upgradeTicks = 0;
-			}
-			
 			if(inventory[1] != null)
 			{
 				if(InfuseRegistry.getObject(inventory[1]) != null)
@@ -192,21 +131,21 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 			
-			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 			{
 				setActive(true);
 				
-				if((operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				if((operatingTicks+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				}
 			}
 			else {
@@ -349,12 +288,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED);
-	}
-	
-	public int getScaledUpgradeProgress(int i)
-	{
-		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
+		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
 	
 	@Override
@@ -373,8 +307,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
     	super.readFromNBT(nbtTags);
     	
-    	speedMultiplier = nbtTags.getInteger("speedMultiplier");
-    	energyMultiplier = nbtTags.getInteger("energyMultiplier");
+    	upgradeComponent.read(nbtTags);
+    	
     	clientActive = isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
@@ -419,8 +353,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setInteger("speedMultiplier", speedMultiplier);
-        nbtTags.setInteger("energyMultiplier", energyMultiplier);
+        upgradeComponent.write(nbtTags);
+        
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setInteger("infuseStored", infuseStored);
@@ -453,8 +387,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		speedMultiplier = dataStream.readInt();
-		energyMultiplier = dataStream.readInt();
+		upgradeComponent.read(dataStream);
+		
 		isActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
@@ -474,8 +408,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		super.getNetworkedData(data);
 		
-		data.add(speedMultiplier);
-		data.add(energyMultiplier);
+		upgradeComponent.write(data);
+		
 		data.add(isActive);
 		data.add(operatingTicks);
 		data.add(infuseStored);
@@ -511,7 +445,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		switch(method)
 		{
 			case 0:
-				return new Object[] {electricityStored};
+				return new Object[] {getEnergy()};
 			case 1:
 				return new Object[] {operatingTicks};
 			case 2:
@@ -519,13 +453,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			case 3:
 				return new Object[] {canOperate()};
 			case 4:
-				return new Object[] {MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)};
+				return new Object[] {getMaxEnergy()};
 			case 5:
-				return new Object[] {(MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)};
+				return new Object[] {getMaxEnergy()-getEnergy()};
 			case 6:
 				return new Object[] {infuseStored};
 			case 7:
-				return new Object[] {(MAX_INFUSE-infuseStored)};
+				return new Object[] {MAX_INFUSE-infuseStored};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
@@ -553,7 +487,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public double getMaxEnergy() 
 	{
-		return MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY);
+		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 
 	@Override
@@ -635,25 +569,25 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public int getEnergyMultiplier(Object... data) 
 	{
-		return energyMultiplier;
+		return upgradeComponent.energyMultiplier;
 	}
 
 	@Override
 	public void setEnergyMultiplier(int multiplier, Object... data) 
 	{
-		energyMultiplier = multiplier;
+		upgradeComponent.energyMultiplier = multiplier;
 	}
 
 	@Override
 	public int getSpeedMultiplier(Object... data) 
 	{
-		return speedMultiplier;
+		return upgradeComponent.speedMultiplier;
 	}
 
 	@Override
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
-		speedMultiplier = multiplier;
+		upgradeComponent.speedMultiplier = multiplier;
 	}
 	
 	@Override

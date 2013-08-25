@@ -32,6 +32,8 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		sideConfig = new byte[] {2, 1, 0, 0, 4, 3};
 		
 		inventory = new ItemStack[4];
+		
+		upgradeComponent = new UpgradeTileComponent(this, 3);
 	}
 	
 	@Override
@@ -43,69 +45,21 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			ChargeUtils.discharge(1, this);
 			
-			if(inventory[3] != null)
-			{
-				if(inventory[3].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						energyMultiplier++;
-						
-						inventory[3].stackSize--;
-						
-						if(inventory[3].stackSize == 0)
-						{
-							inventory[3] = null;
-						}
-					}
-				}
-				else if(inventory[3].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						speedMultiplier++;
-						
-						inventory[3].stackSize--;
-						
-						if(inventory[3].stackSize == 0)
-						{
-							inventory[3] = null;
-						}
-					}
-				}
-				else {
-					upgradeTicks = 0;
-				}
-			}
-			else {
-				upgradeTicks = 0;
-			}
-			
-			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 			{
 				setActive(true);
 				
-				if((operatingTicks+1) < MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				if((operatingTicks+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(speedMultiplier, TICKS_REQUIRED))
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(speedMultiplier, energyMultiplier, ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				}
 			}
 			else {
@@ -217,7 +171,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		switch(method)
 		{
 			case 0:
-				return new Object[] {electricityStored};
+				return new Object[] {getEnergy()};
 			case 1:
 				return new Object[] {operatingTicks};
 			case 2:
@@ -227,9 +181,9 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			case 4:
 				return new Object[] {canOperate()};
 			case 5:
-				return new Object[] {MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)};
+				return new Object[] {getMaxEnergy()};
 			case 6:
-				return new Object[] {(MekanismUtils.getEnergy(energyMultiplier, MAX_ELECTRICITY)-electricityStored)};
+				return new Object[] {getMaxEnergy()-getEnergy()};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

@@ -1,7 +1,6 @@
 package mekanism.api;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -109,7 +106,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
 
-				if(MekanismUtils.checkTransmissionType(nodeTile, getTransmissionType()))
+				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity) transmitter))
 				{
 					((ITransmitter<N>)nodeTile).removeFromNetwork();
 					newTransporters.add((ITransmitter<N>)nodeTile);
@@ -148,15 +145,22 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			
 			if(ignore != null)
 			{
-				toIgnore = Arrays.asList(ignore);
+			    for (int i = 0; i < ignore.length; i++)
+			    {
+			        this.toIgnore.add(ignore[i]);
+			    }
 			}
 		}
 
 		public void loopAll(Object3D location)
 		{
-			if(MekanismUtils.checkTransmissionType(location.getTileEntity(worldObj), transmissionType))
+			if(TransmissionType.checkTransmissionType(location.getTileEntity(worldObj), transmissionType))
 			{
 				iterated.add(location);
+			}
+			else
+			{
+			    toIgnore.add(location);
 			}
 			
 			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
@@ -167,7 +171,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkTransmissionType(tileEntity, transmissionType))
+					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)))
 					{
 						loopAll(obj);
 					}

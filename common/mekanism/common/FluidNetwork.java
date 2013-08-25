@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -47,6 +50,26 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		refresh();
 		register();
+	}
+	
+	public int getTotalNeeded(List<TileEntity> ignored)
+	{
+		int toReturn = 0;
+		
+		for(IFluidHandler handler : possibleAcceptors)
+		{
+			ForgeDirection side = acceptorDirections.get(handler).getOpposite();
+			
+			for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
+			{
+				int filled = handler.fill(side, new FluidStack(fluid, Integer.MAX_VALUE), false);
+				
+				toReturn += filled;
+				break;
+			}
+		}
+		
+		return toReturn;
 	}
 	
 	public int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
@@ -133,6 +156,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		for(ITransmitter<FluidNetwork> pipe : iterPipes)
 		{
+			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe) pipe).isActive) continue;
 			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
 		
 			for(IFluidHandler acceptor : acceptors)
@@ -183,7 +207,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.FLUID) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.FLUID) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -192,7 +216,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.FLUID) && !dealtWith[countTwo])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.FLUID) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -207,7 +231,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.FLUID))
+						if(TransmissionType.checkTransmissionType(nodeTile, TransmissionType.FLUID))
 						{
 							if(nodeTile != splitPoint)
 							{
@@ -271,7 +295,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getNeeded()
 	{
-		return "Undefined for Fluid networks";
+		return "Fluid needed (any type): " + (float)getTotalNeeded(new ArrayList())/1000F + " buckets";
 	}
 	
 	@Override

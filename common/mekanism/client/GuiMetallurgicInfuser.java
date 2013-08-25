@@ -43,8 +43,8 @@ public class GuiMetallurgicInfuser extends GuiContainer
 		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer.drawString("S:" + (tileEntity.speedMultiplier+1) + "x", 179, 47, 0x404040);
-        fontRenderer.drawString("E:" + (tileEntity.energyMultiplier+1) + "x", 179, 57, 0x404040);
+        fontRenderer.drawString("S:" + (tileEntity.getSpeedMultiplier()+1) + "x", 179, 47, 0x404040);
+        fontRenderer.drawString("E:" + (tileEntity.getEnergyMultiplier()+1) + "x", 179, 57, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
@@ -74,7 +74,7 @@ public class GuiMetallurgicInfuser extends GuiContainer
         displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
         
-        displayInt = tileEntity.getScaledUpgradeProgress(14);
+        displayInt = tileEntity.upgradeComponent.getScaledUpgradeProgress(14);
         drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 60, 10, displayInt);
         
         if(tileEntity.type != null)
