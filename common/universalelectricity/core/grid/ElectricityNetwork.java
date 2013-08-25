@@ -42,14 +42,20 @@ public class ElectricityNetwork implements IElectricityNetwork
 
 	private final Set<IConductor> conductors = new HashSet<IConductor>();
 
+	public float acceptorResistance = 500;
+
 	@Override
 	public float produce(ElectricityPack electricity, TileEntity... ignoreTiles)
 	{
-		ElectricityProductionEvent evt = new ElectricityProductionEvent(electricity, ignoreTiles);
+		ElectricityProductionEvent evt = new ElectricityProductionEvent(this, electricity, ignoreTiles);
 		MinecraftForge.EVENT_BUS.post(evt);
 
-		float energy = electricity.getWatts();
-		float totalEnergy = energy;
+		float totalEnergy = electricity.getWatts();
+		float networkResistance = getTotalResistance();
+		float proportionWasted = getTotalResistance() / (getTotalResistance() + acceptorResistance);
+		float energyWasted = totalEnergy * proportionWasted;
+		float totalUsableEnergy = totalEnergy - energyWasted;
+		float remainingUsableEnergy = totalUsableEnergy;
 		float voltage = electricity.voltage;
 
 		if (!evt.isCanceled())
@@ -72,19 +78,13 @@ public class ElectricityNetwork implements IElectricityNetwork
 							{
 								if (electricalTile.canConnect(direction) && this.getConductors().contains(VectorHelper.getConnectorFromSide(tileEntity.worldObj, new Vector3(tileEntity), direction)))
 								{
-									float energyToSend = totalEnergy * (electricalTile.getRequest(direction) / totalEnergyRequest);
+									float energyToSend = totalUsableEnergy * (electricalTile.getRequest(direction) / totalEnergyRequest);
 
 									if (energyToSend > 0)
 									{
 										ElectricityPack electricityToSend = ElectricityPack.getFromWatts(energyToSend, voltage);
 
-										// Calculate energy loss caused by resistance.
-										float ampsReceived = electricityToSend.amperes - (electricityToSend.amperes * electricityToSend.amperes * this.getTotalResistance()) / electricityToSend.voltage;
-										float voltsReceived = electricityToSend.voltage - (electricityToSend.amperes * this.getTotalResistance());
-
-										electricityToSend = new ElectricityPack(ampsReceived, voltsReceived);
-
-										energy -= ((IElectrical) tileEntity).receiveElectricity(direction, electricityToSend, true);
+										remainingUsableEnergy -= ((IElectrical) tileEntity).receiveElectricity(direction, electricityToSend, true);
 									}
 								}
 							}
@@ -94,7 +94,7 @@ public class ElectricityNetwork implements IElectricityNetwork
 			}
 		}
 
-		return energy;
+		return remainingUsableEnergy;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class ElectricityNetwork implements IElectricityNetwork
 		}
 
 		ElectricityPack mergedPack = ElectricityPack.merge(requests);
-		ElectricityRequestEvent evt = new ElectricityRequestEvent(mergedPack, ignoreTiles);
+		ElectricityRequestEvent evt = new ElectricityRequestEvent(this, mergedPack, ignoreTiles);
 		MinecraftForge.EVENT_BUS.post(evt);
 		return mergedPack;
 	}

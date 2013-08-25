@@ -23,56 +23,6 @@ import universalelectricity.core.vector.VectorHelper;
  */
 public class ElectricityHelper
 {
-	@ForgeSubscribe
-	public void onProduce(ElectricityProduceEvent evt)
-	{
-		// Needs work with shuffling to be able to evenly distribute to all
-		// connected networks
-		// instead of just defaulting to one of them.
-		Vector3 position = new Vector3((TileEntity) evt.tileEntity);
-		HashMap<IElectricityNetwork, ForgeDirection> networks = new HashMap<IElectricityNetwork, ForgeDirection>();
-
-		for (ForgeDirection direction : getDirections((TileEntity) evt.tileEntity))
-		{
-			IElectricityNetwork network = getNetworkFromTileEntity(VectorHelper.getTileEntityFromSide(evt.world, position, direction), direction.getOpposite());
-
-			if (network != null)
-			{
-				networks.put(network, direction);
-				ElectricityPack provided = evt.tileEntity.provideElectricity(direction, network.getRequest((TileEntity) evt.tileEntity), true);
-
-				if (provided != null && provided.getWatts() > 0)
-				{
-					network.produce(provided, (TileEntity) evt.tileEntity);
-				}
-			}
-		}
-
-		/*
-		 * ElectricityPack request = this.getNetwork().getRequest(this);
-		 * 
-		 * if (request.getWatts() > 0) { List<ElectricityPack> providedPacks = new
-		 * ArrayList<ElectricityPack>(); List<TileEntity> tileEntities = new
-		 * ArrayList<TileEntity>();
-		 * 
-		 * for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) { Vector3 position = new
-		 * Vector3(this).modifyPositionFromSide(direction); TileEntity tileEntity =
-		 * position.getTileEntity(this.worldObj);
-		 * 
-		 * if (tileEntity instanceof IElectrical) { tileEntities.add(tileEntity); IElectrical
-		 * electrical = (IElectrical) tileEntity;
-		 * 
-		 * if (electrical.canConnect(direction.getOpposite())) { if
-		 * (electrical.getProvide(direction.getOpposite()) > 0) { providedPacks.add
-		 * (electrical.provideElectricity(direction.getOpposite(), request, true)); } } } }
-		 * 
-		 * ElectricityPack mergedPack = ElectricityPack.merge(providedPacks);
-		 * 
-		 * if (mergedPack.getWatts() > 0) { this.getNetwork().produce(mergedPack,
-		 * tileEntities.toArray(new TileEntity[0])); } }
-		 */
-	}
-
 	public static EnumSet<ForgeDirection> getDirections(TileEntity tileEntity)
 	{
 		EnumSet<ForgeDirection> possibleSides = EnumSet.noneOf(ForgeDirection.class);
