@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
@@ -248,5 +249,11 @@ public class BlockGasTank extends BlockContainer
 	public TileEntity createNewTileEntity(World world)
 	{
 		return new TileEntityGasTank();
+	}
+	
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	{
+		return new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
 	}
 }
