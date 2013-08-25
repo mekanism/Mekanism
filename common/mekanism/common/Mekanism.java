@@ -156,7 +156,7 @@ public class Mekanism
 	public static Item PortableTeleporter;
 	public static Item TeleportationCore;
 	public static Item Configurator;
-	public static Item NetworkMeter;
+	public static Item EnergyMeter;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -374,7 +374,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(Robit.getUnchargedItem(), new Object[] {
 			" S ", "ECE", "OIO", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), AtomicCore, Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('I'), new ItemStack(MachineBlock, 1, 13)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(NetworkMeter), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(EnergyMeter), new Object[] {
 			" G ", "AEA", " I ", Character.valueOf('G'), Block.glass, Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('I'), "ingotSteel"
 		}));
 		
@@ -493,7 +493,7 @@ public class Mekanism
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
-		LanguageRegistry.addName(NetworkMeter, "NetworkMeter");
+		LanguageRegistry.addName(EnergyMeter, "EnergyMeter");
 		
 		//Localization for BasicBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
@@ -613,7 +613,7 @@ public class Mekanism
 		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
-		NetworkMeter = new ItemNetworkMeter(configuration.getItem("NetworkMeter", 11222).getInt()).setUnlocalizedName("NetworkMeter");
+		EnergyMeter = new ItemEnergyMeter(configuration.getItem("EnergyMeter", 11222).getInt()).setUnlocalizedName("EnergyMeter");
 		configuration.save();
 		
 		//Registrations
@@ -643,7 +643,7 @@ public class Mekanism
 		GameRegistry.registerItem(Clump, "Clump");
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
-		GameRegistry.registerItem(NetworkMeter, "NetworkMeter");
+		GameRegistry.registerItem(EnergyMeter, "EnergyMeter");
 	}
 	
 	/**

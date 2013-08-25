@@ -9,11 +9,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 
-public class ItemNetworkMeter extends ItemEnergized
+public class ItemEnergyMeter extends ItemEnergized
 {
 	public static double ENERGY_PER_USE = 400;
 	
-	public ItemNetworkMeter(int id)
+	public ItemEnergyMeter(int id)
     {
         super(id, 60000, 120);
     }
@@ -31,13 +31,13 @@ public class ItemNetworkMeter extends ItemEnergized
     			{
     				setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
     				
-	    			ITransmitter transmitter = (ITransmitter)tileEntity;
+	    			ITransmitter cable = (ITransmitter)tileEntity;
 	    			
 	    			player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getNetworkSize()));
-	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getNetworkAcceptorSize()));
-	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getNetworkNeeded()));
-	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + transmitter.getNetworkFlow()));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Cables: " + EnumColor.DARK_GREY + cable.getNetworkSize()));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + cable.getNetworkAcceptorSize()));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Needed energy: " + EnumColor.DARK_GREY + cable.getNetworkNeeded()));
+	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + cable.getNetworkFlow() ));
 	                player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     			}
     		}
