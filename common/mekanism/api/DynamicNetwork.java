@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -116,6 +118,72 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			ITransmitterNetwork<A, N> newNetwork = create(newTransporters);
 			newNetwork.refresh();
 			newNetwork.setFixed(true);
+			deregister();
+		}
+	}
+	
+	@Override
+	public void split(ITransmitter<N> splitPoint)
+	{
+		if(splitPoint instanceof TileEntity)
+		{
+			removeTransmitter(splitPoint);
+			
+			TileEntity[] connectedBlocks = new TileEntity[6];
+			boolean[] dealtWith = {false, false, false, false, false, false};
+			
+			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+			{
+				TileEntity sideTile = Object3D.get((TileEntity)splitPoint).getFromSide(direction).getTileEntity(((TileEntity)splitPoint).worldObj);
+				
+				if(sideTile != null)
+				{
+					connectedBlocks[Arrays.asList(ForgeDirection.values()).indexOf(direction)] = sideTile;
+				}
+			}
+
+			for(int countOne = 0; countOne < connectedBlocks.length; countOne++)
+			{
+				TileEntity connectedBlockA = connectedBlocks[countOne];
+
+				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && !dealtWith[countOne])
+				{
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
+					List<Object3D> partNetwork = finder.exploreNetwork();
+					
+					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
+					{
+						TileEntity connectedBlockB = connectedBlocks[countTwo];
+						
+						if(TransmissionType.checkTransmissionType(connectedBlockB, getTransmissionType()) && !dealtWith[countTwo])
+						{
+							if(partNetwork.contains(Object3D.get(connectedBlockB)))
+							{
+								dealtWith[countTwo] = true;
+							}
+						}
+					}
+					
+					Set<ITransmitter<N>> newNetCables = new HashSet<ITransmitter<N>>();
+					
+					for(Object3D node : finder.iterated)
+					{
+						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
+
+						if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType()))
+						{
+							if(nodeTile != splitPoint)
+							{
+								newNetCables.add((ITransmitter<N>)nodeTile);
+							}
+						}
+					}
+					
+					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);					
+					newNetwork.refresh();
+				}
+			}
+			
 			deregister();
 		}
 	}

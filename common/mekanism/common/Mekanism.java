@@ -1207,7 +1207,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketRedstoneControl.class);
 		
 		//Donators
-		donators.add("mrgreaper");
+		donators.add("mrgreaper"); 
 		
 		//Load proxy
 		proxy.registerRenderInformation();
