@@ -152,4 +152,22 @@ public class ContainerElectricChest extends Container
 
         return stack;
     }
+    
+    @Override
+    public ItemStack slotClick(int slotNumber, int destSlot, int modifier, EntityPlayer player)
+    {
+    	if(modifier == 2 && destSlot >= 0 && destSlot < 9)
+    	{
+    		ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
+    		if(itemStack != null && itemStack.getItem() instanceof IElectricChest)
+    		{
+    			if(((IElectricChest)itemStack.getItem()).isElectricChest(itemStack))
+    			{
+    				return null;
+    			}
+    		}
+
+    	}
+    	return super.slotClick(slotNumber, destSlot, modifier, player);
+    }
 }
