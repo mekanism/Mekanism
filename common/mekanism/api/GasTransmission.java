@@ -3,7 +3,6 @@ package mekanism.api;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -27,7 +26,7 @@ public final class GasTransmission
     	{
 			TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(MekanismUtils.checkTransmissionType(tube, TransmissionType.GAS))
+			if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS))
 			{
                 tubes[orientation.ordinal()] = tube;
 			}
@@ -92,7 +91,7 @@ public final class GasTransmission
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
-    	if(MekanismUtils.checkTransmissionType(pointer, TransmissionType.GAS))
+    	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS))
     	{
 	    	return ((ITransmitter<GasNetwork>)pointer).getNetwork().emit(amount, type, sender);
     	}
@@ -118,7 +117,7 @@ public final class GasTransmission
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(MekanismUtils.checkTransmissionType(sideTile, TransmissionType.GAS))
+    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.GAS))
     			{
     				networks.add(((ITransmitter<GasNetwork>)sideTile).getNetwork());
     			}

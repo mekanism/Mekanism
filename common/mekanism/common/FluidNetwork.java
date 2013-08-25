@@ -207,7 +207,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.FLUID) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.FLUID) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -216,7 +216,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.FLUID) && !dealtWith[countTwo])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.FLUID) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -231,7 +231,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.FLUID))
+						if(TransmissionType.checkTransmissionType(nodeTile, TransmissionType.FLUID))
 						{
 							if(nodeTile != splitPoint)
 							{

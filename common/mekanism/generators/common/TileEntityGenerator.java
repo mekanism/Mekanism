@@ -101,7 +101,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			{
 				if(!worldObj.isRemote)
 				{
-					if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
+					if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 					{
 						setEnergy(getEnergy() - (Math.min(getEnergy(), output) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), output), this, ForgeDirection.getOrientation(facing))));
 						return;

@@ -40,7 +40,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			
 			for(TileEntity transporter : adjacentTransporters)
 			{
-				if(MekanismUtils.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork>)transporter).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork>)transporter).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getNetwork());
 				}
@@ -99,7 +99,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkTransmissionType(tileEntity, getTransmissionType()))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
 					getNetwork().merge(((ITransmitter<InventoryNetwork>)tileEntity).getNetwork());
 				}

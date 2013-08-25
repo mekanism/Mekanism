@@ -59,7 +59,7 @@ public final class CableUtils
     	{
 			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(MekanismUtils.checkTransmissionType(cable, TransmissionType.ENERGY))
+			if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY))
 			{
 				cables[orientation.ordinal()] = cable;
 			}
@@ -193,7 +193,7 @@ public final class CableUtils
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
-    	if(MekanismUtils.checkTransmissionType(pointer, TransmissionType.ENERGY))
+    	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.ENERGY))
     	{
     		ITransmitter<EnergyNetwork> cable = (ITransmitter<EnergyNetwork>)pointer;
     		
@@ -226,7 +226,7 @@ public final class CableUtils
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(MekanismUtils.checkTransmissionType(sideTile, TransmissionType.ENERGY) && !ignored.contains(sideTile))
+    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.ENERGY) && !ignored.contains(sideTile))
     			{
     				networks.add(((ITransmitter<EnergyNetwork>)sideTile).getNetwork());
     			}

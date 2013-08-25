@@ -284,7 +284,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.ENERGY) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.ENERGY) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -293,7 +293,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.ENERGY) && !dealtWith[countTwo])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.ENERGY) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -308,7 +308,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.ENERGY))
+						if(TransmissionType.checkTransmissionType(nodeTile, TransmissionType.ENERGY))
 						{
 							if(nodeTile != splitPoint)
 							{

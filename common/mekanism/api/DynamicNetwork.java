@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -109,7 +108,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
 
-				if(MekanismUtils.checkTransmissionType(nodeTile, getTransmissionType()))
+				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType()))
 				{
 					((ITransmitter<N>)nodeTile).removeFromNetwork();
 					newTransporters.add((ITransmitter<N>)nodeTile);
@@ -154,7 +153,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 
 		public void loopAll(Object3D location)
 		{
-			if(MekanismUtils.checkTransmissionType(location.getTileEntity(worldObj), transmissionType))
+			if(TransmissionType.checkTransmissionType(location.getTileEntity(worldObj), transmissionType))
 			{
 				iterated.add(location);
 			}
@@ -167,7 +166,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(MekanismUtils.checkTransmissionType(tileEntity, transmissionType))
+					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType))
 					{
 						loopAll(obj);
 					}

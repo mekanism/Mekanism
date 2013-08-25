@@ -125,7 +125,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.ITEM) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.ITEM) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -134,7 +134,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 						
-						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.ITEM) && !dealtWith[countTwo])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.ITEM) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -149,7 +149,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.ITEM))
+						if(TransmissionType.checkTransmissionType(nodeTile, TransmissionType.ITEM))
 						{
 							if(nodeTile != splitPoint)
 							{

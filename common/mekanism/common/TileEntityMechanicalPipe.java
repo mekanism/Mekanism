@@ -68,7 +68,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(MekanismUtils.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getNetwork());
 				}
@@ -127,7 +127,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkTransmissionType(tileEntity, getTransmissionType()))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
 					getNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getNetwork());
 				}

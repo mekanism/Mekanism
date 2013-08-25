@@ -25,7 +25,7 @@ public final class TransporterUtils
     	{
 			TileEntity transporter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(MekanismUtils.checkTransmissionType(transporter, TransmissionType.ITEM))
+			if(TransmissionType.checkTransmissionType(transporter, TransmissionType.ITEM))
 			{
 				transporters[orientation.ordinal()] = transporter;
 			}

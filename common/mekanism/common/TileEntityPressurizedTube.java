@@ -36,7 +36,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			
 			for(TileEntity tube : adjacentTubes)
 			{
-				if(MekanismUtils.checkTransmissionType(tube, TransmissionType.GAS) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<GasNetwork>)tube).getNetwork());
 				}
@@ -95,7 +95,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.GAS))
+				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS))
 				{
 					getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
 				}

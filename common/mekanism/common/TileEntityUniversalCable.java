@@ -51,7 +51,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(MekanismUtils.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getNetwork(false) != null)
 				{
 					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getNetwork());
 				}
@@ -110,7 +110,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			{
 				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 				
-				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
+				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
 					getNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getNetwork());
 				}

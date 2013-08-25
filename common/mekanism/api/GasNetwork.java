@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.common.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -180,7 +179,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(MekanismUtils.checkTransmissionType(connectedBlockA, TransmissionType.GAS) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.GAS) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -189,7 +188,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 
-						if(MekanismUtils.checkTransmissionType(connectedBlockB, TransmissionType.GAS) && !dealtWith[countTwo])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.GAS) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -204,7 +203,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
 
-						if(MekanismUtils.checkTransmissionType(nodeTile, TransmissionType.GAS))
+						if(TransmissionType.checkTransmissionType(nodeTile, TransmissionType.GAS))
 						{
 							if(nodeTile != splitPoint)
 							{

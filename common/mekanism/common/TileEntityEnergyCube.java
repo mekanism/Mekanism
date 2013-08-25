@@ -69,7 +69,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 			
 			if(getEnergy() > 0)
 			{
-				if(MekanismUtils.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
+				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
 					setEnergy(getEnergy() - (Math.min(getEnergy(), tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
 					return;
