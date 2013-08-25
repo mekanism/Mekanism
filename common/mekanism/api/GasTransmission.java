@@ -2,7 +2,6 @@ package mekanism.api;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -26,7 +25,7 @@ public final class GasTransmission
     	{
 			TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS))
+			if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, tileEntity))
 			{
                 tubes[orientation.ordinal()] = tube;
 			}
@@ -70,7 +69,7 @@ public final class GasTransmission
     	{
 			TileEntity connection = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(connection instanceof ITubeConnection)
+			if(connection instanceof ITubeConnection && (!(connection instanceof IGasTransmitter) || TransmissionType.checkTransmissionType(connection, TransmissionType.GAS, tileEntity)))
 			{
 				connections[orientation.ordinal()] = (ITubeConnection)connection;
 			}
@@ -91,7 +90,7 @@ public final class GasTransmission
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
-    	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS))
+    	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{
 	    	return ((ITransmitter<GasNetwork>)pointer).getNetwork().emit(amount, type, sender);
     	}
@@ -117,7 +116,7 @@ public final class GasTransmission
     		{
     			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
     			
-    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.GAS))
+    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.GAS, pointer))
     			{
     				networks.add(((ITransmitter<GasNetwork>)sideTile).getNetwork());
     			}

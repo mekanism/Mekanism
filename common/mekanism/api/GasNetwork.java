@@ -179,7 +179,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			{
 				TileEntity connectedBlockA = connectedBlocks[countOne];
 
-				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.GAS) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, TransmissionType.GAS, (TileEntity) splitPoint) && !dealtWith[countOne])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -188,7 +188,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 					{
 						TileEntity connectedBlockB = connectedBlocks[countTwo];
 
-						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.GAS) && !dealtWith[countTwo])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, TransmissionType.GAS, (TileEntity) splitPoint) && !dealtWith[countTwo])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
