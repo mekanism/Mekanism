@@ -1,18 +1,20 @@
 package mekanism.generators.common;
 
-import mekanism.api.InfuseObject;
-import mekanism.api.InfuseRegistry;
-import mekanism.api.InfuseType;
+import mekanism.api.infuse.InfuseObject;
+import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.infuse.InfuseType;
 import mekanism.common.IModule;
-import mekanism.common.ItemMekanism;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismRecipe;
 import mekanism.common.MekanismUtils;
 import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.item.ItemMekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
+import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
+import mekanism.generators.common.tileentity.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.item.Item;

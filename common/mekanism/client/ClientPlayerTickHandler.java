@@ -3,10 +3,10 @@ package mekanism.client;
 import java.util.EnumSet;
 
 import mekanism.api.EnumColor;
-import mekanism.common.ItemConfigurator;
-import mekanism.common.ItemElectricBow;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemElectricBow;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import net.minecraft.entity.player.EntityPlayer;

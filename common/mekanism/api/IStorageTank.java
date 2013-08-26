@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.IGasStorage;
 import net.minecraft.item.ItemStack;
 
 /**

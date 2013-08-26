@@ -2,8 +2,9 @@ package mekanism.common;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
-import mekanism.api.EnergizedItemManager;
-import mekanism.api.IEnergizedItem;
+import mekanism.api.energy.EnergizedItemManager;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.tileentity.TileEntityElectricBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thermalexpansion.api.item.IChargeableItem;

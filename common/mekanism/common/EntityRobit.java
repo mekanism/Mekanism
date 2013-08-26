@@ -7,9 +7,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import mekanism.api.EnergizedItemManager;
-import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
+import mekanism.api.energy.EnergizedItemManager;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemRobit;
+import mekanism.common.tileentity.TileEntityChargepad;
 import micdoodle8.mods.galacticraft.API.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;

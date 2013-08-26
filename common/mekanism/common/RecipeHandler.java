@@ -3,8 +3,8 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.InfusionInput;
-import mekanism.api.InfusionOutput;
+import mekanism.api.infuse.InfusionInput;
+import mekanism.api.infuse.InfusionOutput;
 import net.minecraft.item.ItemStack;
 
 /** 

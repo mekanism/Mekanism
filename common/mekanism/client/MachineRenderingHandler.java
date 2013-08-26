@@ -1,7 +1,11 @@
 package mekanism.client;
 
-import mekanism.common.BlockMachine.MachineType;
+import mekanism.client.model.ModelChargepad;
+import mekanism.client.model.ModelElectricPump;
+import mekanism.client.model.ModelMetallurgicInfuser;
+import mekanism.client.model.ModelTheoreticalElementizer;
 import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
 import net.minecraft.block.Block;

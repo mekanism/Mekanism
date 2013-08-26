@@ -9,11 +9,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.ICableOutputter;
-import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
-import mekanism.api.TransmissionType;
+import mekanism.api.energy.ICableOutputter;
+import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IElectrical;

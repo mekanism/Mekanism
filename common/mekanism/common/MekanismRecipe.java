@@ -3,8 +3,8 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mekanism.api.IEnergizedItem;
 import mekanism.api.IUpgradeManagement;
+import mekanism.api.energy.IEnergizedItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;

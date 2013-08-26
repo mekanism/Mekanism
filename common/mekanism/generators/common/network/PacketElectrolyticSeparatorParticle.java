@@ -3,7 +3,7 @@ package mekanism.generators.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.common.network.IMekanismPacket;
-import mekanism.generators.common.TileEntityElectrolyticSeparator;
+import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 

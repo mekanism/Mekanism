@@ -2,6 +2,7 @@ package mekanism.api;
 
 import java.lang.reflect.Method;
 
+import mekanism.api.infuse.InfusionInput;
 import net.minecraft.item.ItemStack;
 
 /**

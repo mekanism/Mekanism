@@ -2,13 +2,13 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.IEnergizedItem;
 import mekanism.api.Object3D;
+import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
-import mekanism.common.InventoryElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismUtils;
-import mekanism.common.TileEntityElectricChest;
+import mekanism.common.inventory.InventoryElectricChest;
+import mekanism.common.tileentity.TileEntityElectricChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

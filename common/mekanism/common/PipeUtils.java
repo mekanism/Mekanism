@@ -2,9 +2,9 @@ package mekanism.common;
 
 import java.util.Arrays;
 
-import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
-import mekanism.api.TransmissionType;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;

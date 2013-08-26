@@ -9,10 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.DynamicNetwork;
-import mekanism.api.ITransmitter;
-import mekanism.api.Object3D;
-import mekanism.api.TransmissionType;
+import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -156,7 +156,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		for(ITransmitter<FluidNetwork> pipe : iterPipes)
 		{
-			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe) pipe).isActive) continue;
+			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe)pipe).isActive) continue;
 			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
 		
 			for(IFluidHandler acceptor : acceptors)

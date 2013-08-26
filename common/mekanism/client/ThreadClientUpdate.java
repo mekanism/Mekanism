@@ -8,7 +8,7 @@ import java.net.URL;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
+import mekanism.client.gui.GuiCredits;
 import mekanism.common.Mekanism;
 
 /**

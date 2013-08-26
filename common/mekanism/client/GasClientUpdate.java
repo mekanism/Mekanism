@@ -2,11 +2,11 @@ package mekanism.client;
 
 import java.util.List;
 
-import mekanism.api.DynamicNetwork.NetworkFinder;
-import mekanism.api.EnumGas;
+import mekanism.api.gas.EnumGas;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.DynamicNetwork.NetworkFinder;
 import mekanism.api.Object3D;
-import mekanism.api.TransmissionType;
-import mekanism.common.TileEntityPressurizedTube;
+import mekanism.common.tileentity.TileEntityPressurizedTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 

@@ -11,11 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.DynamicNetwork;
-import mekanism.api.IStrictEnergyAcceptor;
-import mekanism.api.ITransmitter;
 import mekanism.api.Object3D;
-import mekanism.api.TransmissionType;
+import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;

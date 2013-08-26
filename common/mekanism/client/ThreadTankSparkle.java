@@ -6,10 +6,9 @@ import java.util.Set;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
-import mekanism.common.TileEntityDynamicTank;
+import mekanism.common.tileentity.TileEntityDynamicTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;

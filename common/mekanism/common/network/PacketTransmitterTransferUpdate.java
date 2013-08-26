@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.EnumGas;
+import mekanism.api.gas.EnumGas;
 import mekanism.client.EnergyClientUpdate;
 import mekanism.client.GasClientUpdate;
 import mekanism.client.FluidClientUpdate;

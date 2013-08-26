@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.EnumSet;
 
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketStatusUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

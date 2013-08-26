@@ -5,12 +5,12 @@ import ic2.api.item.ICustomElectricItem;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IEnergizedItem;
+import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
-import mekanism.common.TileEntityElectricBlock;
-import mekanism.generators.common.BlockGenerator.GeneratorType;
+import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;

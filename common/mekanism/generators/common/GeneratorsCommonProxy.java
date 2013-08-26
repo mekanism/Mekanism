@@ -1,6 +1,19 @@
 package mekanism.generators.common;
 
 import mekanism.common.Mekanism;
+import mekanism.generators.common.inventory.container.ContainerBioGenerator;
+import mekanism.generators.common.inventory.container.ContainerElectrolyticSeparator;
+import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
+import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
+import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
+import mekanism.generators.common.inventory.container.ContainerWindTurbine;
+import mekanism.generators.common.tileentity.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tileentity.TileEntityBioGenerator;
+import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
+import mekanism.generators.common.tileentity.TileEntityHeatGenerator;
+import mekanism.generators.common.tileentity.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tileentity.TileEntitySolarGenerator;
+import mekanism.generators.common.tileentity.TileEntityWindTurbine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
