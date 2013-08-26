@@ -1,14 +1,9 @@
 package mekanism.client;
 
-import mekanism.api.Object3D;
 import mekanism.common.ContainerFactory;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.TileEntityFactory;
-import mekanism.common.network.PacketRemoveUpgrade;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -19,12 +14,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiFactory extends GuiContainer
+public class GuiFactory extends GuiMekanism
 {
     public TileEntityFactory tileEntity;
-    
-    public GuiRedstoneControl redstoneControl;
-    public GuiUpgradeManagement upgradeManagement;
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
@@ -32,13 +24,15 @@ public class GuiFactory extends GuiContainer
         xSize+=26;
         tileEntity = tentity;
         
-        redstoneControl = new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation);
-        upgradeManagement = new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation);
+        guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -50,22 +44,21 @@ public class GuiFactory extends GuiContainer
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
 		}
-		
-		redstoneControl.renderForeground(xAxis, yAxis);
-		upgradeManagement.renderForeground(xAxis, yAxis);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
     	mc.renderEngine.func_110577_a(tileEntity.tier.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int xAxis = (mouseX - (width - xSize) / 2);
- 		int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - guiWidth;
+ 		int yAxis = mouseY - guiHeight;
         
         int displayInt;
         
@@ -105,23 +98,5 @@ public class GuiFactory extends GuiContainer
 	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
         	}
         }
-        
-        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
-        upgradeManagement.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
-    
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
-	{
-		super.mouseClicked(mouseX, mouseY, button);
-		
-		if(button == 0)
-		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-			
-			redstoneControl.mouseClicked(xAxis, yAxis);
-			upgradeManagement.mouseClicked(xAxis, yAxis);
-		}
-	}
 }

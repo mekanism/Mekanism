@@ -2,7 +2,6 @@ package mekanism.client;
 
 import mekanism.common.ContainerAdvancedElectricMachine;
 import mekanism.common.TileEntityAdvancedElectricMachine;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -13,25 +12,24 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiAdvancedElectricMachine extends GuiContainer
+public class GuiAdvancedElectricMachine extends GuiMekanism
 {
     public TileEntityAdvancedElectricMachine tileEntity;
-    
-    public GuiRedstoneControl redstoneControl;
-    public GuiUpgradeManagement upgradeManagement;
 
     public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
     {
         super(new ContainerAdvancedElectricMachine(inventory, tentity));
         tileEntity = tentity;
         
-        redstoneControl = new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation);
-        upgradeManagement = new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation);
+        guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
+        guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -42,22 +40,21 @@ public class GuiAdvancedElectricMachine extends GuiContainer
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES), xAxis, yAxis);
 		}
-		
-		redstoneControl.renderForeground(xAxis, yAxis);
-		upgradeManagement.renderForeground(xAxis, yAxis);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
     	mc.renderEngine.func_110577_a(tileEntity.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-    	int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+    	int xAxis = mouseX - guiWidth;
+		int yAxis = mouseY - guiHeight;
 		
         int displayInt;
         
@@ -69,25 +66,5 @@ public class GuiAdvancedElectricMachine extends GuiContainer
 
         displayInt = tileEntity.getScaledProgress(24);
         drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
-        
-        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
-        upgradeManagement.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
-    
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
-	{
-		xSize += 26;
-		super.mouseClicked(mouseX, mouseY, button);
-		xSize -= 26;
-		
-		if(button == 0)
-		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-			
-			redstoneControl.mouseClicked(xAxis, yAxis);
-			upgradeManagement.mouseClicked(xAxis, yAxis);
-		}
-	}
 }

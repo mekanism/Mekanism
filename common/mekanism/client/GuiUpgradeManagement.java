@@ -57,18 +57,38 @@ public class GuiUpgradeManagement extends GuiElement
 	}
 	
 	@Override
-	public void mouseClicked(int xAxis, int yAxis)
+	public void preMouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
+		if(button == 0)
 		{
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)0));
+			if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
+			{
+				offsetX(26);
+			}
 		}
-		
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
+	}
+	
+	@Override
+	public void mouseClicked(int xAxis, int yAxis, int button)
+	{
+		if(button == 0)
 		{
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)1));
+			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)0));
+			}
+			
+			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)1));
+			}
+			
+			if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
+			{
+				offsetX(-26);
+			}
 		}
 	}
 }

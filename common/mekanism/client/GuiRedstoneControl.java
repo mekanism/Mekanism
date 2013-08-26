@@ -59,16 +59,22 @@ public class GuiRedstoneControl extends GuiElement
 	}
 	
 	@Override
-	public void mouseClicked(int xAxis, int yAxis)
+	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+	
+	@Override
+	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 		
-		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 142 && yAxis <= 160)
+		if(button == 0)
 		{
-			RedstoneControl current = control.getControlType();
-			int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
-			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketRedstoneControl().setParams(Object3D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 142 && yAxis <= 160)
+			{
+				RedstoneControl current = control.getControlType();
+				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRedstoneControl().setParams(Object3D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+			}
 		}
 	}
 }

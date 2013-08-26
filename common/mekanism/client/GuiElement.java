@@ -72,5 +72,7 @@ public abstract class GuiElement
 	
 	public abstract void renderForeground(int xAxis, int yAxis);
 	
-	public abstract void mouseClicked(int xAxis, int yAxis);
+	public abstract void preMouseClicked(int xAxis, int yAxis, int button);
+	
+	public abstract void mouseClicked(int xAxis, int yAxis, int button);
 }

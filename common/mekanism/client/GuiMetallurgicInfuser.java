@@ -21,25 +21,24 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiMetallurgicInfuser extends GuiContainer
+public class GuiMetallurgicInfuser extends GuiMekanism
 {
 	public TileEntityMetallurgicInfuser tileEntity;
-	
-	public GuiRedstoneControl redstoneControl;
-	public GuiUpgradeManagement upgradeManagement;
 	
 	public GuiMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
     {
         super(new ContainerMetallurgicInfuser(inventory, tentity));
         tileEntity = tentity;
         
-        redstoneControl = new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
-        upgradeManagement = new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
+        guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
+        guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
     }
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -50,22 +49,21 @@ public class GuiMetallurgicInfuser extends GuiContainer
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES), xAxis, yAxis);
 		}
-		
-		redstoneControl.renderForeground(xAxis, yAxis);
-		upgradeManagement.renderForeground(xAxis, yAxis);
     }
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+		
 		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int xAxis = (mouseX - (width - xSize) / 2);
- 		int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - guiWidth;
+ 		int yAxis = mouseY - guiHeight;
         
         int displayInt;
         
@@ -81,25 +79,17 @@ public class GuiMetallurgicInfuser extends GuiContainer
 	        mc.renderEngine.func_110577_a(tileEntity.type.texture);
 	        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
         }
-        
-        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
-        upgradeManagement.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
 	
 	@Override
     protected void mouseClicked(int x, int y, int button)
     {
-		xSize += 26;
 		super.mouseClicked(x, y, button);
-		xSize -= 26;
 		
 		if(button == 0)
 		{
 			int xAxis = (x - (width - xSize) / 2);
 			int yAxis = (y - (height - ySize) / 2);
-			
-			redstoneControl.mouseClicked(xAxis, yAxis);
-			upgradeManagement.mouseClicked(xAxis, yAxis);
 			
 			if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
 			{

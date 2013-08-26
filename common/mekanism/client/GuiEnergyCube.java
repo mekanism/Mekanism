@@ -16,22 +16,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiEnergyCube extends GuiContainer
+public class GuiEnergyCube extends GuiMekanism
 {
 	public TileEntityEnergyCube tileEntity;
-	
-	public GuiRedstoneControl redstoneControl;
 	
 	public GuiEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube tentity)
 	{
 		super(new ContainerEnergyCube(inventory, tentity));
 		tileEntity = tentity;
-		redstoneControl = new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -42,39 +42,23 @@ public class GuiEnergyCube extends GuiContainer
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
 		fontRenderer.drawString(outputInfo, 45, 49, 0x00CD00);
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-		
-		redstoneControl.renderForeground(xAxis, yAxis);
 	}
 	
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+		
 		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int xAxis = (mouseX - (width - xSize) / 2);
- 		int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - guiWidth;
+ 		int yAxis = mouseY - guiHeight;
         
         int scale = (int)((tileEntity.electricityStored / tileEntity.tier.MAX_ELECTRICITY) * 72);
         drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
-        
-        redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
-	
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
-	{
-		super.mouseClicked(mouseX, mouseY, button);
-		
-		if(button == 0)
-		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-			
-			redstoneControl.mouseClicked(xAxis, yAxis);
-		}
-	}
 }
