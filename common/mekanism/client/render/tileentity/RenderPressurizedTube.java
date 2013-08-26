@@ -1,4 +1,4 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,15 +7,15 @@ import mekanism.api.Object3D;
 import mekanism.api.gas.EnumGas;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.client.MekanismRenderer;
-import mekanism.client.MekanismRenderer.BooleanArray;
-import mekanism.client.MekanismRenderer.DisplayInteger;
-import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.client.model.ModelTransmitter;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.BooleanArray;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tileentity.TileEntityGasTank;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;

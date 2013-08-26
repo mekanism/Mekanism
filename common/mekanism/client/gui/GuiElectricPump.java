@@ -1,10 +1,10 @@
 package mekanism.client.gui;
 
-import mekanism.client.MekanismRenderer;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.tileentity.TileEntityElectricPump;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidRegistry;

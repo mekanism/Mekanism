@@ -3,8 +3,8 @@ package mekanism.generators.common.tileentity;
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
-import mekanism.common.ChargeUtils;
-import mekanism.common.MekanismUtils;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.API.ISolarLevel;

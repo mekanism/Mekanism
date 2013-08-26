@@ -1,8 +1,8 @@
-package mekanism.client.render;
+package mekanism.client.render.entity;
 
 import mekanism.client.model.ModelRobit;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;

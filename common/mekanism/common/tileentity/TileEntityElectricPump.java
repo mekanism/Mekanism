@@ -11,13 +11,13 @@ import java.util.Set;
 
 import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.common.ChargeUtils;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

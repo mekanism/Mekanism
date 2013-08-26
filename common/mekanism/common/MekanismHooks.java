@@ -6,6 +6,7 @@ import ic2.api.recipe.Recipes;
 import java.util.Map;
 
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

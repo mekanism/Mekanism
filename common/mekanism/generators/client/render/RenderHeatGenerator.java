@@ -1,7 +1,7 @@
 package mekanism.generators.client.render;
 
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.common.tileentity.TileEntityHeatGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

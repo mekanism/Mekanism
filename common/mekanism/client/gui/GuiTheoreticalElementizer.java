@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
-import mekanism.common.MekanismUtils;
 import mekanism.common.tileentity.TileEntityTheoreticalElementizer;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 
 @SideOnly(Side.CLIENT)

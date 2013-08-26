@@ -1,10 +1,10 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelTransmitter;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
-import mekanism.common.TransporterUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

@@ -3,13 +3,13 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 

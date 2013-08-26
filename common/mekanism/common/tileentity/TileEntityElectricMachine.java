@@ -2,11 +2,11 @@ package mekanism.common.tileentity;
 
 import mekanism.api.EnumColor;
 import mekanism.api.SideData;
-import mekanism.common.ChargeUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
 import mekanism.common.RecipeHandler;
 import mekanism.common.TileComponentUpgrade;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import dan200.computer.api.IComputerAccess;

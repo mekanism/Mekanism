@@ -2,7 +2,7 @@ package mekanism.generators.common.tileentity;
 
 import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.MekanismUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock

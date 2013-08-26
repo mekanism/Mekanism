@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
 import mekanism.api.gas.EnumGas;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelElectrolyticSeparator;
 import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

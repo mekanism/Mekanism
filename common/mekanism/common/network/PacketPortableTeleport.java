@@ -3,11 +3,11 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.api.Object3D;
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package mekanism.client;
+package mekanism.client.sound;
 
 /**
  * Implement this if your TileEntity has a specific sound.

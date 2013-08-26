@@ -5,8 +5,8 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.common.ChargeUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

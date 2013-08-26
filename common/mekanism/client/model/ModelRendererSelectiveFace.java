@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mekanism.client.MekanismRenderer;
-import mekanism.client.MekanismRenderer.BooleanArray;
-import mekanism.client.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.BooleanArray;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.Tessellator;
 

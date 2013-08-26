@@ -1,13 +1,13 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.client.model.ModelChargepad;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.tileentity.TileEntityChargepad;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 

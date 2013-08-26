@@ -1,15 +1,17 @@
-package mekanism.client;
+package mekanism.client.render.item;
 
+import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelRobit;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IElectricChest;
 import mekanism.common.IEnergyCube;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;

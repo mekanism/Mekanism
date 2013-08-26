@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.util;
 
 import ic2.api.Direction;
 
@@ -14,9 +14,20 @@ import java.util.Iterator;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
+import mekanism.common.DynamicTankCache;
+import mekanism.common.IActiveState;
+import mekanism.common.IFactory;
+import mekanism.common.IModule;
+import mekanism.common.IRedstoneControl;
+import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.Teleporter;
+import mekanism.common.Tier;
+import mekanism.common.Version;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Teleporter.Code;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerElectricChest;

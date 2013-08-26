@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import mekanism.common.util.MekanismUtils;
+
 /**
  * Thread used to retrieve data from the Mekanism server.
  * @author AidanBrady

@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketStatusUpdate;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.ITickHandler;

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;

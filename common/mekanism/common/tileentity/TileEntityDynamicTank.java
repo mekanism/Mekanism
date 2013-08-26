@@ -6,13 +6,13 @@ import java.util.Map;
 
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
 import mekanism.common.SynchronizedTankData;
 import mekanism.common.TankUpdateProtocol;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

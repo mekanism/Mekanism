@@ -2,10 +2,10 @@ package mekanism.generators.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.client.Sound;
-import mekanism.common.ChargeUtils;
+import mekanism.client.sound.Sound;
 import mekanism.common.FluidSlot;
-import mekanism.common.MekanismUtils;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

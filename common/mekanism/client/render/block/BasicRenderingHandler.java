@@ -1,5 +1,7 @@
-package mekanism.client;
+package mekanism.client.render.block;
 
+import mekanism.client.ClientProxy;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;

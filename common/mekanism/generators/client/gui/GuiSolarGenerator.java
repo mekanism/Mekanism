@@ -2,8 +2,8 @@ package mekanism.generators.client.gui;
 
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRedstoneControl;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.tileentity.TileEntitySolarGenerator;
 import net.minecraft.entity.player.InventoryPlayer;

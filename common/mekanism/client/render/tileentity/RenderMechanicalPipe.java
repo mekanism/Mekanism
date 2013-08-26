@@ -1,14 +1,14 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.client.MekanismRenderer;
-import mekanism.client.MekanismRenderer.DisplayInteger;
-import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.client.model.ModelTransmitter;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.PipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

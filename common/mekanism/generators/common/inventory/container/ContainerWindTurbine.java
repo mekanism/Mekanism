@@ -1,7 +1,7 @@
 package mekanism.generators.common.inventory.container;
 
-import mekanism.common.ChargeUtils;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tileentity.TileEntityWindTurbine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

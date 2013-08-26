@@ -1,4 +1,4 @@
-package mekanism.client;
+package mekanism.client.sound;
 
 import java.net.URL;
 

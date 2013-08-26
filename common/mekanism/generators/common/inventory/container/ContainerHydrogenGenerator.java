@@ -2,8 +2,8 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.api.IStorageTank;
 import mekanism.api.gas.EnumGas;
-import mekanism.common.ChargeUtils;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tileentity.TileEntityHydrogenGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

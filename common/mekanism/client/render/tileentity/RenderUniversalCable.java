@@ -1,18 +1,18 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.client.MekanismRenderer;
-import mekanism.client.MekanismRenderer.BooleanArray;
-import mekanism.client.MekanismRenderer.DisplayInteger;
-import mekanism.client.MekanismRenderer.Model3D;
 import mekanism.client.model.ModelTransmitter;
-import mekanism.common.CableUtils;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.BooleanArray;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.tileentity.TileEntityUniversalCable;
+import mekanism.common.util.CableUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;

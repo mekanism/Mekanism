@@ -1,9 +1,9 @@
 package mekanism.generators.common.tileentity;
 
 import mekanism.api.Object3D;
-import mekanism.common.ChargeUtils;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.MekanismUtils;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.ItemStack;
 import dan200.computer.api.IComputerAccess;

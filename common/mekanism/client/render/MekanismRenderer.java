@@ -1,10 +1,10 @@
-package mekanism.client;
+package mekanism.client.render;
 
 import java.util.Arrays;
 import java.util.List;
 
 import mekanism.common.ISpecialBounds;
-import mekanism.common.MekanismUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;

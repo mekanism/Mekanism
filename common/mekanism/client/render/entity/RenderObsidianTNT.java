@@ -1,4 +1,4 @@
-package mekanism.client.render;
+package mekanism.client.render.entity;
 
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;

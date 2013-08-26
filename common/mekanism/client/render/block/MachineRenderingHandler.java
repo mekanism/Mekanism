@@ -1,13 +1,15 @@
-package mekanism.client;
+package mekanism.client.render.block;
 
+import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
 import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.model.ModelTheoreticalElementizer;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;

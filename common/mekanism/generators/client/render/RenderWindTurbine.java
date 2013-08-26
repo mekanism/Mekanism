@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindTurbine;
 import mekanism.generators.common.tileentity.TileEntityWindTurbine;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

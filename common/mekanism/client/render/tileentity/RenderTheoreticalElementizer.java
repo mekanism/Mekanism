@@ -1,9 +1,9 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelTheoreticalElementizer;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.tileentity.TileEntityTheoreticalElementizer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 

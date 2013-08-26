@@ -1,12 +1,12 @@
 package mekanism.client.gui;
 
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketPortableTeleport;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;

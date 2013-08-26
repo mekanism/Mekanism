@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.ChargeUtils;
 import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
@@ -8,6 +7,7 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tileentity.TileEntityElectricMachine;
+import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

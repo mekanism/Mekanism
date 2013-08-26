@@ -1,14 +1,15 @@
 package mekanism.client.gui;
 
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketWeather;
 import mekanism.common.network.PacketWeather.WeatherType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;

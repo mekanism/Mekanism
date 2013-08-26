@@ -1,8 +1,8 @@
 package mekanism.generators.client;
 
-import mekanism.client.MekanismRenderer;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.client.model.ModelElectrolyticSeparator;

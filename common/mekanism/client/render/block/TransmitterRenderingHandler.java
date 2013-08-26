@@ -1,8 +1,9 @@
-package mekanism.client;
+package mekanism.client.render.block;
 
+import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelTransmitter;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;

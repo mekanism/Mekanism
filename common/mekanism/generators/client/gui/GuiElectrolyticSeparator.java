@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import mekanism.api.Object3D;
 import mekanism.api.gas.EnumGas;
-import mekanism.common.MekanismUtils;
 import mekanism.common.PacketHandler;
-import mekanism.common.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.client.gui.inventory.GuiContainer;

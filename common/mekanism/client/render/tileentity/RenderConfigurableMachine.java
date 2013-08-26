@@ -1,16 +1,16 @@
-package mekanism.client.render;
+package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
-import mekanism.client.MekanismRenderer;
-import mekanism.client.MekanismRenderer.DisplayInteger;
-import mekanism.client.MekanismRenderer.Model3D;
-import mekanism.common.MekanismUtils;
-import mekanism.common.MekanismUtils.ResourceType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;

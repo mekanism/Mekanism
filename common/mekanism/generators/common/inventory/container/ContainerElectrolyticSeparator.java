@@ -2,9 +2,9 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.api.IStorageTank;
 import mekanism.api.gas.EnumGas;
-import mekanism.common.ChargeUtils;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
