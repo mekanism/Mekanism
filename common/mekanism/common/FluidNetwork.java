@@ -150,7 +150,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				transmitters.remove(conductor);
 			}
 			else {
-				conductor.setNetwork(this);
+				conductor.setTransmitterNetwork(this);
 			}
 		}
 		

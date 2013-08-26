@@ -77,7 +77,7 @@ public class ItemConfigurator extends ItemEnergized
     		}
     		else if(world.getBlockTileEntity(x, y, z) instanceof ITransmitter)
     		{
-    			((ITransmitter)world.getBlockTileEntity(x, y, z)).fixNetwork();
+    			((ITransmitter)world.getBlockTileEntity(x, y, z)).fixTransmitterNetwork();
     		}
     		
     		if(getState(stack) == 0)

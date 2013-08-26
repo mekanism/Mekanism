@@ -70,7 +70,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 				transmitters.remove(conductor);
 			}
 			else {
-				conductor.setNetwork(this);
+				conductor.setTransmitterNetwork(this);
 			}
 		}
 		

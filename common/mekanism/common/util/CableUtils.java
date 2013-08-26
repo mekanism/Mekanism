@@ -202,7 +202,7 @@ public final class CableUtils
     		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
     		ignored.add(sender);
     		
-    		return cable.getNetwork().emit(amount, ignored);
+    		return cable.getTransmitterNetwork().emit(amount, ignored);
     	}
     	
     	return amount;
@@ -230,7 +230,7 @@ public final class CableUtils
     			
     			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.ENERGY) && !ignored.contains(sideTile))
     			{
-    				networks.add(((ITransmitter<EnergyNetwork>)sideTile).getNetwork());
+    				networks.add(((ITransmitter<EnergyNetwork>)sideTile).getTransmitterNetwork());
     			}
     		}
     		

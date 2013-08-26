@@ -271,7 +271,7 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			((ITransmitter)tileEntity).refreshNetwork();
+			((ITransmitter)tileEntity).refreshTransmitterNetwork();
 		}
 	}
 	
@@ -282,7 +282,7 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			((ITransmitter)tileEntity).refreshNetwork();
+			((ITransmitter)tileEntity).refreshTransmitterNetwork();
 		}
 	}
 	

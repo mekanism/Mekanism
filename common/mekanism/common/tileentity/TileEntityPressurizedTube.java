@@ -28,7 +28,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	}
 	
 	@Override
-	public GasNetwork getNetwork(boolean createIfNull)
+	public GasNetwork getTransmitterNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
 		{
@@ -37,9 +37,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 			
 			for(TileEntity tube : adjacentTubes)
 			{
-				if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, this) && ((ITransmitter<GasNetwork>)tube).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, this) && ((ITransmitter<GasNetwork>)tube).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<GasNetwork>)tube).getNetwork());
+					connectedNets.add(((ITransmitter<GasNetwork>)tube).getTransmitterNetwork());
 				}
 			}
 			
@@ -62,9 +62,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	}
 
 	@Override
-	public void fixNetwork()
+	public void fixTransmitterNetwork()
 	{
-		getNetwork().fixMessedUpNetwork(this);
+		getTransmitterNetwork().fixMessedUpNetwork(this);
 	}
 
 	@Override
@@ -72,14 +72,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	{
 		if(!worldObj.isRemote)
 		{
-			getNetwork().split(this);
+			getTransmitterNetwork().split(this);
 		}
 		
 		super.invalidate();
 	}
 	
 	@Override
-	public void removeFromNetwork()
+	public void removeFromTransmitterNetwork()
 	{
 		if(theNetwork != null)
 		{
@@ -88,7 +88,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	}
 	
 	@Override
-	public void refreshNetwork() 
+	public void refreshTransmitterNetwork() 
 	{
 		if(!worldObj.isRemote)
 		{
@@ -98,11 +98,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 				
 				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
 				{
-					getNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getNetwork());
+					getTransmitterNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork());
 				}
 			}
 			
-			getNetwork().refresh();
+			getTransmitterNetwork().refresh();
 		}
 	}
 	
@@ -132,27 +132,27 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	}
 	
 	@Override
-	public int getNetworkSize()
+	public int getTransmitterNetworkSize()
 	{
-		return getNetwork().getSize();
+		return getTransmitterNetwork().getSize();
 	}
 
 	@Override
-	public int getNetworkAcceptorSize()
+	public int getTransmitterNetworkAcceptorSize()
 	{
-		return getNetwork().getAcceptorSize();
+		return getTransmitterNetwork().getAcceptorSize();
 	}
 
 	@Override
-	public String getNetworkNeeded()
+	public String getTransmitterNetworkNeeded()
 	{
-		return getNetwork().getNeeded();
+		return getTransmitterNetwork().getNeeded();
 	}
 
 	@Override
-	public String getNetworkFlow()
+	public String getTransmitterNetworkFlow()
 	{
-		return getNetwork().getFlow();
+		return getTransmitterNetwork().getFlow();
 	}
 
     @Override

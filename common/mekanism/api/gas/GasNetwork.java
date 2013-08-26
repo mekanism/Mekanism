@@ -126,7 +126,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 				transmitters.remove(conductor);
 			}
 			else {
-				conductor.setNetwork(this);
+				conductor.setTransmitterNetwork(this);
 			}
 		}
 		

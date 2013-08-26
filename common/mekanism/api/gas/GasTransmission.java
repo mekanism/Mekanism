@@ -96,7 +96,7 @@ public final class GasTransmission
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{
-	    	return ((ITransmitter<GasNetwork>)pointer).getNetwork().emit(amount, type, sender);
+	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(amount, type, sender);
     	}
     	
     	return amount;
@@ -122,7 +122,7 @@ public final class GasTransmission
     			
     			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.GAS, pointer))
     			{
-    				networks.add(((ITransmitter<GasNetwork>)sideTile).getNetwork());
+    				networks.add(((ITransmitter<GasNetwork>)sideTile).getTransmitterNetwork());
     			}
     		}
     		

@@ -26,24 +26,24 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	}
 	
 	@Override
-	public void setNetwork(N network)
+	public void setTransmitterNetwork(N network)
 	{
 		if(network != theNetwork)
 		{
-			removeFromNetwork();
+			removeFromTransmitterNetwork();
 			theNetwork = network;
 		}
 	}
 	
 	@Override
-	public boolean areNetworksEqual(TileEntity tileEntity)
+	public boolean areTransmitterNetworksEqual(TileEntity tileEntity)
 	{
 		return tileEntity instanceof ITransmitter && getTransmissionType() == ((ITransmitter)tileEntity).getTransmissionType();
 	}
 	
 	@Override
-	public N getNetwork()
+	public N getTransmitterNetwork()
 	{
-		return getNetwork(true);
+		return getTransmitterNetwork(true);
 	}
 }

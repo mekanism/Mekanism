@@ -34,7 +34,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	}
 	
 	@Override
-	public InventoryNetwork getNetwork(boolean createIfNull)
+	public InventoryNetwork getTransmitterNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
 		{
@@ -44,9 +44,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			
 			for(TileEntity transporter : adjacentTransporters)
 			{
-				if(TransmissionType.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork>)transporter).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork>)transporter).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getNetwork());
+					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getTransmitterNetwork());
 				}
 			}
 			
@@ -69,9 +69,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	}
 
 	@Override
-	public void fixNetwork()
+	public void fixTransmitterNetwork()
 	{
-		getNetwork().fixMessedUpNetwork(this);
+		getTransmitterNetwork().fixMessedUpNetwork(this);
 	}
 	
 	@Override
@@ -79,14 +79,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	{
 		if(!worldObj.isRemote)
 		{
-			getNetwork().split(this);
+			getTransmitterNetwork().split(this);
 		}
 		
 		super.invalidate();
 	}
 	
 	@Override
-	public void removeFromNetwork()
+	public void removeFromTransmitterNetwork()
 	{
 		if(theNetwork != null)
 		{
@@ -95,7 +95,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	}
 
 	@Override
-	public void refreshNetwork() 
+	public void refreshTransmitterNetwork() 
 	{
 		if(!worldObj.isRemote)
 		{
@@ -105,11 +105,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 				
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
-					getNetwork().merge(((ITransmitter<InventoryNetwork>)tileEntity).getNetwork());
+					getTransmitterNetwork().merge(((ITransmitter<InventoryNetwork>)tileEntity).getTransmitterNetwork());
 				}
 			}
 			
-			getNetwork().refresh();
+			getTransmitterNetwork().refresh();
 		}
 	}
 	
@@ -167,26 +167,26 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	}
 	
 	@Override
-	public int getNetworkSize()
+	public int getTransmitterNetworkSize()
 	{
-		return getNetwork().getSize();
+		return getTransmitterNetwork().getSize();
 	}
 
 	@Override
-	public int getNetworkAcceptorSize()
+	public int getTransmitterNetworkAcceptorSize()
 	{
-		return getNetwork().getAcceptorSize();
+		return getTransmitterNetwork().getAcceptorSize();
 	}
 
 	@Override
-	public String getNetworkNeeded()
+	public String getTransmitterNetworkNeeded()
 	{
-		return getNetwork().getNeeded();
+		return getTransmitterNetwork().getNeeded();
 	}
 
 	@Override
-	public String getNetworkFlow()
+	public String getTransmitterNetworkFlow()
 	{
-		return getNetwork().getFlow();
+		return getTransmitterNetwork().getFlow();
 	}
 }

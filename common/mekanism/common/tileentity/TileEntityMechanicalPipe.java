@@ -63,7 +63,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	}
 	
 	@Override
-	public FluidNetwork getNetwork(boolean createIfNull)
+	public FluidNetwork getTransmitterNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
 		{
@@ -72,9 +72,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getNetwork());
+					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork());
 				}
 			}
 			
@@ -97,9 +97,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	}
 
 	@Override
-	public void fixNetwork()
+	public void fixTransmitterNetwork()
 	{
-		getNetwork().fixMessedUpNetwork(this);
+		getTransmitterNetwork().fixMessedUpNetwork(this);
 	}
 	
 	@Override
@@ -107,14 +107,14 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		if(!worldObj.isRemote)
 		{
-			getNetwork().split(this);
+			getTransmitterNetwork().split(this);
 		}
 		
 		super.invalidate();
 	}
 	
 	@Override
-	public void removeFromNetwork()
+	public void removeFromTransmitterNetwork()
 	{
 		if(theNetwork != null)
 		{
@@ -123,7 +123,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	}
 
 	@Override
-	public void refreshNetwork() 
+	public void refreshTransmitterNetwork() 
 	{
 		if(!worldObj.isRemote)
 		{
@@ -133,11 +133,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 				
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
-					getNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getNetwork());
+					getTransmitterNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork());
 				}
 			}
 			
-			getNetwork().refresh();
+			getTransmitterNetwork().refresh();
 		}
 	}
 	
@@ -169,7 +169,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side, getNetwork().emit(received, true, Object3D.get(this).getFromSide(side).getTileEntity(worldObj)), true);
+							container.drain(side, getTransmitterNetwork().emit(received, true, Object3D.get(this).getFromSide(side).getTileEntity(worldObj)), true);
 						}
 					}
 				}
@@ -235,7 +235,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		if(!isActive)
 		{
-			return getNetwork().emit(resource, doFill, Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
+			return getTransmitterNetwork().emit(resource, doFill, Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
 		}
 		
 		return 0;
@@ -272,26 +272,26 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	}
 	
 	@Override
-	public int getNetworkSize()
+	public int getTransmitterNetworkSize()
 	{
-		return getNetwork().getSize();
+		return getTransmitterNetwork().getSize();
 	}
 
 	@Override
-	public int getNetworkAcceptorSize()
+	public int getTransmitterNetworkAcceptorSize()
 	{
-		return getNetwork().getAcceptorSize();
+		return getTransmitterNetwork().getAcceptorSize();
 	}
 
 	@Override
-	public String getNetworkNeeded()
+	public String getTransmitterNetworkNeeded()
 	{
-		return getNetwork().getNeeded();
+		return getTransmitterNetwork().getNeeded();
 	}
 
 	@Override
-	public String getNetworkFlow()
+	public String getTransmitterNetworkFlow()
 	{
-		return getNetwork().getFlow();
+		return getTransmitterNetwork().getFlow();
 	}
 }

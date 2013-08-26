@@ -15,7 +15,7 @@ public interface ITransmitter<N>
 	 * Gets the network currently in use by this transmitter segment.
 	 * @return network this transmitter is using
 	 */
-	public N getNetwork();
+	public N getTransmitterNetwork();
 	
 	/**
 	 * Gets the network currently in use by this transmitter segment.
@@ -24,37 +24,37 @@ public interface ITransmitter<N>
 	 * if none is available
 	 * @return network this transmitter is using
 	 */
-	public N getNetwork(boolean createIfNull);
+	public N getTransmitterNetwork(boolean createIfNull);
 	
 	/**
 	 * Sets this transmitter segment's network to a new value.
 	 * @param network - network to set to
 	 */
-	public void setNetwork(N network);
+	public void setTransmitterNetwork(N network);
 	
 	/**
 	 * Refreshes the transmitter's network.
 	 */
-	public void refreshNetwork();
+	public void refreshTransmitterNetwork();
 	
 	/**
 	 * Remove this transmitter from its network.
 	 */
-	public void removeFromNetwork();
+	public void removeFromTransmitterNetwork();
 
 	/**
 	 * Call this if you're worried a transmitter's network is messed up and you want
 	 * it to try and fix itself.
 	 */
-	public void fixNetwork();
+	public void fixTransmitterNetwork();
 	
-	public boolean areNetworksEqual(TileEntity tileEntity);
+	public boolean areTransmitterNetworksEqual(TileEntity tileEntity);
 
-	public int getNetworkSize();
+	public int getTransmitterNetworkSize();
 
-	public int getNetworkAcceptorSize();
+	public int getTransmitterNetworkAcceptorSize();
 
-	public String getNetworkNeeded();
+	public String getTransmitterNetworkNeeded();
 
-	public String getNetworkFlow();
+	public String getTransmitterNetworkFlow();
 }

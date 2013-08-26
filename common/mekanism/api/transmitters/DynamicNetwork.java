@@ -111,7 +111,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 
 				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity) transmitter))
 				{
-					((ITransmitter<N>)nodeTile).removeFromNetwork();
+					((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
 					newTransporters.add((ITransmitter<N>)nodeTile);
 				}
 			}

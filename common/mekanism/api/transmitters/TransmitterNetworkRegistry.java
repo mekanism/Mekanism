@@ -140,7 +140,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 						
 						if(tileEntity instanceof ITransmitter)
 						{
-							((ITransmitter)tileEntity).refreshNetwork();
+							((ITransmitter)tileEntity).refreshTransmitterNetwork();
 						}
 					}
 				}
