@@ -30,7 +30,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
@@ -624,5 +624,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+	}
+	
+	@Override
+	public UpgradeTileComponent getComponent()
+	{
+		return upgradeComponent;
 	}
 }

@@ -26,7 +26,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
+public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -729,5 +729,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+	}
+	
+	@Override
+	public UpgradeTileComponent getComponent()
+	{
+		return upgradeComponent;
 	}
 }

@@ -24,13 +24,16 @@ public class GuiFactory extends GuiContainer
     public TileEntityFactory tileEntity;
     
     public GuiRedstoneControl redstoneControl;
+    public GuiUpgradeManagement upgradeManagement;
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
         super(new ContainerFactory(inventory, tentity));
         xSize+=26;
         tileEntity = tentity;
+        
         redstoneControl = new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation);
+        upgradeManagement = new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation);
     }
 
     @Override
@@ -42,25 +45,14 @@ public class GuiFactory extends GuiContainer
         fontRenderer.drawString(tileEntity.fullName, 48, 4, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 93) + 2, 0x404040);
         fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 124, (ySize - 93) + 2, 0x404040);
-        fontRenderer.drawString("S:" + (tileEntity.getSpeedMultiplier()+1) + "x", 179, 47, 0x404040);
-        fontRenderer.drawString("E:" + (tileEntity.getEnergyMultiplier()+1) + "x", 179, 57, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
 			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
 		}
 		
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
-		{
-			drawCreativeTabHoveringText("Remove speed upgrade", xAxis, yAxis);
-		}
-		
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
-		{
-			drawCreativeTabHoveringText("Remove energy upgrade", xAxis, yAxis);
-		}
-		
 		redstoneControl.renderForeground(xAxis, yAxis);
+		upgradeManagement.renderForeground(xAxis, yAxis);
     }
 
     @Override
@@ -79,9 +71,6 @@ public class GuiFactory extends GuiContainer
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
-        
-        displayInt = tileEntity.upgradeComponent.getScaledUpgradeProgress(14);
-        drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 176 + 26, 72, 10, displayInt);
         
         displayInt = tileEntity.getScaledRecipeProgress(15);
         drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 176 + 26, 86, 10, displayInt);
@@ -118,6 +107,7 @@ public class GuiFactory extends GuiContainer
         }
         
         redstoneControl.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
+        upgradeManagement.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
     }
     
 	@Override
@@ -131,18 +121,7 @@ public class GuiFactory extends GuiContainer
 			int yAxis = (mouseY - (height - ySize) / 2);
 			
 			redstoneControl.mouseClicked(xAxis, yAxis);
-			
-			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
-			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)0));
-			}
-			
-			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
-			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)1));
-			}
+			upgradeManagement.mouseClicked(xAxis, yAxis);
 		}
 	}
 }

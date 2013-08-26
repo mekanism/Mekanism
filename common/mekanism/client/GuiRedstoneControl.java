@@ -15,34 +15,14 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiRedstoneControl 
+public class GuiRedstoneControl extends GuiElement
 {
-	private static Minecraft mc = Minecraft.getMinecraft();
-	
-	private static ResourceLocation RESOURCE = MekanismUtils.getResource(ResourceType.GUI, "GuiRedstoneControl.png");
-	
-	public GuiContainer guiContainer;
-	
-	public TileEntity tileEntity;
-	
-	public ResourceLocation defaultLocation;
-	
 	public GuiRedstoneControl(GuiContainer gui, TileEntity tile, ResourceLocation def)
 	{
-		guiContainer = gui;
-		tileEntity = tile;
-		defaultLocation = def;
+		super(MekanismUtils.getResource(ResourceType.GUI, "GuiRedstoneControl.png"), gui, tile, def);
 	}
 	
-	private void displayTooltip(String s, int xAxis, int yAxis)
-	{
-		try {
-			Method m = GuiContainer.class.getDeclaredMethod("drawCreativeTabHoveringText", String.class, Integer.TYPE, Integer.TYPE);
-			m.setAccessible(true);
-			m.invoke(guiContainer, s, xAxis, yAxis);
-		} catch(Exception e) {e.printStackTrace();}
-	}
-	
+	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.func_110577_a(RESOURCE);
@@ -63,6 +43,7 @@ public class GuiRedstoneControl
 		mc.renderEngine.func_110577_a(defaultLocation);
 	}
 	
+	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{
 		mc.renderEngine.func_110577_a(RESOURCE);
@@ -77,6 +58,7 @@ public class GuiRedstoneControl
 		mc.renderEngine.func_110577_a(defaultLocation);
 	}
 	
+	@Override
 	public void mouseClicked(int xAxis, int yAxis)
 	{
 		IRedstoneControl control = (IRedstoneControl)tileEntity;

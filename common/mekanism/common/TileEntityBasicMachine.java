@@ -22,7 +22,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeManagement, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
@@ -390,5 +390,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+	}
+	
+	@Override
+	public UpgradeTileComponent getComponent()
+	{
+		return upgradeComponent;
 	}
 }
