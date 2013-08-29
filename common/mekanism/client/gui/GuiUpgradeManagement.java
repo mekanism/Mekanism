@@ -40,8 +40,11 @@ public class GuiUpgradeManagement extends GuiElement
 		
 		IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
 		
-		getFontRenderer().drawString("S:" + (upgradeTile.getSpeedMultiplier()+1) + "x", 179, 47, 0x404040);
-        getFontRenderer().drawString("E:" + (upgradeTile.getEnergyMultiplier()+1) + "x", 179, 57, 0x404040);
+		if(getFontRenderer() != null)
+		{
+			getFontRenderer().drawString("S:" + (upgradeTile.getSpeedMultiplier()+1) + "x", 179, 47, 0x404040);
+	        getFontRenderer().drawString("E:" + (upgradeTile.getEnergyMultiplier()+1) + "x", 179, 57, 0x404040);
+		}
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 		{
