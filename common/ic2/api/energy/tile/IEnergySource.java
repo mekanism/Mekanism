@@ -19,7 +19,7 @@ public interface IEnergySource extends IEnergyEmitter {
 	 * 
 	 * If the source doesn't have a buffer, this is a no-op.
 	 * 
-	 * @param amount amount of EU to draw
+	 * @param amount amount of EU to draw, may be negative
 	 */
 	void drawEnergy(double amount);
 }

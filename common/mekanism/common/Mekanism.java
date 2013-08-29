@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.Recipes;
 
 import java.io.File;
@@ -9,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import mekanism.api.Object3D;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.api.Object3D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
@@ -944,7 +945,7 @@ public class Mekanism
 			
 			if(hooks.IC2Loaded)
 			{
-				Recipes.macerator.addRecipe(new ItemStack(Ingot, 1, 2), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+				Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Ingot, 1, 2), 1), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			}
 			if(hooks.TELoaded)
 			{

@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeOutput;
 import ic2.api.recipe.Recipes;
 
@@ -52,34 +54,34 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.OreBlock, 1, 0), null, new ItemStack(Mekanism.Dust, 2, 2));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.OreBlock, 1, 0), 1), null, new ItemStack(Mekanism.Dust, 2, 2));
 			
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 1), null, new ItemStack(Mekanism.Dust, 1, 2));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 0), null, new ItemStack(Mekanism.Dust, 1, 3));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 3), null, new ItemStack(Item.glowstone));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Ingot, 1, 4), null, new ItemStack(Mekanism.Dust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 1), 1), null, new ItemStack(Mekanism.Dust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 0), 1), null, new ItemStack(Mekanism.Dust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 3), 1), null, new ItemStack(Item.glowstone));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 4), 1), null, new ItemStack(Mekanism.Dust, 1, 5));
 			
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 0), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 1), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 2), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 3), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 4), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-			Recipes.macerator.addRecipe(new ItemStack(Mekanism.Clump, 1, 5), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 0), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 1), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 2), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 3), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 4), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
+			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 5), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
 			
-			for(Map.Entry<ItemStack, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
+			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
 			{
-				if(MekanismUtils.getName(entry.getKey()).startsWith("ore"))
+				if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ore"))
 				{
-					if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey()))
+					if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey().getInputs().get(0)))
 					{
-						RecipeHandler.addEnrichmentChamberRecipe(entry.getKey(), entry.getValue().items.get(0));
+						RecipeHandler.addEnrichmentChamberRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
 					}
 				}
-				else if(MekanismUtils.getName(entry.getKey()).startsWith("ingot"))
+				else if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ingot"))
 				{
-					if(!Recipe.CRUSHER.containsRecipe(entry.getKey()))
+					if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
 					{
-						RecipeHandler.addCrusherRecipe(entry.getKey(), entry.getValue().items.get(0));
+						RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
 					}
 				}
 			}
@@ -87,7 +89,7 @@ public final class MekanismHooks
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("amplification", 50000);
 			
-			Recipes.matterAmplifier.addRecipe(new ItemStack(Mekanism.EnrichedAlloy), tag);
+			Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
 			
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
 		}

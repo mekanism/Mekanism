@@ -21,6 +21,9 @@ public interface IEnergySink extends IEnergyAcceptor {
 
 	/**
 	 * Transfer energy to the sink.
+	 * 
+	 * It's highly recommended to accept all energy by letting the internal buffer overflow to
+	 * increase the performance and accuracy of the distribution simulation.
 	 *
 	 * @param directionFrom direction from which the energy comes from
 	 * @param amount energy to be transferred

@@ -16,7 +16,7 @@ public class Recipes {
 	public static IMachineRecipeManager metalformerExtruding;
 	public static IMachineRecipeManager metalformerCutting;
 	public static IMachineRecipeManager metalformerRolling;
-	public static IMachineRecipeManager orewasching;
+	public static IMachineRecipeManager oreWashing;
 	public static IMachineRecipeManager Scanner;
 
 	/**
