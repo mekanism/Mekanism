@@ -113,14 +113,17 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			{
 				int x = event.getChunk().xPosition;
 				int z = event.getChunk().zPosition;
+				
 				IChunkProvider cProvider = event.getChunk().worldObj.getChunkProvider();
 				Chunk[] neighbors = new Chunk[5];
 				
 				neighbors[0] = event.getChunk();
+				
 				if(cProvider.chunkExists(x + 1, z)) neighbors[1] = cProvider.provideChunk(x + 1, z);
 				if(cProvider.chunkExists(x - 1, z)) neighbors[2] = cProvider.provideChunk(x - 1, z);
 				if(cProvider.chunkExists(x, z + 1)) neighbors[3] = cProvider.provideChunk(x, z + 1);
 				if(cProvider.chunkExists(x, z - 1)) neighbors[4] = cProvider.provideChunk(x, z - 1);
+				
 				for(Chunk c : neighbors)
 				{
 					refreshChunk(c);

@@ -1,5 +1,6 @@
 package mekanism.common.tileentity;
 
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 
@@ -20,6 +21,7 @@ import mekanism.common.util.CableUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -99,6 +101,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		if(!worldObj.isRemote)
 		{
 			getTransmitterNetwork().split(this);
+			
+			if(Mekanism.hooks.IC2Loaded)
+			{
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			}
 		}
 		
 		super.invalidate();
@@ -174,7 +181,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
     {
 		ArrayList list = new ArrayList();
 		list.add(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj));
-    	return getTransmitterNetwork().emit(i, list);
+    	return i - (getTransmitterNetwork().emit(i*Mekanism.FROM_IC2, list)*Mekanism.TO_IC2);
     }
 
 	@Override
@@ -248,7 +255,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	
 	public class FakeUENetwork implements IElectricityNetwork
 	{
-		
 		@Override
 		public void split(IConductor connection) {}
 		

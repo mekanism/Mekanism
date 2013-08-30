@@ -70,23 +70,27 @@ public final class MekanismHooks
 			
 			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
 			{
-				if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ore"))
+				if(!entry.getKey().getInputs().isEmpty())
 				{
-					if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey().getInputs().get(0)))
+					if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ore"))
 					{
-						RecipeHandler.addEnrichmentChamberRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+						if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey().getInputs().get(0)))
+						{
+							RecipeHandler.addEnrichmentChamberRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+						}
 					}
-				}
-				else if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ingot"))
-				{
-					if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
+					else if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ingot"))
 					{
-						RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+						if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
+						{
+							RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+						}
 					}
 				}
 			}
 			
 			NBTTagCompound tag = new NBTTagCompound();
+			
 			tag.setInteger("amplification", 50000);
 			
 			Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);

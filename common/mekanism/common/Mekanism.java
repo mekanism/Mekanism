@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.Recipes;
 
@@ -72,9 +74,11 @@ import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransf
 import mekanism.common.network.PacketWeather;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityControlPanel;
+import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityGasTank;
 import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -82,9 +86,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
@@ -1278,5 +1284,22 @@ public class Mekanism
 		try {
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidSent));
 		} catch(Exception e) {}
+	}
+	
+	@ForgeSubscribe
+	public void onChunkLoad(ChunkEvent.Load event)
+	{
+		for(Object obj : event.getChunk().chunkTileEntityMap.values())
+		{
+			TileEntity tileEntity = (TileEntity)obj;
+			
+			if(tileEntity != null)
+			{
+				if(tileEntity instanceof TileEntityElectricBlock || tileEntity instanceof TileEntityUniversalCable)
+				{
+					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
+				}
+			}
+		}
 	}
 }

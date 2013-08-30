@@ -22,9 +22,6 @@ import com.google.common.io.ByteArrayDataInput;
 
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork
 {
-	/** Whether or not this machine has initialized and registered with other mods. */
-	public boolean initialized;
-	
 	/** The direction this block is facing. */
 	public int facing;
 	
