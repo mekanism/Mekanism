@@ -21,9 +21,9 @@
 			<fileset dir="../Minecraft Forge/"/>
 		</copy>
 
-		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.2/CodeChickenCore%200.9.0.5.jar"
+		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.2/CodeChickenCore-dev%200.9.0.5_d1.jar"
 			dest="${dir.mcp}/lib/CCC-dev.jar"/>
-		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.2/NotEnoughItems%201.6.1.3.jar"
+		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.2/NotEnoughItems-dev%201.6.1.3_d1.jar"
 			dest="${dir.mcp}/lib/NEI-dev.jar"/>
 
 		<copy todir="${dir.mcp}/src/minecraft">
