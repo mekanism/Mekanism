@@ -18,7 +18,7 @@
 		<delete dir="${dir.development}/forge"/>
 
 		<copy todir="${dir.development}">
-			<fileset dir="../Minecraft Forge Latest/"/>
+			<fileset dir="../Minecraft Forge/"/>
 		</copy>
 
 		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.2/CodeChickenCore-dev%200.9.0.5.jar"
