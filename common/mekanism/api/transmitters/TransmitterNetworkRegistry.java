@@ -3,7 +3,6 @@ package mekanism.api.transmitters;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -57,7 +56,9 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	
 	public void pruneEmptyNetworks()
 	{
-		for(ITransmitterNetwork e : networks)
+	    HashSet<ITransmitterNetwork> copySet = new HashSet<ITransmitterNetwork>(networks);
+	    
+		for(ITransmitterNetwork e : copySet)
 		{
 			if(e.getSize() == 0)
 			{
