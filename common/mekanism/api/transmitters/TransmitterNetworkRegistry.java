@@ -2,6 +2,7 @@ package mekanism.api.transmitters;
 
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
@@ -18,34 +19,34 @@ public class TransmitterNetworkRegistry implements ITickHandler
 {
 	private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
 	private static boolean loaderRegistered = false;
-	
+
 	private HashSet<ITransmitterNetwork> networks = new HashSet<ITransmitterNetwork>();
-	
+
 	public TransmitterNetworkRegistry()
 	{
 		TickRegistry.registerTickHandler(this, Side.SERVER);
 	}
-	
+
 	public static void initiate()
 	{
 		if(!loaderRegistered)
 		{
 			loaderRegistered = true;
-			
+
 			MinecraftForge.EVENT_BUS.register(new NetworkLoader());
 		}
 	}
-	
+
 	public static TransmitterNetworkRegistry getInstance()
 	{
 		return INSTANCE;
 	}
-		
+
 	public void registerNetwork(ITransmitterNetwork network)
 	{
 		networks.add(network);
 	}
-	
+
 	public void removeNetwork(ITransmitterNetwork network)
 	{
 		if(networks.contains(network))
@@ -53,7 +54,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			networks.remove(network);
 		}
 	}
-	
+
 	public void pruneEmptyNetworks()
 	{
 	    HashSet<ITransmitterNetwork> copySet = new HashSet<ITransmitterNetwork>(networks);
@@ -66,18 +67,18 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			}
 		}
 	}
-	
+
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
 		return;
 	}
-	
+
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
 		Set<ITransmitterNetwork> iterNetworks = (Set<ITransmitterNetwork>)networks.clone();
-		
+
 		for(ITransmitterNetwork net : iterNetworks)
 		{
 			if(networks.contains(net))
@@ -98,13 +99,13 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	{
 		return "MekanismNetworks";
 	}
-	
+
 	@Override
-	public String toString() 
+	public String toString()
 	{
 		return "Network Registry:\n" + networks;
 	}
-	
+
 	public static class NetworkLoader
 	{
 		@ForgeSubscribe
@@ -114,41 +115,43 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			{
 				int x = event.getChunk().xPosition;
 				int z = event.getChunk().zPosition;
-				
+
 				IChunkProvider cProvider = event.getChunk().worldObj.getChunkProvider();
 				Chunk[] neighbors = new Chunk[5];
-				
+
 				neighbors[0] = event.getChunk();
-				
+
 				if(cProvider.chunkExists(x + 1, z)) neighbors[1] = cProvider.provideChunk(x + 1, z);
 				if(cProvider.chunkExists(x - 1, z)) neighbors[2] = cProvider.provideChunk(x - 1, z);
 				if(cProvider.chunkExists(x, z + 1)) neighbors[3] = cProvider.provideChunk(x, z + 1);
 				if(cProvider.chunkExists(x, z - 1)) neighbors[4] = cProvider.provideChunk(x, z - 1);
-				
+
 				for(Chunk c : neighbors)
 				{
 					refreshChunk(c);
 				}
 			}
 		}
-		
+
 		public void refreshChunk(Chunk c)
 		{
-			if(c != null)
-			{
-				for(Object obj : c.chunkTileEntityMap.values())
-				{
-					if(obj instanceof TileEntity)
-					{
-						TileEntity tileEntity = (TileEntity)obj;
-						
-						if(tileEntity instanceof ITransmitter)
-						{
-							((ITransmitter)tileEntity).refreshTransmitterNetwork();
-						}
-					}
-				}
-			}
+		    if(c != null)
+            {
+                Iterator it = c.chunkTileEntityMap.entrySet().iterator();
+                while(it.hasNext())
+                {
+                    Object obj = it.next();
+                    if(obj instanceof TileEntity)
+                    {
+                        TileEntity tileEntity = (TileEntity)obj;
+
+                        if(tileEntity instanceof ITransmitter)
+                        {
+                            ((ITransmitter)tileEntity).refreshTransmitterNetwork();
+                        }
+                    }
+                }
+            }
 		}
 	}
 }
