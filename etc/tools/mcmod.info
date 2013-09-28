@@ -4,7 +4,7 @@
   "name": "MekanismTools",
   "description": "Tools module for Mekanism.",
   "version": "5.5.7",
-  "mcversion": "1.6.2",
+  "mcversion": "1.6.4",
   "updateUrl": "",
   "authors": [
     "aidancbrady"
