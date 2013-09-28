@@ -47,7 +47,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			data.length = tileEntity.structure.volLength;
 			data.width = tileEntity.structure.volWidth;
 			
-			func_110628_a(MekanismRenderer.getLiquidTexture());
+			bindTexture(MekanismRenderer.getLiquidTexture());
 			
 			if(data.location != null && data.height > 0 && tileEntity.structure.fluidStored.getFluid() != null)
 			{

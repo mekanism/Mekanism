@@ -68,7 +68,7 @@ public class ItemRenderingHandler implements IItemRenderer
             GL11.glTranslatef(0, 1.0F, 1.0F);
             GL11.glScalef(1.0F, -1F, -1F);
             
-            Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
+            Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
 	    	
 			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * MekanismRenderer.getPartialTicks();
 	        lidangle = 1.0F - lidangle;
@@ -82,7 +82,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.5F, 0.0F);
-			 Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
+			 Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
 		}
 		else {

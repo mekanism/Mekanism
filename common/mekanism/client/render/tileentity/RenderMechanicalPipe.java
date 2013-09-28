@@ -41,7 +41,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityMechanicalPipe tileEntity, double x, double y, double z, float partialTick)
 	{
-		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe" + (tileEntity.isActive ? "Active" : "") + ".png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe" + (tileEntity.isActive ? "Active" : "") + ".png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
@@ -68,7 +68,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 				MekanismRenderer.glowOn();
 			}
 			
-			func_110628_a(MekanismRenderer.getLiquidTexture());
+			bindTexture(MekanismRenderer.getLiquidTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			for(int i = 0; i < 6; i++)

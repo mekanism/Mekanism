@@ -47,7 +47,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	@SuppressWarnings("incomplete-switch")
 	public void renderAModelAt(TileEntityPressurizedTube tileEntity, double x, double y, double z, float partialTick)
 	{
-		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
@@ -117,7 +117,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			push();
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.gasScale);
-			func_110628_a(tileEntity.refGas.texturePath);
+			bindTexture(tileEntity.refGas.texturePath);
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			if(tileEntity.gasScale > 0)

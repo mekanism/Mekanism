@@ -56,7 +56,7 @@ public class RenderObsidianTNT extends Render
         }
 
         float f3 = (1.0F - ((entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
-        func_110777_b(entityobsidiantnt);
+        bindEntityTexture(entityobsidiantnt);
         blockRenderer.renderBlockAsItem(Mekanism.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
 
         if(entityobsidiantnt.fuse / 5 % 2 == 0)
@@ -77,8 +77,8 @@ public class RenderObsidianTNT extends Render
     }
 
 	@Override
-	protected ResourceLocation func_110775_a(Entity entity) 
+	protected ResourceLocation getEntityTexture(Entity entity) 
 	{
-		return TextureMap.field_110575_b;
+		return TextureMap.locationBlocksTexture;
 	}
 }

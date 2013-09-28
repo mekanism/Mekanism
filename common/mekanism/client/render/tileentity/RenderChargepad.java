@@ -26,7 +26,7 @@ public class RenderChargepad extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
 
 	    switch(tileEntity.facing)
 	    {

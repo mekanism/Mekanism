@@ -57,7 +57,7 @@ public class GuiElectricPump extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
@@ -99,7 +99,7 @@ public class GuiElectricPump extends GuiContainer
 				scale = 0;
 			}
 
-			mc.renderEngine.func_110577_a(MekanismRenderer.getLiquidTexture());
+			mc.renderEngine.bindTexture(MekanismRenderer.getLiquidTexture());
 			drawTexturedModelRectFromIcon(width + yPos, height + xPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
 			start+=16;
 
@@ -109,7 +109,7 @@ public class GuiElectricPump extends GuiContainer
 			}
 		}
 
-		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
 		drawTexturedModalRect(width + yPos, height + xPos, 176, 52, 16, 60);
 	}
 }

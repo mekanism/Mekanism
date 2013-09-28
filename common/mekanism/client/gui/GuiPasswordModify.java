@@ -189,7 +189,7 @@ public class GuiPasswordModify extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiPasswordModify.png"));
+        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiPasswordModify.png"));
         
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

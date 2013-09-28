@@ -70,13 +70,13 @@ public class ClientTickHandler implements ITickHandler
 	
 	private ThreadDownloadImageData getCape(EntityPlayer player, String cape)
 	{
-		TextureManager texturemanager = Minecraft.getMinecraft().func_110434_K();
-		Object object = texturemanager.func_110581_b(getCapeResource(player));
+		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+		Object object = texturemanager.getTexture(getCapeResource(player));
 
 		if(object == null) 
 		{
 			object = new ThreadDownloadImageData(cape, getCapeResource(player), new CapeBufferDownload());
-			texturemanager.func_110579_a(getCapeResource(player), (TextureObject)object);
+			texturemanager.loadTexture(getCapeResource(player), (TextureObject)object);
 		}
 
 		return (ThreadDownloadImageData)object;

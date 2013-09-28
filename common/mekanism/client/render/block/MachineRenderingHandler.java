@@ -49,7 +49,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, -0.8F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "TheoreticalElementizer.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TheoreticalElementizer.png"));
     	    	theoreticalElementizer.render(0.0560F);
     		}
     		else if(metadata == MachineType.ELECTRIC_PUMP.meta)
@@ -57,7 +57,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, -0.85F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
     	    	electricPump.render(0.0560F);
     		}
     		else if(metadata == MachineType.METALLURGIC_INFUSER.meta)
@@ -65,14 +65,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
     	    	metallurgicInfuser.render(0.0625F);
     		}
     		else if(metadata == MachineType.CHARGEPAD.meta)
     		{
     			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
     			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
-    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
     			chargepad.render(0.0625F);
     		}
     		else {

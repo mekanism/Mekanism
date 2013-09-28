@@ -41,7 +41,7 @@ public class GuiWeatherOrb extends GuiScreen
 	public void drawScreen(int i, int j, float f)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiWeatherOrb.png"));
+        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiWeatherOrb.png"));
         drawTexturedModalRect(width / 2 - 100, height / 2 - 100, 0, 0, 176, 166);
         drawString(fontRenderer, "Weather Orb", width / 2 - 45, height / 2 - 95, 0xffffff);
         super.drawScreen(i, j, f);

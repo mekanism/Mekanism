@@ -51,7 +51,7 @@ public class GuiFactory extends GuiMekanism
     {
     	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     	
-    	mc.renderEngine.func_110577_a(tileEntity.tier.guiLocation);
+    	mc.renderEngine.bindTexture(tileEntity.tier.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

@@ -21,7 +21,7 @@ public class GuiUpgradeManagement extends GuiElement
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
-		mc.renderEngine.func_110577_a(RESOURCE);
+		mc.renderEngine.bindTexture(RESOURCE);
 		
 		guiContainer.drawTexturedModalRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 63);
 		
@@ -30,13 +30,13 @@ public class GuiUpgradeManagement extends GuiElement
 		
 	    guiContainer.drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 26, 0, 10, displayInt);
 		
-		mc.renderEngine.func_110577_a(defaultLocation);
+		mc.renderEngine.bindTexture(defaultLocation);
 	}
 	
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{
-		mc.renderEngine.func_110577_a(RESOURCE);
+		mc.renderEngine.bindTexture(RESOURCE);
 		
 		IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
 		
@@ -56,7 +56,7 @@ public class GuiUpgradeManagement extends GuiElement
 			displayTooltip("Remove energy upgrade", xAxis, yAxis);
 		}
 		
-		mc.renderEngine.func_110577_a(defaultLocation);
+		mc.renderEngine.bindTexture(defaultLocation);
 	}
 	
 	@Override

@@ -32,16 +32,16 @@ public class TransmitterRenderingHandler implements ISimpleBlockRenderingHandler
     	switch(metadata)
     	{
     		case 0:
-    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
     			break;
     		case 1:
-    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
     			break;
     		case 2:
-    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe.png"));
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe.png"));
     			break;
     		case 3:
-    			Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
     			break;
     	}
     	

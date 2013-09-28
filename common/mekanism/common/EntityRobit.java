@@ -77,12 +77,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 	
 	@Override
-    protected void func_110147_ax()
+    protected void applyEntityAttributes()
     {
-        super.func_110147_ax();
+        super.applyEntityAttributes();
         
-        func_110148_a(SharedMonsterAttributes.field_111263_d).func_111128_a(0.3);
-        func_110148_a(SharedMonsterAttributes.field_111267_a).func_111128_a(1);
+        getEntityAttribute(SharedMonsterAttributes.movementSpeed).setAttribute(0.3);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setAttribute(1);
     }
 	
 	@Override
@@ -490,7 +490,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         
         amount = applyArmorCalculations(damageSource, amount);
         amount = applyPotionDamageCalculations(damageSource, amount);
-        float j = func_110143_aJ();
+        float j = getHealth();
         
         setEnergy(Math.max(0, getEnergy() - (amount*1000)));
         func_110142_aN().func_94547_a(damageSource, j, amount);

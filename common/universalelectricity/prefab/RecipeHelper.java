@@ -187,6 +187,6 @@ public class RecipeHelper
 
 	public static void addRecipe(IRecipe recipe, Configuration config, boolean defaultBoolean)
 	{
-		addRecipe(recipe, recipe.getRecipeOutput().getItemName(), config, defaultBoolean);
+		addRecipe(recipe, recipe.getRecipeOutput().getUnlocalizedName(), config, defaultBoolean);
 	}
 }

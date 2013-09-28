@@ -25,7 +25,7 @@ public class GuiRedstoneControl extends GuiElement
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
-		mc.renderEngine.func_110577_a(RESOURCE);
+		mc.renderEngine.bindTexture(RESOURCE);
 		
 		guiContainer.drawTexturedModalRect(guiWidth + 176, guiHeight + 138, 0, 0, 26, 26);
 		
@@ -40,13 +40,13 @@ public class GuiRedstoneControl extends GuiElement
 			guiContainer.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 18, 18, 18);
 		}
 		
-		mc.renderEngine.func_110577_a(defaultLocation);
+		mc.renderEngine.bindTexture(defaultLocation);
 	}
 	
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{
-		mc.renderEngine.func_110577_a(RESOURCE);
+		mc.renderEngine.bindTexture(RESOURCE);
 		
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 		
@@ -55,7 +55,7 @@ public class GuiRedstoneControl extends GuiElement
 			displayTooltip(control.getControlType().getDisplay(), xAxis, yAxis);
 		}
 		
-		mc.renderEngine.func_110577_a(defaultLocation);
+		mc.renderEngine.bindTexture(defaultLocation);
 	}
 	
 	@Override

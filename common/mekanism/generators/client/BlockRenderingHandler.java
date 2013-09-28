@@ -45,7 +45,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
     	    	bioGenerator.render(0.0625F, 0.0F);
     		}
     		else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
@@ -53,7 +53,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
     	        advancedSolarGenerator.render(0.0F, 0.022F);
     		}
     		else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
@@ -61,7 +61,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
     	    	heatGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
@@ -69,14 +69,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
     			GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
     	    	hydrogenGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.ELECTROLYTIC_SEPARATOR.meta)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparatorHydrogen.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparatorHydrogen.png"));
     	    	electrolyticSeparator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.WIND_TURBINE.meta)
@@ -84,7 +84,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, 0.35F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
     	        windTurbine.render(0.018F, 0);
     		}
     		else {

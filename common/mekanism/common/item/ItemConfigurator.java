@@ -71,7 +71,7 @@ public class ItemConfigurator extends ItemEnergized
 	    			tileEntity.recurringNodes.clear();
 	    			tileEntity.cleaningNodes.clear();
 	    			
-	    			player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation."));
+	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation."));
 	    			return true;
 	    		}
     		}
@@ -88,7 +88,7 @@ public class ItemConfigurator extends ItemEnergized
 	    			
 	    			if(!player.isSneaking())
 	    			{
-	        			player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Current color: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+	        			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Current color: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 	        			return true;
 	    			}
 	    			else {
@@ -96,7 +96,7 @@ public class ItemConfigurator extends ItemEnergized
 	    				{
 	    					setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 		    				MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-		    				player.sendChatToPlayer(ChatMessageComponent.func_111066_d(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+		    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 		    				
 		    				if(config instanceof TileEntityBasicBlock)
 		    				{

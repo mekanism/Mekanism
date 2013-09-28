@@ -55,7 +55,7 @@ public class GuiDynamicTank extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
-		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
@@ -94,7 +94,7 @@ public class GuiDynamicTank extends GuiContainer
 				scale = 0;
 			}
 
-			mc.renderEngine.func_110577_a(MekanismRenderer.getLiquidTexture());
+			mc.renderEngine.bindTexture(MekanismRenderer.getLiquidTexture());
 			drawTexturedModelRectFromIcon(width + xPos, height + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
 			start+=16;
 
@@ -104,7 +104,7 @@ public class GuiDynamicTank extends GuiContainer
 			}
 		}
 
-		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
 		
 		drawTexturedModalRect(width + xPos, height + yPos, 176, side == 0 ? 0 : 54, 16, 54);
 	}

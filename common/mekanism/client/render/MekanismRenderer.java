@@ -295,7 +295,7 @@ public class MekanismRenderer
     public static TextureMap getTextureMap(int type)
     {
     	try {
-    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, "field_110583_b");
+    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, "listTickables");
     		
     		for(Object obj : l)
     		{
@@ -357,6 +357,6 @@ public class MekanismRenderer
     
     public static ResourceLocation getLiquidTexture()
     {
-    	return TextureMap.field_110575_b;
+    	return TextureMap.locationBlocksTexture;
     }
 }

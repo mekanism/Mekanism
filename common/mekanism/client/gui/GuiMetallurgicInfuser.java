@@ -57,7 +57,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
     {
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		
-		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -77,7 +77,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
         if(tileEntity.type != null)
         {
 	        displayInt = tileEntity.getScaledInfuseLevel(52);
-	        mc.renderEngine.func_110577_a(tileEntity.type.texture);
+	        mc.renderEngine.bindTexture(tileEntity.type.texture);
 	        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
         }
     }

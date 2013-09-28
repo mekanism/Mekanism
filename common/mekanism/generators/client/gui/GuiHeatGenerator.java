@@ -52,7 +52,7 @@ public class GuiHeatGenerator extends GuiMekanism
     {
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		
-		mc.renderEngine.func_110577_a(MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;

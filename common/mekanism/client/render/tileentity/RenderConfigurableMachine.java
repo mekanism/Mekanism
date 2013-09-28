@@ -97,7 +97,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 				
-				func_110628_a(MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "Overlay" + color.friendlyName.replace(" ", "") + ".png"));
+				bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "Overlay" + color.friendlyName.replace(" ", "") + ".png"));
 				GL11.glTranslatef((float)x, (float)y, (float)z);
 				
 				int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), color).display;

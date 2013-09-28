@@ -371,7 +371,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         
     	if(entityplayer.getCurrentEquippedItem() != null)
     	{
-	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getItemName().contains("omniwrench"))
+	    	if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
 	    	{
 	    		if(entityplayer.isSneaking())
 	    		{

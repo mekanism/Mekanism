@@ -48,7 +48,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityUniversalCable tileEntity, double x, double y, double z, float partialTick)
 	{
-		func_110628_a(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
@@ -74,7 +74,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		MekanismRenderer.glowOn();
 		GL11.glColor4f(1.F, 1.F, 1.F, tileEntity.getEnergyScale());
-		func_110628_a(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		
 		if(energy == null)
