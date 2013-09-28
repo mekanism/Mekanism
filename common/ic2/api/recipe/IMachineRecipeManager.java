@@ -24,6 +24,7 @@ public interface IMachineRecipeManager {
 	 * Gets the recipe output for the given input.
 	 * 
 	 * @param input Recipe input
+	 * @param adjustInput modify the input according to the recipe's requirements
 	 * @return Recipe output, or null if none
 	 */
 	public RecipeOutput getOutputFor(ItemStack input, boolean adjustInput);

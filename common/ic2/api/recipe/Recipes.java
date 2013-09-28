@@ -18,6 +18,8 @@ public class Recipes {
 	public static IMachineRecipeManager metalformerRolling;
 	public static IMachineRecipeManager oreWashing;
 	public static IMachineRecipeManager Scanner;
+	public static ICannerBottleRecipeManager cannerBottle;
+	public static ICannerEnrichRecipeManager cannerEnrich;
 
 	/**
 	 * Reference amplifier values:
@@ -48,6 +50,6 @@ public class Recipes {
 	public static IListRecipeManager recyclerBlacklist;
 	public static ICraftingRecipeManager advRecipes;
 
-	public static ISemiFluidEuOutputManager semifluidGenerator;
+	public static ISemiFluidFuelManager semiFluidGenerator;
 
 }

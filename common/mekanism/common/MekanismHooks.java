@@ -2,6 +2,7 @@ package mekanism.common;
 
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.RecipeOutput;
 import ic2.api.recipe.Recipes;
 
@@ -54,19 +55,19 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.OreBlock, 1, 0), 1), null, new ItemStack(Mekanism.Dust, 2, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
+
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Item.glowstone));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
 			
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 1), 1), null, new ItemStack(Mekanism.Dust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 0), 1), null, new ItemStack(Mekanism.Dust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 3), 1), null, new ItemStack(Item.glowstone));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Ingot, 1, 4), 1), null, new ItemStack(Mekanism.Dust, 1, 5));
-			
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 0), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 1), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 2), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 3), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 4), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-			Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.Clump, 1, 5), 1), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
 			
 			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
 			{

@@ -3,6 +3,7 @@ package mekanism.common;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 
 import java.io.File;
@@ -954,7 +955,7 @@ public class Mekanism
 			
 			if(hooks.IC2Loaded)
 			{
-				Recipes.macerator.addRecipe(new RecipeInputItemStack(new ItemStack(Ingot, 1, 2), 1), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			}
 			if(hooks.TELoaded)
 			{
