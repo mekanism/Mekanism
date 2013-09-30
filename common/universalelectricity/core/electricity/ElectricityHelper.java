@@ -1,19 +1,15 @@
 package universalelectricity.core.electricity;
 
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.event.ForgeSubscribe;
 import universalelectricity.core.block.IConnector;
 import universalelectricity.core.block.INetworkProvider;
-import universalelectricity.core.electricity.ElectricalEvent.ElectricityProduceEvent;
 import universalelectricity.core.grid.IElectricityNetwork;
 import universalelectricity.core.vector.Vector3;
-import universalelectricity.core.vector.VectorHelper;
 
 /**
  * A helper class that provides additional useful functions to interact with the ElectricityNetwork

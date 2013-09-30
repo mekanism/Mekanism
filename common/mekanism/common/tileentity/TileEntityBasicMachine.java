@@ -5,7 +5,6 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 
 import mekanism.api.IConfigurable;
-import mekanism.api.IUpgradeManagement;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -17,7 +16,6 @@ import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.TileComponentUpgrade;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;

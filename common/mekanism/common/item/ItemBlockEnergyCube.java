@@ -12,7 +12,6 @@ import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.Tier;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.network.PacketTileEntity;

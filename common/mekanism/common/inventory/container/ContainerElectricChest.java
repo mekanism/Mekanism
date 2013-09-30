@@ -2,7 +2,6 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.IElectricChest;
 import mekanism.common.inventory.slot.SlotElectricChest;
-import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tileentity.TileEntityElectricChest;
 import mekanism.common.util.ChargeUtils;

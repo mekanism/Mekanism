@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
 import ic2.api.item.IElectricItem;
-import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tileentity.TileEntityEnergyCube;

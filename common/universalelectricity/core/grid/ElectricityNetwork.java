@@ -70,21 +70,24 @@ public class ElectricityNetwork implements IElectricityNetwork
 				{
 					for (TileEntity tileEntity : avaliableEnergyTiles)
 					{
-						if (tileEntity instanceof IElectrical && !Arrays.asList(ignoreTiles).contains(tileEntity))
+						if (!Arrays.asList(ignoreTiles).contains(tileEntity))
 						{
-							IElectrical electricalTile = (IElectrical) tileEntity;
-
-							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+							if (tileEntity instanceof IElectrical)
 							{
-								if (electricalTile.canConnect(direction) && this.getConductors().contains(VectorHelper.getConnectorFromSide(tileEntity.worldObj, new Vector3(tileEntity), direction)))
+								IElectrical electricalTile = (IElectrical) tileEntity;
+
+								for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 								{
-									float energyToSend = totalUsableEnergy * (electricalTile.getRequest(direction) / totalEnergyRequest);
-
-									if (energyToSend > 0)
+									if (electricalTile.canConnect(direction) && this.getConductors().contains(VectorHelper.getConnectorFromSide(tileEntity.worldObj, new Vector3(tileEntity), direction)))
 									{
-										ElectricityPack electricityToSend = ElectricityPack.getFromWatts(energyToSend, voltage);
+										float energyToSend = totalUsableEnergy * (electricalTile.getRequest(direction) / totalEnergyRequest);
 
-										remainingUsableEnergy -= ((IElectrical) tileEntity).receiveElectricity(direction, electricityToSend, true);
+										if (energyToSend > 0)
+										{
+											ElectricityPack electricityToSend = ElectricityPack.getFromWatts(energyToSend, voltage);
+
+											remainingUsableEnergy -= ((IElectrical) tileEntity).receiveElectricity(direction, electricityToSend, true);
+										}
 									}
 								}
 							}

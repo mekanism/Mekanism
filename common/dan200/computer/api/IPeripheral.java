@@ -37,6 +37,8 @@ public interface IPeripheral
 	 * when interacting with minecraft objects.
 	 * @param 	computer	The interface to the computer that is making the call. Remember that multiple
 	 *						computers can be attached to a peripheral at once.
+	 * @param	context		The context of the currently running lua thread. This can be used to wait for events
+	 *						or otherwise yield.
 	 * @param	method		An integer identifying which of the methods from getMethodNames() the computer
 	 *						wishes to call. The integer indicates the index into the getMethodNames() table
 	 *						that corresponds to the string passed into peripheral.call()
@@ -55,7 +57,7 @@ public interface IPeripheral
 	 *						arguments are supplied to your method.
 	 * @see 	#getMethodNames
 	 */
-    public Object[] callMethod( IComputerAccess computer, int method, Object[] arguments ) throws Exception;
+    public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws Exception;
     
 	/**
 	 * Is called before the computer attempts to attach to the peripheral, and should return whether to allow

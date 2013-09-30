@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine
 {
@@ -287,7 +288,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
 		{

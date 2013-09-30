@@ -14,8 +14,6 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
@@ -36,6 +34,7 @@ import buildcraft.api.power.PowerHandler.Type;
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
 public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, ICableOutputter, IStrictEnergyAcceptor, IRedstoneControl
@@ -324,7 +323,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
 		{

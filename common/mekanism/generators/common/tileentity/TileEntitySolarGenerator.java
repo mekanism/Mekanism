@@ -7,13 +7,14 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
-import micdoodle8.mods.galacticraft.API.ISolarLevel;
+import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
 {
@@ -139,7 +140,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
 		{

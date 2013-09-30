@@ -54,7 +54,7 @@ public abstract class TileEntityElectrical extends TileEntityAdvanced implements
 	 * 
 	 * @param outputDirection - The output direction.
 	 */
-	public void produceUE(ForgeDirection outputDirection)
+	public boolean produceUE(ForgeDirection outputDirection)
 	{
 		if (!this.worldObj.isRemote && outputDirection != null && outputDirection != ForgeDirection.UNKNOWN)
 		{
@@ -64,7 +64,6 @@ public abstract class TileEntityElectrical extends TileEntityAdvanced implements
 			{
 				TileEntity outputTile = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), outputDirection);
 				IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(outputTile, outputDirection);
-
 				if (outputNetwork != null)
 				{
 					ElectricityPack powerRequest = outputNetwork.getRequest(this);
@@ -74,10 +73,13 @@ public abstract class TileEntityElectrical extends TileEntityAdvanced implements
 						ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(this.getEnergyStored(), this.getVoltage()), ElectricityPack.getFromWatts(provide, this.getVoltage()));
 						float rejectedPower = outputNetwork.produce(sendPack, this);
 						this.provideElectricity(sendPack.getWatts() - rejectedPower, true);
+						return true;
 					}
 				}
 			}
 		}
+
+		return false;
 	}
 
 	/**

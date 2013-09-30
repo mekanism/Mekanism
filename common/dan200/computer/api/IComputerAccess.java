@@ -14,78 +14,41 @@ package dan200.computer.api;
 public interface IComputerAccess
 {
 	/**
-	 * Creates a new numbered directory in a subPath of the users game save, and return that number. To be used with mountSaveDir.<br>
-	 * For example: n = createNewSaveDir( "computer/cdrom" ), will create a new
-	 * numbered folder in the "computer/cdrom" subdirectory of the users save file, and return that number.
-	 * mountSaveDir( "computer/rom", n ) could then be used to mount that folder onto the computers directory
-	 * structure, and the value n could be saved out and used again in future to give the peripheral
-	 * persistant storage.
-	 * @param 	subPath		A relative file path from the users world save, where the directory should be located.
-	 * @return	The numeric represenation of the name of the folder created. Will be positive.
-	 * @see 	#mountSaveDir(String, String, int, boolean, long)
+	 * Mount a mount onto the computers' file system in a read only mode.<br>
+	 * @param desiredLoction The location on the computer's file system where you would like the mount to be mounted.
+	 * @param mount The mount object to mount on the computer. These can be obtained by calling ComputerCraftAPI.createSaveDirMount(), ComputerCraftAPI.createResourceMount() or by creating your own objects that implement the IMount interface.
+	 * @return The location on the computer's file system where you the mount mounted, or null if there was already a file in the desired location. Store this value if you wish to unmount the mount later.
+	 * @see ComputerCraftAPI#createSaveDirMount(World, String)
+	 * @see ComputerCraftAPI#createResourceMount(Class, String, String)
+	 * @see #mountWritable(String, IWritableMount)
+	 * @see #unmount(String)
+	 * @see IMount
 	 */
-	public int createNewSaveDir( String subPath );
+	public String mount( String desiredLocation, IMount mount );
 	
 	/**
-	 * Mounts a directory into the computers file system, from a real directory a subPath of the users game save,
-	 * with a numerical name. To be used with createNewSaveDir.<br>
-	 * For example: n = createNewSaveDir( "computer/cdrom" ), will create a new
-	 * numbered folder in the "computer/cdrom" subdirectory of the users save file, and return that number.
-	 * mountSaveDir( "computer/rom", n ) could then be used to mount that folder onto the computers directory
-	 * structure, and the value n can be saved out by the peripheral and used again, to give the peripheral
-	 * persistant storage.<br>
-	 * When a directory is mounted, it will appear in the computers file system, and the user will be
-	 * able to use file operation to read from and write to the directory (unless readOnly, then only writes will be allowed).
-	 * @param desiredLocation	The desired location in the computers file system where you would like the directory to appear.
-	 *							If this location already exists, a number will be appended until a free name is found, and the
-	 *							actual location will be returned. eg: "cdrom" can become "cdrom2" if two peripherals attempt to
-	 *							mount "cdrom", or a "cdrom" folder already exists.
-	 * @param subPath			The real relative file path from the users world save, where the directory to mount can be located.
-	 * @param id				The numerical name of the folder to mount from the subPath: ex: mountSaveDir( "cdrom", "computer/cdrom", 7 )
-	 *							will mount the directory "computer/cdrom/7". Use createNewSaveDir to obtain a unique directory id.
-	 * @param readOnly			Whether the computer will be disallowed from making changes to the mounted directory and modifing or creating files therin.
-	 * @param spaceLimit		The size limit of the mount, in bytes. Specify 0 to have unlimited capacity.
-	 * @return					The location in the computers file system where the directory was mounted. This may differ from "desiredLocation", so the
-	 *							return value should be kept track of so the folder can be unmounted later.
-	 * @see	#createNewSaveDir(String)
-	 * @see	#mountFixedDir(String, String, boolean, long)
-	 * @see	#unmount(String)
+	 * Mount a mount onto the computers' file system in a writable mode.<br>
+	 * @param desiredLoction The location on the computer's file system where you would like the mount to be mounted.
+	 * @param mount The mount object to mount on the computer. These can be obtained by calling ComputerCraftAPI.createSaveDirMount() or by creating your own objects that implement the IWritableMount interface.
+	 * @return The location on the computer's file system where you the mount mounted, or null if there was already a file in the desired location. Store this value if you wish to unmount the mount later.
+	 * @see ComputerCraftAPI#createSaveDirMount(World, String)
+	 * @see ComputerCraftAPI#createResourceMount(Class, String, String)
+	 * @see #mount(String, IMount)
+	 * @see #unmount(String)
+	 * @see IMount
 	 */
-	public String mountSaveDir( String desiredLocation, String subPath, int id, boolean readOnly, long spaceLimit );
+	public String mountWritable( String desiredLocation, IWritableMount mount );
 	
 	/**
-	 * Mounts a directory into the computers file system, from a real directory in the Minecraft install folder.<br>
-	 * For example: mountFixedDir( "stuff", "mods/mymod/lua/stuff", true ), will mount the "lua/stuff" folder from
-	 * your mod's directory into the computers filesystem at the location "stuff", with readonly permission, giving the
-	 * computer access to those files.<br>
-	 * When a directory is mounted, it will appear in the computers file system, and the user will be
-	 * able to use file operation to read from and write to the directory (unless readOnly, then only writes will be allowed).<br>
-	 * mountFixedDir can also be used to mount files, for example: mountFixedDir( "rom/apis/myapi", "mods/mymod/lua/myapi.lua", true ) can
-	 * be used to have the peripheral install an API onto the computer it attaches to.
-	 * @param desiredLocation	The desired location in the computers file system where you would like the directory to appear.
-	 *							If this location already exists, a number will be appended until a free name is found, and the
-	 *							actual location will be returned. eg: "cdrom" can become "cdrom2" if two peripherals attempt to
-	 *							mount "cdrom", or a "cdrom" folder already exists.
-	 * @param subPath			The real relative file path from the minecraft install root, where the directory to mount can be located.
-	 * @param readOnly			Whether the computer will be disallowed from making changes to the mounted directory and modifing or creating files therin.
-	 * @param spaceLimit		The size limit of the mount, in bytes. Specify 0 to have unlimited capacity.
-	 * @return					The location in the computers file system where the directory was mounted. This may differ from "desiredLocation", so the
-	 *							return value should be kept track of so the folder can be unmounted later.
-	 * @see	#mountSaveDir(String, String, int, boolean, long)
-	 * @see	#unmount(String)
-	 */
-	public String mountFixedDir( String desiredLocation, String path, boolean readOnly, long spaceLimit );
-
-	/**
-	 * Unmounts a directory previously mounted onto the computers file system by mountSaveDir or mountFixedDir.<br>
+	 * Unmounts a directory previously mounted onto the computers file system by mount() or mountWritable().<br>
 	 * When a directory is unmounted, it will disappear from the computers file system, and the user will no longer be able to
-	 * access it. All directories mounted by a mountFixedDir or mountSaveDir are automatically unmounted when the peripheral
+	 * access it. All directories mounted by a mount or mountWritable are automatically unmounted when the peripheral
 	 * is attached if they have not been explicitly unmounted.
 	 * @param location	The desired location in the computers file system of the directory to unmount.
-	 *					This must be the location of a directory previously mounted by mountFixedDir() or mountSaveDir(), as
+	 *					This must be the location of a directory previously mounted by mount() or mountWritable(), as
 	 *					indicated by their return value.
-	 * @see	#mountSaveDir(String, String, int, boolean, long)
-	 * @see	#mountFixedDir(String, String, boolean, long)
+	 * @see	#mount(String, IMount)
+	 * @see	#mountWritable(String, IWritableMount)
 	 */
 	public void unmount( String location );
 	

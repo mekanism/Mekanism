@@ -6,12 +6,10 @@ import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
-import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
