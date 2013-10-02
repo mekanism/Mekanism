@@ -24,7 +24,7 @@ public enum TransmissionType
     {
     	if(sideTile instanceof ITransmitter)
     	{
-    		if(((ITransmitter<?>)sideTile).getTransmissionType() == this)
+    		if(((ITransmitter<?, ?>)sideTile).getTransmissionType() == this)
     		{
     			return true;
     		}

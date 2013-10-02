@@ -263,4 +263,10 @@ public class ItemConfigurator extends ItemEnergized
 	{
 		return false;
 	}
+	
+	@Override
+	public boolean shouldPassSneakingClickToBlock(World world, int x, int y, int z)
+	{
+		return true;
+	}
 }

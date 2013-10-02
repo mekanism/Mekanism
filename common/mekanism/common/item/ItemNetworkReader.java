@@ -32,21 +32,25 @@ public class ItemNetworkReader extends ItemEnergized
     			{
     				setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
     				
-	    			ITransmitter transmitter = (ITransmitter)tileEntity;
+	    			ITransmitter<?, ?> transmitter = (ITransmitter<?, ?>)tileEntity;
 	    			
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkNeeded()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow() ));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getAcceptorSize()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getNeeded()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlow() ));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     			}
     		}
     		
     		if(player.isSneaking() && Mekanism.debug)
     		{
+    			String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
     			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY + " ----------"));
-    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Networks: " + EnumColor.DARK_GREY + TransmitterNetworkRegistry.getInstance().toString()));
+    			for(String s : strings)
+    			{
+    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_GREY + s));
+    			}
     			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     		}
     	}

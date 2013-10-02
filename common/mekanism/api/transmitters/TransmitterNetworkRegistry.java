@@ -106,6 +106,18 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		return "Network Registry:\n" + networks;
 	}
 
+	public String[] toStrings()
+	{
+		String[] strings = new String[networks.size()];
+		int i = 0;
+		for(ITransmitterNetwork<?,?,?> network : networks)
+		{
+			strings[i] = network.toString();
+			++i;
+		}
+		return strings;
+	}
+
 	public static class NetworkLoader
 	{
 		@ForgeSubscribe

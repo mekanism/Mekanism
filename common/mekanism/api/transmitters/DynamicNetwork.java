@@ -15,9 +15,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
+public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> implements ITransmitterNetwork<A, N, D>
 {
-	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
+	public HashSet<ITransmitter<N, D>> transmitters = new HashSet<ITransmitter<N, D>>();
 	
 	public Set<A> possibleAcceptors = new HashSet<A>();
 	public Map<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
@@ -27,19 +27,19 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	
 	protected boolean fixed = false;
 	
-	protected abstract ITransmitterNetwork<A, N> create(ITransmitter<N>... varTransmitters);
+	protected abstract ITransmitterNetwork<A, N, D> create(ITransmitter<N, D>... varTransmitters);
 	
-	protected abstract ITransmitterNetwork<A, N> create(Collection<ITransmitter<N>> collection);
+	protected abstract ITransmitterNetwork<A, N, D> create(Collection<ITransmitter<N, D>> collection);
 	
-	protected abstract ITransmitterNetwork<A, N> create(Set<N> networks);
+	protected abstract ITransmitterNetwork<A, N, D> create(Set<N> networks);
 	
-	public void addAllTransmitters(Set<ITransmitter<N>> newTransmitters)
+	public void addAllTransmitters(Set<ITransmitter<N, D>> newTransmitters)
 	{
 		transmitters.addAll(newTransmitters);
 	}
 	
 	@Override
-	public void removeTransmitter(ITransmitter<N> transmitter)
+	public void removeTransmitter(ITransmitter<N, D> transmitter)
 	{
 		transmitters.remove(transmitter);
 		
@@ -53,7 +53,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	public void register()
 	{
 		try {
-			ITransmitter<N> aTransmitter = transmitters.iterator().next();
+			ITransmitter<N, D> aTransmitter = transmitters.iterator().next();
 			
 			if(aTransmitter instanceof TileEntity && !((TileEntity)aTransmitter).worldObj.isRemote)
 			{
@@ -97,13 +97,13 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	}
 	
 	@Override
-	public void fixMessedUpNetwork(ITransmitter<N> transmitter)
+	public void fixMessedUpNetwork(ITransmitter<N, D> transmitter)
 	{
 		if(transmitter instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), getTransmissionType(), Object3D.get((TileEntity)transmitter));
 			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<ITransmitter<N>> newTransporters = new HashSet<ITransmitter<N>>();
+			Set<ITransmitter<N, D>> newTransporters = new HashSet<ITransmitter<N, D>>();
 			
 			for(Object3D node : partNetwork)
 			{
@@ -111,12 +111,12 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 
 				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity) transmitter))
 				{
-					((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
-					newTransporters.add((ITransmitter<N>)nodeTile);
+					((ITransmitter<N, D>)nodeTile).removeFromTransmitterNetwork();
+					newTransporters.add((ITransmitter<N, D>)nodeTile);
 				}
 			}
 			
-			ITransmitterNetwork<A, N> newNetwork = create(newTransporters);
+			ITransmitterNetwork<A, N, D> newNetwork = create(newTransporters);
 			newNetwork.refresh();
 			newNetwork.setFixed(true);
 			deregister();
@@ -124,7 +124,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	}
 	
 	@Override
-	public void split(ITransmitter<N> splitPoint)
+	public void split(ITransmitter<N, D> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -165,7 +165,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 						}
 					}
 					
-					Set<ITransmitter<N>> newNetCables = new HashSet<ITransmitter<N>>();
+					Set<ITransmitter<N, D>> newNetCables = new HashSet<ITransmitter<N, D>>();
 					
 					for(Object3D node : finder.iterated)
 					{
@@ -175,12 +175,12 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetCables.add((ITransmitter<N>)nodeTile);
+								newNetCables.add((ITransmitter<N, D>)nodeTile);
 							}
 						}
 					}
 					
-					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);					
+					ITransmitterNetwork<A, N, D> newNetwork = create(newNetCables);					
 					newNetwork.refresh();
 				}
 			}
@@ -240,7 +240,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)))
+					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)) && ((ITransmitter<?, ?>)tileEntity).canConnectMutual(direction.getOpposite()))
 					{
 						loopAll(obj);
 					}

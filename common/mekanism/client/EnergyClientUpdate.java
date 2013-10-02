@@ -2,10 +2,10 @@ package mekanism.client;
 
 import java.util.List;
 
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.DynamicNetwork.NetworkFinder;
 import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -27,14 +27,14 @@ public class EnergyClientUpdate
 	public void clientUpdate()
 	{
 		List<Object3D> found = finder.exploreNetwork();
-		
+		System.out.println(energyScale);
 		for(Object3D object : found)
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
 			
-			if(tileEntity instanceof TileEntityUniversalCable)
+			if(tileEntity instanceof ITransmitter && ((ITransmitter<?, ?>)tileEntity).getTransmissionType() == TransmissionType.ENERGY)
 			{
-				((TileEntityUniversalCable)tileEntity).setCachedEnergy(energyScale);
+				((ITransmitter<?, Double>)tileEntity).clientUpdate(energyScale);
 			}
 		}
 	}

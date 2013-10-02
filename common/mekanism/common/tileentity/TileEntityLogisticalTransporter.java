@@ -12,6 +12,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -22,7 +23,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ITileNetwork
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork, ItemStack> implements ITileNetwork
 {
 	/** This transporter's active state. */
 	public boolean isActive = false;
@@ -31,6 +32,12 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.ITEM;
+	}
+	
+	@Override
+	public void clientUpdate(ItemStack stack)
+	{
+		return;
 	}
 	
 	@Override
@@ -44,9 +51,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			
 			for(TileEntity transporter : adjacentTransporters)
 			{
-				if(TransmissionType.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork>)transporter).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(transporter, getTransmissionType()) && ((ITransmitter<InventoryNetwork, ItemStack>)transporter).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<InventoryNetwork>)transporter).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<InventoryNetwork, ItemStack>)transporter).getTransmitterNetwork());
 				}
 			}
 			
@@ -105,7 +112,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 				
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
-					getTransmitterNetwork().merge(((ITransmitter<InventoryNetwork>)tileEntity).getTransmitterNetwork());
+					getTransmitterNetwork().merge(((ITransmitter<InventoryNetwork, ItemStack>)tileEntity).getTransmitterNetwork());
 				}
 			}
 			
@@ -164,29 +171,5 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
-	}
-	
-	@Override
-	public int getTransmitterNetworkSize()
-	{
-		return getTransmitterNetwork().getSize();
-	}
-
-	@Override
-	public int getTransmitterNetworkAcceptorSize()
-	{
-		return getTransmitterNetwork().getAcceptorSize();
-	}
-
-	@Override
-	public String getTransmitterNetworkNeeded()
-	{
-		return getTransmitterNetwork().getNeeded();
-	}
-
-	@Override
-	public String getTransmitterNetworkFlow()
-	{
-		return getTransmitterNetwork().getFlow();
 	}
 }

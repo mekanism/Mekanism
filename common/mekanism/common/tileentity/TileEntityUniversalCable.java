@@ -26,7 +26,7 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergyTile, IEnergySink, IConductor
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork, Double> implements IPowerReceptor, IEnergyTile, IEnergySink, IConductor
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -65,9 +65,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork, Double>)cable).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<EnergyNetwork, Double>)cable).getTransmitterNetwork());
 				}
 			}
 			
@@ -131,7 +131,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 				
 				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
-					getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
+					getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork, Double>)tileEntity).getTransmitterNetwork());
 				}
 			}
 			
@@ -154,7 +154,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public void doWork(PowerHandler workProvider) {}
 	
-	public void setCachedEnergy(double scale)
+	public void clientUpdate(Double scale)
 	{
 		energyScale = scale;
 	}
@@ -188,30 +188,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	public int getMaxSafeInput()
 	{
 		return 2048;
-	}
-
-	@Override
-	public int getTransmitterNetworkSize()
-	{
-		return getTransmitterNetwork().getSize();
-	}
-
-	@Override
-	public int getTransmitterNetworkAcceptorSize()
-	{
-		return getTransmitterNetwork().getAcceptorSize();
-	}
-
-	@Override
-	public String getTransmitterNetworkNeeded()
-	{
-		return getTransmitterNetwork().getNeeded();
-	}
-	
-	@Override
-	public String getTransmitterNetworkFlow()
-	{
-		return getTransmitterNetwork().getFlow();
 	}
 
 	@Override

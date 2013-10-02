@@ -28,19 +28,19 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
+public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork, Double>
 {	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	
-	public EnergyNetwork(ITransmitter<EnergyNetwork>... varCables)
+	public EnergyNetwork(ITransmitter<EnergyNetwork, Double>... varCables)
 	{
 		transmitters.addAll(Arrays.asList(varCables));
 		register();
 	}
 	
-	public EnergyNetwork(Collection<ITransmitter<EnergyNetwork>> collection)
+	public EnergyNetwork(Collection<ITransmitter<EnergyNetwork, Double>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -203,15 +203,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public void refresh()
 	{
-		Set<ITransmitter<EnergyNetwork>> iterCables = (Set<ITransmitter<EnergyNetwork>>) transmitters.clone();
-		Iterator<ITransmitter<EnergyNetwork>> it = iterCables.iterator();
+		Set<ITransmitter<EnergyNetwork, Double>> iterCables = (Set<ITransmitter<EnergyNetwork, Double>>) transmitters.clone();
+		Iterator<ITransmitter<EnergyNetwork, Double>> it = iterCables.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ITransmitter<EnergyNetwork> conductor = (ITransmitter<EnergyNetwork>)it.next();
+			ITransmitter<EnergyNetwork, Double> conductor = (ITransmitter<EnergyNetwork, Double>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -223,7 +223,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 		
-		for(ITransmitter<EnergyNetwork> cable : iterCables)
+		for(ITransmitter<EnergyNetwork, Double> cable : iterCables)
 		{
 			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)cable);
 		
@@ -298,7 +298,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public double getPowerScale()
 	{
-		return joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1);
+		return joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()))/10, 1);
 	}
 	
 	public void clearJoulesTransmitted()
@@ -313,13 +313,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 	
 	@Override
-	protected EnergyNetwork create(ITransmitter<EnergyNetwork>... varTransmitters) 
+	protected EnergyNetwork create(ITransmitter<EnergyNetwork, Double>... varTransmitters) 
 	{
 		return new EnergyNetwork(varTransmitters);
 	}
 
 	@Override
-	protected EnergyNetwork create(Collection<ITransmitter<EnergyNetwork>> collection) 
+	protected EnergyNetwork create(Collection<ITransmitter<EnergyNetwork, Double>> collection) 
 	{
 		return new EnergyNetwork(collection);
 	}

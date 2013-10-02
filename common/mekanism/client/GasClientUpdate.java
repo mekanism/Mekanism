@@ -3,10 +3,10 @@ package mekanism.client;
 import java.util.List;
 
 import mekanism.api.gas.EnumGas;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.DynamicNetwork.NetworkFinder;
 import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityPressurizedTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -33,9 +33,9 @@ public class GasClientUpdate
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
 			
-			if(tileEntity instanceof TileEntityPressurizedTube)
+			if(tileEntity instanceof ITransmitter && ((ITransmitter<?, ?>)tileEntity).getTransmissionType() == TransmissionType.GAS)
 			{
-				((TileEntityPressurizedTube)tileEntity).onTransfer(gasType);
+				((ITransmitter<?,EnumGas>)tileEntity).clientUpdate(gasType);
 			}
 		}
 	}

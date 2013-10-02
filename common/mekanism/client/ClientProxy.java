@@ -33,6 +33,7 @@ import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiTheoreticalElementizer;
 import mekanism.client.gui.GuiWeatherOrb;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
@@ -242,6 +243,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
+		RenderPartTransmitter.init();
+		
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());

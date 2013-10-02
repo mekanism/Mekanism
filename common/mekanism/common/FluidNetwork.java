@@ -23,15 +23,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
+public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack>
 {
-	public FluidNetwork(ITransmitter<FluidNetwork>... varPipes)
+	public FluidNetwork(ITransmitter<FluidNetwork, FluidStack>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public FluidNetwork(Collection<ITransmitter<FluidNetwork>> collection)
+	public FluidNetwork(Collection<ITransmitter<FluidNetwork, FluidStack>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -134,7 +134,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public void refresh()
 	{
-		Set<ITransmitter<FluidNetwork>> iterPipes = (Set<ITransmitter<FluidNetwork>>)transmitters.clone();
+		Set<ITransmitter<FluidNetwork, FluidStack>> iterPipes = (Set<ITransmitter<FluidNetwork, FluidStack>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
 		
 		possibleAcceptors.clear();
@@ -142,7 +142,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		while(it.hasNext())
 		{
-			ITransmitter<FluidNetwork> conductor = (ITransmitter<FluidNetwork>)it.next();
+			ITransmitter<FluidNetwork, FluidStack> conductor = (ITransmitter<FluidNetwork, FluidStack>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -154,7 +154,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 		
-		for(ITransmitter<FluidNetwork> pipe : iterPipes)
+		for(ITransmitter<FluidNetwork, FluidStack> pipe : iterPipes)
 		{
 			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe)pipe).isActive) continue;
 			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
@@ -203,13 +203,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 	
 	@Override
-	protected FluidNetwork create(ITransmitter<FluidNetwork>... varTransmitters) 
+	protected FluidNetwork create(ITransmitter<FluidNetwork, FluidStack>... varTransmitters) 
 	{
 		return new FluidNetwork(varTransmitters);
 	}
 
 	@Override
-	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork>> collection) 
+	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork, FluidStack>> collection) 
 	{
 		return new FluidNetwork(collection);
 	}

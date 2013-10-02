@@ -29,7 +29,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IFluidHandler, ITileNetwork
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork, FluidStack> implements IFluidHandler, ITileNetwork
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
@@ -43,7 +43,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	/** The scale (0F -> 1F) of this pipe's fluid level. */
 	public float fluidScale;
 
-	public void onTransfer(FluidStack fluidStack)
+	public void clientUpdate(FluidStack fluidStack)
 	{
 		if(fluidStack.isFluidEqual(refFluid))
 		{
@@ -72,9 +72,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork, FluidStack>)pipe).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<FluidNetwork, FluidStack>)pipe).getTransmitterNetwork());
 				}
 			}
 			
@@ -133,7 +133,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 				
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
-					getTransmitterNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork());
+					getTransmitterNetwork().merge(((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork());
 				}
 			}
 			
@@ -269,29 +269,5 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
 	{
 		return new FluidTankInfo[] {dummyTank.getInfo()};
-	}
-	
-	@Override
-	public int getTransmitterNetworkSize()
-	{
-		return getTransmitterNetwork().getSize();
-	}
-
-	@Override
-	public int getTransmitterNetworkAcceptorSize()
-	{
-		return getTransmitterNetwork().getAcceptorSize();
-	}
-
-	@Override
-	public String getTransmitterNetworkNeeded()
-	{
-		return getTransmitterNetwork().getNeeded();
-	}
-
-	@Override
-	public String getTransmitterNetworkFlow()
-	{
-		return getTransmitterNetwork().getFlow();
 	}
 }

@@ -55,6 +55,8 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemStopwatch;
 import mekanism.common.item.ItemStorageTank;
 import mekanism.common.item.ItemWeatherOrb;
+import mekanism.common.multipart.ItemPartTransmitter;
+import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketControlPanel;
 import mekanism.common.network.PacketDataRequest;
@@ -199,6 +201,7 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	public static Item NetworkReader;
+	public static Item PartTransmitter;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -622,6 +625,12 @@ public class Mekanism
 		LanguageRegistry.instance().addStringLocalization("item.glowstoneIngot.name", "Glowstone Ingot");
 		LanguageRegistry.instance().addStringLocalization("item.steelIngot.name", "Steel Ingot");
 		
+		//Localization for Multipart Transmitters
+		LanguageRegistry.instance().addStringLocalization("item.MultipartTransmitter.energy.name", "Universal Cable");
+		LanguageRegistry.instance().addStringLocalization("item.MultipartTransmitter.fluid.name", "Mechanical Pipe");
+		LanguageRegistry.instance().addStringLocalization("item.MultipartTransmitter.gas.name", "Pressurized Tube");
+		LanguageRegistry.instance().addStringLocalization("item.MultipartTransmitter.items.name", "Logistical Transporter");
+		
 		//Localization for Mekanism creative tab
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabMekanism", "Mekanism");
 	}
@@ -660,6 +669,7 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
+		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11223).getInt()).setUnlocalizedName("MultipartTransmitter");
 		configuration.save();
 		
 		//Registrations
@@ -1187,6 +1197,8 @@ public class Mekanism
         InfuseRegistry.registerInfuseType(new InfuseType("CARBON", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 0, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("TIN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 4, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 8, 0));
+        
+        new MultipartMekanism().init();
 	}
 	
 	@EventHandler

@@ -56,10 +56,10 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		connectable = CableUtils.getConnections(tileEntity);
 		
-		model.renderCenter(connectable);
+		//model.renderCenter(connectable);
 		for(int i = 0; i < 6; i++)
 		{
-			model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
+			//model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
 		}
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -73,7 +73,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		push();
 		
 		MekanismRenderer.glowOn();
-		GL11.glColor4f(1.F, 1.F, 1.F, tileEntity.getEnergyScale());
+		GL11.glColor4f(1.F, 1.F, 1.F, 0.6F);
 		bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		

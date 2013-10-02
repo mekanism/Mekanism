@@ -2,10 +2,10 @@ package mekanism.client;
 
 import java.util.List;
 
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.DynamicNetwork.NetworkFinder;
 import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,9 +33,9 @@ public class FluidClientUpdate
 		{
 			TileEntity tileEntity = object.getTileEntity(worldObj);
 			
-			if(tileEntity instanceof TileEntityMechanicalPipe)
+			if(tileEntity instanceof ITransmitter && ((ITransmitter<?,?>)tileEntity).getTransmissionType() == TransmissionType.FLUID)
 			{
-				((TileEntityMechanicalPipe)tileEntity).onTransfer(fluidStack);
+				((ITransmitter<?, FluidStack>)tileEntity).clientUpdate(fluidStack);
 			}
 		}
 	}

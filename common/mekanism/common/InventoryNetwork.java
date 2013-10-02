@@ -11,18 +11,19 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
+public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork, ItemStack>
 {
-	public InventoryNetwork(ITransmitter<InventoryNetwork>... varTransporters)
+	public InventoryNetwork(ITransmitter<InventoryNetwork, ItemStack>... varTransporters)
 	{
 		transmitters.addAll(Arrays.asList(varTransporters));
 		register();
 	}
 	
-	public InventoryNetwork(Collection<ITransmitter<InventoryNetwork>> collection)
+	public InventoryNetwork(Collection<ITransmitter<InventoryNetwork, ItemStack>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -52,7 +53,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	@Override
 	public void refresh()
 	{
-		Set<ITransmitter<InventoryNetwork>> iterTransmitters = (Set<ITransmitter<InventoryNetwork>>)transmitters.clone();
+		Set<ITransmitter<InventoryNetwork, ItemStack>> iterTransmitters = (Set<ITransmitter<InventoryNetwork, ItemStack>>)transmitters.clone();
 		Iterator it = iterTransmitters.iterator();
 		
 		possibleAcceptors.clear();
@@ -60,7 +61,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 
 		while(it.hasNext())
 		{
-			ITransmitter<InventoryNetwork> conductor = (ITransmitter<InventoryNetwork>)it.next();
+			ITransmitter<InventoryNetwork, ItemStack> conductor = (ITransmitter<InventoryNetwork, ItemStack>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -72,7 +73,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			}
 		}
 		
-		for(ITransmitter<InventoryNetwork> transmitter : iterTransmitters)
+		for(ITransmitter<InventoryNetwork, ItemStack> transmitter : iterTransmitters)
 		{
 			IInventory[] inventories = TransporterUtils.getConnectedInventories((TileEntity)transmitter);
 		
@@ -107,13 +108,13 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 
 	@Override
-	protected InventoryNetwork create(ITransmitter<InventoryNetwork>... varTransmitters) 
+	protected InventoryNetwork create(ITransmitter<InventoryNetwork, ItemStack>... varTransmitters) 
 	{
 		return new InventoryNetwork(varTransmitters);
 	}
 
 	@Override
-	protected InventoryNetwork create(Collection<ITransmitter<InventoryNetwork>> collection) 
+	protected InventoryNetwork create(Collection<ITransmitter<InventoryNetwork, ItemStack>> collection) 
 	{
 		return new InventoryNetwork(collection);
 	}

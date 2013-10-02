@@ -17,15 +17,15 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
+public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork, EnumGas>
 {
-	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
+	public GasNetwork(ITransmitter<GasNetwork, EnumGas>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public GasNetwork(Collection<ITransmitter<GasNetwork>> collection)
+	public GasNetwork(Collection<ITransmitter<GasNetwork, EnumGas>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -110,15 +110,15 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	@Override
 	public void refresh()
 	{
-		Set<ITransmitter<GasNetwork>> iterTubes = (Set<ITransmitter<GasNetwork>>)transmitters.clone();
-		Iterator<ITransmitter<GasNetwork>> it = iterTubes.iterator();
+		Set<ITransmitter<GasNetwork, EnumGas>> iterTubes = (Set<ITransmitter<GasNetwork, EnumGas>>)transmitters.clone();
+		Iterator<ITransmitter<GasNetwork, EnumGas>> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ITransmitter<GasNetwork> conductor = (ITransmitter<GasNetwork>)it.next();
+			ITransmitter<GasNetwork, EnumGas> conductor = (ITransmitter<GasNetwork, EnumGas>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -130,7 +130,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			}
 		}
 		
-		for(ITransmitter<GasNetwork> pipe : transmitters)
+		for(ITransmitter<GasNetwork, EnumGas> pipe : transmitters)
 		{
 			IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
 		
@@ -178,13 +178,13 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 	
 	@Override
-	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
+	protected GasNetwork create(ITransmitter<GasNetwork, EnumGas>... varTransmitters) 
 	{
 		return new GasNetwork(varTransmitters);
 	}
 
 	@Override
-	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
+	protected GasNetwork create(Collection<ITransmitter<GasNetwork, EnumGas>> collection) 
 	{
 		return new GasNetwork(collection);
 	}
