@@ -158,6 +158,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	private DisplayInteger getListAndRender(ForgeDirection side, EnumGas type)
 	{
 		if(side == ForgeDirection.UNKNOWN)

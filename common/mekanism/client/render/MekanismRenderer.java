@@ -332,8 +332,7 @@ public class MekanismRenderer
     		{
     			return Arrays.equals(boolArray, (boolean[])o);
     		}
-    		else
-    		{
+    		else {
     			return false;
     		}
     	}

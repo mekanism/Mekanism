@@ -1,5 +1,6 @@
 package mekanism.common.tileentity;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.tile.IWrenchable;
@@ -55,6 +56,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
+			if(packetTick == 0)
+			{
+				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			}
+			
 			if(getEnergy() < getMaxEnergy() && powerHandler.getEnergyStored() > 0)
 			{
 				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
