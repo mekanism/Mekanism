@@ -63,7 +63,7 @@ public class GuiFactory extends GuiMekanism
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
         
         if(tileEntity.tier == FactoryTier.BASIC)
         {
@@ -72,7 +72,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 59 + (i*38);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -82,7 +82,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 39 + (i*26);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ELITE)
@@ -92,7 +92,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 33 + (i*19);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
     }
