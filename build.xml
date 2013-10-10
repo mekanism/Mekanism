@@ -23,6 +23,9 @@
 
 		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.4/NotEnoughItems-dev%201.6.1.5.jar"
 			dest="${dir.mcp}/lib/NEI-dev.jar"/>
+			
+		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.4/CodeChickenCore-dev%200.9.0.7.jar"
+			dest = "${dir.mcp}/lib/CCC-dev.jar"/>
 
 		<copy todir="${dir.mcp}/src/minecraft">
 
