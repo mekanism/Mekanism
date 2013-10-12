@@ -154,7 +154,6 @@ public class MekanismTools implements IModule
 		
 		//Load this module
 		addItems();
-		addNames();
 		addRecipes();
 		
 		//Finalization
@@ -372,88 +371,6 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(SteelBoots, 1), new Object[] {
 			"I *", "* I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
-	}
-	
-	public void addNames()
-	{
-		//Base
-		LanguageRegistry.addName(WoodPaxel, "Wood Paxel");
-		LanguageRegistry.addName(StonePaxel, "Stone Paxel");
-		LanguageRegistry.addName(IronPaxel, "Iron Paxel");
-		LanguageRegistry.addName(DiamondPaxel, "Diamond Paxel");
-		LanguageRegistry.addName(GoldPaxel, "Gold Paxel");
-		
-		//Obsidian
-		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
-		LanguageRegistry.addName(ObsidianChestplate, "Obsidian Chestplate");
-		LanguageRegistry.addName(ObsidianLeggings, "Obsidian Leggings");
-		LanguageRegistry.addName(ObsidianBoots, "Obsidian Boots");
-		LanguageRegistry.addName(ObsidianPaxel, "Obsidian Paxel");
-		LanguageRegistry.addName(ObsidianPickaxe, "Obsidian Pickaxe");
-		LanguageRegistry.addName(ObsidianAxe, "Obsidian Axe");
-		LanguageRegistry.addName(ObsidianShovel, "Obsidian Shovel");
-		LanguageRegistry.addName(ObsidianHoe, "Obsidian Hoe");
-		LanguageRegistry.addName(ObsidianSword, "Obsidian Sword");
-		
-		//Lazuli
-		LanguageRegistry.addName(LazuliHelmet, "Lapis Lazuli Helmet");
-		LanguageRegistry.addName(LazuliChestplate, "Lapis Lazuli Chestplate");
-		LanguageRegistry.addName(LazuliLeggings, "Lapis Lazuli Leggings");
-		LanguageRegistry.addName(LazuliBoots, "Lapis Lazuli Boots");
-		LanguageRegistry.addName(LazuliPaxel, "Lapis Lazuli Paxel");
-		LanguageRegistry.addName(LazuliPickaxe, "Lapis Lazuli Pickaxe");
-		LanguageRegistry.addName(LazuliAxe, "Lapis Lazuli Axe");
-		LanguageRegistry.addName(LazuliShovel, "Lapis Lazuli Shovel");
-		LanguageRegistry.addName(LazuliHoe, "Lapis Lazuli Hoe");
-		LanguageRegistry.addName(LazuliSword, "Lapis Lazuli Sword");
-		
-		//Osmium
-		LanguageRegistry.addName(OsmiumHelmet, "Osmium Helmet");
-		LanguageRegistry.addName(OsmiumChestplate, "Osmium Chestplate");
-		LanguageRegistry.addName(OsmiumLeggings, "Osmium Leggings");
-		LanguageRegistry.addName(OsmiumBoots, "Osmium Boots");
-		LanguageRegistry.addName(OsmiumPaxel, "Osmium Paxel");
-		LanguageRegistry.addName(OsmiumPickaxe, "Osmium Pickaxe");
-		LanguageRegistry.addName(OsmiumAxe, "Osmium Axe");
-		LanguageRegistry.addName(OsmiumShovel, "Osmium Shovel");
-		LanguageRegistry.addName(OsmiumHoe, "Osmium Hoe");
-		LanguageRegistry.addName(OsmiumSword, "Osmium Sword");
-		
-		//Redstone
-		LanguageRegistry.addName(BronzeHelmet, "Bronze Helmet");
-		LanguageRegistry.addName(BronzeChestplate, "Bronze Chestplate");
-		LanguageRegistry.addName(BronzeLeggings, "Bronze Leggings");
-		LanguageRegistry.addName(BronzeBoots, "Bronze Boots");
-		LanguageRegistry.addName(BronzePaxel, "Bronze Paxel");
-		LanguageRegistry.addName(BronzePickaxe, "Bronze Pickaxe");
-		LanguageRegistry.addName(BronzeAxe, "Bronze Axe");
-		LanguageRegistry.addName(BronzeShovel, "Bronze Shovel");
-		LanguageRegistry.addName(BronzeHoe, "Bronze Hoe");
-		LanguageRegistry.addName(BronzeSword, "Bronze Sword");
-		
-		//Glowstone
-		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
-		LanguageRegistry.addName(GlowstonePickaxe, "Glowstone Pickaxe");
-		LanguageRegistry.addName(GlowstoneAxe, "Glowstone Axe");
-		LanguageRegistry.addName(GlowstoneShovel, "Glowstone Shovel");
-		LanguageRegistry.addName(GlowstoneHoe, "Glowstone Hoe");
-		LanguageRegistry.addName(GlowstoneSword, "Glowstone Sword");
-		LanguageRegistry.addName(GlowstoneHelmet, "Glowstone Helmet");
-		LanguageRegistry.addName(GlowstoneChestplate, "Glowstone Chestplate");
-		LanguageRegistry.addName(GlowstoneLeggings, "Glowstone Leggings");
-		LanguageRegistry.addName(GlowstoneBoots, "Glowstone Boots");
-		
-		//Steel
-		LanguageRegistry.addName(SteelPaxel, "Steel Paxel");
-		LanguageRegistry.addName(SteelPickaxe, "Steel Pickaxe");
-		LanguageRegistry.addName(SteelAxe, "Steel Axe");
-		LanguageRegistry.addName(SteelShovel, "Steel Shovel");
-		LanguageRegistry.addName(SteelHoe, "Steel Hoe");
-		LanguageRegistry.addName(SteelSword, "Steel Sword");
-		LanguageRegistry.addName(SteelHelmet, "Steel Helmet");
-		LanguageRegistry.addName(SteelChestplate, "Steel Chestplate");
-		LanguageRegistry.addName(SteelLeggings, "Steel Leggings");
-		LanguageRegistry.addName(SteelBoots, "Steel Boots");
 	}
 	
 	public void addItems()

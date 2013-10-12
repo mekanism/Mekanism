@@ -91,7 +91,6 @@ public class MekanismGenerators implements IModule
 		//Load this module
 		addBlocks();
 		addItems();
-		addNames();
 		addRecipes();
 		addEntities();
 		
@@ -151,22 +150,6 @@ public class MekanismGenerators implements IModule
         }
         
         InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
-	}
-	
-	public void addNames()
-	{
-		LanguageRegistry.addName(BioFuel, "Bio Fuel");
-		LanguageRegistry.addName(ElectrolyticCore, "Electrolytic Core");
-		LanguageRegistry.addName(SolarPanel, "Solar Panel");
-		
-		//Localization for Generator
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.HeatGenerator.name", "Heat Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.SolarGenerator.name", "Solar Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.ElectrolyticSeparator.name", "Electrolytic Separator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.HydrogenGenerator.name", "Hydrogen Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.BioGenerator.name", "Bio-Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.AdvancedSolarGenerator.name", "Advanced Solar Generator");
-		LanguageRegistry.instance().addStringLocalization("tile.Generator.WindTurbine.name", "Wind Turbine");
 	}
 	
 	public void addEntities()
