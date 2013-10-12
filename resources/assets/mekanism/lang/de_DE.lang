@@ -1,0 +1,213 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsidian-TNT
+item.Stopwatch.name=Steve's Stoppuhr
+item.WeatherOrb.name=Wetterorb
+item.EnrichedAlloy.name=Angereicherte Legierung
+item.EnergyTablet.name=Energietablett
+item.SpeedUpgrade.name=Geschwindigkeitsupgrade
+item.EnergyUpgrade.name=Energieupgrade
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Atomar-Disassembler
+item.AtomicCore.name=Atomar-Kern
+item.ElectricBow.name=Elektrischer Bogen
+item.StorageTank.name=Wasserstofftank
+item.BoundingBlock.name=Begrenzungsblock
+tile.GasTank.name=Gastank
+item.StorageTank.name=Speichertank
+item.ControlCircuit.name=Kontrollschaltkreis
+item.EnrichedIron.name=Angereichertes Eisen
+item.CompressedCarbon.name=Komprimierter Kohlenstoff
+item.PortableTeleporter.name=Tragbarer Teleporter
+item.TeleportationCore.name=Teleportationskern
+item.Configurator.name=Konfigurator
+item.NetworkReader.name=Netzwerklesegerät
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Osmiumblock
+tile.BasicBlock.BronzeBlock.name=Bronzeblock
+tile.BasicBlock.RefinedObsidian.name=Raffiniertes Obsidian
+tile.BasicBlock.CoalBlock.name=Kohleblock
+tile.BasicBlock.RefinedGlowstone.name=Raffiniertes Glowstone
+tile.BasicBlock.SteelBlock.name=Stahlblock
+tile.BasicBlock.ControlPanel.name=Kontrollpaneel
+tile.BasicBlock.TeleporterFrame.name=Teleporter-Rahmen
+tile.BasicBlock.SteelCasing.name=Stahlhülle
+tile.BasicBlock.DynamicTank.name=Dynamischer Tank
+tile.BasicBlock.DynamicGlass.name=Dynamisches Glas
+tile.BasicBlock.DynamicValve.name=Dynamisches Ventil
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Anreicherungskammer
+tile.MachineBlock.OsmiumCompressor.name=Osmiumkompressor
+tile.MachineBlock.Combiner.name=Kombinierer
+tile.MachineBlock.Crusher.name=Zerstoßer
+tile.MachineBlock.TheoreticalElementizer.name=Theoretischer Elementisierer
+tile.MachineBlock.BasicFactory.name=Basisfabrik
+tile.MachineBlock.AdvancedFactory.name=Fortgeschrittene Fabrik
+tile.MachineBlock.EliteFactory.name=Elitefabrik
+tile.MachineBlock.MetallurgicInfuser.name=Metallurgische Infusionsmaschine
+tile.MachineBlock.PurificationChamber.name=Purifikationskammer
+tile.MachineBlock.EnergizedSmelter.name=Energetisierter Schmelzer
+tile.MachineBlock.Teleporter.name=Teleporter
+tile.MachineBlock.ElectricPump.name=Elektrische Pumpe
+tile.MachineBlock.ElectricChest.name=Elektrische Truhe
+tile.MachineBlock.Chargepad.name=Ladepad
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Osmiumerz
+
+//Transmitters
+tile.Transmitter.PressurizedTube.name=Druckröhre
+tile.Transmitter.UniversalCable.name=Universelles Kabel
+tile.Transmitter.MechanicalPipe.name=Mechanisches Rohr
+tile.Transmitter.LogisticalTransporter.name=Logistischer Transporter
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Basisenergiewürfel
+tile.EnergyCube.Advanced.name=Fortgeschrittener Energiewürfel
+tile.EnergyCube.Elite.name=Eliteenergiewürfel
+tile.EnergyCube.Ultimate.name=Ultimativer Energiewürfel
+
+//Dust
+item.ironDust.name=Eisenstaub
+item.goldDust.name=Goldstaub
+item.osmiumDust.name=Osmiumstaub
+item.obsidianDust.name=Raffinierter Obsidianstaub
+item.diamondDust.name=Diamantstaub
+item.steelDust.name=Stahlstaub
+item.copperDust.name=Kupferstaub
+item.tinDust.name=Zinnstaub
+item.silverDust.name=Silberstaub
+
+//Clumps
+item.ironClump.name=Eisenklumpen
+item.goldClump.name=Goldklumpen
+item.osmiumClump.name=Osmiumklumpen
+item.copperClump.name=Kupferklumpen
+item.tinClump.name=Zinnklumpen
+item.silverClump.name=Silberklumpen
+item.obsidianClump.name=Obsidianklumpen
+
+//Dirty Dust
+item.dirtyIronDust.name=Dreckiger Eisenstaub
+item.dirtyGoldDust.name=Dreckiger Goldstaub
+item.dirtyOsmiumDust.name=Dreckiger Osmiumstaub
+item.dirtyCopperDust.name=Dreckiger Kupferstaub
+item.dirtyTinDust.name=Dreckiger Zinnstaub
+item.dirtySilverDust.name=Dreckiger Silberstaub
+item.dirtyObsidianDust.name=Dreckiger Obsidianstaub
+
+//Ingots
+item.obsidianIngot.name=Obsidianbarren
+item.osmiumIngot.name=Osmiumbarren
+item.bronzeIngot.name=Bronzebarren
+item.glowstoneIngot.name=Glowstonebarren
+item.steelIngot.name=Stahlbarren
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=Biobrennstoff
+item.ElectrolyticCore.name=Elektrolytischer Kern
+item.SolarPanel.name=Solarmodul
+
+//Generators
+tile.Generator.HeatGenerator.name=Hitzegenerator
+tile.Generator.SolarGenerator.name=Solargenerator
+tile.Generator.ElectrolyticSeparator.name=Elektrolytischer Separator
+tile.Generator.HydrogenGenerator.name=Wasserstoffgenerator
+tile.Generator.BioGenerator.name=Bio-Generator
+tile.Generator.AdvancedSolarGenerator.name=Fortgeschrittener Solargenerator
+tile.Generator.WindTurbine.name=Windturbine
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Holz-Paxel
+item.StonePaxel.name=Stein-Paxel
+item.IronPaxel.name=Eisen-Paxel
+item.DiamondPaxel.name=Diamant-Paxel
+item.GoldPaxel.name=Gold-Paxel
+
+//Obsidian
+item.ObsidianHelmet.name=Obsidianhelm
+item.ObsidianChestplate.name=Obsidianbrustpanzer
+item.ObsidianLeggings.name=Obsidianbeinschutz
+item.ObsidianBoots.name=Obsidianstiefel
+item.ObsidianPaxel.name=Obsidian-Paxel
+item.ObsidianPickaxe.name=Obsidianspitzhacke
+item.ObsidianAxe.name=Obsidianaxt
+item.ObsidianShovel.name=Obsidianschaufel
+item.ObsidianHoe.name=Obsidianhacke
+item.ObsidianSword.name=Obsidianschwert
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lapislazulihelm
+item.LazuliChestplate.name=Lapislazulibrustpanzer
+item.LazuliLeggings.name=Lapislazulibeinschutz
+item.LazuliBoots.name=Lapislazulistiefel
+item.LazuliPaxel.name=Lapislazuli-Paxel
+item.LazuliPickaxe.name=Lapislazulispitzhacke
+item.LazuliAxe.name=Lapislazuliaxt
+item.LazuliShovel.name=Lapislazulischaufel
+item.LazuliHoe.name=Lapislazulihacke
+item.LazuliSword.name=Lapislazulischwert
+
+//Osmium
+item.OsmiumHelmet.name=Osmiumhelm
+item.OsmiumChestplate.name=Osmiumbrustpanzer
+item.OsmiumLeggings.name=Osmiumbeinschutz
+item.OsmiumBoots.name=Osmiumstiefel
+item.OsmiumPaxel.name=Osmium-Paxel
+item.OsmiumPickaxe.name=Osmiumspitzhacke
+item.OsmiumAxe.name=Osmiumaxt
+item.OsmiumShovel.name=Osmiumschaufel
+item.OsmiumHoe.name=Osmiumhacke
+item.OsmiumSword.name=Osmiumschwert
+
+//Bronze
+item.BronzeHelmet.name=Bronzehelm
+item.BronzeChestplate.name=Bronzebrustpanzer
+item.BronzeLeggings.name=Bronzebeinschutz
+item.BronzeBoots.name=Bronzestiefel
+item.BronzePaxel.name=Bronze-Paxel
+item.BronzePickaxe.name=Bronzespitzhacke
+item.BronzeAxe.name=Bronzeaxt
+item.BronzeShovel.name=Bronzeschaufel
+item.BronzeHoe.name=Bronzehacke
+item.BronzeSword.name=Bronzeschwert
+
+//Glow
+item.GlowstonePaxel.name=Glowstone-Paxel
+item.GlowstonePickaxe.name=Glowstone-Spitzhacke
+item.GlowstoneAxe.name=Glowstone-Axt
+item.GlowstoneShovel.name=Glowstone-Schaufel
+item.GlowstoneHoe.name=Glowstone-Hacke
+item.GlowstoneSword.name=Glowstone-Schwert
+item.GlowstoneHelmet.name=Glowstone-Helm
+item.GlowstoneChestplate.name=Glowstone-Brustpanzer
+item.GlowstoneLeggings.name=Glowstone-Beinschutz
+item.GlowstoneBoots.name=Glowstone-Stiefel
+
+//Steel
+item.SteelPaxel.name=Stahl-Paxel
+item.SteelPickaxe.name=Stahlspitzhacke
+item.SteelAxe.name=Stahlaxt
+item.SteelShovel.name=Stahlschaufel
+item.SteelHoe.name=Stahlhacke
+item.SteelSword.name=Stahlschwert
+item.SteelHelmet.name=Stahlhelm
+item.SteelChestplate.name=Stahlbrustpanzer
+item.SteelLeggings.name=Stahlbeinschutz
+item.SteelBoots.name=Stahlstiefel
