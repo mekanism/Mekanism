@@ -21,7 +21,6 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		renderAModelAt((TileEntityLogisticalTransporter)tileEntity, x, y, z, partialTick);
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	public void renderAModelAt(TileEntityLogisticalTransporter tileEntity, double x, double y, double z, float partialTick)
 	{
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter" + (tileEntity.isActive ? "Active" : "") + ".png"));

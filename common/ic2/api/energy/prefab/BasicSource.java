@@ -21,6 +21,9 @@ import ic2.api.item.ElectricItem;
  * It's designed to be attached to a tile entity as a delegate. Functionally BasicSource acts as a
  * one-time configurable output energy buffer, thus providing a common use case for generators.
  * 
+ * Sub-classing BasicSource instead of using it as a delegate works as well, but isn't recommended.
+ * The delegate can be extended with additional functionality through a sub class though.
+ * 
  * The constraints set by BasicSource like the strict tank-like energy buffering should provide a
  * more easy to use and stable interface than using IEnergySource directly while aiming for
  * optimal performance.
@@ -44,14 +47,14 @@ import ic2.api.item.ElectricItem;
  * 
  *     @Override
  *     public void invalidate() {
- *         ic2EnergySource.onInvalidate(); // notify the energy source
+ *         ic2EnergySource.invalidate(); // notify the energy source
  *         ...
  *         super.invalidate(); // this is important for mc!
  *     }
  * 
  *     @Override
  *     public void onChunkUnload() {
- *         ic2EnergySource.onOnChunkUnload(); // notify the energy source
+ *         ic2EnergySource.onChunkUnload(); // notify the energy source
  *         ...
  *     }
  * 
@@ -59,7 +62,7 @@ import ic2.api.item.ElectricItem;
  *     public void readFromNBT(NBTTagCompound tag) {
  *         super.readFromNBT(tag);
  * 
- *         ic2EnergySource.onReadFromNbt(tag);
+ *         ic2EnergySource.readFromNBT(tag);
  *         ...
  *     }
  * 
@@ -67,13 +70,13 @@ import ic2.api.item.ElectricItem;
  *     public void writeToNBT(NBTTagCompound tag) {
  *         super.writeToNBT(tag);
  * 
- *         ic2EnergySource.onWriteToNbt(tag);
+ *         ic2EnergySource.writeToNBT(tag);
  *         ...
  *     }
  * 
  *     @Override
  *     public void updateEntity() {
- *         ic2EnergySource.onUpdateEntity(); // notify the energy source
+ *         ic2EnergySource.updateEntity(); // notify the energy source
  *         ...
  *         ic2EnergySource.addEnergy(5); // add 5 eu to the source's buffer this tick
  *         ...
@@ -92,7 +95,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	/**
 	 * Constructor for a new BasicSource delegate.
 	 * 
-	 * @param parent TileEntity represented by this energy source.
+	 * @param parent Base TileEntity represented by this energy source.
 	 * @param capacity Maximum amount of eu to store.
 	 * @param tier IC2 tier, 1=LV, 2=MV, ...
 	 */
@@ -107,16 +110,17 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	// in-world te forwards	>>
 
 	/**
-	 * Forward for the TileEntity's updateEntity(), used for creating the energy net link.
-	 * Either onUpdateEntity or onLoaded have to be used.
+	 * Forward for the base TileEntity's updateEntity(), used for creating the energy net link.
+	 * Either updateEntity or onLoaded have to be used.
 	 */
-	public void onUpdateEntity() {
+	@Override
+	public void updateEntity() {
 		if (!addedToEnet) onLoaded();
 	}
 
 	/**
-	 * Notification that the TileEntity finished loaded, for advanced uses.
-	 * Either onUpdateEntity or onLoaded have to be used.
+	 * Notification that the base TileEntity finished loading, for advanced uses.
+	 * Either updateEntity or onLoaded have to be used.
 	 */
 	public void onLoaded() {
 		if (!addedToEnet && !FMLCommonHandler.instance().getEffectiveSide().isClient()) {
@@ -132,10 +136,22 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	}
 
 	/**
-	 * Forward for the TileEntity's invalidate(), used for destroying the energy net link.
-	 * Both onInvalidate and onOnChunkUnload have to be used.
+	 * Forward for the base TileEntity's invalidate(), used for destroying the energy net link.
+	 * Both invalidate and onChunkUnload have to be used.
 	 */
-	public void onInvalidate() {
+	@Override
+	public void invalidate() {
+		super.invalidate();
+
+		onChunkUnload();
+	}
+
+	/**
+	 * Forward for the base TileEntity's onChunkUnload(), used for destroying the energy net link.
+	 * Both invalidate and onChunkUnload have to be used.
+	 */
+	@Override
+	public void onChunkUnload() {
 		if (addedToEnet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 
@@ -144,30 +160,32 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	}
 
 	/**
-	 * Forward for the TileEntity's onChunkUnload(), used for destroying the energy net link.
-	 * Both onInvalidate and onOnChunkUnload have to be used.
-	 */
-	public void onOnChunkUnload() {
-		onInvalidate();
-	}
-
-	/**
-	 * Forward for the TileEntity's readFromNBT(), used for loading the state.
+	 * Forward for the base TileEntity's readFromNBT(), used for loading the state.
 	 * 
 	 * @param tag Compound tag as supplied by TileEntity.readFromNBT()
 	 */
-	public void onReadFromNbt(NBTTagCompound tag) {
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+
 		NBTTagCompound data = tag.getCompoundTag("IC2BasicSource");
 
 		energyStored = data.getDouble("energy");
 	}
 
 	/**
-	 * Forward for the TileEntity's writeToNBT(), used for saving the state.
+	 * Forward for the base TileEntity's writeToNBT(), used for saving the state.
 	 * 
 	 * @param tag Compound tag as supplied by TileEntity.writeToNBT()
 	 */
-	public void onWriteToNbt(NBTTagCompound tag) {
+	@Override
+	public void writeToNBT(NBTTagCompound tag) {
+		try {
+			super.writeToNBT(tag);
+		} catch (RuntimeException e) {
+			// happens if this is a delegate, ignore
+		}
+
 		NBTTagCompound data = new NBTTagCompound();
 
 		data.setDouble("energy", energyStored);
@@ -240,6 +258,35 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	}
 
 	// << methods for using this adapter
+
+	// backwards compatibility (ignore these) >>
+
+	@Deprecated
+	public void onUpdateEntity() {
+		updateEntity();
+	}
+
+	@Deprecated
+	public void onInvalidate() {
+		invalidate();
+	}
+
+	@Deprecated
+	public void onOnChunkUnload() {
+		onChunkUnload();
+	}
+
+	@Deprecated
+	public void onReadFromNbt(NBTTagCompound tag) {
+		readFromNBT(tag);
+	}
+
+	@Deprecated
+	public void onWriteToNbt(NBTTagCompound tag) {
+		writeToNBT(tag);
+	}
+
+	// << backwards compatibility
 
 	// ******************************
 	// *** Methods for use by ic2 ***

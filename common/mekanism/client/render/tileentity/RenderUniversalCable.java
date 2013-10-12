@@ -118,6 +118,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	private static Model3D[] assignEnergy()
 	{
 		Model3D[] energyArray = new Model3D[7];

@@ -21,11 +21,11 @@ public class GuiFactory extends GuiMekanism
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
         super(new ContainerFactory(inventory, tentity));
-        xSize+=26;
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class GuiFactory extends GuiMekanism
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES), xAxis, yAxis);
 		}
     }
 
@@ -63,10 +63,7 @@ public class GuiFactory extends GuiMekanism
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
-        
-        displayInt = tileEntity.getScaledRecipeProgress(15);
-        drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 176 + 26, 86, 10, displayInt);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
         
         if(tileEntity.tier == FactoryTier.BASIC)
         {
@@ -75,7 +72,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 59 + (i*38);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -85,7 +82,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 39 + (i*26);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ELITE)
@@ -95,7 +92,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 33 + (i*19);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
     }

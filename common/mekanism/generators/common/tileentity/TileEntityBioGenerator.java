@@ -209,7 +209,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 	public int getFuel(ItemStack itemstack)
 	{
-		return itemstack.itemID == MekanismGenerators.BioFuel.itemID ? 100 : 0;
+		return itemstack.itemID == MekanismGenerators.BioFuel.itemID ? 200 : 0;
 	}
 
 	/**
