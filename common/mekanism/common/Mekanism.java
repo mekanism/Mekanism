@@ -200,6 +200,7 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	public static Item NetworkReader;
+	public static Item MaganeseAlloy;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -501,9 +502,13 @@ public class Mekanism
 	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
         }
         
+        //Register infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
+        
+        //Smelting
+        FurnaceRecipes.smelting().addSmelting(Block.dirt.blockID, new ItemStack(MaganeseAlloy, 2), 0);
 	}
 	
 	/**
@@ -539,7 +544,8 @@ public class Mekanism
 		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
 		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
 		LanguageRegistry.addName(Configurator, "Configurator");
-		LanguageRegistry.addName(NetworkReader, "NetworkReader");
+		LanguageRegistry.addName(NetworkReader, "Network Reader");
+		LanguageRegistry.addName(MaganeseAlloy, "Maganese Alloy");
 		
 		//Localization for BasicBlock
 		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
@@ -661,6 +667,7 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
+		MaganeseAlloy = new ItemMekanism(configuration.getItem("MaganeseAlloy", 11223).getInt()).setUnlocalizedName("MaganeseAlloy");
 		configuration.save();
 		
 		//Registrations
@@ -691,6 +698,7 @@ public class Mekanism
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
+		GameRegistry.registerItem(MaganeseAlloy, "MaganeseAlloy");
 	}
 	
 	/**

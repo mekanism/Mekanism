@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
-import ic2.api.item.ICustomElectricItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
+import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
@@ -43,7 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IItemElectric, ICustomElectricItem, ISustainedInventory, ISustainedTank, IChargeableItem
+public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IChargeableItem
 {
 	public Block metaBlock;
 	
@@ -194,56 +196,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 		
 		return false;
     }
-	
-	@Override
-	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
-			
-			if(!simulate)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
-			}
-			
-			return (int)(energyToStore*Mekanism.TO_IC2);
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
-	{
-		if(canSend(itemStack))
-		{
-			double energyWanted = amount*Mekanism.FROM_IC2;
-			double energyToGive = Math.min(Math.min(energyWanted, getMaxEnergy(itemStack)*0.01), getEnergy(itemStack));
-			
-			if(!simulate)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - energyToGive);
-			}
-			
-			return (int)(energyToGive*Mekanism.TO_IC2);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public boolean canUse(ItemStack itemStack, int amount)
-	{
-		return getEnergy(itemStack) >= amount*Mekanism.FROM_IC2;
-	}
-	
-	@Override
-	public boolean canShowChargeToolTip(ItemStack itemStack)
-	{
-		return false;
-	}
 	
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
@@ -500,5 +452,11 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	public float getTransfer(ItemStack itemStack)
 	{
 		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
+	}
+	
+	@Override
+	public IElectricItemManager getManager(ItemStack itemStack) 
+	{
+		return IC2ItemManager.getManager(this);
 	}
 }
