@@ -7,8 +7,10 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
+import mekanism.common.network.PacketWalkieTalkieState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
@@ -25,6 +27,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 {
 	public boolean lastTickConfiguratorChange = false;
 	public boolean lastTickElectricBowChange = false;
+	public boolean lastTickWalkieTalkieChange = false;
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -74,6 +77,24 @@ public class ClientPlayerTickHandler implements ITickHandler
 					}
 					else {
 						lastTickElectricBowChange = false;
+					}
+				}
+				else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemWalkieTalkie)
+				{
+					ItemWalkieTalkie item = (ItemWalkieTalkie)entityPlayer.getCurrentEquippedItem().getItem();
+					
+					if(entityPlayer.isSneaking() && Keyboard.isKeyDown(Keyboard.KEY_M) && item.getOn(stack))
+					{
+						if(!lastTickWalkieTalkieChange)
+						{
+							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
+							item.setChannel(stack, newChan);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
+							lastTickWalkieTalkieChange = true;
+						}
+					}
+					else {
+						lastTickWalkieTalkieChange = false;
 					}
 				}
 			}

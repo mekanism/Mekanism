@@ -55,8 +55,6 @@ public class BlockEnergyCube extends BlockContainer
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	
-	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
@@ -311,15 +309,4 @@ public class BlockEnergyCube extends BlockContainer
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
         return tileEntity.getRedstoneLevel();
     }
-	
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-
-		if(!world.isRemote && tileEntity instanceof TileEntityEnergyCube)
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
-		}
-	}
 }

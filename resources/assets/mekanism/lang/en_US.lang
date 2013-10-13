@@ -26,6 +26,7 @@ item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.MaganeseAlloy.name=Maganese Alloy
+item.WalkieTalkie.name=Walkie-Talkie
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Block

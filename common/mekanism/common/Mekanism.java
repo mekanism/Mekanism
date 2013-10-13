@@ -54,6 +54,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemStopwatch;
 import mekanism.common.item.ItemStorageTank;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.ItemWeatherOrb;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketControlPanel;
@@ -71,6 +72,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTime;
 import mekanism.common.network.PacketTransmitterTransferUpdate;
 import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
+import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWeather;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityControlPanel;
@@ -109,7 +111,6 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -200,6 +201,7 @@ public class Mekanism
 	public static Item Configurator;
 	public static Item NetworkReader;
 	public static Item MaganeseAlloy;
+	public static Item WalkieTalkie;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -539,6 +541,7 @@ public class Mekanism
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
 		MaganeseAlloy = new ItemMekanism(configuration.getItem("MaganeseAlloy", 11223).getInt()).setUnlocalizedName("MaganeseAlloy");
+		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11234).getInt()).setUnlocalizedName("WalkieTalkie");
 		configuration.save();
 		
 		//Registrations
@@ -570,6 +573,7 @@ public class Mekanism
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
 		GameRegistry.registerItem(MaganeseAlloy, "MaganeseAlloy");
+		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 	}
 	
 	/**
@@ -1100,6 +1104,8 @@ public class Mekanism
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 		
+		NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
+		
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();
 		
@@ -1129,6 +1135,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketPortableTeleport.class);
 		PacketHandler.registerPacket(PacketRemoveUpgrade.class);
 		PacketHandler.registerPacket(PacketRedstoneControl.class);
+		PacketHandler.registerPacket(PacketWalkieTalkieState.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

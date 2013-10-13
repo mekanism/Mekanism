@@ -10,6 +10,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -17,10 +18,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -35,6 +40,11 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
+		if(item.itemID == Mekanism.WalkieTalkie.itemID)
+		{
+			return type != ItemRenderType.INVENTORY;
+		}
+		
 		return true;
 	}
 
@@ -57,7 +67,37 @@ public class ItemRenderingHandler implements IItemRenderer
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 	        
 			GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
-	        renderItem((RenderBlocks)data[0], tier.ordinal());
+	        MekanismRenderer.renderItem((RenderBlocks)data[0], tier.ordinal(), Mekanism.EnergyCube);
+		}
+		else if(item.getItem() instanceof ItemWalkieTalkie)
+		{
+			Icon icon = item.getItem().getIconIndex(item);
+			TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+
+            if (icon == null)
+            {
+                GL11.glPopMatrix();
+                return;
+            }
+
+            texturemanager.bindTexture(texturemanager.getResourceLocation(item.getItemSpriteNumber()));
+            Tessellator tessellator = Tessellator.instance;
+            float f = icon.getMinU();
+            float f1 = icon.getMaxU();
+            float f2 = icon.getMinV();
+            float f3 = icon.getMaxV();
+            float f4 = 0.0F;
+            float f5 = 0.3F;
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glTranslatef(-f4, -f5, 0.0F);
+            float f6 = 1.5F;
+            GL11.glScalef(f6, f6, f6);
+            GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
+            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
+
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		}
 		else if(item.getItem() instanceof ItemBlockMachine && item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
 		{
@@ -82,62 +122,11 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.5F, 0.0F);
-			 Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
 		}
 		else {
 			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.machineBlockID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
 		}
-	}
-	
-	/**
-	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
-	 * in a player's inventory, and in a player's hand.
-	 * @param renderer - RenderBlocks renderer to render the item with
-	 * @param metadata - block/item metadata
-	 * @param block - block to render
-	 */
-	public void renderItem(RenderBlocks renderer, int metadata)
-	{
-		Block block = Block.blocksList[Mekanism.energyCubeID];
-		renderer.setRenderBoundsFromBlock(block);
-		block.setBlockBoundsForItemRender();
-
-        if(renderer.useInventoryTint)
-        {
-            int renderColor = block.getRenderColor(metadata);
-            float red = (float)(renderColor >> 16 & 255) / 255.0F;
-            float green = (float)(renderColor >> 8 & 255) / 255.0F;
-            float blue = (float)(renderColor & 255) / 255.0F;
-            GL11.glColor4f(red, green, blue, 1.0F);
-        }
-
-        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, metadata));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, metadata));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
-        tessellator.draw();
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
-        tessellator.draw();
-        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 }
