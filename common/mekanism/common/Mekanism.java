@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 
@@ -200,7 +199,6 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	public static Item NetworkReader;
-	public static Item MaganeseAlloy;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -502,135 +500,9 @@ public class Mekanism
 	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
         }
         
-        //Register infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
-        
-        //Smelting
-        FurnaceRecipes.smelting().addSmelting(Block.dirt.blockID, new ItemStack(MaganeseAlloy, 2), 0);
-	}
-	
-	/**
-	 * Adds all item and block names.
-	 */
-	public void addNames()
-	{
-		//Extras
-		LanguageRegistry.addName(ElectricBow, "Electric Bow");
-		LanguageRegistry.addName(ObsidianTNT, "Obsidian TNT");
-		
-		if(extrasEnabled == true)
-		{
-			LanguageRegistry.addName(Stopwatch, "Steve's Stopwatch");
-			LanguageRegistry.addName(WeatherOrb, "Weather Orb");
-		}
-		
-		LanguageRegistry.addName(EnrichedAlloy, "Enriched Alloy");
-		LanguageRegistry.addName(EnergyTablet, "Energy Tablet");
-		LanguageRegistry.addName(SpeedUpgrade, "Speed Upgrade");
-		LanguageRegistry.addName(EnergyUpgrade, "Energy Upgrade");
-		LanguageRegistry.addName(Robit, "Robit");
-		LanguageRegistry.addName(AtomicDisassembler, "Atomic Disassembler");
-		LanguageRegistry.addName(AtomicCore, "Atomic Core");
-		LanguageRegistry.addName(ElectricBow, "Electric Bow");
-		LanguageRegistry.addName(StorageTank, "Hydrogen Tank");
-		LanguageRegistry.addName(BoundingBlock, "Bounding Block");
-		LanguageRegistry.addName(GasTank, "Gas Tank");
-		LanguageRegistry.addName(StorageTank, "Storage Tank");
-		LanguageRegistry.addName(ControlCircuit, "Control Circuit");
-		LanguageRegistry.addName(EnrichedIron, "Enriched Iron");
-		LanguageRegistry.addName(CompressedCarbon, "Compressed Carbon");
-		LanguageRegistry.addName(PortableTeleporter, "Portable Teleporter");
-		LanguageRegistry.addName(TeleportationCore, "Teleportation Core");
-		LanguageRegistry.addName(Configurator, "Configurator");
-		LanguageRegistry.addName(NetworkReader, "Network Reader");
-		LanguageRegistry.addName(MaganeseAlloy, "Maganese Alloy");
-		
-		//Localization for BasicBlock
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.OsmiumBlock.name", "Osmium Block");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.BronzeBlock.name", "Bronze Block");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RefinedObsidian.name", "Refined Obsidian");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.CoalBlock.name", "Coal Block");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.RefinedGlowstone.name", "Refined Glowstone");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.SteelBlock.name", "Steel Block");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.ControlPanel.name", "Control Panel");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.TeleporterFrame.name", "Teleporter Frame");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.SteelCasing.name", "Steel Casing");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.DynamicTank.name", "Dynamic Tank");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.DynamicGlass.name", "Dynamic Glass");
-		LanguageRegistry.instance().addStringLocalization("tile.BasicBlock.DynamicValve.name", "Dynamic Valve");
-		
-		//Localization for MachineBlock
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnrichmentChamber.name", "Enrichment Chamber");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.OsmiumCompressor.name", "Osmium Compressor");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Combiner.name", "Combiner");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Crusher.name", "Crusher");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.TheoreticalElementizer.name", "Theoretical Elementizer");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.BasicFactory.name", "Basic Factory");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.AdvancedFactory.name", "Advanced Factory");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EliteFactory.name", "Elite Factory");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.MetallurgicInfuser.name", "Metallurgic Infuser");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.PurificationChamber.name", "Purification Chamber");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.EnergizedSmelter.name", "Energized Smelter");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Teleporter.name", "Teleporter");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.ElectricPump.name", "Electric Pump");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.ElectricChest.name", "Electric Chest");
-		LanguageRegistry.instance().addStringLocalization("tile.MachineBlock.Chargepad.name", "Chargepad");
-		
-		//Localization for OreBlock
-		LanguageRegistry.instance().addStringLocalization("tile.OreBlock.OsmiumOre.name", "Osmium Ore");
-		
-		//Localization for Transmitter
-		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.PressurizedTube.name", "Pressurized Tube");
-		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.UniversalCable.name", "Universal Cable");
-		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.MechanicalPipe.name", "Mechanical Pipe");
-		LanguageRegistry.instance().addStringLocalization("tile.Transmitter.LogisticalTransporter.name", "Logistical Transporter");
-		
-		//Localization for EnergyCube
-		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Basic.name", "Basic Energy Cube");
-		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Advanced.name", "Advanced Energy Cube");
-		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Elite.name", "Elite Energy Cube");
-		LanguageRegistry.instance().addStringLocalization("tile.EnergyCube.Ultimate.name", "Ultimate Energy Cube");
-		
-		//Localization for Dust
-		LanguageRegistry.instance().addStringLocalization("item.ironDust.name", "Iron Dust");
-		LanguageRegistry.instance().addStringLocalization("item.goldDust.name", "Gold Dust");
-		LanguageRegistry.instance().addStringLocalization("item.osmiumDust.name", "Osmium Dust");
-		LanguageRegistry.instance().addStringLocalization("item.obsidianDust.name", "Refined Obsidian Dust");
-		LanguageRegistry.instance().addStringLocalization("item.diamondDust.name", "Diamond Dust");
-		LanguageRegistry.instance().addStringLocalization("item.steelDust.name", "Steel Dust");
-		LanguageRegistry.instance().addStringLocalization("item.copperDust.name", "Copper Dust");
-		LanguageRegistry.instance().addStringLocalization("item.tinDust.name", "Tin Dust");
-		LanguageRegistry.instance().addStringLocalization("item.silverDust.name", "Silver Dust");
-		
-		//Localization for Clump
-		LanguageRegistry.instance().addStringLocalization("item.ironClump.name", "Iron Clump");
-		LanguageRegistry.instance().addStringLocalization("item.goldClump.name", "Gold Clump");
-		LanguageRegistry.instance().addStringLocalization("item.osmiumClump.name", "Osmium Clump");
-		LanguageRegistry.instance().addStringLocalization("item.copperClump.name", "Copper Clump");
-		LanguageRegistry.instance().addStringLocalization("item.tinClump.name", "Tin Clump");
-		LanguageRegistry.instance().addStringLocalization("item.silverClump.name", "Silver Clump");
-		LanguageRegistry.instance().addStringLocalization("item.obsidianClump.name", "Obsidian Clump");
-		
-		//Localization for Dirty Dust
-		LanguageRegistry.instance().addStringLocalization("item.dirtyIronDust.name", "Dirty Iron Dust");
-		LanguageRegistry.instance().addStringLocalization("item.dirtyGoldDust.name", "Dirty Gold Dust");
-		LanguageRegistry.instance().addStringLocalization("item.dirtyOsmiumDust.name", "Dirty Osmium Dust");
-		LanguageRegistry.instance().addStringLocalization("item.dirtyCopperDust.name", "Dirty Copper Dust");
-		LanguageRegistry.instance().addStringLocalization("item.dirtyTinDust.name", "Dirty Tin Dust");
-		LanguageRegistry.instance().addStringLocalization("item.dirtySilverDust.name", "Dirty Silver Dust");
-		LanguageRegistry.instance().addStringLocalization("item.dirtyObsidianDust.name", "Dirty Obsidian Dust");
-		
-		//Localization for Ingot
-		LanguageRegistry.instance().addStringLocalization("item.obsidianIngot.name", "Obsidian Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.osmiumIngot.name", "Osmium Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.bronzeIngot.name", "Bronze Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.glowstoneIngot.name", "Glowstone Ingot");
-		LanguageRegistry.instance().addStringLocalization("item.steelIngot.name", "Steel Ingot");
-		
-		//Localization for Mekanism creative tab
-		LanguageRegistry.instance().addStringLocalization("itemGroup.tabMekanism", "Mekanism");
 	}
 	
 	/**
@@ -667,7 +539,6 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
-		MaganeseAlloy = new ItemMekanism(configuration.getItem("MaganeseAlloy", 11223).getInt()).setUnlocalizedName("MaganeseAlloy");
 		configuration.save();
 		
 		//Registrations
@@ -698,7 +569,6 @@ public class Mekanism
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
-		GameRegistry.registerItem(MaganeseAlloy, "MaganeseAlloy");
 	}
 	
 	/**
@@ -1238,7 +1108,6 @@ public class Mekanism
 		//Load this module
 		addItems();
 		addBlocks();
-		addNames();
 		addRecipes();
 		addEntities();
 		

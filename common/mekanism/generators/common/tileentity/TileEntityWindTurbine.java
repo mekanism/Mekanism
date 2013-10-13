@@ -7,6 +7,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.ItemStack;
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 
 public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
 {
@@ -58,7 +59,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
 		{

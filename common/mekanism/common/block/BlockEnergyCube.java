@@ -1,5 +1,8 @@
 package mekanism.common.block;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.tile.IEnergyTile;
+
 import java.util.List;
 import java.util.Random;
 
@@ -7,7 +10,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tileentity.TileEntityBasicBlock;
@@ -27,6 +29,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -308,4 +311,15 @@ public class BlockEnergyCube extends BlockContainer
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
         return tileEntity.getRedstoneLevel();
     }
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote && tileEntity instanceof TileEntityEnergyCube)
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
+		}
+	}
 }

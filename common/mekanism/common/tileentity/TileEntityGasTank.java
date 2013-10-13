@@ -10,7 +10,6 @@ import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

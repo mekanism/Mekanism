@@ -1,7 +1,5 @@
 package mekanism.client.gui;
 
-import java.lang.reflect.Method;
-
 import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
@@ -10,7 +8,6 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;

@@ -6,24 +6,19 @@ import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.IUpgradeManagement;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
-import mekanism.common.IFactory;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.Tier;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
@@ -36,6 +31,7 @@ import net.minecraftforge.common.ForgeDirection;
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
 public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
@@ -537,7 +533,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
 	{
 		switch(method)
 		{

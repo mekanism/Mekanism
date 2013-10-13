@@ -12,7 +12,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.Teleporter.Code;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.Entity;
@@ -27,6 +26,7 @@ import net.minecraftforge.common.ForgeDirection;
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IStrictEnergyAcceptor
@@ -400,7 +400,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{

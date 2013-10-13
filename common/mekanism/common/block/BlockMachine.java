@@ -1,5 +1,8 @@
 package mekanism.common.block;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.tile.IEnergyTile;
+
 import java.util.List;
 import java.util.Random;
 
@@ -19,7 +22,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Tier;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.Tier.FactoryTier;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
@@ -60,6 +62,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -856,5 +859,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	public boolean doDefaultBoundSetting(int metadata) 
 	{
 		return false;
+	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote && tileEntity instanceof IEnergyTile)
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
+		}
 	}
 }

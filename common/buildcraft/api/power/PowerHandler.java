@@ -23,7 +23,7 @@ public final class PowerHandler {
 				case STORAGE:
 					return true;
 				default:
-				    return false;
+					return false;
 			}
 		}
 
@@ -33,11 +33,16 @@ public final class PowerHandler {
 				case STORAGE:
 					return true;
 				default:
-				    return false;
+					return false;
 			}
 		}
 	}
 
+	/**
+	 * Extend this class to create custom Perdition algorithms (its not final).
+	 *
+	 * NOTE: It is not possible to create a Zero perdition algorithm.
+	 */
 	public static class PerditionCalculator {
 
 		public static final float DEFAULT_POWERLOSS = 1F;
@@ -48,6 +53,11 @@ public final class PowerHandler {
 			powerLoss = DEFAULT_POWERLOSS;
 		}
 
+		/**
+		 * Simple constructor for simple Perdition per tick.
+		 *
+		 * @param powerLoss power loss per tick
+		 */
 		public PerditionCalculator(float powerLoss) {
 			if (powerLoss < MIN_POWERLOSS) {
 				powerLoss = MIN_POWERLOSS;
@@ -71,6 +81,17 @@ public final class PowerHandler {
 				current = 0;
 			}
 			return current;
+		}
+
+		/**
+		 * Taxes a flat rate on all incoming power.
+		 * 
+		 * Defaults to 0% tax rate.
+		 * 
+		 * @return percent of input to tax
+		 */
+		public float getTaxPercent() {
+			return 0;
 		}
 	}
 	public static final PerditionCalculator DEFAULT_PERDITION = new PerditionCalculator();
@@ -337,6 +358,8 @@ public final class PowerHandler {
 			}
 
 			updateSources(from);
+			
+			used -= used * getPerdition().getTaxPercent();
 
 			used = addEnergy(used);
 

@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.RecipeHandler;
-import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;

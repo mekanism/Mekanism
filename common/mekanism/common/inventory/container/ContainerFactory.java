@@ -1,11 +1,9 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.IFactory;
 import mekanism.common.Tier;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;

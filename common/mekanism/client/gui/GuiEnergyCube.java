@@ -4,7 +4,6 @@ import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 
