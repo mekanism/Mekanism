@@ -199,6 +199,7 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	public static Item NetworkReader;
+	public static Item MaganeseAlloy;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -351,13 +352,7 @@ public class Mekanism
 			" P ", "PEP", " P ", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), EnrichedAlloy
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(EnrichedIron, 2), new Object[] {
-			Item.redstone, Item.ingotIron
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
-			"C", "I", "C", Character.valueOf('C'), "dustCopper", Character.valueOf('I'), Item.ingotIron
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(EnrichedIron, 4), new Object[] {
-			"T", "I", "T", Character.valueOf('T'), "dustTin", Character.valueOf('I'), Item.ingotIron
+			MaganeseAlloy, Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 8), new Object[] {
 			"IFI", "CEC", "IFI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('F'), Block.furnaceIdle, Character.valueOf('C'), "circuitBasic", Character.valueOf('E'), EnrichedAlloy
@@ -500,9 +495,13 @@ public class Mekanism
 	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
         }
         
+        //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
+        
+        //Smelting
+        FurnaceRecipes.smelting().addSmelting(Block.dirt.blockID, new ItemStack(MaganeseAlloy, 2), 0);
 	}
 	
 	/**
@@ -539,6 +538,7 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
+		MaganeseAlloy = new ItemMekanism(configuration.getItem("MaganeseAlloy", 11223).getInt()).setUnlocalizedName("MaganeseAlloy");
 		configuration.save();
 		
 		//Registrations
@@ -569,6 +569,7 @@ public class Mekanism
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
+		GameRegistry.registerItem(MaganeseAlloy, "MaganeseAlloy");
 	}
 	
 	/**

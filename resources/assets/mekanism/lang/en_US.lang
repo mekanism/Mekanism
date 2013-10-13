@@ -24,7 +24,8 @@ item.CompressedCarbon.name=Compressed Carbon
 item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
-item.NetworkReader.name=NetworkReader
+item.NetworkReader.name=Network Reader
+item.MaganeseAlloy.name=Maganese Alloy
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Block
