@@ -168,6 +168,9 @@ public class Mekanism
 	/** The main SoundHandler instance that is used by all audio sources */
 	public static SoundHandler audioHandler;
 	
+	/** The VoiceServer manager for walkie talkies */
+	public static VoiceServerManager voiceManager;
+	
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
     
@@ -1040,12 +1043,14 @@ public class Mekanism
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
+		voiceManager.start();
 		event.registerServerCommand(new CommandMekanism());
 	}
 	
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
+		voiceManager.stop();
 		teleporters.clear();
 		dynamicInventories.clear();
 	}
@@ -1104,7 +1109,9 @@ public class Mekanism
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 		
-		NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
+		//Set up VoiceServerManager
+		voiceManager = new VoiceServerManager();
+		NetworkRegistry.instance().registerConnectionHandler(voiceManager);
 		
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();

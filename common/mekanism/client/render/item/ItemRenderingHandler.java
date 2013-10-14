@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -71,33 +72,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
 		{
-			Icon icon = item.getItem().getIconIndex(item);
-			TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-
-            if (icon == null)
-            {
-                GL11.glPopMatrix();
-                return;
-            }
-
-            texturemanager.bindTexture(texturemanager.getResourceLocation(item.getItemSpriteNumber()));
-            Tessellator tessellator = Tessellator.instance;
-            float f = icon.getMinU();
-            float f1 = icon.getMaxU();
-            float f2 = icon.getMinV();
-            float f3 = icon.getMaxV();
-            float f4 = 0.0F;
-            float f5 = 0.3F;
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glTranslatef(-f4, -f5, 0.0F);
-            float f6 = 1.5F;
-            GL11.glScalef(f6, f6, f6);
-            GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
-            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
-
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			MekanismRenderer.renderItem(item);
 		}
 		else if(item.getItem() instanceof ItemBlockMachine && item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
 		{

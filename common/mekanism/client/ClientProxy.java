@@ -368,6 +368,7 @@ public class ClientProxy extends CommonProxy
 		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);
 		
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
+		NetworkRegistry.instance().registerConnectionHandler(new VoiceClientManager());
 	}
 	
 	@Override
