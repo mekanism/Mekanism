@@ -864,7 +864,7 @@ public final class MekanismUtils
      * Retrieves a private value from a defined class and field.
      * @param obj - the Object to retrieve the value from, null if static
      * @param c - Class to retrieve field value from
-     * @param field - name of declared field
+     * @param fields - possible names of field to iterate through
      * @return value as an Object, cast as necessary
      */
     public static Object getPrivateValue(Object obj, Class c, String[] fields)
@@ -888,7 +888,7 @@ public final class MekanismUtils
      * @param obj - the Object to perform the operation on, null if static
      * @param value - value to set the field to
      * @param c - Class the operation will be performed on
-     * @param field - name of declared field
+     * @param fields - possible names of field to iterate through
      */
     public static void setPrivateValue(Object obj, Object value, Class c, String[] fields)
     {
@@ -904,6 +904,13 @@ public final class MekanismUtils
     	}
     }
     
+    /**
+     * Retrieves a private method from a class, sets it as accessible, and returns it.
+     * @param c - Class the method is located in
+     * @param methods - possible names of the method to iterate through
+     * @param params - the Types inserted as parameters into the method
+     * @return private method
+     */
     public static Method getPrivateMethod(Class c, String[] methods, Class... params)
     {
     	for(String method : methods)

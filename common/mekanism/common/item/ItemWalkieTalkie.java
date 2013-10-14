@@ -17,6 +17,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 	public ItemWalkieTalkie(int id)
 	{
 		super(id);
+		setMaxStackSize(1);
 	}
 	
 	@Override

@@ -72,7 +72,17 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
 		{
+			if(((ItemWalkieTalkie)item.getItem()).getOn(item))
+			{
+				MekanismRenderer.glowOn();
+			}
+			
 			MekanismRenderer.renderItem(item);
+			
+			if(((ItemWalkieTalkie)item.getItem()).getOn(item))
+			{
+				MekanismRenderer.glowOff();
+			}
 		}
 		else if(item.getItem() instanceof ItemBlockMachine && item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
 		{

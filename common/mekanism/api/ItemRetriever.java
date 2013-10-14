@@ -35,10 +35,6 @@ public final class ItemRetriever
 	 * registered later in order to hook into other mods. In a rare circumstance you may
 	 * have to add "after:Mekanism" in the @Mod 'dependencies' annotation.
 	 * 
-	 * Note that you will be able to retrieve items that Mekanism has retrieved
-	 * from other mods. In other words, if IC2 is installed, 'getItem("GoldDust")' will
-	 * return IndustrialCraft gold dust.
-	 * 
 	 * @param identifier - a String to be searched in the 'Mekanism' class
 	 * @return an ItemStack of the declared identifier, otherwise null.
 	 */
