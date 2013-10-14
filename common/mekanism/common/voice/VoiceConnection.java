@@ -56,7 +56,7 @@ public class VoiceConnection
 				}
 			}
 		} catch(Exception e) {
-			System.err.println("Error while starting server-based connection.");
+			System.err.println("[Mekanism] VoiceServer: Error while starting server-based connection.");
 			e.printStackTrace();
 			open = false;
 		}
@@ -76,7 +76,6 @@ public class VoiceConnection
 						
 						if(byteCount > 0)
 						{
-							System.out.println("Got data");
 							Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
 						}
 					} catch(Exception e) {
@@ -101,7 +100,7 @@ public class VoiceConnection
 			
 			Mekanism.voiceManager.connections.remove(this);
 		} catch(Exception e) {
-			System.err.println("Error while stopping server-based connection.");
+			System.err.println("[Mekanism] VoiceServer: Error while stopping server-based connection.");
 			e.printStackTrace();
 		}
 	}
@@ -119,7 +118,7 @@ public class VoiceConnection
 			
 			output.flush();
 		} catch(Exception e) {
-			System.err.println("Error while sending data to player.");
+			System.err.println("[Mekanism] VoiceServer: Error while sending data to player.");
 			e.printStackTrace();
 		}
 	}

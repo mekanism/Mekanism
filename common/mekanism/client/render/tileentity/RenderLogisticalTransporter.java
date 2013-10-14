@@ -3,14 +3,18 @@ package mekanism.client.render.tileentity;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();

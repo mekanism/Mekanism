@@ -4,17 +4,22 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class VoiceOutput extends Thread
 {
 	public VoiceClient voiceClient;
 	
-	public DataLine.Info speaker = new DataLine.Info(SourceDataLine.class, voiceClient.format, 2200);
+	public DataLine.Info speaker;
 	
 	public SourceDataLine sourceLine;
 	
 	public VoiceOutput(VoiceClient client)
 	{
 		voiceClient = client;
+		speaker = new DataLine.Info(SourceDataLine.class, voiceClient.format, 2200);
 		
 		setDaemon(true);
 		setName("VoiceServer Client Output Thread");
@@ -37,7 +42,7 @@ public class VoiceOutput extends Thread
 				sourceLine.write(audioData, 0, audioData.length);
 			}
 		} catch(Exception e) {
-			System.err.println("Error while running speaker loop.");
+			System.err.println("[Mekanism] VoiceServer: Error while running client output thread.");
 			e.printStackTrace();
 		}
 	}

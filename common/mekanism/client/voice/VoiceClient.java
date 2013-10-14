@@ -4,25 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 
-import mekanism.client.MekanismKeyHandler;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.NetLoginHandler;
-import net.minecraft.network.packet.NetHandler;
-import net.minecraft.network.packet.Packet1Login;
-import net.minecraft.server.MinecraftServer;
-import cpw.mods.fml.common.network.IConnectionHandler;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class VoiceClient
 {
 	public Socket socket;
@@ -39,7 +28,7 @@ public class VoiceClient
 	
 	public void start(String ip, int port)
 	{
-		System.out.println("Started client connection.");
+		System.out.println("[Mekanism] VoiceServer: Starting client connection...");
 		
 		try {
 			socket = new Socket(ip, port);
@@ -51,14 +40,14 @@ public class VoiceClient
 			(outputThread = new VoiceOutput(this)).start();
 			(inputThread = new VoiceInput(this)).start();
 		} catch(Exception e) {
-			System.err.println("Error in core client initiation.");
+			System.err.println("[Mekanism] VoiceServer: Error while starting client connection.");
 			e.printStackTrace();
 		}
 	}
 	
 	public void stop()
 	{
-		System.out.println("Stopped client connection.");
+		System.out.println("[Mekanism] VoiceServer: Stopping client connection...");
 		
 		try {
 			inputThread.interrupt();
@@ -78,7 +67,7 @@ public class VoiceClient
 			socket = null;
 			running = false;
 		} catch(Exception e) {
-			System.err.println("Error while ending client connection.");
+			System.err.println("[Mekanism] VoiceServer: Error while stopping client connection.");
 			e.printStackTrace();
 		}
 	}

@@ -6,18 +6,22 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 
 import mekanism.client.MekanismKeyHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class VoiceInput extends Thread
 {
 	public VoiceClient voiceClient;
 	
-	public DataLine.Info microphone = new DataLine.Info(TargetDataLine.class, voiceClient.format, 2200);
+	public DataLine.Info microphone;
 	
 	public TargetDataLine targetLine;
 	
 	public VoiceInput(VoiceClient client)
 	{
 		voiceClient = client;
+		microphone = new DataLine.Info(TargetDataLine.class, voiceClient.format, 2200);
 		
 		setDaemon(true);
 		setName("VoiceServer Client Input Thread");
@@ -76,7 +80,7 @@ public class VoiceInput extends Thread
 			
 			audioInput.close();
 		} catch(Exception e) {
-			System.err.println("Error while running microphone loop.");
+			System.err.println("[Mekanism] VoiceServer: Error while running client input thread.");
 			e.printStackTrace();
 		}
 	}

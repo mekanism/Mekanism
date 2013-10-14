@@ -21,10 +21,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 	public VoiceClient voiceClient = new VoiceClient();
 	
 	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) 
-	{
-
-	}
+	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {}
 
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager) 
@@ -49,6 +46,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{
+		System.out.println("Left");
 		voiceClient.stop();
 		Mekanism.proxy.unloadSoundHandler();
 	}

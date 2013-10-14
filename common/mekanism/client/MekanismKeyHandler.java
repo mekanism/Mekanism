@@ -8,7 +8,10 @@ import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends KeyHandler
 {
 	public static KeyBinding modeSwitch = new KeyBinding("Mekanism Mode Switch", Keyboard.KEY_M);

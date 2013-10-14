@@ -5,7 +5,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import net.minecraft.client.renderer.IImageBuffer;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class CapeBufferDownload implements IImageBuffer
 {
     private int[] imageData;
