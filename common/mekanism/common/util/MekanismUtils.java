@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,17 +18,17 @@ import mekanism.api.Object3D;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
+import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.Teleporter;
-import mekanism.common.Version;
-import mekanism.common.IFactory.RecipeType;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Version;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.network.PacketElectricChest;
@@ -901,6 +902,22 @@ public final class MekanismUtils
 	    		continue;
 	    	}
     	}
+    }
+    
+    public static Method getPrivateMethod(Class c, String[] methods, Class... params)
+    {
+    	for(String method : methods)
+    	{
+    		try {
+    			Method m = c.getDeclaredMethod(method, params);
+    			m.setAccessible(true);
+    			return m;
+    		} catch(Exception e) {
+    			continue;
+    		}
+    	}
+    	
+    	return null;
     }
     
     /**

@@ -39,49 +39,9 @@ public class ClientTickHandler implements ITickHandler
 	public static final String DONATE_CAPE = "https://dl.dropboxusercontent.com/u/90411166/donate.png";
 	public static final String AIDAN_CAPE = "https://dl.dropboxusercontent.com/u/90411166/aidan.png";
 	
-	private Map<String, ThreadDownloadImageData> mikeDownload = new HashMap<String, ThreadDownloadImageData>();
-	private Map<String, ThreadDownloadImageData> donateDownload = new HashMap<String, ThreadDownloadImageData>();
-	private Map<String, ThreadDownloadImageData> aidanDownload = new HashMap<String, ThreadDownloadImageData>();
-	
-	private void updateCape(EntityPlayer player, ThreadDownloadImageData newCape)
-	{
-		if(player.getHideCape())
-		{
-			try {
-				Method m = EntityPlayer.class.getDeclaredMethod("setHideCape", Integer.class, Boolean.class);
-				m.invoke(player, 1, false);
-			} catch(Exception e) {}
-		}
-		
-		if(MekanismUtils.getPrivateValue(player, AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape) != newCape)
-		{
-			MekanismUtils.setPrivateValue(player, newCape, AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape);
-		}
-	}
-	
-	private ResourceLocation getCapeResource(EntityPlayer player)
-	{
-		if(player instanceof AbstractClientPlayer)
-		{
-			return (ResourceLocation)MekanismUtils.getPrivateValue(player, AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
-		}
-		
-		return null;
-	}
-	
-	private ThreadDownloadImageData getCape(EntityPlayer player, String cape)
-	{
-		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-		Object object = texturemanager.getTexture(getCapeResource(player));
-
-		if(object == null) 
-		{
-			object = new ThreadDownloadImageData(cape, getCapeResource(player), new CapeBufferDownload());
-			texturemanager.loadTexture(getCapeResource(player), (TextureObject)object);
-		}
-
-		return (ThreadDownloadImageData)object;
-	}
+	private Map<String, CapeBufferDownload> mikeDownload = new HashMap<String, CapeBufferDownload>();
+	private Map<String, CapeBufferDownload> donateDownload = new HashMap<String, CapeBufferDownload>();
+	private Map<String, CapeBufferDownload> aidanDownload = new HashMap<String, CapeBufferDownload>();
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
@@ -104,30 +64,66 @@ public class ClientTickHandler implements ITickHandler
 					{
 	                    if(StringUtils.stripControlCodes(player.username).equals("mikeacttck"))
 	                    {
-	                    	if(mikeDownload.get(player.username) == null)
-	                    	{
-	                    		mikeDownload.put(player.username, getCape(player, MIKE_CAPE));
-	                    	}
+	                    	CapeBufferDownload download = mikeDownload.get(player.username);
 	                    	
-	                    	updateCape(player, mikeDownload.get(player.username));
+	                    	if(download == null)
+	                    	{
+	                    		download = new CapeBufferDownload(player.username, MIKE_CAPE);
+	                    		mikeDownload.put(player.username, download);
+	                    		
+	                    		download.start();
+	                    	}
+	                    	else {
+	                    		if(!download.downloaded)
+	                    		{
+	                    			continue;
+	                    		}
+	                    		
+	                    		MekanismUtils.setPrivateValue(player, download.getImage(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape);
+	                    		MekanismUtils.setPrivateValue(player, download.getResourceLocation(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
+	                    	}
 	                    }
 	                    else if(StringUtils.stripControlCodes(player.username).equals("aidancbrady"))
 	                    {
-	                    	if(aidanDownload.get(player.username) == null)
-	                    	{
-	                    		aidanDownload.put(player.username, getCape(player, AIDAN_CAPE));
-	                    	}
+	                    	CapeBufferDownload download = aidanDownload.get(player.username);
 	                    	
-	                    	updateCape(player, aidanDownload.get(player.username));
+	                    	if(download == null)
+	                    	{
+	                    		download = new CapeBufferDownload(player.username, AIDAN_CAPE);
+	                    		aidanDownload.put(player.username, download);
+	                    		
+	                    		download.start();
+	                    	}
+	                    	else {
+	                    		if(!download.downloaded)
+	                    		{
+	                    			continue;
+	                    		}
+	                    		
+	                    		MekanismUtils.setPrivateValue(player, download.getImage(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape);
+	                    		MekanismUtils.setPrivateValue(player, download.getResourceLocation(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
+	                    	}
 	                    }
 	                    else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.username)) || player.username.contains("Player"))
 	                    {
-	                    	if(donateDownload.get(player.username) == null)
-	                    	{
-	                    		donateDownload.put(player.username, getCape(player, DONATE_CAPE));
-	                    	}
+	                    	CapeBufferDownload download = donateDownload.get(player.username);
 	                    	
-	                    	updateCape(player, donateDownload.get(player.username));
+	                    	if(download == null)
+	                    	{
+	                    		download = new CapeBufferDownload(player.username, DONATE_CAPE);
+	                    		donateDownload.put(player.username, download);
+	                    		
+	                    		download.start();
+	                    	}
+	                    	else {
+	                    		if(!download.downloaded)
+	                    		{
+	                    			continue;
+	                    		}
+	                    		
+	                    		MekanismUtils.setPrivateValue(player, download.getImage(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape);
+	                    		MekanismUtils.setPrivateValue(player, download.getResourceLocation(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
+	                    	}
 	                    }
 					}
 				}
