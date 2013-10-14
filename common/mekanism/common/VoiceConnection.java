@@ -6,7 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
+import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class VoiceConnection 
@@ -62,24 +64,89 @@ public class VoiceConnection
 			@Override
 			public void run()
 			{
-				try {
-					while(open)
-					{
+				while(open)
+				{
+					try {
+						short byteCount = VoiceConnection.this.input.readShort();
+						byte[] audioData = new byte[byteCount];
+						VoiceConnection.this.input.readFully(audioData);
 						
+						if(byteCount > 0)
+						{
+							Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
+						}
+					} catch(Exception e) {
+						open = false;
 					}
-				} catch(Exception e) {
-					open = false;
 				}
 				
 				if(!open)
 				{
-					try {
-						input.close();
-						output.close();
-						socket.close();
-					} catch(Exception e) {}
+					kill();
 				}
 			}
 		}).start();
+	}
+	
+	public void kill()
+	{
+		try {
+			input.close();
+			output.close();
+			socket.close();
+			
+			Mekanism.voiceManager.connections.remove(this);
+		} catch(Exception e) {}
+	}
+	
+	public void sendToPlayer(short byteCount, byte[] audioData, VoiceConnection connection)
+	{
+		if(!open)
+		{
+			kill();
+		}
+		
+		try {
+			output.writeShort(byteCount);
+			output.write(audioData);
+			
+			output.flush();
+		} catch(Exception e) {}
+	}
+	
+	public boolean canListen(int channel)
+	{
+		for(ItemStack itemStack : entityPlayer.inventory.mainInventory)
+		{
+			if(itemStack != null)
+			{
+				if(itemStack.getItem() instanceof ItemWalkieTalkie)
+				{
+					if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public int getCurrentChannel()
+	{
+		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+		
+		if(itemStack != null)
+		{
+			ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie)itemStack.getItem();
+			
+			if(walkieTalkie != null)
+			{
+				return walkieTalkie.getChannel(itemStack);
+			}
+		}
+		
+		return 0;
 	}
 }

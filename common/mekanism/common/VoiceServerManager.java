@@ -21,12 +21,14 @@ public class VoiceServerManager implements IConnectionHandler
 	
 	public boolean running;
 	
+	public Thread listenThread;
+	
 	public void start()
 	{
 		try {
 			serverSocket = new ServerSocket(36123);
 			
-			new Thread(new Runnable()
+			listenThread = new Thread(new Runnable()
 			{
 				@Override
 				public void run()
@@ -37,10 +39,15 @@ public class VoiceServerManager implements IConnectionHandler
 							Socket s = serverSocket.accept();
 							VoiceConnection connection = new VoiceConnection(s);
 							connections.add(connection);
-						} catch(Exception e) {}
+						} catch(Exception e) {
+							System.err.println("Error while accepting connection.");
+							e.printStackTrace();
+						}
 					}
 				}
-			}).start();
+			});
+			
+			listenThread.start();
 		} catch(Exception e) {}
 		
 		running = true;
@@ -49,11 +56,41 @@ public class VoiceServerManager implements IConnectionHandler
 	public void stop()
 	{
 		try {
+			listenThread.interrupt();
+			
 			serverSocket.close();
 			serverSocket = null;
-		} catch(Exception e) {}
+		} catch(Exception e) {
+			System.err.println("Error while stopping voice server.");
+			e.printStackTrace();
+		}
 		
 		running = false;
+	}
+	
+	public void sendToPlayers(short byteCount, byte[] audioData, VoiceConnection connection)
+	{
+		if(connection.entityPlayer == null)
+		{
+			return;
+		}
+		
+		int channel = connection.getCurrentChannel();
+		
+		if(channel == 0)
+		{
+			return;
+		}
+		
+		for(VoiceConnection iterConn : connections)
+		{
+			if(iterConn.entityPlayer == null || iterConn == connection || !iterConn.canListen(channel))
+			{
+				continue;
+			}
+			
+			iterConn.sendToPlayer(byteCount, audioData, connection);
+		}
 	}
 	
 	@Override

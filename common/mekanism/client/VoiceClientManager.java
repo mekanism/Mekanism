@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
@@ -59,6 +60,7 @@ public class VoiceClientManager implements IConnectionHandler
 		try {
 			socket = new Socket(server, 36123);
 			running = true;
+			start();
 		} catch(Exception e) {}
 	}
 
@@ -69,11 +71,120 @@ public class VoiceClientManager implements IConnectionHandler
 		try {
 			socket = new Socket(InetAddress.getLocalHost().getHostAddress(), 36123);
 			running = true;
+			start();
 		} catch(Exception e) {}
 	}
 
 	@Override
 	public void connectionClosed(INetworkManager manager) 
+	{
+		stop();
+	}
+
+	@Override
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
+	{
+
+	}
+	
+	public void start()
+	{
+		try {
+			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+			
+			//Speaker (Out)
+			new Thread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					try {
+						VoiceClientManager.this.sourceLine = ((SourceDataLine)AudioSystem.getLine(VoiceClientManager.this.speaker));
+						VoiceClientManager.this.sourceLine.open(VoiceClientManager.this.format, 2200);
+						VoiceClientManager.this.sourceLine.start();
+						
+						while(running)
+						{
+							System.out.println("Looped");
+							short byteCount = VoiceClientManager.this.input.readShort();
+							byte[] audioData = new byte[byteCount];
+							VoiceClientManager.this.input.readFully(audioData);
+							
+							VoiceClientManager.this.sourceLine.write(audioData, 0, audioData.length);
+						}
+					} catch(Exception e) {
+						System.err.println("Error while running speaker loop.");
+					}
+				}
+			}).start();
+			
+			//Microphone (In)
+			new Thread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					try {
+						VoiceClientManager.this.targetLine = ((TargetDataLine)AudioSystem.getLine(microphone));
+						VoiceClientManager.this.targetLine.open(VoiceClientManager.this.format, 2200);
+						VoiceClientManager.this.targetLine.start();
+						AudioInputStream audioInput = new AudioInputStream(VoiceClientManager.this.targetLine);
+						
+						boolean doFlush = false;
+						
+						while(running)
+						{
+							if(MekanismKeyHandler.voiceDown)
+							{
+								targetLine.flush();
+								
+								while(running && MekanismKeyHandler.voiceDown)
+								{
+									int availableBytes = audioInput.available();
+									byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
+									int bytesRead = audioInput.read(audioData, 0, audioData.length);
+									
+									if(bytesRead > 0)
+									{
+										System.out.println("Writing");
+										output.writeShort(audioData.length);
+										output.write(audioData);
+									}
+								}
+								
+								try {
+									Thread.sleep(200L);
+								} catch(Exception e) {
+									e.printStackTrace();
+								}
+								
+								doFlush = true;
+							}
+							else if(doFlush)
+							{
+								VoiceClientManager.this.output.flush();
+								doFlush = false;
+							}
+							
+							try {
+								Thread.sleep(20L);
+							} catch(Exception e) {
+								e.printStackTrace();
+							}
+						}
+						
+						audioInput.close();
+					} catch(Exception e) {
+						System.err.println("Error while running microphone loop.");
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		} catch(Exception e) {}
+	}
+	
+	public void stop()
 	{
 		try {
 			sourceLine.flush();
@@ -92,48 +203,9 @@ public class VoiceClientManager implements IConnectionHandler
 			socket.close();
 			socket = null;
 			running = false;
-		} catch(Exception e) {}
-	}
-
-	@Override
-	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
-	{
-
-	}
-	
-	public void init()
-	{
-		try {
-			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-			
-			//Speaker (Out)
-			new Thread(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					try {
-						VoiceClientManager.this.sourceLine = ((SourceDataLine)AudioSystem.getLine(VoiceClientManager.this.speaker));
-						VoiceClientManager.this.sourceLine.open(VoiceClientManager.this.format, 2200);
-						VoiceClientManager.this.sourceLine.start();
-					} catch(Exception e) {}
-				}
-			}).start();
-			
-			//Microphone (In)
-			new Thread(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					try {
-						VoiceClientManager.this.targetLine = ((TargetDataLine)AudioSystem.getLine(microphone));
-						VoiceClientManager.this.targetLine.open(VoiceClientManager.this.format, 2200);
-						VoiceClientManager.this.targetLine.start();
-					} catch(Exception e) {}
-				}
-			}).start();
-		} catch(Exception e) {}
+		} catch(Exception e) {
+			System.err.println("Error while ending client connection.");
+			e.printStackTrace();
+		}
 	}
 }

@@ -98,6 +98,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -369,6 +370,8 @@ public class ClientProxy extends CommonProxy
 		
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
 		NetworkRegistry.instance().registerConnectionHandler(new VoiceClientManager());
+		
+		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());
 	}
 	
 	@Override
