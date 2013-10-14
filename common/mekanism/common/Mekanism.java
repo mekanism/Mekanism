@@ -83,6 +83,7 @@ import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -1114,7 +1115,6 @@ public class Mekanism
 		
 		//Set up VoiceServerManager
 		voiceManager = new VoiceServerManager();
-		NetworkRegistry.instance().registerConnectionHandler(voiceManager);
 		
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();

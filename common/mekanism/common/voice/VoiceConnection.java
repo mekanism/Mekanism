@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.voice;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
+import mekanism.common.Mekanism;
 import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

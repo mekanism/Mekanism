@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.voice;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
 
-public class VoiceServerManager implements IConnectionHandler
+public class VoiceServerManager
 {
 	public Set<VoiceConnection> connections = new HashSet<VoiceConnection>();
 	
@@ -30,33 +30,7 @@ public class VoiceServerManager implements IConnectionHandler
 		
 		try {
 			serverSocket = new ServerSocket(36123);
-			
-			listenThread = new Thread(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					while(running)
-					{
-						try {
-							Socket s = serverSocket.accept();
-							VoiceConnection connection = new VoiceConnection(s);
-							connections.add(connection);
-							System.out.println("Accepted new connection.");
-						} catch(SocketException e) {
-							if(!e.getLocalizedMessage().toLowerCase().equals("socket closed"))
-							{
-								e.printStackTrace();
-							}
-						} catch(Exception e) {
-							System.err.println("Error while accepting connection.");
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-			
-			listenThread.start();
+			(listenThread = new ListenThread()).start();
 		} catch(Exception e) {}
 		
 		running = true;
@@ -109,39 +83,35 @@ public class VoiceServerManager implements IConnectionHandler
 		}
 	}
 	
-	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) 
+	public class ListenThread extends Thread
 	{
+		public ListenThread()
+		{
+			setDaemon(true);
+			setName("VoiceServer Listen Thread");
+		}
 		
-	}
-
-	@Override
-	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager) 
-	{
-		return null;
-	}
-
-	@Override
-	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
-	{
-		
-	}
-
-	@Override
-	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) 
-	{
-		
-	}
-
-	@Override
-	public void connectionClosed(INetworkManager manager) 
-	{
-		
-	}
-
-	@Override
-	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) 
-	{
-		
+		@Override
+		public void run()
+		{
+			while(running)
+			{
+				try {
+					Socket s = serverSocket.accept();
+					VoiceConnection connection = new VoiceConnection(s);
+					connections.add(connection);
+					
+					System.out.println("Accepted new connection.");
+				} catch(SocketException e) {
+					if(!e.getLocalizedMessage().toLowerCase().equals("socket closed"))
+					{
+						e.printStackTrace();
+					}
+				} catch(Exception e) {
+					System.err.println("Error while accepting connection.");
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
