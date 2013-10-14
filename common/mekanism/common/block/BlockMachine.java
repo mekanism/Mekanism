@@ -860,15 +860,4 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		return false;
 	}
-	
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-
-		if(!world.isRemote && tileEntity instanceof IEnergyTile)
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
-		}
-	}
 }
