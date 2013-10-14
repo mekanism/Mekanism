@@ -34,6 +34,9 @@ public class VoiceClientManager implements IConnectionHandler
 	public TargetDataLine targetLine;
 	public SourceDataLine sourceLine;
 	
+	public Thread microphoneThread;
+	public Thread speakerThread;
+	
 	public DataInputStream input;
 	public DataOutputStream output;
 	
@@ -89,12 +92,14 @@ public class VoiceClientManager implements IConnectionHandler
 	
 	public void start()
 	{
+		System.out.println("Started client connection.");
+		
 		try {
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			
 			//Speaker (Out)
-			new Thread(new Runnable()
+			speakerThread = new Thread(new Runnable()
 			{
 				@Override
 				public void run()
@@ -106,7 +111,6 @@ public class VoiceClientManager implements IConnectionHandler
 						
 						while(running)
 						{
-							System.out.println("Looped");
 							short byteCount = VoiceClientManager.this.input.readShort();
 							byte[] audioData = new byte[byteCount];
 							VoiceClientManager.this.input.readFully(audioData);
@@ -115,12 +119,15 @@ public class VoiceClientManager implements IConnectionHandler
 						}
 					} catch(Exception e) {
 						System.err.println("Error while running speaker loop.");
+						e.printStackTrace();
 					}
 				}
-			}).start();
+			});
+			
+			speakerThread.start();
 			
 			//Microphone (In)
-			new Thread(new Runnable()
+			microphoneThread = new Thread(new Runnable()
 			{
 				@Override
 				public void run()
@@ -147,7 +154,6 @@ public class VoiceClientManager implements IConnectionHandler
 									
 									if(bytesRead > 0)
 									{
-										System.out.println("Writing");
 										output.writeShort(audioData.length);
 										output.write(audioData);
 									}
@@ -180,13 +186,23 @@ public class VoiceClientManager implements IConnectionHandler
 						e.printStackTrace();
 					}
 				}
-			}).start();
-		} catch(Exception e) {}
+			});
+			
+			microphoneThread.start();
+		} catch(Exception e) {
+			System.err.println("Error in core client initiation.");
+			e.printStackTrace();
+		}
 	}
 	
 	public void stop()
 	{
+		System.out.println("Stopped client connection.");
+		
 		try {
+			microphoneThread.interrupt();
+			speakerThread.interrupt();
+			
 			sourceLine.flush();
 			sourceLine.close();
 			

@@ -25,9 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientPlayerTickHandler implements ITickHandler
 {
-	public boolean lastTickConfiguratorChange = false;
-	public boolean lastTickElectricBowChange = false;
-	public boolean lastTickWalkieTalkieChange = false;
+	public boolean lastTickUpdate = false;
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -47,55 +45,58 @@ public class ClientPlayerTickHandler implements ITickHandler
 				{
 					ItemConfigurator item = (ItemConfigurator)entityPlayer.getCurrentEquippedItem().getItem();
 					
-		    		if(entityPlayer.isSneaking() && Keyboard.isKeyDown(Keyboard.KEY_M))
+		    		if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchDown)
 		    		{
-		    			if(!lastTickConfiguratorChange)
+		    			if(!lastTickUpdate)
 		    			{
 			    			item.setState(stack, (byte)(item.getState(stack) < 2 ? item.getState(stack)+1 : 0));
 			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
 			    			entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack))));
-			    			lastTickConfiguratorChange = true;
+			    			lastTickUpdate = true;
 		    			}
 		    		}
 		    		else {
-		    			lastTickConfiguratorChange = false;
+		    			lastTickUpdate = false;
 		    		}
 				}
 				else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemElectricBow)
 				{
 					ItemElectricBow item = (ItemElectricBow)entityPlayer.getCurrentEquippedItem().getItem();
 					
-					if(entityPlayer.isSneaking() && Keyboard.isKeyDown(Keyboard.KEY_M))
+					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchDown)
 					{
-						if(!lastTickElectricBowChange)
+						if(!lastTickUpdate)
 						{
 							item.setFireState(stack, !item.getFireState(stack));
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
 							entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
-							lastTickElectricBowChange = true;
+							lastTickUpdate = true;
 						}
 					}
 					else {
-						lastTickElectricBowChange = false;
+						lastTickUpdate = false;
 					}
 				}
 				else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemWalkieTalkie)
 				{
 					ItemWalkieTalkie item = (ItemWalkieTalkie)entityPlayer.getCurrentEquippedItem().getItem();
 					
-					if(entityPlayer.isSneaking() && Keyboard.isKeyDown(Keyboard.KEY_M) && item.getOn(stack))
+					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchDown && item.getOn(stack))
 					{
-						if(!lastTickWalkieTalkieChange)
+						if(!lastTickUpdate)
 						{
 							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
 							item.setChannel(stack, newChan);
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
-							lastTickWalkieTalkieChange = true;
+							lastTickUpdate = true;
 						}
 					}
 					else {
-						lastTickWalkieTalkieChange = false;
+						lastTickUpdate = false;
 					}
+				}
+				else {
+					lastTickUpdate = false;
 				}
 			}
 		}

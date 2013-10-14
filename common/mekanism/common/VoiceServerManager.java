@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public class VoiceServerManager implements IConnectionHandler
 	
 	public void start()
 	{
+		System.out.println("Starting up voice server.");
+		
 		try {
 			serverSocket = new ServerSocket(36123);
 			
@@ -39,6 +42,12 @@ public class VoiceServerManager implements IConnectionHandler
 							Socket s = serverSocket.accept();
 							VoiceConnection connection = new VoiceConnection(s);
 							connections.add(connection);
+							System.out.println("Accepted new connection.");
+						} catch(SocketException e) {
+							if(!e.getLocalizedMessage().toLowerCase().equals("socket closed"))
+							{
+								e.printStackTrace();
+							}
 						} catch(Exception e) {
 							System.err.println("Error while accepting connection.");
 							e.printStackTrace();
@@ -60,6 +69,13 @@ public class VoiceServerManager implements IConnectionHandler
 			
 			serverSocket.close();
 			serverSocket = null;
+			
+			System.out.println("Shutting down voice server.");
+		} catch(SocketException e) {
+			if(!e.getLocalizedMessage().toLowerCase().equals("socket closed"))
+			{
+				e.printStackTrace();
+			}
 		} catch(Exception e) {
 			System.err.println("Error while stopping voice server.");
 			e.printStackTrace();

@@ -55,6 +55,8 @@ public class VoiceConnection
 				}
 			}
 		} catch(Exception e) {
+			System.err.println("Error while starting server-based connection.");
+			e.printStackTrace();
 			open = false;
 		}
 			
@@ -73,6 +75,7 @@ public class VoiceConnection
 						
 						if(byteCount > 0)
 						{
+							System.out.println("Got data");
 							Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
 						}
 					} catch(Exception e) {
@@ -96,7 +99,10 @@ public class VoiceConnection
 			socket.close();
 			
 			Mekanism.voiceManager.connections.remove(this);
-		} catch(Exception e) {}
+		} catch(Exception e) {
+			System.err.println("Error while stopping server-based connection.");
+			e.printStackTrace();
+		}
 	}
 	
 	public void sendToPlayer(short byteCount, byte[] audioData, VoiceConnection connection)
@@ -111,7 +117,10 @@ public class VoiceConnection
 			output.write(audioData);
 			
 			output.flush();
-		} catch(Exception e) {}
+		} catch(Exception e) {
+			System.err.println("Error while sending data to player.");
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean canListen(int channel)
@@ -122,9 +131,12 @@ public class VoiceConnection
 			{
 				if(itemStack.getItem() instanceof ItemWalkieTalkie)
 				{
-					if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
+					if(((ItemWalkieTalkie)itemStack.getItem()).getOn(itemStack))
 					{
-						return true;
+						if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
+						{
+							return true;
+						}
 					}
 				}
 			}
@@ -143,7 +155,10 @@ public class VoiceConnection
 			
 			if(walkieTalkie != null)
 			{
-				return walkieTalkie.getChannel(itemStack);
+				if(walkieTalkie.getOn(itemStack))
+				{
+					return walkieTalkie.getChannel(itemStack);
+				}
 			}
 		}
 		
