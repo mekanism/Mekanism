@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -52,9 +53,9 @@ public class ClientTickHandler implements ITickHandler
 			} catch(Exception e) {}
 		}
 		
-		if(MekanismUtils.getPrivateValue(player, AbstractClientPlayer.class, "field_110315_c") != newCape)
+		if(MekanismUtils.getPrivateValue(player, AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape) != newCape)
 		{
-			MekanismUtils.setPrivateValue(player, newCape, AbstractClientPlayer.class, "field_110315_c");
+			MekanismUtils.setPrivateValue(player, newCape, AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_downloadImageCape);
 		}
 	}
 	
@@ -62,7 +63,7 @@ public class ClientTickHandler implements ITickHandler
 	{
 		if(player instanceof AbstractClientPlayer)
 		{
-			return (ResourceLocation)MekanismUtils.getPrivateValue(player, AbstractClientPlayer.class, "field_110313_e");
+			return (ResourceLocation)MekanismUtils.getPrivateValue(player, AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
 		}
 		
 		return null;

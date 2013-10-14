@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.common.ISpecialBounds;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -334,7 +335,7 @@ public class MekanismRenderer
     public static TextureMap getTextureMap(int type)
     {
     	try {
-    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, "listTickables");
+    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, ObfuscatedNames.TextureManager_listTickables);
     		
     		for(Object obj : l)
     		{
@@ -386,7 +387,7 @@ public class MekanismRenderer
     public static float getPartialTicks()
     {
     	try {
-    		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, "timer");
+    		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
     		return t.renderPartialTicks;
     	} catch(Exception e) {}
     	

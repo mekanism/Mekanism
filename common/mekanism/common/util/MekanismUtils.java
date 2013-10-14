@@ -866,15 +866,20 @@ public final class MekanismUtils
      * @param field - name of declared field
      * @return value as an Object, cast as necessary
      */
-    public static Object getPrivateValue(Object obj, Class c, String field)
+    public static Object getPrivateValue(Object obj, Class c, String[] fields)
     {
-    	try {
-	    	Field f = c.getDeclaredField(field);
-	    	f.setAccessible(true);
-	    	return f.get(obj);
-    	} catch(Exception e) {
-    		return null;
+    	for(String field : fields)
+    	{
+	    	try {
+		    	Field f = c.getDeclaredField(field);
+		    	f.setAccessible(true);
+		    	return f.get(obj);
+	    	} catch(Exception e) {
+	    		continue;
+	    	}
     	}
+    	
+    	return null;
     }
     
     /**
@@ -884,13 +889,18 @@ public final class MekanismUtils
      * @param c - Class the operation will be performed on
      * @param field - name of declared field
      */
-    public static void setPrivateValue(Object obj, Object value, Class c, String field)
+    public static void setPrivateValue(Object obj, Object value, Class c, String[] fields)
     {
-    	try {
-    		Field f = c.getDeclaredField(field);
-    		f.setAccessible(true);
-    		f.set(obj, value);
-    	} catch(Exception e) {}
+    	for(String field : fields)
+    	{
+	    	try {
+	    		Field f = c.getDeclaredField(field);
+	    		f.setAccessible(true);
+	    		f.set(obj, value);
+	    	} catch(Exception e) {
+	    		continue;
+	    	}
+    	}
     }
     
     /**
