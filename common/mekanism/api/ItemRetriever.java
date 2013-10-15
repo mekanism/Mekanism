@@ -20,9 +20,9 @@ public final class ItemRetriever
 	 * 
 	 * Mekanism identifiers follow an easy-to-remember pattern.  All identifiers
 	 * are identical to the String returned by 'getItemName().'  None include spaces, 
-	 * and always make sure you start with a capital letter. The name that shows up
-	 * in-game can be stripped down to identifier form by removing spaces and all non-
-	 * alphabetic characters (,./'=-_). Below is an example:
+	 * and all start with a capital letter. The name that shows up in-game can be 
+	 * stripped down to identifier form by removing spaces and all non-alphabetic 
+	 * characters (,./'=-_). Below is an example:
 	 * 
 	 * ItemStack enrichedAlloy = ItemRetriever.getItem("EnrichedAlloy");
 	 * 

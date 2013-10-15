@@ -164,10 +164,6 @@ public class Mekanism
 	
 	/** The recent news which is received from the Mekanism server */
 	public static String recentNews;
-
-	@SideOnly(Side.CLIENT)
-	/** The main SoundHandler instance that is used by all audio sources */
-	public static SoundHandler audioHandler;
 	
 	/** The VoiceServer manager for walkie talkies */
 	public static VoiceServerManager voiceManager;
@@ -229,8 +225,6 @@ public class Mekanism
 	public static boolean disableBCBronzeCrafting = true;
 	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
-	public static boolean enableSounds = true;
-	public static boolean fancyUniversalCableRender = true;
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;

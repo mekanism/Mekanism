@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import java.lang.reflect.Method;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -11,11 +10,7 @@ import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureObject;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
@@ -134,11 +129,11 @@ public class ClientTickHandler implements ITickHandler
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
-		if(Mekanism.audioHandler != null)
+		if(MekanismClient.audioHandler != null)
 		{
-			synchronized(Mekanism.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.sounds)
 			{
-				Mekanism.audioHandler.onTick();
+				MekanismClient.audioHandler.onTick();
 			}
 		}
 	}

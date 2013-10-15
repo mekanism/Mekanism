@@ -3,12 +3,12 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -65,7 +65,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 
-		if(tileEntity.getEnergyScale() <= 0 || !Mekanism.fancyUniversalCableRender)
+		if(tileEntity.getEnergyScale() <= 0 || !MekanismClient.fancyUniversalCableRender)
 		{
 			return;
 		}

@@ -123,8 +123,8 @@ public class ClientProxy extends CommonProxy
 		super.loadConfiguration();
 		
 		Mekanism.configuration.load();
-		Mekanism.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
-		Mekanism.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
+		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
+		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		Mekanism.configuration.save();
 	}
 	
@@ -137,11 +137,11 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSound(TileEntity tileEntity) 
 	{
-		if(Mekanism.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
+		if(MekanismClient.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
 		{
-			synchronized(Mekanism.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.sounds)
 			{
-				Mekanism.audioHandler.register(tileEntity);
+				MekanismClient.audioHandler.register(tileEntity);
 			}
 		}
 	}
@@ -149,13 +149,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unregisterSound(TileEntity tileEntity) 
 	{
-		if(Mekanism.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
+		if(MekanismClient.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
 		{
-			synchronized(Mekanism.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.sounds)
 			{
-				if(Mekanism.audioHandler.getFrom(tileEntity) != null)
+				if(MekanismClient.audioHandler.getFrom(tileEntity) != null)
 				{
-					Mekanism.audioHandler.getFrom(tileEntity).remove();
+					MekanismClient.audioHandler.getFrom(tileEntity).remove();
 				}
 			}
 		}
@@ -376,23 +376,23 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void loadSoundHandler()
 	{
-		if(Mekanism.enableSounds)
+		if(MekanismClient.enableSounds)
 		{
-			Mekanism.audioHandler = new SoundHandler();
+			MekanismClient.audioHandler = new SoundHandler();
 		}
 	}
 	
 	@Override
 	public void unloadSoundHandler()
 	{
-		if(Mekanism.enableSounds)
+		if(MekanismClient.enableSounds)
 		{
-			if(Mekanism.audioHandler != null)
+			if(MekanismClient.audioHandler != null)
 			{
-				synchronized(Mekanism.audioHandler.sounds)
+				synchronized(MekanismClient.audioHandler.sounds)
 				{
 					HashMap<TileEntity, Sound> sounds = new HashMap<TileEntity, Sound>();
-					sounds.putAll(Mekanism.audioHandler.sounds);
+					sounds.putAll(MekanismClient.audioHandler.sounds);
 					
 					for(Sound sound : sounds.values())
 					{

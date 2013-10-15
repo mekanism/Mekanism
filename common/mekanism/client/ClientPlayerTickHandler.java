@@ -45,7 +45,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 				{
 					ItemConfigurator item = (ItemConfigurator)entityPlayer.getCurrentEquippedItem().getItem();
 					
-		    		if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchDown)
+		    		if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitch.isPressed())
 		    		{
 		    			if(!lastTickUpdate)
 		    			{
@@ -63,7 +63,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 				{
 					ItemElectricBow item = (ItemElectricBow)entityPlayer.getCurrentEquippedItem().getItem();
 					
-					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchDown)
+					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitch.isPressed())
 					{
 						if(!lastTickUpdate)
 						{
@@ -81,7 +81,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 				{
 					ItemWalkieTalkie item = (ItemWalkieTalkie)entityPlayer.getCurrentEquippedItem().getItem();
 					
-					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchDown && item.getOn(stack))
+					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitch.isPressed() && item.getOn(stack))
 					{
 						if(!lastTickUpdate)
 						{
