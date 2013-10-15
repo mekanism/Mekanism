@@ -9,9 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWalkieTalkie extends ItemMekanism
 {
+	@SideOnly(Side.CLIENT)
 	public Icon[] icons = new Icon[256];
 	
 	public ItemWalkieTalkie(int id)
@@ -30,6 +33,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getIconIndex(ItemStack itemStack)
 	{
 		if(!getOn(itemStack))
@@ -41,6 +45,7 @@ public class ItemWalkieTalkie extends ItemMekanism
     }
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:WalkieTalkieOff");
