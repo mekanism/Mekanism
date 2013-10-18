@@ -46,7 +46,6 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{
-		System.out.println("Left");
 		voiceClient.stop();
 		Mekanism.proxy.unloadSoundHandler();
 	}

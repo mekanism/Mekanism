@@ -59,9 +59,7 @@ public class VoiceInput extends Thread
 					
 					try {
 						Thread.sleep(200L);
-					} catch(Exception e) {
-						e.printStackTrace();
-					}
+					} catch(Exception e) {}
 					
 					doFlush = true;
 				}
@@ -73,9 +71,7 @@ public class VoiceInput extends Thread
 				
 				try {
 					Thread.sleep(20L);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
+				} catch(Exception e) {}
 			}
 			
 			audioInput.close();
