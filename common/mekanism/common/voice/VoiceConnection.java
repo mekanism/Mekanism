@@ -117,6 +117,8 @@ public class VoiceConnection
 			output.write(audioData);
 			
 			output.flush();
+			
+			System.out.println("Sent");
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while sending data to player.");
 			e.printStackTrace();

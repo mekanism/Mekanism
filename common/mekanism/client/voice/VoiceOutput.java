@@ -39,6 +39,8 @@ public class VoiceOutput extends Thread
 				byte[] audioData = new byte[byteCount];
 				voiceClient.input.readFully(audioData);
 				
+				System.out.println("Got");
+				
 				sourceLine.write(audioData, 0, audioData.length);
 			}
 		} catch(Exception e) {

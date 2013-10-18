@@ -17,6 +17,8 @@ public class MekanismKeyHandler extends KeyHandler
 	public static KeyBinding modeSwitch = new KeyBinding("Mekanism Mode Switch", Keyboard.KEY_M);
 	public static KeyBinding voice = new KeyBinding("Mekanism Voice", Keyboard.KEY_U);
 	
+	public static boolean voiceKeyDown = false;
+	
 	public MekanismKeyHandler()
 	{
 		super(new KeyBinding[] {modeSwitch, voice}, new boolean[] {false, false});
@@ -29,10 +31,22 @@ public class MekanismKeyHandler extends KeyHandler
 	}
 
 	@Override
-	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {}
+	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) 
+	{
+		if(tickEnd && kb.keyCode == voice.keyCode)
+		{
+			voiceKeyDown = true;
+		}
+	}
 
 	@Override
-	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {}
+	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) 
+	{
+		if(tickEnd && kb.keyCode == voice.keyCode)
+		{
+			voiceKeyDown = false;
+		}
+	}
 
 	@Override
 	public EnumSet<TickType> ticks() 
