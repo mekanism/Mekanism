@@ -24,12 +24,17 @@ public class EntityObsidianTNT extends Entity
     public EntityObsidianTNT(World world, double x, double y, double z)
     {
         this(world);
+        
         setPosition(x, y, z);
+        
         float randPi = (float)(Math.random()*Math.PI*2);
+        
         motionX = -(Math.sin(randPi))*0.02F;
         motionY = 0.2;
         motionZ = -(Math.cos(randPi))*0.02F;
+        
         fuse = Mekanism.obsidianTNTDelay;
+        
         prevPosX = x;
         prevPosY = y;
         prevPosZ = z;

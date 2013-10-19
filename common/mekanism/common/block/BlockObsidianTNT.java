@@ -59,7 +59,7 @@ public class BlockObsidianTNT extends Block
 
         if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
-            onBlockDestroyedByPlayer(world, x, y, z, 1);
+        	explode(world, x, y, z);
             world.setBlockToAir(x, y, z);
         }
     }
@@ -69,7 +69,7 @@ public class BlockObsidianTNT extends Block
     {
         if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
-            onBlockDestroyedByPlayer(world, x, y, z, 1);
+        	explode(world, x, y, z);
             world.setBlockToAir(x, y, z);
         }
     }
@@ -85,20 +85,13 @@ public class BlockObsidianTNT extends Block
         }
     }
 
-    @Override
-    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
+    public void explode(World world, int x, int y, int z)
     {
         if(!world.isRemote)
         {
-            if((meta & 1) == 0)
-            {
-                dropBlockAsItem_do(world, x, y, z, new ItemStack(Mekanism.ObsidianTNT, 1, 0));
-            }
-            else {
-                EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
-                world.spawnEntityInWorld(entity);
-                world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
-            }
+            EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
+            world.spawnEntityInWorld(entity);
+            world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
         }
     }
 
@@ -107,7 +100,7 @@ public class BlockObsidianTNT extends Block
     {
         if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
         {
-            onBlockDestroyedByPlayer(world, x, y, z, 1);
+            explode(world, x, y, z);
             world.setBlockToAir(x, y, z);
             return true;
         }
@@ -131,15 +124,9 @@ public class BlockObsidianTNT extends Block
 
             if(entityarrow.isBurning())
             {
-                onBlockDestroyedByPlayer(world, x, y, z, 1);
+            	explode(world, x, y, z);
                 world.setBlockToAir(x, y, z);
             }
         }
-    }
-
-    @Override
-    protected ItemStack createStackedBlock(int i)
-    {
-        return null;
     }
 }
