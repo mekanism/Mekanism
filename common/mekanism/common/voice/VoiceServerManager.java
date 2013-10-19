@@ -22,6 +22,8 @@ public class VoiceServerManager
 	
 	public boolean running;
 	
+	public boolean foundLocal = false;
+	
 	public Thread listenThread;
 	
 	public void start()
@@ -40,6 +42,8 @@ public class VoiceServerManager
 	{
 		try {
 			listenThread.interrupt();
+			
+			foundLocal = false;
 			
 			serverSocket.close();
 			serverSocket = null;
@@ -60,7 +64,7 @@ public class VoiceServerManager
 	
 	public void sendToPlayers(short byteCount, byte[] audioData, VoiceConnection connection)
 	{
-		if(connection.entityPlayer == null)
+		if(connection.getPlayer() == null)
 		{
 			return;
 		}
@@ -74,7 +78,7 @@ public class VoiceServerManager
 		
 		for(VoiceConnection iterConn : connections)
 		{
-			if(iterConn.entityPlayer == null || iterConn == connection || !iterConn.canListen(channel))
+			if(iterConn.getPlayer() == null || iterConn == connection || !iterConn.canListen(channel))
 			{
 				continue;
 			}

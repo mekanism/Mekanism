@@ -35,13 +35,13 @@ public class VoiceOutput extends Thread
 			
 			while(voiceClient.running)
 			{
-				short byteCount = voiceClient.input.readShort();
-				byte[] audioData = new byte[byteCount];
-				voiceClient.input.readFully(audioData);
-				
-				System.out.println("Got");
-				
-				sourceLine.write(audioData, 0, audioData.length);
+				try {
+					short byteCount = voiceClient.input.readShort();
+					byte[] audioData = new byte[byteCount];
+					voiceClient.input.readFully(audioData);
+					
+					sourceLine.write(audioData, 0, audioData.length);
+				} catch(Exception e) {}
 			}
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while running client output thread.");

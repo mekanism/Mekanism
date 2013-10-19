@@ -7,16 +7,19 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.TcpConnection;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class VoiceConnection 
 {
 	public Socket socket;
 	
-	public EntityPlayerMP entityPlayer;
+	public String username;
 	
 	public boolean open = true;
 	
@@ -36,22 +39,28 @@ public class VoiceConnection
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			
-			for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+			while(username == null)
 			{
-				if(obj instanceof EntityPlayerMP)
+				int iterAmount = 0;
+				for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
 				{
-					EntityPlayerMP playerMP = (EntityPlayerMP)obj;
-					String playerIP = playerMP.getPlayerIP();
-					
-					if(playerIP.equals("127.0.0.1"))
+					iterAmount++;
+					if(obj instanceof EntityPlayerMP)
 					{
-						entityPlayer = playerMP;
-						break;
-					}
-					else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
-					{
-						entityPlayer = playerMP;
-						break;
+						EntityPlayerMP playerMP = (EntityPlayerMP)obj;
+						String playerIP = playerMP.getPlayerIP();
+						
+						if(playerIP.equals("127.0.0.1") && !Mekanism.voiceManager.foundLocal)
+						{
+							Mekanism.voiceManager.foundLocal = true;
+							username = playerMP.username;
+							break;
+						}
+						else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
+						{
+							username = playerMP.username;
+							break;
+						}
 					}
 				}
 			}
@@ -117,8 +126,6 @@ public class VoiceConnection
 			output.write(audioData);
 			
 			output.flush();
-			
-			System.out.println("Sent");
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while sending data to player.");
 			e.printStackTrace();
@@ -127,7 +134,7 @@ public class VoiceConnection
 	
 	public boolean canListen(int channel)
 	{
-		for(ItemStack itemStack : entityPlayer.inventory.mainInventory)
+		for(ItemStack itemStack : getPlayer().inventory.mainInventory)
 		{
 			if(itemStack != null)
 			{
@@ -149,7 +156,7 @@ public class VoiceConnection
 	
 	public int getCurrentChannel()
 	{
-		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+		ItemStack itemStack = getPlayer().getCurrentEquippedItem();
 		
 		if(itemStack != null)
 		{
@@ -165,5 +172,10 @@ public class VoiceConnection
 		}
 		
 		return 0;
+	}
+	
+	public EntityPlayerMP getPlayer()
+	{
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(username);
 	}
 }

@@ -42,21 +42,21 @@ public class VoiceInput extends Thread
 			{
 				if(MekanismKeyHandler.voiceKeyDown)
 				{
-					System.out.println("Pressed");
 					targetLine.flush();
 					
 					while(voiceClient.running && MekanismKeyHandler.voiceKeyDown)
 					{
-						int availableBytes = audioInput.available();
-						byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
-						int bytesRead = audioInput.read(audioData, 0, audioData.length);
-						
-						if(bytesRead > 0)
-						{
-							voiceClient.output.writeShort(audioData.length);
-							voiceClient.output.write(audioData);
-							System.out.println("Wrote");
-						}
+						try {
+							int availableBytes = audioInput.available();
+							byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
+							int bytesRead = audioInput.read(audioData, 0, audioData.length);
+							
+							if(bytesRead > 0)
+							{
+								voiceClient.output.writeShort(audioData.length);
+								voiceClient.output.write(audioData);
+							}
+						} catch(Exception e) {}
 					}
 					
 					try {
@@ -67,7 +67,6 @@ public class VoiceInput extends Thread
 				}
 				else if(doFlush)
 				{
-					System.out.println("Flushed");
 					voiceClient.output.flush();
 					doFlush = false;
 				}
