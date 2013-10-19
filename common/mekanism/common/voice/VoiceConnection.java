@@ -44,7 +44,7 @@ public class VoiceConnection
 			{
 				int retryCount = 0;
 				
-				while(username == null && retryCount <= 10)
+				while(username == null && retryCount <= 60)
 				{
 					try {
 						List l = Collections.synchronizedList((List)((ArrayList)server.getConfigurationManager().playerEntityList).clone());
@@ -71,7 +71,7 @@ public class VoiceConnection
 						}
 						
 						retryCount++;
-						Thread.sleep(100);
+						Thread.sleep(50);
 					} catch(Exception e) {}
 				}
 				
@@ -79,6 +79,9 @@ public class VoiceConnection
 				{
 					System.out.println("[Mekanism] VoiceServer: Unable to trace connection's IP address.");
 					return;
+				}
+				else {
+					System.out.println("[Mekanism] VoiceServer: Traced IP in " + retryCount + " attempts.");
 				}
 			}
 		} catch(Exception e) {
