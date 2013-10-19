@@ -67,7 +67,10 @@ public class VoiceInput extends Thread
 				}
 				else if(doFlush)
 				{
-					voiceClient.output.flush();
+					try {
+						voiceClient.output.flush();
+					} catch(Exception e) {}
+					
 					doFlush = false;
 				}
 				
