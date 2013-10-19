@@ -103,6 +103,7 @@ public class VoiceServerManager
 				try {
 					Socket s = serverSocket.accept();
 					VoiceConnection connection = new VoiceConnection(s);
+					connection.start();
 					connections.add(connection);
 					
 					System.out.println("[Mekanism] VoiceServer: Accepted new connection.");

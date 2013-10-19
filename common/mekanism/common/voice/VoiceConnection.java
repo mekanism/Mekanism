@@ -5,14 +5,15 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.TcpConnection;
+import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class VoiceConnection 
@@ -26,11 +27,11 @@ public class VoiceConnection
 	public DataInputStream input;
 	public DataOutputStream output;
 	
+	public MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+	
 	public VoiceConnection(Socket s)
 	{
 		socket = s;
-		
-		start();
 	}
 	
 	public void start()
@@ -39,29 +40,45 @@ public class VoiceConnection
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			
-			while(username == null)
+			synchronized(Mekanism.voiceManager)
 			{
-				int iterAmount = 0;
-				for(Object obj : FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList)
+				int retryCount = 0;
+				
+				while(username == null && retryCount <= 10)
 				{
-					iterAmount++;
-					if(obj instanceof EntityPlayerMP)
-					{
-						EntityPlayerMP playerMP = (EntityPlayerMP)obj;
-						String playerIP = playerMP.getPlayerIP();
+					try {
+						List l = Collections.synchronizedList((List)((ArrayList)server.getConfigurationManager().playerEntityList).clone());
 						
-						if(playerIP.equals("127.0.0.1") && !Mekanism.voiceManager.foundLocal)
+						for(Object obj : l)
 						{
-							Mekanism.voiceManager.foundLocal = true;
-							username = playerMP.username;
-							break;
+							if(obj instanceof EntityPlayerMP)
+							{
+								EntityPlayerMP playerMP = (EntityPlayerMP)obj;
+								String playerIP = playerMP.getPlayerIP();
+								
+								if(playerIP.equals("127.0.0.1") && !Mekanism.voiceManager.foundLocal)
+								{
+									Mekanism.voiceManager.foundLocal = true;
+									username = playerMP.username;
+									break;
+								}
+								else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
+								{
+									username = playerMP.username;
+									break;
+								}
+							}
 						}
-						else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
-						{
-							username = playerMP.username;
-							break;
-						}
-					}
+						
+						retryCount++;
+						Thread.sleep(100);
+					} catch(Exception e) {}
+				}
+				
+				if(username == null)
+				{
+					System.out.println("[Mekanism] VoiceServer: Unable to trace connection's IP address.");
+					return;
 				}
 			}
 		} catch(Exception e) {
@@ -176,6 +193,6 @@ public class VoiceConnection
 	
 	public EntityPlayerMP getPlayer()
 	{
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerForUsername(username);
+		return server.getConfigurationManager().getPlayerForUsername(username);
 	}
 }
