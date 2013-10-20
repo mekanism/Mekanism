@@ -97,8 +97,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
-			tileEntity.powerHandler.configure(0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
-    		
     		if(!world.isRemote)
     		{
     			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));

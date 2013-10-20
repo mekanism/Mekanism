@@ -143,6 +143,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         super.readFromNBT(nbtTags);
 
         electricityStored = nbtTags.getDouble("electricityStored");
+        powerHandler.readFromNBT(nbtTags);
     }
 
 	@Override
@@ -151,6 +152,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         super.writeToNBT(nbtTags);
         
         nbtTags.setDouble("electricityStored", getEnergy());
+        powerHandler.writeToNBT(nbtTags);
     }
 	
 	@Override
