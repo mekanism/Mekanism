@@ -52,7 +52,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		register();
 	}
 	
-	public int getTotalNeeded(List<TileEntity> ignored)
+	public synchronized int getTotalNeeded(List<TileEntity> ignored)
 	{
 		int toReturn = 0;
 		
@@ -72,7 +72,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		return toReturn;
 	}
 	
-	public int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
+	public synchronized int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
 	{
 		List availableAcceptors = Arrays.asList(getAcceptors(fluidToSend).toArray());
 		
@@ -115,7 +115,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 	
 	@Override
-	public Set<IFluidHandler> getAcceptors(Object... data)
+	public synchronized Set<IFluidHandler> getAcceptors(Object... data)
 	{
 		FluidStack fluidToSend = (FluidStack)data[0];
 		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
@@ -132,7 +132,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
  
 	@Override
-	public void refresh()
+	public synchronized void refresh()
 	{
 		Set<ITransmitter<FluidNetwork>> iterPipes = (Set<ITransmitter<FluidNetwork>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
@@ -171,7 +171,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
-	public void merge(FluidNetwork network)
+	public synchronized void merge(FluidNetwork network)
 	{
 		if(network != null && network != this)
 		{

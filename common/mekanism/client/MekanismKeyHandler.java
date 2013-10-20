@@ -14,14 +14,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends KeyHandler
 {
-	public static KeyBinding modeSwitch = new KeyBinding("Mekanism Mode Switch", Keyboard.KEY_M);
-	public static KeyBinding voice = new KeyBinding("Mekanism Voice", Keyboard.KEY_U);
-	
-	public static boolean voiceKeyDown = false;
+	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism Mode Switch", Keyboard.KEY_M);
+	public static KeyBinding voiceKey = new KeyBinding("Mekanism Voice", Keyboard.KEY_U);
 	
 	public MekanismKeyHandler()
 	{
-		super(new KeyBinding[] {modeSwitch, voice}, new boolean[] {false, false});
+		super(new KeyBinding[] {modeSwitchKey, voiceKey}, new boolean[] {false, false});
 	}
 
 	@Override
@@ -31,22 +29,10 @@ public class MekanismKeyHandler extends KeyHandler
 	}
 
 	@Override
-	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) 
-	{
-		if(tickEnd && kb.keyCode == voice.keyCode)
-		{
-			voiceKeyDown = true;
-		}
-	}
+	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {}
 
 	@Override
-	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) 
-	{
-		if(tickEnd && kb.keyCode == voice.keyCode)
-		{
-			voiceKeyDown = false;
-		}
-	}
+	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {}
 
 	@Override
 	public EnumSet<TickType> ticks() 

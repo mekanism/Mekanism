@@ -69,10 +69,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	}
 
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		return;
-	}
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
@@ -133,14 +130,16 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			}
 		}
 
-		public void refreshChunk(Chunk c)
+		public synchronized void refreshChunk(Chunk c)
 		{
 		    if(c != null)
             {
                 Iterator it = c.chunkTileEntityMap.entrySet().iterator();
+                
                 while(it.hasNext())
                 {
                     Object obj = it.next();
+                    
                     if(obj instanceof TileEntity)
                     {
                         TileEntity tileEntity = (TileEntity)obj;

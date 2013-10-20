@@ -40,11 +40,11 @@ public class VoiceInput extends Thread
 			
 			while(voiceClient.running)
 			{
-				if(MekanismKeyHandler.voiceKeyDown)
+				if(MekanismKeyHandler.voiceKey.pressed)
 				{
 					targetLine.flush();
 					
-					while(voiceClient.running && MekanismKeyHandler.voiceKeyDown)
+					while(voiceClient.running && MekanismKeyHandler.voiceKey.pressed)
 					{
 						try {
 							int availableBytes = audioInput.available();

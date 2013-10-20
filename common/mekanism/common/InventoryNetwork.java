@@ -44,13 +44,13 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 	
 	@Override
-	public Set<IInventory> getAcceptors(Object... data) 
+	public synchronized Set<IInventory> getAcceptors(Object... data) 
 	{
 		return null;
 	}
 
 	@Override
-	public void refresh()
+	public synchronized void refresh()
 	{
 		Set<ITransmitter<InventoryNetwork>> iterTransmitters = (Set<ITransmitter<InventoryNetwork>>)transmitters.clone();
 		Iterator it = iterTransmitters.iterator();
@@ -88,7 +88,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 
 	@Override
-	public void merge(InventoryNetwork network)
+	public synchronized void merge(InventoryNetwork network)
 	{
 		if(network != null && network != this)
 		{

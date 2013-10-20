@@ -61,7 +61,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		register();
 	}
 	
-	public double getEnergyNeeded(List<TileEntity> ignored)
+	public synchronized double getEnergyNeeded(List<TileEntity> ignored)
 	{
 		double totalNeeded = 0;
 		
@@ -91,7 +91,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return totalNeeded;
 	}
 	
-	public double emit(double energyToSend, ArrayList<TileEntity> ignored)
+	public synchronized double emit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
 		double energyAvailable = energyToSend;		
 		double sent;
@@ -149,7 +149,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 	
 	@Override
-	public Set<TileEntity> getAcceptors(Object... data)
+	public synchronized Set<TileEntity> getAcceptors(Object... data)
 	{
 		Set<TileEntity> toReturn = new HashSet<TileEntity>();
 		
@@ -201,9 +201,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public void refresh()
+	public synchronized void refresh()
 	{
-		Set<ITransmitter<EnergyNetwork>> iterCables = (Set<ITransmitter<EnergyNetwork>>) transmitters.clone();
+		Set<ITransmitter<EnergyNetwork>> iterCables = (Set<ITransmitter<EnergyNetwork>>)transmitters.clone();
 		Iterator<ITransmitter<EnergyNetwork>> it = iterCables.iterator();
 		
 		possibleAcceptors.clear();
@@ -248,7 +248,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public void merge(EnergyNetwork network)
+	public synchronized void merge(EnergyNetwork network)
 	{
 		if(network != null && network != this)
 		{

@@ -46,7 +46,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		register();
 	}
 	
-	public int emit(int gasToSend, EnumGas transferType, TileEntity emitter)
+	public synchronized int emit(int gasToSend, EnumGas transferType, TileEntity emitter)
 	{
 		List availableAcceptors = Arrays.asList(getAcceptors(transferType).toArray());
 		
@@ -88,7 +88,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 	
 	@Override
-	public Set<IGasAcceptor> getAcceptors(Object... data)
+	public synchronized Set<IGasAcceptor> getAcceptors(Object... data)
 	{
 		EnumGas transferType = (EnumGas)data[0];
 		Set<IGasAcceptor> toReturn = new HashSet<IGasAcceptor>();
@@ -108,7 +108,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 
 	@Override
-	public void refresh()
+	public synchronized void refresh()
 	{
 		Set<ITransmitter<GasNetwork>> iterTubes = (Set<ITransmitter<GasNetwork>>)transmitters.clone();
 		Iterator<ITransmitter<GasNetwork>> it = iterTubes.iterator();
@@ -146,7 +146,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 
 	@Override
-	public void merge(GasNetwork network)
+	public synchronized void merge(GasNetwork network)
 	{
 		if(network != null && network != this)
 		{

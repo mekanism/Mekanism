@@ -97,7 +97,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	}
 	
 	@Override
-	public void fixMessedUpNetwork(ITransmitter<N> transmitter)
+	public synchronized void fixMessedUpNetwork(ITransmitter<N> transmitter)
 	{
 		if(transmitter instanceof TileEntity)
 		{
@@ -124,7 +124,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	}
 	
 	@Override
-	public void split(ITransmitter<N> splitPoint)
+	public synchronized void split(ITransmitter<N> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -214,7 +214,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			
 			if(ignore != null)
 			{
-			    for (int i = 0; i < ignore.length; i++)
+			    for(int i = 0; i < ignore.length; i++)
 			    {
 			        this.toIgnore.add(ignore[i]);
 			    }
@@ -227,8 +227,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 				iterated.add(location);
 			}
-			else
-			{
+			else {
 			    toIgnore.add(location);
 			}
 			
