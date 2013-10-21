@@ -20,6 +20,7 @@ import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -74,6 +75,12 @@ public class ItemConfigurator extends ItemEnergized
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation."));
 	    			return true;
 	    		}
+    		}
+    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
+    		{
+    			TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
+    			transporter.insert(new Object3D(x, y, z).getFromSide(ForgeDirection.getOrientation(side)), new ItemStack(Item.appleRed));
+    			return true;
     		}
     		else if(world.getBlockTileEntity(x, y, z) instanceof ITransmitter)
     		{

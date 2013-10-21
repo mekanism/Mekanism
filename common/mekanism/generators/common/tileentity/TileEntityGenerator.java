@@ -226,7 +226,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
     		
-    		updateDelay = 10;
+    		updateDelay = Mekanism.UPDATE_DELAY;
     		clientActive = active;
     	}
     }

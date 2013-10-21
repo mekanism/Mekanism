@@ -82,6 +82,26 @@ public class Object3D
 		return new Object3D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
 	}
 	
+	public Object3D difference(Object3D other)
+	{
+		return new Object3D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord);
+	}
+	
+	public ForgeDirection sideDifference(Object3D other)
+	{
+		Object3D diff = difference(other);
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(side.offsetX == xCoord && side.offsetY == yCoord && side.offsetZ == zCoord)
+			{
+				return side;
+			}
+		}
+		
+		return ForgeDirection.UNKNOWN;
+	}
+	
 	public int distanceTo(Object3D obj)
 	{
 	    int subX = xCoord - obj.xCoord;
@@ -93,6 +113,17 @@ public class Object3D
 	public boolean sideVisible(ForgeDirection side, IBlockAccess world)
 	{
 		return world.getBlockId(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ) == 0;
+	}
+	
+	public Object3D step(ForgeDirection side)
+	{
+		return translate(side.offsetX, side.offsetY, side.offsetZ);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[Object3D: " + xCoord + ", " + yCoord + ", " + zCoord + "]";
 	}
 	
 	@Override

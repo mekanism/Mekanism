@@ -5,8 +5,10 @@ import java.util.Arrays;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -107,5 +109,22 @@ public final class TransporterUtils
     	}
     	
     	return inventories;
+    }
+    
+    public static boolean insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack)
+    {
+    	return tileEntity.insert(Object3D.get(outputter), itemStack);
+    }
+    
+    public static boolean canInsert(TileEntity tileEntity, ItemStack itemStack)
+    {
+    	if(!(tileEntity instanceof IInventory))
+    	{
+    		return false;
+    	}
+    	
+    	IInventory inventory = (IInventory)tileEntity;
+    		
+    	return true;
     }
 }

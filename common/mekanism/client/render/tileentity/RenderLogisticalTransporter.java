@@ -1,11 +1,16 @@
 package mekanism.client.render.tileentity;
 
+import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.common.TransporterStack;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -18,6 +23,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter();
+	
+	private EntityItem entityItem = new EntityItem(null);
+	private RenderItem renderer = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -43,6 +51,17 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		}
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
+		
+		for(TransporterStack stack : tileEntity.transit)
+		{
+			entityItem.setEntityItemStack(stack.itemStack);
+			Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+			
+			double progress = (double)stack.progress / 100D * 0.5D;
+			
+			renderer.doRenderItem(entityItem, x + 0.5 + offset.xCoord*progress, y + 1.5 + offset.yCoord*progress, z + 0.5 + offset.zCoord*progress, 0, 0);
+		}
+		
 		GL11.glPopMatrix();
 	}
 }

@@ -12,6 +12,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
+import mekanism.common.TransporterPathfinder;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
@@ -291,6 +292,11 @@ public class BlockTransmitter extends Block
 			if(tileEntity instanceof TileEntityUniversalCable)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
+			}
+			
+			if(tileEntity instanceof TileEntityLogisticalTransporter)
+			{
+				System.out.println(TransporterPathfinder.getPath((TileEntityLogisticalTransporter)tileEntity, new ItemStack(Item.appleRed)));
 			}
 		}
 	}
