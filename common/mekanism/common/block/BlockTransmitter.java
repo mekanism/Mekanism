@@ -49,12 +49,15 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockTransmitter extends Block
 {
+	public static final float MIN_BOUND = 0.3125F;
+	public static final float MAX_BOUND = 0.6875F;
+	
 	public BlockTransmitter(int id)
 	{
 		super(id, Material.wood);
 		setHardness(2.0F);
 		setResistance(5.0F);
-		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+		setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
@@ -83,42 +86,42 @@ public class BlockTransmitter extends Block
 	{
 		boolean[] connectable = getConnectable(world, x, y, z);
 		
-		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+		setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
 		super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 
 		if(connectable[4]) 
 		{
-			setBlockBounds(0.0F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+			setBlockBounds(0.0F, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[5]) 
 		{
-			setBlockBounds(0.3F, 0.3F, 0.3F, 1.0F, 0.7F, 0.7F);
+			setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, 1.0F, MAX_BOUND, MAX_BOUND);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[0]) 
 		{
-			setBlockBounds(0.3F, 0.0F, 0.3F, 0.7F, 0.7F, 0.7F);
+			setBlockBounds(MIN_BOUND, 0.0F, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[1])
 		{
-			setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 1.0F, 0.7F);
+			setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, 1.0F, MAX_BOUND);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[2])
 		{
-			setBlockBounds(0.3F, 0.3F, 0.0F, 0.7F, 0.7F, 0.7F);
+			setBlockBounds(MIN_BOUND, MIN_BOUND, 0.0F, MAX_BOUND, MAX_BOUND, MAX_BOUND);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[3])
 		{
-			setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 1.0F);
+			setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
@@ -132,12 +135,12 @@ public class BlockTransmitter extends Block
 		
 		if(connectable != null)
 		{
-			float minX = 0.3F;
-			float minY = 0.3F;
-			float minZ = 0.3F;
-			float maxX = 0.7F;
-			float maxY = 0.7F;
-			float maxZ = 0.7F;
+			float minX = MIN_BOUND;
+			float minY = MIN_BOUND;
+			float minZ = MIN_BOUND;
+			float maxX = MAX_BOUND;
+			float maxY = MAX_BOUND;
+			float maxZ = MAX_BOUND;
 	
 			if(connectable[0])
 			{
@@ -224,12 +227,12 @@ public class BlockTransmitter extends Block
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		float minX = 0.3F;
-		float minY = 0.3F;
-		float minZ = 0.3F;
-		float maxX = 0.7F;
-		float maxY = 0.7F;
-		float maxZ = 0.7F;
+		float minX = MIN_BOUND;
+		float minY = MIN_BOUND;
+		float minZ = MIN_BOUND;
+		float maxX = MAX_BOUND;
+		float maxY = MAX_BOUND;
+		float maxZ = MAX_BOUND;
 		
 		boolean[] connectable = getConnectable(world, x, y, z);
 			
@@ -374,7 +377,7 @@ public class BlockTransmitter extends Block
         
         if(!returnBlock)
         {
-            float motion = 0.7F;
+            float motion = 0.3F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;

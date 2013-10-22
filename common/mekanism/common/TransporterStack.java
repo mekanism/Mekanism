@@ -14,7 +14,6 @@ public class TransporterStack
 {
 	public ItemStack itemStack;
 	
-	/** out of 100 */
 	public int progress;
 	
 	public boolean initiatedPath = false;
