@@ -52,12 +52,15 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		
+		entityItem.age = 0;
+		entityItem.hoverStart = 0;
+		
 		for(TransporterStack stack : tileEntity.transit)
 		{
 			entityItem.setEntityItemStack(stack.itemStack);
 			Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 			
-			double progress = (double)stack.progress / 100D * 0.5D;
+			double progress = ((double)stack.progress / 100D) * 0.5D;
 			
 			renderer.doRenderItem(entityItem, x + 0.5 + offset.xCoord*progress, y + 1.5 + offset.yCoord*progress, z + 0.5 + offset.zCoord*progress, 0, 0);
 		}

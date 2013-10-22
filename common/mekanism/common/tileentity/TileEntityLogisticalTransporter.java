@@ -55,9 +55,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 				
 				stack.progress++;
 				
+				if(stack.progress > 50)
+				{
+					System.out.println(stack.getNext(this));
+				}
+				
 				if(stack.progress > 100)
 				{
-					if(stack.hasPath() && !stack.noTarget)
+					if(stack.hasPath())
 					{
 						int currentIndex = stack.pathToTarget.indexOf(Object3D.get(this));
 						Object3D next = stack.pathToTarget.get(currentIndex-1);
@@ -150,6 +155,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			for(TransporterStack stack : transit)
 			{
 				System.out.println(Object3D.get(this) + " " + stack.progress);
+				System.out.println(stack.pathToTarget);
 			}
 			
 			if(!transit.isEmpty())
@@ -302,6 +308,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			isActive = dataStream.readBoolean();
 		}
 		else {
+			transit.clear();
+			
 			int amount = dataStream.readInt();
 			
 			for(int i = 0; i < amount; i++)

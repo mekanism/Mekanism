@@ -24,7 +24,7 @@ public final class TransporterPathfinder
 		
 		public TileEntityLogisticalTransporter start;
 		
-		public Set<Object3D> possibleDestinations = new HashSet<Object3D>();
+		public Object3D lastFound;
 		
 		public IdleDest(World world, TileEntityLogisticalTransporter tileEntity)
 		{
@@ -34,7 +34,7 @@ public final class TransporterPathfinder
 		
 		public void loop(TileEntityLogisticalTransporter pointer)
 		{
-			if(pointer == null)
+			if(pointer == null || lastFound != null)
 			{
 				return;
 			}
@@ -56,7 +56,8 @@ public final class TransporterPathfinder
 			
 			if(!found)
 			{
-				possibleDestinations.add(Object3D.get(pointer));
+				lastFound = Object3D.get(pointer);
+				return;
 			}
 		}
 		
@@ -64,17 +65,7 @@ public final class TransporterPathfinder
 		{
 			loop(start);
 			
-			Object3D furthest = null;
-			
-			for(Object3D obj : possibleDestinations)
-			{
-				if(furthest == null || obj.distanceTo(Object3D.get(start)) > furthest.distanceTo(Object3D.get(start)))
-				{
-					furthest = obj;
-				}
-			}
-			
-			return furthest;
+			return lastFound;
 		}
 	}
 	
@@ -303,6 +294,7 @@ public final class TransporterPathfinder
 		System.out.println("Target found: " + closest);
 		
 		Path p = new Path(d.worldObj, d.finalNode, Object3D.get(start), closest);
+		System.out.println("Path:"+p.getPath());
 		return p.getPath();
 	}
 	
@@ -317,6 +309,7 @@ public final class TransporterPathfinder
 		}
 		
 		Path p = new Path(start.worldObj, prevHome, Object3D.get(start), null);
+		System.out.println("Idle:" + p.getPath());
 		return p.getPath();
 	}
 }

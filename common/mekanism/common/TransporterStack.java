@@ -32,16 +32,36 @@ public class TransporterStack
 	{
 		data.add(progress);
 		data.add(noTarget);
-		getNext(tileEntity).write(data);
+		
+		if(noTarget && pathToTarget.indexOf(Object3D.get(tileEntity)) > 0)
+		{
+			data.add(true);
+			getNext(tileEntity).write(data);
+		}
+		else {
+			data.add(false);
+		}
+		
 		getPrev(tileEntity).write(data);
+		
+		data.add(itemStack.itemID);
+		data.add(itemStack.stackSize);
+		data.add(itemStack.getItemDamage());
 	}
 	
 	public void read(ByteArrayDataInput dataStream)
 	{
 		progress = dataStream.readInt();
 		noTarget = dataStream.readBoolean();
-		clientNext = Object3D.read(dataStream);
+		
+		if(dataStream.readBoolean())
+		{
+			clientNext = Object3D.read(dataStream);
+		}
+		
 		clientPrev = Object3D.read(dataStream);
+		
+		itemStack = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}
 	
 	public void write(NBTTagCompound nbtTags)
@@ -49,6 +69,7 @@ public class TransporterStack
 		nbtTags.setInteger("progress", progress);
 		originalLocation.write(nbtTags);
 		nbtTags.setBoolean("noTarget", noTarget);
+		itemStack.writeToNBT(nbtTags);
 	}
 	
 	public void read(NBTTagCompound nbtTags)
@@ -56,6 +77,7 @@ public class TransporterStack
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Object3D.read(nbtTags);
 		noTarget = nbtTags.getBoolean("noTarget");
+		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 	
 	public boolean hasPath()
@@ -82,10 +104,9 @@ public class TransporterStack
 	
 	public void calculateIdle(TileEntityLogisticalTransporter tileEntity)
 	{
-		Object3D prevDest = pathToTarget.get(0);
 		pathToTarget = TransporterPathfinder.getIdlePath(tileEntity, originalLocation, pathToTarget.get(pathToTarget.size()-1));
 		noTarget = true;
-		originalLocation = prevDest;
+		originalLocation = Object3D.get(tileEntity);
 		initiatedPath = true;
 	}
 	
@@ -131,9 +152,12 @@ public class TransporterStack
 		{
 			return Object3D.get(tileEntity).sideDifference(getPrev(tileEntity)).ordinal();
 		}
-		else {
+		else if(progress > 50)
+		{
 			return Object3D.get(tileEntity).sideDifference(getNext(tileEntity)).ordinal();
 		}
+		
+		return 0;
 	}
 	
 	public Object3D getDest()
