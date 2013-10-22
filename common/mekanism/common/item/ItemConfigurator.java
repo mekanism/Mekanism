@@ -59,13 +59,6 @@ public class ItemConfigurator extends ItemEnergized
 	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 	    			return true;
 	    		}
-	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
-	    		{
-	    			TileEntityLogisticalTransporter tileEntity = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
-	    			tileEntity.isActive = !tileEntity.isActive;
-	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
-	    			return true;
-	    		}
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityElectricPump)
 	    		{
 	    			TileEntityElectricPump tileEntity = (TileEntityElectricPump)world.getBlockTileEntity(x, y, z);

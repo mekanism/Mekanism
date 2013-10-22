@@ -294,7 +294,7 @@ public final class TransporterPathfinder
 		return p.getPath();
 	}
 	
-	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, Object3D home, Object3D prevHome)
+	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start)
 	{
 		IdleDest d = new IdleDest(start.worldObj, start);
 		Object3D farthest = d.find();
@@ -304,7 +304,7 @@ public final class TransporterPathfinder
 			return null;
 		}
 		
-		Path p = new Path(start.worldObj, prevHome, Object3D.get(start), null);
+		Path p = new Path(start.worldObj, farthest, Object3D.get(start), null);
 		return p.getPath();
 	}
 }

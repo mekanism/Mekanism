@@ -18,6 +18,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
@@ -29,16 +30,27 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ITileNetwork
 {
-	/** This transporter's active state. */
-	public boolean isActive = false;
-	
 	public Set<TransporterStack> transit = new HashSet<TransporterStack>();
+	
+	public boolean needsSync = false;
 	
 	@Override
 	public void updateEntity()
 	{
-		if(!worldObj.isRemote)
+		if(worldObj.isRemote)
 		{
+			for(TransporterStack stack : transit)
+			{
+				if(stack.clientFirstTick)
+				{
+					stack.clientFirstTick = false;
+				}
+				else {
+					stack.progress++;
+				}
+			}
+		}
+		else {
 			Set<TransporterStack> remove = new HashSet<TransporterStack>();
 			
 			for(TransporterStack stack : transit)
@@ -66,6 +78,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 						{
 							if(next != null && next.getTileEntity(worldObj) instanceof TileEntityLogisticalTransporter)
 							{
+								needsSync = true;
 								TileEntityLogisticalTransporter nextTile = (TileEntityLogisticalTransporter)next.getTileEntity(worldObj);
 								nextTile.entityEntering(stack);
 								remove.add(stack);
@@ -78,6 +91,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 							{
 								if(next != null && next.getTileEntity(worldObj) instanceof IInventory)
 								{
+									needsSync = true;
 									IInventory inventory = (IInventory)next.getTileEntity(worldObj);
 									
 									if(inventory != null)
@@ -103,6 +117,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 					{
 						remove.add(stack);
 						continue;
+					}
+					else {
+						stack.progress = 50;
 					}
 				}
 				else if(stack.progress == 50)
@@ -152,12 +169,18 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 				System.out.println(Object3D.get(this) + " " + stack.progress);
 			}
 			
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getItemPacket(new ArrayList())), Object3D.get(this), 50D);
+			if(needsSync)
+			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+				needsSync = false;
+			}
 		}
 	}
 	
 	private boolean recalculate(TransporterStack stack)
 	{
+		needsSync = true;
+		
 		if(!stack.recalculatePath(this))
 		{
 			stack.calculateIdle(this);
@@ -174,6 +197,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	
 	public boolean insert(Object3D original, ItemStack itemStack)
 	{
+		needsSync = true;
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
@@ -192,6 +216,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	{
 		stack.progress = 0;
 		transit.add(stack);
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 	}
 	
 	@Override
@@ -294,36 +319,22 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		if(dataStream.readInt() == 0)
+		transit.clear();
+		
+		int amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
 		{
-			isActive = dataStream.readBoolean();
-		}
-		else {
-			transit.clear();
+			TransporterStack stack = new TransporterStack();
+			stack.read(dataStream);
 			
-			int amount = dataStream.readInt();
-			
-			for(int i = 0; i < amount; i++)
-			{
-				TransporterStack stack = new TransporterStack();
-				stack.read(dataStream);
-				
-				transit.add(stack);
-			}
+			transit.add(stack);
 		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(0);
-		data.add(isActive);
-		return data;
-	}
-	
-	public ArrayList getItemPacket(ArrayList data)
-	{
-		data.add(1);
 		data.add(transit.size());
 		
 		for(TransporterStack stack : transit)
@@ -338,8 +349,16 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
-
-        isActive = nbtTags.getBoolean("isActive");
+        
+    	if(nbtTags.hasKey("stacks"))
+    	{
+    		NBTTagList tagList = nbtTags.getTagList("stacks");
+    		
+    		for(int i = 0; i < tagList.tagCount(); i++)
+    		{
+    			transit.add(TransporterStack.read((NBTTagCompound)tagList.tagAt(i)));
+    		}
+    	}
     }
 
 	@Override
@@ -347,7 +366,19 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setBoolean("isActive", isActive);
+        NBTTagList stacks = new NBTTagList();
+        
+        for(TransporterStack stack : transit)
+        {
+        	NBTTagCompound tagCompound = new NBTTagCompound();
+        	stack.write(tagCompound);
+        	stacks.appendTag(tagCompound);
+        }
+        
+        if(stacks.tagCount() != 0)
+        {
+        	nbtTags.setTag("stacks", stacks);
+        }
     }
 	
 	@Override

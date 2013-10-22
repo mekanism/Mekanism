@@ -35,7 +35,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityLogisticalTransporter tileEntity, double x, double y, double z, float partialTick)
 	{
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter" + (tileEntity.isActive ? "Active" : "") + ".png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);

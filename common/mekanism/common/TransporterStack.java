@@ -28,6 +28,8 @@ public class TransporterStack
 	
 	public boolean noTarget = false;
 	
+	public boolean clientFirstTick = true;
+	
 	public void write(TileEntityLogisticalTransporter tileEntity, ArrayList data)
 	{
 		data.add(progress);
@@ -72,12 +74,20 @@ public class TransporterStack
 		itemStack.writeToNBT(nbtTags);
 	}
 	
-	public void read(NBTTagCompound nbtTags)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Object3D.read(nbtTags);
 		noTarget = nbtTags.getBoolean("noTarget");
 		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
+	}
+	
+	public static TransporterStack read(NBTTagCompound nbtTags)
+	{
+		TransporterStack stack = new TransporterStack();
+		stack.readFromNBT(nbtTags);
+		
+		return stack;
 	}
 	
 	public boolean hasPath()
@@ -104,7 +114,7 @@ public class TransporterStack
 	
 	public void calculateIdle(TileEntityLogisticalTransporter tileEntity)
 	{
-		pathToTarget = TransporterPathfinder.getIdlePath(tileEntity, originalLocation, pathToTarget.get(pathToTarget.size()-1));
+		pathToTarget = TransporterPathfinder.getIdlePath(tileEntity);
 		noTarget = true;
 		originalLocation = Object3D.get(tileEntity);
 		initiatedPath = true;
