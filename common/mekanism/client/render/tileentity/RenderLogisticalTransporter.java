@@ -65,9 +65,16 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 			entityItem.setEntityItemStack(stack.itemStack);
 			Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 			
-			double progress = (double)stack.progress / 100D * 0.5D;
+			float itemFix = 0;
 			
-			renderer.doRenderItem(entityItem, x + 0.5 + offset.xCoord*progress, y + 0.5 + offset.yCoord*progress - entityItem.yOffset, z + 0.5 + offset.zCoord*progress, 0, 0);
+			if(stack.itemStack.itemID >= 256)
+			{
+				itemFix = 0.1F;
+			}
+			
+			double progress = ((double)stack.progress / 100D) - 0.5;
+			
+			renderer.doRenderItem(entityItem, x + 0.5 + offset.xCoord*progress, y + 0.5 + offset.yCoord*progress - entityItem.yOffset - itemFix, z + 0.5 + offset.zCoord*progress, 0, 0);
 			GL11.glPopMatrix();
 		}
 	}
