@@ -33,7 +33,7 @@ public class TransporterStack
 		data.add(progress);
 		data.add(noTarget);
 		
-		if(noTarget && pathToTarget.indexOf(Object3D.get(tileEntity)) > 0)
+		if(pathToTarget.indexOf(Object3D.get(tileEntity)) > 0)
 		{
 			data.add(true);
 			getNext(tileEntity).write(data);
@@ -154,7 +154,7 @@ public class TransporterStack
 		}
 		else if(progress > 50)
 		{
-			return Object3D.get(tileEntity).sideDifference(getNext(tileEntity)).ordinal();
+			return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
 		}
 		
 		return 0;

@@ -55,11 +55,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 				
 				stack.progress++;
 				
-				if(stack.progress > 50)
-				{
-					System.out.println(stack.getNext(this));
-				}
-				
 				if(stack.progress > 100)
 				{
 					if(stack.hasPath())
@@ -155,13 +150,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			for(TransporterStack stack : transit)
 			{
 				System.out.println(Object3D.get(this) + " " + stack.progress);
-				System.out.println(stack.pathToTarget);
 			}
 			
-			if(!transit.isEmpty())
-			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getItemPacket(new ArrayList())), Object3D.get(this), 50D);
-			}
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getItemPacket(new ArrayList())), Object3D.get(this), 50D);
 		}
 	}
 	

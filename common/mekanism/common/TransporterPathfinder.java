@@ -287,14 +287,10 @@ public final class TransporterPathfinder
 		
 		if(closest == null)
 		{
-			System.out.println("No target");
 			return null;
 		}
 		
-		System.out.println("Target found: " + closest);
-		
 		Path p = new Path(d.worldObj, d.finalNode, Object3D.get(start), closest);
-		System.out.println("Path:"+p.getPath());
 		return p.getPath();
 	}
 	
@@ -309,7 +305,6 @@ public final class TransporterPathfinder
 		}
 		
 		Path p = new Path(start.worldObj, prevHome, Object3D.get(start), null);
-		System.out.println("Idle:" + p.getPath());
 		return p.getPath();
 	}
 }

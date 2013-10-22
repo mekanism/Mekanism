@@ -112,7 +112,7 @@ public class Object3D
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if(side.offsetX == xCoord && side.offsetY == yCoord && side.offsetZ == zCoord)
+			if(side.offsetX == diff.xCoord && side.offsetY == diff.yCoord && side.offsetZ == diff.zCoord)
 			{
 				return side;
 			}
