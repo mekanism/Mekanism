@@ -13,7 +13,9 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TransporterStack;
 import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -41,11 +43,21 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			
 			for(TransporterStack stack : transit)
 			{
+				if(!stack.initiatedPath)
+				{
+					System.out.println("Initiating path");
+					if(!recalculate(stack))
+					{
+						remove.add(stack);
+						continue;
+					}
+				}
+				
 				stack.progress++;
 				
 				if(stack.progress > 100)
 				{
-					if(stack.hasPath())
+					if(stack.hasPath() && !stack.noTarget)
 					{
 						int currentIndex = stack.pathToTarget.indexOf(Object3D.get(this));
 						Object3D next = stack.pathToTarget.get(currentIndex-1);
@@ -62,48 +74,68 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 							}
 						}
 						else {
-							if(!stack.goingHome)
+							if(!stack.noTarget)
 							{
-								
-							}
-							else {
-								
+								if(next != null && next.getTileEntity(worldObj) instanceof IInventory)
+								{
+									IInventory inventory = (IInventory)next.getTileEntity(worldObj);
+									
+									if(inventory != null)
+									{
+										ItemStack rejected = TransporterUtils.putInInventory(inventory, stack.itemStack);
+										
+										if(rejected == null)
+										{
+											remove.add(stack);
+											continue;
+										}
+										else {
+											stack.itemStack = rejected;
+										}
+									}
+								}
 							}
 						}
 					}
 					
-					stack.sendHome(this);
-					
-					if(!stack.hasPath())
+					System.out.println("high progress");
+					if(!recalculate(stack))
 					{
-						//drop
 						remove.add(stack);
+						continue;
 					}
 				}
 				else if(stack.progress == 50)
 				{
 					if(stack.isFinal(this))
 					{
-						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack) && !stack.goingHome)
+						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack) && !stack.noTarget)
 						{
-							stack.sendHome(this);
-							
-							if(!stack.hasPath())
+							System.out.println("final, has target, cant insert dest");
+							if(!recalculate(stack))
 							{
-								//drop
 								remove.add(stack);
+								continue;
+							}
+						}
+						else if(stack.noTarget)
+						{
+							System.out.println("reached final with no target, recalculating");
+							if(!recalculate(stack))
+							{
+								remove.add(stack);
+								continue;
 							}
 						}
 					}
 					else {
 						if(!(stack.getNext(this).getTileEntity(worldObj) instanceof TileEntityLogisticalTransporter))
 						{
-							stack.sendHome(this);
-							
-							if(!stack.hasPath())
+							System.out.println("reached half, not final, next not transport");
+							if(!recalculate(stack))
 							{
-								//drop
 								remove.add(stack);
+								continue;
 							}
 						}
 					}
@@ -119,7 +151,28 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 			{
 				System.out.println(Object3D.get(this) + " " + stack.progress);
 			}
+			
+			if(!transit.isEmpty())
+			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getItemPacket(new ArrayList())), Object3D.get(this), 50D);
+			}
 		}
+	}
+	
+	private boolean recalculate(TransporterStack stack)
+	{
+		if(!stack.recalculatePath(this))
+		{
+			stack.calculateIdle(this);
+		}
+		
+		if(!stack.hasPath())
+		{
+			//drop
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public boolean insert(Object3D original, ItemStack itemStack)
@@ -244,13 +297,41 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		isActive = dataStream.readBoolean();
+		if(dataStream.readInt() == 0)
+		{
+			isActive = dataStream.readBoolean();
+		}
+		else {
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				TransporterStack stack = new TransporterStack();
+				stack.read(dataStream);
+				
+				transit.add(stack);
+			}
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		data.add(0);
 		data.add(isActive);
+		return data;
+	}
+	
+	public ArrayList getItemPacket(ArrayList data)
+	{
+		data.add(1);
+		data.add(transit.size());
+		
+		for(TransporterStack stack : transit)
+		{
+			stack.write(this, data);
+		}
+		
 		return data;
 	}
 	

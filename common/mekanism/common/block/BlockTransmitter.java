@@ -293,11 +293,6 @@ public class BlockTransmitter extends Block
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
 			}
-			
-			if(tileEntity instanceof TileEntityLogisticalTransporter)
-			{
-				System.out.println(TransporterPathfinder.getPath((TileEntityLogisticalTransporter)tileEntity, new ItemStack(Item.appleRed)));
-			}
 		}
 	}
 	

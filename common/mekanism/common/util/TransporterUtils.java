@@ -127,4 +127,9 @@ public final class TransporterUtils
     		
     	return true;
     }
+    
+    public static ItemStack putInInventory(IInventory inventory, ItemStack itemStack)
+    {
+    	return null;//TODO
+    }
 }

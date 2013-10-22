@@ -16,6 +16,68 @@ import net.minecraftforge.common.ForgeDirection;
 
 public final class TransporterPathfinder
 {
+	public static class IdleDest
+	{
+		public World worldObj;
+		
+		public Set<TileEntityLogisticalTransporter> iterated = new HashSet<TileEntityLogisticalTransporter>();
+		
+		public TileEntityLogisticalTransporter start;
+		
+		public Set<Object3D> possibleDestinations = new HashSet<Object3D>();
+		
+		public IdleDest(World world, TileEntityLogisticalTransporter tileEntity)
+		{
+			worldObj = world;
+			start = tileEntity;
+		}
+		
+		public void loop(TileEntityLogisticalTransporter pointer)
+		{
+			if(pointer == null)
+			{
+				return;
+			}
+			
+			iterated.add(pointer);
+			
+			boolean found = false;
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				TileEntity tile = Object3D.get(pointer).getFromSide(side).getTileEntity(worldObj);
+				
+				if(tile instanceof TileEntityLogisticalTransporter && !iterated.contains(tile))
+				{
+					loop((TileEntityLogisticalTransporter)tile);
+					found = true;
+				}
+			}
+			
+			if(!found)
+			{
+				possibleDestinations.add(Object3D.get(pointer));
+			}
+		}
+		
+		public Object3D find()
+		{
+			loop(start);
+			
+			Object3D furthest = null;
+			
+			for(Object3D obj : possibleDestinations)
+			{
+				if(furthest == null || obj.distanceTo(Object3D.get(start)) > furthest.distanceTo(Object3D.get(start)))
+				{
+					furthest = obj;
+				}
+			}
+			
+			return furthest;
+		}
+	}
+	
 	public static class Destination
 	{
 		public World worldObj;
@@ -153,18 +215,8 @@ public final class TransporterPathfinder
 
 				if(currentNode.equals(finalNode))
 				{
-					for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-					{
-						TileEntity tile = currentNode.getFromSide(side).getTileEntity(worldObj);
-						
-						if(tile != null && Object3D.get(tile).equals(target))
-						{
-							results = reconstructPath(navMap, finalNode);
-							return true;
-						}
-					}
-					
-					return false;
+					results = reconstructPath(navMap, finalNode);
+					return true;
 				}
 
 				openSet.remove(currentNode);
@@ -207,7 +259,11 @@ public final class TransporterPathfinder
 			
 			if(foundPath)
 			{
-				results.add(0, target);
+				if(target != null)
+				{
+					results.add(0, target);
+				}
+				
 				return results;
 			}
 			
@@ -250,9 +306,17 @@ public final class TransporterPathfinder
 		return p.getPath();
 	}
 	
-	public static List<Object3D> getHomePath(TileEntityLogisticalTransporter start, Object3D home, Object3D prevHome)
+	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, Object3D home, Object3D prevHome)
 	{
-		Path p = new Path(start.worldObj, prevHome, Object3D.get(start), home);
+		IdleDest d = new IdleDest(start.worldObj, start);
+		Object3D farthest = d.find();
+		
+		if(farthest == null || farthest.equals(Object3D.get(start)))
+		{
+			return null;
+		}
+		
+		Path p = new Path(start.worldObj, prevHome, Object3D.get(start), null);
 		return p.getPath();
 	}
 }

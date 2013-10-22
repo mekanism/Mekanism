@@ -1,11 +1,15 @@
 package mekanism.api;
 
+import java.util.ArrayList;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class Object3D 
 {
@@ -46,7 +50,10 @@ public class Object3D
 	public TileEntity getTileEntity(IBlockAccess world)
 	{
 		if(!(world instanceof World && ((World)world).blockExists(xCoord, yCoord, zCoord)))
+		{
 			return null;
+		}
+		
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
 	
@@ -56,6 +63,13 @@ public class Object3D
 		nbtTags.setInteger("y", yCoord);
 		nbtTags.setInteger("z", zCoord);
 		nbtTags.setInteger("dimensionId", dimensionId);
+	}
+	
+	public void write(ArrayList data)
+	{
+		data.add(xCoord);
+		data.add(yCoord);
+		data.add(zCoord);
 	}
 	
 	public Object3D translate(int x, int y, int z)
@@ -80,6 +94,11 @@ public class Object3D
 	public static Object3D read(NBTTagCompound nbtTags)
 	{
 		return new Object3D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
+	}
+	
+	public static Object3D read(ByteArrayDataInput dataStream)
+	{
+		return new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}
 	
 	public Object3D difference(Object3D other)
