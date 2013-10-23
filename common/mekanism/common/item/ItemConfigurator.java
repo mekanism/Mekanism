@@ -68,6 +68,13 @@ public class ItemConfigurator extends ItemEnergized
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation."));
 	    			return true;
 	    		}
+	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
+	    		{
+	    			TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
+	    			MekanismUtils.incrementColor(transporter);
+	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + "None")));
+	    			return true;
+	    		}
     		}
     		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
     		{
@@ -103,6 +110,7 @@ public class ItemConfigurator extends ItemEnergized
 		    					TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
 		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Object3D.get(tileEntity), 50D);
 		    				}
+		    				
 		    				return true;
 	    				}
 	    			}

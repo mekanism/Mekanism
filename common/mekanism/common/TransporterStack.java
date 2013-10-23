@@ -8,6 +8,7 @@ import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -127,7 +128,7 @@ public class TransporterStack
 	
 	public boolean recalculatePath(TileEntityLogisticalTransporter tileEntity)
 	{
-		List<Object3D> newPath = TransporterPathfinder.getNewPath(tileEntity, itemStack);
+		List<Object3D> newPath = TransporterPathfinder.getNewPath(tileEntity, this);
 		
 		if(newPath == null)
 		{
@@ -144,7 +145,7 @@ public class TransporterStack
 	
 	public void calculateIdle(TileEntityLogisticalTransporter tileEntity)
 	{
-		pathToTarget = TransporterPathfinder.getIdlePath(tileEntity);
+		pathToTarget = TransporterPathfinder.getIdlePath(tileEntity, this);
 		noTarget = true;
 		originalLocation = Object3D.get(tileEntity);
 		initiatedPath = true;
@@ -198,6 +199,17 @@ public class TransporterStack
 		}
 		
 		return 0;
+	}
+	
+	public boolean canInsert(TileEntity tileEntity)
+	{
+		if(!(tileEntity instanceof TileEntityLogisticalTransporter))
+		{
+			return false;
+		}
+		
+		TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tileEntity;
+		return transporter.color == color || transporter.color == null;
 	}
 	
 	public Object3D getDest()

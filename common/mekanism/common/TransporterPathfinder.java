@@ -26,10 +26,13 @@ public final class TransporterPathfinder
 		
 		public Object3D lastFound;
 		
-		public IdleDest(World world, TileEntityLogisticalTransporter tileEntity)
+		public TransporterStack transportStack;
+		
+		public IdleDest(World world, TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
 		{
 			worldObj = world;
 			start = tileEntity;
+			transportStack = stack;
 		}
 		
 		public void loop(TileEntityLogisticalTransporter pointer)
@@ -79,13 +82,13 @@ public final class TransporterPathfinder
 		public Object3D destination;
 		public Object3D finalNode;
 		
-		public ItemStack itemStack;
+		public TransporterStack transportStack;
 		
-		public Destination(World world, TileEntityLogisticalTransporter tileEntity, ItemStack stack)
+		public Destination(World world, TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
 		{
 			worldObj = world;
 			start = tileEntity;
-			itemStack = stack;
+			transportStack = stack;
 		}
 		
 		public void loop(TileEntityLogisticalTransporter pointer)
@@ -101,14 +104,14 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = Object3D.get(pointer).getFromSide(side).getTileEntity(worldObj);
 				
-				if(TransporterUtils.canInsert(tile, itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
+				if(TransporterUtils.canInsert(tile, transportStack.itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
 					destination = Object3D.get(tile);
 					finalNode = Object3D.get(pointer);
 					return;
 				}
 				
-				if(tile instanceof TileEntityLogisticalTransporter && !iterated.contains(tile))
+				if(transportStack.canInsert(tile) && !iterated.contains(tile))
 				{
 					loop((TileEntityLogisticalTransporter)tile);
 				}
@@ -136,17 +139,20 @@ public final class TransporterPathfinder
 		public final Object3D start;
 		
 		public final Object3D finalNode;
+		
+		public final TransporterStack transportStack;
 
 		public List<Object3D> results;
 
 		private World worldObj;
 
-		public Path(World world, Object3D node, Object3D startObj, Object3D finishObj) 
+		public Path(World world, Object3D node, Object3D startObj, Object3D finishObj, TransporterStack stack) 
 		{
 			worldObj = world;
 			finalNode = node;
 			start = startObj;
 			target = finishObj;
+			transportStack = stack;
 
 			openSet = new HashSet<Object3D>();
 			closedSet = new HashSet<Object3D>();
@@ -172,7 +178,7 @@ public final class TransporterPathfinder
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
 				Object3D neighbor = finalNode.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
 
-				if(!(neighbor.getTileEntity(worldObj) instanceof TileEntityLogisticalTransporter)) 
+				if(!transportStack.canInsert(neighbor.getTileEntity(worldObj))) 
 				{
 					blockCount++;
 				}
@@ -218,7 +224,7 @@ public final class TransporterPathfinder
 					ForgeDirection direction = ForgeDirection.getOrientation(i);
 					Object3D neighbor = currentNode.getFromSide(direction);
 
-					if(neighbor.getTileEntity(worldObj) instanceof TileEntityLogisticalTransporter) 
+					if(transportStack.canInsert(neighbor.getTileEntity(worldObj))) 
 					{
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 
@@ -280,23 +286,25 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Object3D> getNewPath(TileEntityLogisticalTransporter start, ItemStack stack)
+	public static List<Object3D> getNewPath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
 		Destination d = new Destination(start.worldObj, start, stack);
 		Object3D closest = d.find();
+		
+		System.out.println(closest);
 		
 		if(closest == null)
 		{
 			return null;
 		}
 		
-		Path p = new Path(d.worldObj, d.finalNode, Object3D.get(start), closest);
+		Path p = new Path(d.worldObj, d.finalNode, Object3D.get(start), closest, stack);
 		return p.getPath();
 	}
 	
-	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start)
+	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
-		IdleDest d = new IdleDest(start.worldObj, start);
+		IdleDest d = new IdleDest(start.worldObj, start, stack);
 		Object3D farthest = d.find();
 		
 		if(farthest == null || farthest.equals(Object3D.get(start)))
@@ -304,7 +312,7 @@ public final class TransporterPathfinder
 			return null;
 		}
 		
-		Path p = new Path(start.worldObj, farthest, Object3D.get(start), null);
+		Path p = new Path(start.worldObj, farthest, Object3D.get(start), null, stack);
 		return p.getPath();
 	}
 }

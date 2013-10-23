@@ -81,7 +81,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 						
 						if(!stack.isFinal(this))
 						{
-							if(next != null && next.getTileEntity(worldObj) instanceof TileEntityLogisticalTransporter)
+							if(next != null && stack.canInsert(stack.getNext(this).getTileEntity(worldObj)))
 							{
 								needsSync = true;
 								TileEntityLogisticalTransporter nextTile = (TileEntityLogisticalTransporter)next.getTileEntity(worldObj);
@@ -151,7 +151,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 						}
 					}
 					else {
-						if(!(stack.getNext(this).getTileEntity(worldObj) instanceof TileEntityLogisticalTransporter))
+						if(!stack.canInsert(stack.getNext(this).getTileEntity(worldObj)))
 						{
 							System.out.println("reached half, not final, next not transport");
 							if(!recalculate(stack))
@@ -206,9 +206,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
-		stack.recalculatePath(this);
 		
-		if(stack.hasPath())
+		if(stack.recalculatePath(this))
 		{
 			transit.add(stack);
 			return true;

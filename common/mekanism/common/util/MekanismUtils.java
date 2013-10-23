@@ -36,6 +36,7 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -1004,6 +1005,23 @@ public final class MekanismUtils
     	}
     	
     	return false;
+    }
+    
+    public static void incrementColor(TileEntityLogisticalTransporter tileEntity)
+    {
+    	if(tileEntity.color == null)
+    	{
+    		tileEntity.color = EnumColor.values()[1];
+    		return;
+    	}
+    	else if(tileEntity.color.ordinal() == EnumColor.values().length-1)
+    	{
+    		tileEntity.color = null;
+    		return;
+    	}
+    	
+    	int ordinal = tileEntity.color.ordinal();
+    	tileEntity.color = EnumColor.values()[ordinal+1];
     }
     
     public static enum ResourceType

@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Arrays;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
