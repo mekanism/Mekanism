@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -31,6 +32,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ITileNetwork
 {
 	private static final int SPEED = 5;
+	
+	public EnumColor color;
 	
 	public Set<TransporterStack> transit = new HashSet<TransporterStack>();
 	
@@ -321,6 +324,16 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		int c = dataStream.readInt();
+		
+		if(c != -1)
+		{
+			color = EnumColor.values()[c];
+		}
+		else {
+			color = null;
+		}
+		
 		transit.clear();
 		
 		int amount = dataStream.readInt();
@@ -337,6 +350,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		if(color != null)
+		{
+			data.add(color.ordinal());
+		}
+		else {
+			data.add(-1);
+		}
+		
 		data.add(transit.size());
 		
 		for(TransporterStack stack : transit)
@@ -351,6 +372,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
+        
+        if(nbtTags.hasKey("color"))
+        {
+        	color = EnumColor.values()[nbtTags.getInteger("color")];
+        }
         
     	if(nbtTags.hasKey("stacks"))
     	{
@@ -367,6 +393,11 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
+        if(color != null)
+        {
+        	nbtTags.setInteger("color", color.ordinal());
+        }
         
         NBTTagList stacks = new NBTTagList();
         

@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,8 @@ public class TransporterStack
 	public ItemStack itemStack;
 	
 	public int progress;
+	
+	public EnumColor color;
 	
 	public boolean initiatedPath = false;
 	
@@ -31,6 +34,14 @@ public class TransporterStack
 	
 	public void write(TileEntityLogisticalTransporter tileEntity, ArrayList data)
 	{
+		if(color != null)
+		{
+			data.add(color.ordinal());
+		}
+		else {
+			data.add(-1);
+		}
+		
 		data.add(progress);
 		data.add(noTarget);
 		
@@ -52,6 +63,16 @@ public class TransporterStack
 	
 	public void read(ByteArrayDataInput dataStream)
 	{
+		int c = dataStream.readInt();
+		
+		if(c != -1)
+		{
+			color = EnumColor.values()[c];
+		}
+		else {
+			color = null;
+		}
+		
 		progress = dataStream.readInt();
 		noTarget = dataStream.readBoolean();
 		
@@ -67,6 +88,11 @@ public class TransporterStack
 	
 	public void write(NBTTagCompound nbtTags)
 	{
+		if(color != null)
+		{
+			nbtTags.setInteger("color", color.ordinal());
+		}
+		
 		nbtTags.setInteger("progress", progress);
 		originalLocation.write(nbtTags);
 		nbtTags.setBoolean("noTarget", noTarget);
@@ -75,6 +101,11 @@ public class TransporterStack
 	
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
+		if(nbtTags.hasKey("color"))
+		{
+			color = EnumColor.values()[nbtTags.getInteger("color")];
+		}
+		
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Object3D.read(nbtTags);
 		noTarget = nbtTags.getBoolean("noTarget");
