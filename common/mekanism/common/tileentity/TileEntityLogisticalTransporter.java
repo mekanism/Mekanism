@@ -30,6 +30,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<InventoryNetwork> implements ITileNetwork
 {
+	private static final int SPEED = 5;
+	
 	public Set<TransporterStack> transit = new HashSet<TransporterStack>();
 	
 	public boolean needsSync = false;
@@ -46,7 +48,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 					stack.clientFirstTick = false;
 				}
 				else {
-					stack.progress++;
+					stack.progress += SPEED;
 				}
 			}
 		}
@@ -65,7 +67,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 					}
 				}
 				
-				stack.progress++;
+				stack.progress += SPEED;
 				
 				if(stack.progress > 100)
 				{

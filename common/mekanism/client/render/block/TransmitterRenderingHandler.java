@@ -2,6 +2,7 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -19,7 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TransmitterRenderingHandler implements ISimpleBlockRenderingHandler
 {
-	public ModelTransmitter transmitter = new ModelTransmitter();
+	public ModelTransmitter smallTransmitter = new ModelTransmitter(Size.SMALL);
+	public ModelTransmitter largeTransmitter = new ModelTransmitter(Size.LARGE);
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) 
@@ -45,9 +47,17 @@ public class TransmitterRenderingHandler implements ISimpleBlockRenderingHandler
     			break;
     	}
     	
-    	transmitter.renderSide(ForgeDirection.UP, true);
-    	transmitter.renderSide(ForgeDirection.DOWN, true);
-    	transmitter.renderCenter(new boolean[]{true, true, false, false, false, false});
+    	if(metadata != 3)
+    	{
+	    	smallTransmitter.renderSide(ForgeDirection.UP, true);
+	    	smallTransmitter.renderSide(ForgeDirection.DOWN, true);
+	    	smallTransmitter.renderCenter(new boolean[]{true, true, false, false, false, false});
+    	}
+    	else {
+        	largeTransmitter.renderSide(ForgeDirection.UP, true);
+	    	largeTransmitter.renderSide(ForgeDirection.DOWN, true);
+	    	largeTransmitter.renderCenter(new boolean[]{true, true, false, false, false, false});
+    	}
     	
     	GL11.glEnable(GL11.GL_CULL_FACE);
 	}

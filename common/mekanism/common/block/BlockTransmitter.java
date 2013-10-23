@@ -49,16 +49,44 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockTransmitter extends Block
 {
-	public static final float MIN_BOUND = 0.3125F;
-	public static final float MAX_BOUND = 0.6875F;
+	public static final float SMALL_MIN_BOUND = 0.3125F;
+	public static final float SMALL_MAX_BOUND = 0.6875F;
+	
+	public static final float LARGE_MIN_BOUND = 0.25F;
+	public static final float LARGE_MAX_BOUND = 0.75F;
 	
 	public BlockTransmitter(int id)
 	{
 		super(id, Material.wood);
 		setHardness(2.0F);
 		setResistance(5.0F);
-		setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
 		setCreativeTab(Mekanism.tabMekanism);
+	}
+	
+	public float getMinBound(IBlockAccess world, int x, int y, int z)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+		
+		if(metadata < 3)
+		{
+			return SMALL_MIN_BOUND;
+		}
+		else {
+			return LARGE_MIN_BOUND;
+		}
+	}
+	
+	public float getMaxBound(IBlockAccess world, int x, int y, int z)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+		
+		if(metadata < 3)
+		{
+			return SMALL_MAX_BOUND;
+		}
+		else {
+			return LARGE_MAX_BOUND;
+		}
 	}
 	
 	@Override
@@ -86,42 +114,42 @@ public class BlockTransmitter extends Block
 	{
 		boolean[] connectable = getConnectable(world, x, y, z);
 		
-		setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
+		setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 		super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 
 		if(connectable[4]) 
 		{
-			setBlockBounds(0.0F, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
+			setBlockBounds(0.0F, getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[5]) 
 		{
-			setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, 1.0F, MAX_BOUND, MAX_BOUND);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), 1.0F, getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[0]) 
 		{
-			setBlockBounds(MIN_BOUND, 0.0F, MIN_BOUND, MAX_BOUND, MAX_BOUND, MAX_BOUND);
+			setBlockBounds(getMinBound(world, x, y, z), 0.0F, getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[1])
 		{
-			setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, 1.0F, MAX_BOUND);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), 1.0F, getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[2])
 		{
-			setBlockBounds(MIN_BOUND, MIN_BOUND, 0.0F, MAX_BOUND, MAX_BOUND, MAX_BOUND);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), 0.0F, getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[3])
 		{
-			setBlockBounds(MIN_BOUND, MIN_BOUND, MIN_BOUND, MAX_BOUND, MAX_BOUND, 1.0F);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
@@ -135,12 +163,12 @@ public class BlockTransmitter extends Block
 		
 		if(connectable != null)
 		{
-			float minX = MIN_BOUND;
-			float minY = MIN_BOUND;
-			float minZ = MIN_BOUND;
-			float maxX = MAX_BOUND;
-			float maxY = MAX_BOUND;
-			float maxZ = MAX_BOUND;
+			float minX = getMinBound(world, x, y, z);
+			float minY = getMinBound(world, x, y, z);
+			float minZ = getMinBound(world, x, y, z);
+			float maxX = getMaxBound(world, x, y, z);
+			float maxY = getMaxBound(world, x, y, z);
+			float maxZ = getMaxBound(world, x, y, z);
 	
 			if(connectable[0])
 			{
@@ -227,12 +255,12 @@ public class BlockTransmitter extends Block
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		float minX = MIN_BOUND;
-		float minY = MIN_BOUND;
-		float minZ = MIN_BOUND;
-		float maxX = MAX_BOUND;
-		float maxY = MAX_BOUND;
-		float maxZ = MAX_BOUND;
+		float minX = getMinBound(world, x, y, z);
+		float minY = getMinBound(world, x, y, z);
+		float minZ = getMinBound(world, x, y, z);
+		float maxX = getMaxBound(world, x, y, z);
+		float maxY = getMaxBound(world, x, y, z);
+		float maxZ = getMaxBound(world, x, y, z);
 		
 		boolean[] connectable = getConnectable(world, x, y, z);
 			

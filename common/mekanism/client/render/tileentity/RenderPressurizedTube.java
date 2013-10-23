@@ -8,6 +8,7 @@ import mekanism.api.gas.EnumGas;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -29,7 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model = new ModelTransmitter();
+	private ModelTransmitter model = new ModelTransmitter(Size.SMALL);
 	
 	private boolean[] connectable;
 	

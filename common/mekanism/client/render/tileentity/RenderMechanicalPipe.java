@@ -3,13 +3,14 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.PipeUtils;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.PipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -25,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model = new ModelTransmitter();
+	private ModelTransmitter model = new ModelTransmitter(Size.SMALL);
 	
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	

@@ -2,6 +2,7 @@ package mekanism.client.render.tileentity;
 
 import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.common.TransporterStack;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model = new ModelTransmitter();
+	private ModelTransmitter model = new ModelTransmitter(Size.LARGE);
 	
 	private EntityItem entityItem = new EntityItem(null);
 	private RenderItem renderer = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);

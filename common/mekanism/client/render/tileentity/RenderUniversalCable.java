@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -27,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderUniversalCable extends TileEntitySpecialRenderer
 {
-	private static ModelTransmitter model = new ModelTransmitter();
+	private static ModelTransmitter model = new ModelTransmitter(Size.SMALL);
 	
 	private static Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
 	

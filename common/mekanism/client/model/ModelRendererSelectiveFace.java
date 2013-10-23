@@ -113,8 +113,7 @@ public class ModelRendererSelectiveFace
                         GL11.glTranslatef(-rotationPointX * scaleFactor, -rotationPointY * scaleFactor, -rotationPointZ * scaleFactor);
                     }
                 }
-                else
-                {
+                else {
                     GL11.glPushMatrix();
                     GL11.glTranslatef(rotationPointX * scaleFactor, rotationPointY * scaleFactor, rotationPointZ * scaleFactor);
 
