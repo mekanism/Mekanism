@@ -101,7 +101,7 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = Object3D.get(pointer).getFromSide(side).getTileEntity(worldObj);
 				
-				if(TransporterUtils.canInsert(tile, itemStack) && !(tile instanceof TileEntityLogisticalTransporter))
+				if(TransporterUtils.canInsert(tile, itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
 					destination = Object3D.get(tile);
 					finalNode = Object3D.get(pointer);

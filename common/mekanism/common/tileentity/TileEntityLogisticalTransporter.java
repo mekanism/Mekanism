@@ -98,7 +98,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 									
 									if(inventory != null)
 									{
-										ItemStack rejected = TransporterUtils.putInInventory(inventory, stack.itemStack);
+										ItemStack rejected = TransporterUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this));
 										
 										if(rejected == null)
 										{
@@ -128,7 +128,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 				{
 					if(stack.isFinal(this))
 					{
-						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack) && !stack.noTarget)
+						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack, stack.getSide(this)) && !stack.noTarget)
 						{
 							System.out.println("final, has target, cant insert dest");
 							if(!recalculate(stack))
