@@ -1178,21 +1178,4 @@ public class Mekanism
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidSent));
 		} catch(Exception e) {}
 	}
-	
-	@ForgeSubscribe
-	public void onChunkLoad(ChunkEvent.Load event)
-	{
-		for(Object obj : event.getChunk().chunkTileEntityMap.values())
-		{
-			TileEntity tileEntity = (TileEntity)obj;
-			
-			if(tileEntity != null)
-			{
-				if(tileEntity instanceof TileEntityElectricBlock || tileEntity instanceof TileEntityUniversalCable)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
-				}
-			}
-		}
-	}
 }
