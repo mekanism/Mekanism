@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.model.ModelTransmitter.Size;
+import mekanism.client.model.ModelTransporterBox;
 import mekanism.common.TransporterStack;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
@@ -24,6 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter(Size.LARGE);
+	private ModelTransporterBox modelBox = new ModelTransporterBox();
 	
 	private EntityItem entityItem = new EntityItem(null);
 	private RenderItem renderer = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
@@ -41,6 +43,11 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		
+		if(tileEntity.color != null)
+		{
+			GL11.glColor4f(tileEntity.color.getColor(0), tileEntity.color.getColor(1), tileEntity.color.getColor(2), 1.0F);
+		}
 		
 		boolean[] connectable = TransporterUtils.getConnections(tileEntity);
 		
@@ -77,6 +84,17 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 			
 			renderer.doRenderItem(entityItem, x + 0.5 + offset.xCoord*progress, y + 0.5 + offset.yCoord*progress - entityItem.yOffset - itemFix, z + 0.5 + offset.zCoord*progress, 0, 0);
 			GL11.glPopMatrix();
+			
+			if(stack.color != null)
+			{
+				bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
+				GL11.glPushMatrix();
+				GL11.glDisable(GL11.GL_CULL_FACE);
+				GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
+				GL11.glTranslatef((float)(x + 0.5 + offset.xCoord*progress), (float)(y + 0.5 + offset.yCoord*progress - entityItem.yOffset - itemFix), (float)(z + 0.5 + offset.zCoord*progress));
+				modelBox.render(0.0625F);
+				GL11.glPopMatrix();
+			}
 		}
 	}
 }

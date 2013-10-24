@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +19,7 @@ public class TransporterStack
 	
 	public int progress;
 	
-	public EnumColor color;
+	public EnumColor color = EnumColor.AQUA;
 	
 	public boolean initiatedPath = false;
 	
@@ -37,7 +38,7 @@ public class TransporterStack
 	{
 		if(color != null)
 		{
-			data.add(color.ordinal());
+			data.add(TransporterUtils.colors.indexOf(color));
 		}
 		else {
 			data.add(-1);
@@ -68,7 +69,7 @@ public class TransporterStack
 		
 		if(c != -1)
 		{
-			color = EnumColor.values()[c];
+			color = TransporterUtils.colors.get(c);
 		}
 		else {
 			color = null;
@@ -91,7 +92,7 @@ public class TransporterStack
 	{
 		if(color != null)
 		{
-			nbtTags.setInteger("color", color.ordinal());
+			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
 		}
 		
 		nbtTags.setInteger("progress", progress);
@@ -104,7 +105,7 @@ public class TransporterStack
 	{
 		if(nbtTags.hasKey("color"))
 		{
-			color = EnumColor.values()[nbtTags.getInteger("color")];
+			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
 		}
 		
 		progress = nbtTags.getInteger("progress");

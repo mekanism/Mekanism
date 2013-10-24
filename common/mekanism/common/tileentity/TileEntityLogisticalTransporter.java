@@ -327,7 +327,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 		
 		if(c != -1)
 		{
-			color = EnumColor.values()[c];
+			color = TransporterUtils.colors.get(c);
 		}
 		else {
 			color = null;
@@ -351,7 +351,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	{
 		if(color != null)
 		{
-			data.add(color.ordinal());
+			data.add(TransporterUtils.colors.indexOf(color));
 		}
 		else {
 			data.add(-1);
@@ -374,7 +374,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
         
         if(nbtTags.hasKey("color"))
         {
-        	color = EnumColor.values()[nbtTags.getInteger("color")];
+        	color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
         }
         
     	if(nbtTags.hasKey("stacks"))
@@ -395,7 +395,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
         
         if(color != null)
         {
-        	nbtTags.setInteger("color", color.ordinal());
+        	nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
         }
         
         NBTTagList stacks = new NBTTagList();

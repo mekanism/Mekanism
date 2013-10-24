@@ -18,6 +18,7 @@ import mekanism.common.tileentity.TileEntityElectricPump;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -71,7 +72,8 @@ public class ItemConfigurator extends ItemEnergized
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
 	    		{
 	    			TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
-	    			MekanismUtils.incrementColor(transporter);
+	    			TransporterUtils.incrementColor(transporter);
+	    			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + "None")));
 	    			return true;
 	    		}

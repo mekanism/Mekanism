@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import mekanism.api.EnumColor;
@@ -15,6 +16,27 @@ import net.minecraftforge.common.ForgeDirection;
 
 public final class TransporterUtils 
 {
+	public static ArrayList<EnumColor> colors = buildColors();
+	
+	public static ArrayList<EnumColor> buildColors()
+	{
+		ArrayList<EnumColor> ret = new ArrayList<EnumColor>();
+		
+		ret.add(EnumColor.DARK_BLUE);
+		ret.add(EnumColor.DARK_GREEN);
+		ret.add(EnumColor.DARK_AQUA);
+		ret.add(EnumColor.DARK_RED);
+		ret.add(EnumColor.PURPLE);
+		ret.add(EnumColor.INDIGO);
+		ret.add(EnumColor.BRIGHT_GREEN);
+		ret.add(EnumColor.AQUA);
+		ret.add(EnumColor.RED);
+		ret.add(EnumColor.PINK);
+		ret.add(EnumColor.YELLOW);
+		
+		return ret;
+	}
+
     /**
      * Gets all the transporters around a tile entity.
      * @param tileEntity - center tile entity
@@ -327,4 +349,21 @@ public final class TransporterUtils
 
 		return null;
 	}
+	
+    public static void incrementColor(TileEntityLogisticalTransporter tileEntity)
+    {
+    	if(tileEntity.color == null)
+    	{
+    		tileEntity.color = colors.get(0);
+    		return;
+    	}
+    	else if(colors.indexOf(tileEntity.color) == colors.size()-1)
+    	{
+    		tileEntity.color = null;
+    		return;
+    	}
+    	
+    	int index = colors.indexOf(tileEntity.color);
+    	tileEntity.color = colors.get(index+1);
+    }
 }
