@@ -9,7 +9,6 @@ import java.util.Set;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
