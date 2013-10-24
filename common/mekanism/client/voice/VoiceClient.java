@@ -50,21 +50,33 @@ public class VoiceClient
 		System.out.println("[Mekanism] VoiceServer: Stopping client connection...");
 		
 		try {
-			inputThread.interrupt();
-			outputThread.interrupt();
+			try {
+				inputThread.interrupt();
+				outputThread.interrupt();
+			} catch(Exception e) {}
 			
-			inputThread.close();
-			outputThread.close();
+			try {
+				inputThread.close();
+				outputThread.close();
+			} catch(Exception e) {}
 			
-			output.flush();
-			output.close();
-			output = null;
+			try {
+				output.flush();
+				output.close();
+				output = null;
+			} catch(Exception e) {}
 			
-			input.close();
-			input = null;
+			try {
+				input.close();
+				input = null;
+			} catch(Exception e) {}
 			
-			socket.close();
-			socket = null;
+			try {
+				socket.close();
+				socket = null;
+			} catch(Exception e) {}
+			
+			
 			running = false;
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while stopping client connection.");

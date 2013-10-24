@@ -50,7 +50,7 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = Object3D.get(pointer).getFromSide(side).getTileEntity(worldObj);
 				
-				if(tile instanceof TileEntityLogisticalTransporter && !iterated.contains(tile))
+				if(transportStack.canInsert(tile) && !iterated.contains(tile))
 				{
 					loop((TileEntityLogisticalTransporter)tile);
 					found = true;
