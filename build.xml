@@ -21,10 +21,10 @@
 			<fileset dir="../Minecraft Forge Latest/"/>
 		</copy>
 
-		<get src="http://www.chickenbones.craftsaddle.org/Files/goto.php?file=NotEnoughItems&version=1.6.4"
+		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.4/NotEnoughItems-dev%201.6.1.5_d1.jar"
 			dest="${dir.mcp}/lib/NEI-dev.jar"/>
 			
-		<get src="http://www.chickenbones.craftsaddle.org/Files/goto.php?file=CodeChickenCore&version=1.6.4"
+		<get src="http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.4/CodeChickenCore-dev%200.9.0.7.jar"
 			dest = "${dir.mcp}/lib/CCC-dev.jar"/>
 
 		<copy todir="${dir.mcp}/src/minecraft">
