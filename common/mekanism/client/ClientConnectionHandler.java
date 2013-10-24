@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientConnectionHandler implements IConnectionHandler
 {
-	public VoiceClient voiceClient = new VoiceClient();
+	public VoiceClient voiceClient;
 	
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {}
@@ -32,21 +32,26 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
 	{
-		voiceClient.start(server, 36123);
+		try {
+			voiceClient = new VoiceClient(server, 36123);
+			voiceClient.run();
+		} catch(Exception e) {}
 	}
 
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) 
 	{
 		try {
-			voiceClient.start(InetAddress.getLocalHost().getHostAddress(), 36123);
+			voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), 36123);
+			voiceClient.run();
 		} catch(Exception e) {}
 	}
 
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{
-		voiceClient.stop();
+		voiceClient.disconnect();
+		voiceClient = null;
 		Mekanism.proxy.unloadSoundHandler();
 	}
 

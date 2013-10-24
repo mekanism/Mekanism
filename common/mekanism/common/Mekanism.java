@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 
@@ -19,7 +17,6 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
@@ -76,11 +73,9 @@ import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWeather;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityControlPanel;
-import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityGasTank;
 import mekanism.common.tileentity.TileEntityTeleporter;
-import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
@@ -89,11 +84,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
@@ -112,8 +105,6 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Mekanism - the mod in which no true definition fits.

@@ -12,9 +12,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class VoiceClient
+public class VoiceClient extends Thread
 {
 	public Socket socket;
+	
+	public String ip;
+	public int port;
 	
 	public AudioFormat format = new AudioFormat(11025.0F, 8, 1, true, true);
 	
@@ -26,7 +29,14 @@ public class VoiceClient
 	
 	public boolean running;
 	
-	public void start(String ip, int port)
+	public VoiceClient(String s, int i)
+	{
+		ip = s;
+		port = i;
+	}
+	
+	@Override
+	public void run()
 	{
 		System.out.println("[Mekanism] VoiceServer: Starting client connection...");
 		
@@ -39,13 +49,15 @@ public class VoiceClient
 			
 			(outputThread = new VoiceOutput(this)).start();
 			(inputThread = new VoiceInput(this)).start();
+			
+			System.out.println("[Mekanism] VoiceServer: Successfully connected to server.");
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while starting client connection.");
 			e.printStackTrace();
 		}
 	}
 	
-	public void stop()
+	public void disconnect()
 	{
 		System.out.println("[Mekanism] VoiceServer: Stopping client connection...");
 		
@@ -53,6 +65,10 @@ public class VoiceClient
 			try {
 				inputThread.interrupt();
 				outputThread.interrupt();
+			} catch(Exception e) {}
+			
+			try {
+				interrupt();
 			} catch(Exception e) {}
 			
 			try {
