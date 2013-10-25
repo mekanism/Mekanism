@@ -84,7 +84,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(inInventory != null && inInventory.itemStack != null)
 					{
-						if(TransporterUtils.insert((TileEntity)inventory, transporter, inInventory.itemStack, color))
+						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, color))
 						{
 							inventory.setInventorySlotContents(inInventory.slotID, null);
 							setActive(true);
@@ -147,7 +147,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		
 		filters.clear();
 		
-		for(int i = 0; i < dataStream.readInt(); i++)
+		int amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
 		{
 			filters.add(TransporterFilter.readFromPacket(dataStream));
 		}
@@ -189,6 +191,13 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		return 1;
 	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side) 
+	{
+		return new int[] {0};
+	}
+
 
 	@Override
 	public RedstoneControl getControlType() 

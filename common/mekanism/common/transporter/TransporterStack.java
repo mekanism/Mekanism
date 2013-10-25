@@ -19,7 +19,7 @@ public class TransporterStack
 	
 	public int progress;
 	
-	public EnumColor color = EnumColor.AQUA;
+	public EnumColor color = null;
 	
 	public boolean initiatedPath = false;
 	

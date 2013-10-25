@@ -58,6 +58,7 @@ public class PacketHandler implements IPacketHandler
 					packetType.read(dataStream, entityplayer, entityplayer.worldObj);
 				} catch(Exception e) {
 					System.err.println("[Mekanism] Error while reading '" + packetType.getName() + "' packet.");
+					e.printStackTrace();
 				}
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");

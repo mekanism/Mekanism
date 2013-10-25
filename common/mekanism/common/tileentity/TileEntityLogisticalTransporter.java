@@ -202,7 +202,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 	
 	public boolean insert(Object3D original, ItemStack itemStack, EnumColor color)
 	{
-		needsSync = true;
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
@@ -215,6 +214,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 		
 		if(stack.recalculatePath(this))
 		{
+			needsSync = true;
 			transit.add(stack);
 			return true;
 		}
@@ -341,7 +341,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 		
 		transit.clear();
 		
-		for(int i = 0; i < dataStream.readInt(); i++)
+		int amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
 		{
 			transit.add(TransporterStack.readFromPacket(dataStream));
 		}
