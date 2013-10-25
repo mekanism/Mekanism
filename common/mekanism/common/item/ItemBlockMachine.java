@@ -63,6 +63,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 12: Electric Pump
  * 13: Electric Chest
  * 14: Chargepad
+ * 15: Logistical Sorter
  * @author AidanBrady
  *
  */
@@ -135,6 +136,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				break;
 			case 14:
 				name = "Chargepad";
+				break;
+			case 15:
+				name = "LogisticalSorter";
 				break;
 			default:
 				name = "Unknown";

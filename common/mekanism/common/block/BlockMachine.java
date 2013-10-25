@@ -34,6 +34,7 @@ import mekanism.common.tileentity.TileEntityEliteFactory;
 import mekanism.common.tileentity.TileEntityEnergizedSmelter;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
 import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
@@ -80,6 +81,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 12: Electric Pump
  * 13: Electric Chest
  * 14: Chargepad
+ * 15: Logistical Sorter
  * @author AidanBrady
  *
  */
@@ -136,6 +138,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 		icons[11][0] = register.registerIcon("mekanism:Teleporter");
+		icons[15][0] = register.registerIcon("mekanism:LogisticalSorterSideOn");
+		icons[15][1] = register.registerIcon("mekanism:LogisticalSorterSideOff");
+		icons[15][2] = register.registerIcon("mekanism:LogisticalSorterFrontOn");
+		icons[15][3] = register.registerIcon("mekanism:LogisticalSorterFrontOff");
+		icons[15][4] = register.registerIcon("mekanism:LogisticalSorterBackOn");
+		icons[15][5] = register.registerIcon("mekanism:LogisticalSorterBackOff");
 	}
 	
 	@Override
@@ -174,22 +182,22 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
 
-            if (tileEntity.facing == 4)
+            if(tileEntity.facing == 4)
             {
                 world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if (tileEntity.facing == 5)
+            else if(tileEntity.facing == 5)
             {
                 world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if (tileEntity.facing == 2)
+            else if(tileEntity.facing == 2)
             {
                 world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if (tileEntity.facing == 3)
+            else if(tileEntity.facing == 3)
             {
                 world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
@@ -341,6 +349,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		return icons[11][0];
     	}
+    	else if(meta == 15)
+    	{
+    		if(side == 1)
+    		{
+    			return icons[15][3];
+    		}
+    		else if(side == 0)
+    		{
+    			return icons[15][5];
+    		}
+    		else {
+    			return icons[15][1];
+    		}
+    	}
     	
     	return null;
     }
@@ -478,6 +500,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		return icons[11][0];
     	}
+    	else if(metadata == 15)
+    	{
+    		if(side == tileEntity.facing)
+    		{
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][2] : icons[15][3];
+    		}
+    		else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
+    		{
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][4] : icons[15][5];
+    		}
+    		else {
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][0] : icons[15][1];
+    		}
+    	}
     	
     	return null;
     }
@@ -519,6 +555,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		list.add(new ItemStack(i, 1, 12));
 		list.add(new ItemStack(i, 1, 13));
 		list.add(new ItemStack(i, 1, 14));
+		list.add(new ItemStack(i, 1, 15));
 	}
     
     @Override
@@ -808,7 +845,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
 		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true),
 		ELECTRIC_CHEST(13, -1, 12000, TileEntityElectricChest.class, true),
-		CHARGEPAD(14, -1, 9000, TileEntityChargepad.class, true);
+		CHARGEPAD(14, -1, 9000, TileEntityChargepad.class, true),
+		LOGISTICAL_SORTER(15, 26, 12000, TileEntityLogisticalSorter.class, false);
 		
 		public int meta;
 		public int guiId;

@@ -413,7 +413,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         	}
         }
     	
-        if (tileEntity != null)
+        if(tileEntity != null)
         {
         	if(!entityplayer.isSneaking())
         	{
