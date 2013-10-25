@@ -2,12 +2,14 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.SlotInfo;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -134,9 +136,9 @@ public final class TransporterUtils
     	return inventories;
     }
     
-    public static boolean insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack)
+    public static boolean insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color)
     {
-    	return tileEntity.insert(Object3D.get(outputter), itemStack);
+    	return tileEntity.insert(Object3D.get(outputter), itemStack, color);
     }
     
     public static boolean canInsert(TileEntity tileEntity, ItemStack itemStack, int side)
@@ -304,7 +306,7 @@ public final class TransporterUtils
 		return itemStack;
 	}
 
-	public static ItemStack takeTopItemFromInventory(IInventory inventory, int side) 
+	public static SlotInfo takeItem(IInventory inventory, int side) 
 	{
 		if(!(inventory instanceof ISidedInventory)) 
 		{
@@ -313,16 +315,14 @@ public final class TransporterUtils
 				if(inventory.getStackInSlot(i) != null) 
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
-					toSend.stackSize = 1;
+					inventory.setInventorySlotContents(i, null);
 
-					inventory.decrStackSize(i, 1);
-
-					return toSend;
+					return new SlotInfo(toSend, i);
 				}
 			}
 		} 
 		else {
-			ISidedInventory sidedInventory = (ISidedInventory) inventory;
+			ISidedInventory sidedInventory = (ISidedInventory)inventory;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(side);
 
 			if(slots != null) 
@@ -334,13 +334,12 @@ public final class TransporterUtils
 					if(sidedInventory.getStackInSlot(slotID) != null) 
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
-						toSend.stackSize = 1;
 
 						if(sidedInventory.canExtractItem(slotID, toSend, side)) 
 						{
-							sidedInventory.decrStackSize(slotID, 1);
+							sidedInventory.setInventorySlotContents(slotID, null);
 
-							return toSend;
+							return new SlotInfo(toSend, slotID);
 						}
 					}
 				}

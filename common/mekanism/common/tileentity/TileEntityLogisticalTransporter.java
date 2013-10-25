@@ -200,12 +200,18 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 		return true;
 	}
 	
-	public boolean insert(Object3D original, ItemStack itemStack)
+	public boolean insert(Object3D original, ItemStack itemStack, EnumColor color)
 	{
 		needsSync = true;
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
+		stack.color = color;
+		
+		if(!stack.canInsert(this))
+		{
+			return false;
+		}
 		
 		if(stack.recalculatePath(this))
 		{

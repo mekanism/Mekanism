@@ -519,7 +519,7 @@ public final class MekanismUtils
      */
     public static int getTicks(int speedUpgrade, int def)
     {
-        return (int) (def * Math.pow(10, (-speedUpgrade/9.0)));
+        return (int)(def * Math.pow(10, (-speedUpgrade/9.0)));
     }
     
     /**
@@ -531,7 +531,7 @@ public final class MekanismUtils
      */
     public static int getEnergyPerTick(int speedUpgrade, int energyUpgrade, int def)
     {
-        return (int) (def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));
+        return (int)(def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));
     }
     
     /**
@@ -554,7 +554,7 @@ public final class MekanismUtils
      */
     public static double getEnergy(int energyUpgrade, double def)
     {
-        return (int) (def * Math.pow(10, (energyUpgrade/9.0)));
+        return (int)(def * Math.pow(10, (energyUpgrade/9.0)));
     }
     
     /**
@@ -591,31 +591,6 @@ public final class MekanismUtils
     	
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
-    }
-    
-    /**
-     * Converts a ForgeDirection enum value to it's corresponding value in IndustrialCraft's 'Direction.'  Using values()[ordinal()] will not work in this situation,
-     * as IC2 uses different values from base MC direction theory.
-     * @param side - ForgeDirection value
-     * @return Direction value
-     */
-    public static Direction toIC2Direction(ForgeDirection side)
-    {
-    	switch(side)
-    	{
-    		case DOWN:
-    			return Direction.YN;
-    		case UP:
-    			return Direction.YP;
-    		case NORTH:
-    			return Direction.ZN;
-    		case SOUTH:
-    			return Direction.ZP;
-    		case WEST:
-    			return Direction.XN;
-    		default:
-    			return Direction.XP;
-    	}
     }
     
     /**
