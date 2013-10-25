@@ -31,6 +31,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(!worldObj.isRemote)
+		{
+			if(MekanismUtils.canFunction(this))
+			{
+				//TODO
+			}
+		}
 	}
 	
     @Override
@@ -80,6 +88,13 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
+		filters.clear();
+		
+		for(int i = 0; i < dataStream.readInt(); i++)
+		{
+			filters.add(TransporterFilter.readFromPacket(dataStream));
+		}
+		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
@@ -89,6 +104,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		super.getNetworkedData(data);
 		
 		data.add(controlType.ordinal());
+		data.add(filters.size());
+		
+		for(TransporterFilter filter : filters)
+		{
+			filter.write(data);
+		}
 		
 		return data;
 	}
@@ -103,6 +124,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		return false;
+	}
+	
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 1;
 	}
 
 	@Override

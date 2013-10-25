@@ -335,14 +335,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
 		
 		transit.clear();
 		
-		int amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
+		for(int i = 0; i < dataStream.readInt(); i++)
 		{
-			TransporterStack stack = new TransporterStack();
-			stack.read(dataStream);
-			
-			transit.add(stack);
+			transit.add(TransporterStack.readFromPacket(dataStream));
 		}
 	}
 	
@@ -383,7 +378,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<Inven
     		
     		for(int i = 0; i < tagList.tagCount(); i++)
     		{
-    			transit.add(TransporterStack.read((NBTTagCompound)tagList.tagAt(i)));
+    			transit.add(TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
     }

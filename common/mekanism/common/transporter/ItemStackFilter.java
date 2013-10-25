@@ -10,14 +10,20 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemStackFilter extends TransporterFilter
 {
-	public ItemStack itemStack;
+	public ItemStack itemType;
+	
+	@Override
+	public boolean canFilter(ItemStack itemStack)
+	{
+		return itemType.isItemEqual(itemStack);
+	}
 	
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
 		super.write(nbtTags);
 		
-		itemStack.writeToNBT(nbtTags);
+		itemType.writeToNBT(nbtTags);
 	}
 	
 	@Override
@@ -25,7 +31,7 @@ public class ItemStackFilter extends TransporterFilter
 	{
 		super.read(nbtTags);
 		
-		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
+		itemType = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 	
 	@Override
@@ -33,9 +39,9 @@ public class ItemStackFilter extends TransporterFilter
 	{
 		super.write(data);
 		
-		data.add(itemStack.itemID);
-		data.add(itemStack.stackSize);
-		data.add(itemStack.getItemDamage());
+		data.add(itemType.itemID);
+		data.add(itemType.stackSize);
+		data.add(itemType.getItemDamage());
 	}
 	
 	@Override
@@ -43,6 +49,23 @@ public class ItemStackFilter extends TransporterFilter
 	{
 		super.read(dataStream);
 		
-		itemStack = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		itemType = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+	}
+	
+	@Override
+	public int hashCode() 
+	{
+		int code = 1;
+		code = 31 * code + super.hashCode();
+		code = 31 * code + itemType.itemID;
+		code = 31 * code + itemType.stackSize;
+		code = 31 * code + itemType.getItemDamage();
+		return code;
+	}
+	
+	@Override
+	public boolean equals(Object filter)
+	{
+		return super.equals(filter) && filter instanceof ItemStackFilter && ((ItemStackFilter)filter).itemType.isItemEqual(itemType);
 	}
 }
