@@ -9,15 +9,14 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerLogisticalSorter extends Container
+public class ContainerItemStackFilter extends Container
 {
 	private TileEntityLogisticalSorter tileEntity;
 	
-	public ContainerLogisticalSorter(InventoryPlayer inventory, TileEntityLogisticalSorter tentity)
+	public ContainerItemStackFilter(InventoryPlayer inventory, TileEntityLogisticalSorter tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, EnumGas.NONE, true, 0, 8, 8));
-		addSlotToContainer(new SlotStorageTank(tentity, EnumGas.NONE, true, 1, 8, 40));
+		addSlotToContainer(new Slot(tentity, 0, 8, 8));
 		
 		int slotX;
 		

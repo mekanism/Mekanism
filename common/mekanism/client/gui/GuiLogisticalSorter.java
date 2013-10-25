@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.common.inventory.container.ContainerLogisticalSorter;
+import mekanism.common.inventory.container.ContainerItemStackFilter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -19,7 +19,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	
 	public GuiLogisticalSorter(InventoryPlayer inventory, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerLogisticalSorter(inventory, tentity));
+		super(new ContainerItemStackFilter(inventory, tentity));
 		tileEntity = tentity;
 		
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));

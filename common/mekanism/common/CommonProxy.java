@@ -9,7 +9,7 @@ import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.inventory.container.ContainerGasTank;
-import mekanism.common.inventory.container.ContainerLogisticalSorter;
+import mekanism.common.inventory.container.ContainerItemStackFilter;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.inventory.container.ContainerRobitInventory;
@@ -283,7 +283,7 @@ public class CommonProxy
 			case 25:
 				return new ContainerRobitRepair(player.inventory, world);
 			case 26:
-				return new ContainerLogisticalSorter(player.inventory, (TileEntityLogisticalSorter)tileEntity);
+				return new ContainerItemStackFilter(player.inventory, (TileEntityLogisticalSorter)tileEntity);
 		}
 		
 		return null;
