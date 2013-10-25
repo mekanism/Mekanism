@@ -1,4 +1,4 @@
-package mekanism.generators.common;
+package mekanism.generators.common.item;
 
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
@@ -72,35 +72,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		String name = "";
-		switch(itemstack.getItemDamage())
-		{
-			case 0:
-				name = "HeatGenerator";
-				break;
-			case 1:
-				name = "SolarGenerator";
-				break;
-			case 2:
-				name = "ElectrolyticSeparator";
-				break;
-			case 3:
-				name = "HydrogenGenerator";
-				break;
-			case 4:
-				name = "BioGenerator";
-				break;
-			case 5:
-				name = "AdvancedSolarGenerator";
-				break;
-			case 6:
-				name = "WindTurbine";
-				break;
-			default:
-				name = "Unknown";
-				break;
-		}
-		return getUnlocalizedName() + "." + name;
+		return getUnlocalizedName() + "." + GeneratorType.getFromMetadata(itemstack.getItemDamage()).name;
 	}
 	
 	@Override

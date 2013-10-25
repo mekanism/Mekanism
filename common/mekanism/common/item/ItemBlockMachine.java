@@ -89,63 +89,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		String name = "";
-		switch(itemstack.getItemDamage())
-		{
-			case 0:
-				name = "EnrichmentChamber";
-				break;
-			case 1:
-				name = "OsmiumCompressor";
-				break;
-			case 2:
-				name = "Combiner";
-				break;
-			case 3:
-				name = "Crusher";
-				break;
-			case 4:
-				name = "TheoreticalElementizer";
-				break;
-			case 5:
-				name = "BasicFactory";
-				break;
-			case 6:
-				name = "AdvancedFactory";
-				break;
-			case 7:
-				name = "EliteFactory";
-				break;
-			case 8:
-				name = "MetallurgicInfuser";
-				break;
-			case 9:
-				name = "PurificationChamber";
-				break;
-			case 10:
-				name = "EnergizedSmelter";
-				break;
-			case 11:
-				name = "Teleporter";
-				break;
-			case 12:
-				name = "ElectricPump";
-				break;
-			case 13:
-				name = "ElectricChest";
-				break;
-			case 14:
-				name = "Chargepad";
-				break;
-			case 15:
-				name = "LogisticalSorter";
-				break;
-			default:
-				name = "Unknown";
-				break;
-		}
-		
-		return getUnlocalizedName() + "." + name;
+		return getUnlocalizedName() + "." + MachineType.getFromMetadata(itemstack.getItemDamage()).name;
 	}
 	
 	@Override

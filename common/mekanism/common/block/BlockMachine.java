@@ -831,32 +831,34 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0, 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
-		OSMIUM_COMPRESSOR(1, 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
-		COMBINER(2, 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
-		CRUSHER(3, 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
-		THEORETICAL_ELEMENTIZER(4, 7, Mekanism.theoreticalElementizerUsage*400, TileEntityTheoreticalElementizer.class, true),
-		BASIC_FACTORY(5, 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
-		ADVANCED_FACTORY(6, 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
-		ELITE_FACTORY(7, 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
-		METALLURGIC_INFUSER(8, 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
-		PURIFICATION_CHAMBER(9, 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
-		ENERGIZED_SMELTER(10, 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
-		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true),
-		ELECTRIC_CHEST(13, -1, 12000, TileEntityElectricChest.class, true),
-		CHARGEPAD(14, -1, 9000, TileEntityChargepad.class, true),
-		LOGISTICAL_SORTER(15, 26, 12000, TileEntityLogisticalSorter.class, false);
+		ENRICHMENT_CHAMBER(0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
+		OSMIUM_COMPRESSOR(1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
+		COMBINER(2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
+		CRUSHER(3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
+		THEORETICAL_ELEMENTIZER(4, "TheoreticalElementizer", 7, Mekanism.theoreticalElementizerUsage*400, TileEntityTheoreticalElementizer.class, true),
+		BASIC_FACTORY(5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
+		ADVANCED_FACTORY(6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
+		ELITE_FACTORY(7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
+		METALLURGIC_INFUSER(8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
+		PURIFICATION_CHAMBER(9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
+		ENERGIZED_SMELTER(10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
+		TELEPORTER(11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false),
+		ELECTRIC_PUMP(12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
+		ELECTRIC_CHEST(13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
+		CHARGEPAD(14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
+		LOGISTICAL_SORTER(15, "LogisticalSorter", 26, 12000, TileEntityLogisticalSorter.class, false);
 		
 		public int meta;
+		public String name;
 		public int guiId;
 		public double baseEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private MachineType(int i, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private MachineType(int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
+			name = s;
 			guiId = j;
 			baseEnergy = k;
 			tileEntityClass = tileClass;

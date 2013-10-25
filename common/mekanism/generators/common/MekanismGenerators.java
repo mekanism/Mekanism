@@ -13,6 +13,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
 import mekanism.generators.common.block.BlockGenerator;
+import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import mekanism.generators.common.tileentity.TileEntitySolarGenerator;
 import net.minecraft.block.Block;

@@ -21,7 +21,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 	{
 		super(new ContainerLogisticalSorter(inventory, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
+		
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}
 	
 	@Override

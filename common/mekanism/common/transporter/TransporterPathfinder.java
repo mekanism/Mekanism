@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.transporter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -289,8 +289,6 @@ public final class TransporterPathfinder
 	{
 		Destination d = new Destination(start.worldObj, start, stack);
 		Object3D closest = d.find();
-		
-		System.out.println(closest);
 		
 		if(closest == null)
 		{
