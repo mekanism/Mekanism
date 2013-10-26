@@ -1,14 +1,10 @@
 package mekanism.common.network;
 
 import java.io.DataOutputStream;
-import java.util.ArrayList;
 
 import mekanism.api.Object3D;
 import mekanism.common.ITileNetwork;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.tileentity.TileEntityDynamicTank;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -21,7 +17,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 {
 	public Object3D object3D;
 	
-	public int filterIndex;
+	public int type;
 	
 	@Override
 	public String getName()
@@ -33,7 +29,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	public IMekanismPacket setParams(Object... data)
 	{
 		object3D = (Object3D)data[0];
-		filterIndex = (Integer)data[1];
+		type = (Integer)data[1];
 		
 		return this;
 	}
@@ -47,7 +43,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		
 		int id = dataStream.readInt();
 		
-		int index = dataStream.readInt();
+		int type = dataStream.readInt();
 		
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(id);
 		
@@ -55,12 +51,14 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		{
 			TileEntity tileEntity = worldServer.getBlockTileEntity(x, y, z);
 			
-			if(tileEntity instanceof TileEntityLogisticalSorter)
+			if(type == 0)
 			{
-				((TileEntityDynamicTank)tileEntity).sendStructure = true;
+				player.openGui(Mekanism.instance, 27, worldServer, x, y, z);
 			}
-			
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
+			else if(type == 1)
+			{
+				player.openGui(Mekanism.instance, 28, worldServer, x, y, z);
+			}
 		}
 	}
 
@@ -73,6 +71,6 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		
 		dataStream.writeInt(object3D.dimensionId);
 		
-		dataStream.writeInt(filterIndex);
+		dataStream.writeInt(type);
 	}
 }

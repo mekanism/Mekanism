@@ -89,6 +89,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							inventory.setInventorySlotContents(inInventory.slotID, null);
 							setActive(true);
 						}
+						else {
+							inventory.setInventorySlotContents(inInventory.slotID, inInventory.itemStack);
+						}
 					}
 					
 					delayTicks = 10;

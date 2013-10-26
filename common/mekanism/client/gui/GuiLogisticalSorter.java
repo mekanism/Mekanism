@@ -1,11 +1,11 @@
 package mekanism.client.gui;
 
-import mekanism.common.inventory.container.ContainerItemStackFilter;
+import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
@@ -17,26 +17,60 @@ public class GuiLogisticalSorter extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;
 	
-	public GuiLogisticalSorter(InventoryPlayer inventory, TileEntityLogisticalSorter tentity)
+	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerItemStackFilter(inventory, tentity));
+		super(new ContainerNull(player, tentity));
 		tileEntity = tentity;
-		
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}
 	
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	public boolean doesGuiPauseGame()
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+		return false;
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
 		
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+		
+		buttonList.clear();
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
+		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		super.actionPerformed(guibutton);
+		
+		if(guibutton.id == 0)
+		{
+			
+		}
+		else if(guibutton.id == 1)
+		{
+			
+		}
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
 		fontRenderer.drawString("Logistical Sorter", 43, 6, 0x404040);
-		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-	}
-	
+		fontRenderer.drawString("Filters:", 11, 17, 0x00CD00);
+		fontRenderer.drawString("- " + tileEntity.filters.size(), 11, 26, 0x00CD00);
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
 	@Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
@@ -47,8 +81,5 @@ public class GuiLogisticalSorter extends GuiMekanism
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
-        int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
     }
 }

@@ -1,25 +1,20 @@
 package mekanism.common.inventory.container;
 
-import mekanism.api.gas.EnumGas;
-import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerItemStackFilter extends Container
+public class ContainerFilter extends Container
 {
-	private TileEntityLogisticalSorter tileEntity;
-	
-	public ContainerItemStackFilter(InventoryPlayer inventory, TileEntityLogisticalSorter tentity)
-	{
-		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, 8, 8));
-		
-		int slotX;
-		
+    public ContainerFilter(InventoryPlayer inventory)
+    {
+        int slotX;
+
         for(slotX = 0; slotX < 3; ++slotX)
         {
             for(int slotY = 0; slotY < 9; ++slotY)
@@ -32,23 +27,18 @@ public class ContainerItemStackFilter extends Container
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
-        
-        tileEntity.openChest();
-        tileEntity.playersUsing.add(inventory.player);
     }
     
-	@Override
+    @Override
     public void onContainerClosed(EntityPlayer entityplayer)
     {
 		super.onContainerClosed(entityplayer);
-		tileEntity.closeChest();
-		tileEntity.playersUsing.remove(entityplayer);
     }
-	
+
 	@Override
     public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-        return tileEntity.isUseableByPlayer(entityplayer);
+        return true;
     }
     
 	@Override
@@ -61,8 +51,27 @@ public class ContainerItemStackFilter extends Container
         {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-            
-            //TODO
+
+        	if(slotID >= 0 && slotID <= 26)
+        	{
+        		if(!mergeItemStack(slotStack, 27, inventorySlots.size(), false))
+        		{
+        			return null;
+        		}
+        	}
+        	else if(slotID > 26)
+        	{
+        		if(!mergeItemStack(slotStack, 0, 26, false))
+        		{
+        			return null;
+        		}
+        	}
+        	else {
+        		if(!mergeItemStack(slotStack, 0, inventorySlots.size(), true))
+        		{
+        			return null;
+        		}
+        	}
             
             if(slotStack.stackSize == 0)
             {

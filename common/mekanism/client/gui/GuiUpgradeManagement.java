@@ -23,12 +23,12 @@ public class GuiUpgradeManagement extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 		
-		guiContainer.drawTexturedModalRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 63);
+		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 63);
 		
 		IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
 		int displayInt = upgradeTile.getComponent().getScaledUpgradeProgress(14);
 		
-	    guiContainer.drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 26, 0, 10, displayInt);
+	    guiObj.drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 26, 0, 10, displayInt);
 		
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

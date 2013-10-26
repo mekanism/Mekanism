@@ -19,12 +19,12 @@ public class GuiRecipeType extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 		
-		guiContainer.drawTexturedModalRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
+		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
 		
 		TileEntityFactory factory = (TileEntityFactory)tileEntity;
         int displayInt = factory.getScaledRecipeProgress(15);
         
-        guiContainer.drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+        guiObj.drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
 		
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

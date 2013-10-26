@@ -16,16 +16,16 @@ public abstract class GuiElement
 	
 	protected ResourceLocation RESOURCE;
 	
-	public GuiContainer guiContainer;
+	public GuiScreen guiObj;
 	
 	public TileEntity tileEntity;
 	
 	public ResourceLocation defaultLocation;
 	
-	public GuiElement(ResourceLocation resource, GuiContainer gui, TileEntity tile, ResourceLocation def)
+	public GuiElement(ResourceLocation resource, GuiScreen gui, TileEntity tile, ResourceLocation def)
 	{
 		RESOURCE = resource;
-		guiContainer = gui;
+		guiObj = gui;
 		tileEntity = tile;
 		defaultLocation = def;
 	}
@@ -35,26 +35,32 @@ public abstract class GuiElement
 		try {
 			Method m = GuiContainer.class.getDeclaredMethod("drawCreativeTabHoveringText", String.class, Integer.TYPE, Integer.TYPE);
 			m.setAccessible(true);
-			m.invoke(guiContainer, s, xAxis, yAxis);
+			m.invoke(guiObj, s, xAxis, yAxis);
 		} catch(Exception e) {}
 	}
 	
 	protected void offsetX(int xSize)
 	{
-		try {
-			Field f = GuiContainer.class.getDeclaredField("xSize");
-			f.setAccessible(true);
-			f.set(guiContainer, ((Integer)f.get(guiContainer))+xSize);
-		} catch(Exception e) {}
+		if(guiObj instanceof GuiContainer)
+		{
+			try {
+				Field f = GuiContainer.class.getDeclaredField("xSize");
+				f.setAccessible(true);
+				f.set(guiObj, ((Integer)f.get(guiObj))+xSize);
+			} catch(Exception e) {}
+		}
 	}
 	
 	protected void offsetY(int ySize)
 	{
-		try {
-			Field f = GuiContainer.class.getDeclaredField("ySize");
-			f.setAccessible(true);
-			f.set(guiContainer, ((Integer)f.get(guiContainer))+ySize);
-		} catch(Exception e) {}
+		if(guiObj instanceof GuiContainer)
+		{
+			try {
+				Field f = GuiContainer.class.getDeclaredField("ySize");
+				f.setAccessible(true);
+				f.set(guiObj, ((Integer)f.get(guiObj))+ySize);
+			} catch(Exception e) {}
+		}
 	}
 	
 	protected FontRenderer getFontRenderer()
@@ -62,7 +68,7 @@ public abstract class GuiElement
 		try {
 			Field f = GuiScreen.class.getDeclaredField("fontRenderer");
 			f.setAccessible(true);
-			return (FontRenderer)f.get(guiContainer);
+			return (FontRenderer)f.get(guiObj);
 		} catch(Exception e) {}
 		
 		return null;

@@ -21,6 +21,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityChargepad;
@@ -827,6 +828,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	}
     	
     	return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    }
+    
+    @Override
+    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+    {
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(metadata != MachineType.CHARGEPAD.meta)
+    	{
+    		return true;
+    	}
+    	
+    	return false;
     }
 	
 	public static enum MachineType

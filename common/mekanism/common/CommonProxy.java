@@ -8,9 +8,10 @@ import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.inventory.container.ContainerFactory;
+import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerGasTank;
-import mekanism.common.inventory.container.ContainerItemStackFilter;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
+import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.inventory.container.ContainerRobitMain;
@@ -21,6 +22,7 @@ import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
+import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
@@ -33,7 +35,6 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
@@ -283,7 +284,11 @@ public class CommonProxy
 			case 25:
 				return new ContainerRobitRepair(player.inventory, world);
 			case 26:
-				return new ContainerItemStackFilter(player.inventory, (TileEntityLogisticalSorter)tileEntity);
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+			case 27:
+				return new ContainerFilter(player.inventory);
+			case 28:
+				return new ContainerFilter(player.inventory);
 		}
 		
 		return null;
