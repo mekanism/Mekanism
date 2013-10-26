@@ -30,6 +30,16 @@ public class GuiItemStackFilter extends GuiMekanism
 	
 	public String status = EnumColor.DARK_GREEN + "All OK";
 	
+	public int ticker;
+	
+	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
+	{
+		super(new ContainerFilter(player.inventory));
+		tileEntity = tentity;
+		
+		filter = (ItemStackFilter)tileEntity.filters.get(index);
+	}
+	
 	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(new ContainerFilter(player.inventory));
@@ -109,6 +119,20 @@ public class GuiItemStackFilter extends GuiMekanism
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		if(ticker > 0)
+		{
+			ticker--;
+		}
+		else {
+			status = EnumColor.DARK_GREEN + "All OK";
+		}
+	}
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)

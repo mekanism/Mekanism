@@ -56,12 +56,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 		if(guibutton.id == 0)
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 1));
-			mc.thePlayer.openGui(Mekanism.instance, 27, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+			mc.displayGuiScreen(new GuiItemStackFilter(mc.thePlayer, tileEntity));
 		}
 		else if(guibutton.id == 1)
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 2));
-			mc.thePlayer.openGui(Mekanism.instance, 28, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+			mc.displayGuiScreen(new GuiOreDictFilter(mc.thePlayer, tileEntity));
 		}
 	}
 	

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -19,7 +20,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -31,6 +34,10 @@ public class GuiOreDictFilter extends GuiMekanism
 	
 	private GuiTextField oreDictText;
 	
+	public ItemStack renderStack;
+	
+	public int ticker = 0;
+	
 	public int stackSwitch = 0;
 	
 	public int stackIndex = 0;
@@ -38,6 +45,14 @@ public class GuiOreDictFilter extends GuiMekanism
 	public List<ItemStack> iterStacks;
 	
 	public String status = EnumColor.DARK_GREEN + "All OK";
+	
+	public GuiOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
+	{
+		super(new ContainerFilter(player.inventory));
+		tileEntity = tentity;
+		
+		filter = (OreDictFilter)tentity.filters.get(index);
+	}
 	
 	public GuiOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
@@ -72,14 +87,21 @@ public class GuiOreDictFilter extends GuiMekanism
 	@Override
 	public void keyTyped(char c, int i)
 	{
-		if(i == mc.gameSettings.keyBindInventory.keyCode)
+		if(i == Keyboard.KEY_E)
 		{
+			oreDictText.textboxKeyTyped(c, i);
 			return;
 		}
 		
 		super.keyTyped(c, i);
 		
-		if(Character.isLetter(c) || Character.isDigit(c) || c == '*')
+		if(oreDictText.isFocused() && i == Keyboard.KEY_RETURN)
+		{
+			setOreDictKey();
+			return;
+		}
+		
+		if(Character.isLetter(c) || Character.isDigit(c) || c == '*' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE)
 		{
 			oreDictText.textboxKeyTyped(c, i);
 		}
@@ -106,14 +128,14 @@ public class GuiOreDictFilter extends GuiMekanism
 		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
 		
-		/*if(filter.itemType != null)
+		if(renderStack != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemIntoGUI(fontRenderer, mc.getTextureManager(), filter.itemType, 12, 19);
+			itemRenderer.renderItemIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
-		}*/
+		}
 		
 		GL11.glPushMatrix();
 		GL11.glColor4f(1, 1, 1, 1);
@@ -172,13 +194,48 @@ public class GuiOreDictFilter extends GuiMekanism
 	{
 		super.updateScreen();
 		
+		oreDictText.updateCursorCounter();
 		
+		if(ticker > 0)
+		{
+			ticker--;
+		}
+		else {
+			status = EnumColor.DARK_GREEN + "All OK";
+		}
+		
+		if(stackSwitch > 0)
+		{
+			stackSwitch--;
+		}
+		
+		if(stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0)
+		{
+			stackSwitch = 20;
+			
+			if(stackIndex == -1 || stackIndex == iterStacks.size()-1)
+			{
+				stackIndex = 0;
+			}
+			else if(stackIndex < iterStacks.size()-1)
+			{
+				stackIndex++;
+			}
+			
+			renderStack = iterStacks.get(stackIndex);
+		}
+		else if(iterStacks != null && iterStacks.size() == 0)
+		{
+			renderStack = null;
+		}
 	}
 	
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
         super.mouseClicked(mouseX, mouseY, button);
+        
+        oreDictText.mouseClicked(mouseX, mouseY, button);
         
     	if(button == 0)
 		{
@@ -201,6 +258,75 @@ public class GuiOreDictFilter extends GuiMekanism
     
     private void setOreDictKey()
     {
+    	String oreName = oreDictText.getText();
     	
+    	if(oreName == null || oreName.isEmpty())
+    	{
+    		status = EnumColor.DARK_RED + "No key entered";
+    		return;
+    	}
+    	else if(oreName.equals(filter.oreDictName))
+    	{
+    		status = EnumColor.DARK_RED + "Same key";
+    		return;
+    	}
+    	
+    	if(iterStacks == null)
+    	{
+    		iterStacks = new ArrayList<ItemStack>();
+    	}
+    	else {
+    		iterStacks.clear();
+    	}
+    	
+    	List<String> keys = new ArrayList<String>();
+    	
+    	for(String s : OreDictionary.getOreNames())
+    	{
+    		if(oreName.equals(s))
+    		{
+    			keys.add(s);
+    		}
+    		else if(oreName.endsWith("*") && !oreName.startsWith("*"))
+    		{
+    			if(s.startsWith(oreName.substring(0, oreName.length()-1)))
+    			{
+    				keys.add(s);
+    			}
+    		}
+    		else if(oreName.startsWith("*") && !oreName.endsWith("*"))
+    		{
+    			if(s.endsWith(oreName.substring(1)))
+    			{
+    				keys.add(s);
+    			}
+    		}
+    		else if(oreName.startsWith("*") && oreName.endsWith("*"))
+    		{
+    			if(s.contains(oreName.substring(1, oreName.length()-1)))
+    			{
+    				keys.add(s);
+    			}
+    		}
+    	}
+    	
+    	for(String key : keys)
+    	{
+    		for(ItemStack stack : OreDictionary.getOres(key))
+    		{
+    			ItemStack toAdd = stack.copy();
+    			
+    			if(!iterStacks.contains(stack))
+    			{
+    				iterStacks.add(stack.copy());
+    			}
+    		}
+    	}
+    	
+    	filter.oreDictName = oreName;
+    	oreDictText.setText("");
+    	
+    	stackSwitch = 0;
+    	stackIndex = -1;
     }
 }
