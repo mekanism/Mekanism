@@ -9,9 +9,9 @@ import mekanism.api.Object3D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.TransporterStack;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -196,15 +196,21 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return true;
 	}
 	
-	public boolean insert(Object3D original, ItemStack itemStack)
+	public boolean insert(Object3D original, ItemStack itemStack, EnumColor color)
 	{
-		needsSync = true;
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
+		stack.color = color;
+		
+		if(!stack.canInsert(this))
+		{
+			return false;
+		}
 		
 		if(stack.recalculatePath(this))
 		{
+			needsSync = true;
 			transit.add(stack);
 			return true;
 		}
@@ -249,10 +255,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		for(int i = 0; i < amount; i++)
 		{
-			TransporterStack stack = new TransporterStack();
-			stack.read(dataStream);
-			
-			transit.add(stack);
+			transit.add(TransporterStack.readFromPacket(dataStream));
 		}
 	}
 	
@@ -293,7 +296,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
     		
     		for(int i = 0; i < tagList.tagCount(); i++)
     		{
-    			transit.add(TransporterStack.read((NBTTagCompound)tagList.tagAt(i)));
+    			transit.add(TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
     }

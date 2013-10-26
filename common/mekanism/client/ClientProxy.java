@@ -17,6 +17,7 @@ import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiGasTank;
+import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPasswordEnter;
@@ -77,6 +78,7 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
@@ -348,6 +350,8 @@ public class ClientProxy extends CommonProxy
 				}
 			case 25:
 				return new GuiRobitRepair(player.inventory, world, x);
+			case 26:
+				return new GuiLogisticalSorter(player.inventory, (TileEntityLogisticalSorter)tileEntity);
 		}
 		
 		return null;

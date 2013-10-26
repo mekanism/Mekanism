@@ -413,7 +413,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         	}
         }
     	
-        if (tileEntity != null)
+        if(tileEntity != null)
         {
         	if(!entityplayer.isSneaking())
         	{
@@ -551,21 +551,22 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	
 	public static enum GeneratorType
 	{
-		HEAT_GENERATOR(0, 0, 160000, TileEntityHeatGenerator.class, true),
-		SOLAR_GENERATOR(1, 1, 96000, TileEntitySolarGenerator.class, false),
-		ELECTROLYTIC_SEPARATOR(2, 2, 20000, TileEntityElectrolyticSeparator.class, true),
-		HYDROGEN_GENERATOR(3, 3, 40000, TileEntityHydrogenGenerator.class, true),
-		BIO_GENERATOR(4, 4, 160000, TileEntityBioGenerator.class, true),
-		ADVANCED_SOLAR_GENERATOR(5, 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
-		WIND_TURBINE(6, 5, 200000, TileEntityWindTurbine.class, true);
+		HEAT_GENERATOR(0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true),
+		SOLAR_GENERATOR(1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, false),
+		ELECTROLYTIC_SEPARATOR(2, "ElectrolyticSeparator", 2, 20000, TileEntityElectrolyticSeparator.class, true),
+		HYDROGEN_GENERATOR(3, "HydrogenGenerator", 3, 40000, TileEntityHydrogenGenerator.class, true),
+		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
+		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
+		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);
 		
 		public int meta;
+		public String name;
 		public int guiId;
 		public double maxEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private GeneratorType(int i, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private GeneratorType(int i, String name, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
 			guiId = j;

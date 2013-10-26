@@ -16,6 +16,7 @@ import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityUniversalCable;
+import mekanism.common.transporter.TransporterPathfinder;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;

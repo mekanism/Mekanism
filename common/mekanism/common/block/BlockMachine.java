@@ -34,6 +34,7 @@ import mekanism.common.tileentity.TileEntityEliteFactory;
 import mekanism.common.tileentity.TileEntityEnergizedSmelter;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
 import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
@@ -80,6 +81,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 12: Electric Pump
  * 13: Electric Chest
  * 14: Chargepad
+ * 15: Logistical Sorter
  * @author AidanBrady
  *
  */
@@ -136,6 +138,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 		icons[11][0] = register.registerIcon("mekanism:Teleporter");
+		icons[15][0] = register.registerIcon("mekanism:LogisticalSorterSideOn");
+		icons[15][1] = register.registerIcon("mekanism:LogisticalSorterSideOff");
+		icons[15][2] = register.registerIcon("mekanism:LogisticalSorterFrontOn");
+		icons[15][3] = register.registerIcon("mekanism:LogisticalSorterFrontOff");
+		icons[15][4] = register.registerIcon("mekanism:LogisticalSorterBackOn");
+		icons[15][5] = register.registerIcon("mekanism:LogisticalSorterBackOff");
 	}
 	
 	@Override
@@ -174,22 +182,22 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
 
-            if (tileEntity.facing == 4)
+            if(tileEntity.facing == 4)
             {
                 world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if (tileEntity.facing == 5)
+            else if(tileEntity.facing == 5)
             {
                 world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if (tileEntity.facing == 2)
+            else if(tileEntity.facing == 2)
             {
                 world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if (tileEntity.facing == 3)
+            else if(tileEntity.facing == 3)
             {
                 world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
@@ -341,6 +349,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		return icons[11][0];
     	}
+    	else if(meta == 15)
+    	{
+    		if(side == 1)
+    		{
+    			return icons[15][3];
+    		}
+    		else if(side == 0)
+    		{
+    			return icons[15][5];
+    		}
+    		else {
+    			return icons[15][1];
+    		}
+    	}
     	
     	return null;
     }
@@ -478,6 +500,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		return icons[11][0];
     	}
+    	else if(metadata == 15)
+    	{
+    		if(side == tileEntity.facing)
+    		{
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][2] : icons[15][3];
+    		}
+    		else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
+    		{
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][4] : icons[15][5];
+    		}
+    		else {
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][0] : icons[15][1];
+    		}
+    	}
     	
     	return null;
     }
@@ -519,6 +555,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		list.add(new ItemStack(i, 1, 12));
 		list.add(new ItemStack(i, 1, 13));
 		list.add(new ItemStack(i, 1, 14));
+		list.add(new ItemStack(i, 1, 15));
 	}
     
     @Override
@@ -794,31 +831,34 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0, 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
-		OSMIUM_COMPRESSOR(1, 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
-		COMBINER(2, 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
-		CRUSHER(3, 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
-		THEORETICAL_ELEMENTIZER(4, 7, Mekanism.theoreticalElementizerUsage*400, TileEntityTheoreticalElementizer.class, true),
-		BASIC_FACTORY(5, 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
-		ADVANCED_FACTORY(6, 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
-		ELITE_FACTORY(7, 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
-		METALLURGIC_INFUSER(8, 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
-		PURIFICATION_CHAMBER(9, 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
-		ENERGIZED_SMELTER(10, 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
-		TELEPORTER(11, 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(12, 17, 10000, TileEntityElectricPump.class, true),
-		ELECTRIC_CHEST(13, -1, 12000, TileEntityElectricChest.class, true),
-		CHARGEPAD(14, -1, 9000, TileEntityChargepad.class, true);
+		ENRICHMENT_CHAMBER(0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
+		OSMIUM_COMPRESSOR(1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
+		COMBINER(2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
+		CRUSHER(3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
+		THEORETICAL_ELEMENTIZER(4, "TheoreticalElementizer", 7, Mekanism.theoreticalElementizerUsage*400, TileEntityTheoreticalElementizer.class, true),
+		BASIC_FACTORY(5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
+		ADVANCED_FACTORY(6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
+		ELITE_FACTORY(7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
+		METALLURGIC_INFUSER(8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
+		PURIFICATION_CHAMBER(9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
+		ENERGIZED_SMELTER(10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
+		TELEPORTER(11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false),
+		ELECTRIC_PUMP(12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
+		ELECTRIC_CHEST(13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
+		CHARGEPAD(14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
+		LOGISTICAL_SORTER(15, "LogisticalSorter", 26, 12000, TileEntityLogisticalSorter.class, false);
 		
 		public int meta;
+		public String name;
 		public int guiId;
 		public double baseEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private MachineType(int i, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private MachineType(int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
+			name = s;
 			guiId = j;
 			baseEnergy = k;
 			tileEntityClass = tileClass;

@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class TransporterStack
 	
 	public int progress;
 	
-	public EnumColor color = EnumColor.AQUA;
+	public EnumColor color = null;
 	
 	public boolean initiatedPath = false;
 	
@@ -101,7 +101,7 @@ public class TransporterStack
 		itemStack.writeToNBT(nbtTags);
 	}
 	
-	public void readFromNBT(NBTTagCompound nbtTags)
+	public void read(NBTTagCompound nbtTags)
 	{
 		if(nbtTags.hasKey("color"))
 		{
@@ -114,10 +114,18 @@ public class TransporterStack
 		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 	
-	public static TransporterStack read(NBTTagCompound nbtTags)
+	public static TransporterStack readFromNBT(NBTTagCompound nbtTags)
 	{
 		TransporterStack stack = new TransporterStack();
-		stack.readFromNBT(nbtTags);
+		stack.read(nbtTags);
+		
+		return stack;
+	}
+	
+	public static TransporterStack readFromPacket(ByteArrayDataInput dataStream)
+	{
+		TransporterStack stack = new TransporterStack();
+		stack.read(dataStream);
 		
 		return stack;
 	}
