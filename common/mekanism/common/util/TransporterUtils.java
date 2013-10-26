@@ -353,6 +353,16 @@ public final class TransporterUtils
 		return null;
 	}
 	
+	public static EnumColor increment(EnumColor color)
+	{
+		if(colors.indexOf(color) == colors.size()-1)
+		{
+			return colors.get(0);
+		}
+		
+		return colors.get(colors.indexOf(color)+1);
+	}
+	
     public static void incrementColor(TileEntityLogisticalTransporter tileEntity)
     {
     	if(tileEntity.color == null)

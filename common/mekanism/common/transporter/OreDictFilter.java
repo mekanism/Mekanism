@@ -16,7 +16,40 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		return MekanismUtils.oreDictCheck(itemStack, oreDictName);
+		String oreKey = MekanismUtils.getOreDictName(itemStack);
+		
+		if(oreKey == null)
+		{
+			return false;
+		}
+		
+		if(oreDictName.equals(oreKey))
+		{
+			return true;
+		}
+		else if(oreDictName.endsWith("*") && !oreDictName.startsWith("*"))
+		{
+			if(oreKey.startsWith(oreDictName.substring(0, oreDictName.length()-1)))
+			{
+				return true;
+			}
+		}
+		else if(oreDictName.startsWith("*") && !oreDictName.endsWith("*"))
+		{
+			if(oreKey.endsWith(oreDictName.substring(1)))
+			{
+				return true;
+			}
+		}
+		else if(oreDictName.startsWith("*") && oreDictName.endsWith("*"))
+		{
+			if(oreKey.contains(oreDictName.substring(1, oreDictName.length()-1)))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override

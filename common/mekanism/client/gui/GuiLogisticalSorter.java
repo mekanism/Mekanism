@@ -1,6 +1,11 @@
 package mekanism.client.gui;
 
+import mekanism.api.Object3D;
+import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -50,11 +55,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 1));
+			mc.thePlayer.openGui(Mekanism.instance, 27, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 		}
 		else if(guibutton.id == 1)
 		{
-			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 2));
+			mc.thePlayer.openGui(Mekanism.instance, 28, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 		}
 	}
 	

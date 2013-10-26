@@ -12,7 +12,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PacketLogisticalSorterGui implements IMekanismPacket
+public class PacketFilterUpdate implements IMekanismPacket
 {
 	public Object3D object3D;
 	
@@ -21,7 +21,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	@Override
 	public String getName()
 	{
-		return "LogisticalSorterGui";
+		return "FilterUpdate";
 	}
 	
 	@Override

@@ -1,11 +1,10 @@
 package mekanism.common.tileentity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
@@ -27,7 +26,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState
 {
-	public Set<TransporterFilter> filters = new HashSet<TransporterFilter>();
+	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -43,6 +42,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.baseEnergy);
 		inventory = new ItemStack[1];
+		doAutoSync = false;
 	}
 	
 	@Override
@@ -201,7 +201,15 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return new int[] {0};
 	}
 
-
+	@Override
+	public void openChest()
+	{
+		if(!worldObj.isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		}
+	}
+	
 	@Override
 	public RedstoneControl getControlType() 
 	{
