@@ -12,7 +12,6 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
-import mekanism.common.TransporterPathfinder;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
@@ -243,7 +242,7 @@ public class BlockTransmitter extends Block
 			}
 			else if(world.getBlockMetadata(x, y, z) == 3)
 			{
-				connectable = TransporterUtils.getConnections(tileEntity);
+				connectable = TransporterUtils.getConnections((TileEntityLogisticalTransporter)tileEntity);
 			}
 		}
 		
@@ -307,7 +306,10 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			((ITransmitter)tileEntity).refreshTransmitterNetwork();
+			if(tileEntity instanceof ITransmitter)
+			{
+				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+			}
 		}
 	}
 	
@@ -318,7 +320,10 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			((ITransmitter)tileEntity).refreshTransmitterNetwork();
+			if(tileEntity instanceof ITransmitter)
+			{
+				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+			}
 			
 			if(tileEntity instanceof TileEntityUniversalCable)
 			{

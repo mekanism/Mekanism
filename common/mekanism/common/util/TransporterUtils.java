@@ -6,7 +6,6 @@ import java.util.Arrays;
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -42,17 +41,22 @@ public final class TransporterUtils
      * @param tileEntity - center tile entity
      * @return array of TileEntities
      */
-    public static TileEntity[] getConnectedTransporters(TileEntity tileEntity)
+    public static TileEntity[] getConnectedTransporters(TileEntityLogisticalTransporter tileEntity)
     {
     	TileEntity[] transporters = new TileEntity[] {null, null, null, null, null, null};
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity transporter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity tile = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(TransmissionType.checkTransmissionType(transporter, TransmissionType.ITEM))
+			if(tile instanceof TileEntityLogisticalTransporter)
 			{
-				transporters[orientation.ordinal()] = transporter;
+				TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
+				
+				if(transporter.color == null || tileEntity.color == null || transporter.color == tileEntity.color)
+				{
+					transporters[orientation.ordinal()] = transporter;
+				}
 			}
     	}
     	
@@ -64,7 +68,7 @@ public final class TransporterUtils
      * @param tileEntity - center TileEntity
      * @return boolean[] of adjacent connections
      */
-    public static boolean[] getConnections(TileEntity tileEntity)
+    public static boolean[] getConnections(TileEntityLogisticalTransporter tileEntity)
     {
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
@@ -117,7 +121,7 @@ public final class TransporterUtils
      * @param tileEntity - center tile entity
      * @return array of IInventories
      */
-    public static IInventory[] getConnectedInventories(TileEntity tileEntity)
+    public static IInventory[] getConnectedInventories(TileEntityLogisticalTransporter tileEntity)
     {
     	IInventory[] inventories = new IInventory[] {null, null, null, null, null, null};
 

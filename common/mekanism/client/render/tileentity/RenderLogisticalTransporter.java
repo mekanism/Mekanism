@@ -4,6 +4,7 @@ import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.model.ModelTransporterBox;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.TransporterStack;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
@@ -89,10 +90,12 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 			{
 				bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
 				GL11.glPushMatrix();
+				MekanismRenderer.glowOn();
 				GL11.glDisable(GL11.GL_CULL_FACE);
 				GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
 				GL11.glTranslatef((float)(x + 0.5 + offset.xCoord*progress), (float)(y + 0.5 + offset.yCoord*progress - entityItem.yOffset - itemFix), (float)(z + 0.5 + offset.zCoord*progress));
 				modelBox.render(0.0625F);
+				MekanismRenderer.glowOff();
 				GL11.glPopMatrix();
 			}
 		}
