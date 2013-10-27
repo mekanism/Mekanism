@@ -28,7 +28,6 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelTheoreticalElementizer theoreticalElementizer = new ModelTheoreticalElementizer();
 	public ModelElectricPump electricPump = new ModelElectricPump();
 	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
-	public ModelChest electricChest = new ModelChest();
 	public ModelChargepad chargepad = new ModelChargepad();
 	
 	@Override

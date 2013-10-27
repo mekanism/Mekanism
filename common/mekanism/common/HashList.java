@@ -19,6 +19,11 @@ public class HashList<T> implements Iterable<T>
 	
 	public T get(int index)
 	{
+		if(index > size()-1)
+		{
+			return null;
+		}
+		
 		return list.get(index);
 	}
 	

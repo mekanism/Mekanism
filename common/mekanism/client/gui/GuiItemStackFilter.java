@@ -54,12 +54,6 @@ public class GuiItemStackFilter extends GuiMekanism
 	}
 	
 	@Override
-	public boolean doesGuiPauseGame()
-	{
-		return false;
-	}
-	
-	@Override
 	public void initGui()
 	{
 		super.initGui();
@@ -110,7 +104,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemIntoGUI(fontRenderer, mc.getTextureManager(), filter.itemType, 12, 19);
+			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), filter.itemType, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}

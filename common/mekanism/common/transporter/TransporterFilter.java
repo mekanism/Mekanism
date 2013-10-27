@@ -9,14 +9,11 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TransporterFilter 
+public abstract class TransporterFilter 
 {
 	public EnumColor color;
 	
-	public boolean canFilter(ItemStack itemStack)
-	{
-		return false;
-	}
+	public abstract boolean canFilter(ItemStack itemStack);
 	
 	public void write(NBTTagCompound nbtTags)
 	{

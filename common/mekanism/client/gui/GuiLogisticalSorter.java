@@ -26,6 +26,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;
 	
+	public boolean isDragging = false;
+	
+	public int dragOffset = 0;
+	
+	public float scroll;
+	
 	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(new ContainerNull(player, tentity));
@@ -33,10 +39,55 @@ public class GuiLogisticalSorter extends GuiMekanism
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}
 	
-	@Override
-	public boolean doesGuiPauseGame()
+	public int getScroll()
 	{
-		return false;
+		return Math.max(Math.min((int)(scroll*125), 125), 0);
+	}
+	
+	public int getFilterIndex()
+	{
+		return 0;
+	}
+	
+	@Override
+	public void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
+		if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
+		{
+			dragOffset = yAxis - (getScroll()+18);
+			isDragging = true;
+		}
+	}
+	
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks)
+	{
+		super.mouseClickMove(mouseX, mouseY, button, ticks);
+		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
+		if(isDragging)
+		{
+			scroll = (float)(yAxis-18-dragOffset)/123F;
+		}
+	}
+	
+	@Override
+	protected void mouseMovedOrUp(int x, int y, int type)
+	{
+		super.mouseMovedOrUp(x, y, type);
+		
+		if(type == 0 && isDragging)
+		{
+			dragOffset = 0;
+			isDragging = false;
+		}
 	}
 	
 	@Override
@@ -76,10 +127,10 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
 		fontRenderer.drawString("Logistical Sorter", 43, 6, 0x404040);
-		fontRenderer.drawString("Filters:", 11, 17, 0x00CD00);
-		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 26, 0x00CD00);
-		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 35, 0x00CD00);
-		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 44, 0x00CD00);
+		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
+		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
+		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
+		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -94,6 +145,17 @@ public class GuiLogisticalSorter extends GuiMekanism
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+		drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(tileEntity.filters.get(getFilterIndex()+i) != null)
+			{
+				TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
+				int yStart = i*29 + 18;
+			}
+		}
     }
 	
 	public ArrayList getItemStackFilters()
