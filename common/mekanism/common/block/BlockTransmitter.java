@@ -16,7 +16,7 @@ import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityUniversalCable;
-import mekanism.common.transporter.TransporterPathfinder;
+import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
@@ -375,6 +375,24 @@ public class BlockTransmitter extends Block
 				return null;
 		}
 	}
+	
+    @Override
+    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
+    {
+    	TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    	
+    	if(!world.isRemote && tileEntity instanceof TileEntityLogisticalTransporter)
+    	{
+    		TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
+    		
+    		for(TransporterStack stack : transporter.transit)
+    		{
+    			TransporterUtils.drop(transporter, stack);
+    		}
+    	}
+    	
+    	super.breakBlock(world, x, y, z, i1, i2);
+    }
 	
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)

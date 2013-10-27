@@ -2,13 +2,14 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.SlotInfo;
+import mekanism.common.transporter.TransporterStack;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -361,6 +362,33 @@ public final class TransporterUtils
 		}
 		
 		return colors.get(colors.indexOf(color)+1);
+	}
+	
+	public static void drop(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
+	{
+		float[] pos = TransporterUtils.getStackPosition(tileEntity, stack);
+		EntityItem entityItem = new EntityItem(tileEntity.worldObj, tileEntity.xCoord + pos[0], tileEntity.yCoord + pos[1], tileEntity.zCoord + pos[2], stack.itemStack);
+		
+		entityItem.motionX = 0;
+		entityItem.motionY = 0;
+		entityItem.motionZ = 0;
+	        
+        tileEntity.worldObj.spawnEntityInWorld(entityItem);
+	}
+	
+	public static float[] getStackPosition(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
+	{
+		Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+		float progress = ((float)stack.progress / 100F) - 0.5F;
+		
+		float itemFix = 0;
+		
+		if(stack.itemStack.itemID >= 256)
+		{
+			itemFix = 0.1F;
+		}
+		
+		return new float[] {0.5F + offset.xCoord*progress, 0.5F + offset.yCoord*progress - itemFix, 0.5F + offset.zCoord*progress};
 	}
 	
     public static void incrementColor(TileEntityLogisticalTransporter tileEntity)

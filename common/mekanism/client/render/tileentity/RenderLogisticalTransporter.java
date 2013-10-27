@@ -1,6 +1,5 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.model.ModelTransporterBox;
@@ -72,18 +71,10 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		{
 			GL11.glPushMatrix();
 			entityItem.setEntityItemStack(stack.itemStack);
-			Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 			
-			float itemFix = 0;
+			float[] pos = TransporterUtils.getStackPosition(tileEntity, stack);
 			
-			if(stack.itemStack.itemID >= 256)
-			{
-				itemFix = 0.1F;
-			}
-			
-			double progress = ((double)stack.progress / 100D) - 0.5;
-			
-			renderer.doRenderItem(entityItem, x + 0.5 + offset.xCoord*progress, y + 0.5 + offset.yCoord*progress - entityItem.yOffset - itemFix, z + 0.5 + offset.zCoord*progress, 0, 0);
+			renderer.doRenderItem(entityItem, x + pos[0], y + pos[1] - entityItem.yOffset, z + pos[2], 0, 0);
 			GL11.glPopMatrix();
 			
 			if(stack.color != null)
@@ -93,7 +84,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 				MekanismRenderer.glowOn();
 				GL11.glDisable(GL11.GL_CULL_FACE);
 				GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-				GL11.glTranslatef((float)(x + 0.5 + offset.xCoord*progress), (float)(y + 0.5 + offset.yCoord*progress - entityItem.yOffset - 0.1F), (float)(z + 0.5 + offset.zCoord*progress));
+				GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1] - entityItem.yOffset - (stack.itemStack.itemID < 256 ? 0.1 : 0)), (float)(z + pos[2]));
 				modelBox.render(0.0625F);
 				MekanismRenderer.glowOff();
 				GL11.glPopMatrix();

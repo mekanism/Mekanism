@@ -189,7 +189,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		if(!stack.hasPath())
 		{
-			//drop
+			TransporterUtils.drop(this, stack);
 			return false;
 		}
 		
