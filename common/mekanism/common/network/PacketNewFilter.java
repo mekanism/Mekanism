@@ -19,8 +19,6 @@ public class PacketNewFilter implements IMekanismPacket
 {
 	public Object3D object3D;
 	
-	public int type;
-	
 	public TransporterFilter filter;
 	
 	@Override
@@ -46,8 +44,6 @@ public class PacketNewFilter implements IMekanismPacket
 		int z = dataStream.readInt();
 		
 		int id = dataStream.readInt();
-		
-		int type = dataStream.readInt();
 		
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(id);
 		

@@ -267,6 +267,12 @@ public class GuiOreDictFilter extends GuiMekanism
 			{
 				filter.color = TransporterUtils.increment(filter.color);
 			}
+			
+			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 48 && yAxis <= 60)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				setOreDictKey();
+			}
 		}
     }
     

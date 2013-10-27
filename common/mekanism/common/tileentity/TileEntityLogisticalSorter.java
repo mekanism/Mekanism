@@ -71,19 +71,19 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					SlotInfo inInventory = TransporterUtils.takeItem(inventory, facing);
 					
-					EnumColor color = null;
-					
-					for(TransporterFilter filter : filters)
-					{
-						if(filter.canFilter(inInventory.itemStack))
-						{
-							color = filter.color;
-							break;
-						}
-					}
-					
 					if(inInventory != null && inInventory.itemStack != null)
 					{
+						EnumColor color = null;
+						
+						for(TransporterFilter filter : filters)
+						{
+							if(filter.canFilter(inInventory.itemStack))
+							{
+								color = filter.color;
+								break;
+							}
+						}
+						
 						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, color))
 						{
 							inventory.setInventorySlotContents(inInventory.slotID, null);
