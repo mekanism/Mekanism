@@ -222,6 +222,7 @@ public class Mekanism
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
+	public static boolean voiceServerEnabled = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;
@@ -1039,14 +1040,22 @@ public class Mekanism
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		voiceManager.start();
+		if(voiceServerEnabled)
+		{
+			voiceManager.start();
+		}
+		
 		event.registerServerCommand(new CommandMekanism());
 	}
 	
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
-		voiceManager.stop();
+		if(voiceServerEnabled)
+		{
+			voiceManager.stop();
+		}
+		
 		teleporters.clear();
 		dynamicInventories.clear();
 	}
@@ -1106,7 +1115,10 @@ public class Mekanism
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		//Set up VoiceServerManager
-		voiceManager = new VoiceServerManager();
+		if(voiceServerEnabled)
+		{
+			voiceManager = new VoiceServerManager();
+		}
 		
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();

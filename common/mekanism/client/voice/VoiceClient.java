@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
@@ -51,6 +52,8 @@ public class VoiceClient extends Thread
 			(inputThread = new VoiceInput(this)).start();
 			
 			System.out.println("[Mekanism] VoiceServer: Successfully connected to server.");
+		} catch(ConnectException e) {
+			System.err.println("[Mekanism] VoiceServer: Server's VoiceServer is disabled.");
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while starting client connection.");
 			e.printStackTrace();
