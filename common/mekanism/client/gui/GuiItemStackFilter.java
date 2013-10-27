@@ -8,6 +8,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
@@ -25,6 +26,8 @@ import org.lwjgl.opengl.GL12;
 public class GuiItemStackFilter extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;
+	
+	public boolean isNew = false;
 	
 	public ItemStackFilter filter = new ItemStackFilter();
 	
@@ -44,6 +47,8 @@ public class GuiItemStackFilter extends GuiMekanism
 	{
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
+		
+		isNew = true;
 		
 		filter.color = TransporterUtils.colors.get(0);
 	}
@@ -73,7 +78,16 @@ public class GuiItemStackFilter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			//PacketFilterUpdate TODO
+			if(filter.itemType != null)
+			{
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 0));
+				mc.thePlayer.openGui(Mekanism.instance, 26, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+			}
+			else {
+				status = EnumColor.DARK_RED + "No item";
+				ticker = 20;
+			}
 		}
 	}
 	
@@ -83,7 +97,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString("Edit ItemStack Filter", 43, 6, 0x404040);
+		fontRenderer.drawString((isNew ? "New" : "Edit") + " ItemStack Filter", 43, 6, 0x404040);
 		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("ItemStack Details:", 35, 32, 0x00CD00);
 		

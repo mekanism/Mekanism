@@ -23,11 +23,12 @@ public class ItemStackFilter extends TransporterFilter
 	{
 		super.write(nbtTags);
 		
+		nbtTags.setInteger("type", 0);
 		itemType.writeToNBT(nbtTags);
 	}
 	
 	@Override
-	public void read(NBTTagCompound nbtTags)
+	protected void read(NBTTagCompound nbtTags)
 	{
 		super.read(nbtTags);
 		
@@ -37,6 +38,8 @@ public class ItemStackFilter extends TransporterFilter
 	@Override
 	public void write(ArrayList data)
 	{
+		data.add(0);
+		
 		super.write(data);
 		
 		data.add(itemType.itemID);
@@ -45,7 +48,7 @@ public class ItemStackFilter extends TransporterFilter
 	}
 	
 	@Override
-	public void read(ByteArrayDataInput dataStream)
+	protected void read(ByteArrayDataInput dataStream)
 	{
 		super.read(dataStream);
 		

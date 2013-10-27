@@ -57,11 +57,12 @@ public class OreDictFilter extends TransporterFilter
 	{
 		super.write(nbtTags);
 		
+		nbtTags.setInteger("type", 1);
 		nbtTags.setString("oreDictName", oreDictName);
 	}
 	
 	@Override
-	public void read(NBTTagCompound nbtTags)
+	protected void read(NBTTagCompound nbtTags)
 	{
 		super.read(nbtTags);
 		
@@ -71,13 +72,15 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public void write(ArrayList data)
 	{
+		data.add(1);
+		
 		super.write(data);
 		
 		data.add(oreDictName);
 	}
 	
 	@Override
-	public void read(ByteArrayDataInput dataStream)
+	protected void read(ByteArrayDataInput dataStream)
 	{
 		super.read(dataStream);
 		
