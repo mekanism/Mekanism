@@ -15,23 +15,26 @@ import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PacketNewFilter implements IMekanismPacket
+public class PacketEditFilter implements IMekanismPacket
 {
 	public Object3D object3D;
 	
-	public TransporterFilter filter;
+	public TransporterFilter edited;
+	
+	public boolean delete;
 	
 	@Override
 	public String getName()
 	{
-		return "NewFilter";
+		return "EditFilter";
 	}
 	
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		object3D = (Object3D)data[0];
-		filter = (TransporterFilter)data[1];
+		delete = (Boolean)data[1];
+		edited = (TransporterFilter)data[2];
 		
 		return this;
 	}
@@ -41,6 +44,9 @@ public class PacketNewFilter implements IMekanismPacket
 	{
 		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
+		delete = dataStream.readBoolean();
+		edited = TransporterFilter.readFromPacket(dataStream);
+			
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
 		
 		if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
@@ -48,7 +54,19 @@ public class PacketNewFilter implements IMekanismPacket
 			TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)object3D.getTileEntity(worldServer);
 			TransporterFilter filter = TransporterFilter.readFromPacket(dataStream);
 			
-			//sorter.filters.add(filter);
+			if(!sorter.filters.contains(filter))
+			{
+				return;
+			}
+			
+			int index = sorter.filters.indexOf(filter);
+			
+			sorter.filters.remove(index);
+			
+			if(!delete)
+			{
+				sorter.filters.add(index, edited);
+			}
 			
 			for(EntityPlayer iterPlayer : sorter.playersUsing)
 			{
@@ -66,8 +84,10 @@ public class PacketNewFilter implements IMekanismPacket
 		
 		dataStream.writeInt(object3D.dimensionId);
 		
+		dataStream.writeBoolean(delete);
+		
 		ArrayList data = new ArrayList();
-		filter.write(data);
+		edited.write(data);
 		PacketHandler.encode(data.toArray(), dataStream);
 	}
 }

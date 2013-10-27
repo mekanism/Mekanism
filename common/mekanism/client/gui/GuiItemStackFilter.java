@@ -3,10 +3,10 @@ package mekanism.client.gui;
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
@@ -79,14 +79,25 @@ public class GuiItemStackFilter extends GuiMekanism
 		{
 			if(filter.itemType != null)
 			{
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+				if(isNew)
+				{
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+				}
+				else {
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, filter));
+				}
+				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
-				mc.thePlayer.openGui(Mekanism.instance, 26, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 			}
 			else {
 				status = EnumColor.DARK_RED + "No item";
 				ticker = 20;
 			}
+		}
+		else if(guibutton.id == 1)
+		{
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, filter));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 		}
 	}
 	

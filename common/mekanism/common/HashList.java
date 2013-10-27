@@ -43,6 +43,16 @@ public class HashList<T> implements Iterable<T>
 		}
 	}
 	
+	public void remove(int index)
+	{
+		list.remove(index);
+	}
+	
+	public void remove(T obj)
+	{
+		list.remove(obj);
+	}
+	
 	public int indexOf(T obj)
 	{
 		return list.indexOf(obj);
