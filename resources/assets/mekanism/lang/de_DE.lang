@@ -58,6 +58,7 @@ tile.MachineBlock.Teleporter.name=Teleporter
 tile.MachineBlock.ElectricPump.name=Elektrische Pumpe
 tile.MachineBlock.ElectricChest.name=Elektrische Truhe
 tile.MachineBlock.Chargepad.name=Ladepad
+tile.MachineBlock.LogisticalSorter.name=Logistischer Sortierer
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
