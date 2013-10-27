@@ -50,8 +50,12 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{
-		voiceClient.disconnect();
-		voiceClient = null;
+		if(voiceClient != null)
+		{
+			voiceClient.disconnect();
+			voiceClient = null;
+		}
+		
 		Mekanism.proxy.unloadSoundHandler();
 	}
 
