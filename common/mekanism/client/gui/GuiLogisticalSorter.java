@@ -1,7 +1,16 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+
+import mekanism.api.Object3D;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.transporter.ItemStackFilter;
+import mekanism.common.transporter.OreDictFilter;
+import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -50,11 +59,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 1));
+			mc.displayGuiScreen(new GuiItemStackFilter(mc.thePlayer, tileEntity));
 		}
 		else if(guibutton.id == 1)
 		{
-			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 2));
+			mc.displayGuiScreen(new GuiOreDictFilter(mc.thePlayer, tileEntity));
 		}
 	}
 	
@@ -66,7 +77,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		fontRenderer.drawString("Logistical Sorter", 43, 6, 0x404040);
 		fontRenderer.drawString("Filters:", 11, 17, 0x00CD00);
-		fontRenderer.drawString("- " + tileEntity.filters.size(), 11, 26, 0x00CD00);
+		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 26, 0x00CD00);
+		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 35, 0x00CD00);
+		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 44, 0x00CD00);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -82,4 +95,34 @@ public class GuiLogisticalSorter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
     }
+	
+	public ArrayList getItemStackFilters()
+	{
+		ArrayList list = new ArrayList();
+		
+		for(TransporterFilter filter : tileEntity.filters)
+		{
+			if(filter instanceof ItemStackFilter)
+			{
+				list.add(filter);
+			}
+		}
+		
+		return list;
+	}
+	
+	public ArrayList getOreDictFilters()
+	{
+		ArrayList list = new ArrayList();
+		
+		for(TransporterFilter filter : tileEntity.filters)
+		{
+			if(filter instanceof OreDictFilter)
+			{
+				list.add(filter);
+			}
+		}
+		
+		return list;
+	}
 }

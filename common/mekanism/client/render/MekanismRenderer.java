@@ -3,9 +3,11 @@ package mekanism.client.render;
 import java.util.Arrays;
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -33,6 +35,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MekanismRenderer 
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
+	
+	public static Icon[] colors = new Icon[256];
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -146,6 +150,21 @@ public class MekanismRenderer
 		{
 			Tessellator.instance.draw();
 		}
+	}
+	
+	public static ResourceLocation getColorResource(EnumColor color)
+	{
+		return MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "Overlay" + color.friendlyName.replace(" ", "") + ".png");
+	}
+	
+	public static Icon getColorIcon(EnumColor color)
+	{
+		if(colors[color.ordinal()] == null)
+		{
+			colors[color.ordinal()] = getTextureMap(0).registerIcon("mekanism:Overlay" + color.getName());
+		}
+		
+		return colors[color.ordinal()];
 	}
 	
     public static void glowOn() 

@@ -1,10 +1,13 @@
 package mekanism.common.network;
 
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 import mekanism.api.Object3D;
-import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.transporter.TransporterFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -12,23 +15,25 @@ import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PacketLogisticalSorterGui implements IMekanismPacket
+public class PacketNewFilter implements IMekanismPacket
 {
 	public Object3D object3D;
 	
 	public int type;
 	
+	public TransporterFilter filter;
+	
 	@Override
 	public String getName()
 	{
-		return "LogisticalSorterGui";
+		return "FilterUpdate";
 	}
 	
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		object3D = (Object3D)data[0];
-		type = (Integer)data[1];
+		filter = (TransporterFilter)data[1];
 		
 		return this;
 	}
@@ -48,7 +53,12 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		
 		if(worldServer != null && worldServer.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalSorter)
 		{
-			player.openGui(Mekanism.instance, 26+type, worldServer, x, y, z);
+			TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)worldServer.getBlockTileEntity(x, y, z);
+			TransporterFilter filter = TransporterFilter.readFromPacket(dataStream);
+			
+			sorter.filters.add(filter);
+			
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(sorter), sorter.getFilterPacket(new ArrayList())), player);
 		}
 	}
 
@@ -61,6 +71,8 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		
 		dataStream.writeInt(object3D.dimensionId);
 		
-		dataStream.writeInt(type);
+		ArrayList data = new ArrayList();
+		filter.write(data);
+		PacketHandler.encode(data.toArray(), dataStream);
 	}
 }

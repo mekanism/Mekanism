@@ -17,8 +17,10 @@ import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiGasTank;
+import mekanism.client.gui.GuiItemStackFilter;
 import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiMetallurgicInfuser;
+import mekanism.client.gui.GuiOreDictFilter;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
@@ -352,6 +354,10 @@ public class ClientProxy extends CommonProxy
 				return new GuiRobitRepair(player.inventory, world, x);
 			case 26:
 				return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)tileEntity);
+			case 27:
+				return new GuiItemStackFilter(player, (TileEntityLogisticalSorter)tileEntity);
+			case 28:
+				return new GuiOreDictFilter(player, (TileEntityLogisticalSorter)tileEntity);
 		}
 		
 		return null;

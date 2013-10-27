@@ -16,7 +16,40 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		return MekanismUtils.oreDictCheck(itemStack, oreDictName);
+		String oreKey = MekanismUtils.getOreDictName(itemStack);
+		
+		if(oreKey == null)
+		{
+			return false;
+		}
+		
+		if(oreDictName.equals(oreKey))
+		{
+			return true;
+		}
+		else if(oreDictName.endsWith("*") && !oreDictName.startsWith("*"))
+		{
+			if(oreKey.startsWith(oreDictName.substring(0, oreDictName.length()-1)))
+			{
+				return true;
+			}
+		}
+		else if(oreDictName.startsWith("*") && !oreDictName.endsWith("*"))
+		{
+			if(oreKey.endsWith(oreDictName.substring(1)))
+			{
+				return true;
+			}
+		}
+		else if(oreDictName.startsWith("*") && oreDictName.endsWith("*"))
+		{
+			if(oreKey.contains(oreDictName.substring(1, oreDictName.length()-1)))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -24,11 +57,12 @@ public class OreDictFilter extends TransporterFilter
 	{
 		super.write(nbtTags);
 		
+		nbtTags.setInteger("type", 1);
 		nbtTags.setString("oreDictName", oreDictName);
 	}
 	
 	@Override
-	public void read(NBTTagCompound nbtTags)
+	protected void read(NBTTagCompound nbtTags)
 	{
 		super.read(nbtTags);
 		
@@ -38,13 +72,15 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public void write(ArrayList data)
 	{
+		data.add(1);
+		
 		super.write(data);
 		
 		data.add(oreDictName);
 	}
 	
 	@Override
-	public void read(ByteArrayDataInput dataStream)
+	protected void read(ByteArrayDataInput dataStream)
 	{
 		super.read(dataStream);
 		

@@ -59,6 +59,7 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketPortableTeleport;
 import mekanism.common.network.PacketPortalFX;
@@ -1138,6 +1139,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketRedstoneControl.class);
 		PacketHandler.registerPacket(PacketWalkieTalkieState.class);
 		PacketHandler.registerPacket(PacketLogisticalSorterGui.class);
+		PacketHandler.registerPacket(PacketNewFilter.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

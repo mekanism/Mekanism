@@ -1,11 +1,10 @@
 package mekanism.common.tileentity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
@@ -27,7 +26,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState
 {
-	public Set<TransporterFilter> filters = new HashSet<TransporterFilter>();
+	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -43,6 +42,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.baseEnergy);
 		inventory = new ItemStack[1];
+		doAutoSync = false;
 	}
 	
 	@Override
@@ -97,6 +97,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					delayTicks = 10;
 				}
 			}
+			
+			if(playersUsing.size() > 0)
+			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), Object3D.get(this), 50D);
+			}
 		}
 	}
 	
@@ -145,19 +150,42 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		super.handlePacketData(dataStream);
 		
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
+		int type = dataStream.readInt();
 		
-		filters.clear();
-		
-		int amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
+		if(type == 0)
 		{
-			filters.add(TransporterFilter.readFromPacket(dataStream));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			filters.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				filters.add(TransporterFilter.readFromPacket(dataStream));
+			}
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
-		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		else if(type == 1)
+		{
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];	
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
+		else if(type == 2)
+		{
+			filters.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				filters.add(TransporterFilter.readFromPacket(dataStream));
+			}
+		}
 	}
 	
 	@Override
@@ -165,8 +193,40 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		super.getNetworkedData(data);
 		
+		data.add(0);
+		
 		data.add(isActive);
 		data.add(controlType.ordinal());
+		
+		data.add(filters.size());
+		
+		for(TransporterFilter filter : filters)
+		{
+			filter.write(data);
+		}
+		
+		return data;
+	}
+	
+	public ArrayList getGenericPacket(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(1);
+		
+		data.add(isActive);
+		data.add(controlType.ordinal());
+		
+		return data;
+		
+	}
+	
+	public ArrayList getFilterPacket(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(2);
+		
 		data.add(filters.size());
 		
 		for(TransporterFilter filter : filters)
@@ -201,7 +261,15 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return new int[] {0};
 	}
 
-
+	@Override
+	public void openChest()
+	{
+		if(!worldObj.isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getFilterPacket(new ArrayList())), Object3D.get(this), 50D);
+		}
+	}
+	
 	@Override
 	public RedstoneControl getControlType() 
 	{

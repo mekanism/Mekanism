@@ -31,6 +31,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	/** A timer used to send packets to clients. */
 	public int packetTick;
 	
+	public boolean doAutoSync = true;
+	
 	public Set<ITileComponent> components = new HashSet<ITileComponent>();
 	
 	@Override
@@ -45,7 +47,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(!worldObj.isRemote)
 		{
-			if(playersUsing.size() > 0)
+			if(doAutoSync && playersUsing.size() > 0)
 			{
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
 			}

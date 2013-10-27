@@ -1,7 +1,5 @@
 package mekanism.common.util;
 
-import ic2.api.Direction;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +8,9 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -36,7 +36,6 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -451,6 +450,37 @@ public final class MekanismUtils
     	}
     	
     	return hasResource;
+    }
+    
+    public static String getOreDictName(ItemStack check)
+    {
+        HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
+        
+        int idFound = -1;
+        
+        for(Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
+        {
+        	for(ItemStack stack : entry.getValue())
+        	{
+        		if(stack.isItemEqual(check))
+        		{
+        			idFound = entry.getKey();
+        			break;
+        		}
+        	}
+        	
+        	if(idFound != -1)
+        	{
+        		break;
+        	}
+        }
+        
+        if(idFound == -1)
+        {
+        	return null;
+        }
+        
+        return OreDictionary.getOreName(idFound);
     }
     
     /**

@@ -3,7 +3,6 @@ package mekanism.common.transporter;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.common.Teleporter.Code;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +23,7 @@ public class TransporterFilter
 		nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
 	}
 	
-	public void read(NBTTagCompound nbtTags)
+	protected void read(NBTTagCompound nbtTags)
 	{
 		color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
 	}
@@ -34,14 +33,25 @@ public class TransporterFilter
 		data.add(TransporterUtils.colors.indexOf(color));
 	}
 	
-	public void read(ByteArrayDataInput dataStream)
+	protected void read(ByteArrayDataInput dataStream)
 	{
 		color = TransporterUtils.colors.get(dataStream.readInt());
 	}
 	
 	public static TransporterFilter readFromNBT(NBTTagCompound nbtTags)
 	{
-		TransporterFilter filter = new TransporterFilter();
+		int type = nbtTags.getInteger("type");
+		
+		TransporterFilter filter = null;
+		
+		if(type == 0)
+		{
+			filter = new ItemStackFilter();
+		}
+		else {
+			filter = new OreDictFilter();
+		}
+		
 		filter.read(nbtTags);
 		
 		return filter;
@@ -49,7 +59,19 @@ public class TransporterFilter
 	
 	public static TransporterFilter readFromPacket(ByteArrayDataInput dataStream)
 	{
-		TransporterFilter filter = new TransporterFilter();
+		int type = dataStream.readInt();
+		
+		TransporterFilter filter = null;
+		
+		if(type == 0)
+		{
+			filter = new ItemStackFilter();
+		}
+		else if(type == 1)
+		{
+			filter = new OreDictFilter();
+		}
+		
 		filter.read(dataStream);
 		
 		return filter;
