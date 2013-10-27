@@ -15,6 +15,7 @@ import mekanism.common.transporter.SlotInfo;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,7 +101,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			
 			if(playersUsing.size() > 0)
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), Object3D.get(this), 50D);
+				for(EntityPlayer player : playersUsing)
+				{
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+				}
 			}
 		}
 	}

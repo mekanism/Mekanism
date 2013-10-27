@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import mekanism.api.gas.EnumGas;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.client.gui.GuiControlPanel;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDynamicTank;
@@ -67,7 +66,6 @@ import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
-import mekanism.common.tileentity.TileEntityControlPanel;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
@@ -303,7 +301,7 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
-				return new GuiControlPanel((TileEntityControlPanel)tileEntity, player, world);
+				//OPEN
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

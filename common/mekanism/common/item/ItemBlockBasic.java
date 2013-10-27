@@ -13,7 +13,7 @@ import net.minecraft.util.Icon;
  * 3: Coal Block
  * 4: Refined Glowstone
  * 5: Steel Block
- * 6: Control Panel
+ * 6: OPEN
  * 7: Teleporter Frame
  * 8: Steel Casing
  * 9: Dynamic Tank
@@ -70,7 +70,7 @@ public class ItemBlockBasic extends ItemBlock
 				name = "SteelBlock";
 				break;
 			case 6:
-				name = "ControlPanel";
+				name = "empty";//OPEN
 				break;
 			case 7:
 				name = "TeleporterFrame";

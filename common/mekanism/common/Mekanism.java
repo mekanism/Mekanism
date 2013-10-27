@@ -59,8 +59,8 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPortableTeleport;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
@@ -74,7 +74,6 @@ import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransf
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWeather;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
-import mekanism.common.tileentity.TileEntityControlPanel;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityGasTank;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
@@ -1028,7 +1027,6 @@ public class Mekanism
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
-		GameRegistry.registerTileEntity(TileEntityControlPanel.class, "ControlPanel");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");

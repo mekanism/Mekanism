@@ -35,7 +35,6 @@ tile.BasicBlock.RefinedObsidian.name=Refined Obsidian
 tile.BasicBlock.CoalBlock.name=Coal Block
 tile.BasicBlock.RefinedGlowstone.name=Refined Glowstone
 tile.BasicBlock.SteelBlock.name=Steel Block
-tile.BasicBlock.ControlPanel.name=Control Panel
 tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
 tile.BasicBlock.SteelCasing.name=Steel Casing
 tile.BasicBlock.DynamicTank.name=Dynamic Tank
