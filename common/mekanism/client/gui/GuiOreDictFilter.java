@@ -11,6 +11,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.OreDictFilter;
@@ -76,9 +77,15 @@ public class GuiOreDictFilter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 58, guiHeight + 63, 60, 18, "Save"));
+		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, "Save"));
+		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, "Delete"));
 		
-		oreDictText = new GuiTextField(fontRenderer, guiWidth + 35, guiHeight + 48, 95, 12);
+		if(isNew)
+		{
+			((GuiButton)buttonList.get(1)).enabled = false;
+		}
+		
+		oreDictText = new GuiTextField(fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
 		oreDictText.setMaxStringLength(12);
 		oreDictText.setFocused(true);
 	}
@@ -116,7 +123,7 @@ public class GuiOreDictFilter extends GuiMekanism
 			if(filter.oreDictName != null && !filter.oreDictName.isEmpty())
 			{
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 				mc.thePlayer.openGui(Mekanism.instance, 26, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 			}
 			else {
@@ -151,12 +158,12 @@ public class GuiOreDictFilter extends GuiMekanism
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         
         mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(filter.color));
-		itemRenderer.renderIcon(12, 45, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+		itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 		
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 		
-		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 45 && yAxis <= 61)
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
 		}
@@ -186,12 +193,12 @@ public class GuiOreDictFilter extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
 		
-		if(xAxis >= 131 && xAxis <= 143 && yAxis >= 48 && yAxis <= 60)
+		if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 		{
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 48, 176 + 11, 0, 12, 12);
+			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 0, 12, 12);
 		}
 		else {
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 48, 176 + 11, 12, 12, 12);
+			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
 		
         oreDictText.drawTextBox();
@@ -253,16 +260,15 @@ public class GuiOreDictFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 0));
-				mc.thePlayer.openGui(Mekanism.instance, 26, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 			}
 			
-			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 45 && yAxis <= 61)
+			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 			{
 				filter.color = TransporterUtils.increment(filter.color);
 			}
 			
-			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 48 && yAxis <= 60)
+			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				setOreDictKey();

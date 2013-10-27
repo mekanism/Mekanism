@@ -350,12 +350,6 @@ public class ClientProxy extends CommonProxy
 				}
 			case 25:
 				return new GuiRobitRepair(player.inventory, world, x);
-			case 26:
-				return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)tileEntity);
-			case 27:
-				return new GuiItemStackFilter(player, (TileEntityLogisticalSorter)tileEntity);
-			case 28:
-				return new GuiOreDictFilter(player, (TileEntityLogisticalSorter)tileEntity);
 		}
 		
 		return null;

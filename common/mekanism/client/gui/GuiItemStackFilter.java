@@ -8,9 +8,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.network.PacketRobit;
-import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.ItemStackFilter;
 import mekanism.common.util.MekanismUtils;
@@ -62,7 +61,13 @@ public class GuiItemStackFilter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 58, guiHeight + 63, 60, 18, "Save"));
+		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, "Save"));
+		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, "Delete"));
+		
+		if(isNew)
+		{
+			((GuiButton)buttonList.get(1)).enabled = false;
+		}
 	}
 	
 	@Override
@@ -75,7 +80,7 @@ public class GuiItemStackFilter extends GuiMekanism
 			if(filter.itemType != null)
 			{
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 				mc.thePlayer.openGui(Mekanism.instance, 26, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 			}
 			else {
@@ -115,12 +120,12 @@ public class GuiItemStackFilter extends GuiMekanism
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         
         mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(filter.color));
-		itemRenderer.renderIcon(12, 45, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+		itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 		
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 		
-		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 45 && yAxis <= 61)
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
 		}
@@ -193,8 +198,7 @@ public class GuiItemStackFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 0));
-				mc.thePlayer.openGui(Mekanism.instance, 26, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 			}
 			
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
@@ -208,7 +212,7 @@ public class GuiItemStackFilter extends GuiMekanism
 				}
 			}
 			
-			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 45 && yAxis <= 61)
+			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 			{
 				filter.color = TransporterUtils.increment(filter.color);
 			}

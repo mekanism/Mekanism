@@ -22,6 +22,7 @@ import mekanism.common.Tier;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityChargepad;
@@ -650,6 +651,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	        		return true;
 	        	}
         	}
+        	else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
+        	{
+        		TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
+        		PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Object3D.get(tileEntity), -1);
+        	}
         	else {
             	if(!entityplayer.isSneaking() && MachineType.getFromMetadata(metadata).guiId != -1)
 	        	{
@@ -860,7 +866,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		ELECTRIC_PUMP(12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
 		ELECTRIC_CHEST(13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
 		CHARGEPAD(14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
-		LOGISTICAL_SORTER(15, "LogisticalSorter", 26, 12000, TileEntityLogisticalSorter.class, false);
+		LOGISTICAL_SORTER(15, "LogisticalSorter", -1, 12000, TileEntityLogisticalSorter.class, false);
 		
 		public int meta;
 		public String name;

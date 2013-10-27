@@ -7,6 +7,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.ItemStackFilter;
 import mekanism.common.transporter.OreDictFilter;
@@ -72,7 +73,15 @@ public class GuiLogisticalSorter extends GuiMekanism
 				if(xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29)
 				{
 					TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
-					System.out.println(getFilterIndex()+i);
+					
+					if(filter instanceof ItemStackFilter)
+					{
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
+					}
+					else if(filter instanceof OreDictFilter)
+					{
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+					}
 				}
 			}
 		}
@@ -124,13 +133,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 1));
-			mc.displayGuiScreen(new GuiItemStackFilter(mc.thePlayer, tileEntity));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 1));
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(Object3D.get(tileEntity), 2));
-			mc.displayGuiScreen(new GuiOreDictFilter(mc.thePlayer, tileEntity));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 2));
 		}
 	}
 	
