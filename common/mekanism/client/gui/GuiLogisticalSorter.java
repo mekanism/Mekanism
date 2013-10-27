@@ -62,6 +62,20 @@ public class GuiLogisticalSorter extends GuiMekanism
 			dragOffset = yAxis - (getScroll()+18);
 			isDragging = true;
 		}
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(tileEntity.filters.get(getFilterIndex()+i) != null)
+			{
+				int yStart = i*29 + 18;
+				
+				if(xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29)
+				{
+					TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
+					System.out.println(getFilterIndex()+i);
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -132,6 +146,26 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
 		
+		for(int i = 0; i < 4; i++)
+		{
+			if(tileEntity.filters.get(getFilterIndex()+i) != null)
+			{
+				TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
+				int yStart = i*29 + 18;
+				
+				if(filter instanceof ItemStackFilter)
+				{
+					fontRenderer.drawString("ItemStack Filter", 58, yStart + 2, 0x404040);
+					fontRenderer.drawString("Color: " + filter.color.getName(), 58, yStart + 11, 0x404040);
+				}
+				else if(filter instanceof OreDictFilter)
+				{
+					fontRenderer.drawString("OreDict Filter", 58, yStart + 2, 0x404040);
+					fontRenderer.drawString("Color: " + filter.color.getName(), 58, yStart + 11, 0x404040);
+				}
+			}
+		}
+		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -148,12 +182,26 @@ public class GuiLogisticalSorter extends GuiMekanism
         
 		drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
 		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
 		for(int i = 0; i < 4; i++)
 		{
 			if(tileEntity.filters.get(getFilterIndex()+i) != null)
 			{
 				TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 				int yStart = i*29 + 18;
+				
+				boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29;
+				
+				if(filter instanceof ItemStackFilter)
+				{
+					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
+				}
+				else if(filter instanceof OreDictFilter)
+				{
+					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 195, 96, 29);
+				}
 			}
 		}
     }
