@@ -28,6 +28,8 @@ public class GuiItemStackFilter extends GuiMekanism
 	
 	public boolean isNew = false;
 	
+	public ItemStackFilter origFilter;
+	
 	public ItemStackFilter filter = new ItemStackFilter();
 	
 	public String status = EnumColor.DARK_GREEN + "All OK";
@@ -39,7 +41,8 @@ public class GuiItemStackFilter extends GuiMekanism
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
 		
-		filter = (ItemStackFilter)tileEntity.filters.get(index);
+		origFilter = (ItemStackFilter)tileEntity.filters.get(index);
+		filter = ((ItemStackFilter)tileEntity.filters.get(index)).clone();
 	}
 	
 	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
@@ -84,7 +87,7 @@ public class GuiItemStackFilter extends GuiMekanism
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
 				}
 				else {
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, filter));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, origFilter, filter));
 				}
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
@@ -96,7 +99,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, filter));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, origFilter));
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 		}
 	}

@@ -101,4 +101,14 @@ public class OreDictFilter extends TransporterFilter
 	{
 		return super.equals(filter) && filter instanceof OreDictFilter && ((OreDictFilter)filter).oreDictName.equals(oreDictName);
 	}
+	
+	@Override
+	public OreDictFilter clone()
+	{
+		OreDictFilter filter = new OreDictFilter();
+		filter.color = color;
+		filter.oreDictName = oreDictName;
+		
+		return filter;
+	}
 }

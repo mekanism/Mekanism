@@ -110,7 +110,9 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 					}
 					
 					player.openContainer.windowId = windowId;
-				} catch(Exception e) {}
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

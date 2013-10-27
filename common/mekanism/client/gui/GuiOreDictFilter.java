@@ -15,6 +15,7 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.transporter.ItemStackFilter;
 import mekanism.common.transporter.OreDictFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -34,6 +35,8 @@ public class GuiOreDictFilter extends GuiMekanism
 	public TileEntityLogisticalSorter tileEntity;
 	
 	public boolean isNew = false;
+	
+	public OreDictFilter origFilter;
 	
 	public OreDictFilter filter = new OreDictFilter();
 	
@@ -56,7 +59,10 @@ public class GuiOreDictFilter extends GuiMekanism
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
 		
-		filter = (OreDictFilter)tentity.filters.get(index);
+		origFilter = (OreDictFilter)tileEntity.filters.get(index);
+		filter = ((OreDictFilter)tentity.filters.get(index)).clone();
+		
+		updateStackList(filter.oreDictName);
 	}
 	
 	public GuiOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
@@ -94,13 +100,10 @@ public class GuiOreDictFilter extends GuiMekanism
 	@Override
 	public void keyTyped(char c, int i)
 	{
-		if(i == Keyboard.KEY_E)
+		if(!oreDictText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
-			oreDictText.textboxKeyTyped(c, i);
-			return;
+			super.keyTyped(c, i);
 		}
-		
-		super.keyTyped(c, i);
 		
 		if(oreDictText.isFocused() && i == Keyboard.KEY_RETURN)
 		{
@@ -121,6 +124,11 @@ public class GuiOreDictFilter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
+			if(!oreDictText.getText().isEmpty())
+			{
+				setOreDictKey();
+			}
+			
 			if(filter.oreDictName != null && !filter.oreDictName.isEmpty())
 			{
 				if(isNew)
@@ -128,7 +136,7 @@ public class GuiOreDictFilter extends GuiMekanism
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
 				}
 				else {
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, filter));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, origFilter, filter));
 				}
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
@@ -140,7 +148,7 @@ public class GuiOreDictFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, filter));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, origFilter));
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 		}
 	}
@@ -288,22 +296,9 @@ public class GuiOreDictFilter extends GuiMekanism
 		}
     }
     
-    private void setOreDictKey()
+    private void updateStackList(String oreName)
     {
-    	String oreName = oreDictText.getText();
-    	
-    	if(oreName == null || oreName.isEmpty())
-    	{
-    		status = EnumColor.DARK_RED + "No key entered";
-    		return;
-    	}
-    	else if(oreName.equals(filter.oreDictName))
-    	{
-    		status = EnumColor.DARK_RED + "Same key";
-    		return;
-    	}
-    	
-    	if(iterStacks == null)
+       	if(iterStacks == null)
     	{
     		iterStacks = new ArrayList<ItemStack>();
     	}
@@ -355,10 +350,28 @@ public class GuiOreDictFilter extends GuiMekanism
     		}
     	}
     	
-    	filter.oreDictName = oreName;
-    	oreDictText.setText("");
-    	
     	stackSwitch = 0;
     	stackIndex = -1;
+    }
+    
+    private void setOreDictKey()
+    {
+    	String oreName = oreDictText.getText();
+    	
+    	if(oreName == null || oreName.isEmpty())
+    	{
+    		status = EnumColor.DARK_RED + "No key entered";
+    		return;
+    	}
+    	else if(oreName.equals(filter.oreDictName))
+    	{
+    		status = EnumColor.DARK_RED + "Same key";
+    		return;
+    	}
+    	
+    	updateStackList(oreName);
+    	
+    	filter.oreDictName = oreName;
+    	oreDictText.setText("");
     }
 }

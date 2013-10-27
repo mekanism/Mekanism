@@ -71,4 +71,14 @@ public class ItemStackFilter extends TransporterFilter
 	{
 		return super.equals(filter) && filter instanceof ItemStackFilter && ((ItemStackFilter)filter).itemType.isItemEqual(itemType);
 	}
+	
+	@Override
+	public ItemStackFilter clone()
+	{
+		ItemStackFilter filter = new ItemStackFilter();
+		filter.color = color;
+		filter.itemType = itemType.copy();
+		
+		return filter;
+	}
 }

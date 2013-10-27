@@ -48,7 +48,7 @@ public class PacketNewFilter implements IMekanismPacket
 			TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)object3D.getTileEntity(worldServer);
 			TransporterFilter filter = TransporterFilter.readFromPacket(dataStream);
 			
-			//sorter.filters.add(filter);
+			sorter.filters.add(filter);
 			
 			for(EntityPlayer iterPlayer : sorter.playersUsing)
 			{

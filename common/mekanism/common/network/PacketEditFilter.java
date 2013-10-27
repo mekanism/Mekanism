@@ -19,6 +19,8 @@ public class PacketEditFilter implements IMekanismPacket
 {
 	public Object3D object3D;
 	
+	public TransporterFilter filter;
+	
 	public TransporterFilter edited;
 	
 	public boolean delete;
@@ -34,7 +36,12 @@ public class PacketEditFilter implements IMekanismPacket
 	{
 		object3D = (Object3D)data[0];
 		delete = (Boolean)data[1];
-		edited = (TransporterFilter)data[2];
+		filter = (TransporterFilter)data[2];
+		
+		if(!delete)
+		{
+			edited = (TransporterFilter)data[3];
+		}
 		
 		return this;
 	}
@@ -45,14 +52,18 @@ public class PacketEditFilter implements IMekanismPacket
 		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
 		delete = dataStream.readBoolean();
-		edited = TransporterFilter.readFromPacket(dataStream);
+		filter = TransporterFilter.readFromPacket(dataStream);
+		
+		if(!delete)
+		{
+			edited = TransporterFilter.readFromPacket(dataStream);
+		}
 			
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
 		
 		if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
 		{
 			TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)object3D.getTileEntity(worldServer);
-			TransporterFilter filter = TransporterFilter.readFromPacket(dataStream);
 			
 			if(!sorter.filters.contains(filter))
 			{
@@ -87,7 +98,13 @@ public class PacketEditFilter implements IMekanismPacket
 		dataStream.writeBoolean(delete);
 		
 		ArrayList data = new ArrayList();
-		edited.write(data);
+		filter.write(data);
+		
+		if(!delete)
+		{
+			edited.write(data);
+		}
+		
 		PacketHandler.encode(data.toArray(), dataStream);
 	}
 }
