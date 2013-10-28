@@ -32,8 +32,6 @@ public class TransporterStack
 	
 	public boolean noTarget = false;
 	
-	public boolean clientFirstTick = true;
-	
 	public void write(TileEntityLogisticalTransporter tileEntity, ArrayList data)
 	{
 		if(color != null)
@@ -202,7 +200,7 @@ public class TransporterStack
 		{
 			return Object3D.get(tileEntity).sideDifference(getPrev(tileEntity)).ordinal();
 		}
-		else if(progress > 50)
+		else if(progress >= 50)
 		{
 			return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
 		}

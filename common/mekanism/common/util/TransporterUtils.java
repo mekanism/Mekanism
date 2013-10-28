@@ -366,7 +366,7 @@ public final class TransporterUtils
 	
 	public static void drop(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
 	{
-		float[] pos = TransporterUtils.getStackPosition(tileEntity, stack);
+		float[] pos = TransporterUtils.getStackPosition(tileEntity, stack, 0);
 		EntityItem entityItem = new EntityItem(tileEntity.worldObj, tileEntity.xCoord + pos[0], tileEntity.yCoord + pos[1], tileEntity.zCoord + pos[2], stack.itemStack);
 		
 		entityItem.motionX = 0;
@@ -376,10 +376,10 @@ public final class TransporterUtils
         tileEntity.worldObj.spawnEntityInWorld(entityItem);
 	}
 	
-	public static float[] getStackPosition(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
+	public static float[] getStackPosition(TileEntityLogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
 		Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
-		float progress = ((float)stack.progress / 100F) - 0.5F;
+		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 		
 		float itemFix = 0;
 		

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import mekanism.common.HashList;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -27,13 +28,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork
 {
-	private static final int SPEED = 5;
+	public static final int SPEED = 5;
 	
 	public EnumColor color;
 	
-	public Set<TransporterStack> transit = new HashSet<TransporterStack>();
+	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 	
-	public boolean needsSync = false;
+	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
 	
 	@Override
 	public void updateEntity()
@@ -42,13 +43,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		{
 			for(TransporterStack stack : transit)
 			{
-				if(stack.clientFirstTick)
-				{
-					stack.clientFirstTick = false;
-				}
-				else {
-					stack.progress += SPEED;
-				}
+				stack.progress = Math.min(100, stack.progress+SPEED);
 			}
 		}
 		else {
@@ -58,7 +53,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			{
 				if(!stack.initiatedPath)
 				{
-					System.out.println("Initiating path");
 					if(!recalculate(stack))
 					{
 						remove.add(stack);
@@ -79,7 +73,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						{
 							if(next != null && stack.canInsert(stack.getNext(this).getTileEntity(worldObj)))
 							{
-								needsSync = true;
 								TileEntityLogisticalTransporter nextTile = (TileEntityLogisticalTransporter)next.getTileEntity(worldObj);
 								nextTile.entityEntering(stack);
 								remove.add(stack);
@@ -92,7 +85,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 							{
 								if(next != null && next.getTileEntity(worldObj) instanceof IInventory)
 								{
-									needsSync = true;
+									needsSync.add(stack);
 									IInventory inventory = (IInventory)next.getTileEntity(worldObj);
 									
 									if(inventory != null)
@@ -105,6 +98,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 											continue;
 										}
 										else {
+											needsSync.add(stack);
 											stack.itemStack = rejected;
 										}
 									}
@@ -113,7 +107,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						}
 					}
 					
-					System.out.println("high progress");
 					if(!recalculate(stack))
 					{
 						remove.add(stack);
@@ -129,7 +122,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 					{
 						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack, stack.getSide(this)) && !stack.noTarget)
 						{
-							System.out.println("final, has target, cant insert dest");
 							if(!recalculate(stack))
 							{
 								remove.add(stack);
@@ -138,7 +130,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						}
 						else if(stack.noTarget)
 						{
-							System.out.println("reached final with no target, recalculating");
 							if(!recalculate(stack))
 							{
 								remove.add(stack);
@@ -149,7 +140,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 					else {
 						if(!stack.canInsert(stack.getNext(this).getTileEntity(worldObj)))
 						{
-							System.out.println("reached half, not final, next not transport");
 							if(!recalculate(stack))
 							{
 								remove.add(stack);
@@ -162,25 +152,25 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			
 			for(TransporterStack stack : remove)
 			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, true)), Object3D.get(this), 50D);
 				transit.remove(stack);
 			}
 			
-			for(TransporterStack stack : transit)
+			for(TransporterStack stack : needsSync)
 			{
-				System.out.println(Object3D.get(this) + " " + stack.progress);
+				if(transit.contains(stack))
+				{
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+				}
 			}
 			
-			if(needsSync)
-			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
-				needsSync = false;
-			}
+			needsSync.clear();
 		}
 	}
 	
 	private boolean recalculate(TransporterStack stack)
 	{
-		needsSync = true;
+		needsSync.add(stack);
 		
 		if(!stack.recalculatePath(this))
 		{
@@ -210,8 +200,8 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		if(stack.recalculatePath(this))
 		{
-			needsSync = true;
 			transit.add(stack);
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
 			return true;
 		}
 		
@@ -222,7 +212,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		stack.progress = 0;
 		transit.add(stack);
-		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
 	}
 	
 	@Override
@@ -239,29 +229,56 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		int c = dataStream.readInt();
+		int type = dataStream.readInt();
 		
-		if(c != -1)
+		if(type == 0)
 		{
-			color = TransporterUtils.colors.get(c);
+			int c = dataStream.readInt();
+			
+			if(c != -1)
+			{
+				color = TransporterUtils.colors.get(c);
+			}
+			else {
+				color = null;
+			}
+			
+			transit.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				transit.add(TransporterStack.readFromPacket(dataStream));
+			}
 		}
-		else {
-			color = null;
-		}
-		
-		transit.clear();
-		
-		int amount = dataStream.readInt();
-		
-		for(int i = 0; i < amount; i++)
+		else if(type == 1)
 		{
-			transit.add(TransporterStack.readFromPacket(dataStream));
+			boolean kill = dataStream.readBoolean();
+			int index = dataStream.readInt();
+			
+			if(kill)
+			{
+				transit.remove(index);
+			}
+			else {
+				TransporterStack stack = TransporterStack.readFromPacket(dataStream);
+				
+				if(stack.progress == 0)
+				{
+					stack.progress = 5;
+				}
+				
+				transit.replace(index, stack);
+			}
 		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		data.add(0);
+		
 		if(color != null)
 		{
 			data.add(TransporterUtils.colors.indexOf(color));
@@ -273,6 +290,22 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		data.add(transit.size());
 		
 		for(TransporterStack stack : transit)
+		{
+			stack.write(this, data);
+		}
+		
+		return data;
+	}
+	
+	public ArrayList getSyncPacket(TransporterStack stack, boolean kill)
+	{
+		ArrayList data = new ArrayList();
+		
+		data.add(1);
+		data.add(kill);
+		data.add(transit.indexOf(stack));
+		
+		if(!kill)
 		{
 			stack.write(this, data);
 		}

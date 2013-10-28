@@ -48,6 +48,21 @@ public class HashList<T> implements Iterable<T>
 		list.remove(index);
 	}
 	
+	public void replace(int index, T obj)
+	{
+		if(contains(obj))
+		{
+			remove(obj);
+		}
+		
+		if(index == size()-1)
+		{
+			remove(index);
+		}
+		
+		add(index, obj);
+	}
+	
 	public void remove(T obj)
 	{
 		list.remove(obj);
@@ -61,6 +76,18 @@ public class HashList<T> implements Iterable<T>
 	public int size()
 	{
 		return list.size();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return list.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		return list.equals(obj);
 	}
 	
 	@Override

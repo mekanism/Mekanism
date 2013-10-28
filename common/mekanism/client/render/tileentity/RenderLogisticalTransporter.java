@@ -72,7 +72,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 			GL11.glPushMatrix();
 			entityItem.setEntityItemStack(stack.itemStack);
 			
-			float[] pos = TransporterUtils.getStackPosition(tileEntity, stack);
+			float[] pos = TransporterUtils.getStackPosition(tileEntity, stack, partialTick*TileEntityLogisticalTransporter.SPEED);
 			
 			renderer.doRenderItem(entityItem, x + pos[0], y + pos[1] - entityItem.yOffset, z + pos[2], 0, 0);
 			GL11.glPopMatrix();
