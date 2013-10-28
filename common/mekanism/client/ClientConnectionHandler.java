@@ -32,28 +32,37 @@ public class ClientConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
 	{
-		try {
-			voiceClient = new VoiceClient(server, 36123);
-			voiceClient.run();
-		} catch(Exception e) {}
+		if(Mekanism.voiceServerEnabled)
+		{
+			try {
+				voiceClient = new VoiceClient(server, 36123);
+				voiceClient.run();
+			} catch(Exception e) {}
+		}
 	}
 
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) 
 	{
-		try {
-			voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), 36123);
-			voiceClient.run();
-		} catch(Exception e) {}
+		if(Mekanism.voiceServerEnabled)
+		{
+			try {
+				voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), 36123);
+				voiceClient.run();
+			} catch(Exception e) {}
+		}
 	}
 
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{
-		if(voiceClient != null)
+		if(Mekanism.voiceServerEnabled)
 		{
-			voiceClient.disconnect();
-			voiceClient = null;
+			if(voiceClient != null)
+			{
+				voiceClient.disconnect();
+				voiceClient = null;
+			}
 		}
 		
 		Mekanism.proxy.unloadSoundHandler();
