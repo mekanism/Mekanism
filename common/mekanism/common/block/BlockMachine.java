@@ -655,6 +655,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	{
         		TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
         		PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Object3D.get(tileEntity), -1);
+        		return true;
         	}
         	else {
             	if(!entityplayer.isSneaking() && MachineType.getFromMetadata(metadata).guiId != -1)
