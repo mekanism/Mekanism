@@ -566,9 +566,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private GeneratorType(int i, String name, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private GeneratorType(int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
+			name = s;
 			guiId = j;
 			maxEnergy = k;
 			tileEntityClass = tileClass;
