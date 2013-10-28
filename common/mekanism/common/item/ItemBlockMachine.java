@@ -336,7 +336,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			if(((ItemStack)data[0]).getItemDamage() != 11 && ((ItemStack)data[0]).getItemDamage() != 12 && ((ItemStack)data[0]).getItemDamage() != 13 && ((ItemStack)data[0]).getItemDamage() != 14)
+			int meta = ((ItemStack)data[0]).getItemDamage();
+			
+			if(meta != 11 && meta != 12 && meta != 13 && meta != 14 && meta != 15)
 			{
 				return true;
 			}
