@@ -174,13 +174,11 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		if(!stack.recalculatePath(this))
 		{
-			stack.calculateIdle(this);
-		}
-		
-		if(!stack.hasPath())
-		{
-			TransporterUtils.drop(this, stack);
-			return false;
+			if(!stack.calculateIdle(this))
+			{
+				TransporterUtils.drop(this, stack);
+				return false;
+			}
 		}
 		
 		return true;

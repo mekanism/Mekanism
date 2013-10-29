@@ -43,19 +43,24 @@ public class HashList<T> implements Iterable<T>
 		}
 	}
 	
+	public boolean isEmpty()
+	{
+		return list.isEmpty();
+	}
+	
 	public void remove(int index)
 	{
+		if(isEmpty() || index > size()-1)
+		{
+			return;
+		}
+		
 		list.remove(index);
 	}
 	
 	public void replace(int index, T obj)
 	{
-		if(contains(obj))
-		{
-			remove(obj);
-		}
-		
-		if(index == size()-1)
+		if(get(index) != null)
 		{
 			remove(index);
 		}

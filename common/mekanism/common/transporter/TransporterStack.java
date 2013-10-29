@@ -150,12 +150,22 @@ public class TransporterStack
 		return true;
 	}
 	
-	public void calculateIdle(TileEntityLogisticalTransporter tileEntity)
+	public boolean calculateIdle(TileEntityLogisticalTransporter tileEntity)
 	{
-		pathToTarget = TransporterPathfinder.getIdlePath(tileEntity, this);
+		List<Object3D> newPath = TransporterPathfinder.getIdlePath(tileEntity, this);
+		
+		if(newPath == null)
+		{
+			return false;
+		}
+		
+		pathToTarget = newPath;
+		
 		noTarget = true;
 		originalLocation = Object3D.get(tileEntity);
 		initiatedPath = true;
+		
+		return true;
 	}
 	
 	public boolean isFinal(TileEntityLogisticalTransporter tileEntity)

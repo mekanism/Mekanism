@@ -9,6 +9,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.SlotInfo;
 import mekanism.common.transporter.TransporterStack;
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -370,7 +371,16 @@ public final class TransporterUtils
 	
 	public static void drop(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
 	{
-		float[] pos = TransporterUtils.getStackPosition(tileEntity, stack, 0);
+		float[] pos = null;
+		
+		if(stack.pathToTarget != null)
+		{
+			pos = TransporterUtils.getStackPosition(tileEntity, stack, 0);
+		}
+		else {
+			pos = new float[] {0, 0, 0};
+		}
+		
 		EntityItem entityItem = new EntityItem(tileEntity.worldObj, tileEntity.xCoord + pos[0], tileEntity.yCoord + pos[1], tileEntity.zCoord + pos[2], stack.itemStack);
 		
 		entityItem.motionX = 0;
