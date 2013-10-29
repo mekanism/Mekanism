@@ -33,7 +33,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.5.7", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.6.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismGenerators implements IModule
 {
@@ -44,7 +44,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(5, 5, 7);
+	public static Version versionNumber = new Version(5, 6, 0);
 	
 	//Items
 	public static Item BioFuel;

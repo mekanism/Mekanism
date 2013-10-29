@@ -114,7 +114,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "5.5.7")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.6.0")
 @NetworkMod(channels = {"MEK"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -139,7 +139,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(5, 5, 7);
+	public static Version versionNumber = new Version(5, 6, 0);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Object3D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Object3D>>();
@@ -526,8 +526,8 @@ public class Mekanism
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
 		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
-		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt(), 0, 150).setUnlocalizedName("SpeedUpgrade");
-		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt(), 1000, 0).setUnlocalizedName("EnergyUpgrade");
+		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt()).setUnlocalizedName("SpeedUpgrade");
+		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt()).setUnlocalizedName("EnergyUpgrade");
 		Robit = (ItemRobit) new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
 		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
@@ -543,7 +543,7 @@ public class Mekanism
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
 		MaganeseAlloy = new ItemMekanism(configuration.getItem("MaganeseAlloy", 11223).getInt()).setUnlocalizedName("MaganeseAlloy");
-		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11234).getInt()).setUnlocalizedName("WalkieTalkie");
+		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		configuration.save();
 		
 		//Registrations
