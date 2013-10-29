@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.TransporterUtils;
@@ -23,7 +25,7 @@ public final class TransporterPathfinder
 		
 		public TileEntityLogisticalTransporter start;
 		
-		public Object3D lastFound;
+		public Map<Object3D, Integer> destinations = new HashMap<Object3D, Integer>();
 		
 		public TransporterStack transportStack;
 		
@@ -34,14 +36,22 @@ public final class TransporterPathfinder
 			transportStack = stack;
 		}
 		
-		public void loop(TileEntityLogisticalTransporter pointer)
+		public void loop(TileEntityLogisticalTransporter pointer, int dist)
 		{
-			if(pointer == null || lastFound != null)
+			if(pointer == null)
 			{
 				return;
 			}
 			
 			iterated.add(pointer);
+			
+			if(pointer.color == EnumColor.BLACK)
+			{
+				dist += 1000;
+			}
+			else {
+				dist++;
+			}
 			
 			boolean found = false;
 			
@@ -49,25 +59,34 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = Object3D.get(pointer).getFromSide(side).getTileEntity(worldObj);
 				
-				if(transportStack.canInsert(tile) && !iterated.contains(tile))
+				if(transportStack.canInsertToTransporter(tile) && !iterated.contains(tile))
 				{
-					loop((TileEntityLogisticalTransporter)tile);
+					loop((TileEntityLogisticalTransporter)tile, dist);
 					found = true;
 				}
 			}
 			
 			if(!found)
 			{
-				lastFound = Object3D.get(pointer);
-				return;
+				destinations.put(Object3D.get(pointer), dist);
 			}
 		}
 		
 		public Object3D find()
 		{
-			loop(start);
+			loop(start, 0);
 			
-			return lastFound;
+			Object3D farthest = null;
+			
+			for(Map.Entry<Object3D, Integer> entry : destinations.entrySet())
+			{
+				if(farthest == null || destinations.get(farthest) < entry.getValue())
+				{
+					farthest = entry.getKey();
+				}
+			}
+			
+			return farthest;
 		}
 	}
 	
@@ -77,9 +96,10 @@ public final class TransporterPathfinder
 		
 		public Set<TileEntityLogisticalTransporter> iterated = new HashSet<TileEntityLogisticalTransporter>();
 		
+		public Map<Object3D, Integer> destinations = new HashMap<Object3D, Integer>();
+		public Map<Object3D, Object3D> prevNodes = new HashMap<Object3D, Object3D>();
+		
 		public TileEntityLogisticalTransporter start;
-		public Object3D destination;
-		public Object3D finalNode;
 		
 		public TransporterStack transportStack;
 		
@@ -90,14 +110,22 @@ public final class TransporterPathfinder
 			transportStack = stack;
 		}
 		
-		public void loop(TileEntityLogisticalTransporter pointer)
+		public void loop(TileEntityLogisticalTransporter pointer, int dist)
 		{
-			if(pointer == null || destination != null)
+			if(pointer == null)
 			{
 				return;
 			}
 			
 			iterated.add(pointer);
+			
+			if(pointer.color == EnumColor.BLACK)
+			{
+				dist += 1000;
+			}
+			else {
+				dist++;
+			}
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -105,23 +133,33 @@ public final class TransporterPathfinder
 				
 				if(TransporterUtils.canInsert(tile, transportStack.itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
-					destination = Object3D.get(tile);
-					finalNode = Object3D.get(pointer);
+					destinations.put(Object3D.get(tile), dist);
+					prevNodes.put(Object3D.get(tile), Object3D.get(pointer));
 					return;
 				}
 				
-				if(transportStack.canInsert(tile) && !iterated.contains(tile))
+				if(transportStack.canInsertToTransporter(tile) && !iterated.contains(tile))
 				{
-					loop((TileEntityLogisticalTransporter)tile);
+					loop((TileEntityLogisticalTransporter)tile, dist);
 				}
 			}
 		}
 		
 		public Object3D find()
 		{
-			loop(start);
+			loop(start, 0);
 			
-			return destination;
+			Object3D closest = null;
+			
+			for(Map.Entry<Object3D, Integer> entry : destinations.entrySet())
+			{
+				if(closest == null || destinations.get(closest) > entry.getValue())
+				{
+					closest = entry.getKey();
+				}
+			}
+			
+			return closest;
 		}
 	}
 	
@@ -177,7 +215,7 @@ public final class TransporterPathfinder
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
 				Object3D neighbor = finalNode.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
 
-				if(!transportStack.canInsert(neighbor.getTileEntity(worldObj))) 
+				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj))) 
 				{
 					blockCount++;
 				}
@@ -223,7 +261,7 @@ public final class TransporterPathfinder
 					ForgeDirection direction = ForgeDirection.getOrientation(i);
 					Object3D neighbor = currentNode.getFromSide(direction);
 
-					if(transportStack.canInsert(neighbor.getTileEntity(worldObj))) 
+					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj))) 
 					{
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 
@@ -295,7 +333,7 @@ public final class TransporterPathfinder
 			return null;
 		}
 		
-		Path p = new Path(d.worldObj, d.finalNode, Object3D.get(start), closest, stack);
+		Path p = new Path(d.worldObj, d.prevNodes.get(closest), Object3D.get(start), closest, stack);
 		return p.getPath();
 	}
 	

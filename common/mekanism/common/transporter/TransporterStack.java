@@ -208,7 +208,7 @@ public class TransporterStack
 		return 0;
 	}
 	
-	public boolean canInsert(TileEntity tileEntity)
+	public boolean canInsertToTransporter(TileEntity tileEntity)
 	{
 		if(!(tileEntity instanceof TileEntityLogisticalTransporter))
 		{

@@ -35,6 +35,7 @@ public final class TransporterUtils
 		ret.add(EnumColor.RED);
 		ret.add(EnumColor.PINK);
 		ret.add(EnumColor.YELLOW);
+		ret.add(EnumColor.BLACK);
 		
 		return ret;
 	}

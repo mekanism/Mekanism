@@ -71,7 +71,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						
 						if(!stack.isFinal(this))
 						{
-							if(next != null && stack.canInsert(stack.getNext(this).getTileEntity(worldObj)))
+							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj)))
 							{
 								TileEntityLogisticalTransporter nextTile = (TileEntityLogisticalTransporter)next.getTileEntity(worldObj);
 								nextTile.entityEntering(stack);
@@ -138,7 +138,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						}
 					}
 					else {
-						if(!stack.canInsert(stack.getNext(this).getTileEntity(worldObj)))
+						if(!stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj)))
 						{
 							if(!recalculate(stack))
 							{
@@ -193,7 +193,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		stack.originalLocation = original;
 		stack.color = color;
 		
-		if(!stack.canInsert(this))
+		if(!stack.canInsertToTransporter(this))
 		{
 			return false;
 		}
