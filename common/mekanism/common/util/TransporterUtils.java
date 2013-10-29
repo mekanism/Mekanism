@@ -144,7 +144,7 @@ public final class TransporterUtils
     
     public static boolean insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color)
     {
-    	return tileEntity.insert(Object3D.get(outputter), itemStack, color);
+    	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color);
     }
     
     public static boolean canInsert(TileEntity tileEntity, ItemStack itemStack, int side)

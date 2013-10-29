@@ -56,7 +56,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			return 0;
 		}
 		
-		return (int)((tileEntity.filters.size()*scroll) - (4F/(float)tileEntity.filters.size()));
+		return (int)((tileEntity.filters.size()*scroll) - ((4F/(float)tileEntity.filters.size()))*scroll);
 	}
 	
 	@Override
@@ -175,6 +175,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		
+		fontRenderer.drawString("Energy:", 11, 58, 0x00CD00);
+		fontRenderer.drawString((int)(((float)tileEntity.getEnergy()/tileEntity.getMaxEnergy())*100) + "%", 11, 67, 0x00CD00);
 		
 		fontRenderer.drawString("Default:", 12, 126, 0x00CD00);
 		

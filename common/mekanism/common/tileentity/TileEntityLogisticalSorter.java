@@ -1,12 +1,16 @@
 package mekanism.common.tileentity;
 
+import ic2.api.energy.tile.IEnergySink;
+
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -25,7 +29,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IEnergySink, IStrictEnergyAcceptor
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 	
@@ -40,6 +44,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean isActive;
 	
 	public boolean clientActive;
+	
+	public final double ENERGY_PER_ITEM = 5;
 	
 	public TileEntityLogisticalSorter() 
 	{
@@ -87,8 +93,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							}
 						}
 						
-						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
+						double needed = getEnergyNeeded(inInventory.itemStack);
+						
+						if(getEnergy() >= needed && TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
 						{
+							setEnergy(getEnergy()-getEnergyNeeded(inInventory.itemStack));
 							inventory.setInventorySlotContents(inInventory.slotID, null);
 							setActive(true);
 						}
@@ -234,6 +243,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 	}
 	
+	private double getEnergyNeeded(ItemStack itemStack)
+	{
+		if(itemStack == null)
+		{
+			return 0;
+		}
+		
+		return itemStack.stackSize*ENERGY_PER_ITEM;
+	}
+	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -373,4 +392,66 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     {
     	return true;
     }
+
+	@Override
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
+	{
+		return true;
+	}
+
+	@Override
+	public double transferEnergyToAcceptor(double amount)
+	{
+    	double rejects = 0;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
+    	
+    	if(amount <= neededElectricity)
+    	{
+    		electricityStored += amount;
+    	}
+    	else {
+    		electricityStored += neededElectricity;
+    		rejects = amount-neededElectricity;
+    	}
+    	
+    	return rejects;
+	}
+
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side) 
+	{
+		return true;
+	}
+
+	@Override
+	public double demandedEnergyUnits() 
+	{
+		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
+	}
+
+	@Override
+    public double injectEnergyUnits(ForgeDirection direction, double i)
+    {
+		double givenEnergy = i*Mekanism.FROM_IC2;
+    	double rejects = 0;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
+    	
+    	if(givenEnergy < neededEnergy)
+    	{
+    		electricityStored += givenEnergy;
+    	}
+    	else if(givenEnergy > neededEnergy)
+    	{
+    		electricityStored += neededEnergy;
+    		rejects = givenEnergy-neededEnergy;
+    	}
+    	
+    	return rejects*Mekanism.TO_IC2;
+    }
+
+	@Override
+	public int getMaxSafeInput() 
+	{
+		return 2048;
+	}
 }
