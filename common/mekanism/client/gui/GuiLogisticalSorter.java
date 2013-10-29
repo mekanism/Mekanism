@@ -42,12 +42,17 @@ public class GuiLogisticalSorter extends GuiMekanism
 	
 	public int getScroll()
 	{
-		return Math.max(Math.min((int)(scroll*125), 125), 0);
+		return Math.max(Math.min((int)(scroll*123), 123), 0);
 	}
 	
 	public int getFilterIndex()
 	{
-		return 0;
+		if(tileEntity.filters.size() <= 4)
+		{
+			return 0;
+		}
+		
+		return (int)((tileEntity.filters.size()*scroll) - (4F/(float)tileEntity.filters.size()));
 	}
 	
 	@Override
@@ -97,7 +102,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		if(isDragging)
 		{
-			scroll = (float)(yAxis-18-dragOffset)/123F;
+			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/123F, 0), 1);
 		}
 	}
 	

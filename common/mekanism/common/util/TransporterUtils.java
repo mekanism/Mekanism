@@ -188,13 +188,13 @@ public final class TransporterUtils
 		} 
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory) inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(side);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 
 			for(int get = 0; get <= slots.length - 1; get++) 
 			{
 				int slotID = slots[get];
 
-				if(sidedInventory.isItemValidForSlot(slotID, itemStack) && sidedInventory.canInsertItem(slotID, itemStack, side)) 
+				if(sidedInventory.isItemValidForSlot(slotID, itemStack) && sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 				{
 					ItemStack inSlot = inventory.getStackInSlot(slotID);
 
@@ -267,13 +267,13 @@ public final class TransporterUtils
 		} 
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory) inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(side);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 
 			for(int get = 0; get <= slots.length - 1; get++) 
 			{
 				int slotID = slots[get];
 
-				if(sidedInventory.isItemValidForSlot(slotID, itemStack) && sidedInventory.canInsertItem(slotID, itemStack, side)) 
+				if(sidedInventory.isItemValidForSlot(slotID, itemStack) && sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 				{
 					ItemStack inSlot = inventory.getStackInSlot(slotID);
 
@@ -329,7 +329,7 @@ public final class TransporterUtils
 		} 
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(side);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 
 			if(slots != null) 
 			{
@@ -341,7 +341,7 @@ public final class TransporterUtils
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 
-						if(sidedInventory.canExtractItem(slotID, toSend, side)) 
+						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 						{
 							sidedInventory.setInventorySlotContents(slotID, null);
 
