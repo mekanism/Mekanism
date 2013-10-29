@@ -31,6 +31,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
+	public EnumColor color;
+	
 	public final int MAX_DELAY = 10;
 	
 	public int delayTicks;
@@ -74,18 +76,18 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(inInventory != null && inInventory.itemStack != null)
 					{
-						EnumColor color = null;
+						EnumColor filterColor = color;
 						
 						for(TransporterFilter filter : filters)
 						{
 							if(filter.canFilter(inInventory.itemStack))
 							{
-								color = filter.color;
+								filterColor = filter.color;
 								break;
 							}
 						}
 						
-						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, color))
+						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
 						{
 							inventory.setInventorySlotContents(inInventory.slotID, null);
 							setActive(true);
@@ -116,6 +118,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
         
         nbtTags.setInteger("controlType", controlType.ordinal());
         
+        if(color != null)
+        {
+        	nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+        }
+        
         NBTTagList filterTags = new NBTTagList();
         
         for(TransporterFilter filter : filters)
@@ -138,6 +145,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     	
     	controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     	
+    	if(nbtTags.hasKey("color"))
+    	{
+    		color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+    	}
+    	
        	if(nbtTags.hasKey("filters"))
     	{
     		NBTTagList tagList = nbtTags.getTagList("filters");
@@ -152,6 +164,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			if(dataStream.readInt() == 0)
+			{
+				color = TransporterUtils.increment(color);
+			}
+			
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		int type = dataStream.readInt();
@@ -160,6 +182,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		{
 			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			int c = dataStream.readInt();
+			
+			if(c != -1)
+			{
+				color = TransporterUtils.colors.get(c);
+			}
+			else {
+				color = null;
+			}
 			
 			filters.clear();
 			
@@ -175,7 +207,17 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		else if(type == 1)
 		{
 			isActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];	
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			int c = dataStream.readInt();
+			
+			if(c != -1)
+			{
+				color = TransporterUtils.colors.get(c);
+			}
+			else {
+				color = null;
+			}
 			
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -202,6 +244,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		data.add(isActive);
 		data.add(controlType.ordinal());
 		
+		if(color != null)
+		{
+			data.add(TransporterUtils.colors.indexOf(color));
+		}
+		else {
+			data.add(-1);
+		}
+		
 		data.add(filters.size());
 		
 		for(TransporterFilter filter : filters)
@@ -220,6 +270,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		
 		data.add(isActive);
 		data.add(controlType.ordinal());
+		
+		if(color != null)
+		{
+			data.add(TransporterUtils.colors.indexOf(color));
+		}
+		else {
+			data.add(-1);
+		}
 		
 		return data;
 		
@@ -262,7 +320,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) 
 	{
-		return new int[] {0};
+		if(side == ForgeDirection.getOrientation(facing).ordinal() || side == ForgeDirection.getOrientation(facing).getOpposite().ordinal())
+		{
+			return new int[] {0};
+		}
+		
+		return null;
 	}
 
 	@Override

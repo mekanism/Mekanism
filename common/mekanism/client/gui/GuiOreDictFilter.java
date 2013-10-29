@@ -71,8 +71,6 @@ public class GuiOreDictFilter extends GuiMekanism
 		tileEntity = tentity;
 		
 		isNew = true;
-		
-		filter.color = TransporterUtils.colors.get(0);
 	}
 	
 	@Override
@@ -172,20 +170,29 @@ public class GuiOreDictFilter extends GuiMekanism
 			GL11.glPopMatrix();
 		}
 		
-		GL11.glPushMatrix();
-		GL11.glColor4f(1, 1, 1, 1);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        
-        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(filter.color));
-		itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
-		
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glPopMatrix();
+		if(filter.color != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glColor4f(1, 1, 1, 1);
+	        GL11.glEnable(GL11.GL_LIGHTING);
+	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+	        
+	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(filter.color));
+			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+			
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
 		
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+			if(filter.color != null)
+			{
+				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText("None", xAxis, yAxis);
+			}
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -310,7 +317,7 @@ public class GuiOreDictFilter extends GuiMekanism
     	
     	for(String s : OreDictionary.getOreNames())
     	{
-    		if(oreName.equals(s))
+    		if(oreName.equals(s) || oreName.equals("*"))
     		{
     			keys.add(s);
     		}

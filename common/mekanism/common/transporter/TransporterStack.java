@@ -204,7 +204,10 @@ public class TransporterStack
 	{
 		if(progress < 50)
 		{
-			return Object3D.get(tileEntity).sideDifference(getPrev(tileEntity)).ordinal();
+			if(getPrev(tileEntity) != null)
+			{
+				return Object3D.get(tileEntity).sideDifference(getPrev(tileEntity)).ordinal();
+			}
 		}
 		else if(progress == 50)
 		{
@@ -215,7 +218,10 @@ public class TransporterStack
 		}
 		else if(progress > 50)
 		{
-			return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
+			if(getNext(tileEntity) != null)
+			{
+				return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
+			}
 		}
 		
 		return 0;

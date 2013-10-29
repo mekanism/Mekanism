@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.model.ModelTransporterBox;
@@ -38,7 +39,17 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityLogisticalTransporter tileEntity, double x, double y, double z, float partialTick)
 	{
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
+		int meta = Object3D.get(tileEntity).getMetadata(tileEntity.worldObj);
+		
+		if(meta == 3)
+		{
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
+		}
+		else if(meta == 4)
+		{
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RestrictiveTransporter.png"));
+		}
+		
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		GL11.glScalef(1.0F, -1F, -1F);

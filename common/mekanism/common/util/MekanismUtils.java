@@ -71,50 +71,52 @@ public final class MekanismUtils
 	 */
 	public static boolean checkForUpdates(EntityPlayer entityplayer)
 	{
-		if(Mekanism.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
-		{
-			if(!Mekanism.latestVersionNumber.equals("null"))
+		try {
+			if(Mekanism.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 			{
-				ArrayList<IModule> list = new ArrayList<IModule>();
-				
-				for(IModule module : Mekanism.modulesLoaded)
+				if(!Mekanism.latestVersionNumber.equals("null"))
 				{
-					if(Version.get(Mekanism.latestVersionNumber).comparedState(module.getVersion()) == 1)
+					ArrayList<IModule> list = new ArrayList<IModule>();
+					
+					for(IModule module : Mekanism.modulesLoaded)
 					{
-						list.add(module);
+						if(Version.get(Mekanism.latestVersionNumber).comparedState(module.getVersion()) == 1)
+						{
+							list.add(module);
+						}
+					}
+					
+					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
+					{
+						entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
+						entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version on one or more modules.");
+						
+						if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
+						{
+							entityplayer.addChatMessage(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber);
+						}
+						
+						for(IModule module : list)
+						{
+							entityplayer.addChatMessage(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion());
+						}
+						
+						entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
+						entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
+						entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
+						return true;
+					}
+					else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
+					{
+						entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Using developer build " + EnumColor.DARK_GREY + Mekanism.versionNumber);
+						return true;
 					}
 				}
-				
-				if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
-				{
-					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------");
-					entityplayer.addChatMessage(EnumColor.GREY + " Using outdated version on one or more modules.");
-					
-					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
-					{
-						entityplayer.addChatMessage(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber);
-					}
-					
-					for(IModule module : list)
-					{
-						entityplayer.addChatMessage(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion());
-					}
-					
-					entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
-					entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
-					entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
-					return true;
-				}
-				else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
-				{
-					entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Using developer build " + EnumColor.DARK_GREY + Mekanism.versionNumber);
-					return true;
+				else {
+					System.out.println("[Mekanism] Minecraft is in offline mode, could not check for updates.");
 				}
 			}
-			else {
-				System.out.println("[Mekanism] Minecraft is in offline mode, could not check for updates.");
-			}
-		}
+		} catch(Exception e) {}
 		
 		return false;
 	}

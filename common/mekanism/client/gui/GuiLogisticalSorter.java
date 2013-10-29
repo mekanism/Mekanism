@@ -3,21 +3,25 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.ItemStackFilter;
 import mekanism.common.transporter.OreDictFilter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -60,34 +64,47 @@ public class GuiLogisticalSorter extends GuiMekanism
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
-		
-		if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
+		if(button == 0)
 		{
-			dragOffset = yAxis - (getScroll()+18);
-			isDragging = true;
-		}
-		
-		for(int i = 0; i < 4; i++)
-		{
-			if(tileEntity.filters.get(getFilterIndex()+i) != null)
+			int xAxis = (mouseX - (width - xSize) / 2);
+			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
-				int yStart = i*29 + 18;
-				
-				if(xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29)
+				dragOffset = yAxis - (getScroll()+18);
+				isDragging = true;
+			}
+			
+			for(int i = 0; i < 4; i++)
+			{
+				if(tileEntity.filters.get(getFilterIndex()+i) != null)
 				{
-					TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
+					int yStart = i*29 + 18;
 					
-					if(filter instanceof ItemStackFilter)
+					if(xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29)
 					{
-						PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
-					}
-					else if(filter instanceof OreDictFilter)
-					{
-						PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+						TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
+						
+						if(filter instanceof ItemStackFilter)
+						{
+							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
+						}
+						else if(filter instanceof OreDictFilter)
+						{
+							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+						}
 					}
 				}
+			}
+			
+			if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			}
 		}
 	}
@@ -153,10 +170,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
 		fontRenderer.drawString("Logistical Sorter", 43, 6, 0x404040);
+		
 		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		
+		fontRenderer.drawString("Default:", 12, 126, 0x00CD00);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -168,13 +188,38 @@ public class GuiLogisticalSorter extends GuiMekanism
 				if(filter instanceof ItemStackFilter)
 				{
 					fontRenderer.drawString("ItemStack Filter", 58, yStart + 2, 0x404040);
-					fontRenderer.drawString("Color: " + filter.color.getName(), 58, yStart + 11, 0x404040);
+					fontRenderer.drawString("Color: " + filter.color != null ? filter.color.getName() : "None", 58, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof OreDictFilter)
 				{
 					fontRenderer.drawString("OreDict Filter", 58, yStart + 2, 0x404040);
 					fontRenderer.drawString("Color: " + filter.color.getName(), 58, yStart + 11, 0x404040);
 				}
+			}
+		}
+		
+		if(tileEntity.color != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glColor4f(1, 1, 1, 1);
+	        GL11.glEnable(GL11.GL_LIGHTING);
+	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+	        
+	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(tileEntity.color));
+			itemRenderer.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
+			
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+		
+		if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
+		{
+			if(tileEntity.color != null)
+			{
+				drawCreativeTabHoveringText(tileEntity.color.getName(), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText("None", xAxis, yAxis);
 			}
 		}
 		

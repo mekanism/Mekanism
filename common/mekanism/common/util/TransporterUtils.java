@@ -35,7 +35,6 @@ public final class TransporterUtils
 		ret.add(EnumColor.RED);
 		ret.add(EnumColor.PINK);
 		ret.add(EnumColor.YELLOW);
-		ret.add(EnumColor.BLACK);
 		
 		return ret;
 	}
@@ -357,9 +356,13 @@ public final class TransporterUtils
 	
 	public static EnumColor increment(EnumColor color)
 	{
-		if(colors.indexOf(color) == colors.size()-1)
+		if(color == null)
 		{
 			return colors.get(0);
+		}
+		else if(colors.indexOf(color) == colors.size()-1)
+		{
+			return null;
 		}
 		
 		return colors.get(colors.indexOf(color)+1);

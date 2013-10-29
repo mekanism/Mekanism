@@ -23,7 +23,7 @@ public class OreDictFilter extends TransporterFilter
 			return false;
 		}
 		
-		if(oreDictName.equals(oreKey))
+		if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
 		{
 			return true;
 		}

@@ -44,6 +44,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1: Universal Cable
  * 2: Mechanical Pipe
  * 3: Logistical Transporter
+ * 4: Restrictive Transporter
  * @author AidanBrady
  *
  */
@@ -101,6 +102,7 @@ public class BlockTransmitter extends Block
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
+		list.add(new ItemStack(i, 1, 4));
 	}
 	
 	@Override
@@ -241,7 +243,7 @@ public class BlockTransmitter extends Block
 			{
 				connectable = PipeUtils.getConnections(tileEntity);
 			}
-			else if(world.getBlockMetadata(x, y, z) == 3)
+			else if(world.getBlockMetadata(x, y, z) == 3 || world.getBlockMetadata(x, y, z) == 4)
 			{
 				connectable = TransporterUtils.getConnections((TileEntityLogisticalTransporter)tileEntity);
 			}
@@ -370,6 +372,8 @@ public class BlockTransmitter extends Block
 			case 2:
 				return new TileEntityMechanicalPipe();
 			case 3:
+				return new TileEntityLogisticalTransporter();
+			case 4:
 				return new TileEntityLogisticalTransporter();
 			default:
 				return null;

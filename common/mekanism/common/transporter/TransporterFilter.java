@@ -17,22 +17,43 @@ public abstract class TransporterFilter
 	
 	public void write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+		if(color != null)
+		{
+			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+		
+		}
 	}
 	
 	protected void read(NBTTagCompound nbtTags)
 	{
-		color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+		if(nbtTags.hasKey("color"))
+		{
+			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+		}
 	}
 	
 	public void write(ArrayList data)
 	{
-		data.add(TransporterUtils.colors.indexOf(color));
+		if(color != null)
+		{
+			data.add(TransporterUtils.colors.indexOf(color));
+		}
+		else {
+			data.add(-1);
+		}
 	}
 	
 	protected void read(ByteArrayDataInput dataStream)
 	{
-		color = TransporterUtils.colors.get(dataStream.readInt());
+		int c = dataStream.readInt();
+		
+		if(c != -1)
+		{
+			color = TransporterUtils.colors.get(c);
+		}
+		else {
+			color = null;
+		}
 	}
 	
 	public static TransporterFilter readFromNBT(NBTTagCompound nbtTags)

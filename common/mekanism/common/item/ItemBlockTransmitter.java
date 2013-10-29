@@ -67,6 +67,13 @@ public class ItemBlockTransmitter extends ItemBlock
 				list.add("- " + EnumColor.PURPLE + "Items (universal)");
 				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
 			}
+			else if(itemstack.getItemDamage() == 4)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "Items (universal)");
+				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
+			}
 		}
 	}
 	
@@ -86,6 +93,7 @@ public class ItemBlockTransmitter extends ItemBlock
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
+		
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
@@ -100,10 +108,14 @@ public class ItemBlockTransmitter extends ItemBlock
 			case 3:
 				name = "LogisticalTransporter";
 				break;
+			case 4:
+				name = "RestrictiveTransporter";
+				break;
 			default:
 				name = "Unknown";
 				break;
 		}
+		
 		return getUnlocalizedName() + "." + name;
 	}
 }
