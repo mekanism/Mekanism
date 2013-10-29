@@ -188,12 +188,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 				if(filter instanceof ItemStackFilter)
 				{
 					fontRenderer.drawString("ItemStack Filter", 58, yStart + 2, 0x404040);
-					fontRenderer.drawString("Color: " + filter.color != null ? filter.color.getName() : "None", 58, yStart + 11, 0x404040);
+					fontRenderer.drawString("Color: " + (filter.color != null ? filter.color.getName() : "None"), 58, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof OreDictFilter)
 				{
 					fontRenderer.drawString("OreDict Filter", 58, yStart + 2, 0x404040);
-					fontRenderer.drawString("Color: " + filter.color.getName(), 58, yStart + 11, 0x404040);
+					fontRenderer.drawString("Color: " + (filter.color != null ? filter.color.getName() : "None"), 58, yStart + 11, 0x404040);
 				}
 			}
 		}
