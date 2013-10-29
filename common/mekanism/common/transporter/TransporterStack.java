@@ -168,6 +168,12 @@ public class TransporterStack
 		if(!tileEntity.worldObj.isRemote)
 		{
 			int index = pathToTarget.indexOf(Object3D.get(tileEntity))-1;
+			
+			if(index < 0)
+			{
+				return null;
+			}
+			
 			return pathToTarget.get(index);
 		}
 		else {
@@ -200,7 +206,14 @@ public class TransporterStack
 		{
 			return Object3D.get(tileEntity).sideDifference(getPrev(tileEntity)).ordinal();
 		}
-		else if(progress >= 50)
+		else if(progress == 50)
+		{
+			if(getNext(tileEntity) != null)
+			{
+				return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
+			}
+		}
+		else if(progress > 50)
 		{
 			return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
 		}
