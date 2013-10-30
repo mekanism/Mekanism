@@ -67,6 +67,7 @@ tile.Transmitter.PressurizedTube.name=Druckröhre
 tile.Transmitter.UniversalCable.name=Universelles Kabel
 tile.Transmitter.MechanicalPipe.name=Mechanisches Rohr
 tile.Transmitter.LogisticalTransporter.name=Logistischer Transporter
+tile.Transmitter.RestrictiveTransporter.name=Restriktiver Transporter
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basisenergiewürfel
