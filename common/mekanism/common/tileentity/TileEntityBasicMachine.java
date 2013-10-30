@@ -15,8 +15,9 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.TileComponentUpgrade;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.TileComponentEjector;
+import mekanism.common.TileComponentUpgrade;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -65,6 +66,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentUpgrade upgradeComponent;
+	public TileComponentEjector ejectorComponent;
 	
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.

@@ -92,7 +92,11 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
-        facing = nbtTags.getInteger("facing");
+        
+        if(nbtTags.hasKey("facing"))
+        {
+        	facing = nbtTags.getInteger("facing");
+        }
     }
 
 	@Override

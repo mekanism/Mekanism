@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.SideData;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
+import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -40,6 +41,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		inventory = new ItemStack[4];
 		
 		upgradeComponent = new TileComponentUpgrade(this, 3);
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
 	}
 	
 	@Override
@@ -119,6 +121,8 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
         else {
             inventory[2].stackSize += itemstack.stackSize;
         }
+        
+        ejectorComponent.onOutput();
     }
 
 	@Override

@@ -20,10 +20,11 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.RecipeHandler;
-import mekanism.common.TileComponentUpgrade;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.RecipeHandler;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.TileComponentEjector;
+import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
@@ -78,6 +79,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentEjector ejectorComponent;
 	
 	public TileEntityMetallurgicInfuser()
 	{
@@ -91,6 +93,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {4}));
 		
 		inventory = new ItemStack[5];
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
 	}
 	
 	@Override
@@ -255,6 +258,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         else {
             inventory[3].stackSize += output.resource.stackSize;
         }
+        
+        ejectorComponent.onOutput();
 	}
 	
 	public boolean canOperate()

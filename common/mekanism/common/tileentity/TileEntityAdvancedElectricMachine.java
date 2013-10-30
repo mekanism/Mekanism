@@ -8,6 +8,7 @@ import mekanism.api.SideData;
 import mekanism.api.gas.EnumGas;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
+import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -64,6 +65,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
 		
 		upgradeComponent = new TileComponentUpgrade(this, 4);
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
 	}
     
     /**
@@ -185,6 +187,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         else {
             inventory[2].stackSize += itemstack.stackSize;
         }
+        
+        ejectorComponent.onOutput();
     }
 
     @Override

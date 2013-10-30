@@ -11,14 +11,15 @@ import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
+import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.TileComponentUpgrade;
-import mekanism.common.IFactory.RecipeType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.TileComponentEjector;
+import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
@@ -76,6 +77,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentEjector ejectorComponent;
 	
 	public TileEntityFactory()
 	{
@@ -96,6 +98,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		inventory = new ItemStack[4+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
+		
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
 	}
 	
 	@Override
@@ -385,6 +389,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         else {
             inventory[outputSlot].stackSize += itemstack.stackSize;
         }
+        
+        ejectorComponent.onOutput();
 	}
 	
 	@Override
