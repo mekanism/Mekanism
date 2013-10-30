@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.IEjector;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -321,8 +322,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
     	super.readFromNBT(nbtTags);
     	
-    	upgradeComponent.read(nbtTags);
-    	
     	clientActive = isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
@@ -335,6 +334,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	{
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
+        	
+        	ejectorComponent.refreshSides();
         }
     }
     
@@ -366,8 +367,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        upgradeComponent.write(nbtTags);
         
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("operatingTicks", operatingTicks);
@@ -401,8 +400,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		upgradeComponent.read(dataStream);
-		
 		isActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
@@ -421,8 +418,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
-		upgradeComponent.write(data);
 		
 		data.add(isActive);
 		data.add(operatingTicks);
@@ -644,5 +639,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;
+	}
+	
+	@Override
+	public IEjector getEjector()
+	{
+		return ejectorComponent;
 	}
 }

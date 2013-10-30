@@ -246,6 +246,8 @@ public class CommonProxy
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 8:
 				return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
+			case 9:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 10:
 				return new ContainerGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

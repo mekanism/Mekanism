@@ -26,4 +26,10 @@ public interface IConfigurable
 	 * @return
 	 */
 	public int getOrientation();
+	
+	/**
+	 * Gets this machine's ejector.
+	 * @return
+	 */
+	public IEjector getEjector();
 }

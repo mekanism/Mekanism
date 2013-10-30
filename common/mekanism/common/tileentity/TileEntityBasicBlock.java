@@ -63,12 +63,23 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		facing = dataStream.readInt();
+		
+		for(ITileComponent component : components)
+		{
+			component.read(dataStream);
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
-	{
+	{	
 		data.add(facing);
+		
+		for(ITileComponent component : components)
+		{
+			component.write(data);
+		}
+		
 		return data;
 	}
 	
@@ -97,13 +108,24 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
         {
         	facing = nbtTags.getInteger("facing");
         }
+        
+        for(ITileComponent component : components)
+        {
+        	component.read(nbtTags);
+        }
     }
 
 	@Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
         nbtTags.setInteger("facing", facing);
+        
+        for(ITileComponent component : components)
+        {
+        	component.write(nbtTags);
+        }
     }
 
 	@Override

@@ -23,6 +23,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation));
+        guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.guiLocation));
     }
 
     @Override

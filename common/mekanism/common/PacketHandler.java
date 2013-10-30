@@ -74,15 +74,10 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void registerPacket(Class<? extends IMekanismPacket> packetClass)
 	{
-		for(Class<? extends IMekanismPacket> iteration : packets)
+		if(!packets.contains(packetClass))
 		{
-			if(iteration == packetClass)
-			{
-				return;
-			}
+			packets.add(packetClass);
 		}
-		
-		packets.add(packetClass);
 	}
 	
 	/**

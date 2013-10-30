@@ -5,6 +5,7 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 
 import mekanism.api.IConfigurable;
+import mekanism.api.IEjector;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -115,8 +116,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
-        
-        upgradeComponent.read(nbtTags);
 
         operatingTicks = nbtTags.getInteger("operatingTicks");
         clientActive = isActive = nbtTags.getBoolean("isActive");
@@ -128,6 +127,8 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         	{
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
+        	
+        	ejectorComponent.refreshSides();
         }
     }
 
@@ -135,8 +136,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        upgradeComponent.write(nbtTags);
         
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("isActive", isActive);
@@ -155,8 +154,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		super.handlePacketData(dataStream);
 		
-		upgradeComponent.read(dataStream);;
-		
 		operatingTicks = dataStream.readInt();
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -173,8 +170,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
-		upgradeComponent.write(data);
 		
 		data.add(operatingTicks);
 		data.add(isActive);
@@ -405,5 +400,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;
+	}
+	
+	@Override
+	public IEjector getEjector()
+	{
+		return ejectorComponent;
 	}
 }

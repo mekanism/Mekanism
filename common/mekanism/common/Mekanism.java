@@ -53,6 +53,7 @@ import mekanism.common.item.ItemStopwatch;
 import mekanism.common.item.ItemStorageTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.ItemWeatherOrb;
+import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketControlPanel;
 import mekanism.common.network.PacketDataRequest;
@@ -67,6 +68,7 @@ import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTime;
@@ -1155,6 +1157,8 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketLogisticalSorterGui.class);
 		PacketHandler.registerPacket(PacketNewFilter.class);
 		PacketHandler.registerPacket(PacketEditFilter.class);
+		PacketHandler.registerPacket(PacketConfigurationUpdate.class);
+		PacketHandler.registerPacket(PacketSimpleGui.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

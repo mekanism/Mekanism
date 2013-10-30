@@ -26,6 +26,7 @@ public class GuiFactory extends GuiMekanism
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
     }
 
     @Override

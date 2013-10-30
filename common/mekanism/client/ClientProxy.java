@@ -4,8 +4,10 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
+import mekanism.api.IConfigurable;
 import mekanism.api.gas.EnumGas;
 import mekanism.client.gui.GuiCombiner;
+import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDynamicTank;
@@ -16,10 +18,7 @@ import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiGasTank;
-import mekanism.client.gui.GuiItemStackFilter;
-import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiMetallurgicInfuser;
-import mekanism.client.gui.GuiOreDictFilter;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
@@ -78,7 +77,6 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
@@ -301,7 +299,7 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
-				//OPEN
+				return new GuiConfiguration((IConfigurable)tileEntity);
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

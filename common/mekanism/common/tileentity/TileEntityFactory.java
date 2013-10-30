@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.IEjector;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -88,6 +89,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {4, 5, 6}));
 		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {7, 8, 9}));
+		
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
 	}
 	
 	public TileEntityFactory(FactoryTier type, MachineType machine)
@@ -98,8 +101,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		inventory = new ItemStack[4+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
-		
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
 	}
 	
 	@Override
@@ -398,8 +399,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		super.handlePacketData(dataStream);
 		
-		upgradeComponent.read(dataStream);
-		
 		isActive = dataStream.readBoolean();
 		recipeType = dataStream.readInt();
 		recipeTicks = dataStream.readInt();
@@ -423,8 +422,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     {
         super.readFromNBT(nbtTags);
         
-        upgradeComponent.read(nbtTags);
-        
         clientActive = isActive = nbtTags.getBoolean("isActive");
         recipeType = nbtTags.getInteger("recipeType");
         recipeTicks = nbtTags.getInteger("recipeTicks");
@@ -441,6 +438,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         	{
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
+        	
+        	ejectorComponent.refreshSides();
         }
     }
 
@@ -448,8 +447,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        upgradeComponent.write(nbtTags);
         
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("recipeType", recipeType);
@@ -473,8 +470,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
-		upgradeComponent.write(data);
 		
 		data.add(isActive);
 		data.add(recipeType);
@@ -749,5 +744,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;
+	}
+	
+	@Override
+	public IEjector getEjector()
+	{
+		return ejectorComponent;
 	}
 }
