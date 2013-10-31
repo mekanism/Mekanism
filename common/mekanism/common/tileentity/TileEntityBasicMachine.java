@@ -226,7 +226,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 * @return
 	 */
 	public int getScaledProgress(int i)
-	{
+	{	
 		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
 	

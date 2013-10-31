@@ -6,6 +6,7 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
@@ -157,6 +158,21 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     			((IUpgradeManagement)tileEntity).setSpeedMultiplier(getSpeedMultiplier(stack));
     		}
     		
+    		if(tileEntity instanceof IConfigurable)
+    		{
+    			IConfigurable config = (IConfigurable)tileEntity;
+    			
+    			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasSideData"))
+    			{
+    				config.getEjector().setEjecting(stack.stackTagCompound.getBoolean("ejecting"));
+    				
+    				for(int i = 0; i < 6; i++)
+    				{
+    					config.getConfiguration()[i] = stack.stackTagCompound.getByte("config"+i);
+    				}
+    			}
+    		}
+    		
     		if(tileEntity instanceof TileEntityFactory)
     		{
     			((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
@@ -268,7 +284,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack) data[0];
+			ItemStack itemStack = (ItemStack)data[0];
 
 			if(itemStack.stackTagCompound == null) 
 			{ 
@@ -302,7 +318,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack) data[0];
+			ItemStack itemStack = (ItemStack)data[0];
 
 			if(itemStack.stackTagCompound == null) 
 			{ 

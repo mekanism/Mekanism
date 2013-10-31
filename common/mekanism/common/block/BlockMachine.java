@@ -3,6 +3,7 @@ package mekanism.common.block;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
@@ -54,6 +55,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
@@ -749,6 +751,25 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
 	        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
 	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
+    	}
+    	
+    	if(tileEntity instanceof IConfigurable)
+    	{
+    		IConfigurable config = (IConfigurable)tileEntity;
+    		
+    		if(itemStack.stackTagCompound == null)
+    		{
+    			itemStack.setTagCompound(new NBTTagCompound());
+    		}
+    		
+    		itemStack.stackTagCompound.setBoolean("hasSideData", true);
+    		
+    		itemStack.stackTagCompound.setBoolean("ejecting", config.getEjector().isEjecting());
+    		
+            for(int i = 0; i < 6; i++)
+            {
+            	itemStack.stackTagCompound.setByte("config"+i, config.getConfiguration()[i]);
+            }
     	}
         
     	if(tileEntity instanceof TileEntityElectricBlock)

@@ -78,7 +78,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					IInventory inventory = (IInventory)back;
 					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)front;
 					
-					SlotInfo inInventory = TransporterUtils.takeItem(inventory, facing);
+					SlotInfo inInventory = TransporterUtils.takeItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
 					
 					if(inInventory != null && inInventory.itemStack != null)
 					{

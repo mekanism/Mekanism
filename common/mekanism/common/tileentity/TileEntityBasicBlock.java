@@ -4,6 +4,7 @@ import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
@@ -33,7 +34,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	
 	public boolean doAutoSync = true;
 	
-	public Set<ITileComponent> components = new HashSet<ITileComponent>();
+	public List<ITileComponent> components = new ArrayList<ITileComponent>();
 	
 	@Override
 	public void updateEntity()
