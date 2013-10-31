@@ -334,8 +334,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	{
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
-        	
-        	ejectorComponent.refreshSides();
         }
     }
     

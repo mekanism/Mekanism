@@ -438,8 +438,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
         	{
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
-        	
-        	ejectorComponent.refreshSides();
         }
     }
 

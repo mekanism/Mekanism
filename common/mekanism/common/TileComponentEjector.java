@@ -22,8 +22,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 {
 	public TileEntityContainerBlock tileEntity;
 	
-	public List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
-	
 	public boolean ejecting;
 	
 	public SideData sideData;
@@ -39,29 +37,13 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		tile.components.add(this);
 	}
 	
-	@Override
-	public void refreshSides()
-	{
-		outputSides.clear();
-		
-		IConfigurable configurable = (IConfigurable)tileEntity;
-		
-		for(int i = 0; i < configurable.getConfiguration().length; i++)
-		{
-			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
-			{
-				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
-			}
-		}
-	}
-	
-	private List<ForgeDirection> getTrackedOutputs(int index)
+	private List<ForgeDirection> getTrackedOutputs(int index, List<ForgeDirection> dirs)
 	{
 		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
 		
 		for(int i = trackers[index]+1; i < trackers[index]+6; i++)
 		{
-			for(ForgeDirection side : outputSides)
+			for(ForgeDirection side : dirs)
 			{
 				if(ForgeDirection.getOrientation(i%6) == side)
 				{
@@ -81,6 +63,18 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			return;
 		}
 		
+		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
+		
+		IConfigurable configurable = (IConfigurable)tileEntity;
+		
+		for(int i = 0; i < configurable.getConfiguration().length; i++)
+		{
+			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
+			{
+				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+			}
+		}
+		
 		for(int index = 0; index < sideData.availableSlots.length; index++)
 		{
 			int slotID = sideData.availableSlots[index];
@@ -91,7 +85,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 			
 			ItemStack stack = tileEntity.inventory[slotID];
-			List<ForgeDirection> outputs = getTrackedOutputs(index);
+			List<ForgeDirection> outputs = getTrackedOutputs(index, outputSides);
 			
 			for(ForgeDirection side : outputs)
 			{

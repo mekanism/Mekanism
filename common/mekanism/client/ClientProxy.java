@@ -299,7 +299,7 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
-				return new GuiConfiguration((IConfigurable)tileEntity);
+				return new GuiConfiguration(player, (IConfigurable)tileEntity);
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

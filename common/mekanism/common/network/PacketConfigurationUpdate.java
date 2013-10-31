@@ -59,7 +59,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 			{
 				IConfigurable config = (IConfigurable)tile;
 				config.getEjector().setEjecting(!config.getEjector().isEjecting());
-				System.out.println("Yup");
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);
 			}
 		}
 		else if(packetType == ConfigurationPacket.SIDE_DATA)

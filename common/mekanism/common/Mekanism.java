@@ -55,7 +55,6 @@ import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.ItemWeatherOrb;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
-import mekanism.common.network.PacketControlPanel;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketEditFilter;
@@ -1144,7 +1143,6 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketElectricChest.class);
 		PacketHandler.registerPacket(PacketElectricBowState.class);
 		PacketHandler.registerPacket(PacketConfiguratorState.class);
-		PacketHandler.registerPacket(PacketControlPanel.class);
 		PacketHandler.registerPacket(PacketTileEntity.class);
 		PacketHandler.registerPacket(PacketPortalFX.class);
 		PacketHandler.registerPacket(PacketDataRequest.class);

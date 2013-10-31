@@ -127,8 +127,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
         	{
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
-        	
-        	ejectorComponent.refreshSides();
         }
     }
 
