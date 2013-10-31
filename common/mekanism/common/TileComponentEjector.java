@@ -41,7 +41,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	{
 		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
 		
-		for(int i = trackers[index]+1; i < trackers[index]+6; i++)
+		for(int i = trackers[index]+1; i <= trackers[index]+6; i++)
 		{
 			for(ForgeDirection side : dirs)
 			{
@@ -90,15 +90,20 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			for(ForgeDirection side : outputs)
 			{
 				TileEntity tile = Object3D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.worldObj);
+				ItemStack prev = stack.copy();
 				
 				if(tile instanceof IInventory)
 				{
 					stack = TransporterUtils.putStackInInventory((IInventory)tile, stack, side.ordinal());
 				}
 				
-				if(stack == null)
+				if(stack == null || prev.stackSize != stack.stackSize)
 				{
 					trackers[index] = side.ordinal();
+				}
+				
+				if(stack == null)
+				{
 					break;
 				}
 			}
