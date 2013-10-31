@@ -1,6 +1,11 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
@@ -16,9 +21,10 @@ import mekanism.common.transporter.OreDictFilter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -34,6 +40,10 @@ public class GuiLogisticalSorter extends GuiMekanism
 	public boolean isDragging = false;
 	
 	public int dragOffset = 0;
+	
+	public int stackSwitch = 0;
+	
+	public Map<OreDictFilter, StackData> oreDictStacks = new HashMap<OreDictFilter, StackData>();
 	
 	public float scroll;
 	
@@ -57,6 +67,69 @@ public class GuiLogisticalSorter extends GuiMekanism
 		}
 		
 		return (int)((tileEntity.filters.size()*scroll) - ((4F/(float)tileEntity.filters.size()))*scroll);
+	}
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		if(stackSwitch > 0)
+		{
+			stackSwitch--;
+		}
+		
+		if(stackSwitch == 0)
+		{
+			for(Map.Entry<OreDictFilter, StackData> entry : oreDictStacks.entrySet())
+			{
+				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0)
+				{
+					if(entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size()-1)
+					{
+						entry.getValue().stackIndex = 0;
+					}
+					else if(entry.getValue().stackIndex < entry.getValue().iterStacks.size()-1)
+					{
+						entry.getValue().stackIndex++;
+					}
+					
+					entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
+				}
+			}
+			
+			stackSwitch = 20;
+		}
+		else {
+			for(Map.Entry<OreDictFilter, StackData> entry : oreDictStacks.entrySet())
+			{
+				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
+				{
+					entry.getValue().renderStack = null;
+				}
+			}
+		}
+		
+		Set<OreDictFilter> filtersVisible = new HashSet<OreDictFilter>();
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(tileEntity.filters.get(getFilterIndex()+i) instanceof OreDictFilter)
+			{
+				filtersVisible.add((OreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
+			}
+		}
+		
+		for(TransporterFilter filter : tileEntity.filters)
+		{
+			if(filter instanceof OreDictFilter && !filtersVisible.contains(filter))
+			{
+				if(oreDictStacks.containsKey(filter))
+				{
+					oreDictStacks.remove(filter);
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -190,13 +263,40 @@ public class GuiLogisticalSorter extends GuiMekanism
 				
 				if(filter instanceof ItemStackFilter)
 				{
-					fontRenderer.drawString("ItemStack Filter", 58, yStart + 2, 0x404040);
-					fontRenderer.drawString("Color: " + (filter.color != null ? filter.color.getName() : "None"), 58, yStart + 11, 0x404040);
+					ItemStackFilter itemFilter = (ItemStackFilter)filter;
+					
+					if(itemFilter.itemType != null)
+					{
+						GL11.glPushMatrix();
+						GL11.glEnable(GL11.GL_LIGHTING);
+						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+						GL11.glDisable(GL11.GL_LIGHTING);
+						GL11.glPopMatrix();
+					}
+					
+					fontRenderer.drawString("Item Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof OreDictFilter)
 				{
-					fontRenderer.drawString("OreDict Filter", 58, yStart + 2, 0x404040);
-					fontRenderer.drawString("Color: " + (filter.color != null ? filter.color.getName() : "None"), 58, yStart + 11, 0x404040);
+					OreDictFilter oreFilter = (OreDictFilter)filter;
+					
+					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
+					
+					if(!oreDictStacks.containsKey(oreFilter))
+					{
+						updateStackList(oreFilter);
+					}
+					
+					if(oreDictStacks.get(filter).renderStack != null)
+					{
+						GL11.glPushMatrix();
+						GL11.glEnable(GL11.GL_LIGHTING);
+						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+						GL11.glDisable(GL11.GL_LIGHTING);
+						GL11.glPopMatrix();
+					}
 				}
 			}
 		}
@@ -294,5 +394,74 @@ public class GuiLogisticalSorter extends GuiMekanism
 		}
 		
 		return list;
+	}
+	
+	private void updateStackList(OreDictFilter filter)
+	{
+		if(!oreDictStacks.containsKey(filter))
+		{
+			oreDictStacks.put(filter, new StackData());
+		}
+		
+       	if(oreDictStacks.get(filter).iterStacks == null)
+    	{
+       		oreDictStacks.get(filter).iterStacks = new ArrayList<ItemStack>();
+    	}
+    	else {
+    		oreDictStacks.get(filter).iterStacks.clear();
+    	}
+    	
+    	List<String> keys = new ArrayList<String>();
+    	
+    	for(String s : OreDictionary.getOreNames())
+    	{
+    		if(filter.oreDictName.equals(s) || filter.oreDictName.equals("*"))
+    		{
+    			keys.add(s);
+    		}
+    		else if(filter.oreDictName.endsWith("*") && !filter.oreDictName.startsWith("*"))
+    		{
+    			if(s.startsWith(filter.oreDictName.substring(0, filter.oreDictName.length()-1)))
+    			{
+    				keys.add(s);
+    			}
+    		}
+    		else if(filter.oreDictName.startsWith("*") && !filter.oreDictName.endsWith("*"))
+    		{
+    			if(s.endsWith(filter.oreDictName.substring(1)))
+    			{
+    				keys.add(s);
+    			}
+    		}
+    		else if(filter.oreDictName.startsWith("*") && filter.oreDictName.endsWith("*"))
+    		{
+    			if(s.contains(filter.oreDictName.substring(1, filter.oreDictName.length()-1)))
+    			{
+    				keys.add(s);
+    			}
+    		}
+    	}
+    	
+    	for(String key : keys)
+    	{
+    		for(ItemStack stack : OreDictionary.getOres(key))
+    		{
+    			ItemStack toAdd = stack.copy();
+    			
+    			if(!oreDictStacks.get(filter).iterStacks.contains(stack))
+    			{
+    				oreDictStacks.get(filter).iterStacks.add(stack.copy());
+    			}
+    		}
+    	}
+    	
+    	oreDictStacks.get(filter).stackIndex = -1;
+    }
+	
+	public static class StackData
+	{
+		public List<ItemStack> iterStacks;
+		public int stackIndex;
+		public ItemStack renderStack;
 	}
 }

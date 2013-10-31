@@ -108,7 +108,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString((isNew ? "New" : "Edit") + " ItemStack Filter", 43, 6, 0x404040);
+		fontRenderer.drawString((isNew ? "New" : "Edit") + " Item Filter", 43, 6, 0x404040);
 		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("ItemStack Details:", 35, 32, 0x00CD00);
 		
