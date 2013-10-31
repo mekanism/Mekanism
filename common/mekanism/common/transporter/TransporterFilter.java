@@ -99,7 +99,7 @@ public abstract class TransporterFilter
 	public int hashCode() 
 	{
 		int code = 1;
-		code = 31 * code + color.ordinal();
+		code = 31 * code + (color != null ? color.ordinal() : -1);
 		return code;
 	}
 	
