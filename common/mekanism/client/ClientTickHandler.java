@@ -28,6 +28,8 @@ public class ClientTickHandler implements ITickHandler
 {
 	public boolean hasNotified = false;
 	
+	public boolean preloadedSounds = false;
+	
 	public Minecraft mc = FMLClientHandler.instance().getClient();
 	
 	public static final String MIKE_CAPE = "https://dl.dropboxusercontent.com/s/ji06yflixnszcby/cape.png";
@@ -41,6 +43,18 @@ public class ClientTickHandler implements ITickHandler
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
+		if(!preloadedSounds && mc.sndManager.sndSystem != null)
+		{
+			new Thread(new Runnable() {
+				@Override
+				public void run()
+				{
+					preloadedSounds = true;
+					MekanismClient.audioHandler.preloadSounds();
+				}
+			}).start();
+		}
+		
 		if(!hasNotified && mc.theWorld != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 		{
 			MekanismUtils.checkForUpdates(mc.thePlayer);

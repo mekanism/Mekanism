@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +43,35 @@ public class SoundHandler
 	public SoundHandler()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+		
 		System.out.println("[Mekanism] Successfully set up SoundHandler.");
+	}
+	
+	public void preloadSounds()
+	{
+		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound");
+		File dir = new File(url.getFile());
+		
+		for(File file : dir.listFiles())
+		{
+			if(!file.isDirectory() && file.getName().endsWith(".ogg"))
+			{
+				preloadSound(file.getName());
+			}
+		}
+	}
+	
+	public void preloadSound(String sound)
+	{
+		String id = "pre_" + sound;
+		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
+
+		if(getSoundSystem() != null)
+		{
+			getSoundSystem().newSource(false, id, url, sound, true, 0, 0, 0, 0, 16F);
+			getSoundSystem().activate(id);
+			getSoundSystem().removeSource(id);
+		}
 	}
 	
 	/**

@@ -456,6 +456,7 @@ public class GuiLogisticalSorter extends GuiMekanism
     	}
     	
     	stackSwitch = 0;
+    	updateScreen();
     	oreDictStacks.get(filter).stackIndex = -1;
     }
 	

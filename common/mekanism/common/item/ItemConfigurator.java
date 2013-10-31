@@ -78,12 +78,6 @@ public class ItemConfigurator extends ItemEnergized
 	    			return true;
 	    		}
     		}
-    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
-    		{
-    			TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
-    			transporter.insert(new Object3D(x, y, z).getFromSide(ForgeDirection.getOrientation(side)), new ItemStack(Item.appleRed), EnumColor.RED);
-    			return true;
-    		}
     		else if(world.getBlockTileEntity(x, y, z) instanceof ITransmitter)
     		{
     			((ITransmitter)world.getBlockTileEntity(x, y, z)).fixTransmitterNetwork();
