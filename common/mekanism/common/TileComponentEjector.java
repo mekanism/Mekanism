@@ -8,6 +8,7 @@ import mekanism.api.IEjector;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.common.tileentity.TileEntityContainerBlock;
+import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
@@ -92,9 +93,16 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				TileEntity tile = Object3D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.worldObj);
 				ItemStack prev = stack.copy();
 				
-				if(tile instanceof IInventory)
+				if(tile instanceof IInventory && !(tile instanceof TileEntityLogisticalTransporter))
 				{
 					stack = TransporterUtils.putStackInInventory((IInventory)tile, stack, side.ordinal());
+				}
+				else if(tile instanceof TileEntityLogisticalTransporter)
+				{
+					if(TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, null))
+					{
+						stack = null;
+					}
 				}
 				
 				if(stack == null || prev.stackSize != stack.stackSize)

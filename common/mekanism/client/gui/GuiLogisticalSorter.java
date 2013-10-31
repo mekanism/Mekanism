@@ -238,7 +238,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {	
+    {
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -281,9 +281,6 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					OreDictFilter oreFilter = (OreDictFilter)filter;
 					
-					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
-					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
-					
 					if(!oreDictStacks.containsKey(oreFilter))
 					{
 						updateStackList(oreFilter);
@@ -297,6 +294,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
+					
+					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
 				}
 			}
 		}

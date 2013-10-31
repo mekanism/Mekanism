@@ -61,7 +61,7 @@ public class SoundHandler
 		}
 	}
 	
-	public void preloadSound(String sound)
+	private void preloadSound(String sound)
 	{
 		String id = "pre_" + sound;
 		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
