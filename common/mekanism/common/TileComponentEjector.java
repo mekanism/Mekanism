@@ -98,6 +98,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				
 				if(stack == null)
 				{
+					trackers[index] = side.ordinal();
 					break;
 				}
 			}
