@@ -42,7 +42,6 @@ import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
 import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
-import mekanism.common.tileentity.TileEntityTheoreticalElementizer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -537,11 +536,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		
-		if(Mekanism.extrasEnabled)
-		{
-			list.add(new ItemStack(i, 1, 4));
-		}
-		
 		for(RecipeType type : RecipeType.values())
 		{
 			for(Tier.FactoryTier tier : Tier.FactoryTier.values())
@@ -877,7 +871,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		OSMIUM_COMPRESSOR(1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
 		COMBINER(2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
 		CRUSHER(3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
-		THEORETICAL_ELEMENTIZER(4, "TheoreticalElementizer", 7, Mekanism.theoreticalElementizerUsage*400, TileEntityTheoreticalElementizer.class, true),
 		BASIC_FACTORY(5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
 		ADVANCED_FACTORY(6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
 		ELITE_FACTORY(7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),

@@ -31,7 +31,6 @@ import mekanism.client.gui.GuiRobitRepair;
 import mekanism.client.gui.GuiRobitSmelting;
 import mekanism.client.gui.GuiStopwatch;
 import mekanism.client.gui.GuiTeleporter;
-import mekanism.client.gui.GuiTheoreticalElementizer;
 import mekanism.client.gui.GuiWeatherOrb;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
@@ -50,7 +49,6 @@ import mekanism.client.render.tileentity.RenderLogisticalTransporter;
 import mekanism.client.render.tileentity.RenderMechanicalPipe;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderPressurizedTube;
-import mekanism.client.render.tileentity.RenderTheoreticalElementizer;
 import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
@@ -84,7 +82,6 @@ import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
-import mekanism.common.tileentity.TileEntityTheoreticalElementizer;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -227,7 +224,6 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer", new RenderTheoreticalElementizer());
 		ClientRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser", new RenderMetallurgicInfuser());
 		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
 		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
@@ -294,8 +290,6 @@ public class ClientProxy extends CommonProxy
 				return new GuiCombiner(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 6:
 				return new GuiCrusher(player.inventory, (TileEntityElectricMachine)tileEntity);
-			case 7:
-				return new GuiTheoreticalElementizer(player.inventory, (TileEntityTheoreticalElementizer)tileEntity);
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:

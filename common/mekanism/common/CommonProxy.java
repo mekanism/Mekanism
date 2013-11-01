@@ -42,7 +42,6 @@ import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
-import mekanism.common.tileentity.TileEntityTheoreticalElementizer;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -74,7 +73,6 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
 		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
 		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
-		GameRegistry.registerTileEntity(TileEntityTheoreticalElementizer.class, "TheoreticalElementizer");
 		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
 		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
 		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
@@ -141,7 +139,6 @@ public class CommonProxy
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
 	  	Mekanism.transmitterID = Mekanism.configuration.getBlock("Transmitter", 3007).getInt();
 	  	
-	  	Mekanism.extrasEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ExtrasEnabled", true).getBoolean(true);
 	  	Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);
 	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(true);

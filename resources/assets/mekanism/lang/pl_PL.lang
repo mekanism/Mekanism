@@ -4,8 +4,6 @@
 
 //Items
 tile.ObsidianTNT.name=Obsydianowe TNT
-item.Stopwatch.name=Stoper Steva
-item.WeatherOrb.name=Kula Pogody
 item.EnrichedAlloy.name=Wzbogacony Stop
 item.EnergyTablet.name=Tabletka Energi
 item.SpeedUpgrade.name=Ulepszenie Prędkości
@@ -46,7 +44,6 @@ tile.MachineBlock.EnrichmentChamber.name=Komora Wzbogacania
 tile.MachineBlock.OsmiumCompressor.name=Osmowy Kompresor
 tile.MachineBlock.Combiner.name=Combiner
 tile.MachineBlock.Crusher.name=Rozdrabniarka
-tile.MachineBlock.TheoreticalElementizer.name=Theoretical Elementizer
 tile.MachineBlock.BasicFactory.name=Podstawowa Fabryka
 tile.MachineBlock.AdvancedFactory.name=Zaawansowana Fabryka
 tile.MachineBlock.EliteFactory.name=Elitarna Fabryka

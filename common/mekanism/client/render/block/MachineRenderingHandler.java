@@ -4,15 +4,13 @@ import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
 import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelMetallurgicInfuser;
-import mekanism.client.model.ModelTheoreticalElementizer;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
@@ -25,7 +23,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 {
-	public ModelTheoreticalElementizer theoreticalElementizer = new ModelTheoreticalElementizer();
 	public ModelElectricPump electricPump = new ModelElectricPump();
 	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
 	public ModelChargepad chargepad = new ModelChargepad();
@@ -43,15 +40,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    
 	    if(block.blockID == Mekanism.machineBlockID)
 	    {
-    		if(metadata == MachineType.THEORETICAL_ELEMENTIZER.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, -0.8F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TheoreticalElementizer.png"));
-    	    	theoreticalElementizer.render(0.0560F);
-    		}
-    		else if(metadata == MachineType.ELECTRIC_PUMP.meta)
+    		if(metadata == MachineType.ELECTRIC_PUMP.meta)
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);

@@ -49,10 +49,8 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemRobit;
-import mekanism.common.item.ItemStopwatch;
 import mekanism.common.item.ItemStorageTank;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.item.ItemWeatherOrb;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketDataRequest;
@@ -178,8 +176,6 @@ public class Mekanism
 	
 	//Items
 	public static ItemElectricBow ElectricBow;
-	public static Item Stopwatch;
-	public static Item WeatherOrb;
 	public static Item EnrichedAlloy;
 	public static ItemEnergized EnergyTablet;
 	public static Item SpeedUpgrade;
@@ -215,7 +211,6 @@ public class Mekanism
 	public static Item DirtyDust;
 	
 	//General Configuration
-	public static boolean extrasEnabled = true;
 	public static boolean osmiumGenerationEnabled = true;
 	public static boolean disableBCBronzeCrafting = true;
 	public static boolean disableBCSteelCrafting = true;
@@ -443,13 +438,6 @@ public class Mekanism
 				"CAC", "cOc", "CAC", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('c'), AtomicCore, Character.valueOf('O'), MekanismUtils.getFactory(FactoryTier.ADVANCED, type)
 			}));
 		}
-		
-		if(extrasEnabled)
-		{
-			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 4), new Object[] {
-				"SGS", "GDG", "SGS", Character.valueOf('S'), EnrichedAlloy, Character.valueOf('G'), Block.glass, Character.valueOf('D'), Block.blockDiamond
-			}));
-		}
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
@@ -520,13 +508,7 @@ public class Mekanism
 		//Declarations
 		configuration.load();
 		ElectricBow = (ItemElectricBow) new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
-		
-		if(extrasEnabled == true)
-		{
-			Stopwatch = new ItemStopwatch(configuration.getItem("Stopwatch", 11202).getInt()).setUnlocalizedName("Stopwatch");
-			WeatherOrb = new ItemWeatherOrb(configuration.getItem("WeatherOrb", 11203).getInt()).setUnlocalizedName("WeatherOrb");
-		}
-		
+		//OPEN 11201-11203
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
 		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
@@ -552,13 +534,6 @@ public class Mekanism
 		
 		//Registrations
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
-	
-		if(extrasEnabled)
-		{
-			GameRegistry.registerItem(Stopwatch, "Stopwatch");
-			GameRegistry.registerItem(WeatherOrb, "WeatherOrb");
-		}
-		
 		GameRegistry.registerItem(Dust, "Dust");
 		GameRegistry.registerItem(Ingot, "Ingot");
 		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");

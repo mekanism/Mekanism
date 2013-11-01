@@ -4,8 +4,6 @@
 
 //Items
 tile.ObsidianTNT.name=黑曜石TNT
-item.Stopwatch.name=史蒂夫的怀表
-item.WeatherOrb.name=气候球
 item.EnrichedAlloy.name=富集合金
 item.EnergyTablet.name=能量板
 item.SpeedUpgrade.name=速度升级
@@ -46,7 +44,6 @@ tile.MachineBlock.EnrichmentChamber.name=富集仓E
 tile.MachineBlock.OsmiumCompressor.name=锇压缩机
 tile.MachineBlock.Combiner.name=融合机
 tile.MachineBlock.Crusher.name=粉碎机
-tile.MachineBlock.TheoreticalElementizer.name=神奇道具构建机
 tile.MachineBlock.BasicFactory.name=基础工厂
 tile.MachineBlock.AdvancedFactory.name=高级工厂
 tile.MachineBlock.EliteFactory.name=精英工厂
