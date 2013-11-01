@@ -189,6 +189,11 @@ public final class TransporterUtils
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory) inventory;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			
+			if(slots == null || slots.length == 0)
+			{
+				return false;
+			}
 
 			for(int get = 0; get <= slots.length - 1; get++) 
 			{
@@ -268,6 +273,11 @@ public final class TransporterUtils
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory) inventory;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			
+			if(slots == null || slots.length == 0)
+			{
+				return itemStack;
+			}
 
 			for(int get = 0; get <= slots.length - 1; get++) 
 			{
@@ -331,7 +341,7 @@ public final class TransporterUtils
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 
-			if(slots != null) 
+			if(slots != null && slots.length != 0) 
 			{
 				for(int get = slots.length - 1; get >= 0; get--) 
 				{
