@@ -235,7 +235,6 @@ public class Mekanism
 	public static double osmiumCompressorUsage;
 	public static double combinerUsage;
 	public static double crusherUsage;
-	public static double theoreticalElementizerUsage;
 	public static double factoryUsage;
 	public static double metallurgicInfuserUsage;
 	public static double purificationChamberUsage;

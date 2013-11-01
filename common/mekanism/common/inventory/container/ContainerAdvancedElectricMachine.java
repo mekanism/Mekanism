@@ -79,22 +79,6 @@ public class ContainerAdvancedElectricMachine extends Container
             		return null;
             	}
             }
-            else if(tileEntity.getInvName().equals("Theoretical Elementizer") && slotStack.isItemEqual(new ItemStack(Mekanism.EnrichedAlloy)))
-            {
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
-            	{
-                    if (!mergeItemStack(slotStack, 0, 1, false))
-	                {
-	                    return null;
-	                }
-            	}
-            	else {
-	            	if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
-	            	{
-	            		return null;
-	            	}
-            	}
-            }
             else if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)

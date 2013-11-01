@@ -73,7 +73,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1: Osmium Compressor
  * 2: Combiner
  * 3: Crusher
- * 4: Theoretical Elementizer
+ * 4: OPEN
  * 5: Basic Factory
  * 6: Advanced Factory
  * 7: Elite Factory

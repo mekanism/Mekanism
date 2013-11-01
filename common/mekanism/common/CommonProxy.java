@@ -160,7 +160,6 @@ public class CommonProxy
 		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 50).getDouble(50);
 		Mekanism.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50).getDouble(50);
 		Mekanism.crusherUsage = Mekanism.configuration.get("usage", "CrusherUsage", 50).getDouble(50);
-		Mekanism.theoreticalElementizerUsage = Mekanism.configuration.get("usage", "TheoreticalElementizerUsage", 80).getDouble(80);
 		Mekanism.factoryUsage = Mekanism.configuration.get("usage", "FactoryUsage", 50).getDouble(50);
 		Mekanism.metallurgicInfuserUsage = Mekanism.configuration.get("usage", "MetallurgicInfuserUsage", 50).getDouble(50);
 		Mekanism.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 50).getDouble(50);
