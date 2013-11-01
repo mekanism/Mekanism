@@ -68,11 +68,9 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTime;
 import mekanism.common.network.PacketTransmitterTransferUpdate;
 import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
 import mekanism.common.network.PacketWalkieTalkieState;
-import mekanism.common.network.PacketWeather;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityGasTank;
@@ -1115,8 +1113,6 @@ public class Mekanism
 		//Packet registrations
 		PacketHandler.registerPacket(PacketRobit.class);
 		PacketHandler.registerPacket(PacketTransmitterTransferUpdate.class);
-		PacketHandler.registerPacket(PacketTime.class);
-		PacketHandler.registerPacket(PacketWeather.class);
 		PacketHandler.registerPacket(PacketElectricChest.class);
 		PacketHandler.registerPacket(PacketElectricBowState.class);
 		PacketHandler.registerPacket(PacketConfiguratorState.class);

@@ -299,18 +299,6 @@ public final class MekanismUtils
 	}
 	
 	/**
-	 * Sets the defined world's time to the defined time.
-	 * @param world - world to set time
-	 * @param paramInt - hour to set time to
-	 */
-	public static void setHourForward(World world, int paramInt)
-	{
-		long l1 = world.getWorldTime() / 24000L * 24000L;
-	    long l2 = l1 + 24000L + paramInt * 1000;
-	    world.setWorldTime(l2);
-	}
-	
-	/**
 	 * Creates a fake explosion at the declared player, with only sounds and effects. No damage is caused to either blocks or the player.
 	 * @param entityplayer - player to explode
 	 */

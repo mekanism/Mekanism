@@ -29,9 +29,7 @@ import mekanism.client.gui.GuiRobitInventory;
 import mekanism.client.gui.GuiRobitMain;
 import mekanism.client.gui.GuiRobitRepair;
 import mekanism.client.gui.GuiRobitSmelting;
-import mekanism.client.gui.GuiStopwatch;
 import mekanism.client.gui.GuiTeleporter;
-import mekanism.client.gui.GuiWeatherOrb;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
@@ -276,12 +274,8 @@ public class ClientProxy extends CommonProxy
 		
 		switch(ID)
 		{
-			case 0:
-				return new GuiStopwatch(player);
 			case 1:
 				return new GuiCredits();
-			case 2:
-				return new GuiWeatherOrb(player);
 			case 3:
 				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
