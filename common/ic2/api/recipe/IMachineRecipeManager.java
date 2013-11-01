@@ -17,6 +17,10 @@ public interface IMachineRecipeManager {
 	 * @param input Recipe input
 	 * @param metadata meta data for additional recipe properties, may be null
 	 * @param outputs Recipe outputs, zero or more depending on the machine
+	 * 
+	 * For the thermal centrifuge   @param metadata meta data {"minHeat": 1-xxx}
+	 * For the ore washing plant  @param metadata meta data  {"amount": 1-8000}
+	 * 
 	 */
 	public void addRecipe(IRecipeInput input, NBTTagCompound metadata, ItemStack... outputs);
 
