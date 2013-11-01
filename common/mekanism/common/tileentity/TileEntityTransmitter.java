@@ -46,4 +46,7 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	{
 		return getTransmitterNetwork(true);
 	}
+	
+	@Override
+	public void chunkLoad() {}
 }

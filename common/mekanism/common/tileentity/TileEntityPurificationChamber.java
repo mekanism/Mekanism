@@ -74,6 +74,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 		{
 	    	int rejects = 0;
 	    	int neededGas = MAX_SECONDARY_ENERGY-secondaryEnergyStored;
+	    	
 	    	if(amount <= neededGas)
 	    	{
 	    		secondaryEnergyStored += amount;
@@ -83,6 +84,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	    		secondaryEnergyStored += neededGas;
 	    		rejects = amount-neededGas;
 	    	}
+	    	
 	    	return rejects;
 		}
 		
@@ -110,6 +112,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 					{
 						int received = 0;
 						int gasNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
+						
 						if(item.getRate() <= gasNeeded)
 						{
 							received = item.removeGas(inventory[1], EnumGas.OXYGEN, item.getRate());

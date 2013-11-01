@@ -150,6 +150,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		}
 		
 		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
 	}
 	
 	/**

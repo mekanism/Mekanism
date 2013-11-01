@@ -154,7 +154,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int height = Math.round(entityliving.rotationPitch);
         int change = 3;
+        
+        if(world.getBlockMetadata(x, y, z) == MachineType.LOGISTICAL_SORTER.meta)
+        {
+            if(height >= 65)
+            {
+            	change = 1;
+            }
+            else if(height <= -65)
+            {
+            	change = 0;
+            }
+        }
         
         switch(side)
         {

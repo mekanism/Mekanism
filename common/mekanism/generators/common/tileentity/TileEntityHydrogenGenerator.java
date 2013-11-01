@@ -195,27 +195,6 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		data.add(hydrogenStored);
 		return data;
 	}
-
-	@Override
-	public double getEnvironmentBoost() 
-	{
-		int boost = 1;
-		
-		if(yCoord > 64 && yCoord < 80)
-		{
-			boost = 2;
-		}
-		else if(yCoord > 80 && yCoord < 96)
-		{
-			boost = 3;
-		}
-		else if(yCoord > 96)
-		{
-			boost = 4;
-		}
-		
-		return boost;
-	}
 	
 	@Override
 	public float getVoltage()

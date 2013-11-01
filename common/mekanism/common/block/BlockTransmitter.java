@@ -327,11 +327,6 @@ public class BlockTransmitter extends Block
 			{
 				((ITransmitter)tileEntity).refreshTransmitterNetwork();
 			}
-			
-			if(tileEntity instanceof TileEntityUniversalCable)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
-			}
 		}
 	}
 	

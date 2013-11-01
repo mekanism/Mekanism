@@ -88,7 +88,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				}
 			}
 			
-			setEnergy(electricityStored + getEnvironmentBoost());
+			setEnergy(electricityStored + getBoost());
 			
 			if(canOperate())
 			{	
@@ -161,8 +161,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		return false;
 	}
 	
-	@Override
-	public double getEnvironmentBoost()
+	public double getBoost()
 	{
 		int boost = 0;
 		

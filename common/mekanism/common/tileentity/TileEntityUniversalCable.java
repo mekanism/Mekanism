@@ -1,5 +1,6 @@
 package mekanism.common.tileentity;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
@@ -9,9 +10,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import universalelectricity.core.block.IConductor;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.grid.IElectricityNetwork;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -22,6 +20,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import universalelectricity.core.block.IConductor;
+import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -35,6 +36,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	public IElectricityNetwork ueNetwork;
 	
 	public double energyScale;
+	
+	public boolean registeredIC2 = false;
 	
 	public TileEntityUniversalCable()
 	{
@@ -102,9 +105,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			getTransmitterNetwork().split(this);
 			
-			if(Mekanism.hooks.IC2Loaded)
+			if(registeredIC2)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+				registeredIC2 = false;
 			}
 		}
 		
@@ -136,6 +140,19 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			}
 			
 			getTransmitterNetwork().refresh();
+		}
+	}
+	
+	@Override
+	public void chunkLoad()
+	{
+		if(!worldObj.isRemote)
+		{
+			if(!registeredIC2)
+			{
+				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				registeredIC2 = true;
+			}
 		}
 	}
 

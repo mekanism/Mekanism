@@ -81,6 +81,16 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.registerSound(this);
+			
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0)
+				{
+					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				}
+			}
 		}
 			
 		if(!worldObj.isRemote)
@@ -110,6 +120,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 					else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 					{
 						PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
+						
 						if(receiver != null)
 						{
 			            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
@@ -200,12 +211,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	/**
-	 * Gets the boost this generator can receive in it's current location.
-	 * @return environmental boost
-	 */
-	public abstract double getEnvironmentBoost();
-	
-	/**
 	 * Whether or not this generator can operate.
 	 * @return if the generator can operate
 	 */
@@ -253,14 +258,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public double getOutputEnergyUnitsPerTick()
 	{
 		return output*Mekanism.TO_IC2;
-	}
-	
-	@Override
-	public void setFacing(short orientation)
-	{
-		super.setFacing(orientation);
-		
-		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismGenerators.generatorID);
 	}
 	
 	@Override
@@ -331,7 +328,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(updateDelay == 0)
+		{
+			updateDelay = Mekanism.UPDATE_DELAY;
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 	
 	@Override
@@ -350,7 +351,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     {
         super.readFromNBT(nbtTags);
 
-        clientActive = isActive = nbtTags.getBoolean("isActive");
+        isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 

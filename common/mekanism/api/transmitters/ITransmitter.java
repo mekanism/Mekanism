@@ -38,6 +38,11 @@ public interface ITransmitter<N>
 	public void refreshTransmitterNetwork();
 	
 	/**
+	 * Called when the chunk this transmitter is in is loaded.
+	 */
+	public void chunkLoad();
+	
+	/**
 	 * Remove this transmitter from its network.
 	 */
 	public void removeFromTransmitterNetwork();

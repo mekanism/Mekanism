@@ -185,18 +185,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					if(((IGasAcceptor)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputType))
 					{
-						int sendingGas = 0;
-						if(getGas(outputType) >= output)
-						{
-							sendingGas = output;
-						}
-						else if(getGas(outputType) < output)
-						{
-							sendingGas = getGas(outputType);
-						}
-						
-						int rejects = ((IGasAcceptor)tileEntity).transferGasToAcceptor(sendingGas, outputType);
-						
+						int sendingGas = Math.min(getGas(outputType), output);
+						int rejects = ((IGasAcceptor)tileEntity).transferGasToAcceptor(Math.min(getGas(outputType), output), outputType);
 						setGas(outputType, getGas(outputType) - (sendingGas - rejects));
 					}
 				}

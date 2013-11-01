@@ -91,7 +91,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + getEnvironmentBoost());
+				setEnergy(electricityStored + getBoost());
 			}
 			else {
 				setActive(false);
@@ -127,8 +127,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		return electricityStored < MAX_ELECTRICITY && seesSun && MekanismUtils.canFunction(this);
 	}
 	
-	@Override
-	public double getEnvironmentBoost()
+	public double getBoost()
 	{
 		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier() : 1)) : 0;
 	}

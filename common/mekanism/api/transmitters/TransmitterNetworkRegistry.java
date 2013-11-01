@@ -132,25 +132,26 @@ public class TransmitterNetworkRegistry implements ITickHandler
 
 		public synchronized void refreshChunk(Chunk c)
 		{
-		    if(c != null)
-            {
-                Iterator it = c.chunkTileEntityMap.entrySet().iterator();
-                
-                while(it.hasNext())
-                {
-                    Object obj = it.next();
-                    
-                    if(obj instanceof TileEntity)
-                    {
-                        TileEntity tileEntity = (TileEntity)obj;
-
-                        if(tileEntity instanceof ITransmitter)
-                        {
-                            ((ITransmitter)tileEntity).refreshTransmitterNetwork();
-                        }
-                    }
-                }
-            }
+			try {
+			    if(c != null)
+	            {
+	                for(Object obj : c.chunkTileEntityMap.values())
+	                {
+	                    if(obj instanceof TileEntity)
+	                    {
+	                        TileEntity tileEntity = (TileEntity)obj;
+	
+	                        if(tileEntity instanceof ITransmitter)
+	                        {
+	                            ((ITransmitter)tileEntity).refreshTransmitterNetwork();
+	                            ((ITransmitter)tileEntity).chunkLoad();
+	                        }
+	                    }
+	                }
+	            }
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

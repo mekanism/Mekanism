@@ -80,12 +80,6 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public double getEnvironmentBoost() 
-	{
-		return getMultiplier();
-	}
-
-	@Override
 	public boolean canOperate() 
 	{
 		return electricityStored < MAX_ELECTRICITY && getMultiplier() > 0 && MekanismUtils.canFunction(this);

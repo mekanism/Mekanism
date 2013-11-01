@@ -201,12 +201,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         nbtTags.setInteger("bioFuelStored", bioFuelSlot.fluidStored);
     }
 
-	@Override
-	public double getEnvironmentBoost()
-	{
-		return 0;
-	}
-
 	public int getFuel(ItemStack itemstack)
 	{
 		return itemstack.itemID == MekanismGenerators.BioFuel.itemID ? 200 : 0;

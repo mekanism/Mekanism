@@ -86,13 +86,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			
 			handleSecondaryFuel();
 			
-			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), SECONDARY_ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 			{
 			    setActive(true);
 			    
 				operatingTicks++;
 				
-				secondaryEnergyStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), SECONDARY_ENERGY_PER_TICK);
+				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
 				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				
 				if((operatingTicks) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
