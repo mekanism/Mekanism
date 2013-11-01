@@ -902,7 +902,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		
 		public static MachineType getFromMetadata(int meta)
 		{
-			return values()[meta];
+			for(MachineType type : values())
+			{
+				if(type.meta == meta)
+				{
+					return type;
+				}
+			}
+			
+			return null;
 		}
 		
 		public TileEntity create()
