@@ -37,6 +37,8 @@ public class SoundHandler
 	/** The current base volume Minecraft is using. */
 	public float masterVolume = 0;
 	
+	public Minecraft mc = Minecraft.getMinecraft();
+	
 	/** 
 	 * SoundHandler -- a class that handles all Sounds used by Mekanism.
 	 */
@@ -59,6 +61,8 @@ public class SoundHandler
 				preloadSound(file.getName());
 			}
 		}
+		
+		mc.sndManager.addSound("mekanism:etc/Click.ogg");
 	}
 	
 	private void preloadSound(String sound)

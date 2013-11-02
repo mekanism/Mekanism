@@ -390,7 +390,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return true;
 	}

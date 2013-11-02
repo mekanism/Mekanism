@@ -175,7 +175,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return false;
 	}

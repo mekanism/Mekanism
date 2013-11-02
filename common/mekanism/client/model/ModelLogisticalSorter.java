@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -189,7 +190,7 @@ public class ModelLogisticalSorter extends ModelBase
 		setRotation(DecorPlate, 0F, 0F, 0F);
 	}
 	
-	public void render(float size)
+	public void render(float size, boolean active)
 	{
 		LeftThing.render(size);
 		RightThing.render(size);
@@ -197,6 +198,12 @@ public class ModelLogisticalSorter extends ModelBase
 		TopPlate.render(size);
 		LeftPlate.render(size);
 		RightPlate.render(size);
+		
+		if(active)
+		{
+			MekanismRenderer.glowOn();
+		}
+		
 		BR1Block1.render(size);
 		BL1Block1.render(size);
 		TL1Block1.render(size);
@@ -205,6 +212,12 @@ public class ModelLogisticalSorter extends ModelBase
 		BL1Block2.render(size);
 		TL1Block2.render(size);
 		TR1Block2.render(size);
+		
+		if(active)
+		{
+			MekanismRenderer.glowOff();
+		}
+		
 		PoleBR.render(size);
 		PoleTL.render(size);
 		PoleTR.render(size);

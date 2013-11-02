@@ -61,7 +61,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		{
 			delayTicks = Math.max(0, delayTicks-1);
 			
-			if(delayTicks == 8)
+			if(delayTicks == 6)
 			{
 				setActive(false);
 			}
@@ -94,6 +94,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
 						{
 							inventory.setInventorySlotContents(inInventory.slotID, null);
+							setActive(true);
 						}
 						else {
 							inventory.setInventorySlotContents(inInventory.slotID, inInventory.itemStack);
@@ -361,6 +362,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
     		
+    		if(active)
+    		{
+    			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "mekanism:etc.Click", 0.3F, 1);
+    		}
+    		
     		clientActive = active;
     	}
     }
@@ -372,9 +378,15 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     }
     
     @Override
-    public boolean hasVisual()
+    public boolean renderUpdate()
     {
     	return true;
+    }
+    
+    @Override
+    public boolean lightUpdate()
+    {
+    	return false;
     }
     
 	@Override

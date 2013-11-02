@@ -106,7 +106,13 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return false;
 	}

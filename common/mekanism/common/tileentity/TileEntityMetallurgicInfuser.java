@@ -105,6 +105,16 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.registerSound(this);
+			
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0)
+				{
+					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				}
+			}
 		}
 		
 		if(!worldObj.isRemote)
@@ -409,7 +419,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			sideConfig[i] = dataStream.readByte();
 		}
 		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(updateDelay == 0)
+		{
+			updateDelay = Mekanism.UPDATE_DELAY;
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 	
 	@Override
@@ -616,7 +630,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return true;
 	}

@@ -297,7 +297,13 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return true;
 	}

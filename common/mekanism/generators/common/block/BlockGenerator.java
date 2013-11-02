@@ -149,7 +149,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		
 		if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 		{
-			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).hasVisual())
+			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 			{
 				return 15;
 			}

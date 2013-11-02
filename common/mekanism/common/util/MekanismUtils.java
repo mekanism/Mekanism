@@ -604,13 +604,15 @@ public final class MekanismUtils
      */
     public static void updateBlock(World world, int x, int y, int z)
     {
-    	if(world.getBlockTileEntity(x, y, z) instanceof IActiveState && !((IActiveState)world.getBlockTileEntity(x, y, z)).hasVisual())
+    	if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).renderUpdate())
     	{
-    		return;
+    		world.markBlockForRenderUpdate(x, y, z);
     	}
     	
-		world.markBlockForRenderUpdate(x, y, z);
-		world.updateAllLightTypes(x, y, z);
+    	if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).lightUpdate())
+    	{
+    		world.updateAllLightTypes(x, y, z);
+    	}
     }
     
     /**
