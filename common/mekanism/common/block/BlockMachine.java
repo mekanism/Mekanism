@@ -141,12 +141,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 		icons[11][0] = register.registerIcon("mekanism:Teleporter");
-		icons[15][0] = register.registerIcon("mekanism:LogisticalSorterSideOn");
-		icons[15][1] = register.registerIcon("mekanism:LogisticalSorterSideOff");
-		icons[15][2] = register.registerIcon("mekanism:LogisticalSorterFrontOn");
-		icons[15][3] = register.registerIcon("mekanism:LogisticalSorterFrontOff");
-		icons[15][4] = register.registerIcon("mekanism:LogisticalSorterBackOn");
-		icons[15][5] = register.registerIcon("mekanism:LogisticalSorterBackOff");
 	}
 	
 	@Override
@@ -169,12 +163,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
             }
         }
         
-        switch(side)
+        if(change != 0 && change != 1)
         {
-        	case 0: change = 2; break;
-        	case 1: change = 5; break;
-        	case 2: change = 3; break;
-        	case 3: change = 4; break;
+	        switch(side)
+	        {
+	        	case 0: change = 2; break;
+	        	case 1: change = 5; break;
+	        	case 2: change = 3; break;
+	        	case 3: change = 4; break;
+	        }
         }
         
         tileEntity.setFacing((short)change);
@@ -365,20 +362,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		return icons[11][0];
     	}
-    	else if(meta == 15)
-    	{
-    		if(side == 1)
-    		{
-    			return icons[15][3];
-    		}
-    		else if(side == 0)
-    		{
-    			return icons[15][5];
-    		}
-    		else {
-    			return icons[15][1];
-    		}
-    	}
     	
     	return null;
     }
@@ -515,20 +498,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	else if(metadata == 11)
     	{
     		return icons[11][0];
-    	}
-    	else if(metadata == 15)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][2] : icons[15][3];
-    		}
-    		else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
-    		{
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][4] : icons[15][5];
-    		}
-    		else {
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[15][0] : icons[15][1];
-    		}
     	}
     	
     	return null;
@@ -894,7 +863,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		ELECTRIC_PUMP(12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
 		ELECTRIC_CHEST(13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
 		CHARGEPAD(14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
-		LOGISTICAL_SORTER(15, "LogisticalSorter", -1, 12000, TileEntityLogisticalSorter.class, false);
+		LOGISTICAL_SORTER(15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true);
 		
 		public int meta;
 		public String name;

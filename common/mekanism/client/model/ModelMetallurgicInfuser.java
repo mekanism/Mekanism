@@ -165,28 +165,6 @@ public class ModelMetallurgicInfuser extends ModelBase
 		TUBE.render(size);
 	}
 	
-	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-	{
-		this.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		PANEL.render(f5);
-		MACHINE.render(f5);
-		CENTER_CIRCUIT.render(f5);
-		PIPE_1.render(f5);
-		PIPE_2.render(f5);
-		GUI_STAND.render(f5);
-		GUI_SCREEN.render(f5);
-		PIPE_2_TOP.render(f5);
-		PIPE_1_TOP.render(f5);
-		FRONT_PANEL.render(f5);
-		WIRE_1.render(f5);
-		WIRE_2.render(f5);
-		SIDE_WIRE_1.render(f5);
-		SIDE_WIRE_2.render(f5);
-		VERTICAL_WIRE.render(f5);
-		TUBE.render(f5);
-	}
-	
 	private void setRotation(ModelRenderer model, float x, float y, float z) 
 	{
 		model.rotateAngleX = x;

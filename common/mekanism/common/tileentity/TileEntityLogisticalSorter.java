@@ -1,12 +1,10 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
@@ -29,7 +27,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IEnergySink, IStrictEnergyAcceptor
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 	
@@ -93,13 +91,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							}
 						}
 						
-						double needed = getEnergyNeeded(inInventory.itemStack);
-						
-						if(getEnergy() >= needed && TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
+						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
 						{
-							setEnergy(getEnergy()-getEnergyNeeded(inInventory.itemStack));
 							inventory.setInventorySlotContents(inInventory.slotID, null);
-							setActive(true);
 						}
 						else {
 							inventory.setInventorySlotContents(inInventory.slotID, inInventory.itemStack);
@@ -243,16 +237,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 	}
 	
-	private double getEnergyNeeded(ItemStack itemStack)
-	{
-		if(itemStack == null)
-		{
-			return 0;
-		}
-		
-		return itemStack.stackSize*ENERGY_PER_ITEM;
-	}
-	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -392,66 +376,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     {
     	return true;
     }
-
+    
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
+	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
-		return true;
+		return EnumSet.noneOf(ForgeDirection.class);
 	}
-
+	
 	@Override
-	public double transferEnergyToAcceptor(double amount)
+	public float getRequest(ForgeDirection direction)
 	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side) 
-	{
-		return true;
-	}
-
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy < neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-
-	@Override
-	public int getMaxSafeInput() 
-	{
-		return 2048;
+		return 0;
 	}
 }

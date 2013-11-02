@@ -52,18 +52,6 @@ public class ModelChargepad extends ModelBase
 		setRotation(Shape5, 0F, 0F, 0F);
 	}
 
-	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) 
-	{
-		super.render(entity, f, f1, f2, f3, f4, f5);
-		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		Shape1.render(f5);
-		Shape2.render(f5);
-		Shape3.render(f5);
-		Shape4.render(f5);
-		Shape5.render(f5);
-	}
-
 	public void render(float size)
 	{
 		Shape1.render(size);

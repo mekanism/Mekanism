@@ -3,6 +3,7 @@ package mekanism.client.render.block;
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
 import mekanism.client.model.ModelElectricPump;
+import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -26,6 +27,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelElectricPump electricPump = new ModelElectricPump();
 	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
 	public ModelChargepad chargepad = new ModelChargepad();
+	public ModelLogisticalSorter logisticalSorter = new ModelLogisticalSorter();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -62,6 +64,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
     			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
     			chargepad.render(0.0625F);
+    		}
+    		else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
+    		{
+    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+    	    	GL11.glTranslatef(0.0F, -0.85F, -0.15F);
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
+    	    	logisticalSorter.render(0.0625F);
     		}
     		else {
     	        MekanismRenderer.renderItem(renderer, metadata, block);

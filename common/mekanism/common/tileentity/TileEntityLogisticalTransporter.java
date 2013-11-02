@@ -53,7 +53,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			{
 				if(!stack.initiatedPath)
 				{
-					if(!recalculate(stack))
+					if(!recalculate(stack, null))
 					{
 						remove.add(stack);
 						continue;
@@ -64,6 +64,8 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 				
 				if(stack.progress > 100)
 				{
+					Object3D prevSet = null;
+					
 					if(stack.hasPath())
 					{
 						int currentIndex = stack.pathToTarget.indexOf(Object3D.get(this));
@@ -78,6 +80,10 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 								remove.add(stack);
 								
 								continue;
+							}
+							else if(next != null)
+							{
+								prevSet = next;
 							}
 						}
 						else {
@@ -100,6 +106,8 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 										else {
 											needsSync.add(stack);
 											stack.itemStack = rejected;
+											
+											prevSet = next;
 										}
 									}
 								}
@@ -107,13 +115,19 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						}
 					}
 					
-					if(!recalculate(stack))
+					if(!recalculate(stack, prevSet))
 					{
 						remove.add(stack);
 						continue;
 					}
 					else {
-						stack.progress = 50;
+						if(prevSet != null)
+						{
+							stack.progress = 0;
+						}
+						else {
+							stack.progress = 50;
+						}
 					}
 				}
 				else if(stack.progress == 50)
@@ -122,7 +136,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 					{
 						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack, stack.getSide(this)) && !stack.noTarget)
 						{
-							if(!recalculate(stack))
+							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
 								continue;
@@ -130,7 +144,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						}
 						else if(stack.noTarget)
 						{
-							if(!recalculate(stack))
+							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
 								continue;
@@ -140,7 +154,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 					else {
 						if(!stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj)))
 						{
-							if(!recalculate(stack))
+							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
 								continue;
@@ -168,7 +182,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		}
 	}
 	
-	private boolean recalculate(TransporterStack stack)
+	private boolean recalculate(TransporterStack stack, Object3D from)
 	{
 		needsSync.add(stack);
 		
@@ -179,6 +193,11 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 				TransporterUtils.drop(this, stack);
 				return false;
 			}
+		}
+		
+		if(from != null)
+		{
+			stack.originalLocation = from;
 		}
 		
 		return true;

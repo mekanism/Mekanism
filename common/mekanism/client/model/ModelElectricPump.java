@@ -157,30 +157,6 @@ public class ModelElectricPump extends ModelBase
 		DISPLAY1.render(size);
 	}
 
-	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) 
-	{
-		super.render(entity, f, f1, f2, f3, f4, f5);
-		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		COREBOX.render(f5);
-		INPUTSLOT2.render(f5);
-		INPUTSLOT3.render(f5);
-		INPUTSLOT4.render(f5);
-		INPUTSLOT5.render(f5);
-		INPUTSLOT1.render(f5);
-		PIPE3.render(f5);
-		PIPE2.render(f5);
-		TOPPIPE3.render(f5);
-		PIPE1.render(f5);
-		CORESLOT.render(f5);
-		PIPE4.render(f5);
-		TOPPIPE2.render(f5);
-		DISPLAY2.render(f5);
-		TOPPIPE1.render(f5);
-		TOPPIPE4.render(f5);
-		DISPLAY1.render(f5);
-	}
-
 	private void setRotation(ModelRenderer model, float x, float y, float z) 
 	{
 		model.rotateAngleX = x;

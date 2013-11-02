@@ -143,27 +143,6 @@ public class ModelWindTurbine extends ModelBase
 		return angle % 360;
 	}
 
-	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-	{
-		super.render(entity, f, f1, f2, f3, f4, f5);
-		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		Base.render(f5);
-		TowerFront.render(f5);
-		TowerLeft.render(f5);
-		TowerBack.render(f5);
-		TowerRight.render(f5);
-		TowerMoterFront.render(f5);
-		TowerBaseMotor.render(f5);
-		TowerBaseMotorBack.render(f5);
-		TowerMotor.render(f5);
-		Rotor.render(f5);
-		RotorCover.render(f5);
-		BladeBaseC.render(f5);
-		BladeBaseB.render(f5);
-		BladeBaseA.render(f5);
-	}
-
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
