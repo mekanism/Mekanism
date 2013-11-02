@@ -1,5 +1,6 @@
 package mekanism.generators.common.tileentity;
 
+import net.minecraftforge.common.ForgeDirection;
 import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
@@ -10,6 +11,12 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	public TileEntityAdvancedSolarGenerator()
 	{
 		super("Advanced Solar Generator", 200000, 360, MekanismGenerators.advancedSolarGeneration);
+	}
+	
+	@Override
+	public ForgeDirection getOutputtingSide()
+	{
+		return ForgeDirection.getOrientation(facing);
 	}
 
 	@Override

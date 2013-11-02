@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class HashList<T> implements Iterable<T>
 {
-	private ArrayList<T> list = new ArrayList<T>();
+	private ArrayList<T> list = new ArrayList<T>(256);
 	
 	public boolean contains(T obj)
 	{

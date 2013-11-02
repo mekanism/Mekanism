@@ -106,55 +106,17 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				}
 			}
 			
-			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
-			
-			if(getEnergy() > 0)
+			if(MekanismUtils.canFunction(this))
 			{
-				if(!worldObj.isRemote)
-				{
-					if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
-					{
-						setEnergy(getEnergy() - (Math.min(getEnergy(), output) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), output), this, ForgeDirection.getOrientation(facing))));
-						return;
-					}
-					else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
-					{
-						PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
-						
-						if(receiver != null)
-						{
-			            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-			            	double transferEnergy = Math.min(getEnergy(), Math.min(electricityNeeded, output));
-			            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-			            	setEnergy(getEnergy() - transferEnergy);
-						}
-					}
-				}
-			}
-			
-			if(tileEntity instanceof IConductor)
-			{
-				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-				float provide = getProvide(outputDirection);
-	
-				if(provide > 0)
-				{
-					IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
-		
-					if(outputNetwork != null)
-					{
-						ElectricityPack request = outputNetwork.getRequest(this);
-						
-						if(request.getWatts() > 0)
-						{
-							ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(getEnergyStored(), getVoltage()), ElectricityPack.getFromWatts(provide, getVoltage()));
-							float rejectedPower = outputNetwork.produce(sendPack, this);
-							setEnergyStored(getEnergyStored() - (sendPack.getWatts() - rejectedPower));
-						}
-					}
-				}
+				CableUtils.emit(this);
 			}
 		}
+	}
+	
+	@Override
+	public double getMaxOutput()
+	{
+		return output;
 	}
 	
 	@Override
@@ -164,39 +126,15 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getOutputtingSides()
+	public ForgeDirection getOutputtingSide()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override
 	public float getRequest(ForgeDirection direction)
 	{
 		return 0;
-	}
-	
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(output*Mekanism.TO_UE)) : 0;
-	}
-	
-	@Override
-	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
-	{
-		if(getOutputtingSides().contains(from))
-		{
-			double toSend = Math.min(getEnergy(), Math.min(output, request.getWatts()*Mekanism.FROM_UE));
-			
-			if(doProvide)
-			{
-				setEnergy(getEnergy() - toSend);
-			}
-			
-			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
-		}
-		
-		return new ElectricityPack();
 	}
 	
 	@Override
@@ -269,7 +207,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		return direction == ForgeDirection.getOrientation(facing);
+		return getOutputtingSide() == direction;
 	}
 	
 	@Override
@@ -293,7 +231,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public boolean isTeleporterCompatible(ForgeDirection side) 
 	{
-		return side == ForgeDirection.getOrientation(facing);
+		return getOutputtingSide() == side;
 	}
 	
 	@Override
@@ -374,7 +312,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public boolean canOutputTo(ForgeDirection side)
 	{
-		return side == ForgeDirection.getOrientation(facing);
+		return getOutputtingSide() == side;
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package mekanism.generators.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Object3D;
 import mekanism.common.util.ChargeUtils;
@@ -10,6 +11,8 @@ import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -172,6 +175,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		super.getNetworkedData(data);
 		data.add(seesSun);
 		return data;
+	}
+	
+	@Override
+	public ForgeDirection getOutputtingSide()
+	{
+		return ForgeDirection.getOrientation(0);
 	}
 	
 	@Override

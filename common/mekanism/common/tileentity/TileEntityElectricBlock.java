@@ -67,21 +67,26 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			}
 		}
 	}
+	
+	public ForgeDirection getOutputtingSide()
+	{
+		return null;
+	}
 
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.allOf(ForgeDirection.class);
 	}
 	
-	protected EnumSet<ForgeDirection> getOutputtingSides()
+	public double getMaxOutput()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return 0;
 	}
 	
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return getConsumingSides().contains(direction) || getOutputtingSides().contains(direction);
+		return getConsumingSides().contains(direction) || getOutputtingSide() == direction;
 	}
 	
 	@Override
@@ -191,7 +196,19 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
 	{
-		return null;
+		if(getOutputtingSide() == from)
+		{
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), request.getWatts()*Mekanism.FROM_UE));
+			
+			if(doProvide)
+			{
+				setEnergy(getEnergy() - toSend);
+			}
+			
+			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
+		}
+		
+		return new ElectricityPack();
 	}
 
 	@Override
@@ -206,9 +223,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public float getProvide(ForgeDirection direction) 
+	public float getProvide(ForgeDirection direction)
 	{
-		return 0;
+		return getOutputtingSide() == direction ? Math.min(getEnergyStored(), (float)(getMaxOutput()*Mekanism.TO_UE)) : 0;
 	}
 	
 	@Override

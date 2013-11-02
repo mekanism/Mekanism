@@ -93,7 +93,6 @@ public class MekanismGenerators implements IModule
 		addBlocks();
 		addItems();
 		addRecipes();
-		addEntities();
 		
 		//Packet registrations
 		PacketHandler.registerPacket(PacketElectrolyticSeparatorParticle.class);
@@ -151,11 +150,6 @@ public class MekanismGenerators implements IModule
         }
         
         InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
-	}
-	
-	public void addEntities()
-	{
-		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
 	}
 	
 	public void addBlocks()

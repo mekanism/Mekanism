@@ -33,6 +33,7 @@ public class GeneratorsCommonProxy
 	public void registerSpecialTileEntities() 
 	{
 		GameRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator");
+		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
 		GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");

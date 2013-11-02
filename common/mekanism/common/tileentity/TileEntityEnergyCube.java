@@ -69,53 +69,16 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		ChargeUtils.charge(0, this);
 		ChargeUtils.discharge(1, this);
 		
-		if(!worldObj.isRemote && MekanismUtils.canFunction(this))
+		if(MekanismUtils.canFunction(this))
 		{
-			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
-			
-			if(getEnergy() > 0)
-			{
-				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
-				{
-					setEnergy(getEnergy() - (Math.min(getEnergy(), tier.OUTPUT) - CableUtils.emitEnergyToNetwork(Math.min(getEnergy(), tier.OUTPUT), this, ForgeDirection.getOrientation(facing))));
-					return;
-				}
-				else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
-				{
-					PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(facing).getOpposite());
-					if(receiver != null)
-					{
-		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-		            	double transferEnergy = Math.min(getEnergy(), Math.min(electricityNeeded, tier.OUTPUT));
-		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(facing).getOpposite());
-		            	setEnergy(getEnergy() - transferEnergy);
-					}
-				}
-			}
-			
-			if(tileEntity instanceof IConductor)
-			{
-				ForgeDirection outputDirection = ForgeDirection.getOrientation(facing);
-				float provide = getProvide(outputDirection);
-	
-				if(provide > 0)
-				{
-					IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
-		
-					if(outputNetwork != null)
-					{
-						ElectricityPack request = outputNetwork.getRequest(this);
-						
-						if(request.getWatts() > 0)
-						{
-							ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(getEnergyStored(), getVoltage()), ElectricityPack.getFromWatts(provide, getVoltage()));
-							float rejectedPower = outputNetwork.produce(sendPack, this);
-							setEnergyStored(getEnergyStored() - (sendPack.getWatts() - rejectedPower));
-						}
-					}
-				}
-			}
+			CableUtils.emit(this);
 		}
+	}
+	
+	@Override
+	public double getMaxOutput()
+	{
+		return tier.OUTPUT;
 	}
 	
 	@Override
@@ -150,39 +113,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getOutputtingSides()
+	public ForgeDirection getOutputtingSide()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		return direction != ForgeDirection.getOrientation(facing);
-	}
-	
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(tier.OUTPUT*Mekanism.TO_UE)) : 0;
-	}
-	
-	@Override
-	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
-	{
-		if(getOutputtingSides().contains(from))
-		{
-			double toSend = Math.min(getEnergy(), Math.min(tier.OUTPUT, request.getWatts()*Mekanism.FROM_UE));
-			
-			if(doProvide)
-			{
-				setEnergy(getEnergy() - toSend);
-			}
-			
-			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
-		}
-		
-		return new ElectricityPack();
 	}
 
 	@Override
