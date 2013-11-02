@@ -380,6 +380,7 @@ public final class MekanismUtils
     public static boolean isActive(IBlockAccess world, int x, int y, int z)
     {
     	TileEntity tileEntity = (TileEntity)world.getBlockTileEntity(x, y, z);
+    	
     	if(tileEntity != null)
     	{
     		if(tileEntity instanceof IActiveState)

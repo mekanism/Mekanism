@@ -76,6 +76,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
 	
+	/** This machine's previous amount of energy. */
+	public double prevEnergy;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -110,8 +113,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			{
 				updateDelay--;
 				
-				if(updateDelay == 0)
+				if(updateDelay == 0 && clientActive != isActive)
 				{
+					isActive = clientActive;
 					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 				}
 			}
@@ -172,7 +176,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 			else {
-				setActive(false);
+				if(prevEnergy >= getEnergy())
+				{
+					setActive(false);
+				}
 			}
 			
 			if(!canOperate())
@@ -185,6 +192,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				infuseStored = 0;
 				type = null;
 			}
+			
+			prevEnergy = getEnergy();
 		}
 	}
 	
@@ -408,7 +417,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		isActive = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -419,9 +428,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			sideConfig[i] = dataStream.readByte();
 		}
 		
-		if(updateDelay == 0)
+		if(updateDelay == 0 && clientActive != isActive)
 		{
 			updateDelay = Mekanism.UPDATE_DELAY;
+			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}

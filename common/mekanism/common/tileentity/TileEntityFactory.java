@@ -74,6 +74,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	/** This machine's recipe type. */
 	public int recipeType;
 	
+	/** This machine's previous amount of energy. */
+	public double prevEnergy;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -116,8 +119,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			{
 				updateDelay--;
 				
-				if(updateDelay == 0)
+				if(updateDelay == 0 && clientActive != isActive)
 				{
+					isActive = clientActive;
 					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 				}
 			}
@@ -219,27 +223,29 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				}
 			}
 			
-			if(!worldObj.isRemote)
+			boolean hasOperation = false;
+			
+			for(int i = 0; i < tier.processes; i++)
 			{
-				boolean hasOperation = false;
-				
-				for(int i = 0; i < tier.processes; i++)
+				if(canOperate(getInputSlot(i), getOutputSlot(i)))
 				{
-					if(canOperate(getInputSlot(i), getOutputSlot(i)))
-					{
-						hasOperation = true;
-						break;
-					}
+					hasOperation = true;
+					break;
 				}
-				
-				if(MekanismUtils.canFunction(this) && hasOperation && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			}
+			
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			{
+				setActive(true);
+			}
+			else {
+				if(prevEnergy >= getEnergy())
 				{
-					setActive(true);
-				}
-				else {
 					setActive(false);
 				}
 			}
+			
+			prevEnergy = getEnergy();
 		}
 	}
 	
@@ -409,7 +415,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		super.handlePacketData(dataStream);
 		
-		isActive = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
 		recipeType = dataStream.readInt();
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -424,9 +430,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			sideConfig[i] = dataStream.readByte();
 		}
 		
-		if(updateDelay == 0)
+		if(updateDelay == 0 && clientActive != isActive)
 		{
 			updateDelay = Mekanism.UPDATE_DELAY;
+			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}

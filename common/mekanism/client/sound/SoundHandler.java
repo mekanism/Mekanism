@@ -54,11 +54,14 @@ public class SoundHandler
 		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound");
 		File dir = new File(url.getFile());
 		
-		for(File file : dir.listFiles())
+		if(dir != null)
 		{
-			if(!file.isDirectory() && file.getName().endsWith(".ogg"))
+			for(File file : dir.listFiles())
 			{
-				preloadSound(file.getName());
+				if(!file.isDirectory() && file.getName().endsWith(".ogg"))
+				{
+					preloadSound(file.getName());
+				}
 			}
 		}
 		

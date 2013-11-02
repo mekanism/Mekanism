@@ -66,6 +66,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
+	/** This machine's previous amount of energy. */
+	public double prevEnergy;
+	
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 	
@@ -101,8 +104,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			{
 				updateDelay--;
 				
-				if(updateDelay == 0)
+				if(updateDelay == 0 && clientActive != isActive)
 				{
+					isActive = clientActive;
 					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 				}
 			}
@@ -163,7 +167,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		super.handlePacketData(dataStream);
 		
 		operatingTicks = dataStream.readInt();
-		isActive = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		for(int i = 0; i < 6; i++)
@@ -171,9 +175,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			sideConfig[i] = dataStream.readByte();
 		}
 		
-		if(updateDelay == 0)
+		if(updateDelay == 0 && clientActive != isActive)
 		{
 			updateDelay = Mekanism.UPDATE_DELAY;
+			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}

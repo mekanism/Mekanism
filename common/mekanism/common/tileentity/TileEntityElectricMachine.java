@@ -53,7 +53,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			ChargeUtils.discharge(1, this);
 			
-			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 			{
 				setActive(true);
 				
@@ -71,13 +71,18 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				}
 			}
 			else {
-				setActive(false);
+				if(prevEnergy >= getEnergy())
+				{
+					setActive(false);
+				}
 			}
 			
 			if(!canOperate())
 			{
 				operatingTicks = 0;
 			}
+			
+			prevEnergy = getEnergy();
 		}
 	}
 	

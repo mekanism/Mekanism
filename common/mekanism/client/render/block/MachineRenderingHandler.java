@@ -54,7 +54,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     		{
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
+    	    	GL11.glTranslatef(0.0F, -0.95F, -0.10F);
     	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
     	    	metallurgicInfuser.render(0.0625F);
     		}

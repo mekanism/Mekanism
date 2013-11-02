@@ -271,7 +271,7 @@ public final class CableUtils
 			{
 				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
-					emitter.setEnergy(emitter.getEnergy() - (Math.min(emitter.getEnergy(), emitter.getMaxOutput()) - CableUtils.emitEnergyToNetwork(Math.min(emitter.getEnergy(), emitter.getMaxOutput()), emitter, ForgeDirection.getOrientation(emitter.facing))));
+					emitter.setEnergy(emitter.getEnergy() - (Math.min(emitter.getEnergy(), emitter.getMaxOutput()) - CableUtils.emitEnergyToNetwork(Math.min(emitter.getEnergy(), emitter.getMaxOutput()), emitter, emitter.getOutputtingSide())));
 					return;
 				}
 				else if(tileEntity instanceof IStrictEnergyAcceptor)
@@ -282,13 +282,13 @@ public final class CableUtils
 				}
 				else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
 				{
-					PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(ForgeDirection.getOrientation(emitter.facing).getOpposite());
+					PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(emitter.getOutputtingSide().getOpposite());
 					
 					if(receiver != null)
 					{
 		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
 		            	double transferEnergy = Math.min(emitter.getEnergy(), Math.min(electricityNeeded, emitter.getMaxOutput()));
-		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), ForgeDirection.getOrientation(emitter.facing).getOpposite());
+		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), emitter.getOutputtingSide().getOpposite());
 		            	emitter.setEnergy(emitter.getEnergy() - transferEnergy);
 					}
 				}
@@ -296,7 +296,7 @@ public final class CableUtils
 			
 			if(tileEntity instanceof IConductor)
 			{
-				ForgeDirection outputDirection = ForgeDirection.getOrientation(emitter.facing);
+				ForgeDirection outputDirection = emitter.getOutputtingSide();
 				float provide = emitter.getProvide(outputDirection);
 	
 				if(provide > 0)

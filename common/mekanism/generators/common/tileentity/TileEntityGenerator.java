@@ -86,8 +86,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 			{
 				updateDelay--;
 				
-				if(updateDelay == 0)
+				if(updateDelay == 0 && clientActive != isActive)
 				{
+					isActive = clientActive;
 					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 				}
 			}
@@ -263,12 +264,13 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super.handlePacketData(dataStream);
 		
-		isActive = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
-		if(updateDelay == 0)
+		if(updateDelay == 0 && clientActive != isActive)
 		{
 			updateDelay = Mekanism.UPDATE_DELAY;
+			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}

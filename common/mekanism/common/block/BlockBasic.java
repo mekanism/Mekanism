@@ -277,11 +277,18 @@ public class BlockBasic extends Block
 							tileEntity.structure.fluidStored.amount += itemFluid.amount;
 						}
 						
-						player.setCurrentItemOrArmor(0, new ItemStack(Item.bucketEmpty));
+						if(!player.capabilities.isCreativeMode)
+						{
+							player.setCurrentItemOrArmor(0, new ItemStack(Item.bucketEmpty));
+						}
+						
 						return true;
 					}
 					else {
-						itemStack.stackSize--;
+						if(!player.capabilities.isCreativeMode)
+						{
+							itemStack.stackSize--;
+						}
 						
 						if(itemStack.stackSize == 0)
 						{

@@ -187,6 +187,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+    	
         if(MekanismUtils.isActive(world, x, y, z) && !(tileEntity instanceof TileEntityChargepad) && !(tileEntity instanceof TileEntityLogisticalSorter))
         {
             float xRandom = (float)x + 0.5F;
