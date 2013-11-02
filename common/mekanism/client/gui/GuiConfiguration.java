@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,11 +8,13 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tileentity.TileEntityContainerBlock;
@@ -21,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
@@ -39,12 +43,12 @@ public class GuiConfiguration extends GuiMekanism
     	
     	configurable = tile;
     	
-    	positions.put(0, new GuiPos(81, 63));
-    	positions.put(1, new GuiPos(81, 33));
-    	positions.put(2, new GuiPos(81, 48));
-    	positions.put(3, new GuiPos(66, 63));
-    	positions.put(4, new GuiPos(66, 48));
-    	positions.put(5, new GuiPos(96, 48));
+    	positions.put(0, new GuiPos(110, 63));
+    	positions.put(1, new GuiPos(110, 33));
+    	positions.put(2, new GuiPos(110, 48));
+    	positions.put(3, new GuiPos(95, 63));
+    	positions.put(4, new GuiPos(95, 48));
+    	positions.put(5, new GuiPos(125, 48));
     }
     
 	@Override
@@ -116,6 +120,22 @@ public class GuiConfiguration extends GuiMekanism
         fontRenderer.drawString("Configuration", 60, 5, 0x404040);
         fontRenderer.drawString("Eject: " + ejecting, 53, 17, 0x00CD00);
         
+        fontRenderer.drawString("Color:", 38, 37, 0x404040);
+        
+        if(configurable.getEjector().getColor() != null)
+ 		{
+ 			GL11.glPushMatrix();
+ 			GL11.glColor4f(1, 1, 1, 1);
+ 	        GL11.glEnable(GL11.GL_LIGHTING);
+ 	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+ 	        
+ 	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(configurable.getEjector().getColor()));
+ 			itemRenderer.renderIcon(44, 48, MekanismRenderer.getColorIcon(configurable.getEjector().getColor()), 16, 16);
+ 			
+ 			GL11.glDisable(GL11.GL_LIGHTING);
+ 			GL11.glPopMatrix();
+ 		}
+        
         for(int i = 0; i < positions.size(); i++)
         {
         	int x = positions.get(i).xPos;
@@ -128,6 +148,17 @@ public class GuiConfiguration extends GuiMekanism
         		drawCreativeTabHoveringText(data.color != null ? data.color.getName() : "None", xAxis, yAxis);
         	}
         }
+        
+    	if(xAxis >= 44 && xAxis <= 60 && yAxis >= 48 && yAxis <= 64)
+		{
+			if(configurable.getEjector().getColor() != null)
+			{
+				drawCreativeTabHoveringText(configurable.getEjector().getColor().getName(), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText("None", xAxis, yAxis);
+			}
+		}
 	}
 	
 	@Override
@@ -166,6 +197,12 @@ public class GuiConfiguration extends GuiMekanism
 	        	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT, Object3D.get(tile)));
 	        }
+	        
+	        if(xAxis >= 44 && xAxis <= 60 && yAxis >= 48 && yAxis <= 64)
+			{
+	           	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT_COLOR, Object3D.get((TileEntity)configurable)));
+			}
 	        
 	        for(int i = 0; i < positions.size(); i++)
 	        {

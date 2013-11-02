@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEjector;
 import mekanism.api.Object3D;
@@ -24,6 +25,8 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public TileEntityContainerBlock tileEntity;
 	
 	public boolean ejecting;
+	
+	public EnumColor ejectColor;
 	
 	public SideData sideData;
 	
@@ -99,7 +102,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				}
 				else if(tile instanceof TileEntityLogisticalTransporter)
 				{
-					if(TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, null))
+					if(TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, ejectColor))
 					{
 						stack = null;
 					}
@@ -131,6 +134,18 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	{
 		ejecting = eject;
 	}
+	
+	@Override
+	public void setColor(EnumColor color)
+	{
+		ejectColor = color;
+	}
+	
+	@Override
+	public EnumColor getColor()
+	{
+		return ejectColor;
+	}
 
 	@Override
 	public void tick() {}
@@ -139,6 +154,11 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void read(NBTTagCompound nbtTags) 
 	{
 		ejecting = nbtTags.getBoolean("ejecting");
+		
+		if(nbtTags.hasKey("ejectColor"))
+		{
+			ejectColor = TransporterUtils.colors.get(nbtTags.getInteger("ejectColor"));
+		}
 		
 		for(int i = 0; i < sideData.availableSlots.length; i++)
 		{
@@ -150,12 +170,23 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void read(ByteArrayDataInput dataStream) 
 	{
 		ejecting = dataStream.readBoolean();
+		
+		int c = dataStream.readInt();
+		
+		if(c != -1)
+		{
+			ejectColor = TransporterUtils.colors.get(c);
+		}
+		else {
+			ejectColor = null;
+		}
 	}
 
 	@Override
 	public void write(NBTTagCompound nbtTags) 
 	{
 		nbtTags.setBoolean("ejecting", ejecting);
+		nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(ejectColor));
 		
 		for(int i = 0; i < sideData.availableSlots.length; i++)
 		{
@@ -167,5 +198,13 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void write(ArrayList data) 
 	{
 		data.add(ejecting);
+		
+		if(ejectColor != null)
+		{
+			data.add(TransporterUtils.colors.indexOf(ejectColor));
+		}
+		else {
+			data.add(-1);
+		}
 	}
 }

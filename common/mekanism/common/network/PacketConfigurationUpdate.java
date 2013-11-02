@@ -9,6 +9,7 @@ import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -59,7 +60,6 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 			{
 				IConfigurable config = (IConfigurable)tile;
 				config.getEjector().setEjecting(!config.getEjector().isEjecting());
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);
 			}
 		}
 		else if(packetType == ConfigurationPacket.SIDE_DATA)
@@ -72,6 +72,16 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 			{
 				MekanismUtils.incrementOutput((IConfigurable)tile, configIndex);
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);
+			}
+		}
+		else if(packetType == ConfigurationPacket.EJECT_COLOR)
+		{
+			TileEntity tile = object3D.getTileEntity(world);
+			
+			if(tile instanceof IConfigurable)
+			{
+				IConfigurable config = (IConfigurable)tile;
+				config.getEjector().setColor(TransporterUtils.increment(config.getEjector().getColor()));
 			}
 		}
 	}
@@ -95,6 +105,6 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 	
 	public static enum ConfigurationPacket
 	{
-		EJECT, SIDE_DATA
+		EJECT, SIDE_DATA, EJECT_COLOR
 	}
 }
