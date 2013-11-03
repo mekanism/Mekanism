@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.ClientProxy;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
@@ -52,41 +53,11 @@ public class BlockEnergyCube extends BlockContainer
 		setHardness(2F);
 		setResistance(4F);
 		setCreativeTab(Mekanism.tabMekanism);
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
-	{
-		icons[0][0] = register.registerIcon("mekanism:BasicEnergyCubeFront");
-		icons[0][1] = register.registerIcon("mekanism:BasicEnergyCubeSide");
-		icons[1][0] = register.registerIcon("mekanism:AdvancedEnergyCubeFront");
-		icons[1][1] = register.registerIcon("mekanism:AdvancedEnergyCubeSide");
-		icons[2][0] = register.registerIcon("mekanism:EliteEnergyCubeFront");
-		icons[2][1] = register.registerIcon("mekanism:EliteEnergyCubeSide");
-		icons[3][0] = register.registerIcon("mekanism:UltimateEnergyCubeFront");
-		icons[3][1] = register.registerIcon("mekanism:UltimateEnergyCubeSide");
-	}
-	
-	@Override
-	public void setBlockBoundsForItemRender()
-	{
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta)
-	{
-		if(side == 3)
-		{
-			return icons[meta][0];
-		}
-		else {
-			return icons[meta][1];
-		}
-	}
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
@@ -115,22 +86,6 @@ public class BlockEnergyCube extends BlockContainer
         }
         
         tileEntity.setFacing((short)change);
-    }
-	
-	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-    {
-    	int metadata = world.getBlockMetadata(x, y, z);
-    	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-    	
-    	if(side == tileEntity.facing)
-    	{
-    		return icons[tileEntity.tier.ordinal()][0];
-    	}
-    	else {
-    		return icons[tileEntity.tier.ordinal()][1];
-    	}
     }
     
     @Override
@@ -256,6 +211,24 @@ public class BlockEnergyCube extends BlockContainer
 	public TileEntity createNewTileEntity(World world)
 	{
 		return new TileEntityEnergyCube();
+	}
+	
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return -1;
 	}
 	
 	@Override

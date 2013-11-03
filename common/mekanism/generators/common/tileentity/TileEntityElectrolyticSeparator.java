@@ -167,10 +167,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				}
 			}
 			
-			if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getFluid() != null && waterTank.getFluid().amount-2 >= 0 && electricityStored-100 > 0)
+			if(oxygenStored < MAX_GAS && hydrogenStored < MAX_GAS && waterTank.getFluid() != null && waterTank.getFluid().amount-2 >= 0 && getEnergy()-100 > 0)
 			{
 				waterTank.drain(2, true);
-				setEnergy(electricityStored - MekanismGenerators.electrolyticSeparatorUsage);
+				setEnergy(getEnergy() - MekanismGenerators.electrolyticSeparatorUsage);
 				setGas(EnumGas.OXYGEN, oxygenStored + 1);
 				setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
 			}
@@ -288,7 +288,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MAX_ELECTRICITY-electricityStored;
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{

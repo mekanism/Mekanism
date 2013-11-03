@@ -279,7 +279,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
-    	double neededElectricity = MekanismUtils.getEnergy(getEnergyMultiplier(), getMaxEnergy())-getEnergy();
+    	double neededElectricity = getMaxEnergy()-getEnergy();
     	
     	if(amount <= neededElectricity)
     	{

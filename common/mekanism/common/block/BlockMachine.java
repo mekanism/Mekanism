@@ -650,6 +650,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
+    	if(MachineType.getFromMetadata(metadata) == null)
+    	{
+    		return null;
+    	}
+    	
     	return MachineType.getFromMetadata(metadata).create();
     }
 	

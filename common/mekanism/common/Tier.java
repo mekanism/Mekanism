@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.EnumColor;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -16,15 +17,16 @@ public final class Tier
 	 */
 	public static enum EnergyCubeTier
 	{
-		BASIC("Basic", 2000000, 120, 800),
-		ADVANCED("Advanced", 8000000, 240, 3200),
-		ELITE("Elite", 32000000, 240, 12800),
-		ULTIMATE("Ultimate", 128000000, 480, 51200);
+		BASIC("Basic", EnumColor.BRIGHT_GREEN, 2000000, 120, 800),
+		ADVANCED("Advanced", EnumColor.DARK_RED, 8000000, 240, 3200),
+		ELITE("Elite", EnumColor.DARK_BLUE, 32000000, 240, 12800),
+		ULTIMATE("Ultimate", EnumColor.PURPLE, 128000000, 480, 51200);
 		
 		public double MAX_ELECTRICITY;
 		public float VOLTAGE;
 		public double OUTPUT;
 		public String name;
+		public EnumColor color;
 		
 		public static EnergyCubeTier getFromName(String tierName)
 		{
@@ -40,9 +42,10 @@ public final class Tier
 			return BASIC;
 		}
 		
-		private EnergyCubeTier(String s, double maxEnergy, float voltage, int out)
+		private EnergyCubeTier(String s, EnumColor c, double maxEnergy, float voltage, int out)
 		{
 			name = s;
+			color = c;
 			MAX_ELECTRICITY = maxEnergy;
 			VOLTAGE = voltage;
 			OUTPUT = out;

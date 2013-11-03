@@ -1,6 +1,7 @@
 package mekanism.client.render.item;
 
 import mekanism.client.ClientProxy;
+import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IElectricChest;
@@ -16,17 +17,11 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -37,6 +32,7 @@ public class ItemRenderingHandler implements IItemRenderer
 {
 	public ModelRobit robit = new ModelRobit();
 	public ModelChest electricChest = new ModelChest();
+	public ModelEnergyCube energyCube = new ModelEnergyCube();
 	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -66,9 +62,13 @@ public class ItemRenderingHandler implements IItemRenderer
 		if(item.getItem() instanceof IEnergyCube)
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
-	        
-			GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
-	        MekanismRenderer.renderItem((RenderBlocks)data[0], tier.ordinal(), Mekanism.EnergyCube);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.name + ".png"));
+			
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+	    	
+			energyCube.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
 		{

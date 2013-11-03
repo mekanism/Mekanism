@@ -186,7 +186,11 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void write(NBTTagCompound nbtTags) 
 	{
 		nbtTags.setBoolean("ejecting", ejecting);
-		nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(ejectColor));
+		
+		if(ejectColor != null)
+		{
+			nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(ejectColor));
+		}
 		
 		for(int i = 0; i < sideData.availableSlots.length; i++)
 		{

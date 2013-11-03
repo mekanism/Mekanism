@@ -55,6 +55,8 @@ public class ClientTickHandler implements ITickHandler
 			}).start();
 		}
 		
+		MekanismClient.ticksPassed++;
+		
 		if(!hasNotified && mc.theWorld != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 		{
 			MekanismUtils.checkForUpdates(mc.thePlayer);

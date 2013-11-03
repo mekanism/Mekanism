@@ -189,7 +189,7 @@ public class Mekanism
 	public static Item TeleportationCore;
 	public static Item Configurator;
 	public static Item NetworkReader;
-	public static Item MaganeseAlloy;
+	public static Item ManganeseAlloy;
 	public static Item WalkieTalkie;
 	
 	//Blocks
@@ -237,9 +237,6 @@ public class Mekanism
 	public static double metallurgicInfuserUsage;
 	public static double purificationChamberUsage;
 	public static double energizedSmelterUsage;
-	
-	/** Total ticks passed since thePlayer joined theWorld */
-	public static int ticksPassed = 0;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -340,7 +337,7 @@ public class Mekanism
 			"RER", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), EnrichedAlloy
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(EnrichedIron, 2), new Object[] {
-			MaganeseAlloy, Item.ingotIron
+			ManganeseAlloy, Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 8), new Object[] {
 			"IFI", "CEC", "IFI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('F'), Block.furnaceIdle, Character.valueOf('C'), "circuitBasic", Character.valueOf('E'), EnrichedAlloy
@@ -494,7 +491,7 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
         
         //Smelting
-        FurnaceRecipes.smelting().addSmelting(Block.dirt.blockID, new ItemStack(MaganeseAlloy, 2), 0);
+        FurnaceRecipes.smelting().addSmelting(Block.dirt.blockID, new ItemStack(ManganeseAlloy, 2), 0);
 	}
 	
 	/**
@@ -525,7 +522,7 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
-		MaganeseAlloy = new ItemMekanism(configuration.getItem("MaganeseAlloy", 11223).getInt()).setUnlocalizedName("MaganeseAlloy");
+		ManganeseAlloy = new ItemMekanism(configuration.getItem("ManganeseAlloy", 11223).getInt()).setUnlocalizedName("ManganeseAlloy");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		configuration.save();
 		
@@ -550,7 +547,7 @@ public class Mekanism
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
-		GameRegistry.registerItem(MaganeseAlloy, "MaganeseAlloy");
+		GameRegistry.registerItem(ManganeseAlloy, "MaganeseAlloy");
 		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 	}
 	
@@ -1005,7 +1002,6 @@ public class Mekanism
 		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 2, true);
 		
 		//Tile entities
-		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");

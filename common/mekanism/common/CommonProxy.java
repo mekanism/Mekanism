@@ -75,6 +75,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
 		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
 		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
+		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
 		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
 		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
 		GameRegistry.registerTileEntity(TileEntityElectricPump.class, "ElectricPump");

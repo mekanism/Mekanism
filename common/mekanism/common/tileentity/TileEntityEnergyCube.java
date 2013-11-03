@@ -295,9 +295,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
+		
 		super.handlePacketData(dataStream);
 		
-		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
@@ -306,9 +307,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		data.add(tier.name);
+		
 		super.getNetworkedData(data);
 		
-		data.add(tier.name);
 		data.add(controlType.ordinal());
 		
 		return data;
