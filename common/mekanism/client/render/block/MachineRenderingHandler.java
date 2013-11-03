@@ -34,7 +34,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		if(block == null || renderer == null)
+		if(block == null || renderer == null || MachineType.getFromMetadata(metadata) == null)
 		{
 			return;
 		}
@@ -98,7 +98,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 			
-			if(!MachineType.getFromMetadata(metadata).hasModel)
+			if(MachineType.getFromMetadata(metadata) != null && !MachineType.getFromMetadata(metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
 				renderer.setRenderBoundsFromBlock(block);

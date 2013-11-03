@@ -5,6 +5,7 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -420,6 +421,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+	}
+	
+	@Override
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
@@ -440,7 +447,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return true;
+		return getConsumingSides().contains(side);
 	}
 	
 	@Override
@@ -478,7 +485,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return direction != ForgeDirection.getOrientation(facing);
+		return getConsumingSides().contains(direction);
 	}
 	
 	@Override
@@ -500,7 +507,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection direction) 
 	{
-		return new FluidTankInfo[] {fluidTank.getInfo()};
+		if(direction == ForgeDirection.getOrientation(1))
+		{
+			return new FluidTankInfo[] {fluidTank.getInfo()};
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -524,7 +536,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() != resource.getFluid())
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() != resource.getFluid() && from == ForgeDirection.getOrientation(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -541,7 +553,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
-		return fluidTank.drain(maxDrain, doDrain);
+		if(from == ForgeDirection.getOrientation(1))
+		{
+			return fluidTank.drain(maxDrain, doDrain);
+		}
+		
+		return null;
 	}
 
 	@Override

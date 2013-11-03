@@ -23,7 +23,7 @@ item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
-item.MaganeseAlloy.name=Manganese Alloy
+item.ManganeseAlloy.name=Manganese Alloy
 item.WalkieTalkie.name=Walkie-Talkie
 
 //Basic Block

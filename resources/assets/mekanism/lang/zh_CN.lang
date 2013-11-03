@@ -23,7 +23,7 @@ item.PortableTeleporter.name=便携传送器
 item.TeleportationCore.name=传送核心
 item.Configurator.name=调整器
 item.NetworkReader.name=网络读取器
-item.MaganeseAlloy.name=锰合金
+item.ManganeseAlloy.name=锰合金
 item.WalkieTalkie.name=步话机
 
 //Basic Block
