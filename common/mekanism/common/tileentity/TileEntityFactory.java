@@ -201,7 +201,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 				{
 					if((progress[process]+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 					{
@@ -658,6 +658,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	@Override
     public double injectEnergyUnits(ForgeDirection direction, double i)
     {
+		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		{
+			return i;
+		}
+		
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
     	double neededEnergy = getMaxEnergy()-getEnergy();

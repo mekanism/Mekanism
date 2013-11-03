@@ -28,7 +28,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockGasTank extends BlockContainer
 {
-	public Icon[] icons = new Icon[256];
 	public Random machineRand = new Random();
 	
 	public BlockGasTank(int id)
@@ -42,12 +41,7 @@ public class BlockGasTank extends BlockContainer
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:GasTankTop");
-		icons[1] = register.registerIcon("mekanism:GasTankSide");
-		icons[2] = register.registerIcon("mekanism:GasTankFront");
-	}
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
@@ -67,42 +61,6 @@ public class BlockGasTank extends BlockContainer
         
         tileEntity.setFacing((short)change);
     }
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-    public Icon getIcon(int side, int meta)
-	{
-		if(side == 3)
-		{
-			return icons[2];
-		}
-		else if(side == 0 || side == 1)
-		{
-			return icons[0];
-		}
-		else {
-			return icons[1];
-		}
-	}
-	
-	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-		
-		if(side == tileEntity.facing)
-		{
-			return icons[2];
-		}
-		else if(side == 0 || side == 1)
-		{
-			return icons[0];
-		}
-		else {
-			return icons[1];
-		}
-	}
     
     @Override
     public void breakBlock(World world, int x, int y, int z, int i1, int i2)
@@ -248,6 +206,12 @@ public class BlockGasTank extends BlockContainer
 	public boolean isOpaqueCube()
 	{
 		return false;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return -1;
 	}
 	
 	@Override

@@ -35,19 +35,22 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.block.TransmitterRenderingHandler;
-import mekanism.client.render.entity.RenderObsidianTNT;
+import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
+import mekanism.client.render.tileentity.RenderCrusher;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderElectricChest;
 import mekanism.client.render.tileentity.RenderElectricPump;
 import mekanism.client.render.tileentity.RenderEnergyCube;
+import mekanism.client.render.tileentity.RenderGasTank;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderLogisticalTransporter;
 import mekanism.client.render.tileentity.RenderMechanicalPipe;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
+import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPressurizedTube;
 import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
@@ -79,6 +82,7 @@ import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
+import mekanism.common.tileentity.TileEntityObsidianTNT;
 import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
@@ -219,13 +223,15 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderConfigurableMachine());
+		ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderCrusher());
 		ClientRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser", new RenderMetallurgicInfuser());
+		ClientRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT", new RenderObsidianTNT());
+		ClientRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank", new RenderGasTank());
 		ClientRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube", new RenderEnergyCube());
 		ClientRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
 		ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
@@ -243,7 +249,7 @@ public class ClientProxy extends CommonProxy
 	public void registerRenderInformation()
 	{
 		//Register entity rendering handlers
-		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNT());
+		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
 		
 		//Register item handler
@@ -251,6 +257,8 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, new ItemRenderingHandler());
 		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, new ItemRenderingHandler());
 		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, new ItemRenderingHandler());
+		MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, new ItemRenderingHandler());
+		MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, new ItemRenderingHandler());
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());

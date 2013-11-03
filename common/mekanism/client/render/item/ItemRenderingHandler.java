@@ -6,6 +6,8 @@ import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.model.ModelGasTank;
+import mekanism.client.model.ModelObsidianTNT;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IElectricChest;
@@ -38,6 +40,8 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelChest electricChest = new ModelChest();
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
 	public ModelEnergyCore energyCore = new ModelEnergyCore();
+	public ModelGasTank gasTank = new ModelGasTank();
+	public ModelObsidianTNT obsidianTNT = new ModelObsidianTNT();
 	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -105,6 +109,22 @@ public class ItemRenderingHandler implements IItemRenderer
 	        GL11.glDisable(GL11.GL_BLEND);
 
 	        GL11.glPopMatrix();
+		}
+		else if(item.itemID == Mekanism.gasTankID)
+		{
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+			gasTank.render(0.0625F);
+		}
+		else if(item.itemID == Mekanism.obsidianTNTID)
+		{
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ObsidianTNT.png"));
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+			obsidianTNT.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
 		{

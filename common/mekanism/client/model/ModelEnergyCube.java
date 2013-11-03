@@ -18,6 +18,7 @@ public class ModelEnergyCube extends ModelBase
 	ModelRenderer Frame3;
 	ModelRenderer Frame2;
 	ModelRenderer Frame1;
+	ModelRenderer Connection;
 	ModelRenderer HoriPole1;
 	ModelRenderer HoriPole2;
 	ModelRenderer HoriPole3;
@@ -27,7 +28,7 @@ public class ModelEnergyCube extends ModelBase
 	ModelRenderer HoriPole7;
 	ModelRenderer HoriPole8;
 
-	public ModelEnergyCube() 
+	public ModelEnergyCube()
 	{
 		textureWidth = 64;
 		textureHeight = 64;
@@ -104,6 +105,12 @@ public class ModelEnergyCube extends ModelBase
 		Frame1.setTextureSize(64, 64);
 		Frame1.mirror = true;
 		setRotation(Frame1, 0F, 0F, 0F);
+		Connection = new ModelRenderer(this, 0, 7);
+		Connection.addBox(0F, 0F, 0F, 10, 6, 1);
+		Connection.setRotationPoint(-5F, 13F, -8F);
+		Connection.setTextureSize(64, 64);
+		Connection.mirror = true;
+		setRotation(Connection, 0F, 0F, 0F);
 		HoriPole1 = new ModelRenderer(this, 27, 0);
 		HoriPole1.addBox(0F, 0F, 0F, 3, 3, 10);
 		HoriPole1.setRotationPoint(5F, 21F, -5F);
@@ -171,6 +178,7 @@ public class ModelEnergyCube extends ModelBase
 		Frame3.render(size);
 		Frame2.render(size);
 		Frame1.render(size);
+		Connection.render(size);
 		HoriPole1.render(size);
 		HoriPole2.render(size);
 		HoriPole3.render(size);
@@ -181,7 +189,7 @@ public class ModelEnergyCube extends ModelBase
 		HoriPole8.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z)
+	private void setRotation(ModelRenderer model, float x, float y, float z) 
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

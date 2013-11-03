@@ -17,6 +17,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -208,7 +209,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		return getOutputtingSide() == direction;
+		return direction == getOutputtingSide() && !(receiver instanceof TileEntityUniversalCable);
 	}
 	
 	@Override

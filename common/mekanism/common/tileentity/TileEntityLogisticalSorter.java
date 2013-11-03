@@ -35,6 +35,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 	public EnumColor color;
 	
+	public boolean autoEject;
+	
 	public final int MAX_DELAY = 10;
 	
 	public int delayTicks;
@@ -80,6 +82,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(inInventory != null && inInventory.itemStack != null)
 					{
+						boolean hasFilter = false;
 						EnumColor filterColor = color;
 						
 						for(TransporterFilter filter : filters)
@@ -87,11 +90,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							if(filter.canFilter(inInventory.itemStack))
 							{
 								filterColor = filter.color;
+								hasFilter = true;
 								break;
 							}
 						}
 						
-						if(TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
+						if((hasFilter || autoEject) && TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
 						{
 							inventory.setInventorySlotContents(inInventory.slotID, null);
 							setActive(true);
@@ -127,6 +131,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
         	nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
         }
         
+        nbtTags.setBoolean("autoEject", autoEject);
+        
         NBTTagList filterTags = new NBTTagList();
         
         for(TransporterFilter filter : filters)
@@ -154,6 +160,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     		color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
     	}
     	
+    	autoEject = nbtTags.getBoolean("autoEject");
+    	
        	if(nbtTags.hasKey("filters"))
     	{
     		NBTTagList tagList = nbtTags.getTagList("filters");
@@ -170,9 +178,15 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!worldObj.isRemote)
 		{
-			if(dataStream.readInt() == 0)
+			int type = dataStream.readInt();
+			
+			if(type == 0)
 			{
 				color = TransporterUtils.increment(color);
+			}
+			else if(type == 1)
+			{
+				autoEject = !autoEject;
 			}
 			
 			return;
@@ -196,6 +210,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			else {
 				color = null;
 			}
+			
+			autoEject = dataStream.readBoolean();
 			
 			filters.clear();
 			
@@ -222,6 +238,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			else {
 				color = null;
 			}
+			
+			autoEject = dataStream.readBoolean();
 			
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -256,6 +274,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			data.add(-1);
 		}
 		
+		data.add(autoEject);
+		
 		data.add(filters.size());
 		
 		for(TransporterFilter filter : filters)
@@ -282,6 +302,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		else {
 			data.add(-1);
 		}
+		
+		data.add(autoEject);
 		
 		return data;
 		

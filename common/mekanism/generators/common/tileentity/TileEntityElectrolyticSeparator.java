@@ -18,6 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -454,8 +455,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
     public double injectEnergyUnits(ForgeDirection direction, double i)
     {
+		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		{
+			return i;
+		}
+		
     	double rejects = 0;
-    	double neededEnergy = MAX_ELECTRICITY-electricityStored;
+    	double neededEnergy = getMaxEnergy()-getEnergy();
     	
     	if(i <= neededEnergy)
     	{

@@ -1,11 +1,15 @@
 package mekanism.client.render.entity;
 
+import mekanism.client.model.ModelObsidianTNT;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.src.FMLRenderAccessLibrary;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -14,11 +18,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderObsidianTNT extends Render
+public class RenderObsidianTNTPrimed extends Render
 {
     private RenderBlocks blockRenderer = new RenderBlocks();
+	private ModelObsidianTNT model = new ModelObsidianTNT();
 
-    public RenderObsidianTNT()
+    public RenderObsidianTNTPrimed()
     {
         shadowSize = 0.5F;
     }
@@ -32,7 +37,7 @@ public class RenderObsidianTNT extends Render
     public void renderObsidianTNT(EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float f, float f1)
     {
         GL11.glPushMatrix();
-        GL11.glTranslatef((float)x, (float)y, (float)z);
+        GL11.glTranslatef((float)x, (float)y-1.2f, (float)z);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
 
         if((entityobsidiantnt.fuse - f1) + 1.0F < 10F)
@@ -56,8 +61,8 @@ public class RenderObsidianTNT extends Render
         }
 
         float f3 = (1.0F - ((entityobsidiantnt.fuse - f1) + 1.0F) / 100F) * 0.8F;
-        bindEntityTexture(entityobsidiantnt);
-        blockRenderer.renderBlockAsItem(Mekanism.ObsidianTNT, 0, entityobsidiantnt.getBrightness(f1));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ObsidianTNT.png"));
+		model.render(0.0625F);
 
         if(entityobsidiantnt.fuse / 5 % 2 == 0)
         {
@@ -66,7 +71,7 @@ public class RenderObsidianTNT extends Render
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, f3);
-            blockRenderer.renderBlockAsItem(Mekanism.ObsidianTNT, 0, 1.0F);
+            model.render(0.0625F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glEnable(GL11.GL_LIGHTING);

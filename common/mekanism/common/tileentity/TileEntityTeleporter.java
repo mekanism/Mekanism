@@ -466,8 +466,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	}
 
 	@Override
-	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
+	public double injectEnergyUnits(ForgeDirection direction, double amount)
 	{
+		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		{
+			return amount;
+		}
+		
 		double givenEnergy = amount*Mekanism.FROM_IC2;
     	double rejects = 0;
     	double neededEnergy = getMaxEnergy()-getEnergy();

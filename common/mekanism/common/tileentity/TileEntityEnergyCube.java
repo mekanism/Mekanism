@@ -11,7 +11,6 @@ import java.util.HashSet;
 import mekanism.api.Object3D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -23,13 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConductor;
-import universalelectricity.core.electricity.ElectricityHelper;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import buildcraft.api.power.PowerHandler.Type;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -121,7 +114,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return direction != ForgeDirection.getOrientation(facing);
+		return direction != getOutputtingSide();
 	}
 
 	@Override
@@ -163,6 +156,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
     public double injectEnergyUnits(ForgeDirection direction, double i)
     {
+		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		{
+			return i;
+		}
+		
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
     	double neededEnergy = getMaxEnergy()-getEnergy();
@@ -201,13 +199,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return side != ForgeDirection.getOrientation(facing);
+		return side != getOutputtingSide();
 	}
 
 	@Override
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		return direction == ForgeDirection.getOrientation(facing);
+		return direction == getOutputtingSide() && !(receiver instanceof TileEntityUniversalCable);
 	}
 
 	@Override
@@ -356,13 +354,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public boolean isTeleporterCompatible(ForgeDirection side) 
 	{
-		return true;
+		return side == getOutputtingSide();
 	}
 	
 	@Override
 	public boolean canOutputTo(ForgeDirection side)
 	{
-		return side == ForgeDirection.getOrientation(facing);
+		return side == getOutputtingSide();
 	}
 	
 	@Override

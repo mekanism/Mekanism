@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
+import mekanism.common.tileentity.TileEntityObsidianTNT;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -9,7 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -114,6 +115,36 @@ public class BlockObsidianTNT extends Block
     {
         return false;
     }
+    
+    @Override
+	public boolean hasTileEntity(int metadata)
+	{
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, int metadata)
+	{
+		return new TileEntityObsidianTNT();
+	}
+    
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return -1;
+	}
     
     @Override
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)

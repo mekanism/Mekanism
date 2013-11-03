@@ -562,6 +562,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
     public double injectEnergyUnits(ForgeDirection direction, double i)
     {
+		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		{
+			return i;
+		}
+		
 		double givenEnergy = i*Mekanism.FROM_IC2;
     	double rejects = 0;
     	double neededEnergy = getMaxEnergy()-getEnergy();

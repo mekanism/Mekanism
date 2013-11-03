@@ -1003,7 +1003,6 @@ public class Mekanism
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
-		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		
 		//Load tile entities that have special renderers.
