@@ -200,6 +200,21 @@ public class MekanismRenderer
         GL11.glPopAttrib();
     }
     
+    public static void blendOn()
+    {
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    public static void blendOff()
+    {
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+    
     /**
      * Cleaned-up snip of ItemRenderer.renderItem() -- meant to render 2D items as equipped.
      * @param item - ItemStack to render

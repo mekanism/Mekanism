@@ -229,40 +229,43 @@ public final class TransporterUtils
     
 	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, int side) 
 	{
+		ItemStack toInsert = itemStack.copy();
+		
 		if(!(inventory instanceof ISidedInventory))
 		{
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
-				if(inventory.isItemValidForSlot(i, itemStack)) 
+				if(inventory.isItemValidForSlot(i, toInsert)) 
 				{
 					ItemStack inSlot = inventory.getStackInSlot(i);
 
 					if(inSlot == null)
 					{
-						inventory.setInventorySlotContents(i, itemStack);
+						inventory.setInventorySlotContents(i, toInsert);
 						return null;
 					} 
-					else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize()) 
+					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize()) 
 					{
-						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
 						{
-							ItemStack toSet = itemStack.copy();
+							ItemStack toSet = toInsert.copy();
 							toSet.stackSize += inSlot.stackSize;
 
 							inventory.setInventorySlotContents(i, toSet);
 							return null;
 						} 
 						else {
-							int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+							int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
 
-							ItemStack toSet = itemStack.copy();
+							ItemStack toSet = toInsert.copy();
 							toSet.stackSize = inSlot.getMaxStackSize();
 
-							ItemStack remains = itemStack.copy();
+							ItemStack remains = toInsert.copy();
 							remains.stackSize = rejects;
 
 							inventory.setInventorySlotContents(i, toSet);
-							return remains;
+							
+							toInsert = remains;
 						}
 					}
 				}
@@ -278,36 +281,37 @@ public final class TransporterUtils
 				{
 					int slotID = slots[get];
 	
-					if(sidedInventory.isItemValidForSlot(slotID, itemStack) && sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+					if(sidedInventory.isItemValidForSlot(slotID, toInsert) && sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 					{
 						ItemStack inSlot = inventory.getStackInSlot(slotID);
 	
 						if(inSlot == null) 
 						{
-							inventory.setInventorySlotContents(slotID, itemStack);
+							inventory.setInventorySlotContents(slotID, toInsert);
 							return null;
 						} 
-						else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
+						else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
 						{
-							if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+							if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
 							{
-								ItemStack toSet = itemStack.copy();
+								ItemStack toSet = toInsert.copy();
 								toSet.stackSize += inSlot.stackSize;
 	
 								inventory.setInventorySlotContents(slotID, toSet);
 								return null;
 							} 
 							else {
-								int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+								int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
 	
-								ItemStack toSet = itemStack.copy();
+								ItemStack toSet = toInsert.copy();
 								toSet.stackSize = inSlot.getMaxStackSize();
 	
-								ItemStack remains = itemStack.copy();
+								ItemStack remains = toInsert.copy();
 								remains.stackSize = rejects;
 	
 								inventory.setInventorySlotContents(slotID, toSet);
-								return remains;
+								
+								toInsert = remains;
 							}
 						}
 					}
@@ -315,7 +319,7 @@ public final class TransporterUtils
 			}
 		}
 
-		return itemStack;
+		return toInsert;
 	}
 
 	public static SlotInfo takeItem(IInventory inventory, int side) 

@@ -26,7 +26,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityEnergyCube)tileEntity, x, y, z, 1F);
+		renderAModelAt((TileEntityEnergyCube)tileEntity, x, y, z, partialTick);
 	}
 	
 	private void renderAModelAt(TileEntityEnergyCube tileEntity, double x, double y, double z, float partialTick)
@@ -40,15 +40,11 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 		model.render(0.0625F);
 		GL11.glPopMatrix();
 		
-		//Energy Core Render
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
+        MekanismRenderer.blendOn();
         MekanismRenderer.glowOn();
         
         EnumColor c = tileEntity.tier.color;
@@ -63,11 +59,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
 
         MekanismRenderer.glowOff();
-
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
-        GL11.glDisable(GL11.GL_BLEND);
+        MekanismRenderer.blendOff();
 
         GL11.glPopMatrix();
 	}

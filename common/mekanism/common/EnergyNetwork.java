@@ -345,6 +345,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getFlow()
 	{
-		return ElectricityDisplay.getDisplay((float)(getPower()*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.WATT);
+		return ElectricityDisplay.getDisplay((float)(getPower()*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.JOULES);
 	}
 }

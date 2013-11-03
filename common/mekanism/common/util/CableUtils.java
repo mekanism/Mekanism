@@ -271,7 +271,8 @@ public final class CableUtils
 			{
 				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 				{
-					emitter.setEnergy(emitter.getEnergy() - (Math.min(emitter.getEnergy(), emitter.getMaxOutput()) - CableUtils.emitEnergyToNetwork(Math.min(emitter.getEnergy(), emitter.getMaxOutput()), emitter, emitter.getOutputtingSide())));
+					double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
+					emitter.setEnergy(emitter.getEnergy() - (energyToSend - emitEnergyToNetwork(energyToSend, emitter, emitter.getOutputtingSide())));
 					return;
 				}
 				else if(tileEntity instanceof IStrictEnergyAcceptor)
