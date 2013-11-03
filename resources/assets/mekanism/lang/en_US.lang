@@ -12,7 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
 item.AtomicCore.name=Atomic Core
 item.ElectricBow.name=Electric Bow
-item.StorageTank.name=Hydrogen Tank
 item.BoundingBlock.name=Bounding Block
 tile.GasTank.name=Gas Tank
 item.StorageTank.name=Storage Tank

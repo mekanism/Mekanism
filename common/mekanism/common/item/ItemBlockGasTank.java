@@ -2,34 +2,75 @@ package mekanism.common.item;
 
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.IStorageTank;
 import mekanism.api.gas.EnumGas;
+import mekanism.common.IEnergyCube;
+import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.tileentity.TileEntityGasTank;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 
-public class ItemStorageTank extends ItemMekanism implements IStorageTank
+import org.lwjgl.input.Keyboard;
+
+public class ItemBlockGasTank extends ItemBlock implements IStorageTank, ISustainedInventory
 {
+	public Block metaBlock;
+	
 	/** The maximum amount of gas this tank can hold. */
-	public int MAX_GAS;
+	public int MAX_GAS = 96000;
 	
 	/** How fast this tank can transfer gas. */
-	public int TRANSFER_RATE;
+	public int TRANSFER_RATE = 16;
 	
-	public ItemStorageTank(int id, int maxGas, int transferRate)
+	public ItemBlockGasTank(int id, Block block)
 	{
 		super(id);
-		MAX_GAS = maxGas;
-		TRANSFER_RATE = transferRate;
+		metaBlock = block;
+		setHasSubtypes(true);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
+	
+	@Override
+	public int getMetadata(int i)
+	{
+		return i;
+	}
+	
+	@Override
+	public Icon getIconFromDamage(int i)
+	{
+		return metaBlock.getIcon(2, i);
+	}
+	
+	@Override
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+    {
+    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+    	
+    	if(place)
+    	{
+    		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
+    		tileEntity.gasType = getGasType(stack);
+    		tileEntity.gasStored = getGas(getGasType(stack), stack);
+    		
+    		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+    	}
+    	
+    	return place;
+    }
 	
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -42,6 +83,14 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 		}
 		else {
 			list.add("Stored " + getGasType(itemstack).name + ": " + gas);
+		}
+		
+		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+		}
+		else {
+			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
 	}
 	
@@ -81,7 +130,7 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 					stored = itemstack.stackTagCompound.getInteger("gas");
 				}
 				
-				itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
+				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored/MAX_GAS)*100)-100))));
 				return stored;
 			}
 		}
@@ -110,7 +159,7 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 			{
 				int stored = Math.max(Math.min(amount, MAX_GAS), 0);
 				itemstack.stackTagCompound.setInteger("gas", stored);
-				itemstack.setItemDamage((int)(Math.abs((((float)stored/MAX_GAS)*100)-100)));
+				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored/MAX_GAS)*100)-100))));
 			}
 			
 			if(getGas(getGasType(itemstack), itemstack) == 0)
@@ -234,5 +283,39 @@ public class ItemStorageTank extends ItemMekanism implements IStorageTank
 		}
 
 		itemstack.stackTagCompound.setString("gasType", type.name);
+	}
+	
+	@Override
+	public void setInventory(NBTTagList nbtTags, Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+	
+			itemStack.stackTagCompound.setTag("Items", nbtTags);
+		}
+	}
+
+	@Override
+	public NBTTagList getInventory(Object... data) 
+	{
+		if(data[0] instanceof ItemStack)
+		{
+			ItemStack itemStack = (ItemStack)data[0];
+			
+			if(itemStack.stackTagCompound == null) 
+			{ 
+				return null; 
+			}
+			
+			return itemStack.stackTagCompound.getTagList("Items");
+		}
+		
+		return null;
 	}
 }

@@ -39,6 +39,7 @@ public class RenderObsidianTNTPrimed extends Render
         GL11.glPushMatrix();
         GL11.glTranslatef((float)x, (float)y-1.2f, (float)z);
         GL11.glScalef(0.8F, 0.8F, 0.8F);
+        GL11.glRotatef(180, 1, 0, 0);
 
         if((entityobsidiantnt.fuse - f1) + 1.0F < 10F)
         {

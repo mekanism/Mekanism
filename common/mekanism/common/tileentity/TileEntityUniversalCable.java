@@ -37,8 +37,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	
 	public double energyScale;
 	
-	public boolean registeredIC2 = false;
-	
 	public TileEntityUniversalCable()
 	{
 		ueNetwork = new FakeUENetwork();
@@ -105,11 +103,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			getTransmitterNetwork().split(this);
 			
-			if(registeredIC2)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-				registeredIC2 = false;
-			}
+			Mekanism.ic2Registered.remove(Object3D.get(this));
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 		
 		super.invalidate();
@@ -146,12 +141,17 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public void chunkLoad()
 	{
+		register();
+	}
+	
+	public void register()
+	{
 		if(!worldObj.isRemote)
 		{
-			if(!registeredIC2)
+			if(!Mekanism.ic2Registered.contains(Object3D.get(this)))
 			{
+				Mekanism.ic2Registered.add(Object3D.get(this));
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-				registeredIC2 = true;
 			}
 		}
 	}

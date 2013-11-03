@@ -31,9 +31,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {	
-	private double lastPowerScale = 0;
+	private double lastPowerScale = -1;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
+	
+	private boolean needsUpdate = false;
 	
 	public EnergyNetwork(ITransmitter<EnergyNetwork>... varCables)
 	{
@@ -238,14 +240,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 		
-		double currentPowerScale = getPowerScale();
-		
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			lastPowerScale = currentPowerScale;
-
-			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-		}
+		needsUpdate = true;
 	}
 
 	@Override
@@ -289,11 +284,20 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		
 		double currentPowerScale = getPowerScale();
 		
-		if(currentPowerScale != lastPowerScale && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
+			if(currentPowerScale != lastPowerScale)
+			{
+				needsUpdate = true;
+			}
+			
 			lastPowerScale = currentPowerScale;
 
-			MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+			if(needsUpdate)
+			{
+				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+				needsUpdate = false;
+			}
 		}
 	}
 	

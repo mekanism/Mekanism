@@ -195,23 +195,30 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
             float zRandom = (float)z + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
+            
+            int side = tileEntity.facing;
+            
+            if(tileEntity instanceof TileEntityMetallurgicInfuser)
+            {
+            	side = ForgeDirection.getOrientation(side).getOpposite().ordinal();
+            }
 
-            if(tileEntity.facing == 4)
+            if(side == 4)
             {
                 world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if(tileEntity.facing == 5)
+            else if(side == 5)
             {
                 world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if(tileEntity.facing == 2)
+            else if(side == 2)
             {
                 world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
             }
-            else if(tileEntity.facing == 3)
+            else if(side == 3)
             {
                 world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
                 world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
@@ -852,6 +859,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	
     	return false;
     }
+    
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			((TileEntityElectricBlock)tileEntity).register();
+		}
+	}
 	
 	public static enum MachineType
 	{

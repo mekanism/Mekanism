@@ -2,16 +2,22 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
+import mekanism.api.Object3D;
 import mekanism.api.gas.EnumGas;
+import mekanism.client.ClientPlayerTickHandler.UpdateQueueData;
 import mekanism.client.EnergyClientUpdate;
-import mekanism.client.GasClientUpdate;
 import mekanism.client.FluidClientUpdate;
+import mekanism.client.GasClientUpdate;
+import mekanism.client.MekanismClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketTransmitterTransferUpdate implements IMekanismPacket
 {
@@ -72,6 +78,11 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 			{
 				new EnergyClientUpdate(tileEntity, powerLevel).clientUpdate();
 			}
+			else {
+				try {
+					appendToQueue(Object3D.get(tileEntity), powerLevel);
+				} catch(Exception e) {}
+			}
 		}
 		else if(transmitterType == 1)
 	    {
@@ -94,6 +105,12 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
     			new FluidClientUpdate(tileEntity, fluidStack).clientUpdate();
     		}
 	    }
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void appendToQueue(Object3D obj, double energy) throws Exception
+	{
+		MekanismClient.cableUpdateQueue.add(new UpdateQueueData(obj, energy));
 	}
 
 	@Override

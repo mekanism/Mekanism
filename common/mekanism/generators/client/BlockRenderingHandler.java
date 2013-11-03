@@ -48,7 +48,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
     	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
-    	    	bioGenerator.render(0.0625F, 0.0F);
+    	    	bioGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
     		{

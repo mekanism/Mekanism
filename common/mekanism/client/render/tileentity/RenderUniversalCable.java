@@ -223,7 +223,6 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 	
 	private DisplayInteger getDisplayList(ForgeDirection side)
 	{
-		
 		DisplayInteger newDisplayList;
 		
 		Model3D toRender = energy[side.ordinal()];

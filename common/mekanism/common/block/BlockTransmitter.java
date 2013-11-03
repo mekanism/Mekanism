@@ -1,8 +1,5 @@
 package mekanism.common.block;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.tile.IEnergyTile;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +30,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -326,6 +322,11 @@ public class BlockTransmitter extends Block
 			if(tileEntity instanceof ITransmitter)
 			{
 				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				
+				if(tileEntity instanceof TileEntityUniversalCable)
+				{
+					((TileEntityUniversalCable)tileEntity).register();
+				}
 			}
 		}
 	}

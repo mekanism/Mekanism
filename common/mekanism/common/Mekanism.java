@@ -6,8 +6,10 @@ import ic2.api.recipe.Recipes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import mekanism.api.Object3D;
@@ -34,6 +36,7 @@ import mekanism.common.block.BlockTransmitter;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockTransmitter;
@@ -49,7 +52,6 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemRobit;
-import mekanism.common.item.ItemStorageTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
@@ -72,9 +74,7 @@ import mekanism.common.network.PacketTransmitterTransferUpdate;
 import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
-import mekanism.common.tileentity.TileEntityEnergyCube;
-import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -84,9 +84,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
@@ -161,6 +163,8 @@ public class Mekanism
 	
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
+	
+	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     
 	//Block IDs
     public static int basicBlockID = 3000;
@@ -181,7 +185,6 @@ public class Mekanism
 	public static ItemRobit Robit;
 	public static ItemAtomicDisassembler AtomicDisassembler;
 	public static Item AtomicCore;
-	public static ItemStorageTank StorageTank;
 	public static Item ControlCircuit;
 	public static Item EnrichedIron;
 	public static Item CompressedCarbon;
@@ -315,9 +318,6 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(AtomicDisassembler.getUnchargedItem(), new Object[] {
 			"AEA", "ACA", " O ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('E'), EnergyTablet.getUnchargedItem(), Character.valueOf('C'), AtomicCore, Character.valueOf('O'), "ingotRefinedObsidian"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(StorageTank.getEmptyItem(), new Object[] {
-			"III", "IDI", "III", Character.valueOf('I'), Item.ingotIron, Character.valueOf('D'), "dustIron"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GasTank), new Object[] {
 			"PPP", "PDP", "PPP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('D'), "dustIron"
@@ -513,7 +513,7 @@ public class Mekanism
 		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
-		StorageTank = (ItemStorageTank) new ItemStorageTank(configuration.getItem("StorageTank", 11213).getInt(), 1600, 16).setUnlocalizedName("StorageTank");
+		//OPEN 11213
 		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", 11214).getInt()).setUnlocalizedName("ControlCircuit");
 		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", 11215).getInt()).setUnlocalizedName("EnrichedIron");
 		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", 11216).getInt()).setUnlocalizedName("CompressedCarbon");
@@ -538,7 +538,6 @@ public class Mekanism
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(AtomicCore, "AtomicCore");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
-		GameRegistry.registerItem(StorageTank, "StorageTank");
 		GameRegistry.registerItem(ControlCircuit, "ControlCircuit");
 		GameRegistry.registerItem(EnrichedIron, "EnrichedIron");
 		GameRegistry.registerItem(CompressedCarbon, "CompressedCarbon");
@@ -577,6 +576,7 @@ public class Mekanism
 		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setUnlocalizedName("MachineBlock");
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setUnlocalizedName("OreBlock");
 		Item.itemsList[energyCubeID] = new ItemBlockEnergyCube(energyCubeID - 256, EnergyCube).setUnlocalizedName("EnergyCube");
+		Item.itemsList[gasTankID] = new ItemBlockGasTank(gasTankID - 256, GasTank).setUnlocalizedName("GasTank");
 		Item.itemsList[transmitterID] = new ItemBlockTransmitter(transmitterID - 256, Transmitter).setUnlocalizedName("Transmitter");
 	}
 	
@@ -1162,5 +1162,27 @@ public class Mekanism
 		try {
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidSent));
 		} catch(Exception e) {}
+	}
+	
+	@ForgeSubscribe
+	public void onChunkLoad(ChunkEvent.Load event)
+	{
+		 if(event.getChunk() != null)
+         {
+			 Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
+			 
+             for(Object obj : copy.values())
+             {
+                 if(obj instanceof TileEntity)
+                 {
+                     TileEntity tileEntity = (TileEntity)obj;
+
+                     if(tileEntity instanceof TileEntityElectricBlock)
+                     {
+                		 ((TileEntityElectricBlock)tileEntity).register();
+                     }
+                 }
+             }
+         }
 	}
 }

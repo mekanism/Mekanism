@@ -1,8 +1,11 @@
 package mekanism.client;
 
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import mekanism.api.EnumColor;
+import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
@@ -11,12 +14,11 @@ import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketWalkieTalkieState;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
-
-import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
@@ -24,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientPlayerTickHandler implements ITickHandler
-{
+{	
 	public boolean lastTickUpdate = false;
 	
 	@Override
@@ -36,6 +38,24 @@ public class ClientPlayerTickHandler implements ITickHandler
 		if(tickData[0] instanceof EntityPlayer)
 		{
 			EntityPlayer entityPlayer = (EntityPlayer)tickData[0];
+			
+			Set<UpdateQueueData> toRemove = new HashSet<UpdateQueueData>();
+			
+			for(UpdateQueueData data : MekanismClient.cableUpdateQueue)
+			{
+				TileEntity tile = data.object3D.getTileEntity(entityPlayer.worldObj);
+				
+				if(tile instanceof TileEntityUniversalCable)
+				{
+					new EnergyClientUpdate(tile, data.energy).clientUpdate();
+					toRemove.add(data);
+				}
+			}
+			
+			for(UpdateQueueData rem : toRemove)
+			{
+				MekanismClient.cableUpdateQueue.remove(rem);
+			}
 			
 			if(entityPlayer.getCurrentEquippedItem() != null)
 			{
@@ -112,5 +132,17 @@ public class ClientPlayerTickHandler implements ITickHandler
 	public String getLabel()
 	{
 		return "MekanismClientPlayer";
+	}
+	
+	public static class UpdateQueueData
+	{
+		public Object3D object3D;
+		public double energy;
+		
+		public UpdateQueueData(Object3D obj, double d)
+		{
+			object3D = obj;
+			energy = d;
+		}
 	}
 }

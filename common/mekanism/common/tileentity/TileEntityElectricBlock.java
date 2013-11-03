@@ -8,6 +8,7 @@ import ic2.api.tile.IWrenchable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
@@ -51,16 +52,23 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		powerHandler.configure(0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
 	}
 	
+	public void register()
+	{
+		if(!worldObj.isRemote)
+		{
+			if(!Mekanism.ic2Registered.contains(Object3D.get(this)))
+			{
+				Mekanism.ic2Registered.add(Object3D.get(this));
+				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			}
+		}
+	}
+	
 	@Override
 	public void onUpdate()
 	{
 		if(!worldObj.isRemote)
 		{
-			if(packetTick == 0)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			}
-			
 			if(getEnergy() < getMaxEnergy() && powerHandler.getEnergyStored() > 0)
 			{
 				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
@@ -129,17 +137,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public void invalidate()
+	public void onChunkUnload()
 	{
 		if(!worldObj.isRemote)
 		{
-			if(Mekanism.hooks.IC2Loaded)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			}
+			Mekanism.ic2Registered.remove(Object3D.get(this));
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 		
-		super.invalidate();
+		super.onChunkUnload();
 	}
     
 	@Override

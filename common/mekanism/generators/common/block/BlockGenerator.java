@@ -32,7 +32,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -486,6 +485,17 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         }
         
         return itemStack;
+	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			((TileEntityElectricBlock)tileEntity).register();
+		}
 	}
 	
 	public static enum GeneratorType

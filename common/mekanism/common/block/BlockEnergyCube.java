@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
@@ -14,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tileentity.TileEntityBasicBlock;
+import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -192,8 +194,6 @@ public class BlockEnergyCube extends BlockContainer
     {
     	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
     	{
-	    	TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-	    	
             float motion = 0.7F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -247,6 +247,17 @@ public class BlockEnergyCube extends BlockContainer
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
         
         return itemStack;
+	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			((TileEntityElectricBlock)tileEntity).register();
+		}
 	}
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 

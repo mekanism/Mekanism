@@ -31,9 +31,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@SideOnly(Side.CLIENT)
 	public Sound audio;
 
-	/** Where the crush piston should be on the model. */
-	public float crushMatrix = 0;
-
 	/** The FluidSlot biofuel instance for this generator. */
 	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
 
@@ -43,34 +40,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		inventory = new ItemStack[2];
 	}
 
-	public float getMatrix()
-	{
-		float matrix = 0;
-
-		if(crushMatrix <= 2)
-		{
-			return crushMatrix;
-		}
-		else {
-			return 2 - (crushMatrix-2);
-		}
-	}
-
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-
-		if(worldObj.isRemote)
-		{
-			if(crushMatrix < 4)
-			{
-				crushMatrix+=0.2F;
-			}
-			else {
-				crushMatrix = 0;
-			}
-		}
 
 		ChargeUtils.charge(1, this);
 
@@ -241,6 +214,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		super.getNetworkedData(data);
 		data.add(bioFuelSlot.fluidStored);
 		return data;
+	}
+	
+	@Override
+	public ForgeDirection getOutputtingSide()
+	{
+		return ForgeDirection.getOrientation(facing).getOpposite();
 	}
 
 	@Override

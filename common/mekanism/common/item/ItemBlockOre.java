@@ -65,6 +65,7 @@ public class ItemBlockOre extends ItemBlock
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
+		
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
@@ -74,6 +75,7 @@ public class ItemBlockOre extends ItemBlock
 				name = "Unknown";
 				break;
 		}
+		
 		return getUnlocalizedName() + "." + name;
 	}
 }

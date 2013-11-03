@@ -12,7 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomar-Disassembler
 item.AtomicCore.name=Atomar-Kern
 item.ElectricBow.name=Elektrischer Bogen
-item.StorageTank.name=Wasserstofftank
 item.BoundingBlock.name=Begrenzungsblock
 tile.GasTank.name=Gastank
 item.StorageTank.name=Speichertank

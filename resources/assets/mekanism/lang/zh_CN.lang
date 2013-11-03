@@ -12,7 +12,6 @@ item.Robit.name=机器人
 item.AtomicDisassembler.name=原子分解机
 item.AtomicCore.name=原子核
 item.ElectricBow.name=电动弓
-item.StorageTank.name=氢气储罐
 item.BoundingBlock.name=绑定方块
 tile.GasTank.name=燃气储罐
 item.StorageTank.name=储罐

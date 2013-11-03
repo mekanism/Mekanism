@@ -1,9 +1,12 @@
 package mekanism.api.transmitters;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -135,7 +138,9 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			try {
 			    if(c != null)
 	            {
-	                for(Object obj : c.chunkTileEntityMap.values())
+			    	Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
+			    	
+	                for(Object obj : copy.values())
 	                {
 	                    if(obj instanceof TileEntity)
 	                    {

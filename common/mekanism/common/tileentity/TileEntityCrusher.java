@@ -1,11 +1,13 @@
 package mekanism.common.tileentity;
 
+import java.util.EnumSet;
 import java.util.Map;
 
-import net.minecraft.util.ResourceLocation;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.block.BlockMachine.MachineType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeDirection;
 
 public class TileEntityCrusher extends TileEntityElectricMachine
 {
@@ -44,6 +46,12 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 		else {
 			return 3 - (crushMatrix-3);
 		}
+	}
+	
+	@Override
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.of(ForgeDirection.getOrientation(0));
 	}
 	
 	@Override
