@@ -23,6 +23,7 @@ import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismHooks;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Teleporter;
@@ -1003,6 +1004,11 @@ public final class MekanismUtils
     	}
     	
     	return false;
+    }
+    
+    public static boolean useBuildcraft()
+    {
+    	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
     public static enum ResourceType

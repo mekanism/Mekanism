@@ -45,7 +45,7 @@ public final class CableUtils
 			
 			if(acceptor instanceof IStrictEnergyAcceptor || 
 					acceptor instanceof IEnergySink || 
-					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && Mekanism.hooks.BuildCraftLoaded) ||
+					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && MekanismUtils.useBuildcraft()) ||
 					acceptor instanceof IElectrical)
 			{
 				acceptors[orientation.ordinal()] = acceptor;
@@ -177,7 +177,7 @@ public final class CableUtils
     		return true;
     	}
     	
-    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof ITransmitter) && Mekanism.hooks.BuildCraftLoaded)
+    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof ITransmitter) && MekanismUtils.useBuildcraft())
     	{
     		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, side.getOpposite()))
     		{
@@ -281,7 +281,7 @@ public final class CableUtils
 					double toSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 					emitter.setEnergy(emitter.getEnergy() - (toSend - acceptor.transferEnergyToAcceptor(toSend)));
 				}
-				else if(tileEntity instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
+				else if(tileEntity instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 				{
 					PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(emitter.getOutputtingSide().getOpposite());
 					

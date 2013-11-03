@@ -217,6 +217,7 @@ public class Mekanism
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
 	public static boolean voiceServerEnabled = true;
+	public static boolean forceBuildcraft = false;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;
