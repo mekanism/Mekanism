@@ -1,7 +1,11 @@
 package mekanism.client.render.item;
 
+import mekanism.api.EnumColor;
+import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
+import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
+import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IElectricChest;
@@ -33,6 +37,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelRobit robit = new ModelRobit();
 	public ModelChest electricChest = new ModelChest();
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
+	public ModelEnergyCore energyCore = new ModelEnergyCore();
 	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -62,6 +67,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		if(item.getItem() instanceof IEnergyCube)
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
+			IEnergizedItem energized = (IEnergizedItem)item.getItem();
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.name + ".png"));
 			
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -69,6 +75,36 @@ public class ItemRenderingHandler implements IItemRenderer
 	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 	    	
 			energyCube.render(0.0625F);
+			
+	        GL11.glPushMatrix();
+	        GL11.glTranslated(0.0, 1.0, 0.0);
+	        Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
+
+	        GL11.glShadeModel(GL11.GL_SMOOTH);
+	        GL11.glEnable(GL11.GL_BLEND);
+	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+	        MekanismRenderer.glowOn();
+	        
+	        EnumColor c = tier.color;
+
+	        GL11.glPushMatrix();
+	        GL11.glScalef(0.4F, 0.4F, 0.4F);
+	        GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), (float)(energized.getEnergy(item)/energized.getMaxEnergy(item)));
+	        GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + MekanismRenderer.getPartialTicks()) * 3)) / 7, 0);
+	        GL11.glRotatef((MekanismClient.ticksPassed + MekanismRenderer.getPartialTicks()) * 4, 0, 1, 0);
+	        GL11.glRotatef(36F + (MekanismClient.ticksPassed + MekanismRenderer.getPartialTicks()) * 4, 0, 1, 1);
+	        energyCore.render(0.0625F);
+	        GL11.glPopMatrix();
+
+	        MekanismRenderer.glowOff();
+
+	        GL11.glShadeModel(GL11.GL_FLAT);
+	        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+	        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+	        GL11.glDisable(GL11.GL_BLEND);
+
+	        GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
 		{

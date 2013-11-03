@@ -55,7 +55,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 
         GL11.glPushMatrix();
         GL11.glScalef(0.4F, 0.4F, 0.4F);
-        GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), tileEntity.getEnergyStored()/tileEntity.getMaxEnergyStored());
+        GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), (float)(tileEntity.getEnergy()/tileEntity.getMaxEnergy()));
         GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + partialTick) * 3)) / 7, 0);
         GL11.glRotatef((MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 0);
         GL11.glRotatef(36F + (MekanismClient.ticksPassed + partialTick) * 4, 0, 1, 1);
