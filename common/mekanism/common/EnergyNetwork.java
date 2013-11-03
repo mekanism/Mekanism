@@ -16,6 +16,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -77,7 +78,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					totalNeeded += Math.min((((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
 				}
-				else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
+				else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 				{
 					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC);
 				}
@@ -124,7 +125,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
 						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(acceptorDirections.get(acceptor).getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
-					else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
+					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 					{
 						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite());
 		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
@@ -175,7 +176,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			else if(acceptor instanceof IPowerReceptor && Mekanism.hooks.BuildCraftLoaded)
+			else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 			{
 				if(((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()) != null)
 				{
