@@ -143,9 +143,8 @@ public class BlockGasTank extends BlockContainer
     
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-    	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
-        
+        ItemStack itemStack = getPickBlock(null, world, x, y, z);
+
         world.setBlockToAir(x, y, z);
         
         if(!returnBlock)
