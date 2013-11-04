@@ -192,7 +192,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
             			world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
             			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.8, y+1, z+.8, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -207,7 +207,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	            		world.spawnParticle("flame", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 	        			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.2, y+1, z+.2, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.75, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -222,7 +222,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	            		world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 	        			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.2, y+1, z+.8, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.5, y+.2, z+.25, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -237,7 +237,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	            		world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 	        			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.8, y+1, z+.2, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.5, y+.2, z+.75, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;

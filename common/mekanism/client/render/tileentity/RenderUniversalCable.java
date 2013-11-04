@@ -74,7 +74,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		push();
 		
 		MekanismRenderer.glowOn();
-		GL11.glColor4f(1.F, 1.F, 1.F, tileEntity.getEnergyScale());
+		GL11.glColor4f(1F, 1F, 1F, tileEntity.getEnergyScale());
 		bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		
@@ -218,6 +218,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			
 			energyArray[side.ordinal()] = toReturn;
 		}
+		
 		return energyArray;
 	}
 	
@@ -226,9 +227,11 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		DisplayInteger newDisplayList;
 		
 		Model3D toRender = energy[side.ordinal()];
+		
 		if(side == ForgeDirection.UNKNOWN)
 		{
 			newDisplayList = centerDisplayLists.get(new BooleanArray(connectable));
+			
 			if(newDisplayList != null)
 			{
 				return newDisplayList;
@@ -248,6 +251,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		}
 		else {
 			newDisplayList = sideDisplayLists.get(side);
+			
 			if(newDisplayList != null)
 			{
 				return newDisplayList;
@@ -260,6 +264,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			newDisplayList.endList();
 			sideDisplayLists.put(side, newDisplayList);
 		}
+		
 		return newDisplayList;
 	}
 }

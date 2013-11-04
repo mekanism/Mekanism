@@ -1,5 +1,8 @@
 package mekanism.generators.client.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -23,7 +26,11 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 {
 	private ModelBioGenerator model = new ModelBioGenerator();
 	
+	private Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
+	
 	private static Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
+	
+	private static final int stages = 40;
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -45,70 +52,98 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 	    }
 		
-		GL11.glRotatef(180, 0f, 0f, 1f);
+		GL11.glRotatef(180, 0F, 0F, 1F);
 		model.render(0.0625F);
 		GL11.glPopMatrix();
+		
+		if(tileEntity.bioFuelSlot.fluidStored > 0)
+		{
+			push();
+			
+			MekanismRenderer.glowOn();
+			GL11.glTranslatef((float)x, (float)y, (float)z);
+			bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
+			getDisplayList(ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
+			MekanismRenderer.glowOff();
+			
+			pop();
+		}
 	}
 	
-	/*
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger getDisplayList(TileEntityBioGenerator tileEntity)
+	private DisplayInteger[] getDisplayList(ForgeDirection side)
 	{
+		if(energyDisplays.containsKey(side))
+		{
+			return energyDisplays.get(side);
+		}
+		
+		DisplayInteger[] displays = new DisplayInteger[stages];
+		
 		Model3D model3D = new Model3D();
 		model3D.baseBlock = Block.waterStill;
 		model3D.setTexture(renderIcon);
 		
-		switch(ForgeDirection.getOrientation(tileEntity.facing))
+		for(int i = 0; i < stages; i++)
 		{
-			case NORTH:
+			displays[i] = DisplayInteger.createAndStart();
+			
+			switch(side)
 			{
-				model3D.minZ = -.01;
-				model3D.maxZ = 0;
-				
-				model3D.minX = 0;
-				model3D.minY = .0625;
-				model3D.maxX = 1;
-				model3D.maxY = 1;
-				break;
+				case NORTH:
+				{
+					model3D.minZ = 0.1875;
+					model3D.maxZ = 0.4375;
+					
+					model3D.minX = 0.375;
+					model3D.maxX = 0.625;
+					model3D.minY = 0.125;
+					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					break;
+				}
+				case SOUTH:
+				{
+					model3D.minZ = 0.5625;
+					model3D.maxZ = 0.8125;
+					
+					model3D.minX = 0.375;
+					model3D.maxX = 0.625;
+					model3D.minY = 0.125;
+					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					break;
+				}
+				case WEST:
+				{
+					model3D.minX = 0.1875;
+					model3D.maxX = 0.4375;
+					
+					model3D.minZ = 0.375;
+					model3D.maxZ = 0.625;
+					model3D.minY = 0.125;
+					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					break;
+				}
+				case EAST:
+				{
+					model3D.minX = 0.5625;
+					model3D.maxX = 0.8125;
+					
+					model3D.minZ = 0.375;
+					model3D.maxZ = 0.625;
+					model3D.minY = 0.125;
+					model3D.maxY = 0.125 + ((float)i/stages)*.34375;
+					break;
+				}
 			}
-			case SOUTH:
-			{
-				model3D.minZ = 1;
-				model3D.maxZ = 1.01;
-				
-				model3D.minX = 0;
-				model3D.minY = .0625;
-				model3D.maxX = 1;
-				model3D.maxY = 1;
-				break;
-			}
-			case WEST:
-			{
-				model3D.minX = -.01;
-				model3D.maxX = 0;
-				
-				model3D.minY = .0625;
-				model3D.minZ = 0;
-				model3D.maxY = 1;
-				model3D.maxZ = 1;
-				break;
-			}
-			case EAST:
-			{
-				model3D.minX = 1;
-				model3D.maxX = 1.01;
-				
-				model3D.minY = .0625;
-				model3D.minZ = 0;
-				model3D.maxY = 1;
-				model3D.maxZ = 1;
-				break;
-			}
+			
+			MekanismRenderer.renderObject(model3D);
+			DisplayInteger.endList();
 		}
 		
-		MekanismRenderer.renderObject(model3D);
+		energyDisplays.put(side, displays);
+		
+		return displays;
 	}
-	*/
 	
 	private void pop()
 	{
