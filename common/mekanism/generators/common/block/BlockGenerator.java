@@ -116,7 +116,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	        	change = 0;
 	        }
         }
-        else {
+        
+        if(change != 0 && change != 1)
+        {
 	        switch(side)
 	        {
 	        	case 0: change = 2; break;

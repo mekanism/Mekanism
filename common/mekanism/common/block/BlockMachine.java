@@ -43,6 +43,7 @@ import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -151,16 +152,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         int height = Math.round(entityliving.rotationPitch);
         int change = 3;
         
-        if(world.getBlockMetadata(x, y, z) == MachineType.LOGISTICAL_SORTER.meta)
+        if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
         {
-            if(height >= 65)
-            {
-            	change = 1;
-            }
-            else if(height <= -65)
-            {
-            	change = 0;
-            }
+	        if(height >= 65)
+	        {
+	        	change = 1;
+	        }
+	        else if(height <= -65)
+	        {
+	        	change = 0;
+	        }
         }
         
         if(change != 0 && change != 1)

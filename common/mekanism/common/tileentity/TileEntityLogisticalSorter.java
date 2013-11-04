@@ -422,4 +422,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		return 0;
 	}
+	
+	@Override
+	public boolean canSetFacing(int facing)
+	{
+		return true;
+	}
 }
