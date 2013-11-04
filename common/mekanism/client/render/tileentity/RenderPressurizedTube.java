@@ -84,20 +84,20 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				switch(ForgeDirection.getOrientation(i))
 				{
 					case NORTH:
-						GL11.glScalef(1, 1, 1.63f);
-						GL11.glTranslatef(0, 0, -.073f);
+						GL11.glScalef(1, 1, 1.7f);
+						GL11.glTranslatef(0, 0, -.077f);
 						break;
 					case SOUTH:
-						GL11.glScalef(1, 1, 1.63f);
-						GL11.glTranslatef(0, 0, .073f);
+						GL11.glScalef(1, 1, 1.7f);
+						GL11.glTranslatef(0, 0, .077f);
 						break;
 					case WEST:
-						GL11.glScalef(1.63f, 1, 1);
-						GL11.glTranslatef(.073f, 0, 0);
+						GL11.glScalef(1.7f, 1, 1);
+						GL11.glTranslatef(.077f, 0, 0);
 						break;
 					case EAST:
-						GL11.glScalef(1.63f, 1, 1);
-						GL11.glTranslatef(-.073f, 0, 0);
+						GL11.glScalef(1.7f, 1, 1);
+						GL11.glTranslatef(-.077f, 0, 0);
 						break;
 				}
 				
