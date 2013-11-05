@@ -157,7 +157,8 @@ public final class TransporterUtils
     	if(tileEntity instanceof IConfigurable)
     	{
     		IConfigurable config = (IConfigurable)tileEntity;
-    		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(side).getOpposite());
+    		int tileSide = config.getOrientation();
+    		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
     		
     		if(configColor != null && configColor != color)
     		{
