@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.SlotInfo;
 import mekanism.common.transporter.TransporterStack;
-import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -147,11 +147,22 @@ public final class TransporterUtils
     	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color);
     }
     
-    public static boolean canInsert(TileEntity tileEntity, ItemStack itemStack, int side)
+    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side)
     {
     	if(!(tileEntity instanceof IInventory))
     	{
     		return false;
+    	}
+    	
+    	if(tileEntity instanceof IConfigurable)
+    	{
+    		IConfigurable config = (IConfigurable)tileEntity;
+    		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(side).getOpposite());
+    		
+    		if(configColor != null && configColor != color)
+    		{
+    			return false;
+    		}
     	}
     	
     	IInventory inventory = (IInventory)tileEntity;

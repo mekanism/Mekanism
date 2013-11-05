@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.tileentity.TileEntityContainerBlock;
@@ -22,16 +20,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
-
 public class GuiConfiguration extends GuiMekanism
 {
-	public Map<Integer, GuiPos> positions = new HashMap<Integer, GuiPos>();
+	public Map<Integer, GuiPos> slotPosMap = new HashMap<Integer, GuiPos>();
+	
+	public Map<Integer, GuiPos> inputPosMap = new HashMap<Integer, GuiPos>();
     
     public IConfigurable configurable;
     
@@ -43,12 +41,19 @@ public class GuiConfiguration extends GuiMekanism
     	
     	configurable = tile;
     	
-    	positions.put(0, new GuiPos(110, 63));
-    	positions.put(1, new GuiPos(110, 33));
-    	positions.put(2, new GuiPos(110, 48));
-    	positions.put(3, new GuiPos(95, 63));
-    	positions.put(4, new GuiPos(95, 48));
-    	positions.put(5, new GuiPos(125, 48));
+    	slotPosMap.put(0, new GuiPos(126, 64));
+    	slotPosMap.put(1, new GuiPos(126, 34));
+    	slotPosMap.put(2, new GuiPos(126, 49));
+    	slotPosMap.put(3, new GuiPos(111, 64));
+    	slotPosMap.put(4, new GuiPos(111, 49));
+    	slotPosMap.put(5, new GuiPos(141, 49));
+    	
+    	inputPosMap.put(0, new GuiPos(36, 64));
+    	inputPosMap.put(1, new GuiPos(36, 34));
+    	inputPosMap.put(2, new GuiPos(36, 49));
+    	inputPosMap.put(3, new GuiPos(21, 64));
+    	inputPosMap.put(4, new GuiPos(21, 49));
+    	inputPosMap.put(5, new GuiPos(51, 49));
     }
     
 	@Override
@@ -81,18 +86,41 @@ public class GuiConfiguration extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 14, 14, 14);
         }
         
-        for(int i = 0; i < positions.size(); i++)
+        for(int i = 0; i < slotPosMap.size(); i++)
         {
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         	
-        	int x = positions.get(i).xPos;
-        	int y = positions.get(i).yPos;
+        	int x = slotPosMap.get(i).xPos;
+        	int y = slotPosMap.get(i).yPos;
         	
         	SideData data = configurable.getSideData().get(configurable.getConfiguration()[i]);
         	
         	if(data.color != EnumColor.GREY)
         	{
         		GL11.glColor4f(data.color.getColor(0), data.color.getColor(1), data.color.getColor(2), 1);
+        	}
+        	
+        	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+        	{
+        		drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+        	}
+        	else {
+    			drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+        	}
+        }
+        
+        for(int i = 0; i < inputPosMap.size(); i++)
+        {
+        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        	
+        	int x = inputPosMap.get(i).xPos;
+        	int y = inputPosMap.get(i).yPos;
+        	
+        	EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
+        	
+        	if(color != null)
+        	{
+        		GL11.glColor4f(color.getColor(0), color.getColor(1), color.getColor(2), 1);
         	}
         	
         	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
@@ -120,26 +148,28 @@ public class GuiConfiguration extends GuiMekanism
         fontRenderer.drawString("Configuration", 60, 5, 0x404040);
         fontRenderer.drawString("Eject: " + ejecting, 53, 17, 0x00CD00);
         
-        fontRenderer.drawString("Color:", 38, 37, 0x404040);
+        fontRenderer.drawString("Input", 32, 81, 0x787878);
+        fontRenderer.drawString("Output", 72, 68, 0x787878);
+        fontRenderer.drawString("Slots", 122, 81, 0x787878);
         
-        if(configurable.getEjector().getColor() != null)
- 		{
- 			GL11.glPushMatrix();
- 			GL11.glColor4f(1, 1, 1, 1);
- 	        GL11.glEnable(GL11.GL_LIGHTING);
- 	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
- 	        
- 	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(configurable.getEjector().getColor()));
- 			itemRenderer.renderIcon(44, 48, MekanismRenderer.getColorIcon(configurable.getEjector().getColor()), 16, 16);
- 			
- 			GL11.glDisable(GL11.GL_LIGHTING);
- 			GL11.glPopMatrix();
- 		}
+        if(configurable.getEjector().getOutputColor() != null)
+  		{
+  			GL11.glPushMatrix();
+  			GL11.glColor4f(1, 1, 1, 1);
+  	        GL11.glEnable(GL11.GL_LIGHTING);
+  	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+  	        
+  	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(configurable.getEjector().getOutputColor()));
+  			itemRenderer.renderIcon(80, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
+  			
+  			GL11.glDisable(GL11.GL_LIGHTING);
+  			GL11.glPopMatrix();
+  		}
         
-        for(int i = 0; i < positions.size(); i++)
+        for(int i = 0; i < slotPosMap.size(); i++)
         {
-        	int x = positions.get(i).xPos;
-        	int y = positions.get(i).yPos;
+        	int x = slotPosMap.get(i).xPos;
+        	int y = slotPosMap.get(i).yPos;
         	
         	SideData data = configurable.getSideData().get(configurable.getConfiguration()[i]);
         	
@@ -149,11 +179,24 @@ public class GuiConfiguration extends GuiMekanism
         	}
         }
         
-    	if(xAxis >= 44 && xAxis <= 60 && yAxis >= 48 && yAxis <= 64)
+        for(int i = 0; i < inputPosMap.size(); i++)
+        {
+        	int x = inputPosMap.get(i).xPos;
+        	int y = inputPosMap.get(i).yPos;
+        	
+        	EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
+        	
+        	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+        	{
+        		drawCreativeTabHoveringText(color != null ? color.getName() : "None", xAxis, yAxis);
+        	}
+        }
+        
+        if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
-			if(configurable.getEjector().getColor() != null)
+			if(configurable.getEjector().getOutputColor() != null)
 			{
-				drawCreativeTabHoveringText(configurable.getEjector().getColor().getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getName(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText("None", xAxis, yAxis);
@@ -198,21 +241,33 @@ public class GuiConfiguration extends GuiMekanism
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT, Object3D.get(tile)));
 	        }
 	        
-	        if(xAxis >= 44 && xAxis <= 60 && yAxis >= 48 && yAxis <= 64)
+	        if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 			{
 	           	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT_COLOR, Object3D.get((TileEntity)configurable)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT_COLOR, Object3D.get(tile)));
 			}
 	        
-	        for(int i = 0; i < positions.size(); i++)
+	        for(int i = 0; i < slotPosMap.size(); i++)
 	        {
-	        	int x = positions.get(i).xPos;
-	        	int y = positions.get(i).yPos;
+	        	int x = slotPosMap.get(i).xPos;
+	        	int y = slotPosMap.get(i).yPos;
 	        	
 	         	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 	         	{
 		        	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.SIDE_DATA, Object3D.get(tile), i));
+	         	}
+	        }
+	        
+	        for(int i = 0; i < inputPosMap.size(); i++)
+	        {
+	        	int x = inputPosMap.get(i).xPos;
+	        	int y = inputPosMap.get(i).yPos;
+	        	
+	         	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+	         	{
+		        	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.INPUT_COLOR, Object3D.get(tile), i));
 	         	}
 	        }
 		}

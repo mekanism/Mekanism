@@ -122,12 +122,14 @@ public class GuiPasswordEnter extends GuiScreen
 		if(passwordField.getText() == null || passwordField.getText() == "")
 		{
 			displayText = EnumColor.DARK_RED + "Field empty";
+			mc.sndManager.playSoundFX("mekanism:etc.Error", 1.0F, 1.0F);
 			ticker = 30;
 		}
 		else if(!getPassword().equals(passwordField.getText()))
 		{
 			displayText = EnumColor.DARK_RED + "Invalid";
 			passwordField.setText("");
+			mc.sndManager.playSoundFX("mekanism:etc.Error", 1.0F, 1.0F);
 			ticker = 30;
 		}
 		else {
@@ -140,6 +142,8 @@ public class GuiPasswordEnter extends GuiScreen
 				((IEnergizedItem)itemStack.getItem()).setEnergy(itemStack, ((IEnergizedItem)itemStack.getItem()).getEnergy(itemStack) - 100);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, true, false));
 			}
+			
+			mc.sndManager.playSoundFX("mekanism:etc.Success", 1.0F, 1.0F);
 		}
 	}
 	

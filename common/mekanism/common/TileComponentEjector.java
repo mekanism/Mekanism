@@ -26,7 +26,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	
 	public boolean ejecting;
 	
-	public EnumColor ejectColor;
+	public EnumColor outputColor;
+	
+	public EnumColor[] inputColors = new EnumColor[] {null, null, null, null, null, null};
 	
 	public SideData sideData;
 	
@@ -102,7 +104,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				}
 				else if(tile instanceof TileEntityLogisticalTransporter)
 				{
-					if(TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, ejectColor))
+					if(TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, outputColor))
 					{
 						stack = null;
 					}
@@ -136,15 +138,27 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 	
 	@Override
-	public void setColor(EnumColor color)
+	public void setOutputColor(EnumColor color)
 	{
-		ejectColor = color;
+		outputColor = color;
 	}
 	
 	@Override
-	public EnumColor getColor()
+	public EnumColor getOutputColor()
 	{
-		return ejectColor;
+		return outputColor;
+	}
+	
+	@Override
+	public void setInputColor(ForgeDirection side, EnumColor color)
+	{
+		inputColors[side.ordinal()] = color;
+	}
+	
+	@Override
+	public EnumColor getInputColor(ForgeDirection side)
+	{
+		return inputColors[side.ordinal()];
 	}
 
 	@Override
@@ -157,12 +171,28 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		
 		if(nbtTags.hasKey("ejectColor"))
 		{
-			ejectColor = TransporterUtils.colors.get(nbtTags.getInteger("ejectColor"));
+			outputColor = TransporterUtils.colors.get(nbtTags.getInteger("ejectColor"));
 		}
 		
 		for(int i = 0; i < sideData.availableSlots.length; i++)
 		{
 			trackers[i] = nbtTags.getInteger("tracker" + i);
+		}
+		
+		for(int i = 0; i < 6; i++)
+		{
+			if(nbtTags.hasKey("inputColors" + i))
+			{
+				int inC = nbtTags.getInteger("inputColors" + i);
+				
+				if(inC != -1)
+				{
+					inputColors[i] = TransporterUtils.colors.get(inC);
+				}
+				else {
+					inputColors[i] = null;
+				}
+			}
 		}
 	}
 
@@ -175,10 +205,23 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		
 		if(c != -1)
 		{
-			ejectColor = TransporterUtils.colors.get(c);
+			outputColor = TransporterUtils.colors.get(c);
 		}
 		else {
-			ejectColor = null;
+			outputColor = null;
+		}
+		
+		for(int i = 0; i < 6; i++)
+		{
+			int inC = dataStream.readInt();
+			
+			if(inC != -1)
+			{
+				inputColors[i] = TransporterUtils.colors.get(inC);
+			}
+			else {
+				inputColors[i] = null;
+			}
 		}
 	}
 
@@ -187,14 +230,25 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	{
 		nbtTags.setBoolean("ejecting", ejecting);
 		
-		if(ejectColor != null)
+		if(outputColor != null)
 		{
-			nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(ejectColor));
+			nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(outputColor));
 		}
 		
 		for(int i = 0; i < sideData.availableSlots.length; i++)
 		{
 			nbtTags.setInteger("tracker" + i, trackers[i]);
+		}
+		
+		for(int i = 0; i < 6; i++)
+		{
+			if(inputColors[i] == null)
+			{
+				nbtTags.setInteger("inputColors" + i, -1);
+			}
+			else {
+				nbtTags.setInteger("inputColors" + i, TransporterUtils.colors.indexOf(inputColors[i]));
+			}
 		}
 	}
 	
@@ -203,12 +257,23 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	{
 		data.add(ejecting);
 		
-		if(ejectColor != null)
+		if(outputColor != null)
 		{
-			data.add(TransporterUtils.colors.indexOf(ejectColor));
+			data.add(TransporterUtils.colors.indexOf(outputColor));
 		}
 		else {
 			data.add(-1);
+		}
+		
+		for(int i = 0; i < 6; i++)
+		{
+			if(inputColors[i] == null)
+			{
+				data.add(-1);
+			}
+			else {
+				data.add(TransporterUtils.colors.indexOf(inputColors[i]));
+			}
 		}
 	}
 }

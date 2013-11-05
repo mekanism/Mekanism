@@ -134,7 +134,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 				{
 					if(stack.isFinal(this))
 					{
-						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.itemStack, stack.getSide(this)) && !stack.noTarget)
+						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this)) && !stack.noTarget)
 						{
 							if(!recalculate(stack, null))
 							{

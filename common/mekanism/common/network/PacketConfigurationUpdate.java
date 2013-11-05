@@ -13,6 +13,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -21,6 +22,8 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 	public Object3D object3D;
 	
 	public int configIndex;
+	
+	public int inputSide;
 	
 	public ConfigurationPacket packetType;
 	
@@ -42,6 +45,11 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 			configIndex = (Integer)data[2];
 		}
 		
+		if(packetType == ConfigurationPacket.INPUT_COLOR)
+		{
+			inputSide = (Integer)data[2];
+		}
+		
 		return this;
 	}
 	
@@ -52,36 +60,32 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 		
 		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
-		if(packetType == ConfigurationPacket.EJECT)
+		TileEntity tile = object3D.getTileEntity(world);
+		
+		if(tile instanceof IConfigurable)
 		{
-			TileEntity tile = object3D.getTileEntity(world);
+			IConfigurable config = (IConfigurable)tile;
 			
-			if(tile instanceof IConfigurable)
+			if(packetType == ConfigurationPacket.EJECT)
 			{
-				IConfigurable config = (IConfigurable)tile;
 				config.getEjector().setEjecting(!config.getEjector().isEjecting());
 			}
-		}
-		else if(packetType == ConfigurationPacket.SIDE_DATA)
-		{
-			configIndex = dataStream.readInt();
-			
-			TileEntity tile = object3D.getTileEntity(world);
-			
-			if(tile instanceof IConfigurable)
+			else if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
+				configIndex = dataStream.readInt();
+				
 				MekanismUtils.incrementOutput((IConfigurable)tile, configIndex);
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);
 			}
-		}
-		else if(packetType == ConfigurationPacket.EJECT_COLOR)
-		{
-			TileEntity tile = object3D.getTileEntity(world);
-			
-			if(tile instanceof IConfigurable)
+			else if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{
-				IConfigurable config = (IConfigurable)tile;
-				config.getEjector().setColor(TransporterUtils.increment(config.getEjector().getColor()));
+				config.getEjector().setOutputColor(TransporterUtils.increment(config.getEjector().getOutputColor()));
+			}
+			else if(packetType == ConfigurationPacket.INPUT_COLOR)
+			{
+				inputSide = dataStream.readInt();
+				ForgeDirection side = ForgeDirection.getOrientation(inputSide);
+				config.getEjector().setInputColor(side, TransporterUtils.increment(config.getEjector().getInputColor(side)));
 			}
 		}
 	}
@@ -101,10 +105,15 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 		{
 			dataStream.writeInt(configIndex);
 		}
+		
+		if(packetType == ConfigurationPacket.INPUT_COLOR)
+		{
+			dataStream.writeInt(inputSide);
+		}
 	}
 	
 	public static enum ConfigurationPacket
 	{
-		EJECT, SIDE_DATA, EJECT_COLOR
+		EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR
 	}
 }

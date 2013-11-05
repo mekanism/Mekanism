@@ -65,7 +65,19 @@ public class SoundHandler
 			}
 		}
 		
-		mc.sndManager.addSound("mekanism:etc/Click.ogg");
+		url = getClass().getClassLoader().getResource("assets/mekanism/sound/etc");
+		dir = new File(url.getFile());
+		
+		if(dir != null)
+		{
+			for(File file : dir.listFiles())
+			{
+				if(file.getName().endsWith(".ogg"))
+				{
+					mc.sndManager.addSound("mekanism:etc/" + file.getName());
+				}
+			}
+		}
 	}
 	
 	private void preloadSound(String sound)

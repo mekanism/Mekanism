@@ -14,6 +14,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +26,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 {
 	/** The direction this block is facing. */
 	public int facing;
+	
+	public int clientFacing;
 	
 	/** The players currently using this block. */
 	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
@@ -64,6 +67,13 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		facing = dataStream.readInt();
+		
+		if(clientFacing != facing)
+		{
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+			clientFacing = facing;
+		}
 		
 		for(ITileComponent component : components)
 		{
@@ -149,8 +159,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			facing = direction;
 		}
 		
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
-		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+		if(facing != clientFacing)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+			clientFacing = facing;
+		}
 	}
 	
 	/**

@@ -168,7 +168,7 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
 				
-				if(TransporterUtils.canInsert(tile, transportStack.itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
+				if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
 					destinations.add(new Destination(currentPath, Object3D.get(tile), dist));
 				}
