@@ -49,12 +49,6 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
-	{
-		return EnumSet.of(ForgeDirection.getOrientation(0));
-	}
-	
-	@Override
 	public Map getRecipes()
 	{
 		return Recipe.CRUSHER.get();

@@ -75,14 +75,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
     	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
     	    	logisticalSorter.render(0.0625F, false);
     		}
-    		else if(metadata == MachineType.CRUSHER.meta)
+    		/*else if(metadata == MachineType.CRUSHER.meta)
     		{    			
     			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
     			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
        			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Crusher.png"));
     			crusher.render(0.0625F, 0.0F);
-    		}
+    		} TODO model */
     		else {
     	        MekanismRenderer.renderItem(renderer, metadata, block);
     		}

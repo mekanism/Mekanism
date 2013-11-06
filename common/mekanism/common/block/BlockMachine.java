@@ -877,7 +877,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		ENRICHMENT_CHAMBER(0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
 		OSMIUM_COMPRESSOR(1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
 		COMBINER(2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
-		CRUSHER(3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, true),
+		CRUSHER(3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
 		BASIC_FACTORY(5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
 		ADVANCED_FACTORY(6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
 		ELITE_FACTORY(7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
