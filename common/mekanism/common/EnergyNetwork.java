@@ -11,10 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -86,7 +88,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				}
 				else if(acceptor instanceof IElectrical)
 				{
-					totalNeeded += ((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor))*Mekanism.FROM_UE;
+					totalNeeded += ((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_UE;
 				}
 			}
 		}
@@ -115,6 +117,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					TileEntity acceptor = (TileEntity)obj;
 					double currentSending = sending+remaining;
+					ForgeDirection side = acceptorDirections.get(acceptor);
 					
 					remaining = 0;
 					
@@ -125,21 +128,23 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					else if(acceptor instanceof IEnergySink)
 					{
 						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
-						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(acceptorDirections.get(acceptor).getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
+						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
 					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 					{
-						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite());
-		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-		            	double transferEnergy = Math.min(electricityNeeded, currentSending);
-		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), acceptorDirections.get(acceptor).getOpposite());
-		            	energyToSend -= transferEnergy;
+						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(side.getOpposite());
+						
+						if(receiver != null)
+						{
+			            	float toSend = receiver.receiveEnergy(Type.PIPE, (float)(Math.min(receiver.powerRequest(), currentSending*Mekanism.TO_BC)), side.getOpposite());
+			            	energyToSend -= toSend*Mekanism.FROM_BC;
+						}
 					}
 					else if(acceptor instanceof IElectrical)
 					{
-						double toSend = Math.min(currentSending, ((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_UE);
+						double toSend = Math.min(currentSending, ((IElectrical)acceptor).getRequest(side.getOpposite())*Mekanism.FROM_UE);
 						ElectricityPack pack = ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), ((IElectrical)acceptor).getVoltage());
-						energyToSend -= ((IElectrical)acceptor).receiveElectricity(acceptorDirections.get(acceptor).getOpposite(), pack, true)*Mekanism.FROM_UE;
+						energyToSend -= ((IElectrical)acceptor).receiveElectricity(side.getOpposite(), pack, true)*Mekanism.FROM_UE;
 					}
 				}
 			}
@@ -184,7 +189,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					if((((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
-						toReturn.add(acceptor);
+						TileEntityUniversalCable cable = (TileEntityUniversalCable)Object3D.get(acceptor).getFromSide(acceptorDirections.get(acceptor).getOpposite()).getTileEntity(acceptor.worldObj);
+						
+						if(cable != null && !cable.getBuildCraftIgnored().contains(acceptor))
+						{
+							toReturn.add(acceptor);
+						}
 					}
 				}
 			}

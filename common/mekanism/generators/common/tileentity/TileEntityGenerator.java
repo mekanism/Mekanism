@@ -8,7 +8,6 @@ import java.util.EnumSet;
 
 import mekanism.api.Object3D;
 import mekanism.api.energy.ICableOutputter;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
@@ -20,18 +19,12 @@ import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConductor;
-import universalelectricity.core.electricity.ElectricityHelper;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.grid.IElectricityNetwork;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import buildcraft.api.power.PowerHandler.Type;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -40,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter, IRedstoneControl
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter, IRedstoneControl, IPowerEmitter
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -67,7 +60,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super(name, maxEnergy);
 		
-		powerHandler.configure(0, 0, 0, (int)(maxEnergy*Mekanism.TO_BC));
+		powerHandler.configure(0, 0, 0, 0);
 		
 		output = out;
 		isActive = false;
@@ -352,5 +345,17 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+	}
+	
+	@Override
+	public boolean canEmitPowerFrom(ForgeDirection side) 
+	{
+		return getOutputtingSide() == side;
+	}
+	
+	@Override
+	protected void reconfigure()
+	{
+		powerHandler.configure(0, 0, 0, 0);
 	}
 }

@@ -16,6 +16,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -23,6 +24,7 @@ import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConductor;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -41,7 +43,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		ueNetwork = new FakeUENetwork();
 		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
-		powerHandler.configure(0, 100, 0, 100);
+		powerHandler.configurePowerPerdition(0, 0);
+		powerHandler.configure(0, 0, 0, 0);
 	}
 	
 	@Override
@@ -135,6 +138,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			}
 			
 			getTransmitterNetwork().refresh();
+			reconfigure();
 		}
 	}
 	
@@ -167,9 +171,64 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		return worldObj;
 	}
+	
+	private void reconfigure()
+	{
+		if(MekanismUtils.useBuildcraft())
+		{
+			float needed = (float)(getTransmitterNetwork().getEnergyNeeded(getBuildCraftIgnored())*Mekanism.TO_BC);
+			powerHandler.configure(1, needed, 0, needed);
+		}
+	}
+	
+	public ArrayList<TileEntity> getBuildCraftIgnored()
+	{
+		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			TileEntity tile = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+			
+			if(tile != null)
+			{
+				if(powerHandler.powerSources[side.ordinal()] > 0)
+				{
+					ignored.add(tile);
+				}
+				else if(tile instanceof IPowerEmitter)
+				{
+					IPowerEmitter emitter = (IPowerEmitter)tile;
+					
+					if(emitter.canEmitPowerFrom(side.getOpposite()))
+					{
+						ignored.add(tile);
+					}
+				}
+			}
+		}
+		
+		return ignored;
+	}
 
 	@Override
-	public void doWork(PowerHandler workProvider) {}
+	public void doWork(PowerHandler workProvider) 
+	{
+		if(MekanismUtils.useBuildcraft())
+		{
+			if(powerHandler.getEnergyStored() > 0)
+			{
+				double rejected = getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC, getBuildCraftIgnored());
+				
+				if(rejected > 0)
+				{
+					System.out.println(rejected + "J of energy was just wasted.");
+				}
+			}
+			
+			powerHandler.setEnergy(0);
+			reconfigure();
+		}
+	}
 	
 	public void setCachedEnergy(double scale)
 	{
@@ -190,7 +249,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public double demandedEnergyUnits()
 	{
-		return getTransmitterNetwork().getEnergyNeeded(new ArrayList())*Mekanism.TO_IC2;
+		return getTransmitterNetwork().getEnergyNeeded(getBuildCraftIgnored())*Mekanism.TO_IC2;
 	}
 
 	@Override

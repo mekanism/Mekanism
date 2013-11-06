@@ -19,12 +19,12 @@ public class ActionManager {
 			triggerProviders.add(provider);
 		}
 	}
-	
-	public static void registerTrigger(ITrigger trigger){
+
+	public static void registerTrigger(ITrigger trigger) {
 		triggers.put(trigger.getUniqueTag(), trigger);
 	}
-	
-	public static void registerAction(IAction action){
+
+	public static void registerAction(IAction action) {
 		actions.put(action.getUniqueTag(), action);
 	}
 
@@ -52,6 +52,7 @@ public class ActionManager {
 		}
 	}
 
+	//TODO: Use sets not lists
 	public static LinkedList<IAction> getNeighborActions(Block block, TileEntity entity) {
 		LinkedList<IAction> actions = new LinkedList<IAction>();
 
@@ -87,18 +88,18 @@ public class ActionManager {
 
 		return triggers;
 	}
-	
-	public static ITrigger getTriggerFromLegacyId(int legacyId){
-		for(ITrigger trigger : triggers.values()){
-			if(trigger.getLegacyId() == legacyId)
+
+	public static ITrigger getTriggerFromLegacyId(int legacyId) {
+		for (ITrigger trigger : triggers.values()) {
+			if (trigger.getLegacyId() == legacyId)
 				return trigger;
 		}
 		return null;
 	}
-	
-	public static IAction getActionFromLegacyId(int legacyId){
-		for(IAction action : actions.values()){
-			if(action.getLegacyId() == legacyId)
+
+	public static IAction getActionFromLegacyId(int legacyId) {
+		for (IAction action : actions.values()) {
+			if (action.getLegacyId() == legacyId)
 				return action;
 		}
 		return null;
