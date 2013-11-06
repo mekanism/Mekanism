@@ -85,7 +85,10 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 			
 			float[] pos = TransporterUtils.getStackPosition(tileEntity, stack, partialTick*TileEntityLogisticalTransporter.SPEED);
 			
-			renderer.doRenderItem(entityItem, x + pos[0], y + pos[1] - entityItem.yOffset, z + pos[2], 0, 0);
+			GL11.glTranslated(x + pos[0], y + pos[1] - entityItem.yOffset, z + pos[2]);
+			GL11.glScalef(0.75F, 0.75F, 0.75F);
+			
+			renderer.doRenderItem(entityItem, 0, 0, 0, 0, 0);
 			GL11.glPopMatrix();
 			
 			if(stack.color != null)

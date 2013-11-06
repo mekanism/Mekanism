@@ -112,6 +112,10 @@ public class GuiItemStackFilter extends GuiMekanism
 		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("ItemStack Details:", 35, 32, 0x00CD00);
 		
+		fontRenderer.drawString("Min: " + filter.min, 128, 20, 0x404040);
+		fontRenderer.drawString("Max: " + filter.max, 128, 32, 0x404040);
+		fontRenderer.drawString(filter.sizeMode ? "On" : "Off", 141, 46, 0x404040);
+		
 		if(filter.itemType != null)
 		{
 			fontRenderer.drawString("ID: " + filter.itemType.itemID + ", meta: " + filter.itemType.getItemDamage(), 35, 41, 0x00CD00);
@@ -189,6 +193,14 @@ public class GuiItemStackFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
+		
+		if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
+		{
+			drawTexturedModalRect(guiWidth + 128, guiHeight + 44, 187, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 128, guiHeight + 44, 187, 11, 11, 11);
+		}
         
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 		{
@@ -236,6 +248,12 @@ public class GuiItemStackFilter extends GuiMekanism
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 			{
 				filter.color = TransporterUtils.increment(filter.color);
+			}
+			
+			if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				filter.sizeMode = !filter.sizeMode;
 			}
 		}
     }
