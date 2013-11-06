@@ -287,10 +287,9 @@ public final class CableUtils
 					
 					if(receiver != null)
 					{
-		            	double electricityNeeded = Math.min(receiver.powerRequest(), receiver.getMaxEnergyStored() - receiver.getEnergyStored())*Mekanism.FROM_BC;
-		            	double transferEnergy = Math.min(emitter.getEnergy(), Math.min(electricityNeeded, emitter.getMaxOutput()));
-		            	receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), emitter.getOutputtingSide().getOpposite());
-		            	emitter.setEnergy(emitter.getEnergy() - transferEnergy);
+		            	double transferEnergy = Math.min(emitter.getEnergy(), Math.min(receiver.powerRequest()*Mekanism.FROM_BC, emitter.getMaxOutput()));
+		            	float sent = receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), emitter.getOutputtingSide().getOpposite());
+		            	emitter.setEnergy(emitter.getEnergy() - sent);
 					}
 				}
 			}

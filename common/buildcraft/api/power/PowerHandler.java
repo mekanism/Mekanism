@@ -11,6 +11,24 @@ import buildcraft.api.core.SafeTimeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
 
+/**
+ * The PowerHandler is similar to FluidTank in that it holds your power and
+ * allows standardized interaction between machines.
+ *
+ * To receive power to your machine you needs create an instance of PowerHandler
+ * and implement IPowerReceptor on the TileEntity.
+ *
+ * If you plan emit power, you need only implement IPowerEmitter. You do not
+ * need a PowerHandler. Engines have a PowerHandler because they can also
+ * receive power from other Engines.
+ * 
+ * See TileRefinery for a simple example of a power using machine.
+ *
+ * @see IPowerReceptor
+ * @see IPowerEmitter
+ *
+ * @author CovertJaguar <http://www.railcraft.info/>
+ */
 public final class PowerHandler {
 
 	public static enum Type {
@@ -76,18 +94,20 @@ public final class PowerHandler {
 		 * @return
 		 */
 		public float applyPerdition(PowerHandler powerHandler, float current, long ticksPassed) {
+//			float prev = current;
 			current -= powerLoss * ticksPassed;
 			if (current < 0) {
 				current = 0;
 			}
+//			powerHandler.totalLostPower += prev - current;
 			return current;
 		}
 
 		/**
 		 * Taxes a flat rate on all incoming power.
-		 * 
+		 *
 		 * Defaults to 0% tax rate.
-		 * 
+		 *
 		 * @return percent of input to tax
 		 */
 		public float getTaxPercent() {
@@ -108,6 +128,11 @@ public final class PowerHandler {
 	private PerditionCalculator perdition;
 	private final PowerReceiver receiver;
 	private final Type type;
+	// Debug
+//	private double totalLostPower = 0;
+//	private double totalReceivedPower = 0;
+//	private double totalUsedPower = 0;
+//	private long startTime = -1;
 
 	public PowerHandler(IPowerReceptor receptor, Type type) {
 		this.receptor = receptor;
@@ -168,6 +193,16 @@ public final class PowerHandler {
 		this.activationEnergy = activationEnergy;
 	}
 
+	/**
+	 * Allows you define perdition in terms of loss/ticks.
+	 *
+	 * This function is mostly for legacy implementations. See
+	 * PerditionCalculator for more complex perdition formulas.
+	 *
+	 * @param powerLoss
+	 * @param powerLossRegularity
+	 * @see PerditionCalculator
+	 */
 	public void configurePowerPerdition(int powerLoss, int powerLossRegularity) {
 		if (powerLoss == 0 || powerLossRegularity == 0) {
 			perdition = new PerditionCalculator(0);
@@ -207,6 +242,13 @@ public final class PowerHandler {
 	 * design around this though if you are aware of the limitations.
 	 */
 	public void update() {
+//		if (startTime == -1)
+//			startTime = receptor.getWorld().getTotalWorldTime();
+//		else {
+//			long duration = receptor.getWorld().getTotalWorldTime() - startTime;
+//			System.out.printf("Power Stats: %s - Stored: %.2f Gained: %.2f - %.2f/t Lost: %.2f - %.2f/t Used: %.2f - %.2f/t%n", receptor.getClass().getSimpleName(), energyStored, totalReceivedPower, totalReceivedPower / duration, totalLostPower, totalLostPower / duration, totalUsedPower, totalUsedPower / duration);
+//		}
+
 		applyPerdition();
 		applyWork();
 		validateEnergy();
@@ -274,6 +316,9 @@ public final class PowerHandler {
 		}
 
 		validateEnergy();
+
+//		if (doUse)
+//			totalUsedPower += result;
 
 		return result;
 	}
@@ -343,6 +388,8 @@ public final class PowerHandler {
 		/**
 		 * Add power to the PowerReceiver from an external source.
 		 *
+		 * IPowerEmitters are responsible for calling this themselves.
+		 *
 		 * @param quantity
 		 * @param from
 		 * @return the amount of power used
@@ -358,7 +405,7 @@ public final class PowerHandler {
 			}
 
 			updateSources(from);
-			
+
 			used -= used * getPerdition().getTaxPercent();
 
 			used = addEnergy(used);
@@ -366,8 +413,10 @@ public final class PowerHandler {
 			applyWork();
 
 			if (source == Type.ENGINE && type.eatsEngineExcess()) {
-				return Math.min(quantity, maxEnergyReceived);
+				used = Math.min(quantity, maxEnergyReceived);
 			}
+
+//			totalReceivedPower += used;
 
 			return used;
 		}

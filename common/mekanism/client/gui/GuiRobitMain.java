@@ -244,6 +244,14 @@ public class GuiRobitMain extends GuiContainer
 	}
 	
 	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		nameChangeField.updateCursorCounter();
+	}
+	
+	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
 		super.mouseClicked(mouseX, mouseY, button);

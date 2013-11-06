@@ -29,6 +29,11 @@ public interface ITrigger {
 	boolean hasParameter();
 
 	/**
+	 * Return true if this trigger requires a parameter
+	 */
+	boolean requiresParameter();
+
+	/**
 	 * Return the trigger description in the UI
 	 */
 	String getDescription();

@@ -13,6 +13,7 @@ public interface ITriggerParameter {
 
 	public abstract void readFromNBT(NBTTagCompound compound);
 
+	@Deprecated
 	public abstract ItemStack getItem();
 
 }

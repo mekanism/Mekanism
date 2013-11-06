@@ -20,13 +20,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import buildcraft.api.transport.IPipe;
+import buildcraft.api.transport.IPipeTile;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork
+public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, IPipeTile
 {
 	public static final int SPEED = 5;
 	
@@ -381,5 +387,82 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public boolean isSolidOnSide(ForgeDirection side)
+	{
+		return true;
+	}
+
+	@Override
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	{
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	{
+		return null;
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	{
+		return false;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	{
+		return null;
+	}
+
+	@Override
+	public IPipe getPipe() 
+	{
+		return null;
+	}
+
+	@Override
+	public PipeType getPipeType() 
+	{
+		return PipeType.ITEM;
+	}
+
+	@Override
+	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from) 
+	{
+		if(doAdd)
+		{
+			if(TransporterUtils.insert(Object3D.get(this).getFromSide(from).getTileEntity(worldObj), this, stack, null))
+			{
+				return stack.stackSize;
+			}
+			else {
+				return 0;
+			}
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public boolean isPipeConnected(ForgeDirection with) 
+	{
+		return true;
 	}
 }

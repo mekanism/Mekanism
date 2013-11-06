@@ -13,9 +13,13 @@ import mekanism.common.transporter.TransporterStack;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler.Type;
 
 public final class TransporterUtils 
 {
@@ -82,9 +86,19 @@ public final class TransporterUtils
 		for(IInventory inventory : connectedInventories)
 		{
 			if(inventory != null)
-			{
+			{	
 				int side = Arrays.asList(connectedInventories).indexOf(inventory);
 				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
+				
+				//Immature BuildCraft inv check
+				if(MekanismUtils.useBuildcraft() && inventory instanceof IPowerReceptor)
+				{
+					if(((IPowerReceptor)inventory).getPowerReceiver(forgeSide).getType() == Type.MACHINE)
+					{
+						connectable[side] = true;
+						continue;
+					}
+				}
 				
 				if(inventory.getSizeInventory() > 0)
 				{
@@ -170,6 +184,8 @@ public final class TransporterUtils
     	
     	if(!(inventory instanceof ISidedInventory))
 		{
+    		inventory = checkChestInv(inventory);
+    		
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
 				if(inventory.isItemValidForSlot(i, itemStack)) 
@@ -239,12 +255,47 @@ public final class TransporterUtils
     	return false;
     }
     
+    public static IInventory checkChestInv(IInventory inv)
+    {
+    	if(inv instanceof TileEntityChest)
+    	{
+    		TileEntityChest main = (TileEntityChest)inv;
+    		TileEntityChest adj = null;
+    		
+    		if(main.adjacentChestXNeg != null)
+    		{
+    			adj = main.adjacentChestXNeg;
+    		}
+    		else if(main.adjacentChestXPos != null)
+    		{
+    			adj = main.adjacentChestXPos;
+    		}
+    		else if(main.adjacentChestZNeg != null)
+    		{
+    			adj = main.adjacentChestZNeg;
+    		}
+    		else if(main.adjacentChestZPosition != null)
+    		{
+    			adj = main.adjacentChestZPosition;
+    		}
+    		
+    		if(adj != null)
+    		{
+    			return new InventoryLargeChest("", main, adj);
+    		}
+    	}
+    	
+    	return inv;
+    }
+    
 	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, int side) 
 	{
 		ItemStack toInsert = itemStack.copy();
 		
 		if(!(inventory instanceof ISidedInventory))
 		{
+			inventory = checkChestInv(inventory);
+			
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
 				if(inventory.isItemValidForSlot(i, toInsert)) 

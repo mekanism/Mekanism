@@ -12,6 +12,7 @@ import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -48,8 +49,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
 		
-		powerHandler = new PowerHandler(this, PowerHandler.Type.MACHINE);
-		powerHandler.configure(0, 100, 0, (int)(maxEnergy*Mekanism.TO_BC));
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configurePowerPerdition(0, 0);
+		powerHandler.configure(0, 0, 0, 0);
 	}
 	
 	public void register()
@@ -67,13 +69,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
-		{
-			if(getEnergy() < getMaxEnergy() && powerHandler.getEnergyStored() > 0)
-			{
-				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
-			}
-		}
+		reconfigure();
 	}
 	
 	public ForgeDirection getOutputtingSide()
@@ -154,7 +150,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         super.readFromNBT(nbtTags);
 
         electricityStored = nbtTags.getDouble("electricityStored");
-        powerHandler.readFromNBT(nbtTags);
+        reconfigure();
     }
 
 	@Override
@@ -163,7 +159,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         super.writeToNBT(nbtTags);
         
         nbtTags.setDouble("electricityStored", getEnergy());
-        powerHandler.writeToNBT(nbtTags);
     }
 	
 	@Override
@@ -172,8 +167,34 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		return powerHandler.getPowerReceiver();
 	}
 	
+	protected void reconfigure()
+	{
+		if(MekanismUtils.useBuildcraft())
+		{
+			powerHandler.configure(1, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
+		}
+	}
+	
 	@Override
-	public void doWork(PowerHandler workProvider) {}
+	public void doWork(PowerHandler workProvider) 
+	{
+		if(powerHandler.getEnergyStored() > 0)
+		{
+			if(getEnergy() < getMaxEnergy())
+			{
+				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			}
+			
+			if(powerHandler.getEnergyStored() > 0)
+			{
+				System.out.println(powerHandler.getEnergyStored() + "J of energy was just wasted.");
+			}
+			
+			powerHandler.setEnergy(0);
+		}
+		
+		reconfigure();
+	}
 	
 	@Override
 	public World getWorld()
