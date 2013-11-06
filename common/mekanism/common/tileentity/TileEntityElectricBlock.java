@@ -185,11 +185,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			}
 			
-			if(powerHandler.getEnergyStored() > 0)
-			{
-				System.out.println(powerHandler.getEnergyStored() + "J of energy was just wasted.");
-			}
-			
 			powerHandler.setEnergy(0);
 		}
 		

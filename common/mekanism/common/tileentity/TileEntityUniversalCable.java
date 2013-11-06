@@ -217,12 +217,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			if(powerHandler.getEnergyStored() > 0)
 			{
-				double rejected = getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC, getBuildCraftIgnored());
-				
-				if(rejected > 0)
-				{
-					System.out.println(rejected + "J of energy was just wasted.");
-				}
+				getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC, getBuildCraftIgnored());
 			}
 			
 			powerHandler.setEnergy(0);
