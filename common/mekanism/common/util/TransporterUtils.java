@@ -8,7 +8,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
-import mekanism.common.transporter.SlotInfo;
+import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterStack;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
@@ -385,10 +385,12 @@ public final class TransporterUtils
 		return toInsert;
 	}
 
-	public static SlotInfo takeItem(IInventory inventory, int side) 
+	public static InvStack takeItem(IInventory inventory, int side) 
 	{
 		if(!(inventory instanceof ISidedInventory)) 
 		{
+			inventory = checkChestInv(inventory);
+			
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) 
 			{
 				if(inventory.getStackInSlot(i) != null) 
@@ -396,7 +398,7 @@ public final class TransporterUtils
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					inventory.setInventorySlotContents(i, null);
 
-					return new SlotInfo(toSend, i);
+					return new InvStack(inventory, new ItemStack[] {toSend}, new int[] {i});
 				}
 			}
 		} 
@@ -418,7 +420,7 @@ public final class TransporterUtils
 						{
 							sidedInventory.setInventorySlotContents(slotID, null);
 
-							return new SlotInfo(toSend, slotID);
+							return new InvStack(inventory, new ItemStack[] {toSend}, new int[] {slotID});
 						}
 					}
 				}

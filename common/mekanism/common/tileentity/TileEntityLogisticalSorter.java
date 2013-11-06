@@ -13,7 +13,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.transporter.SlotInfo;
+import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -78,16 +78,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					IInventory inventory = (IInventory)back;
 					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)front;
 					
-					SlotInfo inInventory = TransporterUtils.takeItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
+					InvStack inInventory = TransporterUtils.takeItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
 					
-					if(inInventory != null && inInventory.itemStack != null)
+					if(inInventory != null && inInventory.getStack() != null)
 					{
 						boolean hasFilter = false;
 						EnumColor filterColor = color;
 						
 						for(TransporterFilter filter : filters)
 						{
-							if(filter.canFilter(inInventory.itemStack))
+							if(filter.canFilter(inInventory.getStack()))
 							{
 								filterColor = filter.color;
 								hasFilter = true;
@@ -95,13 +95,13 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							}
 						}
 						
-						if((hasFilter || autoEject) && TransporterUtils.insert(this, transporter, inInventory.itemStack, filterColor))
+						if((hasFilter || autoEject) && TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
 						{
-							inventory.setInventorySlotContents(inInventory.slotID, null);
+							inInventory.use();
 							setActive(true);
 						}
 						else {
-							inventory.setInventorySlotContents(inInventory.slotID, inInventory.itemStack);
+							inInventory.reset();
 						}
 					}
 					
