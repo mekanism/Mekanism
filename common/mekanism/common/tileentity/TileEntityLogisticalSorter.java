@@ -8,7 +8,6 @@ import mekanism.api.Object3D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -78,24 +77,34 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					IInventory inventory = (IInventory)back;
 					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)front;
 					
-					InvStack inInventory = TransporterUtils.takeItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
+					InvStack inInventory = null;
+					boolean hasFilter = false;
+					EnumColor filterColor = color;
 					
-					if(inInventory != null && inInventory.getStack() != null)
+					for(TransporterFilter filter : filters)
 					{
-						boolean hasFilter = false;
-						EnumColor filterColor = color;
+						InvStack invStack = filter.getStackFromInventory(inventory, ForgeDirection.getOrientation(facing).getOpposite());
 						
-						for(TransporterFilter filter : filters)
+						if(invStack != null && invStack.getStack() != null)
 						{
-							if(filter.canFilter(inInventory.getStack()))
+							if(filter.canFilter(invStack.getStack()))
 							{
 								filterColor = filter.color;
 								hasFilter = true;
+								inInventory = invStack;
 								break;
 							}
 						}
-						
-						if((hasFilter || autoEject) && TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
+					}
+					
+					if(!hasFilter && autoEject)
+					{
+						inInventory = TransporterUtils.takeTopItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
+					}
+					
+					if(inInventory != null && inInventory.getStack() != null)
+					{
+						if(TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
 						{
 							inInventory.use();
 							setActive(true);

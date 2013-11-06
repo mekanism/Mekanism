@@ -4,23 +4,26 @@ import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
 public abstract class TransporterFilter 
-{
+{	
 	public EnumColor color;
 	
 	public abstract boolean canFilter(ItemStack itemStack);
+	
+	public abstract InvStack getStackFromInventory(IInventory inv, ForgeDirection side);
 	
 	public void write(NBTTagCompound nbtTags)
 	{
 		if(color != null)
 		{
 			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
-		
 		}
 	}
 	

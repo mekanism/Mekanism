@@ -1,19 +1,30 @@
 package mekanism.common.transporter;
 
+import java.util.ArrayList;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public final class InvStack
 {
 	public IInventory inventory;
-	public ItemStack[] itemStacks;
-	public int[] slotIDs;
+	public ArrayList<ItemStack> itemStacks;
+	public ArrayList<Integer> slotIDs;
 	
-	public InvStack(IInventory inv, ItemStack[] stacks, int[] ids)
+	public InvStack(IInventory inv)
 	{
 		inventory = inv;
-		itemStacks = stacks;
-		slotIDs = ids;
+		itemStacks = new ArrayList<ItemStack>();
+		slotIDs = new ArrayList<Integer>();
+	}
+	
+	public InvStack(IInventory inv, int id, ItemStack stack)
+	{
+		inventory = inv;
+		itemStacks = new ArrayList<ItemStack>();
+		slotIDs = new ArrayList<Integer>();
+		
+		appendStack(id, stack);
 	}
 	
 	public ItemStack getStack()
@@ -25,9 +36,9 @@ public final class InvStack
 			size += stack.stackSize;
 		}
 		
-		if(itemStacks[0] != null)
+		if(!itemStacks.isEmpty())
 		{
-			ItemStack ret = itemStacks[0].copy();
+			ItemStack ret = itemStacks.get(0).copy();
 			ret.stackSize = size;
 			
 			return ret;
@@ -36,19 +47,35 @@ public final class InvStack
 		return null;
 	}
 	
+	public void appendStack(int id, ItemStack stack)
+	{
+		slotIDs.add(id);
+		itemStacks.add(stack);
+	}
+	
 	public void use()
 	{
-		for(int id : slotIDs)
+		for(int i = 0; i < slotIDs.size(); i++)
 		{
-			inventory.setInventorySlotContents(id, null);
+			ItemStack stack = itemStacks.get(i);
+			
+			if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize)
+			{
+				inventory.setInventorySlotContents(slotIDs.get(i), null);
+			}
+			else {
+				ItemStack ret = stack.copy();
+				ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - stack.stackSize;
+				inventory.setInventorySlotContents(slotIDs.get(i), ret);
+			}
 		}
 	}
 	
 	public void reset()
 	{
-		for(int i = 0; i < slotIDs.length; i++)
+		for(int i = 0; i < slotIDs.size(); i++)
 		{
-			inventory.setInventorySlotContents(slotIDs[i], itemStacks[i]);
+			inventory.setInventorySlotContents(slotIDs.get(i), itemStacks.get(i));
 		}
 	}
 }

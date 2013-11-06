@@ -6,8 +6,10 @@ import com.google.common.io.ByteArrayDataInput;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.ForgeDirection;
 
 public class OreDictFilter extends TransporterFilter
 {
@@ -50,6 +52,12 @@ public class OreDictFilter extends TransporterFilter
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	{
+		return TransporterUtils.takeTopItem(inv, side.ordinal());
 	}
 	
 	@Override

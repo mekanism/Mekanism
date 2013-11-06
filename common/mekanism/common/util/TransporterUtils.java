@@ -215,7 +215,7 @@ public final class TransporterUtils
 			}
 		} 
 		else {
-			ISidedInventory sidedInventory = (ISidedInventory) inventory;
+			ISidedInventory sidedInventory = (ISidedInventory)inventory;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 
 			if(slots != null && slots.length != 0)
@@ -335,7 +335,7 @@ public final class TransporterUtils
 			}
 		} 
 		else {
-			ISidedInventory sidedInventory = (ISidedInventory) inventory;
+			ISidedInventory sidedInventory = (ISidedInventory)inventory;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 
 			if(slots != null && slots.length != 0)
@@ -384,8 +384,91 @@ public final class TransporterUtils
 
 		return toInsert;
 	}
+	
+	public static InvStack takeDefinedItem(IInventory inventory, int side, ItemStack type, int min, int max)
+	{
+		InvStack ret = new InvStack(inventory);
+		
+		if(!(inventory instanceof ISidedInventory)) 
+		{
+			inventory = checkChestInv(inventory);
+			
+			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) 
+			{
+				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).isItemEqual(type)) 
+				{
+					ItemStack stack = inventory.getStackInSlot(i);
+					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
+					
+					if(current+stack.stackSize <= max)
+					{
+						ret.appendStack(i, stack.copy());
+					}
+					else {
+						ItemStack copy = stack.copy();
+						copy.stackSize = max-current;
+						ret.appendStack(i, copy);
+					}
 
-	public static InvStack takeItem(IInventory inventory, int side) 
+					if(ret.getStack() != null && ret.getStack().stackSize == max)
+					{
+						return ret;
+					}
+				}
+			}
+		} 
+		else {
+			ISidedInventory sidedInventory = (ISidedInventory)inventory;
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+
+			if(slots != null && slots.length != 0) 
+			{
+				for(int get = slots.length - 1; get >= 0; get--) 
+				{
+					int slotID = slots[get];
+
+					if(sidedInventory.getStackInSlot(slotID) != null && inventory.getStackInSlot(slotID).isItemEqual(type)) 
+					{
+						ItemStack stack = sidedInventory.getStackInSlot(slotID);
+						int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
+						
+						if(current+stack.stackSize <= max)
+						{
+							ItemStack copy = stack.copy();
+							
+							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+							{
+								ret.appendStack(slotID, copy);
+							}
+						}
+						else {
+							ItemStack copy = stack.copy();
+							
+							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+							{
+								copy.stackSize = max-current;
+								ret.appendStack(slotID, copy);
+							}
+						}
+
+						if(ret.getStack() != null && ret.getStack().stackSize == max)
+						{
+							return ret;
+						}
+					}
+				}
+			}
+		}
+		
+		if(ret != null && ret.getStack() != null && ret.getStack().stackSize >= min)
+		{
+			return ret;
+		}
+
+		return null;
+	}
+
+	public static InvStack takeTopItem(IInventory inventory, int side) 
 	{
 		if(!(inventory instanceof ISidedInventory)) 
 		{
@@ -396,9 +479,7 @@ public final class TransporterUtils
 				if(inventory.getStackInSlot(i) != null) 
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
-					inventory.setInventorySlotContents(i, null);
-
-					return new InvStack(inventory, new ItemStack[] {toSend}, new int[] {i});
+					return new InvStack(inventory, i, toSend);
 				}
 			}
 		} 
@@ -418,9 +499,7 @@ public final class TransporterUtils
 
 						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 						{
-							sidedInventory.setInventorySlotContents(slotID, null);
-
-							return new InvStack(inventory, new ItemStack[] {toSend}, new int[] {slotID});
+							return new InvStack(inventory, slotID, toSend);
 						}
 					}
 				}

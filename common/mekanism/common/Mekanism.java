@@ -569,7 +569,6 @@ public class Mekanism
 		//Registrations
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
-		GameRegistry.registerBlock(GasTank, "GasTank");
 		
 		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setUnlocalizedName("BasicBlock");
