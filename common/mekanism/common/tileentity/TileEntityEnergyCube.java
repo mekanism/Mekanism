@@ -197,6 +197,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	}
 	
 	@Override
+	public boolean canSetFacing(int side)
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
 		return side != getOutputtingSide();
