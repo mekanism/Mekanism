@@ -7,4 +7,8 @@ public final class ObfuscatedNames
 	public static String[] AbstractClientPlayer_downloadImageCape = new String[] {"downloadImageCape", "field_110315_c", "c"};
 	public static String[] AbstractClientPlayer_locationCape = new String[] {"locationCape", "field_110313_e", "e"};
 	public static String[] AbstractClientPlayer_getDownloadImage = new String[] {"getDownloadImage", "func_110301_a", "a"};
+	public static String[] GuiContainer_drawCreativeTabHoveringText = new String[] {"drawCreativeTabHoveringText", "func_74190_a", "a"};
+	public static String[] GuiContainer_xSize = new String[] {"xSize", "field_74194_b", "c"};
+	public static String[] GuiContainer_ySize = new String[] {"ySize", "field_74195_c", "d"};
+	public static String[] GuiScreen_fontRenderer = new String[] {"fontRenderer", "field_73886_k", "o"};
 }
