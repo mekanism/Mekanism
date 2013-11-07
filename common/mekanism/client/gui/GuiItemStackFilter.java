@@ -35,7 +35,7 @@ public class GuiItemStackFilter extends GuiMekanism
 	public ItemStackFilter filter = new ItemStackFilter();
 	
 	public String status = EnumColor.DARK_GREEN + "All OK";
-	
+		
 	public int ticker;
 	
 	private GuiTextField minField;
@@ -91,20 +91,36 @@ public class GuiItemStackFilter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null && !minField.getText().isEmpty() && !maxField.getText().isEmpty() && Integer.parseInt(maxField.getText()) >= Integer.parseInt(minField.getText()))
+			if(filter.itemType != null && !minField.getText().isEmpty() && !maxField.getText().isEmpty())
 			{
-				filter.min = Integer.parseInt(minField.getText());
-				filter.max = Integer.parseInt(maxField.getText());
+				int min = Integer.parseInt(minField.getText());
+				int max = Integer.parseInt(maxField.getText());
 				
-				if(isNew)
+				if(max >= min && max <= 64 && min <= 64)
 				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+					filter.min = Integer.parseInt(minField.getText());
+					filter.max = Integer.parseInt(maxField.getText());
+					
+					if(isNew)
+					{
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+					}
+					else {
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, origFilter, filter));
+					}
+					
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 				}
-				else {
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, origFilter, filter));
+				else if(min > max)
+				{
+					status = EnumColor.DARK_RED + "Max<min";
+					ticker = 20;
 				}
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+				else if(max > 64 || min > 64)
+				{
+					status = EnumColor.DARK_RED + "Max>64";
+					ticker = 20;
+				}
 			}
 			else if(filter.itemType == null)
 			{
@@ -114,11 +130,6 @@ public class GuiItemStackFilter extends GuiMekanism
 			else if(minField.getText().isEmpty() || maxField.getText().isEmpty())
 			{
 				status = EnumColor.DARK_RED + "Max/min";
-				ticker = 20;
-			}
-			else if(Integer.parseInt(maxField.getText()) < Integer.parseInt(minField.getText()))
-			{
-				status = EnumColor.DARK_RED + "Max<min";
 				ticker = 20;
 			}
 		}
@@ -137,7 +148,7 @@ public class GuiItemStackFilter extends GuiMekanism
 			super.keyTyped(c, i);
 		}
 		
-		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE)
+		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
 			minField.textboxKeyTyped(c, i);
 			maxField.textboxKeyTyped(c, i);
