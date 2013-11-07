@@ -16,9 +16,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -35,6 +37,9 @@ public class GuiItemStackFilter extends GuiMekanism
 	public String status = EnumColor.DARK_GREEN + "All OK";
 	
 	public int ticker;
+	
+	private GuiTextField minField;
+	private GuiTextField maxField;
 	
 	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
@@ -69,6 +74,14 @@ public class GuiItemStackFilter extends GuiMekanism
 		{
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
+		
+		minField = new GuiTextField(fontRenderer, guiWidth + 149, guiHeight + 19, 20, 11);
+		minField.setMaxStringLength(2);
+		minField.setText("" + filter.min);
+		
+		maxField = new GuiTextField(fontRenderer, guiWidth + 149, guiHeight + 31, 20, 11);
+		maxField.setMaxStringLength(2);
+		maxField.setText("" + filter.max);
 	}
 	
 	@Override
@@ -78,8 +91,11 @@ public class GuiItemStackFilter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null)
+			if(filter.itemType != null && !minField.getText().isEmpty() && !maxField.getText().isEmpty())
 			{
+				filter.min = Integer.parseInt(minField.getText());
+				filter.max = Integer.parseInt(maxField.getText());
+				
 				if(isNew)
 				{
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
@@ -90,8 +106,14 @@ public class GuiItemStackFilter extends GuiMekanism
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 			}
-			else {
+			else if(filter.itemType == null)
+			{
 				status = EnumColor.DARK_RED + "No item";
+				ticker = 20;
+			}
+			else if(minField.getText().isEmpty() || maxField.getText().isEmpty())
+			{
+				status = EnumColor.DARK_RED + "Max/min";
 				ticker = 20;
 			}
 		}
@@ -99,6 +121,21 @@ public class GuiItemStackFilter extends GuiMekanism
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, origFilter));
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+		}
+	}
+	
+	@Override
+	public void keyTyped(char c, int i)
+	{
+		if((!minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE)
+		{
+			super.keyTyped(c, i);
+		}
+		
+		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE)
+		{
+			minField.textboxKeyTyped(c, i);
+			maxField.textboxKeyTyped(c, i);
 		}
 	}
 	
@@ -112,8 +149,8 @@ public class GuiItemStackFilter extends GuiMekanism
 		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("ItemStack Details:", 35, 32, 0x00CD00);
 		
-		fontRenderer.drawString("Min: " + filter.min, 128, 20, 0x404040);
-		fontRenderer.drawString("Max: " + filter.max, 128, 32, 0x404040);
+		fontRenderer.drawString("Min:", 128, 20, 0x404040);
+		fontRenderer.drawString("Max:", 128, 32, 0x404040);
 		fontRenderer.drawString(filter.sizeMode ? "On" : "Off", 141, 46, 0x404040);
 		
 		if(filter.itemType != null)
@@ -162,6 +199,9 @@ public class GuiItemStackFilter extends GuiMekanism
 	public void updateScreen()
 	{
 		super.updateScreen();
+		
+		minField.updateCursorCounter();
+		maxField.updateCursorCounter();
 		
 		if(ticker > 0)
 		{
@@ -216,12 +256,18 @@ public class GuiItemStackFilter extends GuiMekanism
 	        GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GL11.glPopMatrix();
 		}
+		
+		minField.drawTextBox();
+		maxField.drawTextBox();
     }
 	
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
         super.mouseClicked(mouseX, mouseY, button);
+        
+        minField.mouseClicked(mouseX, mouseY, button);
+        maxField.mouseClicked(mouseX, mouseY, button);
         
     	if(button == 0)
 		{
