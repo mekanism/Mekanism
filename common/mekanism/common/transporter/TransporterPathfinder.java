@@ -2,10 +2,8 @@ package mekanism.common.transporter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Object3D;
@@ -96,7 +94,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static class Destination
+	public static class Destination implements Comparable<Destination>
 	{
 		public List<Object3D> path = new ArrayList<Object3D>();
 		public int distance;
@@ -128,13 +126,29 @@ public final class TransporterPathfinder
 		{
 			return dest instanceof Destination && ((Destination)dest).path.equals(path) && ((Destination)dest).distance == distance;
 		}
+
+		@Override
+		public int compareTo(Destination dest)
+		{
+			if(dest.distance > distance)
+			{
+				return -1;
+			}
+			else if(dest.distance < distance)
+			{
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
 	}
 	
 	public static class DestPath
 	{
 		public World worldObj;
 		
-		public Set<Destination> destinations = new HashSet<Destination>();
+		public List<Destination> destinations = new ArrayList<Destination>();
 		
 		public Object3D start;
 		
@@ -170,7 +184,12 @@ public final class TransporterPathfinder
 				
 				if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
-					destinations.add(new Destination(currentPath, Object3D.get(tile), dist));
+					Destination dest = new Destination(currentPath, Object3D.get(tile), dist);
+					
+					if(!destinations.contains(dest))
+					{
+						destinations.add(dest);
+					}
 				}
 				
 				if(transportStack.canInsertToTransporter(tile) && !currentPath.contains(Object3D.get(tile)))
@@ -184,23 +203,14 @@ public final class TransporterPathfinder
 		{
 			loop(start, new ArrayList<Object3D>(), 0);
 			
+			Collections.sort(destinations);
+			
 		    Destination closest = null;
 			
-			for(Destination obj : destinations)
-			{
-				if(closest == null || obj.distance < closest.distance)
-				{
-					if(!obj.path.isEmpty() && !obj.path.get(0).equals(start))
-					{
-						closest = obj;
-					}
-				}
-			}
-			
-			if(closest == null)
-			{
-				return null;
-			}
+		    if(!destinations.isEmpty())
+		    {
+		    	closest = destinations.get(0);
+		    }
 			
 			return closest.path;
 		}
