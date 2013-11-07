@@ -107,10 +107,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 						if(TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
 						{
 							inInventory.use();
+							inventory.onInventoryChanged();
 							setActive(true);
-						}
-						else {
-							inInventory.reset();
 						}
 					}
 					

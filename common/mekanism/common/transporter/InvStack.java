@@ -70,12 +70,4 @@ public final class InvStack
 			}
 		}
 	}
-	
-	public void reset()
-	{
-		for(int i = 0; i < slotIDs.size(); i++)
-		{
-			inventory.setInventorySlotContents(slotIDs.get(i), itemStacks.get(i));
-		}
-	}
 }
