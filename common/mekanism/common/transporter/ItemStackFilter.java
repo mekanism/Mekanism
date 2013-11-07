@@ -31,7 +31,7 @@ public class ItemStackFilter extends TransporterFilter
 		{
 			return false;
 		}
-		
+	
 		return itemType.isItemEqual(itemStack) && (!sizeMode || itemStack.stackSize >= min);
 	}
 	

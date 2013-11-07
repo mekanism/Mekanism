@@ -91,7 +91,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null && !minField.getText().isEmpty() && !maxField.getText().isEmpty())
+			if(filter.itemType != null && !minField.getText().isEmpty() && !maxField.getText().isEmpty() && Integer.parseInt(maxField.getText()) >= Integer.parseInt(minField.getText()))
 			{
 				filter.min = Integer.parseInt(minField.getText());
 				filter.max = Integer.parseInt(maxField.getText());
@@ -114,6 +114,11 @@ public class GuiItemStackFilter extends GuiMekanism
 			else if(minField.getText().isEmpty() || maxField.getText().isEmpty())
 			{
 				status = EnumColor.DARK_RED + "Max/min";
+				ticker = 20;
+			}
+			else if(Integer.parseInt(maxField.getText()) < Integer.parseInt(minField.getText()))
+			{
+				status = EnumColor.DARK_RED + "Max<min";
 				ticker = 20;
 			}
 		}
@@ -241,6 +246,9 @@ public class GuiItemStackFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 128, guiHeight + 44, 187, 11, 11, 11);
 		}
+		
+		minField.drawTextBox();
+		maxField.drawTextBox();
         
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 		{
@@ -256,9 +264,6 @@ public class GuiItemStackFilter extends GuiMekanism
 	        GL11.glEnable(GL11.GL_DEPTH_TEST);
 	        GL11.glPopMatrix();
 		}
-		
-		minField.drawTextBox();
-		maxField.drawTextBox();
     }
 	
     @Override
