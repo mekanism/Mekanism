@@ -5,6 +5,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
@@ -136,6 +137,23 @@ public class TransporterStack
 	public boolean recalculatePath(TileEntityLogisticalTransporter tileEntity)
 	{
 		List<Object3D> newPath = TransporterPathfinder.getNewPath(tileEntity, this);
+		
+		if(newPath == null)
+		{
+			return false;
+		}
+		
+		pathToTarget = newPath;
+		
+		noTarget = false;
+		initiatedPath = true;
+		
+		return true;
+	}
+	
+	public boolean recalculateRRPath(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity)
+	{
+		List<Object3D> newPath = TransporterPathfinder.getNewRRPath(tileEntity, this, outputter);
 		
 		if(newPath == null)
 		{

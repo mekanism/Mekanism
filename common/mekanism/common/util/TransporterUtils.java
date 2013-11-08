@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterStack;
@@ -159,6 +160,11 @@ public final class TransporterUtils
     public static boolean insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color)
     {
     	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color);
+    }
+    
+    public static boolean insertRR(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color)
+    {
+    	return tileEntity.insertRR(outputter, itemStack.copy(), color);
     }
     
     public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side)

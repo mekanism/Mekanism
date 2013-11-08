@@ -36,6 +36,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 	public boolean autoEject;
 	
+	public boolean roundRobin;
+	
+	public int rrIndex = 0;
+	
 	public final int MAX_DELAY = 10;
 	
 	public int delayTicks;
@@ -104,7 +108,23 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(inInventory != null && inInventory.getStack() != null)
 					{
-						if(TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
+						boolean inserted = false;
+						
+						if(!roundRobin)
+						{
+							if(TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
+							{
+								inserted = true;
+							}
+						}
+						else {
+							if(TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor))
+							{
+								inserted = true;
+							}
+						}
+						
+						if(inserted)
 						{
 							inInventory.use();
 							inventory.onInventoryChanged();
@@ -139,6 +159,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
         }
         
         nbtTags.setBoolean("autoEject", autoEject);
+        nbtTags.setBoolean("roundRobin", roundRobin);
+        
+        nbtTags.setInteger("rrIndex", rrIndex);
         
         NBTTagList filterTags = new NBTTagList();
         
@@ -168,6 +191,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     	}
     	
     	autoEject = nbtTags.getBoolean("autoEject");
+    	roundRobin = nbtTags.getBoolean("roundRobin");
+    	
+    	rrIndex = nbtTags.getInteger("rrIndex");
     	
        	if(nbtTags.hasKey("filters"))
     	{
@@ -195,6 +221,10 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				autoEject = !autoEject;
 			}
+			else if(type == 2)
+			{
+				roundRobin = !roundRobin;
+			}
 			
 			return;
 		}
@@ -219,6 +249,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			}
 			
 			autoEject = dataStream.readBoolean();
+			roundRobin = dataStream.readBoolean();
 			
 			filters.clear();
 			
@@ -247,6 +278,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			}
 			
 			autoEject = dataStream.readBoolean();
+			roundRobin = dataStream.readBoolean();
 			
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -282,6 +314,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 		
 		data.add(autoEject);
+		data.add(roundRobin);
 		
 		data.add(filters.size());
 		
@@ -311,6 +344,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 		
 		data.add(autoEject);
+		data.add(roundRobin);
 		
 		return data;
 		

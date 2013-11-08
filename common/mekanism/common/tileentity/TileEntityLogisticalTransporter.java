@@ -231,6 +231,28 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return false;
 	}
 	
+	public boolean insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color)
+	{
+		TransporterStack stack = new TransporterStack();
+		stack.itemStack = itemStack;
+		stack.originalLocation = Object3D.get(outputter);
+		stack.color = color;
+		
+		if(!stack.canInsertToTransporter(this))
+		{
+			return false;
+		}
+		
+		if(stack.recalculateRRPath(outputter, this))
+		{
+			transit.add(stack);
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public void entityEntering(TransporterStack stack)
 	{
 		stack.progress = 0;

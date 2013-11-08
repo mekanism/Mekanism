@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -220,9 +221,41 @@ public final class TransporterPathfinder
 			return closest.path;
 		}
 		
-		public List<Object3D> findRR(int index)
+		public List<Object3D> findRR(TileEntityLogisticalSorter outputter)
 		{
-			return null;
+			loop(start, new ArrayList<Object3D>(), 0);
+			
+			Collections.sort(destinations);
+			
+		    Destination closest = null;
+			
+		    if(!destinations.isEmpty())
+		    {
+		    	if(outputter.rrIndex <= destinations.size()-1)
+		    	{
+		    		closest = destinations.get(outputter.rrIndex);
+		    		
+		    		if(outputter.rrIndex == destinations.size()-1)
+		    		{
+		    			outputter.rrIndex = 0;
+		    		}
+		    		else if(outputter.rrIndex < destinations.size()-1)
+		    		{
+		    			outputter.rrIndex++;
+		    		}
+		    	}
+		    	else {
+		    		closest = destinations.get(destinations.size()-1);
+		    		outputter.rrIndex = 0;
+		    	}
+		    }
+		    
+		    if(closest == null)
+		    {
+		    	return null;
+		    }
+			
+			return closest.path;
 		}
 	}
 	
@@ -239,10 +272,10 @@ public final class TransporterPathfinder
 		return path;
 	}
 	
-	public static List<Object3D> getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, int index)
+	public static List<Object3D> getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter)
 	{
 		DestPath d = new DestPath(start.worldObj, Object3D.get(start), stack);
-		List<Object3D> path = d.findRR(index);
+		List<Object3D> path = d.findRR(outputter);
 		
 		if(path == null)
 		{

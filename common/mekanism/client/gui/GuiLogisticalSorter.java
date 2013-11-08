@@ -187,6 +187,14 @@ public class GuiLogisticalSorter extends GuiMekanism
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			}
+			
+			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
+			{
+				ArrayList data = new ArrayList();
+				data.add(2);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			}
 		}
 	}
 	
@@ -256,6 +264,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		
+		fontRenderer.drawString("RR:", 12, 74, 0x00CD00);
+		fontRenderer.drawString(tileEntity.roundRobin ? "On" : "Off", 27, 86, 0x00CD00);
 		
 		fontRenderer.drawString("Auto:", 12, 100, 0x00CD00);
 		fontRenderer.drawString(tileEntity.autoEject ? "On" : "Off", 27, 112, 0x00CD00);
@@ -379,6 +390,14 @@ public class GuiLogisticalSorter extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 12, guiHeight + 110, 176, 14, 14, 14);
+		}
+		
+		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
+		{
+			drawTexturedModalRect(guiWidth + 12, guiHeight + 84, 176 + 14, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 12, guiHeight + 84, 176 + 14, 14, 14, 14);
 		}
     }
 	
