@@ -214,12 +214,30 @@ public final class TransporterPathfinder
 			
 			return closest.path;
 		}
+		
+		public List<Object3D> findRR(int index)
+		{
+			return null;
+		}
 	}
 	
 	public static List<Object3D> getNewPath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
 		DestPath d = new DestPath(start.worldObj, Object3D.get(start), stack);
 		List<Object3D> path = d.find();
+		
+		if(path == null)
+		{
+			return null;
+		}
+		
+		return path;
+	}
+	
+	public static List<Object3D> getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, int index)
+	{
+		DestPath d = new DestPath(start.worldObj, Object3D.get(start), stack);
+		List<Object3D> path = d.findRR(index);
 		
 		if(path == null)
 		{

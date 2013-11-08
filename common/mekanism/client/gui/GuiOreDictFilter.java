@@ -109,7 +109,7 @@ public class GuiOreDictFilter extends GuiMekanism
 			return;
 		}
 		
-		if(Character.isLetter(c) || Character.isDigit(c) || c == '*' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE)
+		if(Character.isLetter(c) || Character.isDigit(c) || c == '*' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
 			oreDictText.textboxKeyTyped(c, i);
 		}
