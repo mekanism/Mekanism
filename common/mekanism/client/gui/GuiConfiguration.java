@@ -78,6 +78,14 @@ public class GuiConfiguration extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 14, 14, 14);
 		}
         
+        if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
+        {
+    		drawTexturedModalRect(guiWidth + 156, guiHeight + 21, 176 + 42, 0, 14, 14);
+        }
+        else {
+			drawTexturedModalRect(guiWidth + 156, guiHeight + 21, 176 + 42, 14, 14, 14);
+        }
+        
         if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
  		{
         	drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 0, 14, 14);
@@ -142,13 +150,11 @@ public class GuiConfiguration extends GuiMekanism
 		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-		
-        String ejecting = configurable.getEjector().isEjecting() ? "On" : "Off";
         
         fontRenderer.drawString("Configuration", 60, 5, 0x404040);
-        fontRenderer.drawString("Eject: " + ejecting, 53, 17, 0x00CD00);
+        fontRenderer.drawString("Eject: " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
         
-        fontRenderer.drawString("Input", 32, 81, 0x787878);
+        fontRenderer.drawString("Input (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);
         fontRenderer.drawString("Output", 72, 68, 0x787878);
         fontRenderer.drawString("Slots", 122, 81, 0x787878);
         
@@ -239,6 +245,12 @@ public class GuiConfiguration extends GuiMekanism
 	        {
 	        	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT, Object3D.get(tile)));
+	        }
+	        
+	        if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
+	        {
+	        	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.STRICT_INPUT, Object3D.get(tile)));
 	        }
 	        
 	        if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)

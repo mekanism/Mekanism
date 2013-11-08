@@ -17,4 +17,8 @@ public interface IEjector
 	public boolean isEjecting();
 	
 	public void setEjecting(boolean eject);
+	
+	public boolean hasStrictInput();
+	
+	public void setStrictInput(boolean strict);
 }

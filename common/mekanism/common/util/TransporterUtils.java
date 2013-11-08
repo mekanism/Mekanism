@@ -174,7 +174,7 @@ public final class TransporterUtils
     		int tileSide = config.getOrientation();
     		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
     		
-    		if(configColor != null && configColor != color)
+    		if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
     		{
     			return false;
     		}
