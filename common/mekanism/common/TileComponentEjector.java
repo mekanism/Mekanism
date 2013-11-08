@@ -24,6 +24,8 @@ public class TileComponentEjector implements ITileComponent, IEjector
 {
 	public TileEntityContainerBlock tileEntity;
 	
+	public boolean strictInput;
+	
 	public boolean ejecting;
 	
 	public EnumColor outputColor;
@@ -138,6 +140,18 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 	
 	@Override
+	public boolean hasStrictInput()
+	{
+		return strictInput;
+	}
+	
+	@Override
+	public void setStrictInput(boolean strict)
+	{
+		strictInput = strict;
+	}
+	
+	@Override
 	public void setOutputColor(EnumColor color)
 	{
 		outputColor = color;
@@ -168,6 +182,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void read(NBTTagCompound nbtTags) 
 	{
 		ejecting = nbtTags.getBoolean("ejecting");
+		strictInput = nbtTags.getBoolean("strictInput");
 		
 		if(nbtTags.hasKey("ejectColor"))
 		{
@@ -200,6 +215,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void read(ByteArrayDataInput dataStream) 
 	{
 		ejecting = dataStream.readBoolean();
+		strictInput = dataStream.readBoolean();
 		
 		int c = dataStream.readInt();
 		
@@ -229,6 +245,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void write(NBTTagCompound nbtTags) 
 	{
 		nbtTags.setBoolean("ejecting", ejecting);
+		nbtTags.setBoolean("strictInput", strictInput);
 		
 		if(outputColor != null)
 		{
@@ -256,6 +273,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void write(ArrayList data) 
 	{
 		data.add(ejecting);
+		data.add(strictInput);
 		
 		if(outputColor != null)
 		{

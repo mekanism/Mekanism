@@ -211,6 +211,11 @@ public final class TransporterPathfinder
 		    {
 		    	closest = destinations.get(0);
 		    }
+		    
+		    if(closest == null)
+		    {
+		    	return null;
+		    }
 			
 			return closest.path;
 		}

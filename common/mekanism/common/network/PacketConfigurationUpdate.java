@@ -87,6 +87,10 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 				ForgeDirection side = ForgeDirection.getOrientation(inputSide);
 				config.getEjector().setInputColor(side, TransporterUtils.increment(config.getEjector().getInputColor(side)));
 			}
+			else if(packetType == ConfigurationPacket.STRICT_INPUT)
+			{
+				config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
+			}
 		}
 	}
 	
@@ -114,6 +118,6 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 	
 	public static enum ConfigurationPacket
 	{
-		EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR
+		EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR, STRICT_INPUT
 	}
 }

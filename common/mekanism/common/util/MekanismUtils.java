@@ -23,7 +23,6 @@ import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismHooks;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Teleporter;
@@ -32,6 +31,7 @@ import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Version;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
@@ -354,6 +354,16 @@ public final class MekanismUtils
 	public static ItemStack getEnergyCube(EnergyCubeTier tier)
 	{
 		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(Mekanism.EnergyCube).getItem()).getUnchargedItem(tier);
+		return itemstack;
+	}
+	
+	/**
+	 * Retrieves an empty Gas Tank.
+	 * @return empty gas tank
+	 */
+	public static ItemStack getEmptyGasTank()
+	{
+		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(Mekanism.GasTank).getItem()).getEmptyItem();
 		return itemstack;
 	}
 	
