@@ -224,6 +224,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			else if(type == 2)
 			{
 				roundRobin = !roundRobin;
+				rrIndex = 0;
 			}
 			
 			return;
