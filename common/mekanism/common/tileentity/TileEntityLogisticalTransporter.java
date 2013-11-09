@@ -13,6 +13,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterStack;
+import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -93,7 +94,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 							}
 						}
 						else {
-							if(!stack.noTarget)
+							if(stack.pathType != Path.NONE)
 							{
 								if(next != null && next.getTileEntity(worldObj) instanceof IInventory)
 								{
@@ -102,7 +103,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 									
 									if(inventory != null)
 									{
-										ItemStack rejected = TransporterUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this));
+										ItemStack rejected = TransporterUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
 										
 										if(rejected == null)
 										{
@@ -140,7 +141,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 				{
 					if(stack.isFinal(this))
 					{
-						if(!TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this)) && !stack.noTarget)
+						if(stack.pathType == Path.DEST && !TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this), false))
 						{
 							if(!recalculate(stack, null))
 							{
@@ -148,7 +149,15 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 								continue;
 							}
 						}
-						else if(stack.noTarget)
+						else if(stack.pathType == Path.HOME && !TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this), true))
+						{
+							if(!recalculate(stack, null))
+							{
+								remove.add(stack);
+								continue;
+							}
+						}
+						else if(stack.pathType == Path.NONE)
 						{
 							if(!recalculate(stack, null))
 							{
@@ -214,6 +223,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
+		stack.homeLocation = original;
 		stack.color = color;
 		
 		if(!stack.canInsertToTransporter(this))
@@ -236,6 +246,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = Object3D.get(outputter);
+		stack.homeLocation = Object3D.get(outputter);
 		stack.color = color;
 		
 		if(!stack.canInsertToTransporter(this))
@@ -470,7 +481,9 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		if(doAdd)
 		{
-			if(TransporterUtils.insert(Object3D.get(this).getFromSide(from).getTileEntity(worldObj), this, stack, null))
+			TileEntity tile = Object3D.get(this).getFromSide(from).getTileEntity(worldObj);
+			
+			if(TransporterUtils.insert(tile, this, stack, null))
 			{
 				return stack.stackSize;
 			}

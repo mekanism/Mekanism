@@ -27,11 +27,12 @@ public class TransporterStack
 	public List<Object3D> pathToTarget = new ArrayList<Object3D>();
 	
 	public Object3D originalLocation;
+	public Object3D homeLocation;
 	
 	public Object3D clientNext;
 	public Object3D clientPrev;
 	
-	public boolean noTarget = false;
+	public Path pathType;
 	
 	public void write(TileEntityLogisticalTransporter tileEntity, ArrayList data)
 	{
@@ -44,7 +45,7 @@ public class TransporterStack
 		}
 		
 		data.add(progress);
-		data.add(noTarget);
+		data.add(pathType.ordinal());
 		
 		if(pathToTarget.indexOf(Object3D.get(tileEntity)) > 0)
 		{
@@ -75,7 +76,7 @@ public class TransporterStack
 		}
 		
 		progress = dataStream.readInt();
-		noTarget = dataStream.readBoolean();
+		pathType = Path.values()[dataStream.readInt()];
 		
 		if(dataStream.readBoolean())
 		{
@@ -95,8 +96,14 @@ public class TransporterStack
 		}
 		
 		nbtTags.setInteger("progress", progress);
-		originalLocation.write(nbtTags);
-		nbtTags.setBoolean("noTarget", noTarget);
+		nbtTags.setCompoundTag("originalLocation", originalLocation.write(new NBTTagCompound()));
+		
+		if(nbtTags.hasKey("homeLocation"))
+		{
+			nbtTags.setCompoundTag("homeLocation", homeLocation.write(new NBTTagCompound()));
+		}
+		
+		nbtTags.setInteger("pathType", pathType.ordinal());
 		itemStack.writeToNBT(nbtTags);
 	}
 	
@@ -108,8 +115,14 @@ public class TransporterStack
 		}
 		
 		progress = nbtTags.getInteger("progress");
-		originalLocation = Object3D.read(nbtTags);
-		noTarget = nbtTags.getBoolean("noTarget");
+		originalLocation = Object3D.read(nbtTags.getCompoundTag("originalLocation"));
+		
+		if(homeLocation != null)
+		{
+			homeLocation = Object3D.read(nbtTags.getCompoundTag("homeLocation"));
+		}
+		
+		pathType = Path.values()[nbtTags.getInteger("pathType")];
 		itemStack = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 	
@@ -145,7 +158,7 @@ public class TransporterStack
 		
 		pathToTarget = newPath;
 		
-		noTarget = false;
+		pathType = Path.DEST;
 		initiatedPath = true;
 		
 		return true;
@@ -162,7 +175,7 @@ public class TransporterStack
 		
 		pathToTarget = newPath;
 		
-		noTarget = false;
+		pathType = Path.DEST;
 		initiatedPath = true;
 		
 		return true;
@@ -179,7 +192,6 @@ public class TransporterStack
 		
 		pathToTarget = newPath;
 		
-		noTarget = true;
 		originalLocation = Object3D.get(tileEntity);
 		initiatedPath = true;
 		
@@ -188,7 +200,7 @@ public class TransporterStack
 	
 	public boolean isFinal(TileEntityLogisticalTransporter tileEntity)
 	{
-		return pathToTarget.indexOf(Object3D.get(tileEntity)) == (noTarget ? 0 : 1);
+		return pathToTarget.indexOf(Object3D.get(tileEntity)) == (pathType == Path.NONE ? 0 : 1);
 	}
 	
 	public Object3D getNext(TileEntityLogisticalTransporter tileEntity)
@@ -269,5 +281,10 @@ public class TransporterStack
 	public Object3D getDest()
 	{
 		return pathToTarget.get(0);
+	}
+	
+	public static enum Path
+	{
+		DEST, HOME, NONE
 	}
 }

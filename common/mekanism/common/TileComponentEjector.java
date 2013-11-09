@@ -102,7 +102,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				
 				if(tile instanceof IInventory && !(tile instanceof TileEntityLogisticalTransporter))
 				{
-					stack = TransporterUtils.putStackInInventory((IInventory)tile, stack, side.ordinal());
+					stack = TransporterUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
 				}
 				else if(tile instanceof TileEntityLogisticalTransporter)
 				{

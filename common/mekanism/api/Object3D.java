@@ -57,12 +57,14 @@ public class Object3D
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
 	
-	public void write(NBTTagCompound nbtTags)
+	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("x", xCoord);
 		nbtTags.setInteger("y", yCoord);
 		nbtTags.setInteger("z", zCoord);
 		nbtTags.setInteger("dimensionId", dimensionId);
+		
+		return nbtTags;
 	}
 	
 	public void write(ArrayList data)

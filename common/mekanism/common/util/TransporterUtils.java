@@ -167,14 +167,19 @@ public final class TransporterUtils
     	return tileEntity.insertRR(outputter, itemStack.copy(), color);
     }
     
-    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side)
+    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side, boolean force)
     {
     	if(!(tileEntity instanceof IInventory))
     	{
     		return false;
     	}
     	
-    	if(tileEntity instanceof IConfigurable)
+    	if(force && tileEntity instanceof TileEntityLogisticalSorter)
+    	{
+    		return ((TileEntityLogisticalSorter)tileEntity).canSendHome(itemStack);
+    	}
+    	
+    	if(!force && tileEntity instanceof IConfigurable)
     	{
     		IConfigurable config = (IConfigurable)tileEntity;
     		int tileSide = config.getOrientation();
@@ -194,27 +199,32 @@ public final class TransporterUtils
     		
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
-				if(inventory.isItemValidForSlot(i, itemStack)) 
+				if(!force)
 				{
-					ItemStack inSlot = inventory.getStackInSlot(i);
+					if(!inventory.isItemValidForSlot(i, itemStack)) 
+					{
+						continue;
+					}
+				}
+				
+				ItemStack inSlot = inventory.getStackInSlot(i);
 
-					if(inSlot == null)
+				if(inSlot == null)
+				{
+					return true;
+				} 
+				else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize()) 
+				{
+					if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
 					{
 						return true;
 					} 
-					else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize()) 
-					{
-						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+					else {
+						int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+
+						if(rejects < itemStack.stackSize)
 						{
 							return true;
-						} 
-						else {
-							int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
-
-							if(rejects < itemStack.stackSize)
-							{
-								return true;
-							}
 						}
 					}
 				}
@@ -230,27 +240,32 @@ public final class TransporterUtils
 				{
 					int slotID = slots[get];
 	
-					if(sidedInventory.isItemValidForSlot(slotID, itemStack) && sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+					if(!force)
 					{
-						ItemStack inSlot = inventory.getStackInSlot(slotID);
-	
-						if(inSlot == null) 
+						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+						{
+							continue;
+						}
+					}
+					
+					ItemStack inSlot = inventory.getStackInSlot(slotID);
+
+					if(inSlot == null) 
+					{
+						return true;
+					} 
+					else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
+					{
+						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
 						{
 							return true;
 						} 
-						else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
-						{
-							if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+						else {
+							int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+							
+							if(rejects < itemStack.stackSize)
 							{
 								return true;
-							} 
-							else {
-								int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
-								
-								if(rejects < itemStack.stackSize)
-								{
-									return true;
-								}
 							}
 						}
 					}
@@ -294,8 +309,13 @@ public final class TransporterUtils
     	return inv;
     }
     
-	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, int side) 
+	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, int side, boolean force) 
 	{
+		if(force && inventory instanceof TileEntityLogisticalSorter)
+		{
+			return ((TileEntityLogisticalSorter)inventory).sendHome(itemStack.copy());
+		}
+		
 		ItemStack toInsert = itemStack.copy();
 		
 		if(!(inventory instanceof ISidedInventory))
@@ -304,38 +324,43 @@ public final class TransporterUtils
 			
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
-				if(inventory.isItemValidForSlot(i, toInsert)) 
+				if(!force)
 				{
-					ItemStack inSlot = inventory.getStackInSlot(i);
-
-					if(inSlot == null)
+					if(!inventory.isItemValidForSlot(i, toInsert)) 
 					{
-						inventory.setInventorySlotContents(i, toInsert);
+						continue;
+					}
+				}
+				
+				ItemStack inSlot = inventory.getStackInSlot(i);
+
+				if(inSlot == null)
+				{
+					inventory.setInventorySlotContents(i, toInsert);
+					return null;
+				} 
+				else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize()) 
+				{
+					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
+					{
+						ItemStack toSet = toInsert.copy();
+						toSet.stackSize += inSlot.stackSize;
+
+						inventory.setInventorySlotContents(i, toSet);
 						return null;
 					} 
-					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize()) 
-					{
-						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
-						{
-							ItemStack toSet = toInsert.copy();
-							toSet.stackSize += inSlot.stackSize;
+					else {
+						int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
 
-							inventory.setInventorySlotContents(i, toSet);
-							return null;
-						} 
-						else {
-							int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
+						ItemStack toSet = toInsert.copy();
+						toSet.stackSize = inSlot.getMaxStackSize();
 
-							ItemStack toSet = toInsert.copy();
-							toSet.stackSize = inSlot.getMaxStackSize();
+						ItemStack remains = toInsert.copy();
+						remains.stackSize = rejects;
 
-							ItemStack remains = toInsert.copy();
-							remains.stackSize = rejects;
-
-							inventory.setInventorySlotContents(i, toSet);
-							
-							toInsert = remains;
-						}
+						inventory.setInventorySlotContents(i, toSet);
+						
+						toInsert = remains;
 					}
 				}
 			}
@@ -350,38 +375,43 @@ public final class TransporterUtils
 				{
 					int slotID = slots[get];
 	
-					if(sidedInventory.isItemValidForSlot(slotID, toInsert) && sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+					if(!force)
 					{
-						ItemStack inSlot = inventory.getStackInSlot(slotID);
-	
-						if(inSlot == null) 
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 						{
-							inventory.setInventorySlotContents(slotID, toInsert);
+							continue;
+						}
+					}
+					
+					ItemStack inSlot = inventory.getStackInSlot(slotID);
+
+					if(inSlot == null) 
+					{
+						inventory.setInventorySlotContents(slotID, toInsert);
+						return null;
+					} 
+					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+					{
+						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
+						{
+							ItemStack toSet = toInsert.copy();
+							toSet.stackSize += inSlot.stackSize;
+
+							inventory.setInventorySlotContents(slotID, toSet);
 							return null;
 						} 
-						else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
-						{
-							if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
-							{
-								ItemStack toSet = toInsert.copy();
-								toSet.stackSize += inSlot.stackSize;
-	
-								inventory.setInventorySlotContents(slotID, toSet);
-								return null;
-							} 
-							else {
-								int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
-	
-								ItemStack toSet = toInsert.copy();
-								toSet.stackSize = inSlot.getMaxStackSize();
-	
-								ItemStack remains = toInsert.copy();
-								remains.stackSize = rejects;
-	
-								inventory.setInventorySlotContents(slotID, toSet);
-								
-								toInsert = remains;
-							}
+						else {
+							int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
+
+							ItemStack toSet = toInsert.copy();
+							toSet.stackSize = inSlot.getMaxStackSize();
+
+							ItemStack remains = toInsert.copy();
+							remains.stackSize = rejects;
+
+							inventory.setInventorySlotContents(slotID, toSet);
+							
+							toInsert = remains;
 						}
 					}
 				}

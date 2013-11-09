@@ -14,6 +14,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterFilter;
+import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -365,6 +366,35 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 		
 		return data;
+	}
+	
+	public boolean canSendHome(ItemStack stack)
+	{
+		TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		
+		if(back instanceof IInventory)
+		{
+			return TransporterUtils.canInsert(back, null, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
+		}
+		
+		return false;
+	}
+	
+	public boolean hasInventory()
+	{
+		return Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+	}
+	
+	public ItemStack sendHome(ItemStack stack)
+	{
+		TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		
+		if(back instanceof IInventory)
+		{
+			return TransporterUtils.putStackInInventory((IInventory)back, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
+		}
+		
+		return stack;
 	}
 	
 	@Override

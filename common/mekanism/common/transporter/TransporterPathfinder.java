@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -16,6 +17,102 @@ import net.minecraftforge.common.ForgeDirection;
 
 public final class TransporterPathfinder
 {
+	public static class HomePath
+	{
+		public World worldObj;
+		
+		public List<Destination> destinations = new ArrayList<Destination>();
+		
+		public Object3D start;
+		
+		public Object3D homeLocation;
+		
+		public TransporterStack transportStack;
+		
+		public boolean existed;
+		
+		public HomePath(World world, Object3D obj, Object3D home, TransporterStack stack)
+		{
+			worldObj = world;
+			start = obj;
+			homeLocation = home;
+			transportStack = stack;
+		}
+		
+		public void loop(Object3D pointer, ArrayList<Object3D> currentPath, int dist)
+		{
+			if(pointer == null)
+			{
+				return;
+			}
+			
+			currentPath.add(pointer);
+			
+			if(pointer.getMetadata(worldObj) == 4)
+			{
+				dist += 1000;
+			}
+			else {
+				dist++;
+			}
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
+				
+				if(tile != null && Object3D.get(tile).equals(homeLocation))
+				{
+					if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), true))
+					{
+						Destination dest = new Destination(currentPath, Object3D.get(tile), dist);
+						
+						if(!destinations.contains(dest))
+						{
+							destinations.add(dest);
+						}
+					}
+					
+					if(tile instanceof TileEntityLogisticalSorter)
+			    	{
+			    		if(((TileEntityLogisticalSorter)tile).hasInventory())
+			    		{
+			    			existed = true;
+			    		}
+			    	}
+					else {
+						existed = true;
+					}
+				}
+				
+				if(transportStack.canInsertToTransporter(tile) && !currentPath.contains(Object3D.get(tile)))
+				{
+					loop(Object3D.get(tile), (ArrayList<Object3D>)currentPath.clone(), dist);
+				}
+			}
+		}
+		
+		public List<Object3D> find()
+		{
+			loop(start, new ArrayList<Object3D>(), 0);
+			
+			Collections.sort(destinations);
+			
+		    Destination closest = null;
+			
+		    if(!destinations.isEmpty())
+		    {
+		    	closest = destinations.get(0);
+		    }
+		    
+		    if(closest == null)
+		    {
+		    	return null;
+		    }
+			
+			return closest.path;
+		}
+	}
+	
 	public static class IdlePath
 	{
 		public World worldObj;
@@ -183,7 +280,7 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
 				
-				if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal()) && !(tile instanceof TileEntityLogisticalTransporter))
+				if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), false) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
 					Destination dest = new Destination(currentPath, Object3D.get(tile), dist);
 					
@@ -287,8 +384,27 @@ public final class TransporterPathfinder
 	
 	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
+		if(stack.homeLocation != null)
+		{
+			HomePath d = new HomePath(start.worldObj, Object3D.get(start), stack.homeLocation, stack);
+			List<Object3D> path = d.find();
+			
+			if(path != null)
+			{
+				stack.pathType = Path.HOME;
+				return path;
+			}
+			else {
+				if(stack.homeLocation.getTileEntity(start.worldObj) == null)
+				{
+					stack.homeLocation = null;
+				}
+			}
+		}
+		
 		IdlePath d = new IdlePath(start.worldObj, Object3D.get(start), stack);
 		List<Object3D> path = d.find();
+		stack.pathType = Path.NONE;
 		
 		if(path == null)
 		{
