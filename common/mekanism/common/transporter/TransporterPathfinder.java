@@ -259,7 +259,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Object3D> getNewPath(TileEntityLogisticalTransporter start, TransporterStack stack)
+	public static List<Object3D> getNewBasePath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
 		DestPath d = new DestPath(start.worldObj, Object3D.get(start), stack);
 		List<Object3D> path = d.find();

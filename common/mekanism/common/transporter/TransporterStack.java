@@ -136,7 +136,7 @@ public class TransporterStack
 	
 	public boolean recalculatePath(TileEntityLogisticalTransporter tileEntity)
 	{
-		List<Object3D> newPath = TransporterPathfinder.getNewPath(tileEntity, this);
+		List<Object3D> newPath = TransporterPathfinder.getNewBasePath(tileEntity, this);
 		
 		if(newPath == null)
 		{
