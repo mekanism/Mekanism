@@ -2,13 +2,16 @@ package mekanism.common.transporter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -17,102 +20,6 @@ import net.minecraftforge.common.ForgeDirection;
 
 public final class TransporterPathfinder
 {
-	public static class HomePath
-	{
-		public World worldObj;
-		
-		public List<Destination> destinations = new ArrayList<Destination>();
-		
-		public Object3D start;
-		
-		public Object3D homeLocation;
-		
-		public TransporterStack transportStack;
-		
-		public boolean existed;
-		
-		public HomePath(World world, Object3D obj, Object3D home, TransporterStack stack)
-		{
-			worldObj = world;
-			start = obj;
-			homeLocation = home;
-			transportStack = stack;
-		}
-		
-		public void loop(Object3D pointer, ArrayList<Object3D> currentPath, int dist)
-		{
-			if(pointer == null)
-			{
-				return;
-			}
-			
-			currentPath.add(pointer);
-			
-			if(pointer.getMetadata(worldObj) == 4)
-			{
-				dist += 1000;
-			}
-			else {
-				dist++;
-			}
-			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
-				
-				if(tile != null && Object3D.get(tile).equals(homeLocation))
-				{
-					if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), true))
-					{
-						Destination dest = new Destination(currentPath, Object3D.get(tile), dist);
-						
-						if(!destinations.contains(dest))
-						{
-							destinations.add(dest);
-						}
-					}
-					
-					if(tile instanceof TileEntityLogisticalSorter)
-			    	{
-			    		if(((TileEntityLogisticalSorter)tile).hasInventory())
-			    		{
-			    			existed = true;
-			    		}
-			    	}
-					else {
-						existed = true;
-					}
-				}
-				
-				if(transportStack.canInsertToTransporter(tile) && !currentPath.contains(Object3D.get(tile)))
-				{
-					loop(Object3D.get(tile), (ArrayList<Object3D>)currentPath.clone(), dist);
-				}
-			}
-		}
-		
-		public List<Object3D> find()
-		{
-			loop(start, new ArrayList<Object3D>(), 0);
-			
-			Collections.sort(destinations);
-			
-		    Destination closest = null;
-			
-		    if(!destinations.isEmpty())
-		    {
-		    	closest = destinations.get(0);
-		    }
-		    
-		    if(closest == null)
-		    {
-		    	return null;
-		    }
-			
-			return closest.path;
-		}
-	}
-	
 	public static class IdlePath
 	{
 		public World worldObj;
@@ -162,7 +69,7 @@ public final class TransporterPathfinder
 			
 			if(!found)
 			{
-				destinations.add(new Destination(currentPath, null, dist));
+				destinations.add(new Destination(currentPath, dist));
 			}
 		}
 		
@@ -174,7 +81,7 @@ public final class TransporterPathfinder
 			
 			for(Destination obj : destinations)
 			{
-				if(farthest == null || obj.distance > farthest.distance)
+				if(farthest == null || obj.score > farthest.score)
 				{
 					if(!obj.path.isEmpty() && !obj.path.get(0).equals(start))
 					{
@@ -195,19 +102,12 @@ public final class TransporterPathfinder
 	public static class Destination implements Comparable<Destination>
 	{
 		public List<Object3D> path = new ArrayList<Object3D>();
-		public int distance;
+		public double score;
 		
-		public Destination(ArrayList<Object3D> list, Object3D dest, int i)
+		public Destination(ArrayList<Object3D> list, double d)
 		{
 			path = (List<Object3D>)list.clone();
-			
-			if(dest != null)
-			{
-				path.add(dest);
-			}
-			
-			Collections.reverse(path);
-			distance = i;
+			score = d;
 		}
 		
 		@Override
@@ -215,24 +115,24 @@ public final class TransporterPathfinder
 		{
 			int code = 1;
 			code = 31 * code + path.hashCode();
-			code = 31 * code + distance;
+			code = 31 * code + new Double(score).hashCode();
 			return code;
 		}
 		
 		@Override
 		public boolean equals(Object dest)
 		{
-			return dest instanceof Destination && ((Destination)dest).path.equals(path) && ((Destination)dest).distance == distance;
+			return dest instanceof Destination && ((Destination)dest).path.equals(path) && ((Destination)dest).score == score;
 		}
 
 		@Override
 		public int compareTo(Destination dest)
 		{
-			if(dest.distance > distance)
+			if(dest.score < score)
 			{
 				return -1;
 			}
-			else if(dest.distance < distance)
+			else if(dest.score > score)
 			{
 				return 1;
 			}
@@ -242,39 +142,33 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static class DestPath
+	public static class InventoryFinder
 	{
 		public World worldObj;
 		
-		public List<Destination> destinations = new ArrayList<Destination>();
+		public Set<Object3D> iterated = new HashSet<Object3D>();
+		
+		public Set<Object3D> destsFound = new HashSet<Object3D>();
 		
 		public Object3D start;
 		
 		public TransporterStack transportStack;
 		
-		public DestPath(World world, Object3D obj, TransporterStack stack)
+		public InventoryFinder(World world, Object3D obj, TransporterStack stack)
 		{
 			worldObj = world;
 			start = obj;
 			transportStack = stack;
 		}
 		
-		public void loop(Object3D pointer, ArrayList<Object3D> currentPath, int dist)
+		public void loop(Object3D pointer)
 		{
 			if(pointer == null)
 			{
 				return;
 			}
 			
-			currentPath.add(pointer);
-			
-			if(pointer.getMetadata(worldObj) == 4)
-			{
-				dist += 1000;
-			}
-			else {
-				dist++;
-			}
+			iterated.add(pointer);
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -282,112 +176,303 @@ public final class TransporterPathfinder
 				
 				if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), false) && !(tile instanceof TileEntityLogisticalTransporter))
 				{
-					Destination dest = new Destination(currentPath, Object3D.get(tile), dist);
-					
-					if(!destinations.contains(dest))
-					{
-						destinations.add(dest);
-					}
+					destsFound.add(Object3D.get(tile));
 				}
-				
-				if(transportStack.canInsertToTransporter(tile) && !currentPath.contains(Object3D.get(tile)))
+				else if(transportStack.canInsertToTransporter(tile) && !iterated.contains(Object3D.get(tile)))
 				{
-					loop(Object3D.get(tile), (ArrayList<Object3D>)currentPath.clone(), dist);
+					loop(Object3D.get(tile));
 				}
 			}
 		}
 		
-		public List<Object3D> find()
+		public Set<Object3D> find()
 		{
-			loop(start, new ArrayList<Object3D>(), 0);
+			loop(start);
 			
-			Collections.sort(destinations);
+			return destsFound;
+		}
+	}
+	
+	public static List<Destination> getPaths(TileEntityLogisticalTransporter start, TransporterStack stack)
+	{
+		DestChecker checker = new DestChecker()
+		{
+			@Override
+			public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+			{
+				return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, false);
+			}
+		};
+		
+		InventoryFinder d = new InventoryFinder(start.worldObj, Object3D.get(start), stack);
+		Set<Object3D> destsFound = d.find();
+		List<Destination> paths = new ArrayList<Destination>();
+		
+		for(Object3D obj : destsFound)
+		{
+			Pathfinder p = new Pathfinder(checker, start.worldObj, obj, Object3D.get(start), stack);
 			
-		    Destination closest = null;
-			
-		    if(!destinations.isEmpty())
-		    {
-		    	closest = destinations.get(0);
-		    }
-		    
-		    if(closest == null)
-		    {
-		    	return null;
-		    }
-			
-			return closest.path;
+			if(p.getPath() != null && p.getPath().size() >= 2)
+			{
+				paths.add(new Destination(p.getPath(), p.finalScore));
+			}
 		}
 		
-		public List<Object3D> findRR(TileEntityLogisticalSorter outputter)
-		{
-			loop(start, new ArrayList<Object3D>(), 0);
-			
-			Collections.sort(destinations);
-			
-		    Destination closest = null;
-			
-		    if(!destinations.isEmpty())
-		    {
-		    	if(outputter.rrIndex <= destinations.size()-1)
-		    	{
-		    		closest = destinations.get(outputter.rrIndex);
-		    		
-		    		if(outputter.rrIndex == destinations.size()-1)
-		    		{
-		    			outputter.rrIndex = 0;
-		    		}
-		    		else if(outputter.rrIndex < destinations.size()-1)
-		    		{
-		    			outputter.rrIndex++;
-		    		}
-		    	}
-		    	else {
-		    		closest = destinations.get(destinations.size()-1);
-		    		outputter.rrIndex = 0;
-		    	}
-		    }
-		    
-		    if(closest == null)
-		    {
-		    	return null;
-		    }
-			
-			return closest.path;
-		}
+		Collections.sort(paths);
+		
+		return paths;
 	}
 	
 	public static List<Object3D> getNewBasePath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
-		DestPath d = new DestPath(start.worldObj, Object3D.get(start), stack);
-		List<Object3D> path = d.find();
+		List<Destination> paths = getPaths(start, stack);
 		
-		if(path == null)
+		if(paths.isEmpty())
 		{
 			return null;
 		}
 		
-		return path;
+		return paths.get(0).path;
 	}
 	
 	public static List<Object3D> getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter)
 	{
-		DestPath d = new DestPath(start.worldObj, Object3D.get(start), stack);
-		List<Object3D> path = d.findRR(outputter);
+		List<Destination> paths = getPaths(start, stack);
 		
-		if(path == null)
+		Map<Object3D, Destination> destPaths = new HashMap<Object3D, Destination>();
+		
+		for(Destination d : paths)
 		{
-			return null;
+			if(destPaths.get(d.path.get(0)) == null || destPaths.get(d.path.get(0)).score < d.score)
+			{
+				destPaths.put(d.path.get(0), d);
+			}
 		}
 		
-		return path;
+		List<Destination> dests = new ArrayList<Destination>();
+		dests.addAll(destPaths.values());
+		
+		Collections.sort(dests);
+		
+	    Destination closest = null;
+		
+	    if(!dests.isEmpty())
+	    {
+	    	if(outputter.rrIndex <= dests.size()-1)
+	    	{
+	    		closest = dests.get(outputter.rrIndex);
+	    		
+	    		if(outputter.rrIndex == dests.size()-1)
+	    		{
+	    			outputter.rrIndex = 0;
+	    		}
+	    		else if(outputter.rrIndex < dests.size()-1)
+	    		{
+	    			outputter.rrIndex++;
+	    		}
+	    	}
+	    	else {
+	    		closest = dests.get(dests.size()-1);
+	    		outputter.rrIndex = 0;
+	    	}
+	    }
+	    
+	    if(closest == null)
+	    {
+	    	return null;
+	    }
+		
+		return closest.path;
+	}
+	
+	public static class Pathfinder
+	{
+		public final Set<Object3D> openSet, closedSet;
+
+		public final HashMap<Object3D, Object3D> navMap;
+
+		public final HashMap<Object3D, Double> gScore, fScore;
+
+		public final Object3D start;
+
+		public final Object3D finalNode;
+
+		public final TransporterStack transportStack;
+		
+		public final DestChecker destChecker;
+		
+		public double finalScore;
+
+		public ArrayList<Object3D> results;
+
+		private World worldObj;
+
+		public Pathfinder(DestChecker checker, World world, Object3D finishObj, Object3D startObj, TransporterStack stack) 
+		{
+			destChecker = checker;
+			worldObj = world;
+			
+			finalNode = finishObj;
+			start = startObj;
+			
+			transportStack = stack;
+
+			openSet = new HashSet<Object3D>();
+			closedSet = new HashSet<Object3D>();
+
+			navMap = new HashMap<Object3D, Object3D>();
+
+			gScore = new HashMap<Object3D, Double>();
+			fScore = new HashMap<Object3D, Double>();
+
+			results = new ArrayList<Object3D>();
+			
+			find(start);
+		}
+
+		public boolean find(Object3D start) 
+		{
+			openSet.add(start);
+			gScore.put(start, 0D);
+			fScore.put(start, gScore.get(start) + getEstimate(start, finalNode));
+
+			int blockCount = 0;
+
+			for(int i = 0; i < 6; i++) 
+			{
+				ForgeDirection direction = ForgeDirection.getOrientation(i);
+				Object3D neighbor = finalNode.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
+
+				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj)) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
+				{
+					blockCount++;
+				}
+			}
+
+			if(blockCount >= 6) 
+			{
+				return false;
+			}
+
+			double maxSearchDistance = start.distanceTo(finalNode) * 2;
+
+			while(!openSet.isEmpty()) 
+			{
+				Object3D currentNode = null;
+				double lowestFScore = 0;
+
+				for(Object3D node : openSet)
+				{
+					if(currentNode == null || fScore.get(node) < lowestFScore) 
+					{
+						currentNode = node;
+						lowestFScore = fScore.get(node);
+					}
+				}
+
+				if(currentNode == null && start.distanceTo(currentNode) > maxSearchDistance)
+				{
+					break;
+				}
+
+				openSet.remove(currentNode);
+				closedSet.add(currentNode);
+
+				for(int i = 0; i < 6; i++) 
+				{
+					ForgeDirection direction = ForgeDirection.getOrientation(i);
+					Object3D neighbor = currentNode.getFromSide(direction);
+
+					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj)))
+					{
+						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
+						
+						if(neighbor.getMetadata(worldObj) == 4)
+						{
+							tentativeG += 999;
+						}
+
+						if(closedSet.contains(neighbor)) 
+						{
+							if(tentativeG >= gScore.get(neighbor))
+							{
+								continue;
+							}
+						}
+
+						if(!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor)) 
+						{
+							navMap.put(neighbor, currentNode);
+							gScore.put(neighbor, tentativeG);
+							fScore.put(neighbor, gScore.get(neighbor) + getEstimate(neighbor, finalNode));
+							openSet.add(neighbor);
+						}
+					}
+					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj)))
+					{
+						results = reconstructPath(navMap, currentNode);
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private ArrayList<Object3D> reconstructPath(HashMap<Object3D, Object3D> naviMap, Object3D currentNode) 
+		{
+			ArrayList<Object3D> path = new ArrayList<Object3D>();
+
+			path.add(currentNode);
+			
+			if(naviMap.containsKey(currentNode)) 
+			{
+				path.addAll(reconstructPath(naviMap, naviMap.get(currentNode)));
+			}
+			
+			finalScore = gScore.get(currentNode) + currentNode.distanceTo(finalNode);
+
+			return path;
+		}
+		
+		public ArrayList<Object3D> getPath()
+		{
+			ArrayList<Object3D> path = new ArrayList<Object3D>();
+			path.add(finalNode);
+			path.addAll((ArrayList<Object3D>)results.clone());
+			
+			return path;
+		}
+
+		private double getEstimate(Object3D start, Object3D target2) 
+		{
+			return start.distanceTo(target2);
+		}
+		
+		public static class DestChecker
+		{
+			public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+			{
+				return false;
+			}
+		}
 	}
 	
 	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{
 		if(stack.homeLocation != null)
 		{
-			HomePath d = new HomePath(start.worldObj, Object3D.get(start), stack.homeLocation, stack);
-			List<Object3D> path = d.find();
+			DestChecker checker = new DestChecker() 
+			{
+				@Override
+				public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+				{
+					return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
+				}
+			};
+			
+			Pathfinder p = new Pathfinder(checker, start.worldObj, stack.homeLocation, Object3D.get(start), stack);
+			List<Object3D> path = p.getPath();
 			
 			if(path != null)
 			{
