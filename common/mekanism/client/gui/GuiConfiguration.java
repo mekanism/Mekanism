@@ -208,6 +208,16 @@ public class GuiConfiguration extends GuiMekanism
 				drawCreativeTabHoveringText("None", xAxis, yAxis);
 			}
 		}
+        
+        if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
+        {
+        	drawCreativeTabHoveringText("Auto-eject", xAxis, yAxis);
+        }
+        
+        if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
+        {
+        	drawCreativeTabHoveringText("Strict Input", xAxis, yAxis);
+        }
 	}
 	
 	@Override
@@ -255,7 +265,7 @@ public class GuiConfiguration extends GuiMekanism
 	        
 	        if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 			{
-	           	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT_COLOR, Object3D.get(tile)));
 			}
 	        

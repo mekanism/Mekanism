@@ -292,6 +292,7 @@ public class GuiOreDictFilter extends GuiMekanism
 			
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 			{
+	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 				filter.color = TransporterUtils.increment(filter.color);
 			}
 			

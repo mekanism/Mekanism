@@ -178,6 +178,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(0);
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 			}
 			
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
@@ -186,6 +187,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(1);
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
@@ -194,6 +196,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(2);
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}
 	}
@@ -343,6 +346,16 @@ public class GuiLogisticalSorter extends GuiMekanism
 			else {
 				drawCreativeTabHoveringText("None", xAxis, yAxis);
 			}
+		}
+		
+		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
+		{
+			drawCreativeTabHoveringText("Auto-eject", xAxis, yAxis);
+		}
+		
+		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
+		{
+			drawCreativeTabHoveringText("Round robin", xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

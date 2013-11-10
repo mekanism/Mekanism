@@ -109,7 +109,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
 							item.setChannel(stack, newChan);
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
-							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.ChanSwitch", 1.0F, 1.0F);
+							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}
 					}
