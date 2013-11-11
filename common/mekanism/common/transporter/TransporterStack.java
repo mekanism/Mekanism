@@ -98,7 +98,7 @@ public class TransporterStack
 		nbtTags.setInteger("progress", progress);
 		nbtTags.setCompoundTag("originalLocation", originalLocation.write(new NBTTagCompound()));
 		
-		if(nbtTags.hasKey("homeLocation"))
+		if(homeLocation != null)
 		{
 			nbtTags.setCompoundTag("homeLocation", homeLocation.write(new NBTTagCompound()));
 		}
@@ -117,7 +117,7 @@ public class TransporterStack
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Object3D.read(nbtTags.getCompoundTag("originalLocation"));
 		
-		if(homeLocation != null)
+		if(nbtTags.hasKey("homeLocation"))
 		{
 			homeLocation = Object3D.read(nbtTags.getCompoundTag("homeLocation"));
 		}
