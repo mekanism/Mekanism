@@ -184,6 +184,7 @@ public class BlockBasic extends Block
 					entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 				}
 				else {
+					entityplayer.inventory.onInventoryChanged();
 					tileEntity.sendPacketToRenderer();
 				}
 				

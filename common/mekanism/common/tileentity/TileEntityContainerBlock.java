@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, IInventory, ISustainedInventory
+public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
