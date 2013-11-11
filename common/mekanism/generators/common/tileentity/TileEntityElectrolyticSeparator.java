@@ -403,6 +403,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		data.add(hydrogenStored);
 		data.add(outputType.name);
 		data.add(dumpType.name);
+		
 		return data;
 	}
 	
@@ -423,6 +424,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			oxygenStored = Math.max(Math.min(amount, MAX_GAS), 0);
 		}
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

@@ -201,6 +201,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		{
 			gasStored = Math.max(Math.min(amount, MAX_GAS), 0);
 		}
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

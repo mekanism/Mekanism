@@ -3,18 +3,23 @@ package mekanism.common.tileentity;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergyTile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
+import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +34,7 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor, ITileNetwork
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -225,6 +230,17 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		}
 	}
 	
+	@Override
+	public void validate()
+	{
+		super.validate();
+		
+		if(worldObj.isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
+		}
+	}
+	
 	public void setCachedEnergy(double scale)
 	{
 		energyScale = scale;
@@ -379,5 +395,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			return Integer.MAX_VALUE;
 		}
+	}
+
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data) 
+	{
+		return data;
 	}
 }

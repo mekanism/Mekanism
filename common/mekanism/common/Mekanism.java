@@ -73,6 +73,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterTransferUpdate;
 import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
 import mekanism.common.network.PacketWalkieTalkieState;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityTeleporter;
@@ -1004,6 +1005,7 @@ public class Mekanism
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
+		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

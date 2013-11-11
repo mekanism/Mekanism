@@ -23,7 +23,6 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	public Map<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
 	
 	protected int ticksSinceCreate = 0;
-	protected int ticksSinceSecond = 0;
 	
 	protected boolean fixed = false;
 	

@@ -345,6 +345,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

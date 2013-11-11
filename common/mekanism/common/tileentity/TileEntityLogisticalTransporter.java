@@ -14,6 +14,7 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.transporter.TransporterStack.Path;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -183,6 +184,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			{
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, true)), Object3D.get(this), 50D);
 				transit.remove(stack);
+				MekanismUtils.saveChunk(this);
 			}
 			
 			for(TransporterStack stack : needsSync)
@@ -235,6 +237,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		{
 			transit.add(stack);
 			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+			MekanismUtils.saveChunk(this);
 			return true;
 		}
 		
@@ -269,6 +272,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		stack.progress = 0;
 		transit.add(stack);
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

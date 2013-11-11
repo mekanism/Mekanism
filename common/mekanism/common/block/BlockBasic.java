@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
 import net.minecraft.block.Block;
@@ -38,7 +39,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 3: Coal Block
  * 4: Refined Glowstone
  * 5: Steel Block
- * 6: OPEN
+ * 6: Bin
  * 7: Teleporter Frame
  * 8: Steel Casing
  * 9: Dynamic Tank
@@ -83,7 +84,7 @@ public class BlockBasic extends Block
 		icons[3] = register.registerIcon("mekanism:CoalBlock");
 		icons[4] = register.registerIcon("mekanism:RefinedGlowstone");
 		icons[5] = register.registerIcon("mekanism:SteelBlock");
-		//icons[6] = register.registerIcon("mekanism:ControlPanel");
+		icons[6] = register.registerIcon("mekanism:SteelBlock"); //TODO texture
 		icons[7] = register.registerIcon("mekanism:TeleporterFrame");
 		icons[8] = register.registerIcon("mekanism:SteelCasing");
 		icons[9] = register.registerIcon("mekanism:DynamicTank");
@@ -114,7 +115,7 @@ public class BlockBasic extends Block
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
-		//OPEN
+		list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));
 		list.add(new ItemStack(i, 1, 8));
 		list.add(new ItemStack(i, 1, 9));
@@ -352,7 +353,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		return metadata == 9 || metadata == 10 || metadata == 11;
+		return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11;
 	}
 	
 	@Override
@@ -360,12 +361,14 @@ public class BlockBasic extends Block
 	{
 		switch(metadata)
 		{
-		     case 9:
-		    	 return new TileEntityDynamicTank();
-		     case 10:
-		    	 return new TileEntityDynamicTank();
-		     case 11:
-		    	 return new TileEntityDynamicValve();
+			case 6:
+				return new TileEntityBin();
+			case 9:
+				return new TileEntityDynamicTank();
+			case 10:
+				return new TileEntityDynamicTank();
+			case 11:
+				return new TileEntityDynamicValve();
 		}
 		
 		return null;

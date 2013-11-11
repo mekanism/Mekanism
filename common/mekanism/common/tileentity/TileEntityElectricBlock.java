@@ -103,6 +103,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void setEnergy(double energy)
 	{
 		electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

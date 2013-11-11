@@ -157,6 +157,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 						inventory[3] = getMachineStack();
 						
 						recipeType = 0;
+						
+						MekanismUtils.saveChunk(this);
 					}
 				}
 				else if(inventory[2].isItemEqual(new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENRICHMENT_CHAMBER.meta)) && recipeType != 1)
@@ -173,6 +175,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 						inventory[3] = getMachineStack();
 						
 						recipeType = 1;
+						
+						MekanismUtils.saveChunk(this);
 					}
 				}
 				else if(inventory[2].isItemEqual(new ItemStack(Mekanism.MachineBlock, 1, MachineType.CRUSHER.meta)) && recipeType != 2)
@@ -189,6 +193,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 						inventory[3] = getMachineStack();
 						
 						recipeType = 2;
+						
+						MekanismUtils.saveChunk(this);
 					}
 				}
 				else {
@@ -407,6 +413,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
             inventory[outputSlot].stackSize += itemstack.stackSize;
         }
         
+        onInventoryChanged();
         ejectorComponent.onOutput();
 	}
 	
@@ -714,6 +721,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void setEnergyMultiplier(int multiplier, Object... data) 
 	{
 		upgradeComponent.energyMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
 	}
 
 	@Override
@@ -726,6 +734,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		upgradeComponent.speedMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
@@ -768,6 +777,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

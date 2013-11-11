@@ -19,6 +19,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,10 +33,12 @@ import buildcraft.api.power.PowerHandler.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
-{	
-	private double lastPowerScale = -1;
+{
+	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
+	
+	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
 	private boolean needsUpdate = false;
 	
@@ -296,6 +299,22 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
+			Iterator<DelayQueue> i = updateQueue.iterator();
+			
+			while(i.hasNext())
+			{
+				DelayQueue q = i.next();
+				
+				if(q.delay > 0)
+				{
+					q.delay--;
+				}
+				else {
+					needsUpdate = true;
+					i.remove();
+				}
+			}
+			
 			if(currentPowerScale != lastPowerScale)
 			{
 				needsUpdate = true;
@@ -325,6 +344,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public double getPower()
 	{
 		return joulesLastTick * 20;
+	}
+	
+	public void addUpdate(EntityPlayer player)
+	{
+		updateQueue.add(new DelayQueue(player));
 	}
 	
 	@Override
@@ -361,5 +385,17 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public String getFlow()
 	{
 		return ElectricityDisplay.getDisplay((float)(getPower()*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.JOULES);
+	}
+	
+	public static class DelayQueue
+	{
+		public EntityPlayer player;
+		public int delay;
+		
+		public DelayQueue(EntityPlayer p)
+		{
+			player = p;
+			delay = 5;
+		}
 	}
 }

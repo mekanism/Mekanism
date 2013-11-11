@@ -13,7 +13,7 @@ import net.minecraft.util.Icon;
  * 3: Coal Block
  * 4: Refined Glowstone
  * 5: Steel Block
- * 6: OPEN
+ * 6: Bin
  * 7: Teleporter Frame
  * 8: Steel Casing
  * 9: Dynamic Tank
@@ -49,6 +49,7 @@ public class ItemBlockBasic extends ItemBlock
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
+		
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
@@ -70,7 +71,7 @@ public class ItemBlockBasic extends ItemBlock
 				name = "SteelBlock";
 				break;
 			case 6:
-				name = "empty";//OPEN
+				name = "Bin";
 				break;
 			case 7:
 				name = "TeleporterFrame";
@@ -91,6 +92,7 @@ public class ItemBlockBasic extends ItemBlock
 				name = "Unknown";
 				break;
 		}
+		
 		return getUnlocalizedName() + "." + name;
 	}
 }

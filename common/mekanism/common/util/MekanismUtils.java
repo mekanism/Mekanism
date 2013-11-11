@@ -984,6 +984,16 @@ public final class MekanismUtils
 		return didRemove;
 	}
     
+    public static void saveChunk(TileEntity tileEntity)
+    {
+    	if(tileEntity == null || tileEntity.isInvalid() || tileEntity.worldObj == null)
+    	{
+    		return;
+    	}
+    	
+    	tileEntity.worldObj.markTileEntityChunkModified(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity);
+    }
+    
     /**
      * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements
      * IRedstoneControl.

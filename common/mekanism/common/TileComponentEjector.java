@@ -137,6 +137,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void setEjecting(boolean eject)
 	{
 		ejecting = eject;
+		MekanismUtils.saveChunk(tileEntity);
 	}
 	
 	@Override
@@ -149,12 +150,14 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void setStrictInput(boolean strict)
 	{
 		strictInput = strict;
+		MekanismUtils.saveChunk(tileEntity);
 	}
 	
 	@Override
 	public void setOutputColor(EnumColor color)
 	{
 		outputColor = color;
+		MekanismUtils.saveChunk(tileEntity);
 	}
 	
 	@Override
@@ -167,6 +170,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public void setInputColor(ForgeDirection side, EnumColor color)
 	{
 		inputColors[side.ordinal()] = color;
+		MekanismUtils.saveChunk(tileEntity);
 	}
 	
 	@Override

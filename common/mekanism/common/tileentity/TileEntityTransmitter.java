@@ -2,8 +2,12 @@ package mekanism.common.tileentity;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 

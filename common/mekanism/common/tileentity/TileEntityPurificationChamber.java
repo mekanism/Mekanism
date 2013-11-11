@@ -14,6 +14,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.util.MekanismUtils;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasAcceptor, IGasStorage, ITubeConnection
 {
@@ -54,6 +55,8 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 		{
 			setSecondaryEnergy(amount);
 		}
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override

@@ -123,6 +123,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		{
 			hydrogenStored = Math.max(Math.min(amount, MAX_HYDROGEN), 0);
 		}
+		
+		MekanismUtils.saveChunk(this);
 	}
     
 	@Override

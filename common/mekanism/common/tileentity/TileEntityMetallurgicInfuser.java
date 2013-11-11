@@ -612,6 +612,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setEnergyMultiplier(int multiplier, Object... data) 
 	{
 		upgradeComponent.energyMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
 	}
 
 	@Override
@@ -624,6 +625,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		upgradeComponent.speedMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
@@ -666,6 +668,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
