@@ -32,6 +32,7 @@ tile.BasicBlock.RefinedObsidian.name=强化黑曜石
 tile.BasicBlock.CoalBlock.name=煤炭方块
 tile.BasicBlock.RefinedGlowstone.name=强化荧石
 tile.BasicBlock.SteelBlock.name=钢方块
+tile.BasicBlock.Bin.name=Bin
 tile.BasicBlock.TeleporterFrame.name=传送框架
 tile.BasicBlock.SteelCasing.name=钢质机壳
 tile.BasicBlock.DynamicTank.name=动态储罐

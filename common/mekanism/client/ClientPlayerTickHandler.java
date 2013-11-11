@@ -40,24 +40,6 @@ public class ClientPlayerTickHandler implements ITickHandler
 		{
 			EntityPlayer entityPlayer = (EntityPlayer)tickData[0];
 			
-			Set<UpdateQueueData> toRemove = new HashSet<UpdateQueueData>();
-			
-			for(UpdateQueueData data : MekanismClient.cableUpdateQueue)
-			{
-				TileEntity tile = data.object3D.getTileEntity(entityPlayer.worldObj);
-				
-				if(tile instanceof TileEntityUniversalCable)
-				{
-					new EnergyClientUpdate(tile, data.energy).clientUpdate();
-					toRemove.add(data);
-				}
-			}
-			
-			for(UpdateQueueData rem : toRemove)
-			{
-				MekanismClient.cableUpdateQueue.remove(rem);
-			}
-			
 			if(entityPlayer.getCurrentEquippedItem() != null)
 			{
 				ItemStack stack = entityPlayer.getCurrentEquippedItem();
@@ -134,17 +116,5 @@ public class ClientPlayerTickHandler implements ITickHandler
 	public String getLabel()
 	{
 		return "MekanismClientPlayer";
-	}
-	
-	public static class UpdateQueueData
-	{
-		public Object3D object3D;
-		public double energy;
-		
-		public UpdateQueueData(Object3D obj, double d)
-		{
-			object3D = obj;
-			energy = d;
-		}
 	}
 }

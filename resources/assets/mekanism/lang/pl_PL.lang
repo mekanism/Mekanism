@@ -32,6 +32,7 @@ tile.BasicBlock.RefinedObsidian.name=Rafinowany Obsydian
 tile.BasicBlock.CoalBlock.name=Blok Węgla
 tile.BasicBlock.RefinedGlowstone.name=Rafinowany Jasnogłaz
 tile.BasicBlock.SteelBlock.name=Blok Stali
+tile.BasicBlock.Bin.name=Bin
 tile.BasicBlock.TeleporterFrame.name=Ramka Teleportera
 tile.BasicBlock.SteelCasing.name=Stalowa Obudowa
 tile.BasicBlock.DynamicTank.name=Dynamiczny Zbiornik

@@ -1032,6 +1032,7 @@ public class Mekanism
 		
 		teleporters.clear();
 		dynamicInventories.clear();
+		ic2Registered.clear();
 	}
 	
 	@EventHandler

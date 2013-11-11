@@ -3,6 +3,7 @@ package mekanism.api.transmitters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +20,8 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 {
 	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
 	
-	public Set<A> possibleAcceptors = new HashSet<A>();
-	public Map<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
+	public Set<A> possibleAcceptors = Collections.synchronizedSet(new HashSet<A>());
+	public Map<A, ForgeDirection> acceptorDirections = Collections.synchronizedMap(new HashMap<A, ForgeDirection>());
 	
 	protected int ticksSinceCreate = 0;
 	
