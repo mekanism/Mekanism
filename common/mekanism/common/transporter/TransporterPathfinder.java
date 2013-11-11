@@ -14,6 +14,7 @@ import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -69,7 +70,7 @@ public final class TransporterPathfinder
 			
 			if(!found)
 			{
-				destinations.add(new Destination(currentPath, dist));
+				destinations.add(new Destination(currentPath, dist, true));
 			}
 		}
 		
@@ -104,9 +105,15 @@ public final class TransporterPathfinder
 		public List<Object3D> path = new ArrayList<Object3D>();
 		public double score;
 		
-		public Destination(ArrayList<Object3D> list, double d)
+		public Destination(ArrayList<Object3D> list, double d, boolean inv)
 		{
 			path = (List<Object3D>)list.clone();
+			
+			if(inv)
+			{
+				Collections.reverse(path);
+			}
+			
 			score = d;
 		}
 		
@@ -128,11 +135,11 @@ public final class TransporterPathfinder
 		@Override
 		public int compareTo(Destination dest)
 		{
-			if(dest.score < score)
+			if(score < dest.score)
 			{
 				return -1;
 			}
-			else if(dest.score > score)
+			else if(score > dest.score)
 			{
 				return 1;
 			}
@@ -174,13 +181,21 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
 				
-				if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), false) && !(tile instanceof TileEntityLogisticalTransporter))
+				if(tile != null)
 				{
-					destsFound.add(Object3D.get(tile));
-				}
-				else if(transportStack.canInsertToTransporter(tile) && !iterated.contains(Object3D.get(tile)))
-				{
-					loop(Object3D.get(tile));
+					if(Object3D.get(tile).equals(transportStack.originalLocation))
+					{
+						continue;
+					}
+					
+					if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), false))
+					{
+						destsFound.add(Object3D.get(tile));
+					}
+					else if(transportStack.canInsertToTransporter(tile) && !iterated.contains(Object3D.get(tile)))
+					{
+						loop(Object3D.get(tile));
+					}
 				}
 			}
 		}
@@ -212,9 +227,9 @@ public final class TransporterPathfinder
 		{
 			Pathfinder p = new Pathfinder(checker, start.worldObj, obj, Object3D.get(start), stack);
 			
-			if(p.getPath() != null && p.getPath().size() >= 2)
+			if(p.getPath().size() >= 2)
 			{
-				paths.add(new Destination(p.getPath(), p.finalScore));
+				paths.add(new Destination(p.getPath(), p.finalScore, false));
 			}
 		}
 		
@@ -341,7 +356,7 @@ public final class TransporterPathfinder
 			for(int i = 0; i < 6; i++) 
 			{
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
-				Object3D neighbor = finalNode.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
+				Object3D neighbor = start.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
 
 				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj)) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
 				{
@@ -474,7 +489,7 @@ public final class TransporterPathfinder
 			Pathfinder p = new Pathfinder(checker, start.worldObj, stack.homeLocation, Object3D.get(start), stack);
 			List<Object3D> path = p.getPath();
 			
-			if(path != null)
+			if(path.size() >= 2)
 			{
 				stack.pathType = Path.HOME;
 				return path;

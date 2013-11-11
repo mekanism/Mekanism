@@ -96,7 +96,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 		
 		for(ForgeDirection dir : ForgeDirection.values())
 		{
-			if(dir != ForgeDirection.getOrientation(facing))
+			if(dir != getOutputtingSide())
 			{
 				set.add(dir);
 			}
