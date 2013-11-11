@@ -300,15 +300,22 @@ public class GuiItemStackFilter extends GuiMekanism
 			{
 				ItemStack stack = mc.thePlayer.inventory.getItemStack();
 				
-				if(stack != null)
+				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					filter.itemType = stack.copy();
 					filter.itemType.stackSize = 1;
 				}
+				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					filter.itemType = null;
+				}
+				
+	           	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 			{
+	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 				filter.color = TransporterUtils.increment(filter.color);
 			}
 			
