@@ -75,21 +75,15 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		if(itemstack.getItemDamage() == 6)
 		{
-			if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+			InventoryBin inv = new InventoryBin(itemstack);
+			
+			if(inv.getItemCount() > 0)
 			{
-				list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+				list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
+				list.add(EnumColor.INDIGO + "Item amount: " + EnumColor.GREY + inv.getItemCount());
 			}
 			else {
-				InventoryBin inv = new InventoryBin(itemstack);
-				
-				if(inv.getItemCount() > 0)
-				{
-					list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
-					list.add(EnumColor.INDIGO + "Item amount: " + EnumColor.GREY + inv.getItemCount());
-				}
-				else {
-					list.add(EnumColor.DARK_RED + "Empty");
-				}
+				list.add(EnumColor.DARK_RED + "Empty");
 			}
 		}
 	}
@@ -108,7 +102,7 @@ public class ItemBlockBasic extends ItemBlock
 			return true;
 		}
 		
-		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount") || stack.stackTagCompound.getInteger("newCount") == 0)
+		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 		{
 			return true;
 		}

@@ -38,6 +38,11 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv)
 	{
+		return getResult(inv);
+	}
+	
+	public ItemStack getResult(IInventory inv)
+	{
 		ItemStack bin = null;
 		
 		for(int i = 0; i < inv.getSizeInventory(); i++)
@@ -60,7 +65,6 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 			return null;
 		}
 		
-		int slotLoc = -1;
 		ItemStack addStack = null;
 		
 		for(int i = 0; i < 9; i++)
@@ -75,7 +79,6 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 				}
 				
 				addStack = stack.copy();
-				slotLoc = i;
 			}
 		}
 		
@@ -88,7 +91,7 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 				return null;
 			}
 			
-			ItemStack remain = binInv.add(addStack);
+			binInv.add(addStack);
 			
 			return bin;
 		}
@@ -112,28 +115,57 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	@Override
 	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) 
 	{
-		if(getCraftingResult((InventoryCrafting)craftMatrix) != null)
+		if(getResult(craftMatrix) != null)
 		{
-			for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
+			if(!isBin(item))
 			{
-				if(!isBin(item) && isBin(craftMatrix.getStackInSlot(i)))
+				for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
 				{
-					ItemStack bin = craftMatrix.getStackInSlot(i);
-					InventoryBin inv = new InventoryBin(bin);
-					
-					bin.stackTagCompound.setInteger("newCount", inv.getItemCount()-item.stackSize);
+					if(isBin(craftMatrix.getStackInSlot(i)))
+					{
+						ItemStack bin = craftMatrix.getStackInSlot(i);
+						InventoryBin inv = new InventoryBin(bin.copy());
+						
+						int size = inv.getItemCount();
+						
+						ItemStack testRemove = inv.removeStack();
+						
+						bin.stackTagCompound.setInteger("newCount", size-(testRemove != null ? testRemove.stackSize : 0));
+					}
 				}
-				else if(isBin(item) && craftMatrix.getStackInSlot(i) != null && !isBin(craftMatrix.getStackInSlot(i)))
+			}
+			else {
+				int bin = -1;
+				int other = -1;
+				
+				for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
+				{
+					if(isBin(craftMatrix.getStackInSlot(i)))
+					{
+						bin = i;
+					}
+					else if(!isBin(craftMatrix.getStackInSlot(i)) && craftMatrix.getStackInSlot(i) != null)
+					{
+						other = i;
+					}
+				}
+				
+				ItemStack binStack = craftMatrix.getStackInSlot(bin);
+				ItemStack otherStack = craftMatrix.getStackInSlot(other);
+				
+				ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
+				
+				if(testRemain != null && testRemain.stackSize > 0)
 				{
 					ItemStack proxy = new ItemStack(Mekanism.ItemProxy);
-					((ItemProxy)proxy.getItem()).setSavedItem(proxy, craftMatrix.getStackInSlot(i));
-					
-					craftMatrix.setInventorySlotContents(i, proxy);
+					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());
+					craftMatrix.setInventorySlotContents(other, proxy);
 				}
-				else if(isBin(item) && isBin(craftMatrix.getStackInSlot(i)))
-				{
-					craftMatrix.setInventorySlotContents(i, null);
+				else {
+					craftMatrix.setInventorySlotContents(other, null);
 				}
+				
+				craftMatrix.setInventorySlotContents(bin, null);
 			}
 		}
 	}

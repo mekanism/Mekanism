@@ -88,6 +88,12 @@ public class InventoryBin
 		int id = bin.stackTagCompound.getInteger("itemID");
 		int meta = bin.stackTagCompound.getInteger("itemMeta");
 		
+		if(getItemCount() == 0 || id == 0)
+		{
+			setItemType(null);
+			return null;
+		}
+		
 		return new ItemStack(id, 1, meta);
 	}
 	

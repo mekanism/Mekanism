@@ -218,6 +218,18 @@ public class BlockBasic extends Block
 					
 					if(filled != null)
 					{
+						if(player.capabilities.isCreativeMode)
+						{
+							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
+							
+							if(tileEntity.structure.fluidStored.amount == 0)
+							{
+								tileEntity.structure.fluidStored = null;
+							}
+							
+							return true;
+						}
+						
 						if(itemStack.stackSize > 1)
 						{
 							for(int i = 0; i < player.inventory.mainInventory.length; i++)
