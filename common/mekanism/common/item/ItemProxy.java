@@ -45,7 +45,7 @@ public class ItemProxy extends Item
 		}
 		else {
 			stack.stackTagCompound.setBoolean("hasStack", true);
-			stack.stackTagCompound.setCompoundTag("savedItem", stack.writeToNBT(new NBTTagCompound()));
+			stack.stackTagCompound.setCompoundTag("savedItem", save.writeToNBT(new NBTTagCompound()));
 		}
 	}
 	

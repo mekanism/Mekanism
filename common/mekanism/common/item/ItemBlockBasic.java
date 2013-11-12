@@ -112,7 +112,7 @@ public class ItemBlockBasic extends ItemBlock
 		}
 		
 		ItemStack ret = stack.copy();
-		ret.stackSize = stack.stackTagCompound.getInteger("newCount");
+		ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
 		return ret;
 	}
 	

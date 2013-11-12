@@ -123,7 +123,7 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 					
 					bin.stackTagCompound.setInteger("newCount", inv.getItemCount()-item.stackSize);
 				}
-				else if(isBin(item) && !isBin(craftMatrix.getStackInSlot(i)))
+				else if(isBin(item) && craftMatrix.getStackInSlot(i) != null && !isBin(craftMatrix.getStackInSlot(i)))
 				{
 					ItemStack proxy = new ItemStack(Mekanism.ItemProxy);
 					((ItemProxy)proxy.getItem()).setSavedItem(proxy, craftMatrix.getStackInSlot(i));
