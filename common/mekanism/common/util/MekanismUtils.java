@@ -67,6 +67,7 @@ import cpw.mods.fml.server.FMLServerHandler;
  */
 public final class MekanismUtils
 {
+	public static final ForgeDirection[] SIDE_DIRS = new ForgeDirection[] {ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST};
 	/**
 	 * Checks for a new version of Mekanism.
 	 */

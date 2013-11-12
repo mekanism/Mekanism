@@ -9,6 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderCrusher extends TileEntitySpecialRenderer
 {
 	private ModelCrusher model = new ModelCrusher();
@@ -16,7 +20,7 @@ public class RenderCrusher extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityCrusher)tileEntity, x, y, z, 1F);
+		renderAModelAt((TileEntityCrusher)tileEntity, x, y, z, partialTick);
 	}
 	
 	private void renderAModelAt(TileEntityCrusher tileEntity, double x, double y, double z, float partialTick)

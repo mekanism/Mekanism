@@ -20,6 +20,7 @@ import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityContainerBlock;
@@ -87,6 +88,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad");
 		GameRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter");
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
+		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 	}
 	
 	/**

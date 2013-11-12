@@ -38,9 +38,9 @@ import mekanism.client.render.block.TransmitterRenderingHandler;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
+import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
-import mekanism.client.render.tileentity.RenderCrusher;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderElectricChest;
 import mekanism.client.render.tileentity.RenderElectricPump;
@@ -64,6 +64,7 @@ import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
@@ -243,6 +244,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter", new RenderLogisticalSorter());
+		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
 	}
 	
 	@Override

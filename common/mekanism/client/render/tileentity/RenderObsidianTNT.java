@@ -9,6 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderObsidianTNT extends TileEntitySpecialRenderer
 {
 	private ModelObsidianTNT model = new ModelObsidianTNT();
@@ -16,7 +20,7 @@ public class RenderObsidianTNT extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityObsidianTNT)tileEntity, x, y, z, 1F);
+		renderAModelAt((TileEntityObsidianTNT)tileEntity, x, y, z, partialTick);
 	}
 	
 	private void renderAModelAt(TileEntityObsidianTNT tileEntity, double x, double y, double z, float partialTick)

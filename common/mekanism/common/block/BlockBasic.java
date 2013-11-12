@@ -8,6 +8,7 @@ import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityDynamicTank;
@@ -26,6 +27,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
@@ -194,6 +196,12 @@ public class BlockBasic extends Block
     	
         return false;
     }
+	
+	@Override
+	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return true;
+	}
 	
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
 	{

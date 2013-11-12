@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class ModelRendererSelectiveFace
 {
     public float textureWidth;

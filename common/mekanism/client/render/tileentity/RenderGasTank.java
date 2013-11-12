@@ -9,6 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class RenderGasTank extends TileEntitySpecialRenderer
 {
 	private ModelGasTank model = new ModelGasTank();
@@ -16,7 +20,7 @@ public class RenderGasTank extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityGasTank)tileEntity, x, y, z, 1F);
+		renderAModelAt((TileEntityGasTank)tileEntity, x, y, z, partialTick);
 	}
 	
 	private void renderAModelAt(TileEntityGasTank tileEntity, double x, double y, double z, float partialTick)
