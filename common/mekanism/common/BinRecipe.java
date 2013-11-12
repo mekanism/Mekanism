@@ -130,6 +130,10 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 					
 					craftMatrix.setInventorySlotContents(i, proxy);
 				}
+				else if(isBin(item) && isBin(craftMatrix.getStackInSlot(i)))
+				{
+					craftMatrix.setInventorySlotContents(i, null);
+				}
 			}
 		}
 	}

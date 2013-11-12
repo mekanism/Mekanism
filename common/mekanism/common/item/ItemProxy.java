@@ -22,7 +22,7 @@ public class ItemProxy extends Item
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
-		return stack.stackTagCompound != null && stack.stackTagCompound.getBoolean("hasStack");
+		return stack.stackTagCompound == null || !stack.stackTagCompound.getBoolean("hasStack");
 	}
 	
 	@Override

@@ -47,6 +47,17 @@ public class ItemBlockBasic extends ItemBlock
 	}
 	
 	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		if(stack.getItemDamage() == 6)
+		{
+			return 1;
+		}
+		
+		return 64;
+	}
+	
+	@Override
 	public int getMetadata(int i)
 	{
 		return i;
@@ -71,11 +82,13 @@ public class ItemBlockBasic extends ItemBlock
 			else {
 				InventoryBin inv = new InventoryBin(itemstack);
 				
-				list.add(EnumColor.INDIGO + "Item color: " + EnumColor.GREY + inv.getItemCount());
-				
 				if(inv.getItemCount() > 0)
 				{
-					list.add(EnumColor.BRIGHT_GREEN + "Item type: " + inv.getItemType().getDisplayName());
+					list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
+					list.add(EnumColor.INDIGO + "Item amount: " + EnumColor.GREY + inv.getItemCount());
+				}
+				else {
+					list.add(EnumColor.DARK_RED + "Empty");
 				}
 			}
 		}
@@ -92,15 +105,15 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		if(stack.getItemDamage() != 6)
 		{
-			return false;
+			return true;
 		}
 		
-		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount") || stack.stackTagCompound.getInteger("newCount") == 0)
 		{
-			return false;
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	@Override
