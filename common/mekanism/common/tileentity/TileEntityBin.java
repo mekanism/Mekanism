@@ -2,16 +2,34 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
+import mekanism.common.IActiveState;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState
 {
+	public boolean isActive;
+	
+	public boolean clientActive;
+	
+	public final int MAX_DELAY = 10;
+	
+	public int delayTicks;
+	
 	public int itemCount;
+	
 	public ItemStack itemType;
 	
 	public ItemStack getStack()
@@ -28,13 +46,35 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 	
 	@Override
-	public void onUpdate() {}
+	public void onUpdate() 
+	{
+		if(!worldObj.isRemote)
+		{
+			delayTicks = Math.max(0, delayTicks-1);
+			
+			if(getStack() != null && isActive && delayTicks == 0)
+			{
+				TileEntity tile = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
+				
+				if(tile instanceof TileEntityLogisticalTransporter)
+				{
+					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
+					
+					if(TransporterUtils.insert(this, transporter, getStack(), null))
+					{
+						setInventorySlotContents(0, null);
+					}
+				}
+			}
+		}
+	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 		
+		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("itemCount", itemCount);
 		
 		if(itemCount > 0)
@@ -48,6 +88,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		super.readFromNBT(nbtTags);
 		
+		isActive = nbtTags.getBoolean("isActive");
 		itemCount = nbtTags.getInteger("itemCount");
 		
 		if(itemCount > 0)
@@ -61,6 +102,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		super.getNetworkedData(data);
 		
+		data.add(isActive);
 		data.add(itemCount);
 		
 		if(itemCount > 0)
@@ -77,12 +119,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		super.handlePacketData(dataStream);
 		
+		isActive = dataStream.readBoolean();
 		itemCount = dataStream.readInt();
 		
 		if(itemCount > 0)
 		{
 			itemType = new ItemStack(dataStream.readInt(), 0, dataStream.readInt());
 		}
+		
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	@Override
@@ -169,6 +214,19 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				setItemCount(itemCount + itemstack.stackSize);
 			}
 		}
+		
+		onInventoryChanged();
+	}
+	
+	@Override
+	public void onInventoryChanged()
+	{
+		super.onInventoryChanged();
+		
+		if(!worldObj.isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+		}
 	}
 	
 	public void setItemType(ItemStack stack)
@@ -252,5 +310,42 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public boolean canExtractItem(int i, ItemStack itemstack, int j)
 	{
 		return itemType != null && itemType.isItemEqual(itemstack);
+	}
+	
+	@Override
+	public boolean canSetFacing(int facing)
+	{
+		return facing != 0 && facing != 1;
+	}
+
+	@Override
+    public void setActive(boolean active)
+    {
+    	isActive = active;
+    	
+    	if(clientActive != active)
+    	{
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		clientActive = active;
+    	}
+    }
+    
+    @Override
+    public boolean getActive()
+    {
+    	return isActive;
+    }
+
+	@Override
+	public boolean renderUpdate() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate() 
+	{
+		return true;
 	}
 }

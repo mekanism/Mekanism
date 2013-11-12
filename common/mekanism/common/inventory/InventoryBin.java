@@ -40,7 +40,7 @@ public class InventoryBin
 	
 	public ItemStack add(ItemStack stack)
 	{
-		if(stack != null && stack.stackSize > 0)
+		if(stack != null && stack.stackSize > 0 && stack.isStackable())
 		{
 			if(getItemType() == null)
 			{

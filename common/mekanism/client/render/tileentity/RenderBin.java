@@ -49,64 +49,61 @@ public class RenderBin extends TileEntitySpecialRenderer
                 amount = Integer.toString(itemStack.stackSize);
             }
 
-            for(ForgeDirection side : MekanismUtils.SIDE_DIRS)
+        	Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
+        	
+            if(tileEntity.worldObj.isBlockSolidOnSide(obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
             {
-            	Object3D obj = Object3D.get(tileEntity).getFromSide(side);
-            	
-                if(tileEntity.worldObj.isBlockSolidOnSide(obj.xCoord, obj.yCoord, obj.zCoord, side.getOpposite()))
+                return;
+            }
+            
+            doLight(tileEntity.worldObj, obj);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+
+            if(itemStack != null)
+            {
+                GL11.glPushMatrix();
+
+                switch(ForgeDirection.getOrientation(tileEntity.facing))
                 {
-                    continue;
+                    case NORTH:
+                        GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
+                        break;
+                    case SOUTH:
+                        GL11.glTranslated(x + 0.27, y + 0.83, z + 1.01);
+                        GL11.glRotatef(180, 0, 1, 0);
+                        break;
+                    case WEST:
+                        GL11.glTranslated(x - 0.01, y + 0.83, z + 0.27);
+                        GL11.glRotatef(90, 0, 1, 0);
+                        break;
+                    case EAST:
+                        GL11.glTranslated(x + 1.01, y + 0.83, z + 0.73);
+                        GL11.glRotatef(-90, 0, 1, 0);
+                        break;
+                }
+
+                float scale = 0.03125F;
+                float scaler = 0.9F;
+                
+                GL11.glScalef(scale*scaler, scale*scaler, 0);
+                GL11.glRotatef(180, 0, 0, 1);
+
+                TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
+
+                GL11.glDisable(2896);
+                
+                if(!ForgeHooksClient.renderInventoryItem(renderBlocks, renderEngine, itemStack, true, 0.0F, 0.0F, 0.0F))
+                {
+                    renderItem.renderItemIntoGUI(getFontRenderer(), renderEngine, itemStack, 0, 0);
                 }
                 
-                doLight(tileEntity.worldObj, obj);
-                OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+                GL11.glEnable(2896);
+                GL11.glPopMatrix();
+            }
 
-                if(itemStack != null)
-                {
-                    GL11.glPushMatrix();
-
-                    switch(side)
-                    {
-                        case NORTH:
-                            GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
-                            break;
-                        case SOUTH:
-                            GL11.glTranslated(x + 0.27, y + 0.83, z + 1.01);
-                            GL11.glRotatef(180, 0, 1, 0);
-                            break;
-                        case WEST:
-                            GL11.glTranslated(x - 0.01, y + 0.83, z + 0.27);
-                            GL11.glRotatef(90, 0, 1, 0);
-                            break;
-                        case EAST:
-                            GL11.glTranslated(x + 1.01, y + 0.83, z + 0.73);
-                            GL11.glRotatef(-90, 0, 1, 0);
-                            break;
-                    }
-
-                    float scale = 0.03125F;
-                    float scaler = 0.9F;
-                    
-                    GL11.glScalef(scale*scaler, scale*scaler, 0);
-                    GL11.glRotatef(180, 0, 0, 1);
-
-                    TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
-
-                    GL11.glDisable(2896);
-                    
-                    if(!ForgeHooksClient.renderInventoryItem(renderBlocks, renderEngine, itemStack, true, 0.0F, 0.0F, 0.0F))
-                    {
-                        renderItem.renderItemIntoGUI(getFontRenderer(), renderEngine, itemStack, 0, 0);
-                    }
-                    
-                    GL11.glEnable(2896);
-                    GL11.glPopMatrix();
-                }
-
-                if(amount != "")
-                {
-                    renderText(amount, side, 0.02F, x, y - 0.31F, z);
-                }
+            if(amount != "")
+            {
+                renderText(amount, ForgeDirection.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
             }
         }
     }

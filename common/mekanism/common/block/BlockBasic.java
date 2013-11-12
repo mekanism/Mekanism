@@ -5,26 +5,31 @@ import java.util.List;
 
 import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
+import mekanism.common.IActiveState;
+import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -53,7 +58,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockBasic extends Block
 {
-	public Icon[] icons = new Icon[256];
+	public Icon[][] icons = new Icon[256][6];
 	
 	public BlockBasic(int id)
 	{
@@ -81,25 +86,72 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
-		icons[0] = register.registerIcon("mekanism:OsmiumBlock");
-		icons[1] = register.registerIcon("mekanism:BronzeBlock");
-		icons[2] = register.registerIcon("mekanism:RefinedObsidian");
-		icons[3] = register.registerIcon("mekanism:CoalBlock");
-		icons[4] = register.registerIcon("mekanism:RefinedGlowstone");
-		icons[5] = register.registerIcon("mekanism:SteelBlock");
-		icons[6] = register.registerIcon("mekanism:Bin"); //TODO texture
-		icons[7] = register.registerIcon("mekanism:TeleporterFrame");
-		icons[8] = register.registerIcon("mekanism:SteelCasing");
-		icons[9] = register.registerIcon("mekanism:DynamicTank");
-		icons[10] = register.registerIcon("mekanism:DynamicGlass");
-		icons[11] = register.registerIcon("mekanism:DynamicValve");
+		icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
+		icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
+		icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
+		icons[3][0] = register.registerIcon("mekanism:CoalBlock");
+		icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
+		icons[5][0] = register.registerIcon("mekanism:SteelBlock");
+		icons[6][0] = register.registerIcon("mekanism:BinSide");
+		icons[6][1] = register.registerIcon("mekanism:BinTop");
+		icons[6][2] = register.registerIcon("mekanism:BinFront");
+		icons[6][3] = register.registerIcon("mekanism:BinTopOn");
+		icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
+		icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
+		icons[8][0] = register.registerIcon("mekanism:SteelCasing");
+		icons[9][0] = register.registerIcon("mekanism:DynamicTank");
+		icons[10][0] = register.registerIcon("mekanism:DynamicGlass");
+		icons[11][0] = register.registerIcon("mekanism:DynamicValve");
 	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    {
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(metadata != 6)
+    	{
+    		return getIcon(side, metadata);
+    	}
+    	else {
+    		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+    		
+    		if(side == 0 || side == 1)
+			{
+				return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
+			}
+			else if(side == tileEntity.facing)
+			{
+				return MekanismUtils.isActive(world, x, y, z) ? icons[6][4] : icons[6][2];
+			}
+			else {
+				return icons[6][0];
+			}
+    	}
+    }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
 	{
-		return icons[meta];
+		if(meta != 6)
+		{
+			return icons[meta][0];
+		}
+		else {
+			if(side == 0 || side == 1)
+			{
+				return icons[6][1];
+			}
+			else if(side == 3)
+			{
+				return icons[6][2];
+			}
+			else {
+				return icons[6][0];
+			}
+		}
 	}
 	
 	@Override
@@ -155,6 +207,23 @@ public class BlockBasic extends Block
         
         return super.canCreatureSpawn(type, world, x, y, z);
     }
+	
+	@Override
+	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		
+		if(!world.isRemote && meta == 6)
+		{
+			TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+			
+			if(bin.getStack() != null)
+			{
+				world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.getStack().copy()));
+				bin.setInventorySlotContents(0, null);
+			}
+		}
+	}
 	
 	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
@@ -357,7 +426,16 @@ public class BlockBasic extends Block
 	@Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) 
     {
+        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
+		
+		if(tileEntity instanceof IActiveState)
+		{
+			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+			{
+				return 15;
+			}
+		}
         
         switch(metadata)
         {
@@ -399,10 +477,48 @@ public class BlockBasic extends Block
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
+		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityBasicBlock)
+		{
+		   	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+	        int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+	        int height = Math.round(entityliving.rotationPitch);
+	        int change = 3;
+	        
+	        if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
+	        {
+		        if(height >= 65)
+		        {
+		        	change = 1;
+		        }
+		        else if(height <= -65)
+		        {
+		        	change = 0;
+		        }
+	        }
+	        
+	        if(change != 0 && change != 1)
+	        {
+		        switch(side)
+		        {
+		        	case 0: change = 2; break;
+		        	case 1: change = 5; break;
+		        	case 2: change = 3; break;
+		        	case 3: change = 4; break;
+		        }
+	        }
+	        
+	        tileEntity.setFacing((short)change);
+	        
+	        if(tileEntity instanceof IBoundingBlock)
+	        {
+	        	((IBoundingBlock)tileEntity).onPlace();
+	        }
+		}
+        
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 		
-		if(world.getBlockTileEntity(x, y, z) != null && !world.isRemote)
+		if(!world.isRemote && world.getBlockTileEntity(x, y, z) != null)
 		{
 			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 			
