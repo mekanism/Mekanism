@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemProxy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -39,7 +40,7 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	{
 		ItemStack bin = null;
 		
-		for(int i = 0; i < 9; i++)
+		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
 			
@@ -111,7 +112,26 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	@Override
 	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) 
 	{
-		
+		if(getCraftingResult((InventoryCrafting)craftMatrix) != null)
+		{
+			for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
+			{
+				if(!isBin(item) && isBin(craftMatrix.getStackInSlot(i)))
+				{
+					ItemStack bin = craftMatrix.getStackInSlot(i);
+					InventoryBin inv = new InventoryBin(bin);
+					
+					bin.stackTagCompound.setInteger("newCount", inv.getItemCount()-item.stackSize);
+				}
+				else if(isBin(item) && !isBin(craftMatrix.getStackInSlot(i)))
+				{
+					ItemStack proxy = new ItemStack(Mekanism.ItemProxy);
+					((ItemProxy)proxy.getItem()).setSavedItem(proxy, craftMatrix.getStackInSlot(i));
+					
+					craftMatrix.setInventorySlotContents(i, proxy);
+				}
+			}
+		}
 	}
 
 	@Override

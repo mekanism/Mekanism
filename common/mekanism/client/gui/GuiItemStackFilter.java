@@ -171,7 +171,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		
 		if(filter.itemType != null)
 		{
-			fontRenderer.drawString("ID: " + filter.itemType.itemID + ", meta: " + filter.itemType.getItemDamage(), 35, 41, 0x00CD00);
+			fontRenderer.drawString("Item: " + filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
 		}
 		
 		if(filter.itemType != null)

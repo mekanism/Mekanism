@@ -8,7 +8,7 @@ import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityDynamicTank;
@@ -22,6 +22,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
@@ -403,6 +404,21 @@ public class BlockBasic extends Block
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		return new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
+		ItemStack ret = new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
+		
+		if(ret.getItemDamage() == 6)
+		{
+			TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+			InventoryBin inv = new InventoryBin(ret);
+			
+			inv.setItemCount(tileEntity.itemCount);
+			
+			if(tileEntity.itemCount > 0)
+			{
+				inv.setItemType(tileEntity.itemType);
+			}
+		}
+		
+		return ret;
 	}
 }

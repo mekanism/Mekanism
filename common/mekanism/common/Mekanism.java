@@ -51,6 +51,7 @@ import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -73,7 +74,6 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterTransferUpdate;
 import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
 import mekanism.common.network.PacketWalkieTalkieState;
-import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityTeleporter;
@@ -195,6 +195,7 @@ public class Mekanism
 	public static Item NetworkReader;
 	public static Item ManganeseAlloy;
 	public static Item WalkieTalkie;
+	public static Item ItemProxy;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -434,6 +435,8 @@ public class Mekanism
 				"CAC", "cOc", "CAC", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('c'), AtomicCore, Character.valueOf('O'), MekanismUtils.getFactory(FactoryTier.ADVANCED, type)
 			}));
 		}
+		
+		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
@@ -514,7 +517,7 @@ public class Mekanism
 		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
-		//OPEN 11213
+		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", 11213).getInt()).setUnlocalizedName("ItemProxy");
 		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", 11214).getInt()).setUnlocalizedName("ControlCircuit");
 		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", 11215).getInt()).setUnlocalizedName("EnrichedIron");
 		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", 11216).getInt()).setUnlocalizedName("CompressedCarbon");
@@ -539,6 +542,7 @@ public class Mekanism
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(AtomicCore, "AtomicCore");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
+		GameRegistry.registerItem(ItemProxy, "ItemProxy");
 		GameRegistry.registerItem(ControlCircuit, "ControlCircuit");
 		GameRegistry.registerItem(EnrichedIron, "EnrichedIron");
 		GameRegistry.registerItem(CompressedCarbon, "CompressedCarbon");

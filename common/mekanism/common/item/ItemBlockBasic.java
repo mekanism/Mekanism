@@ -1,9 +1,22 @@
 package mekanism.common.item;
 
+import java.util.List;
+
+import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
+import mekanism.common.inventory.InventoryBin;
+import mekanism.common.tileentity.TileEntityBin;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.world.World;
+
+import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple metal block IDs.
@@ -44,6 +57,88 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		return metaBlock.getIcon(2, i);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	{
+		if(itemstack.getItemDamage() == 6)
+		{
+			if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+			{
+				list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+			}
+			else {
+				InventoryBin inv = new InventoryBin(itemstack);
+				
+				list.add(EnumColor.INDIGO + "Item color: " + EnumColor.GREY + inv.getItemCount());
+				
+				if(inv.getItemCount() > 0)
+				{
+					list.add(EnumColor.BRIGHT_GREEN + "Item type: " + inv.getItemType().getDisplayName());
+				}
+			}
+		}
+	}
+	
+	@Override
+	public boolean hasContainerItem()
+	{
+		return true; //TODO forge PR
+	}
+	
+	@Override
+	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
+	{
+		if(stack.getItemDamage() != 6)
+		{
+			return false;
+		}
+		
+		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public ItemStack getContainerItemStack(ItemStack stack)
+	{
+		if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+		{
+			return new ItemStack(Mekanism.ItemProxy);
+		}
+		
+		ItemStack ret = stack.copy();
+		ret.stackSize = stack.stackTagCompound.getInteger("newCount");
+		return ret;
+	}
+	
+	@Override
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+    {
+    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+    	
+    	if(place)
+    	{
+    		if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
+    		{
+    			TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+    			InventoryBin inv = new InventoryBin(stack);
+    			
+    			tileEntity.itemCount = inv.getItemCount();
+    			
+    			if(inv.getItemCount() > 0)
+    			{
+    				tileEntity.setItemType(inv.getItemType());
+    			}
+    		}
+    	}
+    	
+    	return place;
+    }
 	
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
