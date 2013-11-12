@@ -39,7 +39,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		
 		if(itemCount > 0)
 		{
-			itemType.writeToNBT(nbtTags);
+			nbtTags.setCompoundTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
 		}
 	}
 	
@@ -52,7 +52,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		
 		if(itemCount > 0)
 		{
-			itemType = ItemStack.loadItemStackFromNBT(nbtTags);
+			itemType = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemType"));
 		}
 	}
 	

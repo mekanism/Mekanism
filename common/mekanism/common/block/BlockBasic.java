@@ -87,7 +87,7 @@ public class BlockBasic extends Block
 		icons[3] = register.registerIcon("mekanism:CoalBlock");
 		icons[4] = register.registerIcon("mekanism:RefinedGlowstone");
 		icons[5] = register.registerIcon("mekanism:SteelBlock");
-		icons[6] = register.registerIcon("mekanism:SteelBlock"); //TODO texture
+		icons[6] = register.registerIcon("mekanism:Bin"); //TODO texture
 		icons[7] = register.registerIcon("mekanism:TeleporterFrame");
 		icons[8] = register.registerIcon("mekanism:SteelCasing");
 		icons[9] = register.registerIcon("mekanism:DynamicTank");
@@ -201,7 +201,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		return true;
+		return world.getBlockMetadata(x, y, z) != 10;
 	}
 	
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
