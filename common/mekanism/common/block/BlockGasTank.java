@@ -4,6 +4,7 @@ import java.util.Random;
 
 import mekanism.api.IStorageTank;
 import mekanism.common.ISustainedInventory;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
@@ -63,6 +64,11 @@ public class BlockGasTank extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
     	if(world.isRemote)
     	{
     		return true;

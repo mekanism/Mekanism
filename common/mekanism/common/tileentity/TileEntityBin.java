@@ -95,33 +95,54 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack))
+		if(isValid(stack) && itemCount != MAX_STORAGE)
 		{
 			if(itemType == null)
 			{
 				setItemType(stack);
 			}
 			
-			setItemCount(itemCount + stack.stackSize);
-			onInventoryChanged();
+			if(itemCount + stack.stackSize <= MAX_STORAGE)
+			{
+				setItemCount(itemCount + stack.stackSize);
+				return null;
+			}
+			else {
+				ItemStack rejects = itemType.copy();
+				rejects.stackSize = (itemCount+stack.stackSize) - MAX_STORAGE;
+				
+				setItemCount(MAX_STORAGE);
+				
+				return rejects;
+			}
 		}
 		
-		return null;
+		return stack;
 	}
 	
 	public ItemStack removeStack()
 	{
-		ItemStack stack = getStack();
-		
-		if(stack == null)
+		if(itemCount == 0)
 		{
 			return null;
 		}
 		
-		setItemCount(itemCount - stack.stackSize);
-		onInventoryChanged();
+		return remove(getStack().stackSize);
+	}
+	
+	public ItemStack remove(int amount)
+	{
+		if(itemCount == 0)
+		{
+			return null;
+		}
 		
-		return stack;
+		ItemStack ret = itemType.copy();
+		ret.stackSize = Math.min(Math.min(amount, itemType.getMaxStackSize()), itemCount);
+		
+		setItemCount(itemCount - ret.stackSize);
+		
+		return ret;
 	}
 	
 	@Override
@@ -283,8 +304,6 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				add(itemstack);
 			}
 		}
-		
-		onInventoryChanged();
 	}
 	
 	@Override
@@ -319,6 +338,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			setItemType(null);
 		}
+		
+		onInventoryChanged();
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -122,6 +123,11 @@ public class BlockEnergyCube extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
         if(world.isRemote)
         {
             return true;

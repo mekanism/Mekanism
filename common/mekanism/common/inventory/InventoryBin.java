@@ -37,7 +37,7 @@ public class InventoryBin
 		}
 		
 		setItemCount(getItemCount() - stack.stackSize);
-		return stack;
+		return stack.copy();
 	}
 	
 	public ItemStack add(ItemStack stack)
@@ -52,6 +52,7 @@ public class InventoryBin
 			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
 			{
 				setItemCount(getItemCount() + stack.stackSize);
+				return null;
 			}
 			else {
 				ItemStack rejects = getItemType().copy();

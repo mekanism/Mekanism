@@ -7,6 +7,7 @@ import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -219,8 +220,13 @@ public class BlockBasic extends Block
 			
 			if(bin.getStack() != null)
 			{
-				world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.getStack().copy()));
-				bin.removeStack();
+				if(!player.isSneaking())
+				{
+					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
+				}
+				else {
+					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
+				}
 			}
 		}
 	}
@@ -228,6 +234,11 @@ public class BlockBasic extends Block
 	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
     	int metadata = world.getBlockMetadata(x, y, z);
     	
     	if(metadata == 2)

@@ -9,6 +9,7 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
@@ -300,7 +301,12 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
-    {    	
+    {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
         if(world.isRemote)
         {
             return true;
@@ -361,6 +367,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         		return true;
         	}
         }
+        
         return false;
     }
     

@@ -16,6 +16,7 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -550,6 +551,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
     	if(world.isRemote)
     	{
     		return true;
