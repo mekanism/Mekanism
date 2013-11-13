@@ -385,9 +385,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			return new int[] {1};
 		}
-		else {
+		else if(side == 0)
+		{
 			return new int[] {0};		
 		}
+		
+		return null;
 	}
 
 	@Override

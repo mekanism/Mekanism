@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.InvStack;
@@ -236,6 +237,11 @@ public final class TransporterUtils
 
 			if(slots != null && slots.length != 0)
 			{
+				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				{
+					slots = sidedInventory.getAccessibleSlotsFromSide(1);
+				}
+				
 				for(int get = 0; get <= slots.length - 1; get++) 
 				{
 					int slotID = slots[get];
@@ -371,6 +377,11 @@ public final class TransporterUtils
 
 			if(slots != null && slots.length != 0)
 			{
+				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				{
+					slots = sidedInventory.getAccessibleSlotsFromSide(1);
+				}
+				
 				for(int get = 0; get <= slots.length - 1; get++) 
 				{
 					int slotID = slots[get];
