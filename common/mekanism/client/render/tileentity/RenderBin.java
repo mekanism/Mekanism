@@ -46,7 +46,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
             if(itemStack != null)
             {
-                amount = Integer.toString(itemStack.stackSize);
+                amount = Integer.toString(tileEntity.itemCount);
             }
 
         	Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));

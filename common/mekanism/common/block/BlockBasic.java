@@ -220,7 +220,7 @@ public class BlockBasic extends Block
 			if(bin.getStack() != null)
 			{
 				world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.getStack().copy()));
-				bin.setInventorySlotContents(0, null);
+				bin.removeStack();
 			}
 		}
 	}
@@ -244,7 +244,19 @@ public class BlockBasic extends Block
     		return true;
     	}
     	
-    	if(metadata == 9 || metadata == 10 || metadata == 11)
+    	if(metadata == 6)
+    	{
+    		TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+    		
+    		if(entityplayer.getCurrentEquippedItem() != null)
+    		{
+    			ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
+    			entityplayer.setCurrentItemOrArmor(0, remain);
+    		}
+    		
+    		return true;
+    	}
+    	else if(metadata == 9 || metadata == 10 || metadata == 11)
     	{
 			if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getBlockTileEntity(x, y, z)).structure != null)
 			{

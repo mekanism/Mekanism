@@ -5,6 +5,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryBin 
 {
+	public final int MAX_STORAGE = 4096;
+	
 	public ItemStack bin;
 	
 	public InventoryBin(ItemStack stack)
@@ -17,7 +19,7 @@ public class InventoryBin
 		if(getItemCount() > 0)
 		{
 			ItemStack ret = getItemType().copy();
-			ret.stackSize = Math.min(64, getItemCount());
+			ret.stackSize = Math.min(getItemType().getMaxStackSize(), getItemCount());
 			
 			return ret;
 		}
@@ -40,17 +42,53 @@ public class InventoryBin
 	
 	public ItemStack add(ItemStack stack)
 	{
-		if(stack != null && stack.stackSize > 0 && stack.isStackable())
+		if(isValid(stack) && getItemCount() != MAX_STORAGE)
 		{
 			if(getItemType() == null)
 			{
 				setItemType(stack);
 			}
 			
-			setItemCount(getItemCount() + stack.stackSize);
+			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
+			{
+				setItemCount(getItemCount() + stack.stackSize);
+			}
+			else {
+				ItemStack rejects = getItemType().copy();
+				rejects.stackSize = (getItemCount()+stack.stackSize) - MAX_STORAGE;
+				
+				setItemCount(MAX_STORAGE);
+				
+				return rejects;
+			}
 		}
 		
-		return null;
+		return stack;
+	}
+	
+	public boolean isValid(ItemStack stack)
+	{
+		if(stack == null || stack.stackSize <= 0)
+		{
+			return false;
+		}
+		
+		if(stack.isItemStackDamageable() && stack.isItemDamaged())
+		{
+			return false;
+		}
+		
+		if(getItemType() == null)
+		{
+			return true;
+		}
+		
+		if(!stack.isItemEqual(getItemType()) || !ItemStack.areItemStackTagsEqual(stack, getItemType()))
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public int getItemCount()

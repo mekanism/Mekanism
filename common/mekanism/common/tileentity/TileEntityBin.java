@@ -30,6 +30,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public int itemCount;
 	
+	public final int MAX_STORAGE = 4096;
+	
 	public ItemStack itemType;
 	
 	public ItemStack getStack()
@@ -37,12 +39,89 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(itemCount > 0)
 		{
 			ItemStack ret = itemType.copy();
-			ret.stackSize = Math.min(64, itemCount);
+			ret.stackSize = Math.min(itemType.getMaxStackSize(), itemCount);
 			
 			return ret;
 		}
 		
 		return null;
+	}
+	
+	public ItemStack getInsertStack()
+	{
+		int remain = MAX_STORAGE-itemCount;
+		
+		if(itemType == null)
+		{
+			return null;
+		}
+		
+		if(remain >= itemType.getMaxStackSize())
+		{
+			return null;
+		}
+		else {
+			ItemStack ret = itemType.copy();
+			ret.stackSize = itemType.getMaxStackSize()-remain;
+			
+			return ret;
+		}
+	}
+	
+	public boolean isValid(ItemStack stack)
+	{
+		if(stack == null || stack.stackSize <= 0)
+		{
+			return false;
+		}
+		
+		if(stack.isItemStackDamageable() && stack.isItemDamaged())
+		{
+			return false;
+		}
+		
+		if(itemType == null)
+		{
+			return true;
+		}
+		
+		if(!stack.isItemEqual(itemType) || !ItemStack.areItemStackTagsEqual(stack, itemType))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public ItemStack add(ItemStack stack)
+	{
+		if(isValid(stack))
+		{
+			if(itemType == null)
+			{
+				setItemType(stack);
+			}
+			
+			setItemCount(itemCount + stack.stackSize);
+			onInventoryChanged();
+		}
+		
+		return null;
+	}
+	
+	public ItemStack removeStack()
+	{
+		ItemStack stack = getStack();
+		
+		if(stack == null)
+		{
+			return null;
+		}
+		
+		setItemCount(itemCount - stack.stackSize);
+		onInventoryChanged();
+		
+		return stack;
 	}
 	
 	@Override
@@ -135,7 +214,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		if(slotID == 1)
 		{
-			return null;
+			return getInsertStack();
 		}
 		else {
 			return getStack();
@@ -182,11 +261,6 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) 
 	{
-		if(itemType != null && itemstack != null && !itemstack.isItemEqual(itemType))
-		{
-			return;
-		}
-		
 		if(i == 0)
 		{
 			if(itemCount == 0)
@@ -204,14 +278,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 		else if(i == 1)
 		{
-			if(itemstack != null && itemstack.stackSize > 0)
+			if(isValid(itemstack))
 			{
-				if(itemType == null)
-				{
-					setItemType(itemstack);
-				}
-				
-				setItemCount(itemCount + itemstack.stackSize);
+				add(itemstack);
 			}
 		}
 		
@@ -285,7 +354,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) 
 	{
-		return itemType == null || itemType.isItemEqual(itemstack);
+		return i == 1 ? isValid(itemstack) : false;
 	}
 
 	@Override
@@ -309,7 +378,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int j)
 	{
-		return itemType != null && itemType.isItemEqual(itemstack);
+		return i == 0 ? isValid(itemstack) : false;
 	}
 	
 	@Override
