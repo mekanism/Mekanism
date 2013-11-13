@@ -418,7 +418,7 @@ public class MekanismRenderer
     	}
     }
     
-    public static float getPartialTicks()
+    public static float getPartialTick()
     {
     	try {
     		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
