@@ -1,5 +1,6 @@
 package mekanism.common.inventory;
 
+import mekanism.common.item.ItemBlockBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -75,6 +76,11 @@ public class InventoryBin
 		}
 		
 		if(stack.isItemStackDamageable() && stack.isItemDamaged())
+		{
+			return false;
+		}
+		
+		if(stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6)
 		{
 			return false;
 		}

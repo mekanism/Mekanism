@@ -6,6 +6,7 @@ import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -76,6 +77,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 		
 		if(stack.isItemStackDamageable() && stack.isItemDamaged())
+		{
+			return false;
+		}
+		
+		if(stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6)
 		{
 			return false;
 		}
