@@ -52,9 +52,9 @@ public class SoundHandler
 	public void preloadSounds()
 	{
 		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound");
-		File dir = new File(url.getFile());
+		File dir = new File(url.getFile().replace("%20", " "));
 		
-		if(dir != null)
+		if(dir != null && dir.exists())
 		{
 			for(File file : dir.listFiles())
 			{
@@ -66,9 +66,9 @@ public class SoundHandler
 		}
 		
 		url = getClass().getClassLoader().getResource("assets/mekanism/sound/etc");
-		dir = new File(url.getFile());
+		dir = new File(url.getFile().replace("%20", " "));
 		
-		if(dir != null)
+		if(dir != null && dir.exists())
 		{
 			for(File file : dir.listFiles())
 			{

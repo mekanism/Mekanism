@@ -1,7 +1,6 @@
 package mekanism.client.render.item;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
@@ -36,6 +35,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
@@ -155,25 +155,35 @@ public class ItemRenderingHandler implements IItemRenderer
             {
                 GL11.glPushMatrix();
                 
-                if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+                if(!(itemStack.getItem() instanceof ItemBlock) || Block.blocksList[itemStack.itemID].getRenderType() != 0)
                 {
-                	GL11.glTranslated(-0.2, 0, -0.4);
+                	GL11.glRotatef(180, 0, 0, 1);
+                	GL11.glTranslatef(-1.02F, -0.2F, 0);
+                	
+                	if(type == ItemRenderType.INVENTORY)
+                	{
+                		GL11.glTranslatef(-0.45F, -0.4F, 0.0F);
+                	}
+                }
+                
+                if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
+                {
+                	GL11.glTranslatef(-0.22F, -0.2F, -0.22F);
                 }
 
-                //TODO
-                GL11.glTranslated(0.73, 0.53, -0.01);
+                GL11.glTranslated(0.73, 0.08, 0.44);
                 GL11.glRotatef(90, 0, 1, 0);
 
                 float scale = 0.03125F;
                 float scaler = 0.9F;
                 
                 GL11.glScalef(scale*scaler, scale*scaler, 0);
-                GL11.glRotatef(180, 0, 0, 1);
 
                 TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
 
                 GL11.glDisable(2896);
                 GL11.glEnable(GL11.GL_CULL_FACE);
+                
                 if(!ForgeHooksClient.renderInventoryItem(renderBlocks, renderEngine, itemStack, true, 0.0F, 0.0F, 0.0F))
                 {
                     renderItem.renderItemIntoGUI(binRenderer.getFontRenderer(), renderEngine, itemStack, 0, 0);
@@ -197,12 +207,11 @@ public class ItemRenderingHandler implements IItemRenderer
 		        float displayHeight = 1 - (2 / 16);
 		        GL11.glTranslatef(0, -0.31F, 0);
 		        
-		        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+		        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
                 {
-		        	GL11.glTranslated(-0.4, 0, -0.4);
+		        	GL11.glTranslated(-0.5, -0.4, -0.5);
                 }
 	
-		        //TODO
                 GL11.glTranslatef(0, 0.9F, 1);
                 GL11.glRotatef(90, 0, 1, 0);
                 GL11.glRotatef(90, 1, 0, 0);
