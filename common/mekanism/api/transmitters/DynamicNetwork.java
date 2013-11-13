@@ -20,8 +20,8 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 {
 	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
 	
-	public Set<A> possibleAcceptors = Collections.synchronizedSet(new HashSet<A>());
-	public Map<A, ForgeDirection> acceptorDirections = Collections.synchronizedMap(new HashMap<A, ForgeDirection>());
+	public HashSet<A> possibleAcceptors = new HashSet<A>();
+	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
 	
 	protected int ticksSinceCreate = 0;
 	

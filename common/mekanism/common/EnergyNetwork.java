@@ -164,7 +164,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		Set<TileEntity> toReturn = new HashSet<TileEntity>();
 		
-		for(TileEntity acceptor : possibleAcceptors)
+		Set<TileEntity> copy = (Set<TileEntity>)possibleAcceptors.clone();
+		
+		for(TileEntity acceptor : copy)
 		{
 			if(acceptor instanceof IStrictEnergyAcceptor)
 			{
