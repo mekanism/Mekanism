@@ -196,6 +196,7 @@ public class ClientProxy extends CommonProxy
 			}
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				
 				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
 				{
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
@@ -210,6 +211,7 @@ public class ClientProxy extends CommonProxy
 			}
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
+				
 				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
 				{
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
@@ -255,12 +257,15 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
 		
 		//Register item handler
-		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, new ItemRenderingHandler());
-		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, new ItemRenderingHandler());
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, new ItemRenderingHandler());
-		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, new ItemRenderingHandler());
-		MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, new ItemRenderingHandler());
-		MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, new ItemRenderingHandler());
+		ItemRenderingHandler handler = new ItemRenderingHandler();
+		
+		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
