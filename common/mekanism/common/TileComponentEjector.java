@@ -32,6 +32,8 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	
 	public EnumColor[] inputColors = new EnumColor[] {null, null, null, null, null, null};
 	
+	public int tickDelay = 0;
+	
 	public SideData sideData;
 	
 	public int[] trackers;
@@ -61,6 +63,18 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		}
 		
 		return sides;
+	}
+	
+	@Override
+	public void tick() 
+	{
+		if(tickDelay == 0)
+		{
+			onOutput();
+		}
+		else {
+			tickDelay--;
+		}
 	}
 	
 	@Override
@@ -125,6 +139,8 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			
 			tileEntity.inventory[slotID] = stack;
 		}
+		
+		tickDelay = 20;
 	}
 	
 	@Override
@@ -178,9 +194,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	{
 		return inputColors[side.ordinal()];
 	}
-
-	@Override
-	public void tick() {}
 
 	@Override
 	public void read(NBTTagCompound nbtTags) 

@@ -144,12 +144,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				MekanismUtils.updateCache(inventoryID, cachedFluid, inventory, this);
 			}
 			
-			if(structure == null && packetTick == 5)
+			if(structure == null && ticker == 5)
 			{
 				update();
 			}
 			
-			if(structure != null && isRendering && packetTick % 20 == 0)
+			if(structure != null && isRendering && ticker % 20 == 0)
 			{
 				sendStructure = true;
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);

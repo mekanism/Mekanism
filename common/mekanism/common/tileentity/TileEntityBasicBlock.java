@@ -33,7 +33,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 	
 	/** A timer used to send packets to clients. */
-	public int packetTick;
+	public int ticker;
 	
 	public boolean doAutoSync = true;
 	
@@ -59,7 +59,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 				}
 			}
 			
-			packetTick++;
+			ticker++;
 		}
 	}
 	

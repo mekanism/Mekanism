@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
@@ -571,5 +572,52 @@ public class BlockBasic extends Block
 		}
 		
 		return ret;
+	}
+	
+    @Override
+    public int idDropped(int i, Random random, int j)
+    {
+    	return 0;
+    }
+	
+    @Override
+    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+    {
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+    	{
+	    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+	    	
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+	        
+	        world.spawnEntityInWorld(entityItem);
+    	}
+    	
+        return world.setBlockToAir(x, y, z);
+    }
+	
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
+	{
+		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+        
+        world.setBlockToAir(x, y, z);
+        
+        if(!returnBlock)
+        {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+	        
+            world.spawnEntityInWorld(entityItem);
+        }
+        
+        return itemStack;
 	}
 }
