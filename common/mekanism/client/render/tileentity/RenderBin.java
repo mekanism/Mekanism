@@ -2,7 +2,6 @@ package mekanism.client.render.tileentity;
 
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityBin;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -15,12 +14,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -90,14 +87,11 @@ public class RenderBin extends TileEntitySpecialRenderer
 
                 TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
 
-                GL11.glDisable(2896);
+                GL11.glDisable(GL11.GL_LIGHTING);
                 
-                if(!ForgeHooksClient.renderInventoryItem(renderBlocks, renderEngine, itemStack, true, 0.0F, 0.0F, 0.0F))
-                {
-                    renderItem.renderItemIntoGUI(getFontRenderer(), renderEngine, itemStack, 0, 0);
-                }
+                renderItem.renderItemAndEffectIntoGUI(getFontRenderer(), renderEngine, itemStack, 0, 0);
                 
-                GL11.glEnable(2896);
+                GL11.glEnable(GL11.GL_LIGHTING);
                 GL11.glPopMatrix();
             }
 

@@ -37,7 +37,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -182,14 +181,9 @@ public class ItemRenderingHandler implements IItemRenderer
                 TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
 
                 GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glEnable(GL11.GL_CULL_FACE);
                 
-                if(!ForgeHooksClient.renderInventoryItem(renderBlocks, renderEngine, itemStack, true, 0.0F, 0.0F, 0.0F))
-                {
-                    renderItem.renderItemIntoGUI(binRenderer.getFontRenderer(), renderEngine, itemStack, 0, 0);
-                }
+                renderItem.renderItemAndEffectIntoGUI(binRenderer.getFontRenderer(), renderEngine, itemStack, 0, 0);
                 
-                GL11.glDisable(GL11.GL_CULL_FACE);
                 GL11.glEnable(GL11.GL_LIGHTING);
                 GL11.glPopMatrix();
             }
