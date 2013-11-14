@@ -181,7 +181,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
                 TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
 
-                GL11.glDisable(2896);
+                GL11.glDisable(GL11.GL_LIGHTING);
                 GL11.glEnable(GL11.GL_CULL_FACE);
                 
                 if(!ForgeHooksClient.renderInventoryItem(renderBlocks, renderEngine, itemStack, true, 0.0F, 0.0F, 0.0F))
@@ -190,7 +190,7 @@ public class ItemRenderingHandler implements IItemRenderer
                 }
                 
                 GL11.glDisable(GL11.GL_CULL_FACE);
-                GL11.glEnable(2896);
+                GL11.glEnable(GL11.GL_LIGHTING);
                 GL11.glPopMatrix();
             }
 			
