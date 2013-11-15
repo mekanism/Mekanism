@@ -306,11 +306,11 @@ public class ItemRenderingHandler implements IItemRenderer
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.machineBlockID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
+				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[item.itemID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
 			}
 			else if(item.getItem() instanceof ItemBlockBasic)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.basicBlockID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[item.itemID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 			}
 		}
 	}

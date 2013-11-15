@@ -34,7 +34,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		if(block == null || renderer == null || MachineType.getFromMetadata(metadata) == null)
+		if(block == null || renderer == null || MachineType.get(block.blockID, metadata) == null)
 		{
 			return;
 		}
@@ -42,51 +42,48 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    GL11.glPushMatrix();
 	    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 	    
-	    if(block.blockID == Mekanism.machineBlockID)
-	    {
-    		if(metadata == MachineType.ELECTRIC_PUMP.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, -0.85F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
-    	    	electricPump.render(0.0560F);
-    		}
-    		else if(metadata == MachineType.METALLURGIC_INFUSER.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
-    	    	metallurgicInfuser.render(0.0625F);
-    		}
-    		else if(metadata == MachineType.CHARGEPAD.meta)
-    		{
-    			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
-    			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
-    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
-    			chargepad.render(0.0625F);
-    		}
-    		else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, -0.85F, -0.15F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
-    	    	logisticalSorter.render(0.0625F, false);
-    		}
-    		/*else if(metadata == MachineType.CRUSHER.meta)
-    		{    			
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
-       			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Crusher.png"));
-    			crusher.render(0.0625F, 0.0F);
-    		} TODO model */
-    		else {
-    	        MekanismRenderer.renderItem(renderer, metadata, block);
-    		}
-	    }
+		if(metadata == MachineType.ELECTRIC_PUMP.meta)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -0.85F, 0.0F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
+	    	electricPump.render(0.0560F);
+		}
+		else if(metadata == MachineType.METALLURGIC_INFUSER.meta)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
+	    	metallurgicInfuser.render(0.0625F);
+		}
+		else if(metadata == MachineType.CHARGEPAD.meta)
+		{
+			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
+			chargepad.render(0.0625F);
+		}
+		else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -0.85F, -0.15F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
+	    	logisticalSorter.render(0.0625F, false);
+		}
+		/*else if(metadata == MachineType.CRUSHER.meta)
+		{    			
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+   			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Crusher.png"));
+			crusher.render(0.0625F, 0.0F);
+		} TODO model */
+		else {
+	        MekanismRenderer.renderItem(renderer, metadata, block);
+		}
 	    
 	    GL11.glPopMatrix();
 	}
@@ -94,11 +91,11 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(block.blockID == Mekanism.machineBlockID)
+		int metadata = world.getBlockMetadata(x, y, z);
+		
+		if(MachineType.get(block.blockID, metadata) != null)
 		{
-			int metadata = world.getBlockMetadata(x, y, z);
-			
-			if(MachineType.getFromMetadata(metadata) != null && !MachineType.getFromMetadata(metadata).hasModel)
+			if(!MachineType.get(block.blockID, metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
 				renderer.setRenderBoundsFromBlock(block);

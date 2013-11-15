@@ -92,7 +92,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockMachine extends BlockContainer implements ISpecialBounds
 {
-	public Icon[][] icons = new Icon[256][256];
+	public Icon[][][] icons = new Icon[4096][16][16];
 	public Random machineRand = new Random();
 	
 	public BlockMachine(int id)
@@ -107,42 +107,42 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
-		icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
-		icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
-		icons[0][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
-		icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
-		icons[1][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
-		icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
-		icons[2][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
-		icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
-		icons[3][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
-		icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
-		icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
-		icons[6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
-		icons[6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
-		icons[6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
-		icons[7][0] = register.registerIcon("mekanism:EliteFactoryFront");
-		icons[7][1] = register.registerIcon("mekanism:EliteFactorySide");
-		icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
-		icons[8][0] = register.registerIcon("mekanism:MetallurgicInfuserFrontOff");
-		icons[8][1] = register.registerIcon("mekanism:MetallurgicInfuserFrontOn");
-		icons[8][2] = register.registerIcon("mekanism:MetallurgicInfuserSideOff");
-		icons[8][3] = register.registerIcon("mekanism:MetallurgicInfuserSideOn");
-		icons[8][4] = register.registerIcon("mekanism:MetallurgicInfuserTopOff");
-		icons[8][5] = register.registerIcon("mekanism:MetallurgicInfuserTopOn");
-		icons[8][6] = register.registerIcon("mekanism:MetallurgicInfuserBackOff");
-		icons[8][7] = register.registerIcon("mekanism:MetallurgicInfuserBackOn");
-		icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
-		icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
-		icons[9][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
-		icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
-		icons[10][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[11][0] = register.registerIcon("mekanism:Teleporter");
+		icons[blockID][0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
+		icons[blockID][0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
+		icons[blockID][0][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[blockID][1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
+		icons[blockID][1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
+		icons[blockID][1][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[blockID][2][0] = register.registerIcon("mekanism:CombinerFrontOff");
+		icons[blockID][2][1] = register.registerIcon("mekanism:CombinerFrontOn");
+		icons[blockID][2][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[blockID][3][0] = register.registerIcon("mekanism:CrusherFrontOff");
+		icons[blockID][3][1] = register.registerIcon("mekanism:CrusherFrontOn");
+		icons[blockID][3][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[blockID][5][0] = register.registerIcon("mekanism:BasicFactoryFront");
+		icons[blockID][5][1] = register.registerIcon("mekanism:BasicFactorySide");
+		icons[blockID][5][2] = register.registerIcon("mekanism:BasicFactoryTop");
+		icons[blockID][6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
+		icons[blockID][6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
+		icons[blockID][6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
+		icons[blockID][7][0] = register.registerIcon("mekanism:EliteFactoryFront");
+		icons[blockID][7][1] = register.registerIcon("mekanism:EliteFactorySide");
+		icons[blockID][7][2] = register.registerIcon("mekanism:EliteFactoryTop");
+		icons[blockID][8][0] = register.registerIcon("mekanism:MetallurgicInfuserFrontOff");
+		icons[blockID][8][1] = register.registerIcon("mekanism:MetallurgicInfuserFrontOn");
+		icons[blockID][8][2] = register.registerIcon("mekanism:MetallurgicInfuserSideOff");
+		icons[blockID][8][3] = register.registerIcon("mekanism:MetallurgicInfuserSideOn");
+		icons[blockID][8][4] = register.registerIcon("mekanism:MetallurgicInfuserTopOff");
+		icons[blockID][8][5] = register.registerIcon("mekanism:MetallurgicInfuserTopOn");
+		icons[blockID][8][6] = register.registerIcon("mekanism:MetallurgicInfuserBackOff");
+		icons[blockID][8][7] = register.registerIcon("mekanism:MetallurgicInfuserBackOn");
+		icons[blockID][9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
+		icons[blockID][9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
+		icons[blockID][9][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[blockID][10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
+		icons[blockID][10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
+		icons[blockID][10][2] = register.registerIcon("mekanism:SteelCasing");
+		icons[blockID][11][0] = register.registerIcon("mekanism:Teleporter");
 	}
 	
 	@Override
@@ -248,130 +248,133 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	@SideOnly(Side.CLIENT)
     public Icon getIcon(int side, int meta)
     {
-    	if(meta == 0)
-    	{
-        	if(side == 3)
-        	{
-        		return icons[0][0];
-        	}
-        	else {
-        		return icons[0][2];
-        	}
-    	}
-    	else if(meta == 1)
-    	{
-        	if(side == 3)
-        	{
-        		return icons[1][0];
-        	}
-        	else {
-        		return icons[1][2];
-        	}
-    	}
-    	else if(meta == 2)
-    	{
-        	if(side == 3)
-        	{
-        		return icons[2][0];
-        	}
-        	else {
-        		return icons[2][2];
-        	}
-    	}
-    	else if(meta == 3)
-    	{
-        	if(side == 3)
-        	{
-        		return icons[3][0];
-        	}
-        	else {
-        		return icons[3][2];
-        	}
-    	}
-    	else if(meta == 5)
-    	{
-    		if(side == 3)
-    		{
-    			return icons[5][0];
-    		}
-     		else if(side == 0 || side == 1)
-    		{
-    			return icons[5][2];
-    		}
-    		else {
-    			return icons[5][1];
-    		}
-    	}
-    	else if(meta == 6)
-    	{
-    		if(side == 3)
-    		{
-    			return icons[6][0];
-    		}
-     		else if(side == 0 || side == 1)
-    		{
-    			return icons[6][2];
-    		}
-    		else {
-    			return icons[6][1];
-    		}
-    	}
-    	else if(meta == 7)
-    	{
-    		if(side == 3)
-    		{
-    			return icons[7][0];
-    		}
-     		else if(side == 0 || side == 1)
-    		{
-    			return icons[7][2];
-    		}
-    		else {
-    			return icons[7][1];
-    		}
-    	}
-    	else if(meta == 8)
-    	{
-        	if(side == 0 || side == 1)
-        	{
-        		return icons[8][4];
-        	}
-        	else if(side == 3)
-        	{
-        		return icons[8][0];
-        	}
-        	else if(side == 2)
-        	{
-        		return icons[8][6];
-        	}
-        	else {
-        		return icons[8][2];
-        	}
-    	}
-    	else if(meta == 9)
-    	{
-    		if(side == 3)
-    		{
-    			return icons[9][0];
-    		}
-    		else {
-    			return icons[9][2];
-    		}
-    	}
-    	else if(meta == 10)
-    	{
-    		if(side == 3)
-    		{
-    			return icons[10][0];
-    		}
-    		else {
-    			return icons[10][2];
-    		}
-    	}
-    	else if(meta == 11)
-    	{
-    		return icons[11][0];
-    	}
+		if(blockID == Mekanism.machineBlockID)
+		{
+	    	if(meta == 0)
+	    	{
+	        	if(side == 3)
+	        	{
+	        		return icons[blockID][0][0];
+	        	}
+	        	else {
+	        		return icons[blockID][0][2];
+	        	}
+	    	}
+	    	else if(meta == 1)
+	    	{
+	        	if(side == 3)
+	        	{
+	        		return icons[blockID][1][0];
+	        	}
+	        	else {
+	        		return icons[blockID][1][2];
+	        	}
+	    	}
+	    	else if(meta == 2)
+	    	{
+	        	if(side == 3)
+	        	{
+	        		return icons[blockID][2][0];
+	        	}
+	        	else {
+	        		return icons[blockID][2][2];
+	        	}
+	    	}
+	    	else if(meta == 3)
+	    	{
+	        	if(side == 3)
+	        	{
+	        		return icons[blockID][3][0];
+	        	}
+	        	else {
+	        		return icons[blockID][3][2];
+	        	}
+	    	}
+	    	else if(meta == 5)
+	    	{
+	    		if(side == 3)
+	    		{
+	    			return icons[blockID][5][0];
+	    		}
+	     		else if(side == 0 || side == 1)
+	    		{
+	    			return icons[blockID][5][2];
+	    		}
+	    		else {
+	    			return icons[blockID][5][1];
+	    		}
+	    	}
+	    	else if(meta == 6)
+	    	{
+	    		if(side == 3)
+	    		{
+	    			return icons[blockID][6][0];
+	    		}
+	     		else if(side == 0 || side == 1)
+	    		{
+	    			return icons[blockID][6][2];
+	    		}
+	    		else {
+	    			return icons[blockID][6][1];
+	    		}
+	    	}
+	    	else if(meta == 7)
+	    	{
+	    		if(side == 3)
+	    		{
+	    			return icons[blockID][7][0];
+	    		}
+	     		else if(side == 0 || side == 1)
+	    		{
+	    			return icons[blockID][7][2];
+	    		}
+	    		else {
+	    			return icons[blockID][7][1];
+	    		}
+	    	}
+	    	else if(meta == 8)
+	    	{
+	        	if(side == 0 || side == 1)
+	        	{
+	        		return icons[blockID][8][4];
+	        	}
+	        	else if(side == 3)
+	        	{
+	        		return icons[blockID][8][0];
+	        	}
+	        	else if(side == 2)
+	        	{
+	        		return icons[blockID][8][6];
+	        	}
+	        	else {
+	        		return icons[blockID][8][2];
+	        	}
+	    	}
+	    	else if(meta == 9)
+	    	{
+	    		if(side == 3)
+	    		{
+	    			return icons[blockID][9][0];
+	    		}
+	    		else {
+	    			return icons[blockID][9][2];
+	    		}
+	    	}
+	    	else if(meta == 10)
+	    	{
+	    		if(side == 3)
+	    		{
+	    			return icons[blockID][10][0];
+	    		}
+	    		else {
+	    			return icons[blockID][10][2];
+	    		}
+	    	}
+	    	else if(meta == 11)
+	    	{
+	    		return icons[blockID][11][0];
+	    	}
+		}
     	
     	return null;
     }
@@ -387,101 +390,101 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
 	        if(side == tileEntity.facing)
 	        {
-	        	return MekanismUtils.isActive(world, x, y, z) ? icons[0][1] : icons[0][0];
+	        	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][0][1] : icons[blockID][0][0];
 	        }
 	        else {
-	        	return icons[0][2];
+	        	return icons[blockID][0][2];
 	        }
     	}
     	else if(metadata == 1)
     	{
             if(side == tileEntity.facing)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[1][1] : icons[1][0];
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][1][1] : icons[blockID][1][0];
             }
             else {
-            	return icons[1][2];
+            	return icons[blockID][1][2];
             }
     	}
     	else if(metadata == 2)
     	{
             if(side == tileEntity.facing)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[2][1] : icons[2][0];
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][2][1] : icons[blockID][2][0];
             }
             else {
-            	return icons[2][2];
+            	return icons[blockID][2][2];
             }
     	}
     	else if(metadata == 3)
     	{
             if(side == tileEntity.facing)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[3][1] : icons[3][0];
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][3][1] : icons[blockID][3][0];
             }
             else {
-            	return icons[3][2];
+            	return icons[blockID][3][2];
             }
     	}
     	else if(metadata == 5)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return icons[5][0];
+    			return icons[blockID][5][0];
     		}
     		else if(side == 0 || side == 1)
     		{
-    			return icons[5][2];
+    			return icons[blockID][5][2];
     		}
     		else {
-    			return icons[5][1];
+    			return icons[blockID][5][1];
     		}
     	}
     	else if(metadata == 6)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return icons[6][0];
+    			return icons[blockID][6][0];
     		}
        		else if(side == 0 || side == 1)
     		{
-    			return icons[6][2];
+    			return icons[blockID][6][2];
     		}
     		else {
-    			return icons[6][1];
+    			return icons[blockID][6][1];
     		}
     	}
     	else if(metadata == 7)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return icons[7][0];
+    			return icons[blockID][7][0];
     		}
        		else if(side == 0 || side == 1)
     		{
-    			return icons[7][2];
+    			return icons[blockID][7][2];
     		}
     		else {
-    			return icons[7][1];
+    			return icons[blockID][7][1];
     		}
     	}
     	else if(metadata == 8)
     	{
             if(side == 0 || side == 1)
             {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[8][5] : icons[8][4];
+            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][5] : icons[blockID][8][4];
             }
             else {
             	if(side == tileEntity.facing)
             	{
-            		return MekanismUtils.isActive(world, x, y, z) ? icons[8][1] : icons[8][0];
+            		return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][1] : icons[blockID][8][0];
             	}
             	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
             	{
-            		return MekanismUtils.isActive(world, x, y, z) ? icons[8][7] : icons[8][6];
+            		return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][7] : icons[blockID][8][6];
             	}
             	else {
-            		return MekanismUtils.isActive(world, x, y, z) ? icons[8][3] : icons[8][2];
+            		return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][3] : icons[blockID][8][2];
             	}
             }
     	}
@@ -489,25 +492,25 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		if(side == tileEntity.facing)
     		{
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[9][1] : icons[9][0];
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][9][1] : icons[blockID][9][0];
     		}
     		else {
-    			return icons[9][2];
+    			return icons[blockID][9][2];
     		}
     	}
     	else if(metadata == 10)
     	{
     		if(side == tileEntity.facing)
     		{
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[10][1] : icons[10][0];
+    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][10][1] : icons[blockID][10][0];
     		}
     		else {
-    			return icons[10][2];
+    			return icons[blockID][10][2];
     		}
     	}
     	else if(metadata == 11)
     	{
-    		return icons[11][0];
+    		return icons[blockID][11][0];
     	}
     	
     	return null;
@@ -651,9 +654,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         		return true;
         	}
         	else {
-            	if(!entityplayer.isSneaking() && MachineType.getFromMetadata(metadata).guiId != -1)
+            	if(!entityplayer.isSneaking() && MachineType.get(blockID, metadata).guiId != -1)
 	        	{
-	        		entityplayer.openGui(Mekanism.instance, MachineType.getFromMetadata(metadata).guiId, world, x, y, z);
+	        		entityplayer.openGui(Mekanism.instance, MachineType.get(blockID, metadata).guiId, world, x, y, z);
 	        		return true;
 	        	}
         	}
@@ -664,12 +667,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
-    	if(MachineType.getFromMetadata(metadata) == null)
+    	if(MachineType.get(blockID, metadata) == null)
     	{
     		return null;
     	}
     	
-    	return MachineType.getFromMetadata(metadata).create();
+    	return MachineType.get(blockID, metadata).create();
     }
 	
     @Override
@@ -880,22 +883,23 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
-		OSMIUM_COMPRESSOR(1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
-		COMBINER(2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
-		CRUSHER(3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
-		BASIC_FACTORY(5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
-		ADVANCED_FACTORY(6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
-		ELITE_FACTORY(7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
-		METALLURGIC_INFUSER(8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
-		PURIFICATION_CHAMBER(9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
-		ENERGIZED_SMELTER(10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
-		TELEPORTER(11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
-		ELECTRIC_CHEST(13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
-		CHARGEPAD(14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
-		LOGISTICAL_SORTER(15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true);
+		ENRICHMENT_CHAMBER(Mekanism.machineBlockID, 0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
+		OSMIUM_COMPRESSOR(Mekanism.machineBlockID, 1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
+		COMBINER(Mekanism.machineBlockID, 2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
+		CRUSHER(Mekanism.machineBlockID, 3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
+		BASIC_FACTORY(Mekanism.machineBlockID, 5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
+		ADVANCED_FACTORY(Mekanism.machineBlockID, 6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
+		ELITE_FACTORY(Mekanism.machineBlockID, 7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
+		METALLURGIC_INFUSER(Mekanism.machineBlockID, 8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
+		PURIFICATION_CHAMBER(Mekanism.machineBlockID, 9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
+		ENERGIZED_SMELTER(Mekanism.machineBlockID, 10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
+		TELEPORTER(Mekanism.machineBlockID, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false),
+		ELECTRIC_PUMP(Mekanism.machineBlockID, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
+		ELECTRIC_CHEST(Mekanism.machineBlockID, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
+		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
+		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true);
 		
+		public int typeId;
 		public int meta;
 		public String name;
 		public int guiId;
@@ -903,8 +907,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private MachineType(int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private MachineType(int id, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
+			typeId = id;
 			meta = i;
 			name = s;
 			guiId = j;
@@ -913,11 +918,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			hasModel = model;
 		}
 		
-		public static MachineType getFromMetadata(int meta)
+		public static MachineType get(int id, int meta)
 		{
 			for(MachineType type : values())
 			{
-				if(type.meta == meta)
+				if(type.meta == meta && type.typeId == id)
 				{
 					return type;
 				}

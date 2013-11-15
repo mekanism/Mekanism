@@ -247,8 +247,9 @@ public class GuiConfiguration extends GuiMekanism
 			
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
+				int guiId = MachineType.get(tile.getBlockType().blockID, tile.getBlockMetadata()).guiId;
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Object3D.get(tile), MachineType.getFromMetadata(tile.getBlockMetadata()).guiId));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Object3D.get(tile), guiId));
 			}
 			
 	        if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)

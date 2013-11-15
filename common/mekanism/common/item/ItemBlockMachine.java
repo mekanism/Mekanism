@@ -90,9 +90,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(MachineType.getFromMetadata(itemstack.getItemDamage()) != null)
+		if(MachineType.get(itemstack.itemID, itemstack.getItemDamage()) != null)
 		{
-			return getUnlocalizedName() + "." + MachineType.getFromMetadata(itemstack.getItemDamage()).name;
+			return getUnlocalizedName() + "." + MachineType.get(itemstack.itemID, itemstack.getItemDamage()).name;
 		}
 		
 		return "null";
@@ -667,7 +667,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public double getMaxEnergy(ItemStack itemStack) 
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(itemStack), MachineType.getFromMetadata(itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getEnergy(getEnergyMultiplier(itemStack), MachineType.get(itemStack.itemID, itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override
