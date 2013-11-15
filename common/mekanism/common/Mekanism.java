@@ -225,14 +225,17 @@ public class Mekanism
 	public static boolean forceBuildcraft = false;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
-	public static int UPDATE_DELAY = 10;
+	public static int UPDATE_DELAY = 10;	
+	public static double ENERGY_PER_REDSTONE = 10000;
+	
 	public static double TO_IC2;
 	public static double TO_BC;
+	public static double TO_TE = TO_BC*10;
+	public static double TO_UE = .001;
 	public static double FROM_IC2;
 	public static double FROM_BC;
-	public static double TO_UE = .001;
+	public static double FROM_TE = FROM_BC*10;
 	public static double FROM_UE = 1000;
-	public static double ENERGY_PER_REDSTONE = 10000;
 	
 	//Usage Configuration
 	public static double enrichmentChamberUsage;

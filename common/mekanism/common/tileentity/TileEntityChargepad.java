@@ -29,9 +29,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -141,15 +141,15 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
 				setEnergy(getEnergy() - sent);
 			}
-			else if(itemstack.getItem() instanceof IChargeableItem)
+			else if(itemstack.getItem() instanceof IEnergyContainerItem)
 			{
-				IChargeableItem item = (IChargeableItem)itemstack.getItem();
+				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 				
-				float itemEnergy = (float)Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack));
-				float toTransfer = (float)Math.min(itemEnergy, (getEnergy()*Mekanism.TO_BC));
+				int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack));
+				int toTransfer = (int)Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE));
 				
 				item.receiveEnergy(itemstack, toTransfer, true);
-				setEnergy(getEnergy() - (toTransfer*Mekanism.FROM_BC));
+				setEnergy(getEnergy() - (toTransfer*Mekanism.FROM_TE));
 			}
 		}
 	}

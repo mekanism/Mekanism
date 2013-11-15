@@ -33,9 +33,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
@@ -177,16 +177,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 						setEnergy(getEnergy() + gain);
 					}
 				}
-				else if(inventory[27].getItem() instanceof IChargeableItem)
+				else if(inventory[27].getItem() instanceof IEnergyContainerItem)
 				{
 					ItemStack itemStack = inventory[27];
-					IChargeableItem item = (IChargeableItem)inventory[27].getItem();
+					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();
 					
-					float itemEnergy = (float)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack));
-					float toTransfer = (float)Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_BC));
+					int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack));
+					int toTransfer = (int)Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_TE));
 					
-					item.transferEnergy(itemStack, toTransfer, true);
-					setEnergy(getEnergy() + (toTransfer*Mekanism.FROM_BC));
+					item.extractEnergy(itemStack, toTransfer, true);
+					setEnergy(getEnergy() + (toTransfer*Mekanism.FROM_TE));
 				}
 				else if(inventory[27].itemID == Item.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{

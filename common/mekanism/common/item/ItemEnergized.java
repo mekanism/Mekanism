@@ -14,12 +14,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IChargeableItem
+public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
@@ -163,27 +163,27 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	}
 
 	@Override
-	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	public int receiveEnergy(ItemStack theItem, int energy, boolean doReceive)
 	{
-		return (float)(recharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doReceive)*Mekanism.TO_BC);
+		return (int)(recharge(theItem, (int)((energy*Mekanism.FROM_TE)*Mekanism.TO_UE), doReceive)*Mekanism.TO_TE);
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	public int extractEnergy(ItemStack theItem, int energy, boolean doTransfer) 
 	{
-		return (float)(discharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doTransfer)*Mekanism.TO_BC);
+		return (int)(discharge(theItem, (int)((energy*Mekanism.FROM_TE)*Mekanism.TO_UE), doTransfer)*Mekanism.TO_TE);
 	}
 
 	@Override
-	public float getEnergyStored(ItemStack theItem)
+	public int getEnergyStored(ItemStack theItem)
 	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_BC);
+		return (int)(getEnergy(theItem)*Mekanism.TO_TE);
 	}
 
 	@Override
-	public float getMaxEnergyStored(ItemStack theItem)
+	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
+		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
 	}
 	
 	@Override
