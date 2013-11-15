@@ -24,10 +24,11 @@ import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
+import cofh.api.energy.IEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -277,5 +278,59 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public int getScaledEnergyLevel(int i)
 	{
 		return (int)(getEnergy()*i / getMaxEnergy());
+	}
+	
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	{
+		if(getConsumingSides().contains(from))
+		{
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*Mekanism.FROM_TE);
+			
+			if(!simulate)
+			{
+				setEnergy(getEnergy() + toAdd);
+			}
+			
+			return (int)(toAdd*Mekanism.TO_TE);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	{
+		if(getOutputtingSide() == from)
+		{
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*Mekanism.FROM_TE));
+			
+			if(!simulate)
+			{
+				setEnergy(getEnergy() - toSend);
+			}
+			
+			return (int)(toSend*Mekanism.TO_TE);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public boolean canInterface(ForgeDirection from) 
+	{
+		return canConnect(from);
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from)
+	{
+		return (int)(getEnergy()*Mekanism.TO_TE);
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from) 
+	{
+		return (int)(getMaxEnergy()*Mekanism.TO_TE);
 	}
 }

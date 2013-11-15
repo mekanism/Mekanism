@@ -30,6 +30,7 @@ import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
@@ -128,6 +129,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
 					}
+					else if(acceptor instanceof IEnergyHandler)
+					{
+						IEnergyHandler handler = (IEnergyHandler)acceptor;
+						int used = handler.receiveEnergy(side.getOpposite(), (int)(currentSending*Mekanism.TO_TE), false);
+						energyToSend -= used*Mekanism.FROM_TE;
+					}
 					else if(acceptor instanceof IEnergySink)
 					{
 						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
@@ -170,9 +177,23 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		{
 			if(acceptor instanceof IStrictEnergyAcceptor)
 			{
-				if(((IStrictEnergyAcceptor)acceptor).canReceiveEnergy(acceptorDirections.get(acceptor).getOpposite()))
+				IStrictEnergyAcceptor handler = (IStrictEnergyAcceptor)acceptor;
+				
+				if(handler.canReceiveEnergy(acceptorDirections.get(acceptor).getOpposite()))
 				{
-					if((((IStrictEnergyAcceptor)acceptor).getMaxEnergy() - ((IStrictEnergyAcceptor)acceptor).getEnergy()) > 0)
+					if(handler.getMaxEnergy() - handler.getEnergy() > 0)
+					{
+						toReturn.add(acceptor);
+					}
+				}
+			}
+			else if(acceptor instanceof IEnergyHandler)
+			{
+				IEnergyHandler handler = (IEnergyHandler)acceptor;
+				
+				if(handler.canInterface(acceptorDirections.get(acceptor).getOpposite()))
+				{
+					if(handler.getMaxEnergyStored(acceptorDirections.get(acceptor).getOpposite()) - handler.getEnergyStored(acceptorDirections.get(acceptor).getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}
@@ -180,9 +201,23 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 			else if(acceptor instanceof IEnergySink)
 			{
-				if(((IEnergySink)acceptor).acceptsEnergyFrom(null, acceptorDirections.get(acceptor).getOpposite()))
+				IEnergySink handler = (IEnergySink)acceptor;
+				
+				if(handler.acceptsEnergyFrom(null, acceptorDirections.get(acceptor).getOpposite()))
 				{
-					if(Math.min((((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
+					if(Math.min((handler.demandedEnergyUnits()*Mekanism.FROM_IC2), (handler.getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
+					{
+						toReturn.add(acceptor);
+					}
+				}
+			}
+			else if(acceptor instanceof IElectrical)
+			{
+				IElectrical handler = (IElectrical)acceptor;
+				
+				if(handler.canConnect(acceptorDirections.get(acceptor).getOpposite()))
+				{
+					if(handler.getRequest(acceptorDirections.get(acceptor).getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}
@@ -190,9 +225,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 			else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 			{
-				if(((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()) != null)
+				IPowerReceptor handler = (IPowerReceptor)acceptor;
+				
+				if(handler.getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()) != null)
 				{
-					if((((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
+					if((handler.getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
 						TileEntityUniversalCable cable = (TileEntityUniversalCable)Object3D.get(acceptor).getFromSide(acceptorDirections.get(acceptor).getOpposite()).getTileEntity(acceptor.worldObj);
 						
@@ -200,16 +237,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						{
 							toReturn.add(acceptor);
 						}
-					}
-				}
-			}
-			else if(acceptor instanceof IElectrical)
-			{
-				if(((IElectrical)acceptor).canConnect(acceptorDirections.get(acceptor).getOpposite()))
-				{
-					if(((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor).getOpposite()) > 0)
-					{
-						toReturn.add(acceptor);
 					}
 				}
 			}

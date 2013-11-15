@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -33,8 +31,11 @@ import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
+import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor, ITileNetwork
+import com.google.common.io.ByteArrayDataInput;
+
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor, ITileNetwork, IEnergyHandler
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -340,6 +341,54 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		return Integer.MAX_VALUE;
 	}
 	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data) 
+	{
+		return data;
+	}
+
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) 
+	{
+		if(!simulate)
+		{
+			ArrayList list = new ArrayList();
+			list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
+	    	return (int)(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) 
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canInterface(ForgeDirection from) 
+	{
+		return true;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from) 
+	{
+		return 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from)
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
+		return (int)(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_TE);
+	}
+	
 	public class FakeUENetwork implements IElectricityNetwork
 	{
 		@Override
@@ -395,14 +444,5 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			return Integer.MAX_VALUE;
 		}
-	}
-
-	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
-
-	@Override
-	public ArrayList getNetworkedData(ArrayList data) 
-	{
-		return data;
 	}
 }

@@ -27,6 +27,7 @@ import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+import cofh.api.energy.IEnergyHandler;
 
 public final class CableUtils
 {
@@ -46,7 +47,7 @@ public final class CableUtils
 			if(acceptor instanceof IStrictEnergyAcceptor || 
 					acceptor instanceof IEnergySink || 
 					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && MekanismUtils.useBuildcraft()) ||
-					acceptor instanceof IElectrical)
+					acceptor instanceof IElectrical || acceptor instanceof IEnergyHandler)
 			{
 				acceptors[orientation.ordinal()] = acceptor;
 			}
@@ -138,7 +139,8 @@ public final class CableUtils
 			
 			if((outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite())) || 
 					(outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, orientation.getOpposite())) ||
-					(outputter instanceof IElectrical && ((IElectrical)outputter).canConnect(orientation.getOpposite())))
+					(outputter instanceof IElectrical && ((IElectrical)outputter).canConnect(orientation.getOpposite())) ||
+					(outputter instanceof IEnergyHandler && ((IEnergyHandler)outputter).canInterface(orientation.getOpposite())))
 			{
 				outputters[orientation.ordinal()] = outputter;
 			}
@@ -173,6 +175,11 @@ public final class CableUtils
     	}
     	
     	if(tileEntity instanceof IElectrical && ((IElectrical)tileEntity).canConnect(side.getOpposite()))
+    	{
+    		return true;
+    	}
+    	
+    	if(tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canInterface(side.getOpposite()))
     	{
     		return true;
     	}
@@ -280,6 +287,25 @@ public final class CableUtils
 					IStrictEnergyAcceptor acceptor = (IStrictEnergyAcceptor)tileEntity;
 					double toSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 					emitter.setEnergy(emitter.getEnergy() - (toSend - acceptor.transferEnergyToAcceptor(toSend)));
+				}
+				else if(tileEntity instanceof IEnergyHandler)
+				{
+					IEnergyHandler handler = (IEnergyHandler)tileEntity;
+					double toSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
+					int used = handler.receiveEnergy(emitter.getOutputtingSide().getOpposite(), (int)(toSend*Mekanism.TO_TE), false);
+					emitter.setEnergy(emitter.getEnergy() - used*Mekanism.FROM_TE);
+				}
+				else if(tileEntity instanceof IEnergySink)
+				{
+					double toSend = Math.min(emitter.getEnergy(), (((IEnergySink)tileEntity).getMaxSafeInput()*Mekanism.FROM_IC2));
+					double rejects = ((IEnergySink)tileEntity).injectEnergyUnits(emitter.getOutputtingSide().getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2;
+					emitter.setEnergy(emitter.getEnergy() - (toSend - rejects));
+				}
+				else if(tileEntity instanceof IElectrical)
+				{
+					double toSend = Math.min(emitter.getEnergy(), ((IElectrical)tileEntity).getRequest(emitter.getOutputtingSide().getOpposite())*Mekanism.FROM_UE);
+					ElectricityPack pack = ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), ((IElectrical)tileEntity).getVoltage());
+					emitter.setEnergy(emitter.getEnergy() - (((IElectrical)tileEntity).receiveElectricity(emitter.getOutputtingSide().getOpposite(), pack, true)*Mekanism.FROM_UE));
 				}
 				else if(tileEntity instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 				{
