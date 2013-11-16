@@ -123,7 +123,7 @@ public final class MekanismHooks
 		
 		if(TELoaded)
 		{
-			for(IPulverizerRecipe recipe : CraftingManagers.pulverizerManager.getRecipeList())
+			/*for(IPulverizerRecipe recipe : CraftingManagers.pulverizerManager.getRecipeList())
 			{
 				if(recipe.getSecondaryOutput() == null)
 				{
@@ -142,7 +142,8 @@ public final class MekanismHooks
 						}
 					}
 				}
-			}
+			}*/ 
+			//TODO recipe integration
 		}
 	}
 	
