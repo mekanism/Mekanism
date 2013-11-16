@@ -44,7 +44,6 @@ import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -54,6 +53,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -601,6 +601,23 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		    				break;
 		    		}
 		    		
+			        if(tileEntity instanceof TileEntityLogisticalSorter)
+			        {
+			        	if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
+			        	{
+				        	for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+							{
+								TileEntity tile = Object3D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+			
+								if(tileEntity instanceof IInventory)
+								{
+									change = dir.getOpposite().ordinal();
+									break;
+								}
+							}
+			        	}
+			        }
+		    		
 		    		tileEntity.setFacing((short)change);
 		    		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
 		    		return true;
@@ -738,6 +755,32 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     {
     	return 0;
     }
+    
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	{
+		if(!world.isRemote)
+		{
+			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalSorter)
+			{
+				TileEntityLogisticalSorter tileEntity = (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z);
+				
+        		if(!tileEntity.hasInventory())
+        		{
+		        	for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+					{
+						TileEntity tile = Object3D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+		
+						if(tile instanceof IInventory)
+						{
+							tileEntity.setFacing((short)dir.getOpposite().ordinal());
+							return;
+						}
+					}
+	        	}
+	        }
+		}
+	}
 	
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)

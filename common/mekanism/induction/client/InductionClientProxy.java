@@ -34,8 +34,6 @@ public class InductionClientProxy extends InductionCommonProxy
 	@Override
 	public void registerRenderers()
 	{
-		MinecraftForge.EVENT_BUS.register(SoundHandler.INSTANCE);
-
 		RenderingRegistry.registerBlockHandler(BlockRenderingHandler.INSTANCE);
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTesla.class, new RenderTesla());
