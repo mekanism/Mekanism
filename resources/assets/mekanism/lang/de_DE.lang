@@ -211,3 +211,18 @@ item.SteelHelmet.name=Stahlhelm
 item.SteelChestplate.name=Stahlbrustpanzer
 item.SteelLeggings.name=Stahlbeinschutz
 item.SteelBoots.name=Stahlstiefel
+
+//*********//
+//INDUCTION//
+//*********//
+
+//Blocks
+tile.Tesla.name=Teslaspule
+tile.Multimeter.name=Multimeter
+tile.ElectromagneticContractor.name=Elektromagnetischer Kontraktor
+tile.Battery.name=Modulare Batterie
+
+//Items
+item.Capacitor.name=Kondensatorenzelle
+item.InfiniteCapacitor.name=Unendliche Kondensatorenzelle
+item.Linker.name=Elektrostatischer Linker
