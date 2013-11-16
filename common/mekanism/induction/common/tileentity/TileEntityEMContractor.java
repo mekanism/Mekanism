@@ -10,6 +10,7 @@ import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.induction.common.InventoryUtil;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.PathfinderEMContractor;
@@ -23,7 +24,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -50,6 +50,8 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	private AxisAlignedBB operationBounds;
 	private AxisAlignedBB suckBounds;
+	
+	public ForgeDirection facing = ForgeDirection.UP;
 
 	/**
 	 * true = suck, false = push
@@ -73,7 +75,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	public void initiate()
 	{
 		super.initiate();
-		this.updateBounds();
+		updateBounds();
 	}
 
 	@Override
@@ -81,161 +83,162 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	{
 		super.updateEntity();
 
-		this.pushDelay = Math.max(0, this.pushDelay - 1);
+		pushDelay = Math.max(0, pushDelay - 1);
 
-		if (this.tempLinkVector != null)
+		if(tempLinkVector != null)
 		{
-			if (this.tempLinkVector.getTileEntity(this.worldObj) instanceof TileEntityEMContractor)
+			if(tempLinkVector.getTileEntity(worldObj) instanceof TileEntityEMContractor)
 			{
-				this.setLink((TileEntityEMContractor) this.tempLinkVector.getTileEntity(this.worldObj), true);
+				setLink((TileEntityEMContractor)tempLinkVector.getTileEntity(worldObj), true);
 			}
 
-			this.tempLinkVector = null;
+			tempLinkVector = null;
 		}
 
-		if (canFunction())
+		if(canFunction())
 		{
 			TileEntity inventoryTile = getLatched();
 			IInventory inventory = (IInventory) inventoryTile;
 
-			if (!suck && pushDelay == 0)
+			if(!suck && pushDelay == 0)
 			{
-				ItemStack retrieved = InventoryUtil.takeTopItemFromInventory(inventory, this.getDirection().ordinal());
+				ItemStack retrieved = InventoryUtil.takeTopItemFromInventory(inventory, getFacing().ordinal());
 
-				if (retrieved != null)
+				if(retrieved != null)
 				{
 					EntityItem item = getItemWithPosition(retrieved);
 
-					if (!worldObj.isRemote)
+					if(!worldObj.isRemote)
 					{
-						this.worldObj.spawnEntityInWorld(item);
+						worldObj.spawnEntityInWorld(item);
 					}
 
 					pushDelay = PUSH_DELAY;
 				}
 			}
-			else if (suck)
+			else if(suck)
 			{
-				if (suckBounds != null)
+				if(suckBounds != null)
 				{
-					for (EntityItem item : (List<EntityItem>) worldObj.getEntitiesWithinAABB(EntityItem.class, suckBounds))
+					for(EntityItem item : (List<EntityItem>) worldObj.getEntitiesWithinAABB(EntityItem.class, suckBounds))
 					{
-						ItemStack remains = InventoryUtil.putStackInInventory(inventory, item.getEntityItem(), this.getDirection().ordinal());
+						ItemStack remains = InventoryUtil.putStackInInventory(inventory, item.getEntityItem(), getFacing().ordinal());
 
-						if (remains == null)
+						if(remains == null)
 						{
 							item.setDead();
 						}
-						else
-						{
+						else {
 							item.setEntityItemStack(remains);
 						}
 					}
 				}
 			}
 
-			if (this.thread != null)
+			if(thread != null)
 			{
-				PathfinderEMContractor newPath = this.thread.getPath();
+				PathfinderEMContractor newPath = thread.getPath();
 
-				if (newPath != null)
+				if(newPath != null)
 				{
-					this.pathfinder = newPath;
-					this.thread = null;
+					pathfinder = newPath;
+					thread = null;
 				}
 			}
 
-			final int renderFrequency = MekanismInduction.proxy.isFancy() ? 1 + this.worldObj.rand.nextInt(2) : 10 + this.worldObj.rand.nextInt(2);
-			final boolean renderBeam = this.ticks % renderFrequency == 0 && this.linked != null && !this.linked.isInvalid() && this.linked.suck != this.suck;
+			final int renderFrequency = MekanismInduction.proxy.isFancy() ? 1 + worldObj.rand.nextInt(2) : 10 + worldObj.rand.nextInt(2);
+			final boolean renderBeam = ticks % renderFrequency == 0 && hasLink() && linked.suck != suck;
 
-			if (!this.suck)
+			if(hasLink())
 			{
-				if (this.linked != null && !this.linked.isInvalid())
+				if(!suck)
 				{
-					if (renderBeam)
+					if(renderBeam)
 					{
-						MekanismInduction.proxy.renderElectricShock(this.worldObj, new Vector3(this).translate(0.5), new Vector3(this).translate(new Vector3(this.getDirection())).translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
+						MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(this).translate(0.5), new Vector3(this).translate(new Vector3(getFacing())).translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
 					}
-
-					/**
-					 * Push entity along path.
-					 */
-					if (this.pathfinder != null)
+					
+					//Push entity along path.
+					if(pathfinder != null)
 					{
-						for (int i = 0; i < this.pathfinder.results.size(); i++)
+						for(int i = 0; i < pathfinder.results.size(); i++)
 						{
-							Vector3 result = this.pathfinder.results.get(i).clone();
+							Vector3 result = pathfinder.results.get(i).clone();
 
-							if (TileEntityEMContractor.canBePath(this.worldObj, result))
+							if(TileEntityEMContractor.canBePath(worldObj, result))
 							{
-								if (i - 1 >= 0)
+								if(i - 1 >= 0)
 								{
-									Vector3 prevResult = this.pathfinder.results.get(i - 1).clone();
+									Vector3 prevResult = pathfinder.results.get(i - 1).clone();
 
 									Vector3 difference = prevResult.clone().difference(result);
 									final ForgeDirection direction = difference.toForgeDirection();
 
-									if (renderBeam)
+									if(renderBeam)
 									{
-										MekanismInduction.proxy.renderElectricShock(this.worldObj, prevResult.clone().translate(0.5), result.clone().translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
+										MekanismInduction.proxy.renderElectricShock(worldObj, prevResult.clone().translate(0.5), result.clone().translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
 									}
 
 									AxisAlignedBB bounds = AxisAlignedBB.getAABBPool().getAABB(result.x, result.y, result.z, result.x + 1, result.y + 1, result.z + 1);
-									List<EntityItem> entities = this.worldObj.getEntitiesWithinAABB(EntityItem.class, bounds);
+									List<EntityItem> entities = worldObj.getEntitiesWithinAABB(EntityItem.class, bounds);
 
-									for (EntityItem entityItem : entities)
+									for(EntityItem entityItem : entities)
 									{
-										this.moveEntity(entityItem, direction, result);
+										moveEntity(entityItem, direction, result);
 									}
 								}
 
 							}
-							else
-							{
-								this.updatePath();
+							else {
+								updatePath();
 								break;
 							}
 						}
 					}
-					else
-					{
-						this.updatePath();
+					else {
+						updatePath();
 					}
 				}
-			}
-			else
-			{
-				if (renderBeam && this.linked != null && this.linked.pathfinder != null)
-				{
-					MekanismInduction.proxy.renderElectricShock(this.worldObj, new Vector3(this).translate(0.5), new Vector3(this).translate(new Vector3(this.getDirection())).translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
-				}
-
-				this.pathfinder = null;
-
-				AxisAlignedBB searchBounds = this.operationBounds;
-
-				if (this.linked != null)
-				{
-					Vector3 searchVec = new Vector3(this).modifyPositionFromSide(this.getDirection());
-					searchBounds = AxisAlignedBB.getAABBPool().getAABB(searchVec.x, searchVec.y, searchVec.z, searchVec.x + 1, searchVec.y + 1, searchVec.z + 1);
-				}
-
-				if (searchBounds != null)
-				{
-					for (EntityItem entityItem : (List<EntityItem>) worldObj.getEntitiesWithinAABB(EntityItem.class, searchBounds))
+				else {
+					if(renderBeam)
 					{
-						if (renderBeam)
+						MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(this).translate(0.5), new Vector3(this).translate(new Vector3(getFacing())).translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
+					}
+	
+					pathfinder = null;
+	
+					Vector3 searchVec = new Vector3(this).modifyPositionFromSide(getFacing());
+					AxisAlignedBB searchBounds = AxisAlignedBB.getAABBPool().getAABB(searchVec.x, searchVec.y, searchVec.z, searchVec.x + 1, searchVec.y + 1, searchVec.z + 1);
+	
+					if(searchBounds != null)
+					{
+						for(EntityItem entityItem : (List<EntityItem>)worldObj.getEntitiesWithinAABB(EntityItem.class, searchBounds))
 						{
-							MekanismInduction.proxy.renderElectricShock(this.worldObj, new Vector3(this).translate(0.5), new Vector3(entityItem), MekanismInduction.DYE_COLORS[dyeID], false);
+							if(renderBeam)
+							{
+								MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(this).translate(0.5), new Vector3(entityItem), MekanismInduction.DYE_COLORS[dyeID], false);
+							}
+	
+							moveEntity(entityItem, getFacing(), new Vector3(this));
 						}
-
-						this.moveEntity(entityItem, this.getDirection(), new Vector3(this));
 					}
 				}
 			}
+			else if(!hasLink())
+			{
+				for(EntityItem entityItem : (List<EntityItem>)worldObj.getEntitiesWithinAABB(EntityItem.class, operationBounds))
+				{
+					moveEntity(entityItem, getFacing(), new Vector3(this));
+				}
+			}
+			
+			if(linked.isInvalid())
+			{
+				linked = null;
+			}
+	
+			lastCalcTime--;
 		}
-
-		this.lastCalcTime--;
 	}
 
 	public static boolean canBePath(World world, Vector3 position)
@@ -243,10 +246,15 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		Block block = Block.blocksList[position.getBlockID(world)];
 		return block == null || (block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockLadder || ((block instanceof BlockFluid || block instanceof IFluidBlock) && block.blockID != Block.lavaMoving.blockID && block.blockID != Block.lavaStill.blockID));
 	}
+	
+	private boolean hasLink()
+	{
+		return linked != null && !linked.isInvalid() && linked.linked == this;
+	}
 
 	private void moveEntity(EntityItem entityItem, ForgeDirection direction, Vector3 lockVector)
 	{
-		switch (direction)
+		switch(direction)
 		{
 			case DOWN:
 				entityItem.setPosition(lockVector.x + 0.5, entityItem.posY, lockVector.z + 0.5);
@@ -254,12 +262,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				entityItem.motionX = 0;
 				entityItem.motionZ = 0;
 
-				if (!suck)
+				if(!suck)
 				{
 					entityItem.motionY = Math.max(-MAX_SPEED, entityItem.motionY - ACCELERATION);
 				}
-				else
-				{
+				else {
 					entityItem.motionY = Math.min(MAX_SPEED, entityItem.motionY + .04 + ACCELERATION);
 				}
 
@@ -271,12 +278,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				entityItem.motionX = 0;
 				entityItem.motionZ = 0;
 
-				if (!suck)
+				if(!suck)
 				{
 					entityItem.motionY = Math.min(MAX_SPEED, entityItem.motionY + .04 + ACCELERATION);
 				}
-				else
-				{
+				else {
 					entityItem.motionY = Math.max(-MAX_SPEED, entityItem.motionY - ACCELERATION);
 				}
 
@@ -288,12 +294,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				entityItem.motionX = 0;
 				entityItem.motionY = 0;
 
-				if (!suck)
+				if(!suck)
 				{
 					entityItem.motionZ = Math.max(-MAX_SPEED, entityItem.motionZ - ACCELERATION);
 				}
-				else
-				{
+				else {
 					entityItem.motionZ = Math.min(MAX_SPEED, entityItem.motionZ + ACCELERATION);
 				}
 
@@ -305,12 +310,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				entityItem.motionX = 0;
 				entityItem.motionY = 0;
 
-				if (!suck)
+				if(!suck)
 				{
 					entityItem.motionZ = Math.min(MAX_SPEED, entityItem.motionZ + ACCELERATION);
 				}
-				else
-				{
+				else {
 					entityItem.motionZ = Math.max(-MAX_SPEED, entityItem.motionZ - ACCELERATION);
 				}
 
@@ -322,12 +326,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				entityItem.motionY = 0;
 				entityItem.motionZ = 0;
 
-				if (!suck)
+				if(!suck)
 				{
 					entityItem.motionX = Math.max(-MAX_SPEED, entityItem.motionX - ACCELERATION);
 				}
-				else
-				{
+				else {
 					entityItem.motionX = Math.min(MAX_SPEED, entityItem.motionX + ACCELERATION);
 				}
 
@@ -338,12 +341,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				entityItem.motionY = 0;
 				entityItem.motionZ = 0;
 
-				if (!suck)
+				if(!suck)
 				{
 					entityItem.motionX = Math.min(MAX_SPEED, entityItem.motionX + ACCELERATION);
 				}
-				else
-				{
+				else {
 					entityItem.motionX = Math.max(-MAX_SPEED, entityItem.motionX - ACCELERATION);
 				}
 
@@ -361,7 +363,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	{
 		EntityItem item = null;
 
-		switch (this.getDirection())
+		switch (getFacing())
 		{
 			case DOWN:
 				item = new EntityItem(worldObj, xCoord + 0.5, yCoord - 0.2, zCoord + 0.5, toSend);
@@ -405,7 +407,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	public void updateBounds()
 	{
-		switch (this.getDirection())
+		switch (getFacing())
 		{
 			case DOWN:
 				operationBounds = AxisAlignedBB.getBoundingBox(xCoord, Math.max(yCoord - MAX_REACH, 1), zCoord, xCoord + 1, yCoord, zCoord + 1);
@@ -443,11 +445,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	public TileEntity getLatched()
 	{
-		ForgeDirection side = this.getDirection().getOpposite();
+		ForgeDirection side = getFacing().getOpposite();
 
 		TileEntity tile = worldObj.getBlockTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
 
-		if (tile instanceof IInventory)
+		if(tile instanceof IInventory)
 		{
 			return tile;
 		}
@@ -457,22 +459,22 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	public void incrementFacing()
 	{
-		int newOrdinal = this.getDirection().ordinal() < 5 ? this.getDirection().ordinal() + 1 : 0;
-		this.setFacing(ForgeDirection.getOrientation(newOrdinal));
+		int newOrdinal = getFacing().ordinal() < 5 ? getFacing().ordinal() + 1 : 0;
+		setFacing(ForgeDirection.getOrientation(newOrdinal));
 	}
 
-	public ForgeDirection getDirection()
+	public ForgeDirection getFacing()
 	{
-		return ForgeDirection.getOrientation(this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord));
+		return facing;
 	}
 
 	public void setFacing(ForgeDirection side)
 	{
-		this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, side.ordinal(), 3);
+		facing = side;
 
-		if (!worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 		}
 
 		updateBounds();
@@ -480,55 +482,59 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	public boolean canFunction()
 	{
-		return isLatched() && !this.worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+		return isLatched() && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.suck = nbt.getBoolean("suck");
-		this.dyeID = nbt.getInteger("dyeID");
-		this.tempLinkVector = new Vector3(nbt.getCompoundTag("link"));
+		
+		facing = ForgeDirection.getOrientation(nbt.getInteger("facing"));
+		suck = nbt.getBoolean("suck");
+		dyeID = nbt.getInteger("dyeID");
+		
+		if(nbt.hasKey("link"))
+		{
+			tempLinkVector = new Vector3(nbt.getCompoundTag("link"));
+		}
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
+		
+		nbt.setInteger("facing", facing.ordinal());
 		nbt.setBoolean("suck", suck);
-		nbt.setInteger("dyeID", this.dyeID);
+		nbt.setInteger("dyeID", dyeID);
 
-		if (this.linked != null)
+		if(linked != null)
 		{
-			nbt.setCompoundTag("link", new Vector3(this.linked).writeToNBT(new NBTTagCompound()));
+			nbt.setCompoundTag("link", new Vector3(linked).writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void handlePacketData(ByteArrayDataInput input)
 	{
-		try
-		{
-			suck = input.readBoolean();
-			this.dyeID = input.readInt();
+		facing = ForgeDirection.getOrientation(input.readInt());
+		suck = input.readBoolean();
+		dyeID = input.readInt();
 
-			if (input.readBoolean())
-			{
-				this.tempLinkVector = new Vector3(input.readInt(), input.readInt(), input.readInt());
-			}
-
-			this.worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			updateBounds();
-		}
-		catch (Exception e)
+		if(input.readBoolean())
 		{
+			tempLinkVector = new Vector3(input.readInt(), input.readInt(), input.readInt());
 		}
+
+		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+		updateBounds();
 	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		data.add(facing.ordinal());
 		data.add(suck);
 		data.add(dyeID);
 		
@@ -552,36 +558,36 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	 */
 	public void setLink(TileEntityEMContractor tileEntity, boolean setOpponent)
 	{
-		if (this.linked != null && setOpponent)
+		if(linked != null && setOpponent)
 		{
-			this.linked.setLink(null, false);
+			linked.setLink(null, false);
 		}
 
-		this.linked = tileEntity;
+		linked = tileEntity;
 
-		if (setOpponent)
+		if(setOpponent)
 		{
-			this.linked.setLink(this, false);
+			linked.setLink(this, false);
 		}
 
-		this.updatePath();
+		updatePath();
 	}
 
 	public void updatePath()
 	{
-		if (this.thread == null && this.linked != null && this.lastCalcTime <= 0)
+		if(thread == null && linked != null && lastCalcTime <= 0)
 		{
-			this.pathfinder = null;
-			Vector3 start = new Vector3(this).modifyPositionFromSide(this.getDirection());
-			Vector3 target = new Vector3(this.linked).modifyPositionFromSide(this.linked.getDirection());
+			pathfinder = null;
+			Vector3 start = new Vector3(this).modifyPositionFromSide(getFacing());
+			Vector3 target = new Vector3(linked).modifyPositionFromSide(linked.getFacing());
 
-			if (start.distance(target) < MekanismInduction.MAX_CONTRACTOR_DISTANCE)
+			if(start.distance(target) < MekanismInduction.MAX_CONTRACTOR_DISTANCE)
 			{
-				if (TileEntityEMContractor.canBePath(this.worldObj, start) && TileEntityEMContractor.canBePath(this.worldObj, target))
+				if(TileEntityEMContractor.canBePath(worldObj, start) && TileEntityEMContractor.canBePath(worldObj, target))
 				{
-					this.thread = new ThreadEMPathfinding(new PathfinderEMContractor(this.worldObj, target), start);
-					this.thread.start();
-					this.lastCalcTime = 40;
+					thread = new ThreadEMPathfinding(new PathfinderEMContractor(worldObj, target), start);
+					thread.start();
+					lastCalcTime = 40;
 				}
 			}
 		}
@@ -590,9 +596,9 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	/**
 	 * @param itemDamage
 	 */
-	public void setDye(int dyeID)
+	public void setDye(int dye)
 	{
-		this.dyeID = dyeID;
-		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		dyeID = dye;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 }
