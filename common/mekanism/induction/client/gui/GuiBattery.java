@@ -1,5 +1,6 @@
 package mekanism.induction.client.gui;
 
+import mekanism.induction.common.BatteryManager;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.inventory.container.ContainerBattery;
 import mekanism.induction.common.tileentity.TileEntityBattery;
@@ -33,7 +34,7 @@ public class GuiBattery extends GuiContainer
 
 		fontRenderer.drawString("Battery", 43, 6, 0x404040);
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-		fontRenderer.drawString("Cells: " + tileEntity.clientCells + " / " + tileEntity.structure.getMaxCells(), 62, 23, 0x404040);
+		fontRenderer.drawString("Cells: " + tileEntity.clientCells + " / " + (tileEntity.clientVolume*BatteryManager.CELLS_PER_BATTERY), 62, 23, 0x404040);
 		fontRenderer.drawString("Energy: ", 62, 33, 0x404040);
 		fontRenderer.drawString(ElectricityDisplay.getDisplay(this.tileEntity.getEnergyStored(), ElectricUnit.JOULES, 4, true), 62, 43, 0x404040);
 		fontRenderer.drawString("Max: " + ElectricityDisplay.getDisplayShort(this.tileEntity.getMaxEnergyStored(), ElectricUnit.JOULES), 62, 53, 0x404040);

@@ -12,7 +12,6 @@ import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -125,13 +124,13 @@ public class BlockBattery extends Block implements ITileEntityProvider
 			}
 		}
 	}
-
+	
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockAdded(World world, int x, int y, int z)
 	{
 		if (!world.isRemote)
 		{
-			TileEntityBattery battery = (TileEntityBattery) world.getBlockTileEntity(x, y, z);
+			TileEntityBattery battery = (TileEntityBattery)world.getBlockTileEntity(x, y, z);
 
 			battery.update();
 		}

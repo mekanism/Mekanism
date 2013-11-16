@@ -21,12 +21,6 @@ public class SynchronizedBatteryData
 	 */
 	public ItemStack[] visibleInventory = new ItemStack[3];
 
-	public int length;
-
-	public int width;
-
-	public int height;
-
 	public ItemStack tempStack;
 
 	public boolean isMultiblock;
@@ -35,16 +29,16 @@ public class SynchronizedBatteryData
 
 	public boolean wroteInventory;
 
-	public int getVolume()
-	{
-		return length * width * height;
-	}
-
 	public int getMaxCells()
 	{
 		return getVolume() * BatteryManager.CELLS_PER_BATTERY;
 	}
 
+	public int getVolume()
+	{
+		return locations.size();
+	}
+	
 	public boolean addCell(ItemStack cell)
 	{
 		if (this.inventory.size() < this.getMaxCells())
@@ -119,9 +113,6 @@ public class SynchronizedBatteryData
 	public static SynchronizedBatteryData getBase(TileEntityBattery tileEntity)
 	{
 		SynchronizedBatteryData structure = new SynchronizedBatteryData();
-		structure.length = 1;
-		structure.width = 1;
-		structure.height = 1;
 		structure.locations.add(new Vector3(tileEntity));
 
 		return structure;
@@ -132,9 +123,6 @@ public class SynchronizedBatteryData
 	{
 		int code = 1;
 		code = 31 * locations.hashCode();
-		code = 31 * length;
-		code = 31 * width;
-		code = 31 * height;
 		return code;
 	}
 
@@ -149,11 +137,6 @@ public class SynchronizedBatteryData
 		SynchronizedBatteryData data = (SynchronizedBatteryData) obj;
 
 		if (!data.locations.equals(locations))
-		{
-			return false;
-		}
-
-		if (data.length != length || data.width != width || data.height != height)
 		{
 			return false;
 		}
