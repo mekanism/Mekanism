@@ -49,7 +49,7 @@ public final class ChargeUtils
 				int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack));
 				int toTransfer = (int)Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_TE));
 				
-				item.extractEnergy(itemStack, toTransfer, true);
+				item.extractEnergy(itemStack, toTransfer, false);
 				storer.setEnergy(storer.getEnergy() + (toTransfer*Mekanism.FROM_TE));
 			}
 			else if(storer.inventory[slotID].itemID == Item.redstone.itemID && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
@@ -95,7 +95,7 @@ public final class ChargeUtils
 				int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack));
 				int toTransfer = (int)Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE));
 				
-				item.extractEnergy(itemStack, toTransfer, true);
+				item.extractEnergy(itemStack, toTransfer, false);
 				storer.setEnergy(storer.getEnergy() - (toTransfer*Mekanism.FROM_TE));
 			}
 		}
@@ -110,7 +110,7 @@ public final class ChargeUtils
 	{
 		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
 				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) != 0) || 
-				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, false) != 0) ||
+				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
 				itemstack.itemID == Item.redstone.itemID;
 	}
 
@@ -123,7 +123,7 @@ public final class ChargeUtils
 	{
 		return itemstack.getItem() instanceof IElectricItem || 
 				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) != 0) ||
-				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, false) != 0);
+				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0);
 	}
 
 	/**

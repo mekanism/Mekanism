@@ -185,7 +185,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack));
 					int toTransfer = (int)Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_TE));
 					
-					item.extractEnergy(itemStack, toTransfer, true);
+					item.extractEnergy(itemStack, toTransfer, false);
 					setEnergy(getEnergy() + (toTransfer*Mekanism.FROM_TE));
 				}
 				else if(inventory[27].itemID == Item.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
