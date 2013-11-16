@@ -6,6 +6,7 @@
 	<property environment="env" />
 	<property name="file.core" value="Mekanism-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
 	<property name="file.generators" value="MekanismGenerators-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
+	<property name="file.induction" value="MekanismInduction-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
 	<property name="file.tools" value="MekanismTools-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.jar"/>
 	<property name="file.mdk" value="MDK-v${version.mod.major}.${version.mod.minor}.${version.mod.revis}.${env.BUILD_NUMBER}.zip"/>
 
@@ -13,6 +14,7 @@
 
 		<delete dir="coreContents"/>
 		<delete dir="generatorsContents"/>
+		<delete dir="inductionContents"/>
 		<delete dir="toolsContents"/>
 		<delete dir="mdkContents"/>
 		<delete dir="${dir.development}/forge"/>
@@ -37,6 +39,7 @@
 
 		<mkdir dir="coreContents"/>
 		<mkdir dir="generatorsContents"/>
+		<mkdir dir="inductionContents"/>
 		<mkdir dir="toolsContents"/>
 		<mkdir dir="mdkContents"/>
 
@@ -77,6 +80,14 @@
 
 			<fileset dir="${dir.development}etc/generators"/>
 		</copy>
+		
+		<copy todir="inductionContents">
+			<fileset dir="${dir.mcp}/reobf/minecraft">
+				<include name = "**/mekanism/induction/**"/>
+			</fileset>
+
+			<fileset dir="${dir.development}etc/induction"/>
+		</copy>
 
 		<copy todir="toolsContents">
 			<fileset dir="${dir.mcp}/reobf/minecraft">
@@ -100,6 +111,10 @@
 		<jar destfile="output/${file.generators}">
 			<fileset dir="generatorsContents"/>
 		</jar>
+		
+		<jar destfile="output/${file.induction}">
+			<fileset dir="inductionContents"/>
+		</jar>
 
 		<jar destfile="output/${file.tools}">
 			<fileset dir="toolsContents"/>
@@ -116,6 +131,10 @@
 
 		<jar destfile="Mekanism_Generators.jar">
 			<fileset dir="generatorsContents"/>
+		</jar>
+		
+		<jar destfile="Mekanism_Induction.jar">
+			<fileset dir="inductionContents"/>
 		</jar>
 
 		<jar destfile="Mekanism_Tools.jar">
