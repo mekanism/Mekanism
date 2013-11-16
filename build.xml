@@ -65,6 +65,7 @@
 		<copy todir="coreContents">
 			<fileset dir="${dir.mcp}/reobf/minecraft">
 				<exclude name="**/mekanism/generators/**"/>
+				<exclude name=“**/mekanism/induction/**”/>
 				<exclude name="**/mekanism/tools/**"/>
 			</fileset>
 

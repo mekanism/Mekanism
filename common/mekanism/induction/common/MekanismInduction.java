@@ -55,8 +55,6 @@ public class MekanismInduction implements IModule
 	/**
 	 * Mod Information
 	 */
-	public static final String ID = "mekanism";
-	public static final String NAME = "MekanismInduction";
 
 	public static final String MAJOR_VERSION = "@MAJOR@";
 	public static final String MINOR_VERSION = "@MINOR@";
@@ -72,8 +70,6 @@ public class MekanismInduction implements IModule
 	
 	/** MekanismInduction version number */
 	public static Version versionNumber = new Version(5, 6, 0);
-
-	public static final Logger LOGGER = Logger.getLogger(NAME);
 
 	/**
 	 * Directory Information
@@ -130,7 +126,6 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent evt)
 	{
-		LOGGER.setParent(FMLLog.getLogger());
 		NetworkRegistry.instance().registerGuiHandler(this, MekanismInduction.proxy);
 		MinecraftForge.EVENT_BUS.register(new MultimeterEventHandler());
 		Mekanism.configuration.load();
@@ -230,14 +225,9 @@ public class MekanismInduction implements IModule
 				nameToClassMap.put(findTileID, replaceTile);
 				classToNameMap.put(replaceTile, findTileID);
 				classToNameMap.remove(findTile);
-				LOGGER.fine("Replaced TileEntity: " + findTile);
-			}
-			else {
-				LOGGER.severe("Failed to replace TileEntity: " + findTile);
 			}
 		}
 		catch(Exception e) {
-			LOGGER.severe("Failed to replace TileEntity: " + findTile);
 			e.printStackTrace();
 		}
 	}
