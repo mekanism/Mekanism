@@ -232,7 +232,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				}
 			}
 			
-			if(linked.isInvalid())
+			if(linked != null && linked.isInvalid())
 			{
 				linked = null;
 			}
