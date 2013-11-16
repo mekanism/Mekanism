@@ -2,7 +2,7 @@ package mekanism.induction.client.render;
 
 import mekanism.induction.client.model.ModelMultimeter;
 import mekanism.induction.common.MekanismInduction;
-import mekanism.induction.common.multimeter.TileEntityMultimeter;
+import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;

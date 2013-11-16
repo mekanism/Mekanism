@@ -3,10 +3,10 @@
  */
 package mekanism.induction.common;
 
-import mekanism.induction.common.battery.ContainerBattery;
-import mekanism.induction.common.battery.TileEntityBattery;
-import mekanism.induction.common.multimeter.ContainerMultimeter;
-import mekanism.induction.common.multimeter.TileEntityMultimeter;
+import mekanism.induction.common.inventory.container.ContainerBattery;
+import mekanism.induction.common.inventory.container.ContainerMultimeter;
+import mekanism.induction.common.tileentity.TileEntityBattery;
+import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

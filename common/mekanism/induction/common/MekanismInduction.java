@@ -7,25 +7,27 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import mekanism.common.IModule;
+import mekanism.common.Mekanism;
 import mekanism.common.Version;
-import mekanism.induction.common.battery.BlockBattery;
-import mekanism.induction.common.battery.ItemCapacitor;
-import mekanism.induction.common.battery.ItemInfiniteCapacitor;
-import mekanism.induction.common.battery.TileEntityBattery;
-import mekanism.induction.common.contractor.BlockEMContractor;
-import mekanism.induction.common.contractor.ItemBlockContractor;
-import mekanism.induction.common.contractor.TileEntityEMContractor;
-import mekanism.induction.common.entangler.ItemLinker;
-import mekanism.induction.common.multimeter.BlockMultimeter;
-import mekanism.induction.common.multimeter.ItemBlockMultimeter;
-import mekanism.induction.common.multimeter.MultimeterEventHandler;
-import mekanism.induction.common.multimeter.TileEntityMultimeter;
-import mekanism.induction.common.tesla.BlockTesla;
-import mekanism.induction.common.tesla.TileEntityTesla;
-import mekanism.induction.common.wire.BlockWire;
+import mekanism.induction.common.block.BlockAdvancedFurnace;
+import mekanism.induction.common.block.BlockBattery;
+import mekanism.induction.common.block.BlockEMContractor;
+import mekanism.induction.common.block.BlockMultimeter;
+import mekanism.induction.common.block.BlockTesla;
+import mekanism.induction.common.block.BlockWire;
+import mekanism.induction.common.item.ItemBlockContractor;
+import mekanism.induction.common.item.ItemBlockMultimeter;
+import mekanism.induction.common.item.ItemBlockWire;
+import mekanism.induction.common.item.ItemCapacitor;
+import mekanism.induction.common.item.ItemInfiniteCapacitor;
+import mekanism.induction.common.item.ItemLinker;
+import mekanism.induction.common.tileentity.TileEntityAdvancedFurnace;
+import mekanism.induction.common.tileentity.TileEntityBattery;
+import mekanism.induction.common.tileentity.TileEntityEMContractor;
+import mekanism.induction.common.tileentity.TileEntityMultimeter;
+import mekanism.induction.common.tileentity.TileEntityTesla;
+import mekanism.induction.common.tileentity.TileEntityWire;
 import mekanism.induction.common.wire.EnumWireMaterial;
-import mekanism.induction.common.wire.ItemBlockWire;
-import mekanism.induction.common.wire.TileEntityWire;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -122,17 +124,17 @@ public class MekanismInduction implements IModule
 	}
 
 	// Items
-	public static Item itemCapacitor;
-	public static Item itemInfiniteCapacitor;
-	public static Item itemLinker;
+	public static Item Capacitor;
+	public static Item InfiniteCapacitor;
+	public static Item Linker;
 	/** With Forge Multipart; Use EnumWireMaterial reference. **/
 	private static Item itemPartWire;
 
 	// Blocks
-	public static Block blockTesla;
-	public static Block blockMultimeter;
-	public static Block blockEMContractor;
-	public static Block blockBattery;
+	public static Block Tesla;
+	public static Block Multimeter;
+	public static Block ElectromagneticContractor;
+	public static Block Battery;
 	/** Without Forge Multipart **/
 	private static Block blockWire;
 	public static Block blockAdvancedFurnaceIdle, blockAdvancedFurnaceBurning;
@@ -161,9 +163,9 @@ public class MekanismInduction implements IModule
 		TileEntityEMContractor.PUSH_DELAY = CONFIGURATION.get(Configuration.CATEGORY_GENERAL, "Contractor Item Push Delay", TileEntityEMContractor.PUSH_DELAY).getInt(TileEntityEMContractor.PUSH_DELAY);
 
 		// Items
-		itemCapacitor = new ItemCapacitor(getNextItemID());
-		itemLinker = new ItemLinker(getNextItemID());
-		itemInfiniteCapacitor = new ItemInfiniteCapacitor(getNextItemID());
+		Capacitor = new ItemCapacitor(MekanismInduction.CONFIGURATION.get(Configuration.CATEGORY_ITEM, "Capacitor", getNextItemID()).getInt()).setUnlocalizedName("Capacitor");
+		Linker = new ItemLinker(MekanismInduction.CONFIGURATION.get(Configuration.CATEGORY_ITEM, "Linker", getNextItemID()).getInt()).setUnlocalizedName("Linker");
+		InfiniteCapacitor = new ItemInfiniteCapacitor(MekanismInduction.CONFIGURATION.get(Configuration.CATEGORY_ITEM, "InfiniteCapacitor", getNextItemID()).getInt()).setUnlocalizedName("InfiniteCapacitor");
 
 		if (Loader.isModLoaded("ForgeMultipart"))
 		{
@@ -178,10 +180,10 @@ public class MekanismInduction implements IModule
 		}
 
 		// Blocks
-		blockTesla = new BlockTesla(getNextBlockID());
-		blockMultimeter = new BlockMultimeter(getNextBlockID());
-		blockEMContractor = new BlockEMContractor(getNextBlockID());
-		blockBattery = new BlockBattery(getNextBlockID());
+		Tesla = new BlockTesla(Mekanism.configuration.getBlock("Tesla", getNextBlockID()).getInt()).setUnlocalizedName("Tesla");
+		Multimeter = new BlockMultimeter(Mekanism.configuration.getBlock("Multimeter", getNextBlockID()).getInt()).setUnlocalizedName("Multimeter");
+		ElectromagneticContractor = new BlockEMContractor(Mekanism.configuration.getBlock("ElectromagneticContractor", getNextBlockID()).getInt()).setUnlocalizedName("ElectromagneticContractor");
+		Battery = new BlockBattery(Mekanism.configuration.getBlock("Battery", getNextBlockID()).getInt()).setUnlocalizedName("Battery");
 
 		if (itemPartWire == null)
 		{
@@ -192,21 +194,23 @@ public class MekanismInduction implements IModule
 		{
 			blockAdvancedFurnaceIdle = BlockAdvancedFurnace.createNew(false);
 			blockAdvancedFurnaceBurning = BlockAdvancedFurnace.createNew(true);
+			
 			GameRegistry.registerBlock(blockAdvancedFurnaceIdle, "ri_" + blockAdvancedFurnaceIdle.getUnlocalizedName());
 			GameRegistry.registerBlock(blockAdvancedFurnaceBurning, "ri_" + blockAdvancedFurnaceBurning.getUnlocalizedName() + "2");
+			
 			GameRegistry.registerTileEntity(TileEntityAdvancedFurnace.class, blockAdvancedFurnaceIdle.getUnlocalizedName());
 		}
 
 		CONFIGURATION.save();
 
-		GameRegistry.registerItem(itemCapacitor, itemCapacitor.getUnlocalizedName());
-		GameRegistry.registerItem(itemInfiniteCapacitor, itemInfiniteCapacitor.getUnlocalizedName());
-		GameRegistry.registerItem(itemLinker, itemLinker.getUnlocalizedName());
+		GameRegistry.registerItem(Capacitor, "Capacitor");
+		GameRegistry.registerItem(InfiniteCapacitor, "InfiniteCapacitor");
+		GameRegistry.registerItem(Linker, "Linker");
 
-		GameRegistry.registerBlock(blockTesla, blockTesla.getUnlocalizedName());
-		GameRegistry.registerBlock(blockMultimeter, ItemBlockMultimeter.class, blockMultimeter.getUnlocalizedName());
-		GameRegistry.registerBlock(blockEMContractor, ItemBlockContractor.class, blockEMContractor.getUnlocalizedName());
-		GameRegistry.registerBlock(blockBattery, blockBattery.getUnlocalizedName());
+		GameRegistry.registerBlock(Tesla, "Tesla");
+		GameRegistry.registerBlock(Multimeter, ItemBlockMultimeter.class, "Multimeter");
+		GameRegistry.registerBlock(ElectromagneticContractor, ItemBlockContractor.class, "ElectromagneticContractor");
+		GameRegistry.registerBlock(Battery, "Battery");
 
 		if (blockWire != null)
 		{
@@ -214,10 +218,10 @@ public class MekanismInduction implements IModule
 		}
 
 		// Tiles
-		GameRegistry.registerTileEntity(TileEntityTesla.class, blockTesla.getUnlocalizedName());
-		GameRegistry.registerTileEntity(TileEntityMultimeter.class, blockMultimeter.getUnlocalizedName());
-		GameRegistry.registerTileEntity(TileEntityEMContractor.class, blockEMContractor.getUnlocalizedName());
-		GameRegistry.registerTileEntity(TileEntityBattery.class, blockBattery.getUnlocalizedName());
+		GameRegistry.registerTileEntity(TileEntityTesla.class, "Tesla");
+		GameRegistry.registerTileEntity(TileEntityMultimeter.class, "Multimeter");
+		GameRegistry.registerTileEntity(TileEntityEMContractor.class, "ElectromagneticContractor");
+		GameRegistry.registerTileEntity(TileEntityBattery.class, "Battery");
 
 		if (blockWire != null)
 		{
@@ -267,8 +271,8 @@ public class MekanismInduction implements IModule
 		/**
 		 * Recipes
 		 */
-		ItemStack emptyCapacitor = new ItemStack(itemCapacitor);
-		((IItemElectric) itemCapacitor).setElectricity(emptyCapacitor, 0);
+		ItemStack emptyCapacitor = new ItemStack(Capacitor);
+		((IItemElectric) Capacitor).setElectricity(emptyCapacitor, 0);
 
 		final ItemStack defaultWire = EnumWireMaterial.IRON.getWire();
 
@@ -276,19 +280,19 @@ public class MekanismInduction implements IModule
 		GameRegistry.addRecipe(new ShapedOreRecipe(emptyCapacitor, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** Linker **/
-		GameRegistry.addRecipe(new ShapedOreRecipe(itemLinker, " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Linker, " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL));
 
 		/** Tesla - by Jyzarc */
-		GameRegistry.addRecipe(new ShapedOreRecipe(blockTesla, "WEW", " C ", " I ", 'W', defaultWire, 'E', Item.eyeOfEnder, 'C', emptyCapacitor, 'I', UniversalRecipes.PRIMARY_PLATE));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Tesla, "WEW", " C ", " I ", 'W', defaultWire, 'E', Item.eyeOfEnder, 'C', emptyCapacitor, 'I', UniversalRecipes.PRIMARY_PLATE));
 
 		/** Multimeter */
-		GameRegistry.addRecipe(new ShapedOreRecipe(blockMultimeter, "WWW", "ICI", 'W', defaultWire, 'C', emptyCapacitor, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Multimeter, "WWW", "ICI", 'W', defaultWire, 'C', emptyCapacitor, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** Multimeter */
-		GameRegistry.addRecipe(new ShapedOreRecipe(blockBattery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** EM Contractor */
-		GameRegistry.addRecipe(new ShapedOreRecipe(blockEMContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ElectromagneticContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** Wires **/
 		GameRegistry.addRecipe(new ShapedOreRecipe(EnumWireMaterial.COPPER.getWire(3), "MMM", 'M', "ingotCopper"));

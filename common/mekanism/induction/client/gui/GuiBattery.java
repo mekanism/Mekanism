@@ -1,8 +1,8 @@
 package mekanism.induction.client.gui;
 
 import mekanism.induction.common.MekanismInduction;
-import mekanism.induction.common.battery.ContainerBattery;
-import mekanism.induction.common.battery.TileEntityBattery;
+import mekanism.induction.common.inventory.container.ContainerBattery;
+import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;

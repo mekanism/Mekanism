@@ -1,6 +1,5 @@
 package mekanism.induction.client;
 
-import mekanism.induction.client.fx.FXElectricBolt;
 import mekanism.induction.client.gui.GuiBattery;
 import mekanism.induction.client.gui.GuiMultimeter;
 import mekanism.induction.client.render.BlockRenderingHandler;
@@ -10,11 +9,11 @@ import mekanism.induction.client.render.RenderMultimeter;
 import mekanism.induction.client.render.RenderTesla;
 import mekanism.induction.client.render.RenderWire;
 import mekanism.induction.common.InductionCommonProxy;
-import mekanism.induction.common.battery.TileEntityBattery;
-import mekanism.induction.common.contractor.TileEntityEMContractor;
-import mekanism.induction.common.multimeter.TileEntityMultimeter;
-import mekanism.induction.common.tesla.TileEntityTesla;
-import mekanism.induction.common.wire.TileEntityWire;
+import mekanism.induction.common.tileentity.TileEntityBattery;
+import mekanism.induction.common.tileentity.TileEntityEMContractor;
+import mekanism.induction.common.tileentity.TileEntityMultimeter;
+import mekanism.induction.common.tileentity.TileEntityTesla;
+import mekanism.induction.common.tileentity.TileEntityWire;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

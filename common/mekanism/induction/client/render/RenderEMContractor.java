@@ -2,7 +2,7 @@ package mekanism.induction.client.render;
 
 import mekanism.induction.client.model.ModelEMContractor;
 import mekanism.induction.common.MekanismInduction;
-import mekanism.induction.common.contractor.TileEntityEMContractor;
+import mekanism.induction.common.tileentity.TileEntityEMContractor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;

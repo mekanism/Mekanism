@@ -3,10 +3,10 @@
  */
 package mekanism.induction.client.render;
 
-import mekanism.induction.common.battery.BlockBattery;
-import mekanism.induction.common.contractor.BlockEMContractor;
-import mekanism.induction.common.multimeter.BlockMultimeter;
-import mekanism.induction.common.tesla.BlockTesla;
+import mekanism.induction.common.block.BlockBattery;
+import mekanism.induction.common.block.BlockEMContractor;
+import mekanism.induction.common.block.BlockMultimeter;
+import mekanism.induction.common.block.BlockTesla;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
