@@ -1,5 +1,6 @@
 package mekanism.induction.client.render;
 
+import mekanism.common.Mekanism;
 import mekanism.induction.client.model.ModelEMContractor;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
@@ -59,7 +60,7 @@ public class RenderEMContractor extends TileEntitySpecialRenderer
 			this.bindTexture(TEXTURE_PUSH);
 		}
 
-		if (((TileEntityEMContractor) t).canFunction() && !MekanismInduction.proxy.isPaused())
+		if (((TileEntityEMContractor) t).canFunction() && !Mekanism.proxy.isPaused())
 		{
 			MODEL_SPIN.render(0.0625f);
 		}
