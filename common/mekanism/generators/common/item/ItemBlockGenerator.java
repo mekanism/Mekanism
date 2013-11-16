@@ -337,13 +337,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public int receiveEnergy(ItemStack theItem, int energy, boolean doReceive)
 	{
-		return (int)(recharge(theItem, (int)((energy*Mekanism.FROM_TE)*Mekanism.TO_UE), doReceive)*Mekanism.TO_TE);
+		return (int)(recharge(theItem, (int)((energy*Mekanism.FROM_TE)*Mekanism.TO_UE), !doReceive)*Mekanism.TO_TE);
 	}
 
 	@Override
 	public int extractEnergy(ItemStack theItem, int energy, boolean doTransfer) 
 	{
-		return (int)(discharge(theItem, (int)((energy*Mekanism.FROM_TE)*Mekanism.TO_UE), doTransfer)*Mekanism.TO_TE);
+		return (int)(discharge(theItem, (int)((energy*Mekanism.FROM_TE)*Mekanism.TO_UE), !doTransfer)*Mekanism.TO_TE);
 	}
 
 	@Override

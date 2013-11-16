@@ -14,6 +14,7 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.transporter.TransporterStack.Path;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
@@ -104,7 +105,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 									
 									if(inventory != null)
 									{
-										ItemStack rejected = TransporterUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
+										ItemStack rejected = InventoryUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
 										
 										if(rejected == null)
 										{

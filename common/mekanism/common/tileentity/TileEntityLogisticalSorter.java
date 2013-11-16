@@ -14,7 +14,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterFilter;
-import mekanism.common.transporter.TransporterStack;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -104,7 +104,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(!hasFilter && autoEject)
 					{
-						inInventory = TransporterUtils.takeTopItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
+						inInventory = InventoryUtils.takeTopItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
 					}
 					
 					if(inInventory != null && inInventory.getStack() != null)
@@ -391,7 +391,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		
 		if(back instanceof IInventory)
 		{
-			return TransporterUtils.putStackInInventory((IInventory)back, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.putStackInInventory((IInventory)back, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
 		}
 		
 		return stack;

@@ -35,6 +35,9 @@ public class UniversalElectricity
 	 * explode under high voltage and react to different amounts of voltage differently.
 	 */
 	public static boolean isVoltageSensitive = false;
+	
+	//TODO: Enable this next major MC version
+	//public static float DEFAULT_VOLTAGE = 1;
 
 	/**
 	 * Set this value to true if your mod contains and has the ability to transfer electricity via

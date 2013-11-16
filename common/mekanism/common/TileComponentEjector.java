@@ -10,6 +10,7 @@ import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
@@ -116,7 +117,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				
 				if(tile instanceof IInventory && !(tile instanceof TileEntityLogisticalTransporter))
 				{
-					stack = TransporterUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
+					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
 				}
 				else if(tile instanceof TileEntityLogisticalTransporter)
 				{

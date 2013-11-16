@@ -2,13 +2,13 @@ package mekanism.common.transporter;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
-import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class ItemStackFilter extends TransporterFilter
 {
@@ -40,10 +40,10 @@ public class ItemStackFilter extends TransporterFilter
 	{
 		if(sizeMode)
 		{
-			return TransporterUtils.takeDefinedItem(inv, side.ordinal(), itemType, min, max);
+			return InventoryUtils.takeDefinedItem(inv, side.ordinal(), itemType, min, max);
 		}
 		else {
-			return TransporterUtils.takeTopItem(inv, side.ordinal());
+			return InventoryUtils.takeTopItem(inv, side.ordinal());
 		}
 	}
 	

@@ -58,9 +58,9 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
 				}
 			}
-			
-			ticker++;
 		}
+		
+		ticker++;
 	}
 	
 	@Override

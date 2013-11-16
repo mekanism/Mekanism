@@ -22,7 +22,7 @@ public abstract class MachineRecipeHandler extends TemplateRecipeHandler
 	public abstract String getRecipeId();
 
 	public abstract Set<Entry<ItemStack, ItemStack>> getRecipes();
-
+	
 	@Override
 	public void drawBackground(int i)
 	{

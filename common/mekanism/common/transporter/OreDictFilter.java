@@ -2,14 +2,14 @@ package mekanism.common.transporter;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class OreDictFilter extends TransporterFilter
 {
@@ -57,7 +57,7 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
 	{
-		return TransporterUtils.takeTopItem(inv, side.ordinal());
+		return InventoryUtils.takeTopItem(inv, side.ordinal());
 	}
 	
 	@Override
