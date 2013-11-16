@@ -27,7 +27,5 @@ public class SoundHandler
 		{
 			event.manager.addSound(MekanismInduction.PREFIX + SOUND_FILES[i]);
 		}
-
-		MekanismInduction.LOGGER.fine("Loaded sound fxs");
 	}
 }
