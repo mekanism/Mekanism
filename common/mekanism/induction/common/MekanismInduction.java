@@ -180,6 +180,9 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void init(FMLInitializationEvent evt)
 	{
+		//Add this module to the core list
+		Mekanism.modulesLoaded.add(this);
+		
 		Compatibility.initiate();
 	}
 
@@ -190,7 +193,7 @@ public class MekanismInduction implements IModule
 		 * Recipes
 		 */
 		ItemStack emptyCapacitor = new ItemStack(Capacitor);
-		((IItemElectric) Capacitor).setElectricity(emptyCapacitor, 0);
+		((IItemElectric)Capacitor).setElectricity(emptyCapacitor, 0);
 
 		/** Capacitor **/
 		GameRegistry.addRecipe(new ShapedOreRecipe(emptyCapacitor, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
@@ -216,8 +219,7 @@ public class MekanismInduction implements IModule
 
 	public static void replaceTileEntity(Class<? extends TileEntity> findTile, Class<? extends TileEntity> replaceTile)
 	{
-		try
-		{
+		try {
 			Map<String, Class> nameToClassMap = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "70326_a", "nameToClassMap", "a");
 			Map<Class, String> classToNameMap = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "70326_b", "classToNameMap", "b");
 
@@ -234,8 +236,7 @@ public class MekanismInduction implements IModule
 				LOGGER.severe("Failed to replace TileEntity: " + findTile);
 			}
 		}
-		catch (Exception e)
-		{
+		catch(Exception e) {
 			LOGGER.severe("Failed to replace TileEntity: " + findTile);
 			e.printStackTrace();
 		}
