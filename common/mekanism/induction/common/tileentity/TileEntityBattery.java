@@ -17,8 +17,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.ListUtils;
 import mekanism.induction.common.BatteryUpdateProtocol;
-import mekanism.induction.common.ListUtil;
 import mekanism.induction.common.SynchronizedBatteryData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -404,7 +404,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 	{
 		float amount = pack.getWatts();
 
-		List<ItemStack> inverse = ListUtil.inverse(structure.inventory);
+		List<ItemStack> inverse = ListUtils.inverse(structure.inventory);
 
 		float removed = 0;
 		for (ItemStack itemStack : inverse)
@@ -524,7 +524,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 		{
 			if(!worldObj.isRemote)
 			{
-				return ListUtil.getTop(structure.inventory);
+				return ListUtils.getTop(structure.inventory);
 			}
 			else {
 				return structure.tempStack;
@@ -583,7 +583,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 			{
 				if(!worldObj.isRemote)
 				{
-					structure.inventory.remove(ListUtil.getTop(structure.inventory));
+					structure.inventory.remove(ListUtils.getTop(structure.inventory));
 				}
 				else {
 					structure.tempStack = null;

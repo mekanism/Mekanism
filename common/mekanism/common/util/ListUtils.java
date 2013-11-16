@@ -1,17 +1,17 @@
-package mekanism.induction.common;
+package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class ListUtil
+public class ListUtils
 {
 	public static <V> List<V> inverse(List<V> list)
 	{
 		List<V> toReturn = new ArrayList<V>();
 
-		for (int i = list.size() - 1; i >= 0; i--)
+		for(int i = list.size() - 1; i >= 0; i--)
 		{
 			toReturn.add(list.get(i));
 		}
@@ -23,21 +23,20 @@ public class ListUtil
 	{
 		List<V> toReturn = new ArrayList<V>();
 
-		if (list.size() <= cap)
+		if(list.size() <= cap)
 		{
 			toReturn = copy(list);
 		}
-		else
-		{
+		else {
 			int count = 0;
 
-			for (V obj : list)
+			for(V obj : list)
 			{
 				count++;
 
 				toReturn.add(obj);
 
-				if (count == cap)
+				if(count == cap)
 				{
 					break;
 				}
@@ -51,7 +50,7 @@ public class ListUtil
 	{
 		List<V> toReturn = new ArrayList<V>();
 
-		for (V obj : list)
+		for(V obj : list)
 		{
 			toReturn.add(obj);
 		}
@@ -63,12 +62,12 @@ public class ListUtil
 	{
 		List<V> newList = new ArrayList<V>();
 
-		for (V obj : listOne)
+		for(V obj : listOne)
 		{
 			newList.add(obj);
 		}
 
-		for (V obj : listTwo)
+		for(V obj : listTwo)
 		{
 			newList.add(obj);
 		}
@@ -80,24 +79,23 @@ public class ListUtil
 	{
 		List<V> toReturn = new ArrayList<V>();
 
-		if (list.size() <= cap)
+		if(list.size() <= cap)
 		{
 			return toReturn;
 		}
-		else
-		{
+		else {
 			List<V> inverse = inverse(list);
 
 			int iterNeeded = list.size() - cap;
 			int count = 0;
 
-			for (V obj : list)
+			for(V obj : list)
 			{
 				count++;
 
 				toReturn.add(obj);
 
-				if (count == iterNeeded)
+				if(count == iterNeeded)
 				{
 					break;
 				}
@@ -114,26 +112,26 @@ public class ListUtil
 
 		ArrayList<List<V>> toReturn = new ArrayList<List<V>>();
 
-		for (int i = 0; i < divide; i++)
+		for(int i = 0; i < divide; i++)
 		{
 			toReturn.add(i, new ArrayList<V>());
 		}
 
-		for (List<V> iterSet : toReturn)
+		for(List<V> iterSet : toReturn)
 		{
 			List<V> removed = new ArrayList<V>();
 
 			int toAdd = size;
 
-			if (remain > 0)
+			if(remain > 0)
 			{
 				remain--;
 				toAdd++;
 			}
 
-			for (V obj : list)
+			for(V obj : list)
 			{
-				if (toAdd == 0)
+				if(toAdd == 0)
 				{
 					break;
 				}
@@ -143,7 +141,7 @@ public class ListUtil
 				toAdd--;
 			}
 
-			for (V obj : removed)
+			for(V obj : removed)
 			{
 				list.remove(obj);
 			}
@@ -154,7 +152,7 @@ public class ListUtil
 
 	public static <V> V getTop(List<V> list)
 	{
-		for (V obj : list)
+		for(V obj : list)
 		{
 			return obj;
 		}

@@ -163,6 +163,9 @@ public class CommonProxy
 	  	Mekanism.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04).getDouble(.04);
 	  	Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000).getDouble(10000);
 	  	
+	  	Mekanism.TO_TE = Mekanism.TO_BC*10;
+	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;
+	  	
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50).getDouble(50);
 		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 50).getDouble(50);
 		Mekanism.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50).getDouble(50);

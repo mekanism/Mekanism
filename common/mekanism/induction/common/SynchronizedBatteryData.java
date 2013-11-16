@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.common.util.ListUtils;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
@@ -53,7 +54,7 @@ public class SynchronizedBatteryData
 
 	public void sortInventory()
 	{
-		Object[] array = ListUtil.copy(inventory).toArray();
+		Object[] array = ListUtils.copy(inventory).toArray();
 
 		ItemStack[] toSort = new ItemStack[array.length];
 

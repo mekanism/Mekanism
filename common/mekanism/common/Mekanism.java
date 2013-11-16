@@ -230,11 +230,11 @@ public class Mekanism
 	
 	public static double TO_IC2;
 	public static double TO_BC;
-	public static double TO_TE = TO_BC*10;
+	public static double TO_TE;
 	public static double TO_UE = .001;
 	public static double FROM_IC2;
 	public static double FROM_BC;
-	public static double FROM_TE = FROM_BC*10;
+	public static double FROM_TE;
 	public static double FROM_UE = 1000;
 	
 	//Usage Configuration

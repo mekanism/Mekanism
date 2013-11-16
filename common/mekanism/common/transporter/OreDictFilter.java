@@ -57,7 +57,7 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
 	{
-		return InventoryUtils.takeTopItem(inv, side.ordinal());
+		return InventoryUtils.takeTopStack(inv, side.ordinal());
 	}
 	
 	@Override

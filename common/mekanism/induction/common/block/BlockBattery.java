@@ -5,8 +5,8 @@ package mekanism.induction.common.block;
 
 import mekanism.api.induction.ICapacitor;
 import mekanism.common.Mekanism;
+import mekanism.common.util.ListUtils;
 import mekanism.induction.client.render.BlockRenderingHandler;
-import mekanism.induction.common.ListUtil;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.block.Block;
@@ -47,7 +47,7 @@ public class BlockBattery extends Block implements ITileEntityProvider
 			if (!entityPlayer.capabilities.isCreativeMode)
 			{
 				TileEntityBattery tileEntity = (TileEntityBattery) world.getBlockTileEntity(x, y, z);
-				ItemStack itemStack = ListUtil.getTop(tileEntity.structure.inventory);
+				ItemStack itemStack = ListUtils.getTop(tileEntity.structure.inventory);
 
 				if (tileEntity.structure.inventory.remove(itemStack))
 				{

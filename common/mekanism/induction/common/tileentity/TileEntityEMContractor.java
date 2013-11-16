@@ -11,7 +11,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.induction.common.InventoryUtil;
+import mekanism.common.util.InventoryUtils;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.PathfinderEMContractor;
 import mekanism.induction.common.ThreadEMPathfinding;
@@ -102,7 +102,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 			if(!suck && pushDelay == 0)
 			{
-				ItemStack retrieved = InventoryUtil.takeTopItemFromInventory(inventory, getFacing().ordinal());
+				ItemStack retrieved = InventoryUtils.takeTopItemFromInventory(inventory, getFacing().ordinal());
 
 				if(retrieved != null)
 				{
@@ -122,7 +122,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				{
 					for(EntityItem item : (List<EntityItem>) worldObj.getEntitiesWithinAABB(EntityItem.class, suckBounds))
 					{
-						ItemStack remains = InventoryUtil.putStackInInventory(inventory, item.getEntityItem(), getFacing().ordinal());
+						ItemStack remains = InventoryUtils.putStackInInventory(inventory, item.getEntityItem(), getFacing().ordinal(), false);
 
 						if(remains == null)
 						{
@@ -354,6 +354,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 				break;
 		}
 
+		entityItem.ticksExisted = 1;
 		entityItem.isAirBorne = true;
 		entityItem.delayBeforeCanPickup = 1;
 		entityItem.age = Math.max(entityItem.age - 1, 0);

@@ -104,7 +104,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(!hasFilter && autoEject)
 					{
-						inInventory = InventoryUtils.takeTopItem(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
+						inInventory = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
 					}
 					
 					if(inInventory != null && inInventory.getStack() != null)

@@ -140,7 +140,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock implements 
 	{
 		if(side == 0 || !canAccess())
 		{
-			return new int[] {55};
+			return null;
 		}
 		else {
 			int[] ret = new int[55];

@@ -291,7 +291,7 @@ public final class InventoryUtils
 		return null;
 	}
 
-	public static InvStack takeTopItem(IInventory inventory, int side) 
+	public static InvStack takeTopStack(IInventory inventory, int side) 
 	{
 		if(!(inventory instanceof ISidedInventory)) 
 		{

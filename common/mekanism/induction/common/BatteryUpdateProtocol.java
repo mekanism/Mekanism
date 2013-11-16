@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.common.util.ListUtils;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -209,7 +210,7 @@ public class BatteryUpdateProtocol
 		
 		for(SynchronizedBatteryData data : structures)
 		{
-			mergedInv = ListUtil.merge(mergedInv, data.inventory);
+			mergedInv = ListUtils.merge(mergedInv, data.inventory);
 			
 			if(data.hasVisibleInventory())
 			{
@@ -219,11 +220,11 @@ public class BatteryUpdateProtocol
 
 		int maxCells = iteratedNodes.size() * BatteryManager.CELLS_PER_BATTERY;
 
-		List<ItemStack> rejected = ListUtil.capRemains(mergedInv, maxCells);
+		List<ItemStack> rejected = ListUtils.capRemains(mergedInv, maxCells);
 		ejectItems(rejected, new Vector3(pointer));
 
-		ArrayList<List<ItemStack>> inventories = ListUtil.split(ListUtil.cap(mergedInv, maxCells), iteratedNodes.size());
-		List<TileEntityBattery> iterList = ListUtil.asList(iteratedNodes);
+		ArrayList<List<ItemStack>> inventories = ListUtils.split(ListUtils.cap(mergedInv, maxCells), iteratedNodes.size());
+		List<TileEntityBattery> iterList = ListUtils.asList(iteratedNodes);
 
 		for(int i = 0; i < iterList.size(); i++)
 		{
@@ -286,7 +287,7 @@ public class BatteryUpdateProtocol
 			{
 				TileEntityBattery tileEntity = (TileEntityBattery)obj.getTileEntity(pointer.worldObj);
 
-				structureFound.inventory = ListUtil.merge(structureFound.inventory, tileEntity.structure.inventory);
+				structureFound.inventory = ListUtils.merge(structureFound.inventory, tileEntity.structure.inventory);
 
 				if(tileEntity.structure.hasVisibleInventory())
 				{
@@ -303,10 +304,10 @@ public class BatteryUpdateProtocol
 				tileEntity.structure = structureFound;
 			}
 
-			List<ItemStack> rejected = ListUtil.capRemains(structureFound.inventory, structureFound.getMaxCells());
+			List<ItemStack> rejected = ListUtils.capRemains(structureFound.inventory, structureFound.getMaxCells());
 			ejectItems(rejected, new Vector3(pointer));
 
-			structureFound.inventory = ListUtil.cap(structureFound.inventory, structureFound.getMaxCells());
+			structureFound.inventory = ListUtils.cap(structureFound.inventory, structureFound.getMaxCells());
 		}
 		else {
 			disperseCells();
