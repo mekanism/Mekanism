@@ -51,8 +51,15 @@ public class SoundHandler
 	
 	public void preloadSounds()
 	{
-		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound");
-		File dir = new File(url.getFile().replace("%20", " ").replace(".jar!", ".jar"));
+		String s = getClass().getClassLoader().getResource("assets/mekanism/sound").getFile();
+		s = s.replace("%20", " ").replace(".jar!", ".jar");
+		
+		if(s.contains("file:"))
+		{
+			s = s.split("file:")[1];
+		}
+		
+		File dir = new File(s);
 		
 		if(dir != null && dir.exists())
 		{
@@ -68,8 +75,15 @@ public class SoundHandler
 			System.out.println("Couldn't preload sounds: " + dir.getAbsolutePath());
 		}
 		
-		url = getClass().getClassLoader().getResource("assets/mekanism/sound/etc");
-		dir = new File(url.getFile().replace("%20", " ").replace(".jar!", ".jar"));
+		s = getClass().getClassLoader().getResource("assets/mekanism/sound/etc").getFile();
+		s = s.replace("%20", " ").replace(".jar!", ".jar");
+		
+		if(s.contains("file:"))
+		{
+			s = s.split("file:")[1];
+		}
+		
+		dir = new File(s);
 		
 		if(dir != null && dir.exists())
 		{
