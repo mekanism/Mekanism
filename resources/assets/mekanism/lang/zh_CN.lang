@@ -32,7 +32,7 @@ tile.BasicBlock.RefinedObsidian.name=强化黑曜石
 tile.BasicBlock.CoalBlock.name=煤炭方块
 tile.BasicBlock.RefinedGlowstone.name=强化荧石
 tile.BasicBlock.SteelBlock.name=钢方块
-tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.Bin.name=箱柜
 tile.BasicBlock.TeleporterFrame.name=传送框架
 tile.BasicBlock.SteelCasing.name=钢质机壳
 tile.BasicBlock.DynamicTank.name=动态储罐
@@ -40,7 +40,7 @@ tile.BasicBlock.DynamicGlass.name=动态玻璃
 tile.BasicBlock.DynamicValve.name=动态阀门
 
 //Machine Block
-tile.MachineBlock.EnrichmentChamber.name=富集仓E
+tile.MachineBlock.EnrichmentChamber.name=富集仓
 tile.MachineBlock.OsmiumCompressor.name=锇压缩机
 tile.MachineBlock.Combiner.name=融合机
 tile.MachineBlock.Crusher.name=粉碎机
@@ -92,7 +92,7 @@ item.tinClump.name=锡疙瘩
 item.silverClump.name=银疙瘩
 item.obsidianClump.name=黑曜石疙瘩
 
-//Dirty粉
+//DirtyDust
 item.dirtyIronDust.name=污浊的铁粉
 item.dirtyGoldDust.name=污浊的金粉
 item.dirtyOsmiumDust.name=污浊的锇粉
@@ -211,3 +211,18 @@ item.SteelHelmet.name=钢头盔
 item.SteelChestplate.name=钢胸甲
 item.SteelLeggings.name=钢护腿
 item.SteelBoots.name=钢靴子
+
+//*********//
+//INDUCTION//
+//*********//
+
+//Blocks
+tile.Tesla.name=特斯拉线圈
+tile.Multimeter.name=万用表
+tile.ElectromagneticContractor.name=电磁承接口
+tile.Battery.name=模块电池
+
+//Items
+item.Capacitor.name=电容器
+item.InfiniteCapacitor.name=无限电容器
+item.Linker.name=静电链接器
