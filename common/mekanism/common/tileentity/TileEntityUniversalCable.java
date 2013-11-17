@@ -357,7 +357,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			ArrayList list = new ArrayList();
 			list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-	    	return (int)(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
+	    	return maxReceive - (int)(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
 		}
 		
 		return 0;
