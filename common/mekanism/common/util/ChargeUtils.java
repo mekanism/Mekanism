@@ -46,11 +46,10 @@ public final class ChargeUtils
 				ItemStack itemStack = storer.inventory[slotID];
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
 				
-				int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack));
-				int toTransfer = (int)Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_TE));
+				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_TE)));
 				
-				item.extractEnergy(itemStack, toTransfer, false);
-				storer.setEnergy(storer.getEnergy() + (toTransfer*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 			else if(storer.inventory[slotID].itemID == Item.redstone.itemID && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
@@ -92,11 +91,10 @@ public final class ChargeUtils
 				ItemStack itemStack = storer.inventory[slotID];
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
 				
-				int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack));
-				int toTransfer = (int)Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE));
+				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE)));
 				
-				item.extractEnergy(itemStack, toTransfer, false);
-				storer.setEnergy(storer.getEnergy() - (toTransfer*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() - (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 		}
 	}

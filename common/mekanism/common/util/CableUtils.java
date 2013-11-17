@@ -292,7 +292,7 @@ public final class CableUtils
 				{
 					IEnergyHandler handler = (IEnergyHandler)tileEntity;
 					double toSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
-					int used = handler.receiveEnergy(emitter.getOutputtingSide().getOpposite(), (int)(toSend*Mekanism.TO_TE), false);
+					int used = handler.receiveEnergy(emitter.getOutputtingSide().getOpposite(), (int)Math.round(toSend*Mekanism.TO_TE), false);
 					emitter.setEnergy(emitter.getEnergy() - used*Mekanism.FROM_TE);
 				}
 				else if(tileEntity instanceof IEnergySink)

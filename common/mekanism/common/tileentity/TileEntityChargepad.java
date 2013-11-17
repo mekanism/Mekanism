@@ -145,11 +145,10 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			{
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 				
-				int itemEnergy = (int)Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack));
-				int toTransfer = (int)Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE));
+				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE)));
 				
-				item.receiveEnergy(itemstack, toTransfer, false);
-				setEnergy(getEnergy() - (toTransfer*Mekanism.FROM_TE));
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 		}
 	}

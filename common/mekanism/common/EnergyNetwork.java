@@ -102,6 +102,35 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public synchronized double emit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
+		double prevEnergy = energyToSend;
+		double sent;
+
+		energyToSend = doEmit(energyToSend, ignored);
+		sent = prevEnergy-energyToSend;
+		
+		boolean tryAgain = energyToSend > 0 && sent > 0;
+		
+		while(tryAgain)
+		{
+			tryAgain = false;
+			
+			prevEnergy = energyToSend;
+			sent = 0;
+			
+			energyToSend = doEmit(energyToSend, ignored);
+			sent = prevEnergy-energyToSend;
+			
+			if(energyToSend > 0 && sent > 0)
+			{
+				tryAgain = true;
+			}
+		}
+		
+		return energyToSend;
+	}
+	
+	public synchronized double doEmit(double energyToSend, ArrayList<TileEntity> ignored)
+	{
 		double energyAvailable = energyToSend;		
 		double sent;
 		
@@ -132,7 +161,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					else if(acceptor instanceof IEnergyHandler)
 					{
 						IEnergyHandler handler = (IEnergyHandler)acceptor;
-						int used = handler.receiveEnergy(side.getOpposite(), (int)(currentSending*Mekanism.TO_TE), false);
+						int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*Mekanism.TO_TE), false);
 						energyToSend -= used*Mekanism.FROM_TE;
 					}
 					else if(acceptor instanceof IEnergySink)

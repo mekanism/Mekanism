@@ -318,10 +318,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	}
 
 	@Override
-	public void refresh()
-	{
-		refreshTransmitterNetwork();
-	}
+	public void refresh() {}
 
 	@Override
 	public boolean canConnect(ForgeDirection direction)
@@ -357,7 +354,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			ArrayList list = new ArrayList();
 			list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-	    	return maxReceive - (int)(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
+	    	return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
 		}
 		
 		return 0;
@@ -386,7 +383,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		ArrayList list = new ArrayList();
 		list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
-		return (int)(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_TE);
+		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_TE);
 	}
 	
 	public class FakeUENetwork implements IElectricityNetwork
