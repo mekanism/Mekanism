@@ -145,5 +145,7 @@
 		<zip destfile="MDK.zip">
 			<fileset dir="mdkContents"/>
 		</zip>
+		
+		<copy todir="output" file="build.properties" />
 	</target>
 </project>
