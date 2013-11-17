@@ -64,6 +64,9 @@ public class SoundHandler
 				}
 			}
 		}
+		else {
+			System.out.println("Couldn't preload sounds: " + dir.getAbsolutePath());
+		}
 		
 		url = getClass().getClassLoader().getResource("assets/mekanism/sound/etc");
 		dir = new File(url.getFile().replace("%20", " "));
@@ -77,6 +80,9 @@ public class SoundHandler
 					mc.sndManager.addSound("mekanism:etc/" + file.getName());
 				}
 			}
+		}
+		else {
+			System.out.println("Couldn't find sounds: " + dir.getAbsolutePath());
 		}
 	}
 	
