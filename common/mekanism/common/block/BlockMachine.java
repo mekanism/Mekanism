@@ -31,6 +31,7 @@ import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityCrusher;
+import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
 import mekanism.common.tileentity.TileEntityElectricPump;
@@ -75,7 +76,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1: Osmium Compressor
  * 2: Combiner
  * 3: Crusher
- * 4: OPEN
+ * 4: Digital Miner
  * 5: Basic Factory
  * 6: Advanced Factory
  * 7: Elite Factory
@@ -128,14 +129,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		icons[blockID][7][0] = register.registerIcon("mekanism:EliteFactoryFront");
 		icons[blockID][7][1] = register.registerIcon("mekanism:EliteFactorySide");
 		icons[blockID][7][2] = register.registerIcon("mekanism:EliteFactoryTop");
-		icons[blockID][8][0] = register.registerIcon("mekanism:MetallurgicInfuserFrontOff");
-		icons[blockID][8][1] = register.registerIcon("mekanism:MetallurgicInfuserFrontOn");
-		icons[blockID][8][2] = register.registerIcon("mekanism:MetallurgicInfuserSideOff");
-		icons[blockID][8][3] = register.registerIcon("mekanism:MetallurgicInfuserSideOn");
-		icons[blockID][8][4] = register.registerIcon("mekanism:MetallurgicInfuserTopOff");
-		icons[blockID][8][5] = register.registerIcon("mekanism:MetallurgicInfuserTopOn");
-		icons[blockID][8][6] = register.registerIcon("mekanism:MetallurgicInfuserBackOff");
-		icons[blockID][8][7] = register.registerIcon("mekanism:MetallurgicInfuserBackOn");
 		icons[blockID][9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
 		icons[blockID][9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
 		icons[blockID][9][2] = register.registerIcon("mekanism:SteelCasing");
@@ -183,6 +176,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	((IBoundingBlock)tileEntity).onPlace();
         }
     }
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int i1, int i2)
+	{
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+
+		if(tileEntity instanceof IBoundingBlock)
+		{
+			((IBoundingBlock)tileEntity).onBreak();
+		}
+
+		super.breakBlock(world, x, y, z, i1, i2);
+	}
 	
 	@Override
     @SideOnly(Side.CLIENT)
@@ -332,24 +338,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	    			return icons[blockID][7][1];
 	    		}
 	    	}
-	    	else if(meta == 8)
-	    	{
-	        	if(side == 0 || side == 1)
-	        	{
-	        		return icons[blockID][8][4];
-	        	}
-	        	else if(side == 3)
-	        	{
-	        		return icons[blockID][8][0];
-	        	}
-	        	else if(side == 2)
-	        	{
-	        		return icons[blockID][8][6];
-	        	}
-	        	else {
-	        		return icons[blockID][8][2];
-	        	}
-	    	}
 	    	else if(meta == 9)
 	    	{
 	    		if(side == 3)
@@ -468,26 +456,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     			return icons[blockID][7][1];
     		}
     	}
-    	else if(metadata == 8)
-    	{
-            if(side == 0 || side == 1)
-            {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][5] : icons[blockID][8][4];
-            }
-            else {
-            	if(side == tileEntity.facing)
-            	{
-            		return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][1] : icons[blockID][8][0];
-            	}
-            	else if(side == ForgeDirection.getOrientation(tileEntity.facing).getOpposite().ordinal())
-            	{
-            		return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][7] : icons[blockID][8][6];
-            	}
-            	else {
-            		return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][8][3] : icons[blockID][8][2];
-            	}
-            }
-    	}
     	else if(metadata == 9)
     	{
     		if(side == tileEntity.facing)
@@ -530,6 +498,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
+		//TODO DIGITAL MINER
 		
 		for(RecipeType type : RecipeType.values())
 		{
@@ -930,6 +899,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		OSMIUM_COMPRESSOR(Mekanism.machineBlockID, 1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
 		COMBINER(Mekanism.machineBlockID, 2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
 		CRUSHER(Mekanism.machineBlockID, 3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
+		DIGITAL_MINER(Mekanism.machineBlockID, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true),
 		BASIC_FACTORY(Mekanism.machineBlockID, 5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
 		ADVANCED_FACTORY(Mekanism.machineBlockID, 6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
 		ELITE_FACTORY(Mekanism.machineBlockID, 7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),

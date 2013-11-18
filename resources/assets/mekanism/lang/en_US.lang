@@ -55,6 +55,7 @@ tile.MachineBlock.ElectricPump.name=Electric Pump
 tile.MachineBlock.ElectricChest.name=Electric Chest
 tile.MachineBlock.Chargepad.name=Chargepad
 tile.MachineBlock.LogisticalSorter.name=Logistical Sorter
+tile.MachineBlock.DigitalMiner.name=Digital Miner
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore

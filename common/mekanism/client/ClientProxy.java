@@ -68,6 +68,7 @@ import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
+import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
 import mekanism.common.tileentity.TileEntityElectricChest;
@@ -104,6 +105,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -226,7 +228,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderConfigurableMachine()); //TODO model
+		ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory", new RenderConfigurableMachine());
@@ -247,6 +249,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter", new RenderLogisticalSorter());
 		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
+		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner"); //TODO model
 	}
 	
 	@Override
@@ -296,6 +299,8 @@ public class ClientProxy extends CommonProxy
 		{
 			case 1:
 				return new GuiCredits();
+			case 2:
+				//DigitalMiner GUI TODO
 			case 3:
 				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
@@ -409,6 +414,12 @@ public class ClientProxy extends CommonProxy
 				}
 			}
 		}
+	}
+	
+	@Override
+	public double getReach(EntityPlayer player)
+	{
+		return Minecraft.getMinecraft().playerController.getBlockReachDistance();
 	}
 	
 	@Override

@@ -39,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import codechicken.lib.raytracer.RayTracer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -217,17 +218,21 @@ public class BlockBasic extends Block
 		int meta = world.getBlockMetadata(x, y, z);
 		
 		if(!world.isRemote && meta == 6)
-		{
+		{			
 			TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+			MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
 			
-			if(bin.getStack() != null)
+			if(pos != null && pos.sideHit == bin.facing)
 			{
-				if(!player.isSneaking())
+				if(bin.getStack() != null)
 				{
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
-				}
-				else {
-					world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
+					if(!player.isSneaking())
+					{
+						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
+					}
+					else {
+						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
+					}
 				}
 			}
 		}

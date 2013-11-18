@@ -2,12 +2,10 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
-import mekanism.client.model.ModelCrusher;
 import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -29,7 +27,6 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
 	public ModelChargepad chargepad = new ModelChargepad();
 	public ModelLogisticalSorter logisticalSorter = new ModelLogisticalSorter();
-	public ModelCrusher crusher = new ModelCrusher();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -73,14 +70,6 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
 	    	logisticalSorter.render(0.0625F, false);
 		}
-		/*else if(metadata == MachineType.CRUSHER.meta)
-		{    			
-			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
-   			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Crusher.png"));
-			crusher.render(0.0625F, 0.0F);
-		} TODO model */
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);
 		}

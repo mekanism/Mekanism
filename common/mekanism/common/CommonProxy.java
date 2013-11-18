@@ -25,6 +25,7 @@ import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityCrusher;
+import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
 import mekanism.common.tileentity.TileEntityElectricChest;
@@ -46,6 +47,7 @@ import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -89,6 +91,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter");
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
+		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
 	}
 	
 	/**
@@ -240,6 +243,8 @@ public class CommonProxy
 		
 		switch(ID)
 		{
+			case 2:
+				//DIGITAL MINER CONTAINER TODO
 			case 3:
 				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
@@ -301,6 +306,16 @@ public class CommonProxy
 		}
 		
 		return null;
+	}
+	
+	public double getReach(EntityPlayer player)
+	{
+		if(player instanceof EntityPlayerMP)
+		{
+			return ((EntityPlayerMP)player).theItemInWorldManager.getBlockReachDistance();
+		}
+		
+		return 0;
 	}
 	
 	/**

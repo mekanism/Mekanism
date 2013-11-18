@@ -41,13 +41,14 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -1026,6 +1027,34 @@ public final class MekanismUtils
     	}
     	
     	return false;
+    }
+    
+    public static MovingObjectPosition rayTrace(World world, EntityPlayer player)
+    {
+    	double reach = Mekanism.proxy.getReach(player);
+    	
+        Vec3 headVec = getHeadVec(player);
+        Vec3 lookVec = player.getLook(1);
+        Vec3 endVec = headVec.addVector(lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach);
+        
+        return world.rayTraceBlocks_do_do(headVec, endVec, true, false);
+    }
+    
+    public static Vec3 getHeadVec(EntityPlayer player)
+    {
+        Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
+        
+        if(!player.worldObj.isRemote)
+        {
+            vec.yCoord+=player.getEyeHeight();
+            
+            if(player instanceof EntityPlayerMP && player.isSneaking())
+            {
+                vec.yCoord-=0.08;
+            }
+        }
+        
+        return vec;
     }
     
     public static boolean useBuildcraft()
