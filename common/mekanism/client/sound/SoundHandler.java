@@ -58,14 +58,14 @@ public class SoundHandler
 	{
 		CodeSource src = getClass().getProtectionDomain().getCodeSource();
 		String corePath = src.getLocation().getFile().split("/mekanism/client")[0];
-		List<String> listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar"), "assets/mekanism/sound");
+		List<String> listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound");
 		
 		for(String s : listings)
 		{
 			preloadSound(s);
 		}
 		
-		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar"), "assets/mekanism/sound/etc");
+		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/etc");
 		
 		for(String s : listings)
 		{
