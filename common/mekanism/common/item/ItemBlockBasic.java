@@ -115,11 +115,12 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 		{
-			return new ItemStack(Mekanism.ItemProxy);
+			return ItemProxy.getDead();
 		}
 		
 		ItemStack ret = stack.copy();
 		ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
+		
 		return ret;
 	}
 	

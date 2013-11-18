@@ -11,12 +11,13 @@ public class ItemProxy extends Item
 	public ItemProxy(int id)
 	{
 		super(id);
+		setMaxDamage(1);
 	}
 	
 	@Override
 	public ItemStack getContainerItemStack(ItemStack stack)
 	{
-		return getSavedItem(stack) != null ? getSavedItem(stack) : new ItemStack(Mekanism.ItemProxy);
+		return getSavedItem(stack) != null ? getSavedItem(stack) : getDead();
 	}
 	
 	@Override
@@ -62,6 +63,15 @@ public class ItemProxy extends Item
 		}
 		
 		return null;
+	}
+	
+	public static ItemStack getDead()
+	{
+		ItemStack stack = new ItemStack(Mekanism.ItemProxy);
+		stack.stackSize = 0;
+		stack.setItemDamage(2);
+		
+		return stack;
 	}
 	
 	@Override
