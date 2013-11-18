@@ -1,5 +1,7 @@
 package mekanism.common.item;
 
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
@@ -8,6 +10,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
+import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
@@ -30,6 +33,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,6 +46,7 @@ import org.lwjgl.input.Keyboard;
 
 import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
+import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
@@ -247,33 +252,54 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(isElectricChest(itemstack))
 		{
-			setPrevLidAngle(itemstack, getLidAngle(itemstack));
-			float increment = 0.1F;
-			
-		    if((!getOpen(itemstack) && getLidAngle(itemstack) > 0.0F) || (getOpen(itemstack) && getLidAngle(itemstack) < 1.0F))
-		    {
-		    	float angle = getLidAngle(itemstack);
-	
-		    	if(getOpen(itemstack))
-		    	{
-		    		setLidAngle(itemstack, getLidAngle(itemstack)+increment);
-		    	}
-		    	else {
-		    		setLidAngle(itemstack, getLidAngle(itemstack)-increment);
-		    	}
-	
-		    	if(getLidAngle(itemstack) > 1.0F)
-		    	{
-		    		setLidAngle(itemstack, 1.0F);
-		    	}
-	
-		     	float split = 0.5F;
-	
-		     	if(getLidAngle(itemstack) < 0.0F)
-		     	{
-		     		setLidAngle(itemstack, 0.0F);
-		     	}
-		    }
+			if(!world.isRemote)
+			{
+				InventoryElectricChest inv = new InventoryElectricChest(itemstack);
+				
+				if(inv.getStackInSlot(54) != null && getEnergy(itemstack) < getMaxEnergy(itemstack))
+				{
+					if(inv.getStackInSlot(54).getItem() instanceof IEnergizedItem)
+					{
+						setEnergy(itemstack, getEnergy(itemstack) + EnergizedItemManager.discharge(inv.getStackInSlot(54), getMaxEnergy(itemstack) - getEnergy(itemstack)));
+					}
+					else if(inv.getStackInSlot(54).getItem() instanceof IItemElectric)
+					{
+						setEnergy(itemstack, getEnergy(itemstack) + ElectricItemHelper.dischargeItem(inv.getStackInSlot(54), (float)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_UE)));
+					}
+					else if(Mekanism.hooks.IC2Loaded && inv.getStackInSlot(54).getItem() instanceof IElectricItem)
+					{
+						IElectricItem item = (IElectricItem)inv.getStackInSlot(54).getItem();
+						
+						if(item.canProvideEnergy(inv.getStackInSlot(54)))
+						{
+							double gain = ElectricItem.manager.discharge(inv.getStackInSlot(54), (int)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+							setEnergy(itemstack, getEnergy(itemstack) + gain);
+						}
+					}
+					else if(inv.getStackInSlot(54).getItem() instanceof IEnergyContainerItem)
+					{
+						ItemStack itemStack = inv.getStackInSlot(54);
+						IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(54).getItem();
+						
+						int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
+						int toTransfer = (int)Math.round(Math.min(itemEnergy, ((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_TE)));
+						
+						setEnergy(itemstack, getEnergy(itemstack) + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+					}
+					else if(inv.getStackInSlot(54).itemID == Item.redstone.itemID && getEnergy(itemstack)+Mekanism.ENERGY_PER_REDSTONE <= getMaxEnergy(itemstack))
+					{
+						setEnergy(itemstack, getEnergy(itemstack) + Mekanism.ENERGY_PER_REDSTONE);
+						inv.getStackInSlot(54).stackSize--;
+						
+			            if(inv.getStackInSlot(54).stackSize <= 0)
+			            {
+			                inv.setInventorySlotContents(54, null);
+			            }
+					}
+					
+					inv.write();
+				}
+			}
 		}
 	}
 	

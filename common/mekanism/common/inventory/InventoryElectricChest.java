@@ -11,12 +11,22 @@ import net.minecraft.nbt.NBTTagList;
 public class InventoryElectricChest extends InventoryBasic
 {
 	public EntityPlayer entityPlayer;
+	public ItemStack itemStack;
+	
 	public boolean reading;
 	
 	public InventoryElectricChest(EntityPlayer player)
 	{
 		super("Electric Chest", false, 55);
 		entityPlayer = player;
+		
+		read();
+	}
+	
+	public InventoryElectricChest(ItemStack stack)
+	{
+		super("Electric Chest", false, 55);
+		itemStack = stack;
 		
 		read();
 	}
@@ -36,14 +46,14 @@ public class InventoryElectricChest extends InventoryBasic
     public void openChest()
     {
         read();
-        ((IElectricChest)getItemStack().getItem()).setOpen(getItemStack(), true);
+        ((IElectricChest)getStack().getItem()).setOpen(getStack(), true);
     }
 
 	@Override
     public void closeChest()
     {
         write();
-        ((IElectricChest)getItemStack().getItem()).setOpen(getItemStack(), false);
+        ((IElectricChest)getStack().getItem()).setOpen(getStack(), false);
     }
 	
 	public void write()
@@ -61,31 +71,39 @@ public class InventoryElectricChest extends InventoryBasic
             }
         }
         
-        ((ISustainedInventory)getItemStack().getItem()).setInventory(tagList, getItemStack());
+        ((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
 	}
 	
 	public void read()
 	{
+		if(reading)
+		{
+			return;
+		}
+		
 		reading = true;
 		
-        NBTTagList tagList = ((ISustainedInventory)getItemStack().getItem()).getInventory(getItemStack());
+        NBTTagList tagList = ((ISustainedInventory)getStack().getItem()).getInventory(getStack());
 
-        for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+        if(tagList != null)
         {
-            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
-            byte slotID = tagCompound.getByte("Slot");
-
-            if(slotID >= 0 && slotID < getSizeInventory())
-            {
-                setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
-            }
+	        for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+	        {
+	            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
+	            byte slotID = tagCompound.getByte("Slot");
+	
+	            if(slotID >= 0 && slotID < getSizeInventory())
+	            {
+	                setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
+	            }
+	        }
         }
         
         reading = false;
 	}
 	
-	public ItemStack getItemStack()
+	public ItemStack getStack()
 	{
-		return entityPlayer.getCurrentEquippedItem();
+		return itemStack != null ? itemStack : entityPlayer.getCurrentEquippedItem();
 	}
 }
