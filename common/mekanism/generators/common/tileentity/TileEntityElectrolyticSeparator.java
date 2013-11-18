@@ -93,17 +93,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					{
 						waterTank.fill(fluid, true);
 						
-						if(inventory[0].isItemEqual(new ItemStack(Item.bucketWater)))
+						if(inventory[0].getItem().hasContainerItem())
 						{
-							inventory[0] = new ItemStack(Item.bucketEmpty);
+							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
 						}
 						else {
 							inventory[0].stackSize--;
-							
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
+						}
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
 						}
 					}
 				}
