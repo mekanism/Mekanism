@@ -3,10 +3,10 @@
  */
 package mekanism.induction.common.item;
 
+import mekanism.api.Object3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 
 /**
  * @author Calclavia
@@ -26,7 +26,7 @@ public class ItemLinker extends ItemCoordLink
 		{
 			int dimID = world.provider.dimensionId;
 			player.addChatMessage("Set link to block [" + x + ", " + y + ", " + z + "], dimension '" + dimID + "'");
-			this.setLink(stack, new Vector3(x, y, z), dimID);
+			this.setLink(stack, new Object3D(x, y, z), dimID);
 		}
 
 		return true;

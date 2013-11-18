@@ -52,9 +52,9 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 
 		public String display;
 
-		private DetectMode(String display)
+		private DetectMode(String s)
 		{
-			this.display = display;
+			display = s;
 		}
 	}
 
@@ -70,12 +70,12 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 	{
 		super.updateEntity();
 
-		if (!this.worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			if (this.ticks % 20 == 0)
+			if(ticks % 20 == 0)
 			{
-				float prevDetectedEnergy = this.detectedEnergy;
-				this.updateDetection(this.doGetDetectedEnergy());
+				float prevDetectedEnergy = detectedEnergy;
+				updateDetection(doGetDetectedEnergy());
 
 				boolean outputRedstone = false;
 
@@ -84,38 +84,38 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 					default:
 						break;
 					case EQUAL:
-						outputRedstone = this.detectedEnergy == this.energyLimit;
+						outputRedstone = detectedEnergy == energyLimit;
 						break;
 					case GREATER_THAN:
-						outputRedstone = this.detectedEnergy > this.energyLimit;
+						outputRedstone = detectedEnergy > energyLimit;
 						break;
 					case GREATER_THAN_EQUAL:
-						outputRedstone = this.detectedEnergy >= this.energyLimit;
+						outputRedstone = detectedEnergy >= energyLimit;
 						break;
 					case LESS_THAN:
-						outputRedstone = this.detectedEnergy < this.energyLimit;
+						outputRedstone = detectedEnergy < energyLimit;
 						break;
 					case LESS_THAN_EQUAL:
-						outputRedstone = this.detectedEnergy <= this.energyLimit;
+						outputRedstone = detectedEnergy <= energyLimit;
 						break;
 				}
 
-				if (outputRedstone != this.redstoneOn)
+				if(outputRedstone != redstoneOn)
 				{
-					this.redstoneOn = outputRedstone;
-					this.worldObj.notifyBlocksOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, MekanismInduction.Multimeter.blockID);
+					redstoneOn = outputRedstone;
+					worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismInduction.Multimeter.blockID);
 				}
 
-				if (prevDetectedEnergy != this.detectedEnergy)
+				if(prevDetectedEnergy != detectedEnergy)
 				{
-					this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 			}
 		}
 
-		if (!this.worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			for (EntityPlayer player : this.playersUsing)
+			for(EntityPlayer player : playersUsing)
 			{
 				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
 			}
@@ -128,15 +128,15 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 		switch (input.readByte())
 		{
 			default:
-				this.detectMode = DetectMode.values()[input.readByte()];
-				this.detectedEnergy = input.readFloat();
-				this.energyLimit = input.readFloat();
+				detectMode = DetectMode.values()[input.readByte()];
+				detectedEnergy = input.readFloat();
+				energyLimit = input.readFloat();
 				break;
 			case 2:
-				this.toggleMode();
+				toggleMode();
 				break;
 			case 3:
-				this.energyLimit = input.readFloat();
+				energyLimit = input.readFloat();
 				break;
 		}
 	}
@@ -165,41 +165,41 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 
 	public float doGetDetectedEnergy()
 	{
-		ForgeDirection direction = this.getDirection();
-		TileEntity tileEntity = this.worldObj.getBlockTileEntity(this.xCoord + direction.offsetX, this.yCoord + direction.offsetY, this.zCoord + direction.offsetZ);
+		ForgeDirection direction = getDirection();
+		TileEntity tileEntity = worldObj.getBlockTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
 		return getDetectedEnergy(direction.getOpposite(), tileEntity);
 	}
 
 	public static float getDetectedEnergy(ForgeDirection side, TileEntity tileEntity)
 	{
-		if (tileEntity instanceof TileEntityElectrical)
+		if(tileEntity instanceof TileEntityElectrical)
 		{
 			return ((TileEntityElectrical) tileEntity).getEnergyStored();
 		}
-		else if (tileEntity instanceof IElectricalStorage)
+		else if(tileEntity instanceof IElectricalStorage)
 		{
 			return ((IElectricalStorage) tileEntity).getEnergyStored();
 		}
-		else if (tileEntity instanceof IConductor)
+		else if(tileEntity instanceof IConductor)
 		{
 			IElectricityNetwork network = ((IConductor) tileEntity).getNetwork();
 
-			if (MultimeterEventHandler.getCache(tileEntity.worldObj).containsKey(network) && MultimeterEventHandler.getCache(tileEntity.worldObj).get(network) instanceof Float)
+			if(MultimeterEventHandler.getCache(tileEntity.worldObj).containsKey(network) && MultimeterEventHandler.getCache(tileEntity.worldObj).get(network) instanceof Float)
 			{
 				return MultimeterEventHandler.getCache(tileEntity.worldObj).get(network);
 			}
 		}
-		else if (tileEntity instanceof IEnergyStorage)
+		else if(tileEntity instanceof IEnergyStorage)
 		{
 			return ((IEnergyStorage) tileEntity).getStored();
 		}
-		else if (tileEntity instanceof IEnergyStorage)
+		else if(tileEntity instanceof IEnergyStorage)
 		{
 			return ((IEnergyStorage) tileEntity).getStored();
 		}
-		else if (tileEntity instanceof IPowerReceptor)
+		else if(tileEntity instanceof IPowerReceptor)
 		{
-			if (((IPowerReceptor) tileEntity).getPowerReceiver(side) != null)
+			if(((IPowerReceptor) tileEntity).getPowerReceiver(side) != null)
 			{
 				return ((IPowerReceptor) tileEntity).getPowerReceiver(side).getEnergyStored();
 			}
@@ -210,82 +210,72 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 
 	public void updateDetection(float detected)
 	{
-		this.detectedEnergy = detected;
-		this.detectedAverageEnergy = (detectedAverageEnergy + this.detectedEnergy) / 2;
-		this.peakDetection = Math.max(peakDetection, this.detectedEnergy);
+		detectedEnergy = detected;
+		detectedAverageEnergy = (detectedAverageEnergy + detectedEnergy) / 2;
+		peakDetection = Math.max(peakDetection, detectedEnergy);
 	}
 
 	public float getDetectedEnergy()
 	{
-		return this.detectedEnergy;
+		return detectedEnergy;
 	}
 
 	public float getAverageDetectedEnergy()
 	{
-		return this.detectedAverageEnergy;
+		return detectedAverageEnergy;
 	}
 
 	public void toggleMode()
 	{
-		this.detectMode = DetectMode.values()[(this.detectMode.ordinal() + 1) % DetectMode.values().length];
+		detectMode = DetectMode.values()[(detectMode.ordinal() + 1) % DetectMode.values().length];
 	}
 
-	/**
-	 * Reads a tile entity from NBT.
-	 */
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.detectMode = DetectMode.values()[nbt.getInteger("detectMode")];
-		this.energyLimit = nbt.getFloat("energyLimit");
+		detectMode = DetectMode.values()[nbt.getInteger("detectMode")];
+		energyLimit = nbt.getFloat("energyLimit");
 	}
 
-	/**
-	 * Writes a tile entity to NBT.
-	 */
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setInteger("detectMode", this.detectMode.ordinal());
-		nbt.setFloat("energyLimit", this.energyLimit);
+		nbt.setInteger("detectMode", detectMode.ordinal());
+		nbt.setFloat("energyLimit", energyLimit);
 	}
 
 	public DetectMode getMode()
 	{
-		return this.detectMode;
+		return detectMode;
 	}
 
 	public float getLimit()
 	{
-		return this.energyLimit;
+		return energyLimit;
 	}
 
-	/**
-	 * @return
-	 */
 	public float getPeak()
 	{
-		return this.peakDetection;
+		return peakDetection;
 	}
 
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return direction == this.getDirection();
+		return direction == getDirection();
 	}
 
 	@Override
 	public ForgeDirection getDirection()
 	{
-		return ForgeDirection.getOrientation(this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord));
+		return ForgeDirection.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
 	}
 
 	@Override
 	public void setDirection(ForgeDirection direction)
 	{
-		this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, direction.ordinal(), 3);
+		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, direction.ordinal(), 3);
 	}
-
 }

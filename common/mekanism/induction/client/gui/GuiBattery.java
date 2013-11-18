@@ -43,7 +43,7 @@ public class GuiBattery extends GuiContainer
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
 		mc.renderEngine.bindTexture(TEXTURE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

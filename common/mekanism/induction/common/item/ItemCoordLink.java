@@ -5,12 +5,11 @@ package mekanism.induction.common.item;
 
 import java.util.List;
 
-import mekanism.common.Mekanism;
+import mekanism.api.Object3D;
 import mekanism.common.item.ItemMekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,10 +33,10 @@ public abstract class ItemCoordLink extends ItemMekanism
 
 		if (hasLink(itemstack))
 		{
-			Vector3 vec = getLink(itemstack);
+			Object3D obj = getLink(itemstack);
 			int dimID = getLinkDim(itemstack);
 
-			list.add("Bound to [" + (int) vec.x + ", " + (int) vec.y + ", " + (int) vec.z + "], dimension '" + dimID + "'");
+			list.add("Bound to [" + (int) obj.xCoord + ", " + (int) obj.yCoord + ", " + (int) obj.zCoord + "], dimension '" + dimID + "'");
 		}
 		else
 		{
@@ -50,23 +49,23 @@ public abstract class ItemCoordLink extends ItemMekanism
 		return getLink(itemStack) != null;
 	}
 
-	public Vector3 getLink(ItemStack itemStack)
+	public Object3D getLink(ItemStack itemStack)
 	{
 		if (itemStack.stackTagCompound == null || !itemStack.getTagCompound().hasKey("position"))
 		{
 			return null;
 		}
-		return new Vector3(itemStack.getTagCompound().getCompoundTag("position"));
+		return Object3D.read(itemStack.getTagCompound().getCompoundTag("position"));
 	}
 
-	public void setLink(ItemStack itemStack, Vector3 vec, int dimID)
+	public void setLink(ItemStack itemStack, Object3D obj, int dimID)
 	{
 		if (itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.getTagCompound().setCompoundTag("position", vec.writeToNBT(new NBTTagCompound()));
+		itemStack.getTagCompound().setCompoundTag("position", obj.write(new NBTTagCompound()));
 
 		itemStack.stackTagCompound.setInteger("dimID", dimID);
 	}

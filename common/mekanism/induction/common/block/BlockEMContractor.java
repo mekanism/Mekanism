@@ -1,21 +1,19 @@
 package mekanism.induction.common.block;
 
+import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.induction.client.render.BlockRenderingHandler;
-import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.item.ItemCoordLink;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -24,8 +22,8 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 	public BlockEMContractor(int id)
 	{
 		super(id, Material.piston);
-		this.setCreativeTab(Mekanism.tabMekanism);
-		this.setTextureName("mekanism:machine");
+		setCreativeTab(Mekanism.tabMekanism);
+		setTextureName("mekanism:machine");
 		setHardness(5F);
 		setResistance(10F);
 	}
@@ -42,32 +40,33 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 	{
 		TileEntityEMContractor contractor = (TileEntityEMContractor) world.getBlockTileEntity(par2, par3, par4);
 
-		if (entityPlayer.getCurrentEquippedItem() != null)
+		if(entityPlayer.getCurrentEquippedItem() != null)
 		{
-			if (entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
+			if(entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
 			{
 				contractor.setDye(entityPlayer.getCurrentEquippedItem().getItemDamage());
 
-				if (!entityPlayer.capabilities.isCreativeMode)
+				if(!entityPlayer.capabilities.isCreativeMode)
 				{
 					entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
 				}
+				
 				return true;
 			}
-			else if (entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemCoordLink)
+			else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemCoordLink)
 			{
 				ItemCoordLink link = ((ItemCoordLink) entityPlayer.getCurrentEquippedItem().getItem());
-				Vector3 linkVec = link.getLink(entityPlayer.getCurrentEquippedItem());
+				Object3D linkVec = link.getLink(entityPlayer.getCurrentEquippedItem());
 
-				if (linkVec != null)
+				if(linkVec != null)
 				{
-					if (linkVec.getTileEntity(world) instanceof TileEntityEMContractor)
+					if(linkVec.getTileEntity(world) instanceof TileEntityEMContractor)
 					{
 						contractor.setLink((TileEntityEMContractor) linkVec.getTileEntity(world), true);
 
-						if (world.isRemote)
+						if(world.isRemote)
 						{
-							entityPlayer.addChatMessage("Linked " + this.getLocalizedName() + " with " + " [" + (int) linkVec.x + ", " + (int) linkVec.y + ", " + (int) linkVec.z + "]");
+							entityPlayer.addChatMessage("Linked " + getLocalizedName() + " with " + " [" + (int) linkVec.xCoord + ", " + (int) linkVec.yCoord + ", " + (int) linkVec.zCoord + "]");
 						}
 
 						link.clearLink(entityPlayer.getCurrentEquippedItem());
@@ -80,12 +79,11 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 			}
 		}
 
-		if (!entityPlayer.isSneaking())
+		if(!entityPlayer.isSneaking())
 		{
 			contractor.incrementFacing();
 		}
-		else
-		{
+		else {
 			contractor.suck = !contractor.suck;
 			contractor.updatePath();
 		}
@@ -98,13 +96,13 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 	{
 		TileEntityEMContractor tileContractor = (TileEntityEMContractor) world.getBlockTileEntity(x, y, z);
 
-		if (!world.isRemote && !tileContractor.isLatched())
+		if(!world.isRemote && !tileContractor.isLatched())
 		{
-			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				TileEntity tileEntity = world.getBlockTileEntity(x + side.offsetX, y + side.offsetY, z + side.offsetZ);
 
-				if (tileEntity instanceof IInventory)
+				if(tileEntity instanceof IInventory)
 				{
 					tileContractor.setFacing(side.getOpposite());
 					return;

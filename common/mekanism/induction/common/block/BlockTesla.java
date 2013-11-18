@@ -3,6 +3,7 @@
  */
 package mekanism.induction.common.block;
 
+import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.induction.client.render.BlockRenderingHandler;
 import mekanism.induction.common.item.ItemCoordLink;
@@ -48,54 +49,54 @@ public class BlockTesla extends Block implements ITileEntityProvider
 		TileEntity t = world.getBlockTileEntity(x, y, z);
 		TileEntityTesla tileEntity = ((TileEntityTesla) t).getControllingTelsa();
 
-		if (entityPlayer.getCurrentEquippedItem() != null)
+		if(entityPlayer.getCurrentEquippedItem() != null)
 		{
-			if (entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
+			if(entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
 			{
 				tileEntity.setDye(entityPlayer.getCurrentEquippedItem().getItemDamage());
 
-				if (!entityPlayer.capabilities.isCreativeMode)
+				if(!entityPlayer.capabilities.isCreativeMode)
 				{
 					entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
 				}
 
 				return true;
 			}
-			else if (entityPlayer.getCurrentEquippedItem().itemID == Item.redstone.itemID)
+			else if(entityPlayer.getCurrentEquippedItem().itemID == Item.redstone.itemID)
 			{
 				boolean status = tileEntity.toggleEntityAttack();
 
-				if (!entityPlayer.capabilities.isCreativeMode)
+				if(!entityPlayer.capabilities.isCreativeMode)
 				{
 					entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
 				}
 
-				if (!world.isRemote)
+				if(!world.isRemote)
 				{
 					entityPlayer.addChatMessage("Toggled entity attack to: " + status);
 				}
 
 				return true;
 			}
-			else if (entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemCoordLink)
+			else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemCoordLink)
 			{
-				if (tileEntity.linked == null)
+				if(tileEntity.linked == null)
 				{
 					ItemCoordLink link = ((ItemCoordLink) entityPlayer.getCurrentEquippedItem().getItem());
-					Vector3 linkVec = link.getLink(entityPlayer.getCurrentEquippedItem());
+					Object3D linkObj = link.getLink(entityPlayer.getCurrentEquippedItem());
 
-					if (linkVec != null)
+					if(linkObj != null)
 					{
-						if (!world.isRemote)
+						if(!world.isRemote)
 						{
 							int dimID = link.getLinkDim(entityPlayer.getCurrentEquippedItem());
 							World otherWorld = MinecraftServer.getServer().worldServerForDimension(dimID);
 
-							if (linkVec.getTileEntity(otherWorld) instanceof TileEntityTesla)
+							if(linkObj.getTileEntity(otherWorld) instanceof TileEntityTesla)
 							{
-								tileEntity.setLink(new Vector3(((TileEntityTesla) linkVec.getTileEntity(otherWorld)).getTopTelsa()), dimID, true);
+								tileEntity.setLink(Object3D.get(((TileEntityTesla) linkObj.getTileEntity(otherWorld)).getTopTelsa()), dimID, true);
 
-								entityPlayer.addChatMessage("Linked " + this.getLocalizedName() + " with " + " [" + (int) linkVec.x + ", " + (int) linkVec.y + ", " + (int) linkVec.z + "]");
+								entityPlayer.addChatMessage("Linked " + this.getLocalizedName() + " with " + " [" + (int) linkObj.xCoord + ", " + (int) linkObj.yCoord + ", " + (int) linkObj.zCoord + "]");
 
 								link.clearLink(entityPlayer.getCurrentEquippedItem());
 								world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "ambient.weather.thunder", 5, 1);
@@ -105,11 +106,10 @@ public class BlockTesla extends Block implements ITileEntityProvider
 						}
 					}
 				}
-				else
-				{
+				else {
 					tileEntity.setLink(null, world.provider.dimensionId, true);
 
-					if (!world.isRemote)
+					if(!world.isRemote)
 					{
 						entityPlayer.addChatMessage("Unlinked Tesla.");
 					}
@@ -118,11 +118,10 @@ public class BlockTesla extends Block implements ITileEntityProvider
 				}
 			}
 		}
-		else
-		{
+		else {
 			boolean receiveMode = tileEntity.toggleReceive();
 
-			if (world.isRemote)
+			if(world.isRemote)
 			{
 				entityPlayer.addChatMessage("Tesla receive mode is now " + receiveMode);
 			}
@@ -146,8 +145,8 @@ public class BlockTesla extends Block implements ITileEntityProvider
 		return new TileEntityTesla();
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
 		return BlockRenderingHandler.INSTANCE.getRenderId();
@@ -164,5 +163,4 @@ public class BlockTesla extends Block implements ITileEntityProvider
 	{
 		return false;
 	}
-
 }

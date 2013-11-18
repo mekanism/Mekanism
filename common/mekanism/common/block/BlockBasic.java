@@ -27,6 +27,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -260,10 +261,36 @@ public class BlockBasic extends Block
     	{
     		TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
     		
-    		if(entityplayer.getCurrentEquippedItem() != null)
+    		if(bin.itemCount < bin.MAX_STORAGE)
     		{
-    			ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-    			entityplayer.setCurrentItemOrArmor(0, remain);
+	    		if(bin.addTicks == 0)
+	    		{
+	    			if(entityplayer.getCurrentEquippedItem() != null)
+	    			{
+		    			ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
+		    			entityplayer.setCurrentItemOrArmor(0, remain);
+		    			bin.addTicks = 5;
+	    			}
+	    		}
+	    		else {
+	    			ItemStack[] inv = entityplayer.inventory.mainInventory;
+	    			
+	    			for(int i = 0; i < inv.length; i++)
+	    			{
+	    				if(bin.itemCount == bin.MAX_STORAGE)
+	    				{
+	    					break;
+	    				}
+	    				
+	    				if(inv[i] != null)
+	    				{
+	    					ItemStack remain = bin.add(inv[i]);
+	    					inv[i] = remain;
+	    				}
+	    				
+		    			((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+	    			}
+	    		}
     		}
     		
     		return true;

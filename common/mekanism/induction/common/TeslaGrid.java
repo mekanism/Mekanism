@@ -12,10 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
-/**
- * @author Calclavia
- * 
- */
 public class TeslaGrid
 {
 	private static final TeslaGrid INSTANCE_CLIENT = new TeslaGrid();
@@ -25,15 +21,15 @@ public class TeslaGrid
 
 	public void register(ITesla iTesla)
 	{
-		Iterator<ITesla> it = this.tileEntities.iterator();
+		Iterator<ITesla> it = tileEntities.iterator();
 
-		while (it.hasNext())
+		while(it.hasNext())
 		{
 			ITesla tesla = it.next();
 
-			if (tesla instanceof TileEntity)
+			if(tesla instanceof TileEntity)
 			{
-				if (!((TileEntity) tesla).isInvalid())
+				if(!((TileEntity) tesla).isInvalid())
 				{
 					continue;
 				}
@@ -43,22 +39,22 @@ public class TeslaGrid
 
 		}
 
-		this.tileEntities.add(iTesla);
+		tileEntities.add(iTesla);
 	}
 
 	public void unregister(ITesla iTesla)
 	{
-		this.tileEntities.remove(iTesla);
+		tileEntities.remove(iTesla);
 	}
 
 	public Set<ITesla> get()
 	{
-		return this.tileEntities;
+		return tileEntities;
 	}
 
 	public static TeslaGrid instance()
 	{
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			return INSTANCE_SERVER;
 		}

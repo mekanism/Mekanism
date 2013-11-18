@@ -594,9 +594,6 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		}
 	}
 
-	/**
-	 * @param itemDamage
-	 */
 	public void setDye(int dye)
 	{
 		dyeID = dye;

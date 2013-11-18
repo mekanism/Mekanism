@@ -27,6 +27,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public final int MAX_DELAY = 10;
 	
+	public int addTicks = 0;
+	
 	public int delayTicks;
 	
 	public int itemCount;
@@ -156,6 +158,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		if(!worldObj.isRemote)
 		{
+			addTicks = Math.max(0, addTicks-1);
 			delayTicks = Math.max(0, delayTicks-1);
 			
 			if(getStack() != null && isActive && delayTicks == 0)

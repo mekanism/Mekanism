@@ -69,7 +69,7 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	/**
 	 * Quantum Tesla
 	 */
-	public Vector3 linked;
+	public Object3D linked;
 	public int linkDim;
 
 	/**
@@ -90,47 +90,47 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	{
 		super.updateEntity();
 
-		boolean doPacketUpdate = this.getEnergyStored() > 0;
+		boolean doPacketUpdate = getEnergyStored() > 0;
 
 		/**
 		 * Only transfer if it is the bottom controlling Tesla tower.
 		 */
-		if (this.isController())
+		if(isController())
 		{
-			this.produce();
+			produce();
 
-			if (this.ticks % (5 + this.worldObj.rand.nextInt(2)) == 0 && ((this.worldObj.isRemote && this.doTransfer) || (this.getEnergyStored() > 0 && !this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord))))
+			if(ticks % (5 + worldObj.rand.nextInt(2)) == 0 && ((worldObj.isRemote && doTransfer) || (getEnergyStored() > 0 && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))))
 			{
-				final TileEntityTesla topTesla = this.getTopTelsa();
+				final TileEntityTesla topTesla = getTopTelsa();
 				final Vector3 topTeslaVector = new Vector3(topTesla);
 
 				/**
 				 * Quantum transportation.
 				 */
-				if (this.linked != null || this.isLinkedClient)
+				if(linked != null || isLinkedClient)
 				{
-					if (!this.worldObj.isRemote)
+					if(!worldObj.isRemote)
 					{
-						World dimWorld = MinecraftServer.getServer().worldServerForDimension(this.linkDim);
+						World dimWorld = MinecraftServer.getServer().worldServerForDimension(linkDim);
 
-						if (dimWorld != null)
+						if(dimWorld != null)
 						{
-							TileEntity transferTile = this.linked.getTileEntity(dimWorld);
+							TileEntity transferTile = linked.getTileEntity(dimWorld);
 
-							if (transferTile instanceof TileEntityTesla && !transferTile.isInvalid())
+							if(transferTile instanceof TileEntityTesla && !transferTile.isInvalid())
 							{
-								this.transfer(((TileEntityTesla) transferTile), Math.min(this.getProvide(ForgeDirection.UNKNOWN), TRANSFER_CAP));
+								transfer(((TileEntityTesla) transferTile), Math.min(getProvide(ForgeDirection.UNKNOWN), TRANSFER_CAP));
 
-								if (this.zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
+								if(zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
 								{
-									this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, MekanismInduction.PREFIX + "electricshock", this.getEnergyStored() / 25, 1.3f - 0.5f * (this.dyeID / 16f));
+									worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, MekanismInduction.PREFIX + "electricshock", getEnergyStored() / 25, 1.3f - 0.5f * (dyeID / 16f));
 								}
 							}
 						}
 					}
 					else
 					{
-						MekanismInduction.proxy.renderElectricShock(this.worldObj, topTeslaVector.clone().translate(0.5), topTeslaVector.clone().translate(new Vector3(0.5, Double.POSITIVE_INFINITY, 0.5)), false);
+						MekanismInduction.proxy.renderElectricShock(worldObj, topTeslaVector.clone().translate(0.5), topTeslaVector.clone().translate(new Vector3(0.5, Double.POSITIVE_INFINITY, 0.5)), false);
 					}
 				}
 				else
@@ -138,18 +138,18 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 
 					List<ITesla> transferTeslaCoils = new ArrayList<ITesla>();
 
-					for (ITesla tesla : TeslaGrid.instance().get())
+					for(ITesla tesla : TeslaGrid.instance().get())
 					{
-						if (new Vector3((TileEntity) tesla).distance(new Vector3(this)) < this.getRange())
+						if(new Vector3((TileEntity) tesla).distance(new Vector3(this)) < getRange())
 						{
 							/**
 							 * Make sure Tesla is not part of this tower.
 							 */
-							if (!this.connectedTeslas.contains(tesla) && tesla.canReceive(this))
+							if(!connectedTeslas.contains(tesla) && tesla.canReceive(this))
 							{
-								if (tesla instanceof TileEntityTesla)
+								if(tesla instanceof TileEntityTesla)
 								{
-									if (((TileEntityTesla) tesla).getHeight() <= 1)
+									if(((TileEntityTesla) tesla).getHeight() <= 1)
 									{
 										continue;
 									}
@@ -172,11 +172,11 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 							double distance1 = new Vector3(topTesla).distance(new Vector3((TileEntity) o1));
 							double distance2 = new Vector3(topTesla).distance(new Vector3((TileEntity) o2));
 
-							if (distance1 < distance2)
+							if(distance1 < distance2)
 							{
 								return 1;
 							}
-							else if (distance1 > distance2)
+							else if(distance1 > distance2)
 							{
 								return -1;
 							}
@@ -191,51 +191,51 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 						}
 					});
 
-					if (transferTeslaCoils.size() > 0)
+					if(transferTeslaCoils.size() > 0)
 					{
-						float transferEnergy = this.getEnergyStored() / transferTeslaCoils.size();
+						float transferEnergy = getEnergyStored() / transferTeslaCoils.size();
 						int count = 0;
 						boolean sentPacket = false;
-						for (ITesla tesla : transferTeslaCoils)
+						for(ITesla tesla : transferTeslaCoils)
 						{
-							if (this.zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
+							if(zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
 							{
-								this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, MekanismInduction.PREFIX + "electricshock", this.getEnergyStored() / 25, 1.3f - 0.5f * (this.dyeID / 16f));
+								worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, MekanismInduction.PREFIX + "electricshock", getEnergyStored() / 25, 1.3f - 0.5f * (dyeID / 16f));
 							}
 
 							Vector3 targetVector = new Vector3((TileEntity) tesla);
 
-							if (tesla instanceof TileEntityTesla)
+							if(tesla instanceof TileEntityTesla)
 							{
 								((TileEntityTesla) tesla).getControllingTelsa().outputBlacklist.add(this);
 								targetVector = new Vector3(((TileEntityTesla) tesla).getTopTelsa());
 							}
 
 							double distance = topTeslaVector.distance(targetVector);
-							MekanismInduction.proxy.renderElectricShock(this.worldObj, new Vector3(topTesla).translate(new Vector3(0.5)), targetVector.translate(new Vector3(0.5)), (float) MekanismInduction.DYE_COLORS[this.dyeID].x, (float) MekanismInduction.DYE_COLORS[this.dyeID].y, (float) MekanismInduction.DYE_COLORS[this.dyeID].z);
+							MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(topTesla).translate(new Vector3(0.5)), targetVector.translate(new Vector3(0.5)), (float) MekanismInduction.DYE_COLORS[dyeID].x, (float) MekanismInduction.DYE_COLORS[dyeID].y, (float) MekanismInduction.DYE_COLORS[dyeID].z);
 
-							this.transfer(tesla, Math.min(transferEnergy, TRANSFER_CAP));
+							transfer(tesla, Math.min(transferEnergy, TRANSFER_CAP));
 
-							if (!sentPacket && transferEnergy > 0)
+							if(!sentPacket && transferEnergy > 0)
 							{
-								this.sendPacket(3);
+								sendPacket(3);
 							}
 
-							if (this.attackEntities && this.zapCounter % 5 == 0)
+							if(attackEntities && zapCounter % 5 == 0)
 							{
-								MovingObjectPosition mop = topTeslaVector.clone().translate(0.5).rayTraceEntities(this.worldObj, targetVector.clone().translate(0.5));
+								MovingObjectPosition mop = topTeslaVector.clone().translate(0.5).rayTraceEntities(worldObj, targetVector.clone().translate(0.5));
 
-								if (mop != null && mop.entityHit != null)
+								if(mop != null && mop.entityHit != null)
 								{
-									if (mop.entityHit instanceof EntityLivingBase)
+									if(mop.entityHit instanceof EntityLivingBase)
 									{
 										mop.entityHit.attackEntityFrom(DamageSource.magic, 4);
-										MekanismInduction.proxy.renderElectricShock(this.worldObj, new Vector3(topTesla).clone().translate(0.5), new Vector3(mop.entityHit));
+										MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(topTesla).clone().translate(0.5), new Vector3(mop.entityHit));
 									}
 								}
 							}
 
-							if (count++ > 1)
+							if(count++ > 1)
 							{
 								break;
 							}
@@ -243,27 +243,27 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 					}
 				}
 
-				this.zapCounter++;
-				this.outputBlacklist.clear();
+				zapCounter++;
+				outputBlacklist.clear();
 
-				this.doTransfer = false;
+				doTransfer = false;
 			}
 
-			if (!this.worldObj.isRemote && this.getEnergyStored() > 0 != doPacketUpdate)
+			if(!worldObj.isRemote && getEnergyStored() > 0 != doPacketUpdate)
 			{
-				this.sendPacket(2);
+				sendPacket(2);
 			}
 		}
 
-		this.clearCache();
+		clearCache();
 	}
 
 	private void transfer(ITesla tesla, float transferEnergy)
 	{
-		if (transferEnergy > 0)
+		if(transferEnergy > 0)
 		{
-			tesla.transfer(transferEnergy * (1 - (this.worldObj.rand.nextFloat() * 0.1f)), true);
-			this.transfer(-transferEnergy, true);
+			tesla.transfer(transferEnergy * (1 - (worldObj.rand.nextFloat() * 0.1f)), true);
+			transfer(-transferEnergy, true);
 		}
 	}
 
@@ -276,13 +276,13 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	@Override
 	public boolean canReceive(TileEntity tileEntity)
 	{
-		return this.canReceive && !this.outputBlacklist.contains(tileEntity) && this.getRequest(ForgeDirection.UNKNOWN) > 0;
+		return canReceive && !outputBlacklist.contains(tileEntity) && getRequest(ForgeDirection.UNKNOWN) > 0;
 	}
 
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return this.isController();
+		return isController();
 	}
 
 	@Override
@@ -320,7 +320,7 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 
 	public void sendPacket(int id)
 	{
-		switch (id)
+		switch(id)
 		{
 			case 1:
 				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
@@ -337,80 +337,80 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	@Override
 	public void handlePacketData(ByteArrayDataInput input)
 	{
-		switch (input.readByte())
+		switch(input.readByte())
 		{
 			case 1:
-				this.setEnergyStored(input.readFloat());
-				this.dyeID = input.readInt();
-				this.canReceive = input.readBoolean();
-				this.attackEntities = input.readBoolean();
-				this.isLinkedClient = input.readBoolean();
+				setEnergyStored(input.readFloat());
+				dyeID = input.readInt();
+				canReceive = input.readBoolean();
+				attackEntities = input.readBoolean();
+				isLinkedClient = input.readBoolean();
 				break;
 			case 2:
-				this.setEnergyStored(input.readFloat());
+				setEnergyStored(input.readFloat());
 				break;
 			case 3:
-				this.doTransfer = true;
+				doTransfer = true;
 		}
 	}
 
 	private boolean isController()
 	{
-		return this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) == 0;
+		return worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 0;
 	}
 
 	private void clearCache()
 	{
-		this.topCache = null;
-		this.controlCache = null;
+		topCache = null;
+		controlCache = null;
 	}
 
 	@Override
 	public float transfer(float transferEnergy, boolean doTransfer)
 	{
-		if (isController() || this.getControllingTelsa() == this)
+		if(isController() || getControllingTelsa() == this)
 		{
-			if (doTransfer)
+			if(doTransfer)
 			{
-				this.receiveElectricity(transferEnergy, true);
+				receiveElectricity(transferEnergy, true);
 			}
 
-			this.sendPacket(2);
+			sendPacket(2);
 			return transferEnergy;
 		}
 		else
 		{
-			if (this.getEnergyStored() > 0)
+			if(getEnergyStored() > 0)
 			{
-				transferEnergy += this.getEnergyStored();
-				this.setEnergyStored(0);
+				transferEnergy += getEnergyStored();
+				setEnergyStored(0);
 			}
 
-			return this.getControllingTelsa().transfer(transferEnergy, doTransfer);
+			return getControllingTelsa().transfer(transferEnergy, doTransfer);
 		}
 	}
 
 	public int getRange()
 	{
-		return Math.min(4 * (this.getHeight() - 1), 50);
+		return Math.min(4 * (getHeight() - 1), 50);
 	}
 
 	public void updatePositionStatus()
 	{
-		boolean isTop = new Vector3(this).translate(new Vector3(0, 1, 0)).getTileEntity(this.worldObj) instanceof TileEntityTesla;
-		boolean isBottom = new Vector3(this).translate(new Vector3(0, -1, 0)).getTileEntity(this.worldObj) instanceof TileEntityTesla;
+		boolean isTop = new Vector3(this).translate(new Vector3(0, 1, 0)).getTileEntity(worldObj) instanceof TileEntityTesla;
+		boolean isBottom = new Vector3(this).translate(new Vector3(0, -1, 0)).getTileEntity(worldObj) instanceof TileEntityTesla;
 
-		if (isTop && isBottom)
+		if(isTop && isBottom)
 		{
-			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 1, 3);
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 3);
 		}
-		else if (isBottom)
+		else if(isBottom)
 		{
-			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 2, 3);
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 3);
 		}
 		else
 		{
-			this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, 0, 3);
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3);
 		}
 	}
 
@@ -421,22 +421,22 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	 */
 	public TileEntityTesla getTopTelsa()
 	{
-		if (this.topCache != null)
+		if(topCache != null)
 		{
-			return this.topCache;
+			return topCache;
 		}
 
-		this.connectedTeslas.clear();
+		connectedTeslas.clear();
 		Vector3 checkPosition = new Vector3(this);
 		TileEntityTesla returnTile = this;
 
 		while (true)
 		{
-			TileEntity t = checkPosition.getTileEntity(this.worldObj);
+			TileEntity t = checkPosition.getTileEntity(worldObj);
 
-			if (t instanceof TileEntityTesla)
+			if(t instanceof TileEntityTesla)
 			{
-				this.connectedTeslas.add((TileEntityTesla) t);
+				connectedTeslas.add((TileEntityTesla) t);
 				returnTile = (TileEntityTesla) t;
 			}
 			else
@@ -447,7 +447,7 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 			checkPosition.y++;
 		}
 
-		this.topCache = returnTile;
+		topCache = returnTile;
 		return returnTile;
 	}
 
@@ -458,9 +458,9 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	 */
 	public TileEntityTesla getControllingTelsa()
 	{
-		if (this.controlCache != null)
+		if(controlCache != null)
 		{
-			return this.controlCache;
+			return controlCache;
 		}
 
 		Vector3 checkPosition = new Vector3(this);
@@ -468,9 +468,9 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 
 		while (true)
 		{
-			TileEntity t = checkPosition.getTileEntity(this.worldObj);
+			TileEntity t = checkPosition.getTileEntity(worldObj);
 
-			if (t instanceof TileEntityTesla)
+			if(t instanceof TileEntityTesla)
 			{
 				returnTile = (TileEntityTesla) t;
 			}
@@ -482,7 +482,7 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 			checkPosition.y--;
 		}
 
-		this.controlCache = returnTile;
+		controlCache = returnTile;
 		return returnTile;
 	}
 
@@ -493,16 +493,16 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	 */
 	public int getHeight()
 	{
-		this.connectedTeslas.clear();
+		connectedTeslas.clear();
 		int y = 0;
 
 		while (true)
 		{
-			TileEntity t = new Vector3(this).translate(new Vector3(0, y, 0)).getTileEntity(this.worldObj);
+			TileEntity t = new Vector3(this).translate(new Vector3(0, y, 0)).getTileEntity(worldObj);
 
-			if (t instanceof TileEntityTesla)
+			if(t instanceof TileEntityTesla)
 			{
-				this.connectedTeslas.add((TileEntityTesla) t);
+				connectedTeslas.add((TileEntityTesla) t);
 				y++;
 			}
 			else
@@ -535,19 +535,19 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 
 	public void setDye(int id)
 	{
-		this.dyeID = id;
-		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		dyeID = id;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	public boolean toggleReceive()
 	{
-		return this.canReceive = !this.canReceive;
+		return canReceive = !canReceive;
 	}
 
 	public boolean toggleEntityAttack()
 	{
-		boolean returnBool = this.attackEntities = !this.attackEntities;
-		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		boolean returnBool = attackEntities = !attackEntities;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return returnBool;
 	}
 
@@ -558,14 +558,14 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.dyeID = nbt.getInteger("dyeID");
-		this.canReceive = nbt.getBoolean("canReceive");
-		this.attackEntities = nbt.getBoolean("attackEntities");
+		dyeID = nbt.getInteger("dyeID");
+		canReceive = nbt.getBoolean("canReceive");
+		attackEntities = nbt.getBoolean("attackEntities");
 
-		if (nbt.hasKey("link_x") && nbt.hasKey("link_y") && nbt.hasKey("link_z"))
+		if(nbt.hasKey("linked"))
 		{
-			this.linked = new Vector3(nbt.getInteger("link_x"), nbt.getInteger("link_y"), nbt.getInteger("link_z"));
-			this.linkDim = nbt.getInteger("linkDim");
+			linked = Object3D.read(nbt.getCompoundTag("linked"));
+			linkDim = nbt.getInteger("linkDim");
 		}
 	}
 
@@ -576,48 +576,46 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setInteger("dyeID", this.dyeID);
-		nbt.setBoolean("canReceive", this.canReceive);
-		nbt.setBoolean("attackEntities", this.attackEntities);
+		nbt.setInteger("dyeID", dyeID);
+		nbt.setBoolean("canReceive", canReceive);
+		nbt.setBoolean("attackEntities", attackEntities);
 
-		if (this.linked != null)
+		if(linked != null)
 		{
-			nbt.setInteger("link_x", (int) this.linked.x);
-			nbt.setInteger("link_y", (int) this.linked.y);
-			nbt.setInteger("link_z", (int) this.linked.z);
-			nbt.setInteger("linkDim", this.linkDim);
+			nbt.setCompoundTag("linked", linked.write(new NBTTagCompound()));
+			nbt.setInteger("linkDim", linkDim);
 		}
 	}
 
-	public void setLink(Vector3 vector3, int dimID, boolean setOpponent)
+	public void setLink(Object3D obj, int dimID, boolean setOpponent)
 	{
-		if (!this.worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			World otherWorld = MinecraftServer.getServer().worldServerForDimension(this.linkDim);
+			World otherWorld = MinecraftServer.getServer().worldServerForDimension(linkDim);
 
-			if (setOpponent && this.linked != null && otherWorld != null)
+			if(setOpponent && linked != null && otherWorld != null)
 			{
-				TileEntity tileEntity = this.linked.getTileEntity(otherWorld);
+				TileEntity tileEntity = linked.getTileEntity(otherWorld);
 
-				if (tileEntity instanceof TileEntityTesla)
+				if(tileEntity instanceof TileEntityTesla)
 				{
-					((TileEntityTesla) tileEntity).setLink(null, this.linkDim, false);
+					((TileEntityTesla) tileEntity).setLink(null, linkDim, false);
 				}
 			}
 
-			this.linked = vector3;
-			this.linkDim = dimID;
-			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+			linked = obj;
+			linkDim = dimID;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
-			World newOtherWorld = MinecraftServer.getServer().worldServerForDimension(this.linkDim);
+			World newOtherWorld = MinecraftServer.getServer().worldServerForDimension(linkDim);
 
-			if (setOpponent && newOtherWorld != null && this.linked != null)
+			if(setOpponent && newOtherWorld != null && linked != null)
 			{
-				TileEntity tileEntity = this.linked.getTileEntity(newOtherWorld);
+				TileEntity tileEntity = linked.getTileEntity(newOtherWorld);
 
-				if (tileEntity instanceof TileEntityTesla)
+				if(tileEntity instanceof TileEntityTesla)
 				{
-					((TileEntityTesla) tileEntity).setLink(new Vector3(this), this.worldObj.provider.dimensionId, false);
+					((TileEntityTesla) tileEntity).setLink(Object3D.get(this), worldObj.provider.dimensionId, false);
 				}
 			}
 		}
@@ -626,9 +624,9 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	@Override
 	public float getRequest(ForgeDirection direction)
 	{
-		if (direction != ForgeDirection.DOWN)
+		if(direction != ForgeDirection.DOWN)
 		{
-			return this.getMaxEnergyStored() - this.getEnergyStored();
+			return getMaxEnergyStored() - getEnergyStored();
 		}
 
 		return 0;
@@ -637,9 +635,9 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		if (this.isController() && direction == ForgeDirection.DOWN)
+		if(isController() && direction == ForgeDirection.DOWN)
 		{
-			return this.getEnergyStored();
+			return getEnergyStored();
 		}
 
 		return 0;
