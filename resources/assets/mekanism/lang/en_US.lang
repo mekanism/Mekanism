@@ -189,28 +189,28 @@ item.BronzeHoe.name=Bronze Hoe
 item.BronzeSword.name=Bronze Sword
 
 //Glow
+item.GlowstoneHelmet.name=Glowstone Helmet
+item.GlowstoneChestplate.name=Glowstone Chestplate
+item.GlowstoneLeggings.name=Glowstone Leggings
+item.GlowstoneBoots.name=Glowstone Boots
 item.GlowstonePaxel.name=Glowstone Paxel
 item.GlowstonePickaxe.name=Glowstone Pickaxe
 item.GlowstoneAxe.name=Glowstone Axe
 item.GlowstoneShovel.name=Glowstone Shovel
 item.GlowstoneHoe.name=Glowstone Hoe
 item.GlowstoneSword.name=Glowstone Sword
-item.GlowstoneHelmet.name=Glowstone Helmet
-item.GlowstoneChestplate.name=Glowstone Chestplate
-item.GlowstoneLeggings.name=Glowstone Leggings
-item.GlowstoneBoots.name=Glowstone Boots
 
 //Steel
+item.SteelHelmet.name=Steel Helmet
+item.SteelChestplate.name=Steel Chestplate
+item.SteelLeggings.name=Steel Leggings
+item.SteelBoots.name=Steel Boots
 item.SteelPaxel.name=Steel Paxel
 item.SteelPickaxe.name=Steel Pickaxe
 item.SteelAxe.name=Steel Axe
 item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
-item.SteelHelmet.name=Steel Helmet
-item.SteelChestplate.name=Steel Chestplate
-item.SteelLeggings.name=Steel Leggings
-item.SteelBoots.name=Steel Boots
 
 //*********//
 //INDUCTION//

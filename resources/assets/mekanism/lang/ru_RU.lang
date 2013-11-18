@@ -1,0 +1,228 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Обсидиановый динамит
+item.EnrichedAlloy.name=Обогащённый сплав
+item.EnergyTablet.name=Энергетический планшет
+item.SpeedUpgrade.name=Улучшение "скорость"
+item.EnergyUpgrade.name=Улучшение "энергия"
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Атомный дизассемблер
+item.AtomicCore.name=Атомное ядро
+item.ElectricBow.name=Электролук
+item.BoundingBlock.name=Bounding Block
+tile.GasTank.name=Газовый баллон
+item.StorageTank.name=Storage Tank
+item.ControlCircuit.name=Схема управления
+item.EnrichedIron.name=Обогащённое железо
+item.CompressedCarbon.name=Сжатый уголь
+item.PortableTeleporter.name=Переносной телепортер
+item.TeleportationCore.name=Ядро телепортации
+item.Configurator.name=Конфигуратор
+item.NetworkReader.name=Считыватель сети
+item.ManganeseAlloy.name=Марганцевый сплав
+item.WalkieTalkie.name=Переносная рация
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Осмиевый блок
+tile.BasicBlock.BronzeBlock.name=Бронзовый блок
+tile.BasicBlock.RefinedObsidian.name=Очищенный обсидиан
+tile.BasicBlock.CoalBlock.name=Угольный блок
+tile.BasicBlock.RefinedGlowstone.name=Очищенный светящийся камень
+tile.BasicBlock.SteelBlock.name=Стальной блок
+tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.TeleporterFrame.name=Каркас телепортера
+tile.BasicBlock.SteelCasing.name=Стальной корпус
+tile.BasicBlock.DynamicTank.name=Dynamic Tank
+tile.BasicBlock.DynamicGlass.name=Dynamic Glass
+tile.BasicBlock.DynamicValve.name=Dynamic Valve
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Камера обогащения
+tile.MachineBlock.OsmiumCompressor.name=Осмиевый компрессор
+tile.MachineBlock.Combiner.name=Объединитель
+tile.MachineBlock.Crusher.name=Дробилка
+tile.MachineBlock.BasicFactory.name=Базовая фабрика
+tile.MachineBlock.AdvancedFactory.name=Продвинутая фабрика
+tile.MachineBlock.EliteFactory.name=Элитная фабрика
+tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.PurificationChamber.name=Камера очистки
+tile.MachineBlock.EnergizedSmelter.name=Энергетический плавильный завод
+tile.MachineBlock.Teleporter.name=Телепортер
+tile.MachineBlock.ElectricPump.name=Электропомпа
+tile.MachineBlock.ElectricChest.name=Электросундук
+tile.MachineBlock.Chargepad.name=Зарядная панель
+tile.MachineBlock.LogisticalSorter.name=Логистический сортировщик
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Осмиевая руда
+
+//Transmitters
+tile.Transmitter.PressurizedTube.name=Pressurized Tube
+tile.Transmitter.UniversalCable.name=Универсальный провод
+tile.Transmitter.MechanicalPipe.name=Механическая труба
+tile.Transmitter.LogisticalTransporter.name=Логистический транспортер
+tile.Transmitter.RestrictiveTransporter.name=Ограничительный транспортер
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Базовый энергетический куб
+tile.EnergyCube.Advanced.name=Продвинутый энергетический куб
+tile.EnergyCube.Elite.name=Элитный энергетический куб
+tile.EnergyCube.Ultimate.name=Максимальный энергетический куб
+
+//Dust
+item.ironDust.name=Железная пыль
+item.goldDust.name=Золотая пыль
+item.osmiumDust.name=Осмиевая пыль
+item.obsidianDust.name=Пыль очищенного обсидиана
+item.diamondDust.name=Алмазная пыль
+item.steelDust.name=Стальная пыль
+item.copperDust.name=Медная пыль
+item.tinDust.name=Оловянная пыль
+item.silverDust.name=Серебряная пыль
+
+//Clumps
+item.ironClump.name=Железная глыба
+item.goldClump.name=Золотая глыба
+item.osmiumClump.name=Осмиевая глыба
+item.copperClump.name=Медная глыба
+item.tinClump.name=Оловянная глыба
+item.silverClump.name=Серебряная глыба
+item.obsidianClump.name=Обсидиановая глыба
+
+//Dirty Dust
+item.dirtyIronDust.name=Грязная железная пыль
+item.dirtyGoldDust.name=Грязная золотая пыль
+item.dirtyOsmiumDust.name=Грязная осмиевая пыль
+item.dirtyCopperDust.name=Грязная медная пыль
+item.dirtyTinDust.name=Грязная оловянная пыль
+item.dirtySilverDust.name=Грязная серебряная пыль
+item.dirtyObsidianDust.name=Грязная обсидиановая пыль
+
+//Ingots
+item.obsidianIngot.name=Обсидиановый слиток
+item.osmiumIngot.name=Осмиевый слиток
+item.bronzeIngot.name=Бронзовый слиток
+item.glowstoneIngot.name=Слиток светящегося камня
+item.steelIngot.name=Стальной слиток
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=Биотопливо
+item.ElectrolyticCore.name=Электролитическое ядро
+item.SolarPanel.name=Солнечная панель
+
+//Generators
+tile.Generator.HeatGenerator.name=Тепловой генератор
+tile.Generator.SolarGenerator.name=Солнечный генератор
+tile.Generator.ElectrolyticSeparator.name=Электролитический сепаратор
+tile.Generator.HydrogenGenerator.name=Водородный генератор
+tile.Generator.BioGenerator.name=Био-генератор
+tile.Generator.AdvancedSolarGenerator.name=Продвинутый солнечный генератор
+tile.Generator.WindTurbine.name=Ветровая турбина
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Деревянный паксель
+item.StonePaxel.name=Каменный паксель
+item.IronPaxel.name=Железный паксель
+item.DiamondPaxel.name=Алмазный паксель
+item.GoldPaxel.name=Золотой паксель
+
+//Obsidian
+item.ObsidianHelmet.name=Обсидиановый шлем
+item.ObsidianChestplate.name=Обсидиановая кираса
+item.ObsidianLeggings.name=Обсидиановые поножи
+item.ObsidianBoots.name=Обсидиановые ботинки
+item.ObsidianPaxel.name=Обсидиановый паксель
+item.ObsidianPickaxe.name=Обсидиановая кирка
+item.ObsidianAxe.name=Обсидиановый топор
+item.ObsidianShovel.name=Обсидиановая лопата
+item.ObsidianHoe.name=Обсидиановая мотыга
+item.ObsidianSword.name=Обсидиановый меч
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Лазуритовый шлем
+item.LazuliChestplate.name=Лазуритовая кираса
+item.LazuliLeggings.name=Лазуритовые поножи
+item.LazuliBoots.name=Лазуритовые ботинки
+item.LazuliPaxel.name=Лазуритовый паксель
+item.LazuliPickaxe.name=Лазуритовая кирка
+item.LazuliAxe.name=Лазуритовый топор
+item.LazuliShovel.name=Лазуритовая лопата
+item.LazuliHoe.name=Лазуритовая мотыга
+item.LazuliSword.name=Лазуритовый меч
+
+//Osmium
+item.OsmiumHelmet.name=Осмиевый шлем
+item.OsmiumChestplate.name=Осмиевая кираса
+item.OsmiumLeggings.name=Осмиевые поножи
+item.OsmiumBoots.name=Осмиевые ботинки
+item.OsmiumPaxel.name=Осмиевый паксель
+item.OsmiumPickaxe.name=Осмиевая кирка
+item.OsmiumAxe.name=Осмиевый топор
+item.OsmiumShovel.name=Осмиевая лопата
+item.OsmiumHoe.name=Осмиевая мотыга
+item.OsmiumSword.name=Осмиевый меч
+
+//Bronze
+item.BronzeHelmet.name=Бронзовый шлем
+item.BronzeChestplate.name=Бронзовая кираса
+item.BronzeLeggings.name=Бронзовые поножи
+item.BronzeBoots.name=Бронзовые ботинки
+item.BronzePaxel.name=Бронзовый паксель
+item.BronzePickaxe.name=Бронзовая кирка
+item.BronzeAxe.name=Бронзовый топор
+item.BronzeShovel.name=Бронзовая лопата
+item.BronzeHoe.name=Бронзовая мотыга
+item.BronzeSword.name=Бронзовый меч
+
+//Glow
+item.GlowstoneHelmet.name=Шлем из светящегося камня
+item.GlowstoneChestplate.name=Кираса из светящегося камня
+item.GlowstoneLeggings.name=Поножи из светящегося камня
+item.GlowstoneBoots.name=Ботинки из светящегося камня
+item.GlowstonePaxel.name=Паксель из светящегося камня
+item.GlowstonePickaxe.name=Кирка из светящегося камня
+item.GlowstoneAxe.name=Топор из светящегося камня
+item.GlowstoneShovel.name=Лопата из светящегося камня
+item.GlowstoneHoe.name=Мотыга из светящегося камня
+item.GlowstoneSword.name=Меч из светящегося камня
+
+//Steel
+item.SteelHelmet.name=Стальной шлем
+item.SteelChestplate.name=Стальная кираса
+item.SteelLeggings.name=Стальные поножи
+item.SteelBoots.name=Стальные ботинки
+item.SteelPaxel.name=Стальной паксель
+item.SteelPickaxe.name=Стальная кирка
+item.SteelAxe.name=Стальной топор
+item.SteelShovel.name=Стальная лопата
+item.SteelHoe.name=Стальная мотыга
+item.SteelSword.name=Стальной меч
+
+//*********//
+//INDUCTION//
+//*********//
+
+//Blocks
+tile.Tesla.name=Катушка Теслы
+tile.Multimeter.name=Мультиметр
+tile.ElectromagneticContractor.name=Электромагнитный контрагент
+tile.Battery.name=Модульный аккумулятор
+
+//Items
+item.Capacitor.name=Capacitor Cell
+item.InfiniteCapacitor.name=Infinite Capacitor Cell
+item.Linker.name=Electrostatic Linker
