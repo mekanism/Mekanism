@@ -1,12 +1,17 @@
 package mekanism.client.sound;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
@@ -51,53 +56,79 @@ public class SoundHandler
 	
 	public void preloadSounds()
 	{
-		String s = getClass().getClassLoader().getResource("assets/mekanism/sound").getFile();
-		s = s.replace("%20", " ").replace(".jar!", ".jar");
+		CodeSource src = getClass().getProtectionDomain().getCodeSource();
+		String corePath = src.getLocation().getFile().split("/mekanism/client")[0];
+		List<String> listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar"), "assets/mekanism/sound");
 		
-		if(s.contains("file:"))
+		for(String s : listings)
 		{
-			s = s.split("file:")[1];
+			preloadSound(s);
 		}
 		
-		File dir = new File(s);
+		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar"), "assets/mekanism/sound/etc");
 		
-		if(dir != null && dir.exists())
+		for(String s : listings)
 		{
-			for(File file : dir.listFiles())
-			{
-				if(!file.isDirectory() && file.getName().endsWith(".ogg"))
+			System.out.println("Added " + s);
+			mc.sndManager.addSound("mekanism:etc/" + s);
+		}
+	}
+	
+	private List<String> listFiles(String path, String s)
+	{
+		List<String> names = new ArrayList<String>();
+		
+		File f = new File(path);
+		
+		if(!f.exists())
+		{
+			System.out.println(path + " doesn't exist.");
+			return names;
+		}
+		
+		if(!f.isDirectory())
+		{
+			System.out.println(path);
+			
+			try {
+				ZipInputStream zip = new ZipInputStream(new FileInputStream(path));
+				
+				while(true) 
 				{
-					preloadSound(file.getName());
+					ZipEntry e = zip.getNextEntry();
+					
+					if(e == null)
+					{
+						break;
+					}
+					
+					String name = e.getName();
+					
+					if(name.contains(s) && name.endsWith(".ogg"))
+					{
+						System.out.println("zipname");
+						names.add(name);
+					}
 				}
+				
+				zip.close();
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 		else {
-			System.out.println("Couldn't preload sounds: " + dir.getAbsolutePath());
-		}
-		
-		s = getClass().getClassLoader().getResource("assets/mekanism/sound/etc").getFile();
-		s = s.replace("%20", " ").replace(".jar!", ".jar");
-		
-		if(s.contains("file:"))
-		{
-			s = s.split("file:")[1];
-		}
-		
-		dir = new File(s);
-		
-		if(dir != null && dir.exists())
-		{
-			for(File file : dir.listFiles())
+			f = new File(path + "/" + s);
+			
+			for(File file : f.listFiles())
 			{
-				if(file.getName().endsWith(".ogg"))
+				if(file.getPath().contains(s) && file.getName().endsWith(".ogg"))
 				{
-					mc.sndManager.addSound("mekanism:etc/" + file.getName());
+					names.add(file.getName());
 				}
 			}
 		}
-		else {
-			System.out.println("Couldn't find sounds: " + dir.getAbsolutePath());
-		}
+		
+		return names;
 	}
 	
 	private void preloadSound(String sound)
