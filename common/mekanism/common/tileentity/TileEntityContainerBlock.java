@@ -135,7 +135,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
-		return true;
+		return !isInvalid();
 	}
 	
 	@Override

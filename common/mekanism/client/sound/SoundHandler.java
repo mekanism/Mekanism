@@ -75,6 +75,8 @@ public class SoundHandler
 			preloadSound(s);
 		}
 		
+		System.out.println("[Mekanism] Preloaded " + listings.size() + " object sounds.");
+		
 		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/etc");
 		
 		for(String s : listings)
@@ -84,9 +86,10 @@ public class SoundHandler
 				s = s.split("/mekanism/sound/etc/")[1];
 			}
 			
-			System.out.println("Added " + s);
 			mc.sndManager.addSound("mekanism:etc/" + s);
 		}
+		
+		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");
 	}
 	
 	private List<String> listFiles(String path, String s)
@@ -97,14 +100,11 @@ public class SoundHandler
 		
 		if(!f.exists())
 		{
-			System.out.println(path + " doesn't exist.");
 			return names;
 		}
 		
 		if(!f.isDirectory())
 		{
-			System.out.println(path);
-			
 			try {
 				ZipInputStream zip = new ZipInputStream(new FileInputStream(path));
 				
@@ -121,7 +121,6 @@ public class SoundHandler
 					
 					if(name.contains(s) && name.endsWith(".ogg"))
 					{
-						System.out.println("zipname");
 						names.add(name);
 					}
 				}

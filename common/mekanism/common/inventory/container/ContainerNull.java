@@ -28,6 +28,6 @@ public class ContainerNull extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) 
 	{
-		return true;
+		return tileEntity.isUseableByPlayer(entityplayer);
 	}
 }
