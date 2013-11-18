@@ -62,6 +62,16 @@ public class SoundHandler
 		
 		for(String s : listings)
 		{
+			if(s.contains("etc"))
+			{
+				continue;
+			}
+			
+			if(s.contains("/mekanism/sound/"))
+			{
+				s = s.split("/mekanism/sound/")[1];
+			}
+			
 			preloadSound(s);
 		}
 		
@@ -69,6 +79,11 @@ public class SoundHandler
 		
 		for(String s : listings)
 		{
+			if(s.contains("/mekanism/sound/etc/"))
+			{
+				s = s.split("/mekanism/sound/etc/")[1];
+			}
+			
 			System.out.println("Added " + s);
 			mc.sndManager.addSound("mekanism:etc/" + s);
 		}
