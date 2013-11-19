@@ -44,6 +44,7 @@ public class ContainerElectricPump extends Container
     public void onContainerClosed(EntityPlayer entityplayer)
     {
 		super.onContainerClosed(entityplayer);
+		
 		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
     }

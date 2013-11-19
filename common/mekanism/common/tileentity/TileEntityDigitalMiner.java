@@ -48,6 +48,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public int clientToMine;
 	
+	public ItemStack replaceStack;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -91,6 +93,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         doPull = nbtTags.getBoolean("doPull");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
+        if(nbtTags.hasKey("replaceStack"))
+        {
+        	replaceStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("replaceStack"));
+        }
+        
     	if(nbtTags.hasKey("filters"))
     	{
     		NBTTagList tagList = nbtTags.getTagList("filters");
@@ -123,6 +130,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("doEject", doEject);
         nbtTags.setBoolean("doPull", doPull);
         nbtTags.setInteger("controlType", controlType.ordinal());
+        
+        if(replaceStack != null)
+        {
+        	nbtTags.setCompoundTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+        }
         
         NBTTagList filterTags = new NBTTagList();
         

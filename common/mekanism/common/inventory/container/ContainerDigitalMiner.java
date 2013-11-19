@@ -15,19 +15,19 @@ public class ContainerDigitalMiner extends Container
 {
     private TileEntityDigitalMiner tileEntity;
 
-    public ContainerDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity, IInventory inv, boolean b)
+    public ContainerDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity)
     {
         tileEntity = tentity;
         
-        for(int slotY = 0; slotY < 6; slotY++)
+        for(int slotY = 0; slotY < 3; slotY++)
         {
             for(int slotX = 0; slotX < 9; slotX++)
             {
-                addSlotToContainer(new SlotElectricChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+                addSlotToContainer(new Slot(tentity, slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
             }
         }
 
-        addSlotToContainer(new SlotDischarge(getInv(), 54, 180, 11));
+        addSlotToContainer(new SlotDischarge(tentity, 27, 180, 11));
         
         int slotX;
 
@@ -43,17 +43,9 @@ public class ContainerDigitalMiner extends Container
         {
             addSlotToContainer(new SlotElectricChest(inventory, slotX, 8 + slotX * 18, 206));
         }
-    }
-    
-    public IInventory getInv()
-    {
-    	if(isBlock)
-    	{
-    		return tileEntity;
-    	}
-    	else {
-    		return itemInventory;
-    	}
+        
+        tileEntity.openChest();
+        tileEntity.playersUsing.add(inventory.player);
     }
     
     @Override
@@ -61,25 +53,14 @@ public class ContainerDigitalMiner extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		if(isBlock)
-		{
-			tileEntity.closeChest();
-			tileEntity.playersUsing.remove(entityplayer);
-		}
-		else {
-			itemInventory.closeChest();
-		}
+		tileEntity.closeChest();
+		tileEntity.playersUsing.remove(entityplayer);
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer entityplayer)
     {
-    	if(isBlock)
-    	{
-    		return tileEntity.isUseableByPlayer(entityplayer);
-    	}
-    	
-    	return true;
+		return tileEntity.isUseableByPlayer(entityplayer);
     }
 
     @Override
