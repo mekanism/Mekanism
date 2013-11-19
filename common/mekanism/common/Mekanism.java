@@ -133,7 +133,7 @@ public class Mekanism
     public static Mekanism instance;
     
     /** Mekanism hooks instance */
-    public static MekanismHooks hooks;
+    public static MekanismHooks hooks = new MekanismHooks();
     
     /** Mekanism configuration instance */
     public static Configuration configuration;
@@ -1061,6 +1061,8 @@ public class Mekanism
 			System.out.println("[Mekanism] Detected Tekkit in root directory - hello, fellow user!");
 		}
 		
+		MinecraftForge.EVENT_BUS.register(hooks);
+		
 		//Register infuses
         InfuseRegistry.registerInfuseType(new InfuseType("CARBON", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 0, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("TIN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 4, 0));
@@ -1070,7 +1072,6 @@ public class Mekanism
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		hooks = new MekanismHooks();
 		hooks.hook();
 		
 		addIntegratedItems();

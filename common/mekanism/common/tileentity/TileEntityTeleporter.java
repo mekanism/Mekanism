@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.Entity;
@@ -39,7 +40,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	
 	public TileEntityTeleporter()
 	{
-		super("Teleporter", 1000000);
+		super("Teleporter", MachineType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
 	}

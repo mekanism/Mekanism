@@ -14,9 +14,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import thermalexpansion.api.crafting.CraftingManagers;
-import thermalexpansion.api.crafting.IPulverizerRecipe;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -120,31 +122,17 @@ public final class MekanismHooks
 		{
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
+	}
+	
+	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)
+	{
+		NBTTagCompound nbtTags = new NBTTagCompound();
 		
-		if(TELoaded)
-		{
-			/*for(IPulverizerRecipe recipe : CraftingManagers.pulverizerManager.getRecipeList())
-			{
-				if(recipe.getSecondaryOutput() == null)
-				{
-					if(MekanismUtils.getName(recipe.getInput()).startsWith("ore"))
-					{
-						if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(recipe.getInput()))
-						{
-							RecipeHandler.addEnrichmentChamberRecipe(recipe.getInput(), recipe.getPrimaryOutput());
-						}
-					}
-					else if(MekanismUtils.getName(recipe.getInput()).startsWith("ingot"))
-					{
-						if(!Recipe.CRUSHER.containsRecipe(recipe.getInput()))
-						{
-							RecipeHandler.addCrusherRecipe(recipe.getInput(), recipe.getPrimaryOutput());
-						}
-					}
-				}
-			}*/ 
-			//TODO recipe integration
-		}
+		nbtTags.setInteger("energy", energy);
+		nbtTags.setCompoundTag("input", input.writeToNBT(new NBTTagCompound()));
+		nbtTags.setCompoundTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
+		
+		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
 	}
 	
 	public ItemStack getBuildCraftItem(String name)
@@ -192,6 +180,42 @@ public final class MekanismHooks
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve Basic Components item " + name + ".");
 			return null;
+		}
+	}
+	
+	@EventHandler
+	public void handleIMC(IMCEvent event)
+	{
+		for(IMCMessage message : event.getMessages())
+		{
+			try {
+				if(message.isNBTMessage())
+				{
+					if(message.key.equalsIgnoreCase("PulverizerRecipe") && !message.getNBTValue().hasKey("secondaryChance") && !message.getNBTValue().hasKey("secondaryOutput"))
+					{
+						ItemStack input = ItemStack.loadItemStackFromNBT(message.getNBTValue().getCompoundTag("input"));
+						ItemStack output = ItemStack.loadItemStackFromNBT(message.getNBTValue().getCompoundTag("output"));
+						
+						if(input != null && output != null)
+						{
+							if(MekanismUtils.getName(input).startsWith("ore"))
+							{
+								if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(input))
+								{
+									RecipeHandler.addEnrichmentChamberRecipe(input, output);
+								}
+							}
+							else if(MekanismUtils.getName(input).startsWith("ingot"))
+							{
+								if(!Recipe.CRUSHER.containsRecipe(input))
+								{
+									RecipeHandler.addCrusherRecipe(input, output);
+								}
+							}
+						}
+					}
+				}
+			} catch(Exception e) {}
 		}
 	}
 }
