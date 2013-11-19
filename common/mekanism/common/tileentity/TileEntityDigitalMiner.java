@@ -43,8 +43,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public int radius;
 	
-	public int minY;
-	public int maxY;
+	public int minY = 0;
+	public int maxY = 60;
 	
 	public boolean doEject = false;
 	public boolean doPull = false;
@@ -195,6 +195,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				doPull = !doPull;
 			}
+			else if(type == 2)
+			{
+				boolean doNull = dataStream.readBoolean();
+				
+				if(!doNull)
+				{
+					replaceStack = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+				}
+				else {
+					replaceStack = null;
+				}
+			}
 		}
 		
 		super.handlePacketData(dataStream);
@@ -251,6 +263,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		super.getNetworkedData(data);
 		
 		data.add(0);
+		
 		data.add(radius);
 		data.add(minY);
 		data.add(maxY);
@@ -259,6 +272,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(isActive);
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
+		
+		data.add(filters.size());
+		
+		for(MinerFilter filter : filters)
+		{
+			filter.write(data);
+		}
 		
 		return data;
 	}
@@ -268,6 +288,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		super.getNetworkedData(data);
 		
 		data.add(1);
+		
 		data.add(radius);
 		data.add(minY);
 		data.add(maxY);
@@ -276,11 +297,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(isActive);
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
-		
-		for(MinerFilter filter : filters)
-		{
-			filter.write(data);
-		}
 		
 		return data;
 	}

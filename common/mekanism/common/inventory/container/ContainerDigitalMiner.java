@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +24,7 @@ public class ContainerDigitalMiner extends Container
         {
             for(int slotX = 0; slotX < 9; slotX++)
             {
-                addSlotToContainer(new Slot(tentity, slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+                addSlotToContainer(new Slot(tentity, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
             }
         }
 
@@ -35,13 +36,13 @@ public class ContainerDigitalMiner extends Container
         {
             for(int slotY = 0; slotY < 9; ++slotY)
             {
-                addSlotToContainer(new SlotElectricChest(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
+                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
             }
         }
 
         for(slotX = 0; slotX < 9; ++slotX)
         {
-            addSlotToContainer(new SlotElectricChest(inventory, slotX, 8 + slotX * 18, 206));
+            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
         }
         
         tileEntity.openChest();
@@ -76,32 +77,35 @@ public class ContainerDigitalMiner extends Container
             
         	if(ChargeUtils.canBeDischarged(slotStack))
             {
-	            if(slotID != 54)
+	            if(slotID != 27)
 	            {
-	                if(!mergeItemStack(slotStack, 54, 55, false))
+	                if(!mergeItemStack(slotStack, 27, 28, false))
 	                {
 	                	return null;
 	                }
 	            }
-	            else if(slotID == 54)
+	            else if(slotID == 27)
 	            {
-	            	if(!mergeItemStack(slotStack, 55, inventorySlots.size(), true))
+	            	if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
-            else {
-            	if(slotID < 54)
+            else if(slotStack.getItem() instanceof ItemMachineUpgrade)
+            {
+            	if(slotID != 27 && slotID != 28)
             	{
-            		if(!mergeItemStack(slotStack, 55, inventorySlots.size(), true))
+            		if(!mergeItemStack(slotStack, 28, 29, false))
             		{
             			return null;
             		}
             	}
-            	else if(!mergeItemStack(slotStack, 0, 54, false))
-            	{
-            		return null;
+            	else {
+            		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
             	}
             }
             

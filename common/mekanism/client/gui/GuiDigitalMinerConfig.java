@@ -21,10 +21,12 @@ import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 public class GuiDigitalMinerConfig extends GuiMekanism
@@ -40,6 +42,10 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	public Map<MOreDictFilter, StackData> oreDictStacks = new HashMap<MOreDictFilter, StackData>();
 	
 	public float scroll;
+	
+	private GuiTextField radiusField;
+	private GuiTextField minField;
+	private GuiTextField maxField;
 	
 	public GuiDigitalMinerConfig(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
@@ -66,6 +72,10 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	public void updateScreen()
 	{
 		super.updateScreen();
+		
+		radiusField.updateCursorCounter();
+		minField.updateCursorCounter();
+		maxField.updateCursorCounter();
 		
 		if(stackSwitch > 0)
 		{
@@ -231,6 +241,22 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
 		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
+		
+		String prevRad = !radiusField.getText().equals("") ? radiusField.getText() : "" + tileEntity.radius;
+		String prevMin = !minField.getText().equals("") ? minField.getText() : "" + tileEntity.minY;
+		String prevMax = !maxField.getText().equals("") ? maxField.getText() : "" + tileEntity.maxY;
+		
+		radiusField = new GuiTextField(fontRenderer, guiWidth + 11, guiHeight + 67, 20, 11);
+		radiusField.setMaxStringLength(3);
+		radiusField.setText(prevRad);
+		
+		minField = new GuiTextField(fontRenderer, guiWidth + 11, guiHeight + 79, 20, 11);
+		minField.setMaxStringLength(3);
+		minField.setText(prevMin);
+		
+		maxField = new GuiTextField(fontRenderer, guiWidth + 11, guiHeight + 91, 20, 11);
+		maxField.setMaxStringLength(3);
+		maxField.setText(prevMax);
 	}
 	
 	@Override
@@ -260,6 +286,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		
+		fontRenderer.drawString("Radius: " + tileEntity.radius, 11, 58, 0x00CD00);
+		
+		fontRenderer.drawString("Min Y: " + tileEntity.minY, 11, 70, 0x00CD00);
+		
+		fontRenderer.drawString("Max Y: " + tileEntity.maxY, 11, 82, 0x00CD00);
 		
 		fontRenderer.drawString("Default:", 12, 126, 0x00CD00);
 		
@@ -372,7 +404,27 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 12, guiHeight + 84, 176 + 14, 14, 14, 14);
 		}
+		
+		radiusField.drawTextBox();
+		minField.drawTextBox();
+		maxField.drawTextBox();
     }
+	
+	@Override
+	public void keyTyped(char c, int i)
+	{
+		if((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE)
+		{
+			super.keyTyped(c, i);
+		}
+		
+		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		{
+			radiusField.textboxKeyTyped(c, i);
+			minField.textboxKeyTyped(c, i);
+			maxField.textboxKeyTyped(c, i);
+		}
+	}
 	
 	public ArrayList getItemStackFilters()
 	{

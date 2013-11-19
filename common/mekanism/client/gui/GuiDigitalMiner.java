@@ -35,6 +35,8 @@ public class GuiDigitalMiner extends GuiMekanism
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+        
+        ySize+=64;
     }
 
     @Override
@@ -107,6 +109,21 @@ public class GuiDigitalMiner extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 176 + 4 + 14, 14, 14, 14);
 		}
+		
+		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
+		{
+			GL11.glPushMatrix();
+	        GL11.glDisable(GL11.GL_LIGHTING);
+	        GL11.glDisable(GL11.GL_DEPTH_TEST);
+	        
+	        int x = guiWidth + 144;
+	        int y = guiHeight + 27;
+	        drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+	        
+	        GL11.glEnable(GL11.GL_LIGHTING);
+	        GL11.glEnable(GL11.GL_DEPTH_TEST);
+	        GL11.glPopMatrix();
+		}
 	}
 	
     @Override
@@ -139,18 +156,37 @@ public class GuiDigitalMiner extends GuiMekanism
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			}
 			
-			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
+			if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 			{
+				boolean doNull = false;
 				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack toUse = null;
 				
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					tileEntity.replaceStack = stack.copy();
-					tileEntity.replaceStack.stackSize = 1;
+					toUse = stack.copy();
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					tileEntity.replaceStack = null;
+					doNull = true;
+				}
+				
+				if(stack != null || doNull)
+				{
+					ArrayList data = new ArrayList();
+					data.add(2);
+					
+					if(stack != null)
+					{
+						data.add(true);
+						data.add(stack.itemID);
+						data.add(stack.getItemDamage());
+					}
+					else {
+						data.add(false);
+					}
+					
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 				}
 				
 	           	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
