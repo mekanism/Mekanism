@@ -3,18 +3,27 @@ package mekanism.common.tileentity;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.common.HashList;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.miner.MinerFilter;
+import mekanism.common.miner.ThreadMinerSearch;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -22,7 +31,21 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl
 {
+	public Set<Object3D> oresToMine = new HashSet<Object3D>();
+	
+	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
+	
 	public int radius;
+	
+	public int minY;
+	public int maxY;
+	
+	public boolean doEject = false;
+	public boolean doPull = false;
+
+	public ThreadMinerSearch searcher;
+	
+	public int clientToMine;
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -53,7 +76,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         super.readFromNBT(nbtTags);
         
         radius = nbtTags.getInteger("radius");
+        minY = nbtTags.getInteger("minY");
+        maxY = nbtTags.getInteger("maxY");
+        doEject = nbtTags.getBoolean("doEject");
+        doPull = nbtTags.getBoolean("doPull");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        
+    	if(nbtTags.hasKey("filters"))
+    	{
+    		NBTTagList tagList = nbtTags.getTagList("filters");
+    		
+    		for(int i = 0; i < tagList.tagCount(); i++)
+    		{
+    			filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+    		}
+    	}
     }
 
 	@Override
@@ -62,7 +99,37 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         super.writeToNBT(nbtTags);
         
         nbtTags.setInteger("radius", radius);
+        nbtTags.setInteger("minY", minY);
+        nbtTags.setInteger("maxY", maxY);
+        nbtTags.setBoolean("doEject", doEject);
+        nbtTags.setBoolean("doPull", doPull);
         nbtTags.setInteger("controlType", controlType.ordinal());
+        
+        NBTTagList filterTags = new NBTTagList();
+        
+        for(MinerFilter filter : filters)
+        {
+        	NBTTagCompound tagCompound = new NBTTagCompound();
+        	filter.write(new NBTTagCompound());
+        	filterTags.appendTag(tagCompound);
+        }
+        
+        if(filterTags.tagCount() != 0)
+        {
+        	nbtTags.setTag("filters", filterTags);
+        }
+        
+        NBTTagList miningOres = new NBTTagList();
+        
+        for(Object3D obj : oresToMine)
+        {
+        	miningOres.appendTag(obj.write(new NBTTagCompound()));
+        }
+        
+        if(miningOres.tagCount() != 0)
+        {
+        	nbtTags.setTag("oresToMine", miningOres);
+        }
     }
 	
 	@Override
@@ -70,8 +137,29 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		super.handlePacketData(dataStream);
 		
-		radius = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
+		int type = dataStream.readInt();
+		
+		if(type == 0)
+		{
+			radius = dataStream.readInt();
+			minY = dataStream.readInt();
+			maxY = dataStream.readInt();
+			doEject = dataStream.readBoolean();
+			doPull = dataStream.readBoolean();
+			clientToMine = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+		}
+		else if(type == 1)
+		{
+			filters.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				filters.add(MinerFilter.readFromPacket(dataStream));
+			}
+		}
 	}
 	
 	@Override
@@ -79,8 +167,39 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		super.getNetworkedData(data);
 		
+		data.add(0);
 		data.add(radius);
+		data.add(minY);
+		data.add(maxY);
+		data.add(doEject);
+		data.add(doPull);
+		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
+		
+		return data;
+	}
+	
+	@Override
+	public void openChest()
+	{
+		if(!worldObj.isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getFilterPacket(new ArrayList())), Object3D.get(this), 50D);
+		}
+	}
+	
+	public ArrayList getFilterPacket(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(1);
+		
+		data.add(filters.size());
+		
+		for(MinerFilter filter : filters)
+		{
+			filter.write(data);
+		}
 		
 		return data;
 	}
@@ -143,6 +262,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     	}
     	
     	return rejects;
+	}
+	
+	@Override
+	public double getMaxEnergy() 
+	{
+		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 	
 	@Override

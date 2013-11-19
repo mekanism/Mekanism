@@ -15,8 +15,8 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.transporter.ItemStackFilter;
-import mekanism.common.transporter.OreDictFilter;
+import mekanism.common.transporter.TItemStackFilter;
+import mekanism.common.transporter.TOreDictFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
@@ -36,9 +36,9 @@ public class GuiOreDictFilter extends GuiMekanism
 	
 	public boolean isNew = false;
 	
-	public OreDictFilter origFilter;
+	public TOreDictFilter origFilter;
 	
-	public OreDictFilter filter = new OreDictFilter();
+	public TOreDictFilter filter = new TOreDictFilter();
 	
 	private GuiTextField oreDictText;
 	
@@ -59,8 +59,8 @@ public class GuiOreDictFilter extends GuiMekanism
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
 		
-		origFilter = (OreDictFilter)tileEntity.filters.get(index);
-		filter = ((OreDictFilter)tentity.filters.get(index)).clone();
+		origFilter = (TOreDictFilter)tileEntity.filters.get(index);
+		filter = ((TOreDictFilter)tentity.filters.get(index)).clone();
 		
 		updateStackList(filter.oreDictName);
 	}

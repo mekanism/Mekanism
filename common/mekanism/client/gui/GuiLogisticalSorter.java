@@ -16,8 +16,8 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.transporter.ItemStackFilter;
-import mekanism.common.transporter.OreDictFilter;
+import mekanism.common.transporter.TItemStackFilter;
+import mekanism.common.transporter.TOreDictFilter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -43,7 +43,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	
 	public int stackSwitch = 0;
 	
-	public Map<OreDictFilter, StackData> oreDictStacks = new HashMap<OreDictFilter, StackData>();
+	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<TOreDictFilter, StackData>();
 	
 	public float scroll;
 	
@@ -81,7 +81,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		if(stackSwitch == 0)
 		{
-			for(Map.Entry<OreDictFilter, StackData> entry : oreDictStacks.entrySet())
+			for(Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet())
 			{
 				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0)
 				{
@@ -101,7 +101,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			stackSwitch = 20;
 		}
 		else {
-			for(Map.Entry<OreDictFilter, StackData> entry : oreDictStacks.entrySet())
+			for(Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet())
 			{
 				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
 				{
@@ -110,19 +110,19 @@ public class GuiLogisticalSorter extends GuiMekanism
 			}
 		}
 		
-		Set<OreDictFilter> filtersVisible = new HashSet<OreDictFilter>();
+		Set<TOreDictFilter> filtersVisible = new HashSet<TOreDictFilter>();
 		
 		for(int i = 0; i < 4; i++)
 		{
-			if(tileEntity.filters.get(getFilterIndex()+i) instanceof OreDictFilter)
+			if(tileEntity.filters.get(getFilterIndex()+i) instanceof TOreDictFilter)
 			{
-				filtersVisible.add((OreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
+				filtersVisible.add((TOreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
 			}
 		}
 		
 		for(TransporterFilter filter : tileEntity.filters)
 		{
-			if(filter instanceof OreDictFilter && !filtersVisible.contains(filter))
+			if(filter instanceof TOreDictFilter && !filtersVisible.contains(filter))
 			{
 				if(oreDictStacks.containsKey(filter))
 				{
@@ -158,12 +158,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 						
-						if(filter instanceof ItemStackFilter)
+						if(filter instanceof TItemStackFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
 						}
-						else if(filter instanceof OreDictFilter)
+						else if(filter instanceof TOreDictFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
@@ -283,9 +283,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 				TransporterFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 				int yStart = i*29 + 18;
 				
-				if(filter instanceof ItemStackFilter)
+				if(filter instanceof TItemStackFilter)
 				{
-					ItemStackFilter itemFilter = (ItemStackFilter)filter;
+					TItemStackFilter itemFilter = (TItemStackFilter)filter;
 					
 					if(itemFilter.itemType != null)
 					{
@@ -299,9 +299,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 					fontRenderer.drawString("Item Filter", 78, yStart + 2, 0x404040);
 					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
 				}
-				else if(filter instanceof OreDictFilter)
+				else if(filter instanceof TOreDictFilter)
 				{
-					OreDictFilter oreFilter = (OreDictFilter)filter;
+					TOreDictFilter oreFilter = (TOreDictFilter)filter;
 					
 					if(!oreDictStacks.containsKey(oreFilter))
 					{
@@ -386,11 +386,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 				
 				boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29;
 				
-				if(filter instanceof ItemStackFilter)
+				if(filter instanceof TItemStackFilter)
 				{
 					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
 				}
-				else if(filter instanceof OreDictFilter)
+				else if(filter instanceof TOreDictFilter)
 				{
 					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 195, 96, 29);
 				}
@@ -420,7 +420,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		for(TransporterFilter filter : tileEntity.filters)
 		{
-			if(filter instanceof ItemStackFilter)
+			if(filter instanceof TItemStackFilter)
 			{
 				list.add(filter);
 			}
@@ -435,7 +435,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		for(TransporterFilter filter : tileEntity.filters)
 		{
-			if(filter instanceof OreDictFilter)
+			if(filter instanceof TOreDictFilter)
 			{
 				list.add(filter);
 			}
@@ -444,7 +444,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		return list;
 	}
 	
-	private void updateStackList(OreDictFilter filter)
+	private void updateStackList(TOreDictFilter filter)
 	{
 		if(!oreDictStacks.containsKey(filter))
 		{

@@ -1,0 +1,79 @@
+package mekanism.common.miner;
+
+import java.util.ArrayList;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import com.google.common.io.ByteArrayDataInput;
+
+public class MItemStackFilter extends MinerFilter
+{
+	public ItemStack itemType;
+	
+	@Override
+	public boolean canFilter(ItemStack itemStack)
+	{
+		if(itemStack == null)
+		{
+			return false;
+		}
+	
+		return itemType.isItemEqual(itemStack);
+	}
+	
+	@Override
+	public void write(NBTTagCompound nbtTags)
+	{
+		nbtTags.setInteger("type", 0);
+		itemType.writeToNBT(nbtTags);
+	}
+	
+	@Override
+	protected void read(NBTTagCompound nbtTags)
+	{
+		itemType = ItemStack.loadItemStackFromNBT(nbtTags);
+	}
+	
+	@Override
+	public void write(ArrayList data)
+	{
+		data.add(0);
+		
+		data.add(itemType.itemID);
+		data.add(itemType.stackSize);
+		data.add(itemType.getItemDamage());
+	}
+	
+	@Override
+	protected void read(ByteArrayDataInput dataStream)
+	{
+		itemType = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+	}
+	
+	@Override
+	public int hashCode() 
+	{
+		int code = 1;
+		code = 31 * code + super.hashCode();
+		code = 31 * code + itemType.itemID;
+		code = 31 * code + itemType.stackSize;
+		code = 31 * code + itemType.getItemDamage();
+		return code;
+	}
+	
+	@Override
+	public boolean equals(Object filter)
+	{
+		return super.equals(filter) && filter instanceof MItemStackFilter && ((MItemStackFilter)filter).itemType.isItemEqual(itemType);
+	}
+	
+	@Override
+	public MItemStackFilter clone()
+	{
+		MItemStackFilter filter = new MItemStackFilter();
+		filter.itemType = itemType.copy();
+		
+		return filter;
+	}
+}

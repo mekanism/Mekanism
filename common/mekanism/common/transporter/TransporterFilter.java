@@ -67,10 +67,10 @@ public abstract class TransporterFilter
 		
 		if(type == 0)
 		{
-			filter = new ItemStackFilter();
+			filter = new TItemStackFilter();
 		}
 		else {
-			filter = new OreDictFilter();
+			filter = new TOreDictFilter();
 		}
 		
 		filter.read(nbtTags);
@@ -86,11 +86,11 @@ public abstract class TransporterFilter
 		
 		if(type == 0)
 		{
-			filter = new ItemStackFilter();
+			filter = new TItemStackFilter();
 		}
 		else if(type == 1)
 		{
-			filter = new OreDictFilter();
+			filter = new TOreDictFilter();
 		}
 		
 		filter.read(dataStream);

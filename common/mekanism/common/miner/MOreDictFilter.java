@@ -1,17 +1,14 @@
-package mekanism.common.transporter;
+package mekanism.common.miner;
 
 import java.util.ArrayList;
 
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class OreDictFilter extends TransporterFilter
+public class MOreDictFilter extends MinerFilter
 {
 	public String oreDictName;
 	
@@ -55,16 +52,8 @@ public class OreDictFilter extends TransporterFilter
 	}
 	
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
-	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal());
-	}
-	
-	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
-		super.write(nbtTags);
-		
 		nbtTags.setInteger("type", 1);
 		nbtTags.setString("oreDictName", oreDictName);
 	}
@@ -72,8 +61,6 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
-		super.read(nbtTags);
-		
 		oreDictName = nbtTags.getString("oreDictName");
 	}
 	
@@ -81,17 +68,12 @@ public class OreDictFilter extends TransporterFilter
 	public void write(ArrayList data)
 	{
 		data.add(1);
-		
-		super.write(data);
-		
 		data.add(oreDictName);
 	}
 	
 	@Override
 	protected void read(ByteArrayDataInput dataStream)
 	{
-		super.read(dataStream);
-		
 		oreDictName = dataStream.readUTF();
 	}
 	
@@ -107,14 +89,13 @@ public class OreDictFilter extends TransporterFilter
 	@Override
 	public boolean equals(Object filter)
 	{
-		return super.equals(filter) && filter instanceof OreDictFilter && ((OreDictFilter)filter).oreDictName.equals(oreDictName);
+		return super.equals(filter) && filter instanceof MOreDictFilter && ((MOreDictFilter)filter).oreDictName.equals(oreDictName);
 	}
 	
 	@Override
-	public OreDictFilter clone()
+	public MOreDictFilter clone()
 	{
-		OreDictFilter filter = new OreDictFilter();
-		filter.color = color;
+		MOreDictFilter filter = new MOreDictFilter();
 		filter.oreDictName = oreDictName;
 		
 		return filter;

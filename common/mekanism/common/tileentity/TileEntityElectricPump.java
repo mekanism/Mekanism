@@ -342,11 +342,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         
         NBTTagList cleaningList = new NBTTagList();
         
-        for(Object3D wrapper : cleaningNodes)
+        for(Object3D obj : cleaningNodes)
         {
-        	NBTTagCompound tagCompound = new NBTTagCompound();
-        	wrapper.write(tagCompound);
-        	cleaningList.appendTag(tagCompound);
+        	cleaningList.appendTag(obj.write(new NBTTagCompound()));
         }
         
         if(cleaningList.tagCount() != 0)

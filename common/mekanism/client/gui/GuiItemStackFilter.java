@@ -11,7 +11,7 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.transporter.ItemStackFilter;
+import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
@@ -30,9 +30,9 @@ public class GuiItemStackFilter extends GuiMekanism
 	
 	public boolean isNew = false;
 	
-	public ItemStackFilter origFilter;
+	public TItemStackFilter origFilter;
 	
-	public ItemStackFilter filter = new ItemStackFilter();
+	public TItemStackFilter filter = new TItemStackFilter();
 	
 	public String status = EnumColor.DARK_GREEN + "All OK";
 		
@@ -46,8 +46,8 @@ public class GuiItemStackFilter extends GuiMekanism
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
 		
-		origFilter = (ItemStackFilter)tileEntity.filters.get(index);
-		filter = ((ItemStackFilter)tileEntity.filters.get(index)).clone();
+		origFilter = (TItemStackFilter)tileEntity.filters.get(index);
+		filter = ((TItemStackFilter)tileEntity.filters.get(index)).clone();
 	}
 	
 	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)

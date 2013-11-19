@@ -10,7 +10,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class ItemStackFilter extends TransporterFilter
+public class TItemStackFilter extends TransporterFilter
 {
 	public boolean sizeMode;
 	
@@ -116,14 +116,14 @@ public class ItemStackFilter extends TransporterFilter
 	@Override
 	public boolean equals(Object filter)
 	{
-		return super.equals(filter) && filter instanceof ItemStackFilter && ((ItemStackFilter)filter).itemType.isItemEqual(itemType)
-				&& ((ItemStackFilter)filter).sizeMode == sizeMode && ((ItemStackFilter)filter).min == min && ((ItemStackFilter)filter).max == max;
+		return super.equals(filter) && filter instanceof TItemStackFilter && ((TItemStackFilter)filter).itemType.isItemEqual(itemType)
+				&& ((TItemStackFilter)filter).sizeMode == sizeMode && ((TItemStackFilter)filter).min == min && ((TItemStackFilter)filter).max == max;
 	}
 	
 	@Override
-	public ItemStackFilter clone()
+	public TItemStackFilter clone()
 	{
-		ItemStackFilter filter = new ItemStackFilter();
+		TItemStackFilter filter = new TItemStackFilter();
 		filter.color = color;
 		filter.itemType = itemType.copy();
 		filter.sizeMode = sizeMode;
