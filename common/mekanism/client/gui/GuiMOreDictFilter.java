@@ -5,21 +5,17 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.transporter.TItemStackFilter;
-import mekanism.common.transporter.TOreDictFilter;
+import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,17 +24,16 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
-public class GuiOreDictFilter extends GuiMekanism
+public class GuiMOreDictFilter extends GuiMekanism
 {
-	public TileEntityLogisticalSorter tileEntity;
+	public TileEntityDigitalMiner tileEntity;
 	
 	public boolean isNew = false;
 	
-	public TOreDictFilter origFilter;
+	public MOreDictFilter origFilter;
 	
-	public TOreDictFilter filter = new TOreDictFilter();
+	public MOreDictFilter filter = new MOreDictFilter();
 	
 	private GuiTextField oreDictText;
 	
@@ -54,18 +49,18 @@ public class GuiOreDictFilter extends GuiMekanism
 	
 	public String status = EnumColor.DARK_GREEN + "All OK";
 	
-	public GuiOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
+	public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
 	{
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
 		
-		origFilter = (TOreDictFilter)tileEntity.filters.get(index);
-		filter = ((TOreDictFilter)tentity.filters.get(index)).clone();
+		origFilter = (MOreDictFilter)tileEntity.filters.get(index);
+		filter = ((MOreDictFilter)tentity.filters.get(index)).clone();
 		
 		updateStackList(filter.oreDictName);
 	}
 	
-	public GuiOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
+	public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
@@ -170,31 +165,6 @@ public class GuiOreDictFilter extends GuiMekanism
 			GL11.glPopMatrix();
 		}
 		
-		if(filter.color != null)
-		{
-			GL11.glPushMatrix();
-			GL11.glColor4f(1, 1, 1, 1);
-	        GL11.glEnable(GL11.GL_LIGHTING);
-	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-	        
-	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(filter.color));
-			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
-			
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
-		}
-		
-		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
-		{
-			if(filter.color != null)
-			{
-				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
-			}
-			else {
-				drawCreativeTabHoveringText("None", xAxis, yAxis);
-			}
-		}
-		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -288,12 +258,6 @@ public class GuiOreDictFilter extends GuiMekanism
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
-			}
-			
-			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
-			{
-	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-				filter.color = TransporterUtils.increment(filter.color);
 			}
 			
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)

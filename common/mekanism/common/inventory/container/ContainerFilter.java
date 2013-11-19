@@ -28,12 +28,6 @@ public class ContainerFilter extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
     }
-    
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer)
-    {
-		super.onContainerClosed(entityplayer);
-    }
 
 	@Override
     public boolean canInteractWith(EntityPlayer entityplayer)

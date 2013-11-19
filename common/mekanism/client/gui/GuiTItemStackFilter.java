@@ -24,7 +24,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class GuiItemStackFilter extends GuiMekanism
+public class GuiTItemStackFilter extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;
 	
@@ -41,7 +41,7 @@ public class GuiItemStackFilter extends GuiMekanism
 	private GuiTextField minField;
 	private GuiTextField maxField;
 	
-	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
+	public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;
@@ -50,7 +50,7 @@ public class GuiItemStackFilter extends GuiMekanism
 		filter = ((TItemStackFilter)tileEntity.filters.get(index)).clone();
 	}
 	
-	public GuiItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
+	public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(new ContainerFilter(player.inventory));
 		tileEntity = tentity;

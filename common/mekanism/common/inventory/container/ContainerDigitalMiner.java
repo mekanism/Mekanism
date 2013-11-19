@@ -53,7 +53,6 @@ public class ContainerDigitalMiner extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
     }
 

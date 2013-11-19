@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.HashList;
+import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
@@ -16,6 +17,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.miner.ThreadMinerSearch;
 import mekanism.common.network.PacketTileEntity;
@@ -30,7 +33,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl, IActiveState
 {
 	public Set<Object3D> oresToMine = new HashSet<Object3D>();
 	
@@ -50,6 +53,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public ItemStack replaceStack;
 	
+	public boolean isActive;
+	public boolean clientActive;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -66,6 +72,17 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(getActive())
+		{
+			for(EntityPlayer player : playersUsing)
+			{
+				if(player.openContainer instanceof ContainerNull || player.openContainer instanceof ContainerFilter)
+				{
+					player.closeScreen();
+				}
+			}
+		}
 		
 		if(!worldObj.isRemote)
 		{
@@ -91,6 +108,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         maxY = nbtTags.getInteger("maxY");
         doEject = nbtTags.getBoolean("doEject");
         doPull = nbtTags.getBoolean("doPull");
+        isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         if(nbtTags.hasKey("replaceStack"))
@@ -129,6 +147,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setInteger("maxY", maxY);
         nbtTags.setBoolean("doEject", doEject);
         nbtTags.setBoolean("doPull", doPull);
+        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
         if(replaceStack != null)
@@ -176,6 +195,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doEject = dataStream.readBoolean();
 			doPull = dataStream.readBoolean();
 			clientToMine = dataStream.readInt();
+			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			
 			filters.clear();
@@ -195,6 +215,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doEject = dataStream.readBoolean();
 			doPull = dataStream.readBoolean();
 			clientToMine = dataStream.readInt();
+			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 		}
 		else if(type == 2)
@@ -221,6 +242,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(maxY);
 		data.add(doEject);
 		data.add(doPull);
+		data.add(isActive);
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
 		
@@ -246,6 +268,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(maxY);
 		data.add(doEject);
 		data.add(doPull);
+		data.add(isActive);
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
 		
@@ -395,4 +418,40 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		return true;
 	}
+	
+	@Override
+    public void setActive(boolean active)
+    {
+    	isActive = active;
+    	
+    	if(clientActive != active)
+    	{
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		
+    		if(active)
+    		{
+    			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "mekanism:etc.Click", 0.3F, 1);
+    		}
+    		
+    		clientActive = active;
+    	}
+    }
+    
+    @Override
+    public boolean getActive()
+    {
+    	return isActive;
+    }
+    
+    @Override
+    public boolean renderUpdate()
+    {
+    	return true;
+    }
+    
+    @Override
+    public boolean lightUpdate()
+    {
+    	return true;
+    }
 }

@@ -58,6 +58,7 @@ import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDigitUpdate;
+import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
@@ -1137,6 +1138,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketEditFilter.class);
 		PacketHandler.registerPacket(PacketConfigurationUpdate.class);
 		PacketHandler.registerPacket(PacketSimpleGui.class);
+		PacketHandler.registerPacket(PacketDigitalMinerGui.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 
