@@ -362,6 +362,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	    	{
 	    		return icons[blockID][11][0];
 	    	}
+	    	else if(meta == 4)
+	    	{
+	    		return icons[blockID][0][2]; //TODO
+	    	}
 		}
     	
     	return null;
@@ -480,6 +484,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		return icons[blockID][11][0];
     	}
+      	else if(metadata == 4)
+    	{
+    		return icons[blockID][0][2]; //TODO
+    	}
     	
     	return null;
     }
@@ -498,7 +506,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
-		//TODO DIGITAL MINER
+		list.add(new ItemStack(i, 1, 4));
 		
 		for(RecipeType type : RecipeType.values())
 		{

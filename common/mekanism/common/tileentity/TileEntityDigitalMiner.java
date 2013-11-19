@@ -183,6 +183,20 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				doEject = !doEject;
+			}
+			else if(type == 1)
+			{
+				doPull = !doPull;
+			}
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		int type = dataStream.readInt();
@@ -247,15 +261,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(controlType.ordinal());
 		
 		return data;
-	}
-	
-	@Override
-	public void openChest()
-	{
-		if(!worldObj.isRemote)
-		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getFilterPacket(new ArrayList())), Object3D.get(this), 50D);
-		}
 	}
 	
 	public ArrayList getGenericPacket(ArrayList data)

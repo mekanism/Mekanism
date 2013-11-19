@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 import mekanism.api.Object3D;
 import mekanism.client.gui.GuiDigitalMiner;
@@ -145,6 +146,16 @@ public class PacketDigitalMinerGui implements IMekanismPacket
         playerMP.openContainer = container;
         playerMP.openContainer.windowId = window;
         playerMP.openContainer.addCraftingToCrafters(playerMP);
+        
+        if(guiType == 0)
+        {
+        	TileEntityDigitalMiner tile = (TileEntityDigitalMiner)obj.getTileEntity(world);
+        	
+        	for(EntityPlayer player : tile.playersUsing)
+        	{
+        		PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(obj, tile.getFilterPacket(new ArrayList())), player);
+        	}
+        }
 	}
 	
 	@SideOnly(Side.CLIENT)

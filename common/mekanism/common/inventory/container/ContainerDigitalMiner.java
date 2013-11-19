@@ -27,7 +27,7 @@ public class ContainerDigitalMiner extends Container
             }
         }
 
-        addSlotToContainer(new SlotDischarge(tentity, 27, 180, 11));
+        addSlotToContainer(new SlotDischarge(tentity, 27, 152, 6));
         
         int slotX;
 
@@ -53,6 +53,7 @@ public class ContainerDigitalMiner extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
+		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
     }
 

@@ -3,6 +3,7 @@ package mekanism.common;
 import java.io.File;
 
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
+import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.inventory.container.ContainerElectricPump;
@@ -244,7 +245,7 @@ public class CommonProxy
 		switch(ID)
 		{
 			case 2:
-				//DIGITAL MINER CONTAINER TODO
+				return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner)tileEntity);
 			case 3:
 				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:

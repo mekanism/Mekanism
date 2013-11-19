@@ -10,6 +10,7 @@ import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
+import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDynamicTank;
 import mekanism.client.gui.GuiElectricChest;
 import mekanism.client.gui.GuiElectricPump;
@@ -300,7 +301,7 @@ public class ClientProxy extends CommonProxy
 			case 1:
 				return new GuiCredits();
 			case 2:
-				//DigitalMiner GUI TODO
+				return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)tileEntity);
 			case 3:
 				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 4:
