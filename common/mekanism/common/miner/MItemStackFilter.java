@@ -23,10 +23,12 @@ public class MItemStackFilter extends MinerFilter
 	}
 	
 	@Override
-	public void write(NBTTagCompound nbtTags)
+	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("type", 0);
 		itemType.writeToNBT(nbtTags);
+		
+		return nbtTags;
 	}
 	
 	@Override

@@ -11,7 +11,7 @@ public abstract class MinerFilter
 {
 	public abstract boolean canFilter(ItemStack itemStack);
 	
-	public abstract void write(NBTTagCompound nbtTags);
+	public abstract NBTTagCompound write(NBTTagCompound nbtTags);
 	
 	protected abstract void read(NBTTagCompound nbtTags);
 	

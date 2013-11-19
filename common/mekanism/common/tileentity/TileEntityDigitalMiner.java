@@ -21,6 +21,7 @@ import mekanism.common.miner.ThreadMinerSearch;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -35,6 +36,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
 	
+	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
+	
 	public int radius;
 	
 	public int minY;
@@ -42,8 +45,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public boolean doEject = false;
 	public boolean doPull = false;
-
-	public ThreadMinerSearch searcher;
 	
 	public int clientToMine;
 	
@@ -67,6 +68,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.discharge(27, this);
+			
+			if(playersUsing.size() > 0)
+			{
+				for(EntityPlayer player : playersUsing)
+				{
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+				}
+			}
 		}
 	}
 	
@@ -91,6 +100,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     			filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
+    	
+    	if(nbtTags.hasKey("oresToMine"))
+    	{
+    		NBTTagList tagList = nbtTags.getTagList("oresToMine");
+    		
+    		for(int i = 0; i < tagList.tagCount(); i++)
+    		{
+    			oresToMine.add(Object3D.read((NBTTagCompound)tagList.tagAt(i)));
+    		}
+    	}
     }
 
 	@Override
@@ -109,9 +128,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         
         for(MinerFilter filter : filters)
         {
-        	NBTTagCompound tagCompound = new NBTTagCompound();
-        	filter.write(new NBTTagCompound());
-        	filterTags.appendTag(tagCompound);
+        	filterTags.appendTag(filter.write(new NBTTagCompound()));
         }
         
         if(filterTags.tagCount() != 0)
@@ -119,16 +136,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         	nbtTags.setTag("filters", filterTags);
         }
         
-        NBTTagList miningOres = new NBTTagList();
+        NBTTagList miningOreTags = new NBTTagList();
         
         for(Object3D obj : oresToMine)
         {
-        	miningOres.appendTag(obj.write(new NBTTagCompound()));
+        	miningOreTags.appendTag(obj.write(new NBTTagCompound()));
         }
         
-        if(miningOres.tagCount() != 0)
+        if(miningOreTags.tagCount() != 0)
         {
-        	nbtTags.setTag("oresToMine", miningOres);
+        	nbtTags.setTag("oresToMine", miningOreTags);
         }
     }
 	
@@ -148,8 +165,27 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doPull = dataStream.readBoolean();
 			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			
+			filters.clear();
+			
+			int amount = dataStream.readInt();
+			
+			for(int i = 0; i < amount; i++)
+			{
+				filters.add(MinerFilter.readFromPacket(dataStream));
+			}
 		}
 		else if(type == 1)
+		{
+			radius = dataStream.readInt();
+			minY = dataStream.readInt();
+			maxY = dataStream.readInt();
+			doEject = dataStream.readBoolean();
+			doPull = dataStream.readBoolean();
+			clientToMine = dataStream.readInt();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+		}
+		else if(type == 2)
 		{
 			filters.clear();
 			
@@ -188,11 +224,32 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 	}
 	
-	public ArrayList getFilterPacket(ArrayList data)
+	public ArrayList getGenericPacket(ArrayList data)
 	{
 		super.getNetworkedData(data);
 		
 		data.add(1);
+		data.add(radius);
+		data.add(minY);
+		data.add(maxY);
+		data.add(doEject);
+		data.add(doPull);
+		data.add(oresToMine.size());
+		data.add(controlType.ordinal());
+		
+		for(MinerFilter filter : filters)
+		{
+			filter.write(data);
+		}
+		
+		return data;
+	}
+	
+	public ArrayList getFilterPacket(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(2);
 		
 		data.add(filters.size());
 		

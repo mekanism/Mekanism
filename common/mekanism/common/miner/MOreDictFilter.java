@@ -52,10 +52,12 @@ public class MOreDictFilter extends MinerFilter
 	}
 	
 	@Override
-	public void write(NBTTagCompound nbtTags)
+	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("type", 1);
 		nbtTags.setString("oreDictName", oreDictName);
+		
+		return nbtTags;
 	}
 	
 	@Override
