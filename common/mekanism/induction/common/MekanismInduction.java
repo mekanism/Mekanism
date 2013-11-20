@@ -67,7 +67,7 @@ public class MekanismInduction implements IModule
 
 	@SidedProxy(clientSide = "mekanism.induction.client.InductionClientProxy", serverSide = "mekanism.induction.common.InductionCommonProxy")
 	public static InductionCommonProxy proxy;
-	
+
 	/** MekanismInduction version number */
 	public static Version versionNumber = new Version(5, 6, 0);
 
@@ -141,14 +141,14 @@ public class MekanismInduction implements IModule
 		ElectromagneticContractor = new BlockEMContractor(Mekanism.configuration.getBlock("ElectromagneticContractor", getNextBlockID()).getInt()).setUnlocalizedName("ElectromagneticContractor");
 		Battery = new BlockBattery(Mekanism.configuration.getBlock("Battery", getNextBlockID()).getInt()).setUnlocalizedName("Battery");
 
-		if(REPLACE_FURNACE)
+		if (REPLACE_FURNACE)
 		{
 			blockAdvancedFurnaceIdle = BlockAdvancedFurnace.createNew(false);
 			blockAdvancedFurnaceBurning = BlockAdvancedFurnace.createNew(true);
-			
+
 			GameRegistry.registerBlock(blockAdvancedFurnaceIdle, "ri_" + blockAdvancedFurnaceIdle.getUnlocalizedName());
 			GameRegistry.registerBlock(blockAdvancedFurnaceBurning, "ri_" + blockAdvancedFurnaceBurning.getUnlocalizedName() + "2");
-			
+
 			GameRegistry.registerTileEntity(TileEntityAdvancedFurnace.class, blockAdvancedFurnaceIdle.getUnlocalizedName());
 		}
 
@@ -175,9 +175,9 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void init(FMLInitializationEvent evt)
 	{
-		//Add this module to the core list
+		// Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
-		
+
 		Compatibility.initiate();
 	}
 
@@ -188,7 +188,7 @@ public class MekanismInduction implements IModule
 		 * Recipes
 		 */
 		ItemStack emptyCapacitor = new ItemStack(Capacitor);
-		((IItemElectric)Capacitor).setElectricity(emptyCapacitor, 0);
+		((IItemElectric) Capacitor).setElectricity(emptyCapacitor, 0);
 
 		/** Capacitor **/
 		GameRegistry.addRecipe(new ShapedOreRecipe(emptyCapacitor, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
@@ -202,8 +202,8 @@ public class MekanismInduction implements IModule
 		/** Multimeter */
 		GameRegistry.addRecipe(new ShapedOreRecipe(Multimeter, "WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', emptyCapacitor, 'I', UniversalRecipes.PRIMARY_METAL));
 
-		/** Multimeter */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', UniversalRecipes.PRIMARY_METAL));
+		/** Battery */
+		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', Mekanism.EnergyCube));
 
 		/** EM Contractor */
 		GameRegistry.addRecipe(new ShapedOreRecipe(ElectromagneticContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
@@ -214,20 +214,22 @@ public class MekanismInduction implements IModule
 
 	public static void replaceTileEntity(Class<? extends TileEntity> findTile, Class<? extends TileEntity> replaceTile)
 	{
-		try {
+		try
+		{
 			Map<String, Class> nameToClassMap = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "70326_a", "nameToClassMap", "a");
 			Map<Class, String> classToNameMap = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "70326_b", "classToNameMap", "b");
 
 			String findTileID = classToNameMap.get(findTile);
 
-			if(findTileID != null)
+			if (findTileID != null)
 			{
 				nameToClassMap.put(findTileID, replaceTile);
 				classToNameMap.put(replaceTile, findTileID);
 				classToNameMap.remove(findTile);
 			}
 		}
-		catch(Exception e) {
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -239,7 +241,7 @@ public class MekanismInduction implements IModule
 	}
 
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "Induction";
 	}
