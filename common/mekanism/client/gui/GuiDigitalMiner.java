@@ -6,6 +6,9 @@ import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
+import mekanism.common.miner.ThreadMinerSearch.State;
+import mekanism.common.network.PacketDigitalMinerGui;
+import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -54,21 +57,21 @@ public class GuiDigitalMiner extends GuiMekanism
 		buttonList.clear();
 		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, "Start");
 		
-		if(tileEntity.searcher.finished == true && tileEntity.running)
+		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
 		
 		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, "Stop");
 		
-		if(tileEntity.searcher.finished == false || !tileEntity.running)
+		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
 		
 		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, "Config");
 		
-		if(tileEntity.searcher.finished == true)
+		if(tileEntity.searcher.state != State.IDLE)
 		{
 			configButton.enabled = false;
 		}
@@ -79,23 +82,57 @@ public class GuiDigitalMiner extends GuiMekanism
 	}
 	
 	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		super.actionPerformed(guibutton);
+		
+		if(guibutton.id == 0)
+		{
+			ArrayList data = new ArrayList();
+			data.add(3);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+		}
+		else if(guibutton.id == 1)
+		{
+			ArrayList data = new ArrayList();
+			data.add(4);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+		}
+		else if(guibutton.id == 2)
+		{
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+		}
+	}
+	
+	@Override
 	public void updateScreen()
 	{
 		super.updateScreen();
 		
-		if(tileEntity.searcher.finished == true && tileEntity.running)
+		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
+		else {
+			startButton.enabled = true;
+		}
 		
-		if(tileEntity.searcher.finished == false || !tileEntity.running)
+		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
+		else {
+			stopButton.enabled = true;
+		}
 		
-		if(tileEntity.searcher.finished == true)
+		if(tileEntity.searcher.state != State.IDLE)
 		{
 			configButton.enabled = false;
+		}
+		else {
+			configButton.enabled = true;
 		}
 	}
 
@@ -109,6 +146,12 @@ public class GuiDigitalMiner extends GuiMekanism
 		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        
+        fontRenderer.drawString(tileEntity.running ? "Running" : "Idle", 9, 19, 0x00CD00);
+        fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 28, 0x00CD00);
+        
+        fontRenderer.drawString("Eject: " + (tileEntity.doEject ? "On" : "Off"), 9, 40, 0x00CD00);
+        fontRenderer.drawString("Pull: " + (tileEntity.doPull ? "On" : "Off"), 9, 49, 0x00CD00);
         
     	if(tileEntity.replaceStack != null)
 		{

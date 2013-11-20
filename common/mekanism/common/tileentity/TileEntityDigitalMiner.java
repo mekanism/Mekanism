@@ -21,6 +21,7 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.miner.ThreadMinerSearch;
+import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -98,6 +99,30 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 		}
+	}
+	
+	public void start()
+	{
+		if(searcher.state == State.IDLE)
+		{
+			searcher.start();
+		}
+		
+		running = true;
+	}
+	
+	public void stop()
+	{
+		if(searcher.state == State.FINISHED)
+		{
+			running = false;
+		}
+	}
+	
+	public void reset()
+	{
+		searcher.reset();
+		running = false;
 	}
 	
 	@Override
@@ -211,6 +236,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					replaceStack = null;
 				}
 			}
+			else if(type == 3)
+			{
+				start();
+			}
+			else if(type == 4)
+			{
+				stop();
+			}
 			
 			return;
 		}
@@ -228,6 +261,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doPull = dataStream.readBoolean();
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
+			searcher.state = State.values()[dataStream.readInt()];
 			
 			if(dataStream.readBoolean())
 			{
@@ -258,6 +292,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doPull = dataStream.readBoolean();
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
+			searcher.state = State.values()[dataStream.readInt()];
 			
 			if(dataStream.readBoolean())
 			{
@@ -297,6 +332,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(doPull);
 		data.add(isActive);
 		data.add(running);
+		data.add(searcher.state.ordinal());
 		
 		if(replaceStack != null)
 		{
@@ -334,6 +370,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(doPull);
 		data.add(isActive);
 		data.add(running);
+		data.add(searcher.state.ordinal());
 		
 		if(replaceStack != null)
 		{
