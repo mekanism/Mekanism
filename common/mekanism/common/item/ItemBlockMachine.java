@@ -252,7 +252,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(isElectricChest(itemstack))
 		{
-			if(!world.isRemote)
+			if(world != null && !world.isRemote)
 			{
 				InventoryElectricChest inv = new InventoryElectricChest(itemstack);
 				

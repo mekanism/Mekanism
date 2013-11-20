@@ -66,7 +66,7 @@ public class GuiMultimeter extends GuiContainer
 		data.add((byte)3);
 		data.add(Float.parseFloat(textFieldLimit.getText()));
 		
-		PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity)), data);
+		PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 	}
 
 	@Override
