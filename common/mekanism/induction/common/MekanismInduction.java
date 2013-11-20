@@ -48,7 +48,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0")
+@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = Mekanism.VERSION)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
