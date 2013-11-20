@@ -170,7 +170,6 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 			{
 				if(type == 1)
 				{
-					System.out.println("hi");
 					return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 				}
 				else if(type == 2)

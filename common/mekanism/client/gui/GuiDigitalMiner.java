@@ -138,9 +138,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    	
+    {    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -150,8 +148,11 @@ public class GuiDigitalMiner extends GuiMekanism
         fontRenderer.drawString(tileEntity.running ? "Running" : "Idle", 9, 19, 0x00CD00);
         fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 28, 0x00CD00);
         
-        fontRenderer.drawString("Eject: " + (tileEntity.doEject ? "On" : "Off"), 9, 40, 0x00CD00);
-        fontRenderer.drawString("Pull: " + (tileEntity.doPull ? "On" : "Off"), 9, 49, 0x00CD00);
+        fontRenderer.drawString("Eject: " + (tileEntity.doEject ? "On" : "Off"), 9, 39, 0x00CD00);
+        fontRenderer.drawString("Pull: " + (tileEntity.doPull ? "On" : "Off"), 9, 48, 0x00CD00);
+        
+        fontRenderer.drawString("To mine:", 9, 59, 0x00CD00);
+        fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
         
     	if(tileEntity.replaceStack != null)
 		{
@@ -186,6 +187,8 @@ public class GuiDigitalMiner extends GuiMekanism
 		{
 			drawCreativeTabHoveringText("Reset", xAxis, yAxis);
 		}
+		
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override
