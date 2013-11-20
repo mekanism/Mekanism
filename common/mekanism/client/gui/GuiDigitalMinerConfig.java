@@ -14,8 +14,10 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MItemStackFilter;
 import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.miner.MinerFilter;
+import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -200,6 +202,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+			
+			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Object3D.get(tileEntity), 2));
 			}
 		}
 	}
@@ -403,6 +411,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 12, guiHeight + 84, 176 + 14, 14, 14, 14);
+		}
+		
+		if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
+		{
+			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
 		
 		radiusField.drawTextBox();

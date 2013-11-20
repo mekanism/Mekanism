@@ -6,13 +6,13 @@ import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
@@ -27,6 +27,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiDigitalMiner extends GuiMekanism
 {
 	public TileEntityDigitalMiner tileEntity;
+	
+	public GuiButton startButton;
+	public GuiButton stopButton;
+	public GuiButton configButton;
 
     public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity)
     {
@@ -38,6 +42,62 @@ public class GuiDigitalMiner extends GuiMekanism
         
         ySize+=64;
     }
+    
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+		
+		buttonList.clear();
+		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, "Start");
+		
+		if(tileEntity.searcher.finished == true && tileEntity.running)
+		{
+			startButton.enabled = false;
+		}
+		
+		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, "Stop");
+		
+		if(tileEntity.searcher.finished == false || !tileEntity.running)
+		{
+			stopButton.enabled = false;
+		}
+		
+		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, "Config");
+		
+		if(tileEntity.searcher.finished == true)
+		{
+			configButton.enabled = false;
+		}
+		
+		buttonList.add(startButton);
+		buttonList.add(stopButton);
+		buttonList.add(configButton);
+	}
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		if(tileEntity.searcher.finished == true && tileEntity.running)
+		{
+			startButton.enabled = false;
+		}
+		
+		if(tileEntity.searcher.finished == false || !tileEntity.running)
+		{
+			stopButton.enabled = false;
+		}
+		
+		if(tileEntity.searcher.finished == true)
+		{
+			configButton.enabled = false;
+		}
+	}
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
@@ -72,6 +132,11 @@ public class GuiDigitalMiner extends GuiMekanism
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
 		{
 			drawCreativeTabHoveringText("Auto-pull", xAxis, yAxis);
+		}
+		
+		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
+		{
+			drawCreativeTabHoveringText("Replace block", xAxis, yAxis);
 		}
 	}
 	
@@ -164,7 +229,10 @@ public class GuiDigitalMiner extends GuiMekanism
 				
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					toUse = stack.copy();
+					if(stack.getItem() instanceof ItemBlock)
+					{
+						toUse = stack.copy();
+					}
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
@@ -178,12 +246,12 @@ public class GuiDigitalMiner extends GuiMekanism
 					
 					if(stack != null)
 					{
-						data.add(true);
+						data.add(false);
 						data.add(stack.itemID);
 						data.add(stack.getItemDamage());
 					}
 					else {
-						data.add(false);
+						data.add(true);
 					}
 					
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));

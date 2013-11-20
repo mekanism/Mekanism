@@ -56,6 +56,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public boolean isActive;
 	public boolean clientActive;
 	
+	public boolean running;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -109,6 +111,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         doEject = nbtTags.getBoolean("doEject");
         doPull = nbtTags.getBoolean("doPull");
         isActive = nbtTags.getBoolean("isActive");
+        running = nbtTags.getBoolean("running");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         if(nbtTags.hasKey("replaceStack"))
@@ -148,6 +151,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("doEject", doEject);
         nbtTags.setBoolean("doPull", doPull);
         nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setBoolean("running", running);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
         if(replaceStack != null)
@@ -207,6 +211,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					replaceStack = null;
 				}
 			}
+			
+			return;
 		}
 		
 		super.handlePacketData(dataStream);
@@ -220,8 +226,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			maxY = dataStream.readInt();
 			doEject = dataStream.readBoolean();
 			doPull = dataStream.readBoolean();
-			clientToMine = dataStream.readInt();
 			isActive = dataStream.readBoolean();
+			running = dataStream.readBoolean();
+			
+			if(dataStream.readBoolean())
+			{
+				replaceStack = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+			}
+			else {
+				replaceStack = null;
+			}
+			
+			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			
 			filters.clear();
@@ -240,8 +256,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			maxY = dataStream.readInt();
 			doEject = dataStream.readBoolean();
 			doPull = dataStream.readBoolean();
-			clientToMine = dataStream.readInt();
 			isActive = dataStream.readBoolean();
+			running = dataStream.readBoolean();
+			
+			if(dataStream.readBoolean())
+			{
+				replaceStack = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+			}
+			else {
+				replaceStack = null;
+			}
+			
+			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 		}
 		else if(type == 2)
@@ -270,6 +296,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(doEject);
 		data.add(doPull);
 		data.add(isActive);
+		data.add(running);
+		
+		if(replaceStack != null)
+		{
+			data.add(true);
+			data.add(replaceStack.itemID);
+			data.add(replaceStack.getItemDamage());
+		}
+		else {
+			data.add(false);
+		}
+		
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
 		
@@ -295,6 +333,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(doEject);
 		data.add(doPull);
 		data.add(isActive);
+		data.add(running);
+		
+		if(replaceStack != null)
+		{
+			data.add(true);
+			data.add(replaceStack.itemID);
+			data.add(replaceStack.getItemDamage());
+		}
+		else {
+			data.add(false);
+		}
+		
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
 		

@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotElectricChest;
+import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -29,6 +30,7 @@ public class ContainerDigitalMiner extends Container
         }
 
         addSlotToContainer(new SlotDischarge(tentity, 27, 152, 6));
+        addSlotToContainer(new SlotMachineUpgrade(tentity, 28, 180, 11));
         
         int slotX;
 
