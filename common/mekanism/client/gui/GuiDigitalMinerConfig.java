@@ -292,9 +292,9 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		
 		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 		
-		fontRenderer.drawString("MinY: " + tileEntity.minY, 11, 83, 0x00CD00);
+		fontRenderer.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
 		
-		fontRenderer.drawString("MaxY: " + tileEntity.maxY, 11, 108, 0x00CD00);
+		fontRenderer.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -453,7 +453,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		if(!radiusField.getText().isEmpty())
 		{
-			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 99));
+			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 32));
 			
 			ArrayList data = new ArrayList();
 			data.add(6);

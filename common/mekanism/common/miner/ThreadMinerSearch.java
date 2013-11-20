@@ -1,6 +1,9 @@
 package mekanism.common.miner;
 
+import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 
 public class ThreadMinerSearch extends Thread
 {
@@ -18,12 +21,48 @@ public class ThreadMinerSearch extends Thread
 	{
 		state = State.SEARCHING;
 		
-		if(tileEntity.isInvalid())
+		if(tileEntity.filters.isEmpty())
 		{
+			state = State.FINISHED;
 			return;
 		}
 		
+		int count = 0;
+		
+		for(int y = tileEntity.maxY; y >= tileEntity.minY; y--)
+		{
+			for(int x = tileEntity.xCoord-tileEntity.radius; x <= tileEntity.xCoord+tileEntity.radius; x++)
+			{
+				for(int z = tileEntity.zCoord-tileEntity.radius; z <= tileEntity.zCoord+tileEntity.radius; z++)
+				{
+					if(tileEntity.isInvalid())
+					{
+						return;
+					}
+					
+					int blockID = tileEntity.worldObj.getBlockId(x, y, z);
+					int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
+					
+					if(blockID != 0)
+					{
+						ItemStack stack = new ItemStack(blockID, 1, meta);
+						
+						for(MinerFilter filter : tileEntity.filters)
+						{
+							if(filter.canFilter(stack))
+							{
+								tileEntity.oresToMine.add(new Object3D(x, y, z));
+							}
+						}
+					}
+					
+					count++;
+				}
+			}
+		}
+		
 		state = State.FINISHED;
+		MekanismUtils.saveChunk(tileEntity);
 	}
 	
 	public void reset()
@@ -35,6 +74,7 @@ public class ThreadMinerSearch extends Thread
 	{
 		IDLE("Not ready"), 
 		SEARCHING("Searching"), 
+		PAUSED("Paused"),
 		FINISHED("Ready");
 		
 		public String desc;

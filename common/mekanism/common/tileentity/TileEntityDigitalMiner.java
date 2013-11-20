@@ -109,14 +109,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		
 		running = true;
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	public void stop()
 	{
-		if(searcher.state == State.FINISHED)
+		if(searcher.state == State.SEARCHING)
+		{
+			searcher.interrupt();
+			reset();
+			
+			return;
+		}
+		else if(searcher.state == State.FINISHED)
 		{
 			running = false;
 		}
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	public void reset()
@@ -124,6 +135,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		searcher = new ThreadMinerSearch(this);
 		running = false;
 		oresToMine.clear();
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
@@ -171,6 +184,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
+        if(searcher.state == State.SEARCHING)
+        {
+        	reset();
+        }
         
         nbtTags.setInteger("radius", radius);
         nbtTags.setInteger("minY", minY);
