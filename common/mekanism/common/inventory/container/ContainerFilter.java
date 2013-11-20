@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import mekanism.common.tileentity.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -8,8 +9,12 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerFilter extends Container
 {
-    public ContainerFilter(InventoryPlayer inventory)
+	private TileEntityContainerBlock tileEntity;
+	
+    public ContainerFilter(InventoryPlayer inventory, TileEntityContainerBlock tile)
     {
+    	tileEntity = tile;
+    	
         int slotX;
 
         for(slotX = 0; slotX < 3; ++slotX)
@@ -24,12 +29,24 @@ public class ContainerFilter extends Container
         {
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
+        
+		tileEntity.openChest();
+		tileEntity.playersUsing.add(inventory.player);
+    }
+    
+    @Override
+    public void onContainerClosed(EntityPlayer entityplayer)
+    {
+		super.onContainerClosed(entityplayer);
+		
+		tileEntity.closeChest();
+		tileEntity.playersUsing.remove(entityplayer);
     }
 
 	@Override
     public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-        return true;
+        return tileEntity.isUseableByPlayer(entityplayer);
     }
     
 	@Override

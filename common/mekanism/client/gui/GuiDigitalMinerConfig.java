@@ -17,6 +17,7 @@ import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -185,6 +186,24 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Object3D.get(tileEntity), 2));
 			}
+			
+			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				setRadius();
+			}
+			
+			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				setMinY();
+			}
+			
+			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				setMaxY();
+			}
 		}
 	}
 	
@@ -226,19 +245,19 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
 		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
 		
-		String prevRad = radiusField != null ? radiusField.getText() : "" + tileEntity.radius;
-		String prevMin = minField != null ? minField.getText() : "" + tileEntity.minY;
-		String prevMax = maxField != null ? maxField.getText() : "" + tileEntity.maxY;
+		String prevRad = radiusField != null ? radiusField.getText() : "";
+		String prevMin = minField != null ? minField.getText() : "";
+		String prevMax = maxField != null ? maxField.getText() : "";
 		
 		radiusField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
-		radiusField.setMaxStringLength(3);
+		radiusField.setMaxStringLength(2);
 		radiusField.setText(prevRad);
 		
-		minField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 92, 20, 11);
+		minField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 92, 26, 11);
 		minField.setMaxStringLength(3);
 		minField.setText(prevMin);
 		
-		maxField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 117, 20, 11);
+		maxField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 117, 26, 11);
 		maxField.setMaxStringLength(3);
 		maxField.setText(prevMax);
 	}
@@ -264,7 +283,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString("Logistical Sorter", 43, 6, 0x404040);
+		fontRenderer.drawString("Digital Miner Config", 43, 6, 0x404040);
 		
 		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
@@ -361,20 +380,36 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			}
 		}
 		
-		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
-		{
-			drawTexturedModalRect(guiWidth + 12, guiHeight + 84, 176 + 14, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 12, guiHeight + 84, 176 + 14, 14, 14, 14);
-		}
-		
 		if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 		{
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
+		}
+		
+		if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
+		{
+			drawTexturedModalRect(guiWidth + 39, guiHeight + 67, 176 + 11, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 39, guiHeight + 67, 176 + 11, 11, 11, 11);
+		}
+		
+		if(xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103)
+		{
+			drawTexturedModalRect(guiWidth + 39, guiHeight + 92, 176 + 11, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 39, guiHeight + 92, 176 + 11, 11, 11, 11);
+		}
+		
+		if(xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128)
+		{
+			drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 176 + 11, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 176 + 11, 11, 11, 11);
 		}
 		
 		radiusField.drawTextBox();
@@ -394,24 +429,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			if(radiusField.isFocused())
 			{
-				if(!radiusField.getText().isEmpty())
-				{
-				
-				}
+				setRadius();
 			}
 			else if(minField.isFocused())
 			{
-				if(!minField.getText().isEmpty())
-				{
-				
-				}
+				setMinY();
 			}
 			else if(maxField.isFocused())
 			{
-				if(!maxField.getText().isEmpty())
-				{
-				
-				}
+				setMaxY();
 			}
 		}
 		
@@ -420,6 +446,54 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			radiusField.textboxKeyTyped(c, i);
 			minField.textboxKeyTyped(c, i);
 			maxField.textboxKeyTyped(c, i);
+		}
+	}
+	
+	private void setRadius()
+	{
+		if(!radiusField.getText().isEmpty())
+		{
+			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 99));
+			
+			ArrayList data = new ArrayList();
+			data.add(6);
+			data.add(toUse);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			
+			radiusField.setText("");
+		}
+	}
+	
+	private void setMinY()
+	{
+		if(!minField.getText().isEmpty())
+		{
+			int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), 255));
+			
+			ArrayList data = new ArrayList();
+			data.add(7);
+			data.add(toUse);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			
+			minField.setText("");
+		}
+	}
+	
+	private void setMaxY()
+	{
+		if(!maxField.getText().isEmpty())
+		{
+			int toUse = Math.max(0, Math.min(Integer.parseInt(maxField.getText()), 255));
+			
+			ArrayList data = new ArrayList();
+			data.add(8);
+			data.add(toUse);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			
+			maxField.setText("");
 		}
 	}
 	

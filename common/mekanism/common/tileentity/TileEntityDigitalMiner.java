@@ -138,6 +138,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         doPull = nbtTags.getBoolean("doPull");
         isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
+        searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         if(nbtTags.hasKey("replaceStack"))
@@ -178,6 +179,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("doPull", doPull);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setBoolean("running", running);
+        nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
         
         if(replaceStack != null)

@@ -121,17 +121,18 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	{
 		Container container = null;
 		
+        playerMP.closeScreen();
+		
 		if(guiType == 0)
 		{
 			container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
 		else if(guiType == 1 || guiType == 2)
 		{
-			container = new ContainerFilter(playerMP.inventory);
+			container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
 		
         playerMP.incrementWindowID();
-        playerMP.closeContainer();
         int window = playerMP.currentWindowId;
         
         if(t == SorterGuiPacket.SERVER)

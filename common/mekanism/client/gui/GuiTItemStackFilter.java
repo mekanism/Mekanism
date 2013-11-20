@@ -43,7 +43,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 	
 	public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory));
+		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 		
 		origFilter = (TItemStackFilter)tileEntity.filters.get(index);
@@ -52,7 +52,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 	
 	public GuiTItemStackFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerFilter(player.inventory));
+		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 		
 		isNew = true;

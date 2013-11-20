@@ -301,9 +301,9 @@ public class CommonProxy
 			case 26:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 27:
-				return new ContainerFilter(player.inventory);
+				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
 			case 28:
-				return new ContainerFilter(player.inventory);
+				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
 		}
 		
 		return null;

@@ -56,7 +56,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 	
 	public GuiTOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory));
+		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 		
 		origFilter = (TOreDictFilter)tileEntity.filters.get(index);
@@ -67,7 +67,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 	
 	public GuiTOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerFilter(player.inventory));
+		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 		
 		isNew = true;
