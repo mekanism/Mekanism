@@ -143,8 +143,22 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						
 						if(drops.isEmpty() || canInsert(drops))
 						{
+							add(drops);
 							
+							setReplace(obj);
+							toRemove.add(obj);
+							
+							worldObj.playAuxSFXAtEntity(null, 2001, obj.xCoord, obj.yCoord, obj.zCoord, id + (meta << 12));
+							
+							//delay = getDelay();
+							
+							break;
 						}
+					}
+					
+					for(Object3D obj : toRemove)
+					{
+						oresToMine.remove(obj);
 					}
 				}
 			}
@@ -166,13 +180,45 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public void setReplace(Object3D obj)
 	{
-		if(replaceStack != null)
+		ItemStack stack = getReplace();
+		
+		if(stack != null)
 		{
 			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, replaceStack.itemID, replaceStack.getItemDamage(), 3);
 		}
 		else {
 			worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 		}
+	}
+	
+	public ItemStack getReplace()
+	{
+		if(replaceStack == null)
+		{
+			return null;
+		}
+		
+		for(int i = 0; i < 27; i++)
+		{
+			if(inventory[i] != null && inventory[i].isItemEqual(replaceStack))
+			{
+				inventory[i].stackSize--;
+				
+				if(inventory[i].stackSize == 0)
+				{
+					inventory[i] = null;
+				}
+				
+				return MekanismUtils.size(replaceStack, 1);
+			}
+		}
+		
+		if(doPull)
+		{
+			//TODO
+		}
+		
+		return null;
 	}
 	
 	public boolean canInsert(List<ItemStack> stacks)
