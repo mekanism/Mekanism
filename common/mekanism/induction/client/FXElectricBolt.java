@@ -68,7 +68,7 @@ public class FXElectricBolt extends EntityFX
 		start = new BoltPoint(startVec);
 		end = new BoltPoint(targetVec);
 
-		if(end.y == Double.POSITIVE_INFINITY)
+		if (end.y == Double.POSITIVE_INFINITY)
 		{
 			end.y = Minecraft.getMinecraft().thePlayer.posY + 30;
 		}
@@ -95,7 +95,7 @@ public class FXElectricBolt extends EntityFX
 		segments.add(new BoltSegment(start, end));
 		recalculate();
 
-		if(doSplits)
+		if (doSplits)
 		{
 			double offsetRatio = boltLength * complexity;
 			split(2, offsetRatio / 10, 0.7f, 0.1f, 20 / 2);
@@ -147,7 +147,7 @@ public class FXElectricBolt extends EntityFX
 		/** Previous segment */
 		BoltSegment prev = null;
 
-		for(BoltSegment segment : oldSegments)
+		for (BoltSegment segment : oldSegments)
 		{
 			prev = segment.prev;
 			/** Length of each subsegment */
@@ -165,7 +165,7 @@ public class FXElectricBolt extends EntityFX
 			/**
 			 * Create bolt points.
 			 */
-			for(int i = 1; i < splitAmount; i++)
+			for (int i = 1; i < splitAmount; i++)
 			{
 				Vector3 newOffset = segment.difference.getPerpendicular().rotate(rand.nextFloat() * 360, segment.difference).scale((rand.nextFloat() - 0.5F) * offset);
 				Vector3 basePoint = startPoint.clone().translate(subSegment.clone().scale(i));
@@ -173,17 +173,17 @@ public class FXElectricBolt extends EntityFX
 				newPoints[i] = new BoltPoint(basePoint, newOffset);
 			}
 
-			for(int i = 0; i < splitAmount; i++)
+			for (int i = 0; i < splitAmount; i++)
 			{
 				BoltSegment next = new BoltSegment(newPoints[i], newPoints[(i + 1)], segment.alpha, segment.id * splitAmount + i, segment.splitID);
 				next.prev = prev;
 
-				if(prev != null)
+				if (prev != null)
 				{
 					prev.next = next;
 				}
 
-				if((i != 0) && (rand.nextFloat() < splitChance))
+				if ((i != 0) && (rand.nextFloat() < splitChance))
 				{
 					Vector3 splitrot = next.difference.xCrossProduct().rotate(rand.nextFloat() * 360, next.difference);
 					Vector3 diff = next.difference.clone().rotate((rand.nextFloat() * 0.66F + 0.33F) * splitAngle, splitrot).scale(splitLength);
@@ -198,7 +198,7 @@ public class FXElectricBolt extends EntityFX
 				segments.add(next);
 			}
 
-			if(segment.next != null)
+			if (segment.next != null)
 			{
 				segment.next.prev = prev;
 			}
@@ -217,12 +217,12 @@ public class FXElectricBolt extends EntityFX
 			public int compare(BoltSegment o1, BoltSegment o2)
 			{
 				int comp = Integer.valueOf(o1.splitID).compareTo(Integer.valueOf(o2.splitID));
-				
-				if(comp == 0)
+
+				if (comp == 0)
 				{
 					return Integer.valueOf(o1.id).compareTo(Integer.valueOf(o2.id));
 				}
-				
+
 				return comp;
 			}
 
@@ -236,16 +236,19 @@ public class FXElectricBolt extends EntityFX
 		int lastSplitCalc = 0;
 		int lastActiveSeg = 0;
 
-		for(BoltSegment segment : segments)
+		for (BoltSegment segment : segments)
 		{
-			if(segment.splitID > lastSplitCalc)
+			if (segment != null)
 			{
-				lastActiveSegment.put(lastSplitCalc, lastActiveSeg);
-				lastSplitCalc = segment.splitID;
-				lastActiveSeg = lastActiveSegment.get(parentIDMap.get(segment.splitID)).intValue();
-			}
+				if (segment.splitID > lastSplitCalc)
+				{
+					lastActiveSegment.put(lastSplitCalc, lastActiveSeg);
+					lastSplitCalc = segment.splitID;
+					lastActiveSeg = lastActiveSegment.get(parentIDMap.get(segment.splitID)).intValue();
+				}
 
-			lastActiveSeg = segment.id;
+				lastActiveSeg = segment.id;
+			}
 		}
 
 		lastActiveSegment.put(lastSplitCalc, lastActiveSeg);
@@ -253,17 +256,17 @@ public class FXElectricBolt extends EntityFX
 		lastActiveSeg = lastActiveSegment.get(0).intValue();
 		BoltSegment segment;
 
-		for(Iterator<BoltSegment> iterator = segments.iterator(); iterator.hasNext(); segment.recalculate())
+		for (Iterator<BoltSegment> iterator = segments.iterator(); iterator.hasNext(); segment.recalculate())
 		{
 			segment = iterator.next();
 
-			if(lastSplitCalc != segment.splitID)
+			if (lastSplitCalc != segment.splitID)
 			{
 				lastSplitCalc = segment.splitID;
 				lastActiveSeg = lastActiveSegment.get(segment.splitID);
 			}
 
-			if(segment.id > lastActiveSeg)
+			if (segment.id > lastActiveSeg)
 			{
 				iterator.remove();
 			}
@@ -277,7 +280,7 @@ public class FXElectricBolt extends EntityFX
 		prevPosY = posY;
 		prevPosZ = posZ;
 
-		if(particleAge++ >= particleMaxAge)
+		if (particleAge++ >= particleMaxAge)
 		{
 			setDead();
 		}
@@ -306,29 +309,29 @@ public class FXElectricBolt extends EntityFX
 		tessellator.setBrightness(15728880);
 		Vector3 playerVector = new Vector3(sinYaw * -cosPitch, -cosSinPitch / cosYaw, cosYaw * cosPitch);
 
-		int renderlength = (int)((particleAge + partialframe + (int)(boltLength * 3.0F)) / (int)(boltLength * 3.0F) * segmentCount);
+		int renderlength = (int) ((particleAge + partialframe + (int) (boltLength * 3.0F)) / (int) (boltLength * 3.0F) * segmentCount);
 
-		for(BoltSegment segment : segments)
+		for (BoltSegment segment : segments)
 		{
-			if(segment != null && segment.id <= renderlength)
+			if (segment != null && segment.id <= renderlength)
 			{
 				double renderWidth = boltWidth * ((new Vector3(player).distance(segment.start) / 5f + 1f) * (1 + segment.alpha) * 0.5f);
 				renderWidth = Math.min(boltWidth, Math.max(renderWidth, 0));
 
-				if(segment.difference.getMagnitude() > 0 && segment.difference.getMagnitude() != Double.NaN && segment.difference.getMagnitude() != Double.POSITIVE_INFINITY && renderWidth > 0 && renderWidth != Double.NaN && renderWidth != Double.POSITIVE_INFINITY)
+				if (segment.difference.getMagnitude() > 0 && segment.difference.getMagnitude() != Double.NaN && segment.difference.getMagnitude() != Double.POSITIVE_INFINITY && renderWidth > 0 && renderWidth != Double.NaN && renderWidth != Double.POSITIVE_INFINITY)
 				{
 					Vector3 diffPrev = playerVector.crossProduct(segment.prevDiff).scale(renderWidth / segment.sinPrev);
 					Vector3 diffNext = playerVector.crossProduct(segment.nextDiff).scale(renderWidth / segment.sinNext);
 					Vector3 startVec = segment.start;
 					Vector3 endVec = segment.end;
-					float rx1 = (float)(startVec.x - interpPosX);
-					float ry1 = (float)(startVec.y - interpPosY);
-					float rz1 = (float)(startVec.z - interpPosZ);
-					float rx2 = (float)(endVec.x - interpPosX);
-					float ry2 = (float)(endVec.y - interpPosY);
-					float rz2 = (float)(endVec.z - interpPosZ);
+					float rx1 = (float) (startVec.x - interpPosX);
+					float ry1 = (float) (startVec.y - interpPosY);
+					float rz1 = (float) (startVec.z - interpPosZ);
+					float rx2 = (float) (endVec.x - interpPosX);
+					float ry2 = (float) (endVec.y - interpPosY);
+					float rz2 = (float) (endVec.z - interpPosZ);
 
-					tessellator.setColorRGBA_F(particleRed, particleGreen, particleBlue, (1.0F - (particleAge >= 0 ? ((float)particleAge / (float)particleMaxAge) : 0.0F) * 0.6f) * segment.alpha);
+					tessellator.setColorRGBA_F(particleRed, particleGreen, particleBlue, (1.0F - (particleAge >= 0 ? ((float) particleAge / (float) particleMaxAge) : 0.0F) * 0.6f) * segment.alpha);
 					tessellator.addVertexWithUV(rx2 - diffNext.x, ry2 - diffNext.y, rz2 - diffNext.z, 0.5D, 0.0D);
 					tessellator.addVertexWithUV(rx1 - diffPrev.x, ry1 - diffPrev.y, rz1 - diffPrev.z, 0.5D, 0.0D);
 					tessellator.addVertexWithUV(rx1 + diffPrev.x, ry1 + diffPrev.y, rz1 + diffPrev.z, 0.5D, 1.0D);
@@ -338,24 +341,24 @@ public class FXElectricBolt extends EntityFX
 					 * Render the bolts balls.
 					 */
 
-					if(segment.next == null)
+					if (segment.next == null)
 					{
 						Vector3 roundEnd = segment.end.clone().translate(segment.difference.clone().normalize().scale(renderWidth));
-						float rx3 = (float)(roundEnd.x - interpPosX);
-						float ry3 = (float)(roundEnd.y - interpPosY);
-						float rz3 = (float)(roundEnd.z - interpPosZ);
+						float rx3 = (float) (roundEnd.x - interpPosX);
+						float ry3 = (float) (roundEnd.y - interpPosY);
+						float rz3 = (float) (roundEnd.z - interpPosZ);
 						tessellator.addVertexWithUV(rx3 - diffNext.x, ry3 - diffNext.y, rz3 - diffNext.z, 0.0D, 0.0D);
 						tessellator.addVertexWithUV(rx2 - diffNext.x, ry2 - diffNext.y, rz2 - diffNext.z, 0.5D, 0.0D);
 						tessellator.addVertexWithUV(rx2 + diffNext.x, ry2 + diffNext.y, rz2 + diffNext.z, 0.5D, 1.0D);
 						tessellator.addVertexWithUV(rx3 + diffNext.x, ry3 + diffNext.y, rz3 + diffNext.z, 0.0D, 1.0D);
 					}
 
-					if(segment.prev == null)
+					if (segment.prev == null)
 					{
 						Vector3 roundEnd = segment.start.clone().difference(segment.difference.clone().normalize().scale(renderWidth));
-						float rx3 = (float)(roundEnd.x - interpPosX);
-						float ry3 = (float)(roundEnd.y - interpPosY);
-						float rz3 = (float)(roundEnd.z - interpPosZ);
+						float rx3 = (float) (roundEnd.x - interpPosX);
+						float ry3 = (float) (roundEnd.y - interpPosY);
+						float rz3 = (float) (roundEnd.z - interpPosZ);
 						tessellator.addVertexWithUV(rx1 - diffPrev.x, ry1 - diffPrev.y, rz1 - diffPrev.z, 0.5D, 0.0D);
 						tessellator.addVertexWithUV(rx3 - diffPrev.x, ry3 - diffPrev.y, rz3 - diffPrev.z, 0.0D, 0.0D);
 						tessellator.addVertexWithUV(rx3 + diffPrev.x, ry3 + diffPrev.y, rz3 + diffPrev.z, 0.0D, 1.0D);
@@ -430,26 +433,28 @@ public class FXElectricBolt extends EntityFX
 
 		public void recalculate()
 		{
-			if(prev != null)
+			if (prev != null)
 			{
 				Vector3 prevDiffNorm = prev.difference.clone().normalize();
 				Vector3 diffNorm = difference.clone().normalize();
 				prevDiff = diffNorm.clone().translate(prevDiffNorm).normalize();
 				sinPrev = Math.sin(diffNorm.anglePreNorm(prevDiffNorm.clone().scale(-1)) / 2);
 			}
-			else {
+			else
+			{
 				prevDiff = difference.clone().normalize();
 				sinPrev = 1;
 			}
 
-			if(next != null)
+			if (next != null)
 			{
 				Vector3 nextDiffNorm = next.difference.clone().normalize();
 				Vector3 diffNorm = difference.clone().normalize();
 				nextDiff = diffNorm.clone().translate(nextDiffNorm).normalize();
 				sinNext = Math.sin(diffNorm.anglePreNorm(nextDiffNorm.clone().scale(-1)) / 2);
 			}
-			else {
+			else
+			{
 				nextDiff = difference.clone().normalize();
 				sinNext = 1;
 			}
