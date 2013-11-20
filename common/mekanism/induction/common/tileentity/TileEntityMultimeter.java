@@ -108,7 +108,7 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 
 				if(prevDetectedEnergy != detectedEnergy)
 				{
-					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
