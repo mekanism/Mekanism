@@ -181,6 +181,11 @@ public class GuiDigitalMiner extends GuiMekanism
 		{
 			drawCreativeTabHoveringText("Replace block", xAxis, yAxis);
 		}
+		
+		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
+		{
+			drawCreativeTabHoveringText("Reset", xAxis, yAxis);
+		}
 	}
 	
 	@Override
@@ -216,6 +221,14 @@ public class GuiDigitalMiner extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 147, guiHeight + 63, 176 + 4 + 14, 14, 14, 14);
+		}
+		
+		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
+		{
+			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 14, 14, 14);
 		}
 		
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
@@ -260,6 +273,16 @@ public class GuiDigitalMiner extends GuiMekanism
 				
 				ArrayList data = new ArrayList();
 				data.add(1);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			}
+			
+			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				
+				ArrayList data = new ArrayList();
+				data.add(5);
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			}

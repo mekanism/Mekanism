@@ -1,8 +1,5 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.tileentity.TileEntityTeleporter;
-import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

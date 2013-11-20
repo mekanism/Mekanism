@@ -3,6 +3,7 @@ package mekanism.common.miner;
 import java.util.ArrayList;
 
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -15,6 +16,11 @@ public class MOreDictFilter extends MinerFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
+		if(itemStack == null || !(itemStack.getItem() instanceof ItemBlock))
+		{
+			return false;
+		}
+		
 		String oreKey = MekanismUtils.getOreDictName(itemStack);
 		
 		if(oreKey == null)

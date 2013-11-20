@@ -19,6 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -315,7 +316,7 @@ public class GuiMOreDictFilter extends GuiMekanism
     		{
     			ItemStack toAdd = stack.copy();
     			
-    			if(!iterStacks.contains(stack))
+    			if(!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
     			{
     				iterStacks.add(stack.copy());
     			}

@@ -121,8 +121,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public void reset()
 	{
-		searcher.reset();
+		searcher = new ThreadMinerSearch(this);
 		running = false;
+		oresToMine.clear();
 	}
 	
 	@Override
@@ -243,6 +244,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			else if(type == 4)
 			{
 				stop();
+			}
+			else if(type == 5)
+			{
+				reset();
 			}
 			
 			return;

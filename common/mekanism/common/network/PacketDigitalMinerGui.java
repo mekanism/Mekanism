@@ -4,7 +4,7 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
-import mekanism.client.gui.GuiDigitalMiner;
+import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.GuiMItemStackFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.common.PacketHandler;
@@ -163,13 +163,14 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 	{
 		if(type == 0)
 		{
-			return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+			return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 		}
 		else {
 			if(packetType == MinerGuiPacket.CLIENT)
 			{
 				if(type == 1)
 				{
+					System.out.println("hi");
 					return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 				}
 				else if(type == 2)

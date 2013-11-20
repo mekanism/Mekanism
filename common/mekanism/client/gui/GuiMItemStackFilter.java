@@ -15,6 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
@@ -210,8 +211,11 @@ public class GuiMItemStackFilter extends GuiMekanism
 				
 				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.itemType = stack.copy();
-					filter.itemType.stackSize = 1;
+					if(stack.getItem() instanceof ItemBlock)
+					{
+						filter.itemType = stack.copy();
+						filter.itemType.stackSize = 1;
+					}
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{

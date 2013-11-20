@@ -14,17 +14,18 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MItemStackFilter;
 import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.miner.MinerFilter;
+import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -142,6 +143,10 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
+		radiusField.mouseClicked(mouseX, mouseY, button);
+		minField.mouseClicked(mouseX, mouseY, button);
+		maxField.mouseClicked(mouseX, mouseY, button);
+		
 		if(button == 0)
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
@@ -166,42 +171,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(filter instanceof MItemStackFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
 						}
 					}
 				}
-			}
-			
-			if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
-	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-			}
-			
-			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
-			{
-				ArrayList data = new ArrayList();
-				data.add(1);
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-			}
-			
-			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
-			{
-				ArrayList data = new ArrayList();
-				data.add(2);
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
@@ -250,19 +228,19 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
 		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
 		
-		String prevRad = !radiusField.getText().equals("") ? radiusField.getText() : "" + tileEntity.radius;
-		String prevMin = !minField.getText().equals("") ? minField.getText() : "" + tileEntity.minY;
-		String prevMax = !maxField.getText().equals("") ? maxField.getText() : "" + tileEntity.maxY;
+		String prevRad = radiusField != null ? radiusField.getText() : "" + tileEntity.radius;
+		String prevMin = minField != null ? minField.getText() : "" + tileEntity.minY;
+		String prevMax = maxField != null ? maxField.getText() : "" + tileEntity.maxY;
 		
-		radiusField = new GuiTextField(fontRenderer, guiWidth + 11, guiHeight + 67, 20, 11);
+		radiusField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 67, 24, 11);
 		radiusField.setMaxStringLength(3);
 		radiusField.setText(prevRad);
 		
-		minField = new GuiTextField(fontRenderer, guiWidth + 11, guiHeight + 79, 20, 11);
+		minField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 92, 20, 11);
 		minField.setMaxStringLength(3);
 		minField.setText(prevMin);
 		
-		maxField = new GuiTextField(fontRenderer, guiWidth + 11, guiHeight + 91, 20, 11);
+		maxField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 117, 20, 11);
 		maxField.setMaxStringLength(3);
 		maxField.setText(prevMax);
 	}
@@ -273,7 +251,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		super.actionPerformed(guibutton);
 		
 		if(guibutton.id == 0)
-		{
+		{ 
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 1));
 		}
 		else if(guibutton.id == 1)
@@ -295,13 +273,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
 		
-		fontRenderer.drawString("Radius: " + tileEntity.radius, 11, 58, 0x00CD00);
+		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 		
-		fontRenderer.drawString("Min Y: " + tileEntity.minY, 11, 70, 0x00CD00);
+		fontRenderer.drawString("MinY: " + tileEntity.minY, 11, 83, 0x00CD00);
 		
-		fontRenderer.drawString("Max Y: " + tileEntity.maxY, 11, 82, 0x00CD00);
-		
-		fontRenderer.drawString("Default:", 12, 126, 0x00CD00);
+		fontRenderer.drawString("MaxY: " + tileEntity.maxY, 11, 108, 0x00CD00);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -348,16 +324,6 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			}
 		}
 		
-		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
-		{
-			drawCreativeTabHoveringText("Auto-eject", xAxis, yAxis);
-		}
-		
-		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
-		{
-			drawCreativeTabHoveringText("Round robin", xAxis, yAxis);
-		}
-		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -366,7 +332,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
     {
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMinerConfig.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -395,14 +361,6 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 195, 96, 29);
 				}
 			}
-		}
-		
-		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
-		{
-			drawTexturedModalRect(guiWidth + 12, guiHeight + 110, 176, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 12, guiHeight + 110, 176, 14, 14, 14);
 		}
 		
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
@@ -524,7 +482,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
     		{
     			ItemStack toAdd = stack.copy();
     			
-    			if(!oreDictStacks.get(filter).iterStacks.contains(stack))
+    			if(!oreDictStacks.get(filter).iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
     			{
     				oreDictStacks.get(filter).iterStacks.add(stack.copy());
     			}
