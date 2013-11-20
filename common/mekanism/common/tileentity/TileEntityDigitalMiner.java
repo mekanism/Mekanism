@@ -3,7 +3,9 @@ package mekanism.common.tileentity;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
@@ -25,6 +27,7 @@ import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MinerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,6 +45,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 	
+	public final double ENERGY_USAGE = 50;
+	
 	public int radius;
 	
 	public int minY = 0;
@@ -49,6 +54,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public boolean doEject = false;
 	public boolean doPull = false;
+	
+	public int delay;
 	
 	public int clientToMine;
 	
@@ -91,11 +98,137 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			ChargeUtils.discharge(27, this);
 			
+			if(running && getEnergy() >= MekanismUtils.getEnergy(getSpeedMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
+			{
+				if(delay > 0)
+				{
+					delay--;
+				}
+				
+				//setEnergy(getEnergy()-MekanismUtils.getEnergy(getSpeedMultiplier(), ENERGY_USAGE));
+				
+				if(delay == 0)
+				{
+					Set<Object3D> toRemove = new HashSet<Object3D>();
+					
+					for(Object3D obj : oresToMine)
+					{
+						int id = obj.getBlockId(worldObj);
+						int meta = obj.getMetadata(worldObj);
+						
+						if(id == 0)
+						{
+							toRemove.add(obj);
+							continue;
+						}
+						
+						boolean hasFilter = false;
+						
+						for(MinerFilter filter : filters)
+						{
+							if(filter.canFilter(new ItemStack(id, 1, meta)))
+							{
+								hasFilter = true;
+								break;
+							}
+						}
+						
+						if(!hasFilter)
+						{
+							toRemove.add(obj);
+							continue;
+						}
+						
+						List<ItemStack> drops = MinerUtils.getStacksFromBlock(worldObj, obj);
+						
+						if(drops.isEmpty() || canInsert(drops))
+						{
+							
+						}
+					}
+				}
+			}
+			
 			if(playersUsing.size() > 0)
 			{
 				for(EntityPlayer player : playersUsing)
 				{
 					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+				}
+			}
+		}
+	}
+	
+	public int getDelay()
+	{
+		return 9-getSpeedMultiplier();
+	}
+	
+	public void setReplace(Object3D obj)
+	{
+		if(replaceStack != null)
+		{
+			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, replaceStack.itemID, replaceStack.getItemDamage(), 3);
+		}
+		else {
+			worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+		}
+	}
+	
+	public boolean canInsert(List<ItemStack> stacks)
+	{
+		ItemStack[] testInv = Arrays.copyOf(inventory, inventory.length);
+		
+		int added = 0;
+		
+		stacks:
+		for(ItemStack stack : stacks)
+		{
+			for(int i = 0; i < 27; i++)
+			{
+				if(testInv[i] == null)
+				{
+					testInv[i] = stack;
+					added++;
+					
+					continue stacks;
+				}
+				else if(testInv[i].isItemEqual(stack) && testInv[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
+				{
+					testInv[i].stackSize += stack.stackSize;
+					added++;
+					
+					continue stacks;
+				}
+			}
+		}
+		
+		if(added == stacks.size())
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void add(List<ItemStack> stacks)
+	{
+		stacks:
+		for(ItemStack stack : stacks)
+		{
+			for(int i = 0; i < 27; i++)
+			{
+				if(inventory[i] == null)
+				{
+					inventory[i] = stack;
+					
+					continue stacks;
+				}
+				else if(inventory[i].isItemEqual(stack) && inventory[i].stackSize+stack.stackSize <= stack.getMaxStackSize())
+				{
+					inventory[i].stackSize += stack.stackSize;
+					
+					continue stacks;
 				}
 			}
 		}
@@ -151,6 +284,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         doPull = nbtTags.getBoolean("doPull");
         isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
+        delay = nbtTags.getInteger("delay");
         searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
@@ -197,6 +331,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("doPull", doPull);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setBoolean("running", running);
+        nbtTags.setInteger("delay", delay);
         nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
         

@@ -292,7 +292,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				setEnergy(getEnergy() + toAdd);
 			}
 			
-			return (int)(toAdd*Mekanism.TO_TE);
+			return (int)Math.round(toAdd*Mekanism.TO_TE);
 		}
 		
 		return 0;
@@ -310,7 +310,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				setEnergy(getEnergy() - toSend);
 			}
 			
-			return (int)(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend*Mekanism.TO_TE);
 		}
 		
 		return 0;

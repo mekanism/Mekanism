@@ -27,8 +27,6 @@ public class ThreadMinerSearch extends Thread
 			return;
 		}
 		
-		int count = 0;
-		
 		for(int y = tileEntity.maxY; y >= tileEntity.minY; y--)
 		{
 			for(int x = tileEntity.xCoord-tileEntity.radius; x <= tileEntity.xCoord+tileEntity.radius; x++)
@@ -55,8 +53,6 @@ public class ThreadMinerSearch extends Thread
 							}
 						}
 					}
-					
-					count++;
 				}
 			}
 		}
