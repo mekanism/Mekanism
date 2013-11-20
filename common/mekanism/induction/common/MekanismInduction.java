@@ -48,7 +48,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = Mekanism.VERSION)
+@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
@@ -141,7 +141,7 @@ public class MekanismInduction implements IModule
 		ElectromagneticContractor = new BlockEMContractor(Mekanism.configuration.getBlock("ElectromagneticContractor", getNextBlockID()).getInt()).setUnlocalizedName("ElectromagneticContractor");
 		Battery = new BlockBattery(Mekanism.configuration.getBlock("Battery", getNextBlockID()).getInt()).setUnlocalizedName("Battery");
 
-		if (REPLACE_FURNACE)
+		if(REPLACE_FURNACE)
 		{
 			blockAdvancedFurnaceIdle = BlockAdvancedFurnace.createNew(false);
 			blockAdvancedFurnaceBurning = BlockAdvancedFurnace.createNew(true);
@@ -163,7 +163,7 @@ public class MekanismInduction implements IModule
 		GameRegistry.registerBlock(ElectromagneticContractor, ItemBlockContractor.class, "ElectromagneticContractor");
 		GameRegistry.registerBlock(Battery, "Battery");
 
-		// Tiles
+		//Tiles
 		GameRegistry.registerTileEntity(TileEntityTesla.class, "Tesla");
 		GameRegistry.registerTileEntity(TileEntityMultimeter.class, "Multimeter");
 		GameRegistry.registerTileEntity(TileEntityEMContractor.class, "ElectromagneticContractor");
@@ -188,7 +188,7 @@ public class MekanismInduction implements IModule
 		 * Recipes
 		 */
 		ItemStack emptyCapacitor = new ItemStack(Capacitor);
-		((IItemElectric) Capacitor).setElectricity(emptyCapacitor, 0);
+		((IItemElectric)Capacitor).setElectricity(emptyCapacitor, 0);
 
 		/** Capacitor **/
 		GameRegistry.addRecipe(new ShapedOreRecipe(emptyCapacitor, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
@@ -214,22 +214,19 @@ public class MekanismInduction implements IModule
 
 	public static void replaceTileEntity(Class<? extends TileEntity> findTile, Class<? extends TileEntity> replaceTile)
 	{
-		try
-		{
+		try {
 			Map<String, Class> nameToClassMap = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "70326_a", "nameToClassMap", "a");
 			Map<Class, String> classToNameMap = ObfuscationReflectionHelper.getPrivateValue(TileEntity.class, null, "field_" + "70326_b", "classToNameMap", "b");
 
 			String findTileID = classToNameMap.get(findTile);
 
-			if (findTileID != null)
+			if(findTileID != null)
 			{
 				nameToClassMap.put(findTileID, replaceTile);
 				classToNameMap.put(replaceTile, findTileID);
 				classToNameMap.remove(findTile);
 			}
-		}
-		catch (Exception e)
-		{
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}

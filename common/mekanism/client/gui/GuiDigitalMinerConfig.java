@@ -230,7 +230,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		String prevMin = minField != null ? minField.getText() : "" + tileEntity.minY;
 		String prevMax = maxField != null ? maxField.getText() : "" + tileEntity.maxY;
 		
-		radiusField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 67, 24, 11);
+		radiusField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
 		radiusField.setMaxStringLength(3);
 		radiusField.setText(prevRad);
 		
@@ -388,6 +388,31 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		if((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE)
 		{
 			super.keyTyped(c, i);
+		}
+		
+		if(i == Keyboard.KEY_RETURN)
+		{
+			if(radiusField.isFocused())
+			{
+				if(!radiusField.getText().isEmpty())
+				{
+				
+				}
+			}
+			else if(minField.isFocused())
+			{
+				if(!minField.getText().isEmpty())
+				{
+				
+				}
+			}
+			else if(maxField.isFocused())
+			{
+				if(!maxField.getText().isEmpty())
+				{
+				
+				}
+			}
 		}
 		
 		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)

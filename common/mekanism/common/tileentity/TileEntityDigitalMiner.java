@@ -249,6 +249,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				reset();
 			}
+			else if(type == 6)
+			{
+				radius = dataStream.readInt();
+			}
+			else if(type == 7)
+			{
+				minY = dataStream.readInt();
+			}
+			else if(type == 8)
+			{
+				maxY = dataStream.readInt();
+			}
 			
 			return;
 		}

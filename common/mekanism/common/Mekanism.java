@@ -115,12 +115,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = Mekanism.VERSION)
+@Mod(modid = "Mekanism", name = "Mekanism", version = "5.6.0")
 @NetworkMod(channels = {"MEK"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
-	public static final String VERSION = "5.6.0";
-	
 	/** Mekanism logger instance */
 	public static Logger logger = Logger.getLogger("Minecraft");
 	
