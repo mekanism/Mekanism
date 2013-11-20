@@ -123,7 +123,7 @@ public class PacketEditFilter implements IMekanismPacket
 					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(sorter), sorter.getFilterPacket(new ArrayList())), iterPlayer);
 				}
 			}
-			else if(type == 0 && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+			else if(type == 1 && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
 			{
 				TileEntityDigitalMiner miner = (TileEntityDigitalMiner)object3D.getTileEntity(worldServer);
 				
