@@ -2,6 +2,7 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
+import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
@@ -27,6 +28,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelMetallurgicInfuser metallurgicInfuser = new ModelMetallurgicInfuser();
 	public ModelChargepad chargepad = new ModelChargepad();
 	public ModelLogisticalSorter logisticalSorter = new ModelLogisticalSorter();
+	public ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -69,6 +71,11 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	GL11.glTranslatef(0.0F, -0.85F, -0.15F);
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
 	    	logisticalSorter.render(0.0625F, false);
+		}
+		else if(metadata == MachineType.DIGITAL_MINER.meta)
+		{
+		  	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
+		  	digitalMiner.render(0.0625F, false);
 		}
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);
