@@ -564,18 +564,6 @@ public final class MekanismUtils
      * @param def - the original, default energy required
      * @return max energy per tick
      */
-    public static int getEnergyPerTick(int speedUpgrade, int energyUpgrade, int def)
-    {
-        return (int)(def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));
-    }
-    
-    /**
-     * Gets the energy required per tick for a machine via it's upgrades.
-     * @param speedUpgrade - number of speed upgrades
-     * @param energyUpgrade - number of energy upgrades
-     * @param def - the original, default energy required
-     * @return max energy per tick
-     */
     public static double getEnergyPerTick(int speedUpgrade, int energyUpgrade, double def)
     {
         return (def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));

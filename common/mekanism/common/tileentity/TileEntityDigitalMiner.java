@@ -102,14 +102,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			ChargeUtils.discharge(27, this);
 			
-			if(running && getEnergy() >= MekanismUtils.getEnergy(getSpeedMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
+			if(running && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
 				if(delay > 0)
 				{
 					delay--;
 				}
 				
-				setEnergy(getEnergy()-MekanismUtils.getEnergy(getSpeedMultiplier(), ENERGY_USAGE));
+				setEnergy(getEnergy()-MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE));
 				
 				if(delay == 0)
 				{

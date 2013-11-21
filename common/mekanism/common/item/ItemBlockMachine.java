@@ -156,9 +156,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
-    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+    	boolean place = true;
     	
-    	if(place)
+    	if(stack.getItemDamage() == MachineType.DIGITAL_MINER.meta)
+    	{
+    		
+    	}
+    	
+    	if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
     	{
     		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     		
@@ -206,9 +211,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
     		tileEntity.electricityStored = getEnergy(stack);
+    		
+    		return true;
     	}
     	
-    	return place;
+    	return false;
     }
 	
 	@Override

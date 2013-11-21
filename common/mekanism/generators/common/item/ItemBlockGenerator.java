@@ -112,7 +112,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 		
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-	        if(world.getBlockId(x, y, z) != Block.tallGrass.blockID && world.getBlockId(x, y, z) != 0) 
+	        if(!Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z) && world.getBlockId(x, y, z) != 0) 
 	        	place = false;
 	        
 	        if(world.getBlockId(x, y, z) != 0)
