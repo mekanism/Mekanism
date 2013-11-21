@@ -74,6 +74,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public boolean running;
 	
+	public double prevEnergy;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -125,6 +127,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			if(running && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
+				setActive(true);
+				
 				if(delay > 0)
 				{
 					delay--;
@@ -187,6 +191,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					}
 				}
 			}
+			else {
+				if(prevEnergy >= getEnergy())
+				{
+					setActive(false);
+				}
+			}
 			
 			if(playersUsing.size() > 0)
 			{
@@ -195,6 +205,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
 				}
 			}
+			
+			prevEnergy = getEnergy();
 		}
 	}
 	

@@ -350,10 +350,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) 
 	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
+		
 		if(!simulate)
 		{
-			ArrayList list = new ArrayList();
-			list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
 	    	return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
 		}
 		
