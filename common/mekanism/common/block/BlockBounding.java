@@ -2,8 +2,7 @@ package mekanism.common.block;
 
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -13,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBounding extends Block
 {
@@ -99,6 +100,15 @@ public class BlockBounding extends Block
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		return new TileEntityBoundingBlock();
+		if(metadata == 0)
+		{
+			return new TileEntityBoundingBlock();
+		}
+		else if(metadata == 1)
+		{
+			return new TileEntityAdvancedBoundingBlock();
+		}
+		
+		return null;
 	}
 }

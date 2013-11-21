@@ -13,6 +13,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
@@ -300,7 +301,10 @@ public class GuiDigitalMiner extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						toUse = stack.copy();
+						if(stack.itemID != Block.bedrock.blockID)
+						{
+							toUse = stack.copy();
+						}
 					}
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))

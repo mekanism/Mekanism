@@ -11,6 +11,7 @@ import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
+import mekanism.common.IAdvancedBoundingBlock;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
@@ -41,7 +42,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl, IActiveState
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
 {
 	public Set<Object3D> oresToMine = new HashSet<Object3D>();
 	
@@ -844,5 +845,74 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public void onPlace()
+	{
+		for(int x = xCoord-1; x <= xCoord+1; x++)
+		{
+			for(int y = yCoord; y <= yCoord+1; y++)
+			{
+				for(int z = zCoord-1; z <= zCoord+1; z++)
+				{
+					if(x == xCoord && y == yCoord && z == zCoord)
+					{
+						continue;
+					}
+					
+					MekanismUtils.makeAdvancedBoundingBlock(worldObj, x, y, z, Object3D.get(this));
+				}
+			}
+		}
+	}
+	
+	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
+
+	@Override
+	public void onBreak()
+	{
+		for(int x = xCoord-1; x <= xCoord+1; x++)
+		{
+			for(int y = yCoord; y <= yCoord+2; y++)
+			{
+				for(int z = zCoord-1; z <= zCoord+1; z++)
+				{
+					worldObj.setBlockToAir(x, y, z);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		return null;
+	}
+
+	@Override
+	public int[] getBoundSlots(Object3D location, int slotID)
+	{
+		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		
+		Object3D obj = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		
+		if(location.equals(obj))
+		{
+			int[] ret = new int[27];
+			
+			for(int i = 0; i < ret.length; i++)
+			{
+				ret[i] = i;
+			}
+			
+			return ret;
+		}
+		
+		return null;
 	}
 }

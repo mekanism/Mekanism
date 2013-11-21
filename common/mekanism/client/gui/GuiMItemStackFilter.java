@@ -13,6 +13,7 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -205,8 +206,11 @@ public class GuiMItemStackFilter extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						filter.itemType = stack.copy();
-						filter.itemType.stackSize = 1;
+						if(stack.itemID != Block.bedrock.blockID)
+						{
+							filter.itemType = stack.copy();
+							filter.itemType.stackSize = 1;
+						}
 					}
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))

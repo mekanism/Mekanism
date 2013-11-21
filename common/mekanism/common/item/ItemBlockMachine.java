@@ -160,7 +160,22 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     	
     	if(stack.getItemDamage() == MachineType.DIGITAL_MINER.meta)
     	{
-    		
+    		for(int xPos = x-1; xPos <= x+1; xPos++)
+    		{
+    			for(int yPos = y; yPos <= y+1; yPos++)
+    			{
+    				for(int zPos = z-1; zPos <= z+1; zPos++)
+    				{
+    					Block b = Block.blocksList[world.getBlockId(xPos, yPos, zPos)];
+    					
+    					if(yPos > 255)
+    						place = false;
+    					
+    					if(b != null && b.blockID != 0 && !b.isBlockReplaceable(world, xPos, yPos, zPos))
+    						return false;
+    				}
+    			}
+    		}
     	}
     	
     	if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))

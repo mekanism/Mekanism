@@ -34,6 +34,7 @@ import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityElectricChest;
@@ -595,6 +596,16 @@ public final class MekanismUtils
 		if(!world.isRemote)
 		{
 			((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+		}
+    }
+    
+    public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Object3D orig)
+    {
+		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 3);
+		
+		if(!world.isRemote)
+		{
+			((TileEntityAdvancedBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
 		}
     }
     
