@@ -31,7 +31,6 @@ public class InductionCommonProxy implements IGuiHandler
 		MekanismInduction.FURNACE_WATTAGE = (float)Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Furnace Wattage Per Tick", MekanismInduction.FURNACE_WATTAGE).getDouble(MekanismInduction.FURNACE_WATTAGE);
 		MekanismInduction.SOUND_FXS = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Tesla Sound FXs", MekanismInduction.SOUND_FXS).getBoolean(MekanismInduction.SOUND_FXS);
 		MekanismInduction.MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MekanismInduction.MAX_CONTRACTOR_DISTANCE).getInt(MekanismInduction.MAX_CONTRACTOR_DISTANCE);
-		MekanismInduction.REPLACE_FURNACE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Replace vanilla furnace", MekanismInduction.REPLACE_FURNACE).getBoolean(MekanismInduction.REPLACE_FURNACE);
 
 		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
 		TileEntityEMContractor.MAX_REACH = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Max Item Reach", TileEntityEMContractor.MAX_REACH).getInt(TileEntityEMContractor.MAX_REACH);
