@@ -87,7 +87,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				else if(acceptor instanceof IEnergyHandler)
 				{
 					IEnergyHandler handler = (IEnergyHandler)acceptor;
-					totalNeeded += handler.receiveEnergy(side, handler.getMaxEnergyStored(side) - handler.getEnergyStored(side), true)*Mekanism.FROM_TE;
+					totalNeeded += handler.receiveEnergy(side, Integer.MAX_VALUE, true)*Mekanism.FROM_TE;
 				}
 				else if(acceptor instanceof IEnergySink)
 				{
