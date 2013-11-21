@@ -11,8 +11,13 @@ import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
 
 public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
 {
 	public int[] getBoundSlots(Object3D location, int slotID);
+	
+	public boolean canBoundInsert(Object3D location, int i, ItemStack itemstack);
+
+	public boolean canBoundExtract(Object3D location, int i, ItemStack itemstack, int j);
 }

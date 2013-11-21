@@ -26,8 +26,10 @@ import mekanism.common.miner.ThreadMinerSearch;
 import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -102,6 +104,23 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.discharge(27, this);
+			
+			if(doEject && getTopEject(false, null) != null && getEjectInv() != null)
+			{
+				if(getEjectInv() instanceof IInventory)
+				{
+					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), ForgeDirection.getOrientation(facing).getOpposite().ordinal(), false);
+					
+					getTopEject(true, remains);
+				}
+				else if(getEjectInv() instanceof TileEntityLogisticalTransporter)
+				{
+					if(TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null))
+					{
+						getTopEject(true, null);
+					}
+				}
+			}
 			
 			if(running && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
@@ -238,26 +257,29 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return toReturn;
 	}
 	
-	public boolean shouldOutput()
+	public ItemStack getTopEject(boolean remove, ItemStack reject)
 	{
-		for(int i = 0; i < 27; i++)
+		for(int i = 27-1; i >= 0; i--)
 		{
 			ItemStack stack = inventory[i];
 			
-			if(stack == null)
+			if(stack != null)
 			{
-				continue;
+				if(replaceStack != null && replaceStack.isItemEqual(stack))
+				{
+					continue;
+				}
+				
+				if(remove)
+				{
+					inventory[i] = reject;
+				}
+				
+				return stack;
 			}
-			
-			if(replaceStack != null && stack.isItemEqual(replaceStack))
-			{
-				continue;
-			}
-			
-			return true;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	public boolean canInsert(List<ItemStack> stacks)
@@ -306,9 +328,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return null;
 	}
 	
-	public IInventory getEjectInv()
+	public TileEntity getEjectInv()
 	{
-		return null;
+		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		
+		return (TileEntity)new Object3D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 	
 	public void add(List<ItemStack> stacks)
@@ -893,15 +917,22 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		return null;
 	}
+	
+	public TileEntity getEjectTile()
+	{
+		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		return new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+	}
 
 	@Override
 	public int[] getBoundSlots(Object3D location, int slotID)
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Object3D obj = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Object3D eject = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
 		
-		if(location.equals(obj))
+		if(location.equals(eject) || location.equals(pull))
 		{
 			int[] ret = new int[27];
 			
@@ -914,5 +945,53 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		
 		return null;
+	}
+
+	@Override
+	public boolean canBoundInsert(Object3D location, int i, ItemStack itemstack) 
+	{
+		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		
+		Object3D eject = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
+		
+		if(location.equals(eject))
+		{
+			return false;
+		}
+		else if(location.equals(pull))
+		{
+			if(itemstack != null && replaceStack != null && itemstack.isItemEqual(replaceStack))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean canBoundExtract(Object3D location, int i, ItemStack itemstack, int j)
+	{
+		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		
+		Object3D eject = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
+		
+		if(location.equals(eject))
+		{
+			if(itemstack != null && replaceStack != null && itemstack.isItemEqual(replaceStack))
+			{
+				return false;
+			}
+			
+			return true;
+		}
+		else if(location.equals(pull))
+		{
+			return false;
+		}
+		
+		return false;
 	}
 }

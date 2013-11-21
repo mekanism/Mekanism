@@ -112,21 +112,27 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 		
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-	        if(!Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z) && world.getBlockId(x, y, z) != 0) 
-	        	place = false;
-	        
-	        if(world.getBlockId(x, y, z) != 0)
-	        {
-	        	if(Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z)) 
-	        		place = true; 
-	        }
-	        
-			for(int xPos=-1;xPos<=1;xPos++)
+			if(Block.blocksList[world.getBlockId(x, y, z)] == null)
+				place = false;
+			
+			if(place == true)
 			{
-				for(int zPos=-1;zPos<=1;zPos++)
+		        if(!Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z) && world.getBlockId(x, y, z) != 0) 
+		        	place = false;
+		        
+		        if(world.getBlockId(x, y, z) != 0)
+		        {
+		        	if(Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z)) 
+		        		place = true; 
+		        }
+		        
+				for(int xPos=-1;xPos<=1;xPos++)
 				{
-					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0 || y+2 > 255) 
-						place = false;
+					for(int zPos=-1;zPos<=1;zPos++)
+					{
+						if(world.getBlockId(x+xPos, y+2, z+zPos) != 0 || y+2 > 255) 
+							place = false;
+					}
 				}
 			}
 		}
