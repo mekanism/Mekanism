@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 
 public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
 {
-	public int[] getBoundSlots(Object3D location, int slotID);
+	public int[] getBoundSlots(Object3D location, int side);
 	
 	public boolean canBoundInsert(Object3D location, int i, ItemStack itemstack);
 

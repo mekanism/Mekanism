@@ -25,6 +25,7 @@ import mekanism.common.miner.MinerFilter;
 import mekanism.common.miner.ThreadMinerSearch;
 import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.transporter.InvStack;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -237,9 +238,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 		}
 		
-		if(doPull)
+		if(doPull && getPullInv() instanceof IInventory)
 		{
-			//TODO
+			InvStack stack = InventoryUtils.takeDefinedItem((IInventory)getPullInv(), 1, replaceStack.copy(), 1, 1);
+			
+			if(stack != null)
+			{
+				stack.use();
+				return MekanismUtils.size(replaceStack, 1);
+			}
 		}
 		
 		return null;
@@ -323,16 +330,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return false;
 	}
 	
-	public IInventory getPullInv()
+	public TileEntity getPullInv()
 	{
-		return null;
+		return new Object3D(xCoord, yCoord+2, zCoord).getTileEntity(worldObj);
 	}
 	
 	public TileEntity getEjectInv()
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		return (TileEntity)new Object3D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return new Object3D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 	
 	public void add(List<ItemStack> stacks)
@@ -925,14 +932,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int[] getBoundSlots(Object3D location, int slotID)
+	public int[] getBoundSlots(Object3D location, int side)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		ForgeDirection dir = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Object3D eject = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Object3D eject = new Object3D(xCoord+dir.offsetX, yCoord+1, zCoord+dir.offsetZ, worldObj.provider.dimensionId);
 		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
 		
-		if(location.equals(eject) || location.equals(pull))
+		if((location.equals(eject) && side == dir.ordinal()) || (location.equals(pull) && side == 1))
 		{
 			int[] ret = new int[27];
 			
