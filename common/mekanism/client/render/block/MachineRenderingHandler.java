@@ -74,8 +74,11 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		}
 		else if(metadata == MachineType.DIGITAL_MINER.meta)
 		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
+			GL11.glTranslatef(-0.2F, -0.3F, 0.0F);
 		  	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-		  	digitalMiner.render(0.0625F, false);
+		  	digitalMiner.render(0.03125F, false);
 		}
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);
