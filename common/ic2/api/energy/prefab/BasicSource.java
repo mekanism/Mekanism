@@ -13,6 +13,7 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
 
 /**
@@ -123,7 +124,9 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	 * Either updateEntity or onLoaded have to be used.
 	 */
 	public void onLoaded() {
-		if (!addedToEnet && !FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+		if (!addedToEnet &&
+				!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
+				Info.isIc2Available()) {
 			worldObj = parent.worldObj;
 			xCoord = parent.xCoord;
 			yCoord = parent.yCoord;
@@ -152,7 +155,8 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	 */
 	@Override
 	public void onChunkUnload() {
-		if (addedToEnet) {
+		if (addedToEnet &&
+				Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 
 			addedToEnet = false;
@@ -195,6 +199,51 @@ public class BasicSource extends TileEntity implements IEnergySource {
 
 	// << in-world te forwards
 	// methods for using this adapter >>
+
+	/**
+	 * Get the maximum amount of energy this source can hold in its buffer.
+	 * 
+	 * @return Capacity in EU.
+	 */
+	public int getCapacity() {
+		return capacity;
+	}
+
+	/**
+	 * Set the maximum amount of energy this source can hold in its buffer.
+	 * 
+	 * @param capacity Capacity in EU.
+	 */
+	public void setCapacity(int capacity) {
+		int power = EnergyNet.instance.getPowerFromTier(tier);
+
+		if (capacity < power) capacity = power;
+
+		this.capacity = capacity;
+	}
+
+	/**
+	 * Get the IC2 energy tier for this source.
+	 * 
+	 * @return IC2 Tier.
+	 */
+	public int getTier() {
+		return tier;
+	}
+
+	/**
+	 * Set the IC2 energy tier for this source.
+	 * 
+	 * @param tier IC2 Tier.
+	 */
+	public void setTier(int tier) {
+		int power = EnergyNet.instance.getPowerFromTier(tier);
+
+		if (capacity < power) capacity = power;
+
+		this.tier = tier;
+	}
+
 
 	/**
 	 * Determine the energy stored in the source's output buffer.
@@ -248,7 +297,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	 * @return true if energy was transferred
 	 */
 	public boolean charge(ItemStack stack) {
-		if (stack == null) return false;
+		if (stack == null || !Info.isIc2Available()) return false;
 
 		int amount = ElectricItem.manager.charge(stack, (int) energyStored, tier, false, false);
 
@@ -319,9 +368,9 @@ public class BasicSource extends TileEntity implements IEnergySource {
 
 
 	public final TileEntity parent;
-	public final int capacity;
-	public final int tier;
 
+	protected int capacity;
+	protected int tier;
 	protected double energyStored;
 	protected boolean addedToEnet;
 }

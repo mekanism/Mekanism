@@ -76,11 +76,18 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		
 		for(TileEntity acceptor : getAcceptors())
 		{
+			ForgeDirection side = acceptorDirections.get(acceptor).getOpposite();
+			
 			if(!ignored.contains(acceptor))
 			{
 				if(acceptor instanceof IStrictEnergyAcceptor)
 				{
 					totalNeeded += (((IStrictEnergyAcceptor)acceptor).getMaxEnergy() - ((IStrictEnergyAcceptor)acceptor).getEnergy());
+				}
+				else if(acceptor instanceof IEnergyHandler)
+				{
+					IEnergyHandler handler = (IEnergyHandler)acceptor;
+					totalNeeded += handler.receiveEnergy(side, handler.getMaxEnergyStored(side) - handler.getEnergyStored(side), true)*Mekanism.FROM_TE;
 				}
 				else if(acceptor instanceof IEnergySink)
 				{
@@ -88,11 +95,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				}
 				else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 				{
-					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC);
+					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(side).powerRequest()*Mekanism.FROM_BC);
 				}
 				else if(acceptor instanceof IElectrical)
 				{
-					totalNeeded += ((IElectrical)acceptor).getRequest(acceptorDirections.get(acceptor).getOpposite())*Mekanism.FROM_UE;
+					totalNeeded += ((IElectrical)acceptor).getRequest(side)*Mekanism.FROM_UE;
 				}
 			}
 		}
