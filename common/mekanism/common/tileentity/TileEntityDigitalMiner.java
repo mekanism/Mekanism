@@ -3,7 +3,6 @@ package mekanism.common.tileentity;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +28,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -105,7 +105,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					delay--;
 				}
 				
-				//setEnergy(getEnergy()-MekanismUtils.getEnergy(getSpeedMultiplier(), ENERGY_USAGE));
+				setEnergy(getEnergy()-MekanismUtils.getEnergy(getSpeedMultiplier(), ENERGY_USAGE));
 				
 				if(delay == 0)
 				{
@@ -141,7 +141,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						
 						List<ItemStack> drops = MinerUtils.getStacksFromBlock(worldObj, obj);
 						
-						if(drops.isEmpty() || canInsert(drops))
+						if(canInsert(drops))
 						{
 							add(drops);
 							
@@ -150,7 +150,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							
 							worldObj.playAuxSFXAtEntity(null, 2001, obj.xCoord, obj.yCoord, obj.zCoord, id + (meta << 12));
 							
-							//delay = getDelay();
+							delay = getDelay();
 							
 							break;
 						}
@@ -175,11 +175,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public int getDelay()
 	{
-		return 9-getSpeedMultiplier();
+		return (int)Math.pow((9-getSpeedMultiplier()), 2);
 	}
 	
 	public void setReplace(Object3D obj)
-	{
+	{		
 		ItemStack stack = getReplace();
 		
 		if(stack != null)
@@ -221,9 +221,48 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return null;
 	}
 	
+	public ItemStack[] copy(ItemStack[] stacks)
+	{
+		ItemStack[] toReturn = new ItemStack[stacks.length];
+		
+		for(int i = 0; i < stacks.length; i++)
+		{
+			toReturn[i] = stacks[i] != null ? stacks[i].copy() : null;
+		}
+		
+		return toReturn;
+	}
+	
+	public boolean shouldOutput()
+	{
+		for(int i = 0; i < 27; i++)
+		{
+			ItemStack stack = inventory[i];
+			
+			if(stack == null)
+			{
+				continue;
+			}
+			
+			if(replaceStack != null && stack.isItemEqual(replaceStack))
+			{
+				continue;
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public boolean canInsert(List<ItemStack> stacks)
 	{
-		ItemStack[] testInv = Arrays.copyOf(inventory, inventory.length);
+		if(stacks.isEmpty())
+		{
+			return true;
+		}
+		
+		ItemStack[] testInv = copy(inventory);
 		
 		int added = 0;
 		
@@ -257,8 +296,23 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return false;
 	}
 	
+	public IInventory getPullInv()
+	{
+		return null;
+	}
+	
+	public IInventory getEjectInv()
+	{
+		return null;
+	}
+	
 	public void add(List<ItemStack> stacks)
 	{
+		if(stacks.isEmpty())
+		{
+			return;
+		}
+		
 		stacks:
 		for(ItemStack stack : stacks)
 		{

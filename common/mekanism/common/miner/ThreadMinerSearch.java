@@ -45,6 +45,11 @@ public class ThreadMinerSearch extends Thread
 					{
 						ItemStack stack = new ItemStack(blockID, 1, meta);
 						
+						if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
+						{
+							continue;
+						}
+						
 						for(MinerFilter filter : tileEntity.filters)
 						{
 							if(filter.canFilter(stack))
