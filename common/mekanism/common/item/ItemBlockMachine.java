@@ -268,7 +268,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     		
     		if(tileEntity instanceof IRedstoneControl)
     		{
-    			((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[stack.stackTagCompound.getInteger("controlType")]);
+    			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("controlType"))
+    			{
+    				((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[stack.stackTagCompound.getInteger("controlType")]);
+    			}
     		}
     		
     		if(tileEntity instanceof TileEntityFactory)
