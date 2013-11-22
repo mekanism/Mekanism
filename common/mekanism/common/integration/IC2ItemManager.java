@@ -31,7 +31,7 @@ public class IC2ItemManager implements IElectricItemManager
 				energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) + energyToStore);
 			}
 			
-			return (int)(energyToStore*Mekanism.TO_IC2);
+			return (int)Math.round(energyToStore*Mekanism.TO_IC2);
 		}
 		
 		return 0;
@@ -50,7 +50,7 @@ public class IC2ItemManager implements IElectricItemManager
 				energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) - energyToGive);
 			}
 			
-			return (int)(energyToGive*Mekanism.TO_IC2);
+			return (int)Math.round(energyToGive*Mekanism.TO_IC2);
 		}
 		
 		return 0;
@@ -65,7 +65,7 @@ public class IC2ItemManager implements IElectricItemManager
 	@Override
 	public int getCharge(ItemStack itemStack) 
 	{
-		return 0;
+		return (int)Math.round(energizedItem.getEnergy(itemStack)*Mekanism.TO_IC2);
 	}
 
 	@Override

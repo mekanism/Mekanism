@@ -92,7 +92,7 @@ public final class TransporterUtils
 				//Immature BuildCraft inv check
 				if(MekanismUtils.useBuildcraft() && inventory instanceof IPowerReceptor)
 				{
-					if(((IPowerReceptor)inventory).getPowerReceiver(forgeSide).getType() == Type.MACHINE)
+					if(((IPowerReceptor)inventory).getPowerReceiver(forgeSide) != null && ((IPowerReceptor)inventory).getPowerReceiver(forgeSide).getType() == Type.MACHINE)
 					{
 						connectable[side] = true;
 						continue;
