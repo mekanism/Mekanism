@@ -1148,6 +1148,7 @@ public class Mekanism
 		
 		//Donators
 		donators.add("mrgreaper"); 
+		donators.add("ejmiv89");
 		
 		//Load proxy
 		proxy.registerRenderInformation();

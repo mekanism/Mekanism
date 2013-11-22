@@ -11,14 +11,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+/*
+ * 	Written by pixlepix (I'm in mekanism! Yay!)
+ *	Boilerplate copied from RobitAIFollow
+ */
 public class RobitAIPickup extends EntityAIBase
 {
-
-	//Written by pixlepix (I'm in mekanism! Yay!)
-	//Boilerplate copied from RobitAIFollow
 	/** The robit entity. */
 	private EntityRobit theRobit;
-
 
 	/** The world the robit is located in. */
 	private World theWorld;
@@ -31,8 +31,6 @@ public class RobitAIPickup extends EntityAIBase
 
 	/** The ticker for updates. */
 	private int ticker;
-
-
 
 	/** Whether or not this robit avoids water. */
 	private boolean avoidWater;
@@ -56,39 +54,51 @@ public class RobitAIPickup extends EntityAIBase
 		{
 			return false;
 		}
-		if(!theRobit.getDropPickup()){
+		
+		if(!theRobit.getDropPickup())
+		{
 			return false;
 		}
 		else if(theRobit.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
 		{
 			return false;
 		}
-		if(closest!=null&&closest.getDistanceSqToEntity(closest)>100&&this.thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ)!=null){
+		if(closest!=null&&closest.getDistanceSqToEntity(closest) > 100 && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ)!=null)
+		{
 			return true;
 		}
 
-		List items=theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
+		List items = theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
 		Iterator iter=items.iterator();
 		//Cached for slight performance
 		double closestDistance=-1;
-				while(iter.hasNext()){
-
-					EntityItem entity=(EntityItem) iter.next();
-					double distance=theRobit.getDistanceSqToEntity(entity);
-					if(distance<100){
-						if(closestDistance==-1||distance<closestDistance){
-							if(this.thePathfinder.getPathToXYZ(entity.posX, entity.posY, entity.posZ)!=null){
-								closest=entity;
-								closestDistance=distance;
-							}
-						}
+		
+		while(iter.hasNext())
+		{
+			EntityItem entity=(EntityItem) iter.next();
+			
+			double distance=theRobit.getDistanceToEntity(entity);
+			
+			if(distance <= 10)
+			{
+				if(closestDistance==-1||distance<closestDistance)
+				{
+					if(thePathfinder.getPathToXYZ(entity.posX, entity.posY, entity.posZ)!=null)
+					{
+						closest=entity;
+						closestDistance=distance;
 					}
 				}
-				if(closest==null){
-					//No valid items
-					return false;
-				}
-				return true;
+			}
+		}
+		
+		if(closest == null)
+		{
+			//No valid items
+			return false;
+		}
+		
+		return true;
 
 	}
 
@@ -116,10 +126,10 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public void updateTask()
 	{
-
-		System.out.println(6);
 		theRobit.getLookHelper().setLookPositionWithEntity(closest, 6.0F, theRobit.getVerticalFaceSpeed()/10);
-		if(!theRobit.getDropPickup()){
+		
+		if(!theRobit.getDropPickup())
+		{
 			return;
 		}
 
@@ -141,8 +151,6 @@ public class RobitAIPickup extends EntityAIBase
 						{
 							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(x + l, z - 1, y + i1) && !theWorld.isBlockNormalCube(x + l, z, y + i1) && !theWorld.isBlockNormalCube(x + l, z + 1, y + i1))
 							{
-
-								System.out.println(7);
 								theRobit.setLocationAndAngles((x + l) + 0.5F, z, (y + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 								thePathfinder.clearPathEntity();
 								return;
