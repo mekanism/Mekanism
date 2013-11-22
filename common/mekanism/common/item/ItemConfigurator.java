@@ -16,6 +16,7 @@ import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
 import mekanism.common.tileentity.TileEntityElectricPump;
+import mekanism.common.tileentity.TileEntityLogisticalDiverter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
@@ -71,11 +72,34 @@ public class ItemConfigurator extends ItemEnergized
 	    		}
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
 	    		{
-	    			TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
-	    			TransporterUtils.incrementColor(transporter);
-	    			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
-	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + "None")));
-	    			return true;
+	    			//Player can access color by sneaking
+	    			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalDiverter){
+	    				TileEntityLogisticalDiverter transporter = (TileEntityLogisticalDiverter)world.getBlockTileEntity(x, y, z);
+	    				int newMode=(transporter.modes[side]+1)%3;
+	    				transporter.modes[side]=newMode;
+	    				String description="ERROR";
+	    				switch(newMode){
+	    					case 0:
+	    						description="Always active";
+	    						break;
+	    					case 1:
+	    						description="Active with signal";
+	    						break;
+	    					case 2:
+	    						description="Active without signal";
+	    						break;
+	    				}
+		    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + "Diverter mode changed to: "+EnumColor.RED+description));
+		    			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
+						
+	    				return true;
+	    			}else{
+		    			TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
+		    			TransporterUtils.incrementColor(transporter);
+		    			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
+		    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + "None")));
+		    			return true;
+	    			}
 	    		}
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityBin)
 	    		{
