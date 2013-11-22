@@ -224,6 +224,4 @@ tile.ElectromagneticContractor.name=Electromagnetic Contractor
 tile.Battery.name=Modular Battery
 
 //Items
-item.Capacitor.name=Capacitor Cell
-item.InfiniteCapacitor.name=Infinite Capacitor Cell
 item.Linker.name=Electrostatic Linker

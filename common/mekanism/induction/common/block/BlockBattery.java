@@ -3,7 +3,6 @@
  */
 package mekanism.induction.common.block;
 
-import mekanism.api.induction.ICapacitor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ListUtils;
 import mekanism.induction.client.render.BlockRenderingHandler;
@@ -12,7 +11,6 @@ import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -78,7 +76,7 @@ public class BlockBattery extends Block implements ITileEntityProvider
 		{
 			if (entityPlayer.getCurrentEquippedItem() != null)
 			{
-				if (entityPlayer.getCurrentEquippedItem().getItem() instanceof ICapacitor)
+				if (entityPlayer.getCurrentEquippedItem().itemID == Mekanism.EnergyTablet.itemID)
 				{
 					if (side != 0 && side != 1)
 					{

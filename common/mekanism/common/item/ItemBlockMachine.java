@@ -14,6 +14,8 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
+import mekanism.common.IRedstoneControl;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -22,12 +24,17 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
+import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
 import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -201,6 +208,66 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     					config.getConfiguration()[i] = stack.stackTagCompound.getByte("config"+i);
     				}
     			}
+    		}
+    		
+    		if(tileEntity instanceof TileEntityDigitalMiner)
+    		{
+    			TileEntityDigitalMiner miner = (TileEntityDigitalMiner)tileEntity;
+    			
+    			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasMinerConfig"))
+    			{
+    		        miner.radius = stack.stackTagCompound.getInteger("radius");
+    		        miner.minY = stack.stackTagCompound.getInteger("minY");
+    		        miner.maxY = stack.stackTagCompound.getInteger("maxY");
+    		        miner.doEject = stack.stackTagCompound.getBoolean("doEject");
+    		        miner.doPull = stack.stackTagCompound.getBoolean("doPull");
+    		        
+    		        if(stack.stackTagCompound.hasKey("replaceStack"))
+    		        {
+    		        	miner.replaceStack = ItemStack.loadItemStackFromNBT(stack.stackTagCompound.getCompoundTag("replaceStack"));
+    		        }
+    		        
+    		    	if(stack.stackTagCompound.hasKey("filters"))
+    		    	{
+    		    		NBTTagList tagList = stack.stackTagCompound.getTagList("filters");
+    		    		
+    		    		for(int i = 0; i < tagList.tagCount(); i++)
+    		    		{
+    		    			miner.filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+    		    		}
+    		    	}
+    			}
+    		}
+    		
+    		if(tileEntity instanceof TileEntityLogisticalSorter)
+    		{
+    			TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
+    			
+    			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasSorterConfig"))
+    			{
+    		    	if(stack.stackTagCompound.hasKey("color"))
+    		    	{
+    		    		sorter.color = TransporterUtils.colors.get(stack.stackTagCompound.getInteger("color"));
+    		    	}
+    		    	
+    		    	sorter.autoEject = stack.stackTagCompound.getBoolean("autoEject");
+    		    	sorter.roundRobin = stack.stackTagCompound.getBoolean("roundRobin");
+    		    	
+    		      	if(stack.stackTagCompound.hasKey("filters"))
+    		    	{
+    		    		NBTTagList tagList = stack.stackTagCompound.getTagList("filters");
+    		    		
+    		    		for(int i = 0; i < tagList.tagCount(); i++)
+    		    		{
+    		    			sorter.filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+    		    		}
+    		    	}
+    			}
+    		}
+    		
+    		if(tileEntity instanceof IRedstoneControl)
+    		{
+    			((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[stack.stackTagCompound.getInteger("controlType")]);
     		}
     		
     		if(tileEntity instanceof TileEntityFactory)

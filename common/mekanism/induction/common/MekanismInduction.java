@@ -9,8 +9,6 @@ import mekanism.induction.common.block.BlockMultimeter;
 import mekanism.induction.common.block.BlockTesla;
 import mekanism.induction.common.item.ItemBlockContractor;
 import mekanism.induction.common.item.ItemBlockMultimeter;
-import mekanism.induction.common.item.ItemCapacitor;
-import mekanism.induction.common.item.ItemInfiniteCapacitor;
 import mekanism.induction.common.item.ItemLinker;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
@@ -98,8 +96,6 @@ public class MekanismInduction implements IModule
 	}
 
 	// Items
-	public static Item Capacitor;
-	public static Item InfiniteCapacitor;
 	public static Item Linker;
 
 	// Blocks
@@ -119,9 +115,7 @@ public class MekanismInduction implements IModule
 		Mekanism.configuration.load();
 
 		// Items
-		Capacitor = new ItemCapacitor(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "Capacitor", getNextItemID()).getInt()).setUnlocalizedName("Capacitor");
 		Linker = new ItemLinker(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "Linker", getNextItemID()).getInt()).setUnlocalizedName("Linker");
-		InfiniteCapacitor = new ItemInfiniteCapacitor(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "InfiniteCapacitor", getNextItemID()).getInt()).setUnlocalizedName("InfiniteCapacitor");
 
 		// Blocks
 		Tesla = new BlockTesla(Mekanism.configuration.getBlock("Tesla", getNextBlockID()).getInt()).setUnlocalizedName("Tesla");
@@ -131,8 +125,6 @@ public class MekanismInduction implements IModule
 
 		Mekanism.configuration.save();
 
-		GameRegistry.registerItem(Capacitor, "Capacitor");
-		GameRegistry.registerItem(InfiniteCapacitor, "InfiniteCapacitor");
 		GameRegistry.registerItem(Linker, "Linker");
 
 		GameRegistry.registerBlock(Tesla, "Tesla");
@@ -161,29 +153,23 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-		/**
-		 * Recipes
-		 */
-		ItemStack emptyCapacitor = new ItemStack(Capacitor);
-		((IItemElectric)Capacitor).setElectricity(emptyCapacitor, 0);
-
 		/** Capacitor **/
-		GameRegistry.addRecipe(new ShapedOreRecipe(emptyCapacitor, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Mekanism.EnergyTablet, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** Linker **/
-		GameRegistry.addRecipe(new ShapedOreRecipe(Linker, " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Linker, " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'G', UniversalRecipes.SECONDARY_METAL));
 
 		/** Tesla - by Jyzarc */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Tesla, "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', emptyCapacitor, 'I', Mekanism.MachineBlock));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Tesla, "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'I', Mekanism.MachineBlock));
 
 		/** Multimeter */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Multimeter, "WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', emptyCapacitor, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Multimeter, "WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', Mekanism.EnergyTablet, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** Battery */
 		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', Mekanism.EnergyCube));
 
 		/** EM Contractor */
-		GameRegistry.addRecipe(new ShapedOreRecipe(ElectromagneticContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', emptyCapacitor, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ElectromagneticContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', Mekanism.EnergyTablet, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
 	}
 
 	@Override

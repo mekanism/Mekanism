@@ -6,6 +6,7 @@ import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -44,8 +45,6 @@ public class PacketSimpleGui implements IMekanismPacket
 		
 		if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
 		{
-			player.closeScreen();
-			
 			if(guiId == -1)
 			{
 				return;

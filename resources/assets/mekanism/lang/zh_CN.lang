@@ -223,6 +223,4 @@ tile.ElectromagneticContractor.name=电磁承接口
 tile.Battery.name=模块电池
 
 //Items
-item.Capacitor.name=电容器
-item.InfiniteCapacitor.name=无限电容器
 item.Linker.name=静电链接器

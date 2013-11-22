@@ -121,7 +121,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	{
 		Container container = null;
 		
-        playerMP.closeScreen();
+        playerMP.closeContainer();
 		
 		if(guiType == 0)
 		{

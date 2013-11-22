@@ -13,6 +13,7 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IRedstoneControl;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
@@ -21,6 +22,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier;
+import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui;
@@ -44,7 +46,9 @@ import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
 import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -58,6 +62,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
@@ -800,6 +805,81 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
             {
             	itemStack.stackTagCompound.setByte("config"+i, config.getConfiguration()[i]);
             }
+    	}
+    	
+    	if(tileEntity instanceof TileEntityDigitalMiner)
+    	{
+    		TileEntityDigitalMiner miner = (TileEntityDigitalMiner)tileEntity;
+    		
+    		if(itemStack.stackTagCompound == null)
+    		{
+    			itemStack.setTagCompound(new NBTTagCompound());
+    		}
+    		
+    		itemStack.stackTagCompound.setBoolean("hasMinerConfig", true);
+    		
+            itemStack.stackTagCompound.setInteger("radius", miner.radius);
+            itemStack.stackTagCompound.setInteger("minY", miner.minY);
+            itemStack.stackTagCompound.setInteger("maxY", miner.maxY);
+            itemStack.stackTagCompound.setBoolean("doEject", miner.doEject);
+            itemStack.stackTagCompound.setBoolean("doPull", miner.doPull);
+            
+            if(miner.replaceStack != null)
+            {
+            	itemStack.stackTagCompound.setCompoundTag("replaceStack", miner.replaceStack.writeToNBT(new NBTTagCompound()));
+            }
+            
+            NBTTagList filterTags = new NBTTagList();
+            
+            for(MinerFilter filter : miner.filters)
+            {
+            	filterTags.appendTag(filter.write(new NBTTagCompound()));
+            }
+            
+            if(filterTags.tagCount() != 0)
+            {
+            	itemStack.stackTagCompound.setTag("filters", filterTags);
+            }
+    	}
+    	
+    	if(tileEntity instanceof TileEntityLogisticalSorter)
+    	{
+    		TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
+    		
+    		if(itemStack.stackTagCompound == null)
+    		{
+    			itemStack.setTagCompound(new NBTTagCompound());
+    		}
+    		
+    		itemStack.stackTagCompound.setBoolean("hasSorterConfig", true);
+            
+            if(sorter.color != null)
+            {
+            	itemStack.stackTagCompound.setInteger("color", TransporterUtils.colors.indexOf(sorter.color));
+            }
+            
+            itemStack.stackTagCompound.setBoolean("autoEject", sorter.autoEject);
+            itemStack.stackTagCompound.setBoolean("roundRobin", sorter.roundRobin);
+            
+            NBTTagList filterTags = new NBTTagList();
+            
+            for(TransporterFilter filter : sorter.filters)
+            {
+            	NBTTagCompound tagCompound = new NBTTagCompound();
+            	filter.write(tagCompound);
+            	filterTags.appendTag(tagCompound);
+            }
+            
+            if(filterTags.tagCount() != 0)
+            {
+            	itemStack.stackTagCompound.setTag("filters", filterTags);
+            }
+    	}
+    	
+    	if(tileEntity instanceof IRedstoneControl)
+    	{
+    		IRedstoneControl control = (IRedstoneControl)tileEntity;
+    		itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
     	}
         
     	if(tileEntity instanceof TileEntityElectricBlock)

@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.api.induction.ICapacitor;
 import mekanism.common.ITileNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
@@ -75,7 +75,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 			{
 				if(structure.inventory.size() < structure.getMaxCells())
 				{
-					if(structure.visibleInventory[0].getItem() instanceof ICapacitor)
+					if(structure.visibleInventory[0].itemID == Mekanism.EnergyTablet.itemID)
 					{
 						structure.inventory.add(structure.visibleInventory[0]);
 						structure.visibleInventory[0] = null;

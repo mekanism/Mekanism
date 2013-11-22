@@ -223,6 +223,4 @@ tile.ElectromagneticContractor.name=Электромагнитный контр�
 tile.Battery.name=Модульный аккумулятор
 
 //Items
-item.Capacitor.name=Capacitor Cell
-item.InfiniteCapacitor.name=Infinite Capacitor Cell
 item.Linker.name=Electrostatic Linker

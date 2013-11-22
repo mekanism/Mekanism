@@ -223,6 +223,4 @@ tile.ElectromagneticContractor.name=Elektromagnetischer Kontraktor
 tile.Battery.name=Modulare Batterie
 
 //Items
-item.Capacitor.name=Kondensatorenzelle
-item.InfiniteCapacitor.name=Unendliche Kondensatorenzelle
 item.Linker.name=Elektrostatischer Linker
