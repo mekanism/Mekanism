@@ -89,7 +89,6 @@ public class MOreDictFilter extends MinerFilter
 	public int hashCode() 
 	{
 		int code = 1;
-		code = 31 * code + super.hashCode();
 		code = 31 * code + oreDictName.hashCode();
 		return code;
 	}

@@ -57,7 +57,6 @@ public class MItemStackFilter extends MinerFilter
 	public int hashCode() 
 	{
 		int code = 1;
-		code = 31 * code + super.hashCode();
 		code = 31 * code + itemType.itemID;
 		code = 31 * code + itemType.stackSize;
 		code = 31 * code + itemType.getItemDamage();
