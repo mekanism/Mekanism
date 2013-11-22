@@ -82,6 +82,7 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.tileentity.TileEntityLogisticalDiverter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
@@ -107,6 +108,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -248,6 +250,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
 		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
+
+		ClientRegistry.registerTileEntity(TileEntityLogisticalDiverter.class, "LogisticalDiverter", new RenderLogisticalTransporter());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter", new RenderLogisticalSorter());
 		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
