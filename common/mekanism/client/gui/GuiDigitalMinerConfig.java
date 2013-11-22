@@ -184,7 +184,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Object3D.get(tileEntity), 2));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 3));
 			}
 			
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)

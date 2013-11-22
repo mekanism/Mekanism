@@ -53,7 +53,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 	
-	public final double ENERGY_USAGE = 50;
+	public final double ENERGY_USAGE = 100;
 	
 	public int radius;
 	
@@ -71,6 +71,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public boolean isActive;
 	public boolean clientActive;
+	
+	public boolean silkTouch;
 	
 	public boolean running;
 	
@@ -108,7 +110,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			ChargeUtils.discharge(27, this);
 			
-			if(running && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
+			if(running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
 				setActive(true);
 				
@@ -117,7 +119,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					delay--;
 				}
 				
-				setEnergy(getEnergy()-MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE));
+				setEnergy(getEnergy()-getPerTick());
 				
 				if(delay == 0)
 				{
@@ -202,12 +204,24 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getSmallPacket(new ArrayList())), player);
 				}
 			}
 			
 			prevEnergy = getEnergy();
 		}
+	}
+	
+	public double getPerTick()
+	{
+		double ret = MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE);
+		
+		if(silkTouch)
+		{
+			ret *= 6;
+		}
+		
+		return ret;
 	}
 	
 	public int getDelay()
@@ -421,6 +435,20 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
+	public void openChest()
+	{
+		super.openChest();
+		
+		if(!worldObj.isRemote)
+		{
+			for(EntityPlayer player : playersUsing)
+			{
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
+			}
+		}
+	}
+	
+	@Override
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
@@ -433,6 +461,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
+        silkTouch = nbtTags.getBoolean("silkTouch");
         searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
@@ -480,6 +509,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setBoolean("running", running);
         nbtTags.setInteger("delay", delay);
+        nbtTags.setBoolean("silkTouch", silkTouch);
         nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
         
@@ -564,6 +594,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				maxY = dataStream.readInt();
 			}
+			else if(type == 9)
+			{
+				silkTouch = !silkTouch;
+			}
+			
+			for(EntityPlayer player : playersUsing)
+			{
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+			}
 			
 			return;
 		}
@@ -581,6 +620,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doPull = dataStream.readBoolean();
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
+			silkTouch = dataStream.readBoolean();
 			searcher.state = State.values()[dataStream.readInt()];
 			
 			if(dataStream.readBoolean())
@@ -612,6 +652,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			doPull = dataStream.readBoolean();
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
+			silkTouch = dataStream.readBoolean();
 			searcher.state = State.values()[dataStream.readInt()];
 			
 			if(dataStream.readBoolean())
@@ -636,6 +677,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				filters.add(MinerFilter.readFromPacket(dataStream));
 			}
 		}
+		else if(type == 3)
+		{
+			isActive = dataStream.readBoolean();
+			running = dataStream.readBoolean();
+			clientToMine = dataStream.readInt();
+		}
 	}
 	
 	@Override
@@ -652,6 +699,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(doPull);
 		data.add(isActive);
 		data.add(running);
+		data.add(silkTouch);
 		data.add(searcher.state.ordinal());
 		
 		if(replaceStack != null)
@@ -677,6 +725,19 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 	
+	public ArrayList getSmallPacket(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(3);
+		
+		data.add(isActive);
+		data.add(running);
+		data.add(oresToMine.size());
+		
+		return data;
+	}
+	
 	public ArrayList getGenericPacket(ArrayList data)
 	{
 		super.getNetworkedData(data);
@@ -690,6 +751,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(doPull);
 		data.add(isActive);
 		data.add(running);
+		data.add(silkTouch);
 		data.add(searcher.state.ordinal());
 		
 		if(replaceStack != null)

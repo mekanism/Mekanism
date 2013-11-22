@@ -143,14 +143,15 @@ public class GuiDigitalMiner extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.fullName, 69, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         
-        fontRenderer.drawString(tileEntity.running ? "Running" : "Idle", 9, 19, 0x00CD00);
-        fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 28, 0x00CD00);
+        fontRenderer.drawString(tileEntity.running ? "Running" : "Idle", 9, 10, 0x00CD00);
+        fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
         
-        fontRenderer.drawString("Eject: " + (tileEntity.doEject ? "On" : "Off"), 9, 39, 0x00CD00);
-        fontRenderer.drawString("Pull: " + (tileEntity.doPull ? "On" : "Off"), 9, 48, 0x00CD00);
+        fontRenderer.drawString("Eject: " + (tileEntity.doEject ? "On" : "Off"), 9, 30, 0x00CD00);
+        fontRenderer.drawString("Pull: " + (tileEntity.doPull ? "On" : "Off"), 9, 39, 0x00CD00);
+        fontRenderer.drawString("Silk: " + (tileEntity.silkTouch ? "On" : "Off"), 9, 48, 0x00CD00);
         
         fontRenderer.drawString("To mine:", 9, 59, 0x00CD00);
         fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
@@ -187,6 +188,11 @@ public class GuiDigitalMiner extends GuiMekanism
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
 		{
 			drawCreativeTabHoveringText("Reset", xAxis, yAxis);
+		}
+		
+		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
+		{
+			drawCreativeTabHoveringText("Silk touch", xAxis, yAxis);
 		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -233,6 +239,14 @@ public class GuiDigitalMiner extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 4 + 28, 14, 14, 14);
+		}
+		
+		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
+		{
+			drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 14, 14, 14);
 		}
 		
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
@@ -287,6 +301,16 @@ public class GuiDigitalMiner extends GuiMekanism
 				
 				ArrayList data = new ArrayList();
 				data.add(5);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			}
+			
+			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
+			{
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				
+				ArrayList data = new ArrayList();
+				data.add(9);
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			}

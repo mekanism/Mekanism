@@ -5,6 +5,7 @@ package mekanism.induction.client.render;
 
 import java.util.Random;
 
+import mekanism.common.Mekanism;
 import mekanism.induction.client.model.ModelBattery;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.tileentity.TileEntityBattery;
@@ -71,7 +72,7 @@ public class RenderBattery extends TileEntitySpecialRenderer
 		{
 			if (this.fakeBattery == null)
 			{
-				this.fakeBattery = new EntityItem(t.worldObj, 0, 0, 0, new ItemStack(MekanismInduction.Capacitor));
+				this.fakeBattery = new EntityItem(t.worldObj, 0, 0, 0, new ItemStack(Mekanism.EnergyTablet));
 				this.fakeBattery.age = 10;
 			}
 

@@ -41,6 +41,7 @@ public class ContainerDynamicTank extends Container
     public void onContainerClosed(EntityPlayer entityplayer)
     {
 		super.onContainerClosed(entityplayer);
+		
 		tileEntity.playersUsing.remove(entityplayer);
 		tileEntity.closeChest();
     }

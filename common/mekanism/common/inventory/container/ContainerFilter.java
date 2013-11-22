@@ -30,8 +30,8 @@ public class ContainerFilter extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-		tileEntity.openChest();
 		tileEntity.playersUsing.add(inventory.player);
+		tileEntity.openChest();
     }
     
     @Override
@@ -39,8 +39,8 @@ public class ContainerFilter extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.closeChest();
 		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.closeChest();
     }
 
 	@Override

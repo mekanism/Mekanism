@@ -823,6 +823,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
             itemStack.stackTagCompound.setInteger("maxY", miner.maxY);
             itemStack.stackTagCompound.setBoolean("doEject", miner.doEject);
             itemStack.stackTagCompound.setBoolean("doPull", miner.doPull);
+            itemStack.stackTagCompound.setBoolean("silkTouch", miner.silkTouch);
             
             if(miner.replaceStack != null)
             {
