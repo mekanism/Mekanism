@@ -8,9 +8,11 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -173,6 +175,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					{
 						setInventorySlotContents(0, null);
 					}
+				}
+				else if(tile instanceof IInventory)
+				{
+					setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, getStack(), 0, false));
 				}
 			}
 		}

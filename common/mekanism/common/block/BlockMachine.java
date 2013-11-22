@@ -169,6 +169,25 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	        }
         }
         
+        if(tileEntity instanceof TileEntityLogisticalSorter)
+        {
+        	TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter)tileEntity;
+        	
+        	if(!world.isRemote && !transporter.hasInventory())
+    		{
+    			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+    			{
+    				TileEntity tile = Object3D.get(transporter).getFromSide(dir).getTileEntity(world);
+
+    				if(tile instanceof IInventory)
+    				{
+    					transporter.setFacing((short)dir.getOpposite().ordinal());
+    					break;
+    				}
+    			}
+    		}
+        }
+        
         tileEntity.setFacing((short)change);
         
         if(tileEntity instanceof IBoundingBlock)

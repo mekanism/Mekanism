@@ -108,23 +108,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			ChargeUtils.discharge(27, this);
 			
-			if(doEject && getTopEject(false, null) != null && getEjectInv() != null)
-			{
-				if(getEjectInv() instanceof IInventory)
-				{
-					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), ForgeDirection.getOrientation(facing).getOpposite().ordinal(), false);
-					
-					getTopEject(true, remains);
-				}
-				else if(getEjectInv() instanceof TileEntityLogisticalTransporter)
-				{
-					if(TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null))
-					{
-						getTopEject(true, null);
-					}
-				}
-			}
-			
 			if(running && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE) && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
 				setActive(true);
@@ -195,6 +178,23 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				if(prevEnergy >= getEnergy())
 				{
 					setActive(false);
+				}
+			}
+			
+			if(doEject && getTopEject(false, null) != null && getEjectInv() != null)
+			{
+				if(getEjectInv() instanceof IInventory)
+				{
+					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), ForgeDirection.getOrientation(facing).getOpposite().ordinal(), false);
+					
+					getTopEject(true, remains);
+				}
+				else if(getEjectInv() instanceof TileEntityLogisticalTransporter)
+				{
+					if(TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null))
+					{
+						getTopEject(true, null);
+					}
 				}
 			}
 			

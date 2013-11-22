@@ -48,45 +48,34 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean shouldExecute()
 	{
-		EntityPlayer player = theRobit.getOwner();
-
-		if(player == null)
-		{
-			return false;
-		}
-		
 		if(!theRobit.getDropPickup())
 		{
 			return false;
 		}
-		else if(theRobit.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
-		{
-			return false;
-		}
-		if(closest!=null&&closest.getDistanceSqToEntity(closest) > 100 && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ)!=null)
+		if(closest != null && closest.getDistanceSqToEntity(closest) > 100 && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null)
 		{
 			return true;
 		}
 
 		List items = theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
-		Iterator iter=items.iterator();
+		Iterator iter = items.iterator();
 		//Cached for slight performance
 		double closestDistance=-1;
 		
 		while(iter.hasNext())
 		{
-			EntityItem entity=(EntityItem) iter.next();
+			EntityItem entity = (EntityItem)iter.next();
 			
-			double distance=theRobit.getDistanceToEntity(entity);
+			double distance = theRobit.getDistanceToEntity(entity);
 			
 			if(distance <= 10)
 			{
-				if(closestDistance==-1||distance<closestDistance)
+				if(closestDistance == -1 || distance < closestDistance)
 				{
-					if(thePathfinder.getPathToXYZ(entity.posX, entity.posY, entity.posZ)!=null)
+					if(thePathfinder.getPathToXYZ(entity.posX, entity.posY, entity.posZ) != null)
 					{
-						closest=entity;
-						closestDistance=distance;
+						closest = entity;
+						closestDistance = distance;
 					}
 				}
 			}
@@ -105,7 +94,7 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > (100) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
+		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
 	}
 
 	@Override
