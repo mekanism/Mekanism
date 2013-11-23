@@ -16,7 +16,6 @@ import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
-import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
