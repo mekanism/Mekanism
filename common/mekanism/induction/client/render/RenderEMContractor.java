@@ -18,6 +18,7 @@ public class RenderEMContractor extends TileEntitySpecialRenderer
 	public static final ModelEMContractor MODEL_SPIN = new ModelEMContractor(true);
 
 	@Override
+	@SuppressWarnings("incomplete-switch")
 	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
 	{
 		GL11.glPushMatrix();

@@ -16,7 +16,6 @@ import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 
 public class GuiBattery extends GuiContainer
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.GUI_DIRECTORY + "batterybox_gui.png");
 	public TileEntityBattery tileEntity;
 
 	public GuiBattery(InventoryPlayer inventory, TileEntityBattery tentity)

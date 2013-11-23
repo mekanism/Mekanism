@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import mekanism.induction.common.MekanismInduction;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -41,7 +42,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FXElectricBolt extends EntityFX
 {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "fadedSphere.png");
 	public static final ResourceLocation PARTICLE_RESOURCE = new ResourceLocation("textures/particle/particles.png");
 
 	/** The width of the electrical bolt. */
@@ -308,7 +308,7 @@ public class FXElectricBolt extends EntityFX
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(TEXTURE);
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FadedSphere.png"));
 		/**
 		 * Render the actual bolts.
 		 */

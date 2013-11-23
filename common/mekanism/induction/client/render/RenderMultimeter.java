@@ -30,6 +30,7 @@ public class RenderMultimeter extends TileEntitySpecialRenderer
 	public static final ModelMultimeter model = new ModelMultimeter();
 	
 	@Override
+	@SuppressWarnings("incomplete-switch")
 	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float var8)
 	{
 		TileEntityMultimeter tileEntity = (TileEntityMultimeter) t;
@@ -40,7 +41,7 @@ public class RenderMultimeter extends TileEntitySpecialRenderer
 		GL11.glRotatef(90, 0, 0, 1);
 		GL11.glTranslated(0, -1, 0);
 
-		switch (direction)
+		switch(direction)
 		{
 			case UP:
 				GL11.glRotatef(90, 0, 1, 0);

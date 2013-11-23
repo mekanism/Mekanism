@@ -5,6 +5,7 @@ package mekanism.induction.client.render;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.induction.client.InductionClientProxy;
 import mekanism.induction.common.block.BlockBattery;
 import mekanism.induction.common.block.BlockEMContractor;
 import mekanism.induction.common.block.BlockMultimeter;
@@ -16,9 +17,7 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,12 +29,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 {
 	public static final BlockRenderingHandler INSTANCE = new BlockRenderingHandler();
-	private static final int ID = RenderingRegistry.getNextAvailableRenderId();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		if (block instanceof BlockTesla)
+		if(block instanceof BlockTesla)
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.5, 1.5, 0.5);
@@ -44,7 +42,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			RenderTesla.bottom.render(0.0625f);
 			GL11.glPopMatrix();
 		}
-		else if (block instanceof BlockEMContractor)
+		else if(block instanceof BlockEMContractor)
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.5, 1.5, 0.5);
@@ -53,7 +51,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			RenderEMContractor.model.render(0.0625f);
 			GL11.glPopMatrix();
 		}
-		else if (block instanceof BlockBattery)
+		else if(block instanceof BlockBattery)
 		{
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.5, 1.42, 0.5);
@@ -62,7 +60,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			RenderBattery.model.render(0.0625f);
 			GL11.glPopMatrix();
 		}
-		else if (block instanceof BlockMultimeter)
+		else if(block instanceof BlockMultimeter)
 		{
 			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0, 1, 0);
@@ -76,7 +74,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if (block instanceof BlockBattery)
+		if(block instanceof BlockBattery)
 		{
 			return true;
 		}
@@ -93,6 +91,6 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public int getRenderId()
 	{
-		return ID;
+		return InductionClientProxy.INDUCTION_RENDER_ID;
 	}
 }

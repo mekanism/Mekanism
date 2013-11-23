@@ -51,14 +51,6 @@ public class MekanismInduction implements IModule
 	/**
 	 * Directory Information
 	 */
-	public static final String DOMAIN = "mekanism";
-	public static final String PREFIX = DOMAIN + ":";
-	public static final String DIRECTORY = "/assets/" + DOMAIN + "/";
-	public static final String TEXTURE_DIRECTORY = "textures/";
-	public static final String GUI_DIRECTORY = "gui/";
-	public static final String BLOCK_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "blocks/";
-	public static final String ITEM_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "items/";
-	public static final String MODEL_TEXTURE_DIRECTORY = "render/";
 
 	/**
 	 * Settings

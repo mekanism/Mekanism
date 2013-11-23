@@ -31,6 +31,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class InductionClientProxy extends InductionCommonProxy
 {
+	public static int INDUCTION_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	
 	@Override
 	public void registerRenderers()
 	{
