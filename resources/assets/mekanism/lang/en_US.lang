@@ -66,6 +66,7 @@ tile.Transmitter.UniversalCable.name=Universal Cable
 tile.Transmitter.MechanicalPipe.name=Mechanical Pipe
 tile.Transmitter.LogisticalTransporter.name=Logistical Transporter
 tile.Transmitter.RestrictiveTransporter.name=Restrictive Transporter
+tile.Transmitter.DiversionTransporter.name=Diversion Transporter
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basic Energy Cube

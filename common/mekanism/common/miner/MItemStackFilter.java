@@ -10,7 +10,13 @@ import com.google.common.io.ByteArrayDataInput;
 public class MItemStackFilter extends MinerFilter
 {
 	public ItemStack itemType;
-	
+	public MItemStackFilter(ItemStack item){
+		super();
+		this.itemType=item;
+	}
+	public MItemStackFilter(){
+		super();
+	}
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{

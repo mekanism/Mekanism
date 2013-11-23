@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Object3D;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
@@ -183,6 +184,23 @@ public final class TransporterPathfinder
 				
 				if(tile != null)
 				{
+					//Check for logistical Diverter
+					TileEntity currTile = pointer.getTileEntity(worldObj);
+					if(currTile instanceof TileEntityDivertionTransporter){
+						int mode=((TileEntityDivertionTransporter) currTile).modes[side.ordinal()];
+						boolean redstone=currTile.worldObj.isBlockIndirectlyGettingPowered(currTile.xCoord, currTile.yCoord,currTile.zCoord);
+						if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
+							continue;
+						}
+					}
+					if(tile instanceof TileEntityDivertionTransporter){
+						int mode=((TileEntityDivertionTransporter) tile).modes[side.ordinal()];
+						boolean redstone=tile.worldObj.isBlockIndirectlyGettingPowered(tile.xCoord, tile.yCoord,tile.zCoord);
+						if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
+							continue;
+						}
+					}
+					
 					if(Object3D.get(tile).equals(transportStack.originalLocation))
 					{
 						continue;
@@ -200,13 +218,13 @@ public final class TransporterPathfinder
 			}
 		}
 		
-		public Set<Object3D> find()
-		{
-			loop(start);
-			
-			return destsFound;
-		}
+	public Set<Object3D> find()
+	{
+		loop(start);
+		
+		return destsFound;
 	}
+}
 	
 	public static List<Destination> getPaths(TileEntityLogisticalTransporter start, TransporterStack stack)
 	{

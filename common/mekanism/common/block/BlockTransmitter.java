@@ -9,6 +9,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
@@ -41,6 +42,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 2: Mechanical Pipe
  * 3: Logistical Transporter
  * 4: Restrictive Transporter
+ * 5: Diversion Transporter
  * @author AidanBrady
  *
  */
@@ -99,6 +101,7 @@ public class BlockTransmitter extends Block
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
 	}
 	
 	@Override
@@ -239,7 +242,7 @@ public class BlockTransmitter extends Block
 			{
 				connectable = PipeUtils.getConnections(tileEntity);
 			}
-			else if(world.getBlockMetadata(x, y, z) == 3 || world.getBlockMetadata(x, y, z) == 4)
+			else if(world.getBlockMetadata(x, y, z) == 3 || world.getBlockMetadata(x, y, z) == 4||world.getBlockMetadata(x, y, z) == 5)
 			{
 				connectable = TransporterUtils.getConnections((TileEntityLogisticalTransporter)tileEntity);
 			}
@@ -371,6 +374,9 @@ public class BlockTransmitter extends Block
 				return new TileEntityLogisticalTransporter();
 			case 4:
 				return new TileEntityLogisticalTransporter();
+
+			case 5:
+				return new TileEntityDivertionTransporter();
 			default:
 				return null;
 		}
