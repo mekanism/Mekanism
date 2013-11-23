@@ -95,10 +95,6 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 		 */
 		if(isController())
 		{
-			if(!worldObj.isRemote)
-			{
-				System.out.println(getEnergy());
-			}
 			CableUtils.emit(this);
 			
 			if(ticker % (5 + worldObj.rand.nextInt(2)) == 0 && ((worldObj.isRemote && doTransfer) || (getEnergy() > 0 && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))))
@@ -123,20 +119,18 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 							{
 								transfer(((TileEntityTesla)transferTile), getMaxEnergy()-getEnergy());
 								
-								if(zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
+								if(zapCounter % 5 == 0)
 								{
-									worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mekanism:etc/Shock", (float)getEnergy() / 25, 1.3f - 0.5f * (dyeID / 16f));
+									worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mekanism:etc.Shock", (float)getEnergy() / 25000, 1.3f - 0.5f * (dyeID / 16f));
 								}
 							}
 						}
 					}
-					else
-					{
+					else {
 						MekanismInduction.proxy.renderElectricShock(worldObj, topTeslaVector.clone().translate(0.5), topTeslaVector.clone().translate(new Vector3(0.5, Double.POSITIVE_INFINITY, 0.5)), false);
 					}
 				}
-				else
-				{
+				else {
 					List<ITesla> transferTeslaCoils = new ArrayList<ITesla>();
 					
 					for(ITesla tesla : TeslaGrid.instance().get())
@@ -199,9 +193,9 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 						
 						for(ITesla tesla : transferTeslaCoils)
 						{
-							if(zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
+							if(zapCounter % 5 == 0)
 							{
-								worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mekanism:etc/Shock", (float)getEnergy() / 25, 1.3f - 0.5f * (dyeID / 16f));
+								worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mekanism:etc.Shock", (float)getEnergy() / 25000, 1.3f - 0.5f * (dyeID / 16f));
 							}
 							
 							Vector3 targetVector = new Vector3((TileEntity)tesla);
@@ -213,6 +207,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 							}
 							
 							double distance = topTeslaVector.distance(targetVector);
+							
 							MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(topTesla).translate(new Vector3(0.5)), targetVector.translate(new Vector3(0.5)), (float)MekanismInduction.DYE_COLORS[dyeID].x, (float)MekanismInduction.DYE_COLORS[dyeID].y,
 									(float)MekanismInduction.DYE_COLORS[dyeID].z);
 							
@@ -262,7 +257,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 	
 	private void transfer(ITesla tesla, double transferEnergy)
 	{
-		transfer(-tesla.transfer(transferEnergy * (1 - (worldObj.rand.nextFloat() * 0.1f)), true), true);
+		transfer(-tesla.transfer(transferEnergy, true), true);
 	}
 	
 	@Override
@@ -311,20 +306,21 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 	}
 	
 	@Override
-	public void handlePacketData(ByteArrayDataInput input)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		super.handlePacketData(input);
+		super.handlePacketData(dataStream);
 		
-		switch(input.readByte())
+		switch(dataStream.readByte())
 		{
 			case 1:
-				dyeID = input.readInt();
-				canReceive = input.readBoolean();
-				attackEntities = input.readBoolean();
-				isLinkedClient = input.readBoolean();
+				dyeID = dataStream.readInt();
+				canReceive = dataStream.readBoolean();
+				attackEntities = dataStream.readBoolean();
+				isLinkedClient = dataStream.readBoolean();
 				break;
 			case 2:
 				doTransfer = true;
+				break;
 		}
 	}
 	
@@ -354,8 +350,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 			sendPacket(1);
 			return transferEnergy;
 		}
-		else
-		{
+		else {
 			if(getEnergy() > 0)
 			{
 				transferEnergy += getEnergy();
@@ -384,8 +379,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 		{
 			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 2, 3);
 		}
-		else
-		{
+		else {
 			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3);
 		}
 	}
@@ -415,8 +409,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 				connectedTeslas.add((TileEntityTesla)t);
 				returnTile = (TileEntityTesla)t;
 			}
-			else
-			{
+			else {
 				break;
 			}
 			
@@ -450,8 +443,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 			{
 				returnTile = (TileEntityTesla)t;
 			}
-			else
-			{
+			else {
 				break;
 			}
 			
@@ -481,8 +473,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 				connectedTeslas.add((TileEntityTesla)t);
 				y++;
 			}
-			else
-			{
+			else {
 				break;
 			}
 			
@@ -597,6 +588,12 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 				}
 			}
 		}
+	}
+	
+	@Override
+	public double getMaxOutput()
+	{
+		return TRANSFER_CAP;
 	}
 	
 	@Override

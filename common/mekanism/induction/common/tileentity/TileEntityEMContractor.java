@@ -579,6 +579,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		if(thread == null && linked != null && lastCalcTime <= 0)
 		{
 			pathfinder = null;
+			
 			Vector3 start = new Vector3(this).modifyPositionFromSide(getFacing());
 			Vector3 target = new Vector3(linked).modifyPositionFromSide(linked.getFacing());
 

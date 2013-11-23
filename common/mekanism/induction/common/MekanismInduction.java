@@ -39,10 +39,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
-	/**
-	 * Mod Information
-	 */
-
 	public static final String MAJOR_VERSION = "@MAJOR@";
 	public static final String MINOR_VERSION = "@MINOR@";
 	public static final String REVISION_VERSION = "@REVIS@";
@@ -74,7 +70,6 @@ public class MekanismInduction implements IModule
 	 * Settings
 	 */
 	public static float FURNACE_WATTAGE = 10;
-	public static boolean SOUND_FXS = true;
 
 	/** Block ID by Jyzarc */
 	private static final int BLOCK_ID_PREFIX = 3200;

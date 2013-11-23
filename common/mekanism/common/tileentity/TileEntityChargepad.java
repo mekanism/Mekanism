@@ -19,6 +19,7 @@ import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.EntityLiving;
@@ -45,7 +46,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	
 	public TileEntityChargepad()
 	{
-		super("Chargepad", 9000);
+		super("Chargepad", MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 	

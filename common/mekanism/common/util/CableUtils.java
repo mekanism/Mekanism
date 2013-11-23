@@ -17,6 +17,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.induction.common.tileentity.TileEntityTesla;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.block.IConductor;

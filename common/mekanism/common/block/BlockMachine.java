@@ -1009,7 +1009,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		TELEPORTER(Mekanism.machineBlockID, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false),
 		ELECTRIC_PUMP(Mekanism.machineBlockID, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
 		ELECTRIC_CHEST(Mekanism.machineBlockID, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
-		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 9000, TileEntityChargepad.class, true),
+		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true),
 		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true);
 		
 		public int typeId;
