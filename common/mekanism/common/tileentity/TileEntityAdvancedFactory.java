@@ -15,11 +15,10 @@ public class TileEntityAdvancedFactory extends TileEntityFactory
 		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {4, 5, 6, 7, 8}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {9, 10, 11, 12, 13}));
+		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {4}));
+		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {5, 6, 7, 8, 9}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {10, 11, 12, 13, 14}));
 		
-		sideConfig = new byte[] {4, 3, 0, 0, 2, 1};
-		
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(5));
 	}
 }
