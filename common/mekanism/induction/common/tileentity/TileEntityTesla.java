@@ -90,9 +90,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 		
 		boolean doPacketUpdate = getEnergy() > 0;
 		
-		/**
-		 * Only transfer if it is the bottom controlling Tesla tower.
-		 */
+		//Only transfer if it is the bottom controlling Tesla tower.
 		if(isController())
 		{
 			CableUtils.emit(this);
@@ -102,9 +100,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 				final TileEntityTesla topTesla = getTopTelsa();
 				final Vector3 topTeslaVector = new Vector3(topTesla);
 				
-				/**
-				 * Quantum transportation.
-				 */
+				//Quantum transportation.
 				if(linked != null || isLinkedClient)
 				{
 					if(!worldObj.isRemote)
@@ -157,9 +153,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 						}
 					}
 					
-					/**
-					 * Sort by distance.
-					 */
+					//Sort by distance.
 					Collections.sort(transferTeslaCoils, new Comparator() {
 						public int compare(ITesla o1, ITesla o2)
 						{

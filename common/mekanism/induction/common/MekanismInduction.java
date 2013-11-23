@@ -48,13 +48,7 @@ public class MekanismInduction implements IModule
 	/** MekanismInduction version number */
 	public static Version versionNumber = new Version(5, 6, 0);
 
-	/**
-	 * Directory Information
-	 */
-
-	/**
-	 * Settings
-	 */
+	//Settings
 	public static float FURNACE_WATTAGE = 10;
 
 	/** Block ID by Jyzarc */
@@ -76,10 +70,10 @@ public class MekanismInduction implements IModule
 		return NEXT_ITEM_ID++;
 	}
 
-	// Items
+	//Items
 	public static Item Linker;
 
-	// Blocks
+	//Blocks
 	public static Block Tesla;
 	public static Block Multimeter;
 	public static Block ElectromagneticContractor;
@@ -95,10 +89,10 @@ public class MekanismInduction implements IModule
 		MinecraftForge.EVENT_BUS.register(new MultimeterEventHandler());
 		Mekanism.configuration.load();
 
-		// Items
+		//Items
 		Linker = new ItemLinker(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "Linker", getNextItemID()).getInt()).setUnlocalizedName("Linker");
 
-		// Blocks
+		//Blocks
 		Tesla = new BlockTesla(Mekanism.configuration.getBlock("Tesla", getNextBlockID()).getInt()).setUnlocalizedName("Tesla");
 		Multimeter = new BlockMultimeter(Mekanism.configuration.getBlock("Multimeter", getNextBlockID()).getInt()).setUnlocalizedName("Multimeter");
 		ElectromagneticContractor = new BlockEMContractor(Mekanism.configuration.getBlock("ElectromagneticContractor", getNextBlockID()).getInt()).setUnlocalizedName("ElectromagneticContractor");

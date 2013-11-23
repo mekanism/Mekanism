@@ -1,12 +1,12 @@
 package mekanism.induction.client.gui;
 
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.common.BatteryManager;
-import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.inventory.container.ContainerBattery;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -44,7 +44,7 @@ public class GuiBattery extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(TEXTURE);
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiBattery.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;

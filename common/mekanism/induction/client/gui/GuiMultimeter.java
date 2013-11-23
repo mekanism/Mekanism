@@ -9,14 +9,14 @@ import mekanism.api.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.induction.common.MekanismInduction;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.common.inventory.container.ContainerMultimeter;
 import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -32,7 +32,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiMultimeter extends GuiContainer
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.GUI_DIRECTORY + "gui_multimeter.png");
 	TileEntityMultimeter tileEntity;
 
 	private int containerWidth;
@@ -96,7 +95,7 @@ public class GuiMultimeter extends GuiContainer
 		containerWidth = (width - xSize) / 2;
 		containerHeight = (height - ySize) / 2;
 
-		mc.renderEngine.bindTexture(TEXTURE);
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMultimeter.png"));
 		GL11.glColor4f(1, 1, 1, 1);
 		drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
 

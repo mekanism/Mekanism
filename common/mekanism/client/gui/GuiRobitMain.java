@@ -17,8 +17,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -111,7 +109,7 @@ public class GuiRobitMain extends GuiContainer
     	if(!displayNameChange)
     	{
 	    	fontRenderer.drawString("Hi, I'm " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
-	    	fontRenderer.drawString("Energy: " + ElectricityDisplay.getDisplayShort((float)(robit.getEnergy()*Mekanism.TO_UE), ElectricUnit.JOULES), 29, 36-4, 0x00CD00);
+	    	fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
 	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
 	    	fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
 	    	fontRenderer.drawString("Owner: " + robit.getOwnerName(), 29, 63-4, 0x00CD00);
@@ -122,7 +120,7 @@ public class GuiRobitMain extends GuiContainer
     	
 		if(xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)(robit.getEnergy()*Mekanism.TO_UE), ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy()), xAxis, yAxis);
 		}
 		else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 		{
