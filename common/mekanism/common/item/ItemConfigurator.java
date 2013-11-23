@@ -16,7 +16,7 @@ import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
 import mekanism.common.tileentity.TileEntityElectricPump;
-import mekanism.common.tileentity.TileEntityLogisticalDiverter;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
@@ -73,8 +73,8 @@ public class ItemConfigurator extends ItemEnergized
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
 	    		{
 	    			//Player can access color by sneaking
-	    			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalDiverter){
-	    				TileEntityLogisticalDiverter transporter = (TileEntityLogisticalDiverter)world.getBlockTileEntity(x, y, z);
+	    			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityDivertionTransporter){
+	    				TileEntityDivertionTransporter transporter = (TileEntityDivertionTransporter)world.getBlockTileEntity(x, y, z);
 	    				int newMode=(transporter.modes[side]+1)%3;
 	    				transporter.modes[side]=newMode;
 	    				String description="ERROR";

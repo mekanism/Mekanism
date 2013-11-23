@@ -48,9 +48,12 @@ public class TransmitterRenderingHandler implements ISimpleBlockRenderingHandler
     		case 4:
     			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RestrictiveTransporter.png"));
     			break;
+    		case 5:
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalDiverter.png"));
+    			break;
     	}
     	
-    	if(metadata != 3 && metadata != 4)
+    	if(metadata != 3 && metadata != 4 && metadata != 5)
     	{
 	    	smallTransmitter.renderSide(ForgeDirection.UP, true);
 	    	smallTransmitter.renderSide(ForgeDirection.DOWN, true);

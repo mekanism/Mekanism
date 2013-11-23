@@ -20,6 +20,8 @@ import net.minecraft.util.Icon;
  * 1: Universal Cable
  * 2: Mechanical Pipe
  * 3: Logistical Transporter
+ * 4: Restrictive Transporter
+ * 5: Diversion Transporter
  * @author AidanBrady
  *
  */
@@ -75,6 +77,13 @@ public class ItemBlockTransmitter extends ItemBlock
 				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
 				list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
 			}
+			else if(itemstack.getItemDamage() == 5)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "Items (universal)");
+				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				list.add("- " + EnumColor.DARK_RED + "Controlable by redstone");
+			}
 		}
 	}
 	
@@ -111,6 +120,9 @@ public class ItemBlockTransmitter extends ItemBlock
 				break;
 			case 4:
 				name = "RestrictiveTransporter";
+				break;
+			case 5:
+				name = "DiversionTransporter";
 				break;
 			default:
 				name = "Unknown";

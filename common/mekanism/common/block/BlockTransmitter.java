@@ -9,7 +9,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
-import mekanism.common.tileentity.TileEntityLogisticalDiverter;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
@@ -42,7 +42,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 2: Mechanical Pipe
  * 3: Logistical Transporter
  * 4: Restrictive Transporter
- * 5: Logistical Diverter
+ * 5: Diversion Transporter
  * @author AidanBrady
  *
  */
@@ -376,7 +376,7 @@ public class BlockTransmitter extends Block
 				return new TileEntityLogisticalTransporter();
 
 			case 5:
-				return new TileEntityLogisticalDiverter();
+				return new TileEntityDivertionTransporter();
 			default:
 				return null;
 		}

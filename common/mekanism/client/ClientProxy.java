@@ -82,7 +82,7 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityLogisticalDiverter;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
@@ -251,7 +251,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter", new RenderLogisticalTransporter());
 
-		ClientRegistry.registerTileEntity(TileEntityLogisticalDiverter.class, "LogisticalDiverter", new RenderLogisticalTransporter());
+		ClientRegistry.registerTileEntity(TileEntityDivertionTransporter.class, "LogisticalDiverter", new RenderLogisticalTransporter());
 		ClientRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter", new RenderLogisticalSorter());
 		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());

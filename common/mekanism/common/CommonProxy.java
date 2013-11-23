@@ -38,7 +38,7 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityLogisticalDiverter;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
@@ -92,7 +92,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad");
 		GameRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter");
 
-		GameRegistry.registerTileEntity(TileEntityLogisticalDiverter.class, "LogisticalDiverter");
+		GameRegistry.registerTileEntity(TileEntityDivertionTransporter.class, "LogisticalDiverter");
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");

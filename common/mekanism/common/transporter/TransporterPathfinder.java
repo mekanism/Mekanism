@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityLogisticalDiverter;
+import mekanism.common.tileentity.TileEntityDivertionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
@@ -186,15 +186,15 @@ public final class TransporterPathfinder
 				{
 					//Check for logistical Diverter
 					TileEntity currTile = pointer.getTileEntity(worldObj);
-					if(currTile instanceof TileEntityLogisticalDiverter){
-						int mode=((TileEntityLogisticalDiverter) currTile).modes[side.ordinal()];
+					if(currTile instanceof TileEntityDivertionTransporter){
+						int mode=((TileEntityDivertionTransporter) currTile).modes[side.ordinal()];
 						boolean redstone=currTile.worldObj.isBlockIndirectlyGettingPowered(currTile.xCoord, currTile.yCoord,currTile.zCoord);
 						if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
 							continue;
 						}
 					}
-					if(tile instanceof TileEntityLogisticalDiverter){
-						int mode=((TileEntityLogisticalDiverter) tile).modes[side.ordinal()];
+					if(tile instanceof TileEntityDivertionTransporter){
+						int mode=((TileEntityDivertionTransporter) tile).modes[side.ordinal()];
 						boolean redstone=tile.worldObj.isBlockIndirectlyGettingPowered(tile.xCoord, tile.yCoord,tile.zCoord);
 						if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
 							continue;
