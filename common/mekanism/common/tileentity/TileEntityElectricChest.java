@@ -171,6 +171,12 @@ public class TileEntityElectricChest extends TileEntityElectricBlock implements 
 	{
 		return false;
 	}
+	
+	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 

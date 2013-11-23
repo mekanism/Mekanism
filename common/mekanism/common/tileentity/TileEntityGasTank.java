@@ -289,6 +289,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		
 		return data;
 	}
+	
+	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side) 

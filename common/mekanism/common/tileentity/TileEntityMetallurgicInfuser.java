@@ -520,6 +520,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
+	
+	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
 
 	@Override
 	public double demandedEnergyUnits() 

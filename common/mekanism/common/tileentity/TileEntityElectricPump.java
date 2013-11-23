@@ -487,6 +487,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
+	
+	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		if(side == 1)

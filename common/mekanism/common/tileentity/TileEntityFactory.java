@@ -694,6 +694,12 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 	
 	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
+	
+	@Override
 	public ArrayList<SideData> getSideData()
 	{
 		return sideOutputs;

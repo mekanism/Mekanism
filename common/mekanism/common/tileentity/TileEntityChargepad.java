@@ -223,6 +223,12 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 	
 	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
+	
+	@Override
 	public double transferEnergyToAcceptor(double amount)
 	{
     	double rejects = 0;
