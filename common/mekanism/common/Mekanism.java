@@ -423,7 +423,7 @@ public class Mekanism
 			"SSS", "SCS", "SSS", Character.valueOf('S'), Block.cobblestone, Character.valueOf('C'), "circuitBasic"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 4), new Object[] {
-			"ACA", "SES", "TIT", Character.valueOf('A'), AtomicCore, Character.valueOf('C'), "circuitBasic", Character.valueOf('S'), new ItemStack(MachineBlock, 1, 15), Character.valueOf('E'), new ItemStack(MachineBlock, 1, 13),
+			"ACA", "SES", "TIT", Character.valueOf('A'), AtomicCore, Character.valueOf('C'), "circuitBasic", Character.valueOf('S'), new ItemStack(MachineBlock, 1, 15), Character.valueOf('E'), Robit.getUnchargedItem(),
 			Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('T'), TeleportationCore
 		}));
 		
