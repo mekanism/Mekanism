@@ -52,9 +52,10 @@ public class ItemBlockTransmitter extends ItemBlock
 			else if(itemstack.getItemDamage() == 1)
 			{
 				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 				list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 				list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
-				list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
+				list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism, UE)");
 			}
 			else if(itemstack.getItemDamage() == 2)
 			{

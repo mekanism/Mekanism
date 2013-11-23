@@ -169,6 +169,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
+		if(getTransmitterNetwork().getEnergyNeeded(new ArrayList()) == 0)
+		{
+			return null;
+		}
+		
 		return powerHandler.getPowerReceiver();
 	}
 	
