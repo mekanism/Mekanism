@@ -9,7 +9,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PipeUtils;
-import mekanism.common.tileentity.TileEntityDivertionTransporter;
+import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
@@ -242,7 +242,7 @@ public class BlockTransmitter extends Block
 			{
 				connectable = PipeUtils.getConnections(tileEntity);
 			}
-			else if(world.getBlockMetadata(x, y, z) == 3 || world.getBlockMetadata(x, y, z) == 4||world.getBlockMetadata(x, y, z) == 5)
+			else if(world.getBlockMetadata(x, y, z) == 3 || world.getBlockMetadata(x, y, z) == 4 || world.getBlockMetadata(x, y, z) == 5)
 			{
 				connectable = TransporterUtils.getConnections((TileEntityLogisticalTransporter)tileEntity);
 			}
@@ -376,7 +376,7 @@ public class BlockTransmitter extends Block
 				return new TileEntityLogisticalTransporter();
 
 			case 5:
-				return new TileEntityDivertionTransporter();
+				return new TileEntityDiversionTransporter();
 			default:
 				return null;
 		}

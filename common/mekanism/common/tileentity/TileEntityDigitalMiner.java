@@ -1078,138 +1078,148 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public String getType() {
+	public String getType()
+	{
 		return "Digital Miner";
 	}
-	public String[] names = 
-        {
-                "setRadius",
-                "setMin",
-                "setMax",
-                "setReplace",
-                "addFilter",
-                "removeFilter",
-                "addOreFilter",
-                "removeOreFilter"
-        };
+	
+	public String[] names = {"setRadius", "setMin", "setMax", "setReplace", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter"};
+	
 	@Override
-	public String[] getMethodNames() {
+	public String[] getMethodNames()
+	{
 		return names;
 	}
-
+	
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context,
-			int method, Object[] arguments) throws Exception {
-		if(arguments.length>0)
-        {
-                int num = 0;
-                             
-                if(arguments[0] instanceof Double)
-                {
-                        num = ((Double)arguments[0]).intValue();
-                }
-                if(arguments[0] instanceof String&&(method!=6&&method!=7))
-                {
-                        num = Integer.parseInt((String)arguments[0]);
-                }
-                
-                if(num!=0)
-                {
-                        if(method==0)
-                        {
-                                this.radius=num;
-                        }
-                        if(method==1)
-                        {
-                                this.minY=num;
-                        }
-                        if(method==2)
-                        {
-                                this.maxY=num;
-                        }
-                        if(method==3){
-                        	//replace
-                        	int meta=0;
-                        	if(arguments.length>1){
-                        		if(arguments[1] instanceof Double)
-                        		{
-                        			num = ((Double)arguments[1]).intValue();
-                        		}
-                        		if(arguments[1] instanceof String)
-                        		{
-                        			meta = Integer.parseInt((String)arguments[1]);
-                        		}
-                        	}
-                        	this.replaceStack=new ItemStack(num,1,meta);
-                        }
-                        if(method==4){
-                        	int meta=0;
-
-                        	if(arguments.length>1){
-                        		if(arguments[1] instanceof Double)
-                        		{
-                        			meta = ((Double)arguments[1]).intValue();
-                        		}
-                        		if(arguments[1] instanceof String)
-                        		{
-                        			meta = Integer.parseInt((String)arguments[1]);
-                        		}
-                        	}
-                        	this.filters.add(new MItemStackFilter(new ItemStack(num,1,meta)));
-                        }
-                        if(method==5){
-                        	Iterator<MinerFilter> iter=this.filters.iterator();
-                        	while(iter.hasNext()){
-                        		MinerFilter filter=iter.next();
-                        		if(filter instanceof MItemStackFilter){
-                        			if(((MItemStackFilter) filter).itemType.itemID==num){
-                        				iter.remove();
-                        			}
-                        		}
-                        	}
-                        }
-                        if(method==6){
-                        	String ore=(String) arguments[0];
-                        	MOreDictFilter filter=new MOreDictFilter();
-                        	filter.oreDictName=ore;
-                        	filters.add(filter);
-                        }
-                        if(method==7){
-
-                        	String ore=(String) arguments[0];
-                        	Iterator<MinerFilter> iter=this.filters.iterator();
-                        	while(iter.hasNext()){
-                        		MinerFilter filter=iter.next();
-                        		if(filter instanceof MOreDictFilter){
-                        			if(((MOreDictFilter) filter).oreDictName==ore){
-                        				iter.remove();
-                        			}
-                        		}
-                        	}
-                        }
-                }
-        }
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
+	{
+		if(arguments.length > 0)
+		{
+			int num = 0;
+			
+			if(arguments[0] instanceof Double)
+			{
+				num = ((Double)arguments[0]).intValue();
+			}
+			else if(arguments[0] instanceof String && (method != 6 && method != 7))
+			{
+				num = Integer.parseInt((String)arguments[0]);
+			}
+			
+			if(num != 0)
+			{
+				if(method == 0)
+				{
+					radius = num;
+				}
+				else if(method == 1)
+				{
+					minY = num;
+				}
+				else if(method == 2)
+				{
+					maxY = num;
+				}
+				else if(method == 3)
+				{
+					int meta = 0;
+					
+					if(arguments.length > 1)
+					{
+						if(arguments[1] instanceof Double)
+						{
+							num = ((Double)arguments[1]).intValue();
+						}
+						else if(arguments[1] instanceof String)
+						{
+							meta = Integer.parseInt((String)arguments[1]);
+						}
+					}
+					
+					replaceStack = new ItemStack(num, 1, meta);
+				}
+				else if(method == 4)
+				{
+					int meta = 0;
+					
+					if(arguments.length > 1)
+					{
+						if(arguments[1] instanceof Double)
+						{
+							meta = ((Double)arguments[1]).intValue();
+						}
+						else if(arguments[1] instanceof String)
+						{
+							meta = Integer.parseInt((String)arguments[1]);
+						}
+					}
+					
+					filters.add(new MItemStackFilter(new ItemStack(num, 1, meta)));
+				}
+				else if(method == 5)
+				{
+					Iterator<MinerFilter> iter = filters.iterator();
+					
+					while(iter.hasNext())
+					{
+						MinerFilter filter = iter.next();
+						
+						if(filter instanceof MItemStackFilter)
+						{
+							if(((MItemStackFilter)filter).itemType.itemID == num)
+							{
+								iter.remove();
+							}
+						}
+					}
+				}
+				else if(method == 6)
+				{
+					String ore = (String)arguments[0];
+					MOreDictFilter filter = new MOreDictFilter();
+					
+					filter.oreDictName = ore;
+					filters.add(filter);
+				}
+				else if(method == 7)
+				{
+					String ore = (String)arguments[0];
+					Iterator<MinerFilter> iter = filters.iterator();
+					
+					while(iter.hasNext())
+					{
+						MinerFilter filter = iter.next();
+						
+						if(filter instanceof MOreDictFilter)
+						{
+							if(((MOreDictFilter)filter).oreDictName == ore)
+							{
+								iter.remove();
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		for(EntityPlayer player : playersUsing)
 		{
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
 		}
-        
-        
-        return null;
+		
+		return null;
 	}
-
+	
 	@Override
-	public boolean canAttachToSide(int side) {
+	public boolean canAttachToSide(int side)
+	{
 		return true;
 	}
-
+	
 	@Override
-	public void attach(IComputerAccess computer) {
-		
-	}
-
+	public void attach(IComputerAccess computer) {}
+	
 	@Override
-	public void detach(IComputerAccess computer) {
-		
-	}
+	public void detach(IComputerAccess computer) {}
 }

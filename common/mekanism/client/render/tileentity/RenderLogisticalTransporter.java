@@ -51,7 +51,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		}
 		else if(meta == 5)
 		{
-			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalDiverter.png"));
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DiversionTransporter.png"));
 		}
 		
 		GL11.glPushMatrix();

@@ -49,7 +49,7 @@ public class TransmitterRenderingHandler implements ISimpleBlockRenderingHandler
     			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RestrictiveTransporter.png"));
     			break;
     		case 5:
-    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalDiverter.png"));
+    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DiversionTransporter.png"));
     			break;
     	}
     	

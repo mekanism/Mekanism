@@ -82,7 +82,7 @@ public class ItemBlockTransmitter extends ItemBlock
 				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 				list.add("- " + EnumColor.PURPLE + "Items (universal)");
 				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
-				list.add("- " + EnumColor.DARK_RED + "Controlable by redstone");
+				list.add("- " + EnumColor.DARK_RED + "Controllable by redstone");
 			}
 		}
 	}

@@ -8,7 +8,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.tileentity.TileEntityBin;
-import mekanism.common.tileentity.TileEntityDivertionTransporter;
+import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterStack;
@@ -85,18 +85,21 @@ public final class TransporterUtils
 		
 		for(IInventory inventory : connectedInventories)
 		{
-			
 			if(inventory != null)
-			{	
-				
+			{
 				int side = Arrays.asList(connectedInventories).indexOf(inventory);
-				if(tileEntity instanceof TileEntityDivertionTransporter){
-					int mode=((TileEntityDivertionTransporter) tileEntity).modes[side];
-					boolean redstone=tileEntity.worldObj.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-					if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
+				
+				if(tileEntity instanceof TileEntityDiversionTransporter)
+				{
+					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[side];
+					boolean redstone = tileEntity.worldObj.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+					
+					if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+					{
 						continue;
 					}
 				}
+				
 				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
 				
 				//Immature BuildCraft inv check
@@ -134,23 +137,26 @@ public final class TransporterUtils
 		{
 			if(tile != null)
 			{
-				
-				
 				int side = Arrays.asList(connectedTransporters).indexOf(tile);
-				//Check for logistical Diverter
-				if(tileEntity instanceof TileEntityDivertionTransporter){
-					int mode=((TileEntityDivertionTransporter) tileEntity).modes[side];
-					boolean redstone=tileEntity.worldObj.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-					if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
+				
+				if(tileEntity instanceof TileEntityDiversionTransporter)
+				{
+					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[side];
+					boolean redstone = tileEntity.worldObj.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+					
+					if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+					{
 						continue;
 					}
 				}
 				
-				//Check for logistical Diverter
-				if(tile instanceof TileEntityDivertionTransporter){
-					int mode=((TileEntityDivertionTransporter) tile).modes[ForgeDirection.VALID_DIRECTIONS[side].getOpposite().ordinal()];
-					boolean redstone=tile.worldObj.isBlockIndirectlyGettingPowered(tile.xCoord, tile.yCoord, tile.zCoord);
-					if((mode==2&&redstone==true)||(mode==1&&redstone==false)){
+				if(tile instanceof TileEntityDiversionTransporter)
+				{
+					int mode = ((TileEntityDiversionTransporter)tile).modes[ForgeDirection.VALID_DIRECTIONS[side].getOpposite().ordinal()];
+					boolean redstone = tile.worldObj.isBlockIndirectlyGettingPowered(tile.xCoord, tile.yCoord, tile.zCoord);
+					
+					if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+					{
 						continue;
 					}
 				}
