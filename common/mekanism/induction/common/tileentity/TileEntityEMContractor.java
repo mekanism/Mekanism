@@ -98,11 +98,11 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		if(canFunction())
 		{
 			TileEntity inventoryTile = getLatched();
-			IInventory inventory = (IInventory) inventoryTile;
+			IInventory inventory = (IInventory)inventoryTile;
 
 			if(!suck && pushDelay == 0)
 			{
-				ItemStack retrieved = InventoryUtils.takeTopItemFromInventory(inventory, getFacing().ordinal());
+				ItemStack retrieved = InventoryUtils.takeTopItemFromInventory(inventory, getFacing().getOpposite().ordinal());
 
 				if(retrieved != null)
 				{
@@ -120,16 +120,19 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 			{
 				if(suckBounds != null)
 				{
-					for(EntityItem item : (List<EntityItem>) worldObj.getEntitiesWithinAABB(EntityItem.class, suckBounds))
+					if(!worldObj.isRemote)
 					{
-						ItemStack remains = InventoryUtils.putStackInInventory(inventory, item.getEntityItem(), getFacing().ordinal(), false);
-
-						if(remains == null)
+						for(EntityItem item : (List<EntityItem>)worldObj.getEntitiesWithinAABB(EntityItem.class, suckBounds))
 						{
-							item.setDead();
-						}
-						else {
-							item.setEntityItemStack(remains);
+							ItemStack remains = InventoryUtils.putStackInInventory(inventory, item.getEntityItem(), getFacing().getOpposite().ordinal(), false);
+	
+							if(remains == null)
+							{
+								item.setDead();
+							}
+							else {
+								item.setEntityItemStack(remains);
+							}
 						}
 					}
 				}
