@@ -250,7 +250,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	@Override
 	public float getVoltage() 
 	{
-		return tier.VOLTAGE;
+		return (float)(tier.VOLTAGE*Mekanism.TO_UE);
 	}
 
 	@Override

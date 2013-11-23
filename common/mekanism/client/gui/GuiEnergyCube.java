@@ -34,8 +34,8 @@ public class GuiEnergyCube extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		String capacityInfo = ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort(tileEntity.getMaxEnergyStored(), ElectricUnit.JOULES);
-		String outputInfo = "Voltage: " + tileEntity.getVoltage() + "v";
+		String capacityInfo = MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy());
+		String outputInfo = "Out: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t";
 		
 		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);

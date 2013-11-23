@@ -60,6 +60,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import universalelectricity.core.electricity.ElectricityDisplay;
+import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -1054,6 +1056,11 @@ public final class MekanismUtils
         }
         
         return vec;
+    }
+    
+    public static String getEnergyDisplay(double energy)
+    {
+    	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.JOULES);
     }
     
     public static boolean useBuildcraft()

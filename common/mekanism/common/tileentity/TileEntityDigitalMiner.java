@@ -47,7 +47,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
 {
-	public Set<Object3D> oresToMine = new HashSet<Object3D>();
+	public List<Object3D> oresToMine = new ArrayList<Object3D>();
 	
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
 	
@@ -153,7 +153,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							continue;
 						}
 						
-						List<ItemStack> drops = MinerUtils.getStacksFromBlock(worldObj, obj);
+						List<ItemStack> drops = MinerUtils.getDrops(worldObj, obj, silkTouch);
 						
 						if(canInsert(drops))
 						{
@@ -917,11 +917,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     	if(clientActive != active)
     	{
     		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
-    		
-    		if(active)
-    		{
-    			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "mekanism:etc.Click", 0.3F, 1);
-    		}
     		
     		clientActive = active;
     	}

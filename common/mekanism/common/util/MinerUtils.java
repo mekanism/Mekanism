@@ -7,11 +7,10 @@ import mekanism.api.Object3D;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.event.ForgeEventFactory;
 
 public final class MinerUtils 
 {
-	public static List<ItemStack> getStacksFromBlock(World world, Object3D obj)
+	public static List<ItemStack> getDrops(World world, Object3D obj, boolean silk)
 	{
 		Block block = Block.blocksList[obj.getBlockId(world)];
 
@@ -27,6 +26,15 @@ public final class MinerUtils
 
         int meta = obj.getMetadata(world);
 
-        return block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0);
+        if(!silk)
+        {
+        	return block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0);
+        }
+        else {
+        	List<ItemStack> ret = new ArrayList<ItemStack>();
+        	ret.add(new ItemStack(block.blockID, 1, meta));
+        	
+        	return ret;
+        }
 	}
 }

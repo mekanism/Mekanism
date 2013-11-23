@@ -3,6 +3,7 @@ package mekanism.common.miner;
 import java.util.ArrayList;
 
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,6 +22,11 @@ public class MOreDictFilter extends MinerFilter
 			return false;
 		}
 		
+		if(oreDictName.equals("*") && itemStack.itemID != Block.bedrock.blockID)
+		{
+			return true;
+		}
+		
 		String oreKey = MekanismUtils.getOreDictName(itemStack);
 		
 		if(oreKey == null)
@@ -28,7 +34,7 @@ public class MOreDictFilter extends MinerFilter
 			return false;
 		}
 		
-		if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
+		if(oreDictName.equals(oreKey))
 		{
 			return true;
 		}

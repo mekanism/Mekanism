@@ -3,21 +3,22 @@ package mekanism.induction.common.tileentity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
 import mekanism.api.induction.ITesla;
-import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.util.CableUtils;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.TeslaGrid;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -25,8 +26,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.compatibility.TileEntityUniversalElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -39,10 +38,10 @@ import com.google.common.io.ByteArrayDataInput;
  * @author Calclavia
  * 
  */
-public class TileEntityTesla extends TileEntityUniversalElectrical implements ITesla, ITileNetwork
+public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 {
-	public final static int DEFAULT_COLOR = 12;
-	public final float TRANSFER_CAP = 10;
+	public static final int DEFAULT_COLOR = 12;
+	public static final double TRANSFER_CAP = 10000;
 	private int dyeID = DEFAULT_COLOR;
 	
 	private boolean canReceive = true;
@@ -73,11 +72,10 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	private int zapCounter = 0;
 	private boolean isLinkedClient;
 	
-	@Override
-	public void initiate()
+	public TileEntityTesla()
 	{
-		super.initiate();
-		TeslaGrid.instance().register(this);
+		super("Telsa", TRANSFER_CAP);
+		inventory = new ItemStack[0];
 	}
 	
 	@Override
@@ -85,16 +83,25 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	{
 		super.updateEntity();
 		
-		boolean doPacketUpdate = getEnergyStored() > 0;
+		if(ticker == 1)
+		{
+			TeslaGrid.instance().register(this);
+		}
+		
+		boolean doPacketUpdate = getEnergy() > 0;
 		
 		/**
 		 * Only transfer if it is the bottom controlling Tesla tower.
 		 */
 		if(isController())
 		{
-			produce();
+			if(!worldObj.isRemote)
+			{
+				System.out.println(getEnergy());
+			}
+			CableUtils.emit(this);
 			
-			if(ticks % (5 + worldObj.rand.nextInt(2)) == 0 && ((worldObj.isRemote && doTransfer) || (getEnergyStored() > 0 && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))))
+			if(ticker % (5 + worldObj.rand.nextInt(2)) == 0 && ((worldObj.isRemote && doTransfer) || (getEnergy() > 0 && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))))
 			{
 				final TileEntityTesla topTesla = getTopTelsa();
 				final Vector3 topTeslaVector = new Vector3(topTesla);
@@ -114,11 +121,11 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 							
 							if(transferTile instanceof TileEntityTesla && !transferTile.isInvalid())
 							{
-								transfer(((TileEntityTesla)transferTile), Math.min(getProvide(ForgeDirection.UNKNOWN), TRANSFER_CAP));
+								transfer(((TileEntityTesla)transferTile), getMaxEnergy()-getEnergy());
 								
 								if(zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
 								{
-									worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, MekanismInduction.PREFIX + "electricshock", getEnergyStored() / 25, 1.3f - 0.5f * (dyeID / 16f));
+									worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mekanism:etc/Shock", (float)getEnergy() / 25, 1.3f - 0.5f * (dyeID / 16f));
 								}
 							}
 						}
@@ -130,7 +137,6 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 				}
 				else
 				{
-					
 					List<ITesla> transferTeslaCoils = new ArrayList<ITesla>();
 					
 					for(ITesla tesla : TeslaGrid.instance().get())
@@ -187,14 +193,15 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 					
 					if(transferTeslaCoils.size() > 0)
 					{
-						float transferEnergy = getEnergyStored() / transferTeslaCoils.size();
+						double transferEnergy = getEnergy() / transferTeslaCoils.size();
 						int count = 0;
 						boolean sentPacket = false;
+						
 						for(ITesla tesla : transferTeslaCoils)
 						{
 							if(zapCounter % 5 == 0 && MekanismInduction.SOUND_FXS)
 							{
-								worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, MekanismInduction.PREFIX + "electricshock", getEnergyStored() / 25, 1.3f - 0.5f * (dyeID / 16f));
+								worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mekanism:etc/Shock", (float)getEnergy() / 25, 1.3f - 0.5f * (dyeID / 16f));
 							}
 							
 							Vector3 targetVector = new Vector3((TileEntity)tesla);
@@ -213,7 +220,7 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 							
 							if(!sentPacket && transferEnergy > 0)
 							{
-								sendPacket(3);
+								sendPacket(2);
 							}
 							
 							if(attackEntities && zapCounter % 5 == 0)
@@ -244,28 +251,18 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 				doTransfer = false;
 			}
 			
-			if(!worldObj.isRemote && getEnergyStored() > 0 != doPacketUpdate)
+			if(!worldObj.isRemote && getEnergy() > 0 != doPacketUpdate)
 			{
-				sendPacket(2);
+				sendPacket(1);
 			}
 		}
 		
 		clearCache();
 	}
 	
-	private void transfer(ITesla tesla, float transferEnergy)
+	private void transfer(ITesla tesla, double transferEnergy)
 	{
-		if(transferEnergy > 0)
-		{
-			tesla.transfer(transferEnergy * (1 - (worldObj.rand.nextFloat() * 0.1f)), true);
-			transfer(-transferEnergy, true);
-		}
-	}
-	
-	@Override
-	public float receiveElectricity(ElectricityPack receive, boolean doReceive)
-	{
-		return super.receiveElectricity(receive, doReceive);
+		transfer(-tesla.transfer(transferEnergy * (1 - (worldObj.rand.nextFloat() * 0.1f)), true), true);
 	}
 	
 	@Override
@@ -275,16 +272,11 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		return isController();
-	}
-	
-	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		super.getNetworkedData(data);
+		
 		data.add((byte)1);
-		data.add(getEnergyStored());
 		data.add(dyeID);
 		data.add(canReceive);
 		data.add(attackEntities);
@@ -293,22 +285,14 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 		return data;
 	}
 	
-	public ArrayList getEnergyPacket()
-	{
-		ArrayList data = new ArrayList();
-		data.add((byte)2);
-		data.add(getEnergyStored());
-		
-		return data;
-	}
-	
 	/**
 	 * Do Tesla Beam.
 	 */
-	public ArrayList getTeslaPacket()
+	public ArrayList getTeslaPacket(ArrayList data)
 	{
-		ArrayList data = new ArrayList();
-		data.add((byte)3);
+		super.getNetworkedData(data);
+		
+		data.add((byte)2);
 		
 		return data;
 	}
@@ -321,10 +305,7 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 				break;
 			case 2:
-				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getEnergyPacket()));
-				break;
-			case 3:
-				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getTeslaPacket()));
+				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getTeslaPacket(new ArrayList())));
 				break;
 		}
 	}
@@ -332,19 +313,17 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	@Override
 	public void handlePacketData(ByteArrayDataInput input)
 	{
+		super.handlePacketData(input);
+		
 		switch(input.readByte())
 		{
 			case 1:
-				setEnergyStored(input.readFloat());
 				dyeID = input.readInt();
 				canReceive = input.readBoolean();
 				attackEntities = input.readBoolean();
 				isLinkedClient = input.readBoolean();
 				break;
 			case 2:
-				setEnergyStored(input.readFloat());
-				break;
-			case 3:
 				doTransfer = true;
 		}
 	}
@@ -361,24 +340,26 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	}
 	
 	@Override
-	public float transfer(float transferEnergy, boolean doTransfer)
+	public double transfer(double transferEnergy, boolean doTransfer)
 	{
 		if(isController() || getControllingTelsa() == this)
 		{
+			transferEnergy = Math.min(transferEnergy, getMaxEnergy()-getEnergy());
+			
 			if(doTransfer)
 			{
-				receiveElectricity(transferEnergy, true);
+				setEnergy(getEnergy() + transferEnergy);
 			}
 			
-			sendPacket(2);
+			sendPacket(1);
 			return transferEnergy;
 		}
 		else
 		{
-			if(getEnergyStored() > 0)
+			if(getEnergy() > 0)
 			{
-				transferEnergy += getEnergyStored();
-				setEnergyStored(0);
+				transferEnergy += getEnergy();
+				setEnergy(0);
 			}
 			
 			return getControllingTelsa().transfer(transferEnergy, doTransfer);
@@ -619,44 +600,8 @@ public class TileEntityTesla extends TileEntityUniversalElectrical implements IT
 	}
 	
 	@Override
-	public float getRequest(ForgeDirection direction)
+	public ForgeDirection getOutputtingSide()
 	{
-		if(direction != ForgeDirection.DOWN)
-		{
-			return getMaxEnergyStored() - getEnergyStored();
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		if(isController() && direction == ForgeDirection.DOWN)
-		{
-			return getEnergyStored();
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public float getMaxEnergyStored()
-	{
-		return TRANSFER_CAP;
-	}
-	
-	@Override
-	public EnumSet<ForgeDirection> getInputDirections()
-	{
-		EnumSet input = EnumSet.allOf(ForgeDirection.class);
-		input.remove(ForgeDirection.DOWN);
-		return input;
-	}
-	
-	@Override
-	public EnumSet<ForgeDirection> getOutputDirections()
-	{
-		return EnumSet.of(ForgeDirection.DOWN);
+		return ForgeDirection.DOWN;
 	}
 }

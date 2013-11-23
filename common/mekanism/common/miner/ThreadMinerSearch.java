@@ -1,6 +1,9 @@
 package mekanism.common.miner;
 
+import java.util.Collections;
+
 import mekanism.api.Object3D;
+import mekanism.common.IBoundingBlock;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -38,6 +41,16 @@ public class ThreadMinerSearch extends Thread
 						return;
 					}
 					
+					if(Object3D.get(tileEntity).equals(new Object3D(x, y, z, tileEntity.worldObj.provider.dimensionId)))
+					{
+						continue;
+					}
+					
+					if(new Object3D(x, y, z).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
+					{
+						continue;
+					}
+					
 					int blockID = tileEntity.worldObj.getBlockId(x, y, z);
 					int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
 					
@@ -61,6 +74,8 @@ public class ThreadMinerSearch extends Thread
 				}
 			}
 		}
+		
+		Collections.shuffle(tileEntity.oresToMine);
 		
 		state = State.FINISHED;
 		MekanismUtils.saveChunk(tileEntity);

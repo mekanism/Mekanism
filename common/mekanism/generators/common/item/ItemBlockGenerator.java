@@ -102,50 +102,33 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public float getVoltage(ItemStack itemStack) 
 	{
-		return itemStack.getItemDamage() == 3 ? 240 : 120;
+		return (float)((itemStack.getItemDamage() == 3 ? 240 : 120)*Mekanism.TO_UE);
 	}
 	
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
 	{
 		boolean place = true;
+		int blockID = world.getBlockId(x, y, z);
 		
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			if(Block.blocksList[world.getBlockId(x, y, z)] == null)
-				place = false;
-			
-			if(place == true)
+			if(blockID != 0 && !Block.blocksList[blockID].isBlockReplaceable(world, x, y, z))
+				return false;
+	        
+			for(int xPos=-1;xPos<=1;xPos++)
 			{
-		        if(!Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z) && world.getBlockId(x, y, z) != 0) 
-		        	place = false;
-		        
-		        if(world.getBlockId(x, y, z) != 0)
-		        {
-		        	if(Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z)) 
-		        		place = true; 
-		        }
-		        
-				for(int xPos=-1;xPos<=1;xPos++)
+				for(int zPos=-1;zPos<=1;zPos++)
 				{
-					for(int zPos=-1;zPos<=1;zPos++)
-					{
-						if(world.getBlockId(x+xPos, y+2, z+zPos) != 0 || y+2 > 255) 
-							place = false;
-					}
+					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0 || y+2 > 255) 
+						place = false;
 				}
 			}
 		}
 		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
 		{
-	        if(world.getBlockId(x, y, z) != Block.tallGrass.blockID && world.getBlockId(x, y, z) != 0) 
-	        	place = false;
-	        
-	        if(world.getBlockId(x, y, z) != 0)
-	        {
-	        	if(Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z)) 
-	        		place = true; 
-	        }
+			if(blockID != 0 && !Block.blocksList[blockID].isBlockReplaceable(world, x, y, z))
+				return false;
 	        
 			for(int yPos = y+1; yPos <= y+4; yPos++)
 			{

@@ -116,7 +116,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public float getVoltage()
 	{
-		return 120;
+		return (float)(120*Mekanism.TO_UE);
 	}
 	
 	@Override
@@ -204,12 +204,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (float)Math.min(getMaxEnergy()-getEnergy(), receive.getWatts()*Mekanism.FROM_UE);
+			double toAdd = Math.min(getMaxEnergy()-getEnergy(), receive.getWatts()*Mekanism.FROM_UE);
 			
 			if(doReceive)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
+			
+			System.out.println("Add " + toAdd);
 			
 			return (float)(toAdd*Mekanism.TO_UE);
 		}
@@ -223,6 +225,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(getOutputtingSide() == from)
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), request.getWatts()*Mekanism.FROM_UE));
+			
+			System.out.println("Provide " + toSend);
 			
 			if(doProvide)
 			{

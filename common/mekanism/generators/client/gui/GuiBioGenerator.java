@@ -39,7 +39,7 @@ public class GuiBioGenerator extends GuiMekanism
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES), 51, 26, 0x00CD00);
         fontRenderer.drawString("BioFuel: " + tileEntity.bioFuelSlot.fluidStored, 51, 35, 0x00CD00);
-        fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
+        fontRenderer.drawString("Out: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
         
     	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
