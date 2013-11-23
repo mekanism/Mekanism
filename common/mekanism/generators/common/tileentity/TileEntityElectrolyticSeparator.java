@@ -241,7 +241,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 2)
 		{
-			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.OXYGEN, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.HYDROGEN, itemstack);
+			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.OXYGEN, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.OXYGEN, itemstack);
 		}
 		
 		return false;
@@ -256,11 +256,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.HYDROGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE;
+			return itemstack.getItem() instanceof IStorageTank && (((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.HYDROGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE);
 		}
 		else if(slotID == 2)
 		{
-			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE;
+			return itemstack.getItem() instanceof IStorageTank && (((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE);
 		}
 		else if(slotID == 3)
 		{
