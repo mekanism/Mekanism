@@ -186,7 +186,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 
     				if(tile instanceof IInventory)
     				{
-    					transporter.setFacing((short)dir.getOpposite().ordinal());
+    					change = dir.getOpposite().ordinal();
     					break;
     				}
     			}
