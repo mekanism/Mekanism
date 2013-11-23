@@ -133,9 +133,8 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 					{
 						if(new Vector3((TileEntity)tesla).distance(new Vector3(this)) < getRange())
 						{
-							/**
-							 * Make sure Tesla is not part of this tower.
-							 */
+							
+							//Make sure Tesla is not part of this tower.
 							if(!connectedTeslas.contains(tesla) && tesla.canReceive(this))
 							{
 								if(tesla instanceof TileEntityTesla)
