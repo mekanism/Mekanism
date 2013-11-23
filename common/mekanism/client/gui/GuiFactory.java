@@ -22,6 +22,8 @@ public class GuiFactory extends GuiMekanism
         super(new ContainerFactory(inventory, tentity));
         tileEntity = tentity;
         
+        ySize += 11;
+        
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
@@ -95,5 +97,19 @@ public class GuiFactory extends GuiMekanism
 	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
+        
+        int recipeFuelY = ySize;
+        
+        if(tileEntity.recipeType == RecipeType.PURIFYING.ordinal())
+        {
+        	recipeFuelY += 5;
+        }
+        else if(tileEntity.recipeType == RecipeType.COMBINING.ordinal())
+        {
+        	recipeFuelY += 10;
+        }
+        
+        displayInt = tileEntity.getScaledSecondaryEnergy(160);
+        drawTexturedModalRect(guiWidth + 8, guiHeight + 78, 0, recipeFuelY, displayInt, 5);
     }
 }

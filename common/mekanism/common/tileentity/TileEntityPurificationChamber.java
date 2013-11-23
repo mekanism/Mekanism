@@ -2,10 +2,6 @@ package mekanism.common.tileentity;
 
 import java.util.Map;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeDirection;
 import mekanism.api.IStorageTank;
 import mekanism.api.gas.EnumGas;
 import mekanism.api.gas.IGasAcceptor;
@@ -15,6 +11,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeDirection;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasAcceptor, IGasStorage, ITubeConnection
 {
@@ -33,6 +33,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	public int getFuelTicks(ItemStack itemstack)
 	{
 		if(itemstack.isItemEqual(new ItemStack(Item.flint))) return 300;
+		if(itemstack.isItemEqual(new ItemStack(Mekanism.GasTank)) && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN) return 1;
 		
 		return 0;
 	}
@@ -128,6 +129,8 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 						setGas(EnumGas.OXYGEN, secondaryEnergyStored + received);
 					}
 				}
+				
+				return;
 			}
 		}
 		

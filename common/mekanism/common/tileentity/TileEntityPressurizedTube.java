@@ -110,12 +110,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	{
 		if(type == refGas)
 		{
-			gasScale = Math.min(1, gasScale+.02F);
+			gasScale = Math.min(1, gasScale+.03F);
 		}
 		else if(refGas == null)
 		{
 			refGas = type;
-			gasScale += Math.min(1, gasScale+.02F);
+			gasScale += Math.min(1, gasScale+.03F);
 		}
 	}
 	

@@ -167,9 +167,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 1)
 		{
-			return getFuelTicks(itemstack) > 0 || 
-					(this instanceof TileEntityPurificationChamber && itemstack.getItem() instanceof IStorageTank && 
-							((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN);
+			return getFuelTicks(itemstack) > 0;
 		}
 		
 		return true;
