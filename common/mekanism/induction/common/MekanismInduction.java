@@ -39,12 +39,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
-	public static final String MAJOR_VERSION = "@MAJOR@";
-	public static final String MINOR_VERSION = "@MINOR@";
-	public static final String REVISION_VERSION = "@REVIS@";
-	public static final String BUILD_VERSION = "@BUILD@";
-	public static final String VERSION = MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION;
-
 	@Instance("MekanismInduction")
 	public static MekanismInduction instance;
 

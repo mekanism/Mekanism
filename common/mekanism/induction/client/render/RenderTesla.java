@@ -3,6 +3,8 @@
  */
 package mekanism.induction.client.render;
 
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.client.model.ModelTeslaBottom;
 import mekanism.induction.client.model.ModelTeslaMiddle;
 import mekanism.induction.client.model.ModelTeslaTop;
@@ -23,12 +25,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderTesla extends TileEntitySpecialRenderer
 {
-	public static final ResourceLocation TEXTURE_BOTTOM = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "tesla_bottom.png");
-	public static final ResourceLocation TEXTURE_MIDDLE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "tesla_middle.png");
-	public static final ResourceLocation TEXTURE_TOP = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "tesla_top.png");
-	public static final ModelTeslaBottom MODEL_BOTTOM = new ModelTeslaBottom();
-	public static final ModelTeslaMiddle MODEL_MIDDLE = new ModelTeslaMiddle();
-	public static final ModelTeslaTop MODEL_TOP = new ModelTeslaTop();
+	public static final ModelTeslaBottom bottom = new ModelTeslaBottom();
+	public static final ModelTeslaMiddle middle = new ModelTeslaMiddle();
+	public static final ModelTeslaTop top = new ModelTeslaTop();
 
 	@Override
 	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
@@ -40,16 +39,16 @@ public class RenderTesla extends TileEntitySpecialRenderer
 		switch (t.getBlockMetadata())
 		{
 			default:
-				this.bindTexture(TEXTURE_BOTTOM);
-				MODEL_BOTTOM.render(0.0625f);
+				bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TeslaBottom.png"));
+				bottom.render(0.0625f);
 				break;
 			case 1:
-				this.bindTexture(TEXTURE_MIDDLE);
-				MODEL_MIDDLE.render(0.0625f);
+				bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TeslaMiddle.png"));
+				middle.render(0.0625f);
 				break;
 			case 2:
-				this.bindTexture(TEXTURE_TOP);
-				MODEL_TOP.render(0.0625f);
+				bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TeslaTop.png"));
+				top.render(0.0625f);
 				break;
 		}
 

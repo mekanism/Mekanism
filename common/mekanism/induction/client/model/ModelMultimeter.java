@@ -5,7 +5,6 @@ import net.minecraft.client.model.ModelRenderer;
 
 public class ModelMultimeter extends ModelBase
 {
-	// fields
 	ModelRenderer Base;
 	ModelRenderer secPanel;
 	ModelRenderer arm;
@@ -56,14 +55,14 @@ public class ModelMultimeter extends ModelBase
 		setRotation(infopanel, 0F, 0F, 0F);
 	}
 
-	public void render(float f5)
+	public void render(float size)
 	{
-		Base.render(f5);
-		secPanel.render(f5);
-		arm.render(f5);
-		button.render(f5);
-		arm2.render(f5);
-		infopanel.render(f5);
+		Base.render(size);
+		secPanel.render(size);
+		arm.render(size);
+		button.render(size);
+		arm2.render(size);
+		infopanel.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

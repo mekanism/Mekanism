@@ -1,5 +1,7 @@
 package mekanism.induction.client.render;
 
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.client.model.ModelMultimeter;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.tileentity.TileEntityMultimeter;
@@ -25,9 +27,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMultimeter extends TileEntitySpecialRenderer
 {
-	public static final ModelMultimeter MODEL = new ModelMultimeter();
-	public static final ResourceLocation TEXTURE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "multimeter.png");
-
+	public static final ModelMultimeter model = new ModelMultimeter();
+	
 	@Override
 	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float var8)
 	{
@@ -63,9 +64,9 @@ public class RenderMultimeter extends TileEntitySpecialRenderer
 				GL11.glRotatef(90, 1, 0, 0);
 				break;
 		}
-
-		this.bindTexture(TEXTURE);
-		MODEL.render(0.0625f);
+	
+		this.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Multimeter.png"));
+		model.render(0.0625f);
 
 		GL11.glPopMatrix();
 

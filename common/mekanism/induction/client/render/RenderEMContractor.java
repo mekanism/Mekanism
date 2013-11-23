@@ -1,6 +1,8 @@
 package mekanism.induction.client.render;
 
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.client.model.ModelEMContractor;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
@@ -12,10 +14,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderEMContractor extends TileEntitySpecialRenderer
 {
-	public static final ModelEMContractor MODEL = new ModelEMContractor(false);
+	public static final ModelEMContractor model = new ModelEMContractor(false);
 	public static final ModelEMContractor MODEL_SPIN = new ModelEMContractor(true);
-	public static final ResourceLocation TEXTURE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "em_contractor.png");
-	public static final ResourceLocation TEXTURE_PUSH = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "em_contractor_push.png");
 
 	@Override
 	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
@@ -25,7 +25,7 @@ public class RenderEMContractor extends TileEntitySpecialRenderer
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		switch (((TileEntityEMContractor) t).getFacing())
+		switch(((TileEntityEMContractor) t).getFacing())
 		{
 			case DOWN:
 				GL11.glRotatef(180, 0, 0, 1);
@@ -51,22 +51,20 @@ public class RenderEMContractor extends TileEntitySpecialRenderer
 				break;
 		}
 
-		if (((TileEntityEMContractor) t).suck)
+		if(((TileEntityEMContractor)t).suck)
 		{
-			this.bindTexture(TEXTURE);
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectromagneticContractor.png"));
 		}
-		else
-		{
-			this.bindTexture(TEXTURE_PUSH);
+		else {
+			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectromagneticContractorOn.png"));
 		}
 
-		if (((TileEntityEMContractor) t).canFunction() && !Mekanism.proxy.isPaused())
+		if(((TileEntityEMContractor)t).canFunction() && !Mekanism.proxy.isPaused())
 		{
 			MODEL_SPIN.render(0.0625f);
 		}
-		else
-		{
-			MODEL.render(0.0625f);
+		else {
+			model.render(0.0625f);
 		}
 
 		GL11.glPopMatrix();

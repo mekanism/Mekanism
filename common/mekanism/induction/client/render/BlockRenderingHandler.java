@@ -3,11 +3,14 @@
  */
 package mekanism.induction.client.render;
 
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.common.block.BlockBattery;
 import mekanism.induction.common.block.BlockEMContractor;
 import mekanism.induction.common.block.BlockMultimeter;
 import mekanism.induction.common.block.BlockTesla;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
@@ -37,8 +40,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.5, 1.5, 0.5);
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderTesla.TEXTURE_BOTTOM);
-			RenderTesla.MODEL_BOTTOM.render(0.0625f);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TeslaBottom.png"));
+			RenderTesla.bottom.render(0.0625f);
 			GL11.glPopMatrix();
 		}
 		else if (block instanceof BlockEMContractor)
@@ -46,8 +49,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.5, 1.5, 0.5);
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderEMContractor.TEXTURE);
-			RenderEMContractor.MODEL.render(0.0625f);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectromagneticContractor.png"));
+			RenderEMContractor.model.render(0.0625f);
 			GL11.glPopMatrix();
 		}
 		else if (block instanceof BlockBattery)
@@ -55,8 +58,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glPushMatrix();
 			GL11.glTranslated(0.5, 1.42, 0.5);
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderBattery.TEXTURE);
-			RenderBattery.MODEL.render(0.0625f);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Battery.png"));
+			RenderBattery.model.render(0.0625f);
 			GL11.glPopMatrix();
 		}
 		else if (block instanceof BlockMultimeter)
@@ -64,8 +67,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0, 1, 0);
 			GL11.glTranslated(0, -1, -0.7);
-			FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderMultimeter.TEXTURE);
-			RenderMultimeter.MODEL.render(0.0625f);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Multimeter.png"));
+			RenderMultimeter.model.render(0.0625f);
 			GL11.glPopMatrix();
 		}
 	}
@@ -75,8 +78,6 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	{
 		if (block instanceof BlockBattery)
 		{
-			// FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderBattery.TEXTURE);
-
 			return true;
 		}
 
