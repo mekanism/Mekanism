@@ -4,7 +4,10 @@ import java.io.DataOutputStream;
 
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tileentity.TileEntityBasicBlock;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -12,6 +15,8 @@ import net.minecraft.world.World;
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketSimpleGui implements IMekanismPacket
 {
@@ -41,17 +46,43 @@ public class PacketSimpleGui implements IMekanismPacket
 		
 		guiId = dataStream.readInt();
 		
-		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
-		
-		if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
+		if(!world.isRemote)
 		{
-			if(guiId == -1)
-			{
-				return;
-			}
+			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
 			
-			player.openGui(Mekanism.instance, guiId, worldServer, object3D.xCoord, object3D.yCoord, object3D.zCoord);
+			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
+			{
+				if(guiId == -1)
+				{
+					return;
+				}
+				
+				openServerGui(guiId, (EntityPlayerMP)player, world, object3D);
+			}
 		}
+		else {
+			FMLCommonHandler.instance().showGuiScreen(getGui(guiId, player, world, object3D));
+		}
+	}
+	
+	public static void openServerGui(int id, EntityPlayerMP playerMP, World world, Object3D obj)
+	{
+		playerMP.closeContainer();
+        playerMP.incrementWindowID();
+        
+        int window = playerMP.currentWindowId;
+        
+        PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketSimpleGui().setParams(obj, id), playerMP);   
+        
+    	playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj.xCoord, obj.yCoord, obj.zCoord);
+        playerMP.openContainer.windowId = window;
+        playerMP.openContainer.addCraftingToCrafters(playerMP);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public GuiScreen getGui(int id, EntityPlayer player, World world, Object3D obj)
+	{
+		return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj.xCoord, obj.yCoord, obj.zCoord);
 	}
 
 	@Override

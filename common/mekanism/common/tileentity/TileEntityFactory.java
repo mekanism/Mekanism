@@ -228,7 +228,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 				}
 			}
 			
-			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= getSecondaryEnergyPerTick())
 			{
 				setActive(true);
 			}
@@ -261,7 +261,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			{
 				if(inventory[4].getItem() instanceof IStorageTank)
 				{
-					if(((IStorageTank)inventory[4].getItem()).getGasType(inventory[1]) == EnumGas.OXYGEN)
+					if(((IStorageTank)inventory[4].getItem()).getGasType(inventory[4]) == EnumGas.OXYGEN)
 					{
 						IStorageTank item = (IStorageTank)inventory[4].getItem();
 						
