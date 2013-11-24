@@ -21,7 +21,7 @@ import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.Tier;
+import mekanism.common.Tier.FactoryTier;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -524,11 +524,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
 		
-		for(RecipeType type : RecipeType.values())
+		for(FactoryTier tier : FactoryTier.values())
 		{
-			ItemStack stack = new ItemStack(i, 1, 7);
-			((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
-			list.add(stack);
+			for(RecipeType type : RecipeType.values())
+			{
+				ItemStack stack = new ItemStack(i, 1, 5+tier.ordinal());
+				((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
+				list.add(stack);
+			}
 		}
 		
 		list.add(new ItemStack(i, 1, 8));
