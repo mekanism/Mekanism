@@ -59,7 +59,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 	
-	public final double ENERGY_USAGE = 100;
+	public final double ENERGY_USAGE = Mekanism.digitalMinerUsage;
 	
 	public int radius;
 	

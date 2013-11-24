@@ -248,6 +248,7 @@ public class Mekanism
 	public static double metallurgicInfuserUsage;
 	public static double purificationChamberUsage;
 	public static double energizedSmelterUsage;
+	public static double digitalMinerUsage;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.

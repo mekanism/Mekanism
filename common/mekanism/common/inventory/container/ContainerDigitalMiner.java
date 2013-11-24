@@ -110,6 +110,19 @@ public class ContainerDigitalMiner extends Container
             		}
             	}
             }
+            else {
+            	if(slotID < 27)
+            	{
+            		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(!mergeItemStack(slotStack, 0, 27, false))
+            	{
+            		return null;
+            	}
+            }
             
             if(slotStack.stackSize == 0)
             {
