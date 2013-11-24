@@ -178,7 +178,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         {
         	TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter)tileEntity;
         	
-        	if(!world.isRemote && !transporter.hasInventory())
+        	if(!transporter.hasInventory())
     		{
     			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
     			{
