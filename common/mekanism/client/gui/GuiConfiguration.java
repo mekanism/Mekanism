@@ -165,7 +165,7 @@ public class GuiConfiguration extends GuiMekanism
   	        GL11.glEnable(GL11.GL_LIGHTING);
   	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
   	        
-  	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(configurable.getEjector().getOutputColor()));
+  	        mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
   			itemRenderer.renderIcon(80, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
   			
   			GL11.glDisable(GL11.GL_LIGHTING);

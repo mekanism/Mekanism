@@ -177,7 +177,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 	        GL11.glEnable(GL11.GL_LIGHTING);
 	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 	        
-	        mc.getTextureManager().bindTexture(MekanismRenderer.getColorResource(filter.color));
+	        mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 			
 			GL11.glDisable(GL11.GL_LIGHTING);

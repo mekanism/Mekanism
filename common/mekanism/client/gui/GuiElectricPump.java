@@ -97,7 +97,7 @@ public class GuiElectricPump extends GuiContainer
 				scale = 0;
 			}
 
-			mc.renderEngine.bindTexture(MekanismRenderer.getLiquidTexture());
+			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 			drawTexturedModelRectFromIcon(width + yPos, height + xPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
 			start+=16;
 

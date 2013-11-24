@@ -14,12 +14,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -68,7 +66,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
 				
-				bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "Overlay" + color.friendlyName.replace(" ", "") + ".png"));
+				bindTexture(MekanismRenderer.getBlocksTexture());
 				GL11.glTranslatef((float)x, (float)y, (float)z);
 				
 				int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), color).display;

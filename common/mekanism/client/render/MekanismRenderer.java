@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.gas.EnumGas;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -22,12 +22,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -38,9 +42,34 @@ public class MekanismRenderer
 	
 	public static Icon[] colors = new Icon[256];
 	
+	public static Icon energyIcon;
+	
 	private static float lightmapLastX;
     private static float lightmapLastY;
 	private static boolean optifineBreak = false;
+	
+	public static void init()
+	{
+		MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
+	}
+	
+	@EventHandler
+	@ForgeSubscribe /* Screwy Forge code */
+	public void onStitch(TextureStitchEvent.Pre event)
+	{
+		if(event.map.textureType == 0)
+		{
+			for(EnumColor color : EnumColor.values())
+			{
+				colors[color.ordinal()] = event.map.registerIcon("mekanism:Overlay" + color.friendlyName.replace(" ", ""));
+			}
+			
+			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
+			
+			EnumGas.HYDROGEN.gasIcon = event.map.registerIcon("mekanism:LiquidHydrogen");
+			EnumGas.OXYGEN.gasIcon = event.map.registerIcon("mekanism:LiquidOxygen");
+		}
+	}
     
 	public static class Model3D
 	{
@@ -152,18 +181,8 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static ResourceLocation getColorResource(EnumColor color)
-	{
-		return MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "Overlay" + color.friendlyName.replace(" ", "") + ".png");
-	}
-	
 	public static Icon getColorIcon(EnumColor color)
 	{
-		if(colors[color.ordinal()] == null)
-		{
-			colors[color.ordinal()] = getTextureMap(0).registerIcon("mekanism:Overlay" + color.getName());
-		}
-		
 		return colors[color.ordinal()];
 	}
 	
@@ -175,9 +194,7 @@ public class MekanismRenderer
         {
         	lightmapLastX = OpenGlHelper.lastBrightnessX;
         	lightmapLastY = OpenGlHelper.lastBrightnessY;
-        } 
-        catch(NoSuchFieldError e)
-        {
+        } catch(NoSuchFieldError e) {
         	optifineBreak = true;
         }
         
@@ -428,8 +445,13 @@ public class MekanismRenderer
     	return 0;
     }
     
-    public static ResourceLocation getLiquidTexture()
+    public static ResourceLocation getBlocksTexture()
     {
     	return TextureMap.locationBlocksTexture;
+    }
+    
+    public static ResourceLocation getItemsTexture()
+    {
+    	return TextureMap.locationItemsTexture;
     }
 }

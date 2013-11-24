@@ -84,28 +84,31 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		
 		for(TransporterStack stack : tileEntity.transit)
 		{
-			GL11.glPushMatrix();
-			entityItem.setEntityItemStack(stack.itemStack);
-			
-			float[] pos = TransporterUtils.getStackPosition(tileEntity, stack, partialTick*TileEntityLogisticalTransporter.SPEED);
-			
-			GL11.glTranslated(x + pos[0], y + pos[1] - entityItem.yOffset, z + pos[2]);
-			GL11.glScalef(0.75F, 0.75F, 0.75F);
-			
-			renderer.doRenderItem(entityItem, 0, 0, 0, 0, 0);
-			GL11.glPopMatrix();
-			
-			if(stack.color != null)
+			if(stack != null)
 			{
-				bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
 				GL11.glPushMatrix();
-				MekanismRenderer.glowOn();
-				GL11.glDisable(GL11.GL_CULL_FACE);
-				GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-				GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1] - entityItem.yOffset - (stack.itemStack.itemID < 256 ? 0.1 : 0)), (float)(z + pos[2]));
-				modelBox.render(0.0625F);
-				MekanismRenderer.glowOff();
+				entityItem.setEntityItemStack(stack.itemStack);
+				
+				float[] pos = TransporterUtils.getStackPosition(tileEntity, stack, partialTick*TileEntityLogisticalTransporter.SPEED);
+				
+				GL11.glTranslated(x + pos[0], y + pos[1] - entityItem.yOffset, z + pos[2]);
+				GL11.glScalef(0.75F, 0.75F, 0.75F);
+				
+				renderer.doRenderItem(entityItem, 0, 0, 0, 0, 0);
 				GL11.glPopMatrix();
+				
+				if(stack.color != null)
+				{
+					bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
+					GL11.glPushMatrix();
+					MekanismRenderer.glowOn();
+					GL11.glDisable(GL11.GL_CULL_FACE);
+					GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
+					GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1] - entityItem.yOffset - (stack.itemStack.itemID < 256 ? 0.1 : 0)), (float)(z + pos[2]));
+					modelBox.render(0.0625F);
+					MekanismRenderer.glowOff();
+					GL11.glPopMatrix();
+				}
 			}
 		}
 	}

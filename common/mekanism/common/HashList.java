@@ -39,6 +39,14 @@ public class HashList<T> implements Iterable<T>
 	{
 		if(!list.contains(obj))
 		{
+			if(index > size())
+			{
+				for(int i = size(); i <= index-1; i++)
+				{
+					list.add(i, null);
+				}
+			}
+			
 			list.add(index, obj);
 		}
 	}

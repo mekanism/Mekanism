@@ -52,7 +52,10 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		{
 			for(TransporterStack stack : transit)
 			{
-				stack.progress = Math.min(100, stack.progress+SPEED);
+				if(stack != null)
+				{
+					stack.progress = Math.min(100, stack.progress+SPEED);
+				}
 			}
 		}
 		else {
@@ -143,7 +146,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 				{
 					if(stack.isFinal(this))
 					{
-						if(stack.pathType == Path.DEST && !TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this), false))
+						if(stack.pathType == Path.DEST && !InventoryUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this), false))
 						{
 							if(!recalculate(stack, null))
 							{
@@ -151,7 +154,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 								continue;
 							}
 						}
-						else if(stack.pathType == Path.HOME && !TransporterUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this), true))
+						else if(stack.pathType == Path.HOME && !InventoryUtils.canInsert(stack.getDest().getTileEntity(worldObj), stack.color, stack.itemStack, stack.getSide(this), true))
 						{
 							if(!recalculate(stack, null))
 							{

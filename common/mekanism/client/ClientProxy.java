@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.IConfigurable;
-import mekanism.api.gas.EnumGas;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -71,6 +70,7 @@ import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
 import mekanism.common.tileentity.TileEntityElectricChest;
@@ -82,7 +82,6 @@ import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.tileentity.TileEntityEnrichmentChamber;
 import mekanism.common.tileentity.TileEntityFactory;
 import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
@@ -93,8 +92,6 @@ import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.tileentity.TileEntityUniversalCable;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -108,7 +105,6 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -279,18 +275,6 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new TransmitterRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 		
-		if(!EnumGas.HYDROGEN.hasTexture())
-		{
-			EnumGas.HYDROGEN.gasIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidHydrogen");
-			EnumGas.HYDROGEN.texturePath = MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidHydrogen.png");
-		}
-		
-		if(!EnumGas.OXYGEN.hasTexture())
-		{
-			EnumGas.OXYGEN.gasIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidOxygen");
-			EnumGas.OXYGEN.texturePath = MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidOxygen.png");
-		}
-		
 		System.out.println("[Mekanism] Render registrations complete.");
 	}
 	
@@ -418,6 +402,12 @@ public class ClientProxy extends CommonProxy
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void preInit()
+	{
+		MekanismRenderer.init();
 	}
 	
 	@Override

@@ -69,7 +69,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 				MekanismRenderer.glowOn();
 			}
 			
-			bindTexture(MekanismRenderer.getLiquidTexture());
+			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			for(int i = 0; i < 6; i++)

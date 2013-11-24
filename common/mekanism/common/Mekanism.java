@@ -1057,6 +1057,8 @@ public class Mekanism
 			System.out.println("[Mekanism] Detected Tekkit in root directory - hello, fellow user!");
 		}
 		
+		Mekanism.proxy.preInit();
+		
 		MinecraftForge.EVENT_BUS.register(hooks);
 		
 		//Register infuses

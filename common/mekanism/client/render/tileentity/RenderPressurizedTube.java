@@ -118,7 +118,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			push();
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.gasScale);
-			bindTexture(tileEntity.refGas.texturePath);
+			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			if(tileEntity.gasScale > 0)

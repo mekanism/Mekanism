@@ -30,8 +30,6 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 {
 	private static ModelTransmitter model = new ModelTransmitter(Size.SMALL);
 	
-	private static Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
-	
 	private static Model3D[] energy = null;
 	
 	private static Map<ForgeDirection, DisplayInteger> sideDisplayLists = new HashMap<ForgeDirection, DisplayInteger>();
@@ -75,7 +73,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		MekanismRenderer.glowOn();
 		GL11.glColor4f(1F, 1F, 1F, tileEntity.getEnergyScale());
-		bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
+		bindTexture(MekanismRenderer.getBlocksTexture());
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		
 		if(energy == null)
@@ -125,7 +123,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		Model3D[] energyArray = new Model3D[7];
 		Model3D centerModel = new Model3D();
 		centerModel.baseBlock = Block.waterStill;
-		centerModel.setTexture(renderIcon);
+		centerModel.setTexture(MekanismRenderer.energyIcon);
 		
 		centerModel.minX = 0.3 + offset;
 		centerModel.minY = 0.3 + offset;
@@ -141,7 +139,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		{
 			Model3D toReturn = new Model3D();
 			toReturn.baseBlock = Block.waterStill;
-			toReturn.setTexture(renderIcon);
+			toReturn.setTexture(MekanismRenderer.energyIcon);
 			
 			toReturn.setSideRender(side, false);
 			toReturn.setSideRender(side.getOpposite(), false);

@@ -1,5 +1,7 @@
 package mekanism.common.util;
 
+import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.InvStack;
@@ -7,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -332,4 +335,117 @@ public final class InventoryUtils
 		return null;
 	}
 
+    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side, boolean force)
+    {
+    	if(!(tileEntity instanceof IInventory))
+    	{
+    		return false;
+    	}
+    	
+    	if(force && tileEntity instanceof TileEntityLogisticalSorter)
+    	{
+    		return ((TileEntityLogisticalSorter)tileEntity).canSendHome(itemStack);
+    	}
+    	
+    	if(!force && tileEntity instanceof IConfigurable)
+    	{
+    		IConfigurable config = (IConfigurable)tileEntity;
+    		int tileSide = config.getOrientation();
+    		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+    		
+    		if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
+    		{
+    			return false;
+    		}
+    	}
+    	
+    	IInventory inventory = (IInventory)tileEntity;
+    	
+    	if(!(inventory instanceof ISidedInventory))
+		{
+    		inventory = InventoryUtils.checkChestInv(inventory);
+    		
+			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
+			{
+				if(!force)
+				{
+					if(!inventory.isItemValidForSlot(i, itemStack)) 
+					{
+						continue;
+					}
+				}
+				
+				ItemStack inSlot = inventory.getStackInSlot(i);
+
+				if(inSlot == null)
+				{
+					return true;
+				} 
+				else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize()) 
+				{
+					if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+					{
+						return true;
+					} 
+					else {
+						int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+
+						if(rejects < itemStack.stackSize)
+						{
+							return true;
+						}
+					}
+				}
+			}
+		} 
+		else {
+			ISidedInventory sidedInventory = (ISidedInventory)inventory;
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+
+			if(slots != null && slots.length != 0)
+			{
+				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				{
+					slots = sidedInventory.getAccessibleSlotsFromSide(1);
+				}
+				
+				for(int get = 0; get <= slots.length - 1; get++) 
+				{
+					int slotID = slots[get];
+	
+					if(!force)
+					{
+						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+						{
+							continue;
+						}
+					}
+					
+					ItemStack inSlot = inventory.getStackInSlot(slotID);
+
+					if(inSlot == null) 
+					{
+						return true;
+					} 
+					else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
+					{
+						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+						{
+							return true;
+						} 
+						else {
+							int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+							
+							if(rejects < itemStack.stackSize)
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+    	
+    	return false;
+    }
 }

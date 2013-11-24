@@ -314,6 +314,8 @@ public class CommonProxy
 		return null;
 	}
 	
+	public void preInit() {}
+	
 	public double getReach(EntityPlayer player)
 	{
 		if(player instanceof EntityPlayerMP)

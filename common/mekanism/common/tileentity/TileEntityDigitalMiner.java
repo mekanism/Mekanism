@@ -984,7 +984,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		for(int x = xCoord-1; x <= xCoord+1; x++)
 		{
-			for(int y = yCoord; y <= yCoord+2; y++)
+			for(int y = yCoord; y <= yCoord+1; y++)
 			{
 				for(int z = zCoord-1; z <= zCoord+1; z++)
 				{

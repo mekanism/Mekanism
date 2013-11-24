@@ -374,7 +374,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		
 		if(back instanceof IInventory)
 		{
-			return TransporterUtils.canInsert(back, null, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.canInsert(back, null, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
 		}
 		
 		return false;

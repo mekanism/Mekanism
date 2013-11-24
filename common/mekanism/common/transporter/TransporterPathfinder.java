@@ -14,8 +14,7 @@ import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
-import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -213,7 +212,7 @@ public final class TransporterPathfinder
 						continue;
 					}
 					
-					if(TransporterUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), false))
+					if(InventoryUtils.canInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal(), false))
 					{
 						destsFound.add(Object3D.get(tile));
 					}
@@ -240,7 +239,7 @@ public final class TransporterPathfinder
 			@Override
 			public boolean isValid(TransporterStack stack, int side, TileEntity tile)
 			{
-				return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, false);
+				return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, false);
 			}
 		};
 		
@@ -507,7 +506,7 @@ public final class TransporterPathfinder
 				@Override
 				public boolean isValid(TransporterStack stack, int side, TileEntity tile)
 				{
-					return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
+					return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
 				}
 			};
 			
