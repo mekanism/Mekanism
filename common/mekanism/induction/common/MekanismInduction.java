@@ -2,7 +2,9 @@ package mekanism.induction.common;
 
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Version;
+import mekanism.common.util.MekanismUtils;
 import mekanism.induction.common.block.BlockBattery;
 import mekanism.induction.common.block.BlockEMContractor;
 import mekanism.induction.common.block.BlockMultimeter;
@@ -21,7 +23,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import universalelectricity.compatibility.Compatibility;
-import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import calclavia.lib.UniversalRecipes;
 import cpw.mods.fml.common.Mod;
@@ -135,13 +136,13 @@ public class MekanismInduction implements IModule
 		GameRegistry.addRecipe(new ShapedOreRecipe(Linker, " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'G', UniversalRecipes.SECONDARY_METAL));
 
 		/** Tesla - by Jyzarc */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Tesla, "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'I', Mekanism.MachineBlock));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Tesla, "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'I', new ItemStack(Mekanism.BasicBlock, 1, 8)));
 
 		/** Multimeter */
 		GameRegistry.addRecipe(new ShapedOreRecipe(Multimeter, "WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', Mekanism.EnergyTablet, 'I', UniversalRecipes.PRIMARY_METAL));
 
 		/** Battery */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', Mekanism.EnergyCube));
+		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)));
 
 		/** EM Contractor */
 		GameRegistry.addRecipe(new ShapedOreRecipe(ElectromagneticContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', Mekanism.EnergyTablet, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
