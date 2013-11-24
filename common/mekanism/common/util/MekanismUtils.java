@@ -966,21 +966,15 @@ public final class MekanismUtils
 		{
 			Object obj = itr.next();
 
-			if(obj != null)
+			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null)
 			{
-				if(obj instanceof IRecipe)
+				for(ItemStack itemStack : itemStacks)
 				{
-					if(((IRecipe)obj).getRecipeOutput() != null)
+					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
 					{
-						for(ItemStack itemStack : itemStacks)
-						{
-							if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
-							{
-								itr.remove();
-								didRemove = true;
-								break;
-							}
-						}
+						itr.remove();
+						didRemove = true;
+						break;
 					}
 				}
 			}

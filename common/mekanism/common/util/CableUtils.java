@@ -223,52 +223,6 @@ public final class CableUtils
     	return amount;
     }
     
-    /**
-     * Emits energy from all sides of a TileEntity.
-     * @param amount - amount to send
-     * @param pointer - sending TileEntity
-     * @param ignored - ignored acceptors
-     * @return rejected energy
-     */
-    public static double emitEnergyFromAllSides(double amount, TileEntity pointer, ArrayList<TileEntity> ignored)
-    {
-    	if(pointer != null)
-    	{
-    		Set<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
-    		double totalRemaining = 0;
-    		
-    		ignored.add(pointer);
-    		
-    		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-    		{
-    			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
-    			
-    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.ENERGY) && !ignored.contains(sideTile))
-    			{
-    				networks.add(((ITransmitter<EnergyNetwork>)sideTile).getTransmitterNetwork());
-    			}
-    		}
-    		
-    		if(networks.size() == 0)
-    		{
-    			return amount;
-    		}
-    		
-    		double remaining = amount%networks.size();
-    		double splitEnergy = (amount-remaining)/networks.size();
-    		
-    		for(EnergyNetwork network : networks)
-    		{
-    			totalRemaining += network.emit(splitEnergy+remaining, ignored);
-    			remaining = 0;
-    		}
-    		
-    		return totalRemaining;
-    	}
-    	
-    	return amount;
-    }
-    
     public static void emit(TileEntityElectricBlock emitter)
     {
 		if(!emitter.worldObj.isRemote && MekanismUtils.canFunction(emitter))
