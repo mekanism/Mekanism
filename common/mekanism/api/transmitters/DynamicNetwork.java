@@ -109,7 +109,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
 
-				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity) transmitter))
+				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity)transmitter))
 				{
 					((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
 					newTransporters.add((ITransmitter<N>)nodeTile);

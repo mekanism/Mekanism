@@ -80,6 +80,8 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	private void pop()
 	{
 		GL11.glPopAttrib();
+		MekanismRenderer.glowOff();
+		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
 	
@@ -88,9 +90,9 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		MekanismRenderer.glowOn();
+		MekanismRenderer.blendOn();
 	}
 	
 	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, EnumColor color)

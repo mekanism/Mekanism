@@ -10,8 +10,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.FluidNetwork;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
-import mekanism.common.PipeUtils;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.PipeUtils;
 import mekanism.common.network.PacketDataRequest;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -40,6 +40,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	/** This pipe's active state. */
 	public boolean isActive = false;
 	
+	public int transferDelay = 0;
+	
 	/** The scale (0F -> 1F) of this pipe's fluid level. */
 	public float fluidScale;
 
@@ -47,13 +49,15 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		if(fluidStack.isFluidEqual(refFluid))
 		{
-			fluidScale = Math.min(1, fluidScale+((float)fluidStack.amount/50F));
+			fluidScale = Math.min(1, fluidScale+((float)fluidStack.amount/1000F));
 		}
 		else if(refFluid == null)
 		{
 			refFluid = fluidStack.copy();
-			fluidScale += Math.min(1, ((float)fluidStack.amount/50F));
+			fluidScale += Math.min(1, ((float)fluidStack.amount/1000F));
 		}
+		
+		transferDelay = 2;
 	}
 	
 	@Override
@@ -146,12 +150,18 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		if(worldObj.isRemote)
 		{
-			if(fluidScale > 0)
+			if(transferDelay == 0)
 			{
-				fluidScale -= .01;
+				if(fluidScale > 0)
+				{
+					fluidScale -= .01;
+				}
+				else {
+					refFluid = null;
+				}
 			}
 			else {
-				refFluid = null;
+				transferDelay--;
 			}
 		}	
 		else {		
@@ -169,7 +179,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side, getTransmitterNetwork().emit(received, true, Object3D.get(this).getFromSide(side).getTileEntity(worldObj)), true);
+							container.drain(side, getTransmitterNetwork().emit(received, true, (TileEntity)container), true);
 						}
 					}
 				}

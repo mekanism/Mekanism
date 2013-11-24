@@ -1,20 +1,36 @@
 package mekanism.client.render.tileentity;
 
+import java.util.HashMap;
+
 import mekanism.api.Object3D;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -27,6 +43,10 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 {
 	private ModelTransmitter model = new ModelTransmitter(Size.LARGE);
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
+	
+	private HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>>();
+	
+	private Minecraft mc = Minecraft.getMinecraft();
 	
 	private EntityItem entityItem = new EntityItem(null);
 	private RenderItem renderer = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
@@ -111,5 +131,182 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 				}
 			}
 		}
+		
+		if(meta == 5)
+		{
+			EntityPlayer player = mc.thePlayer;
+			World world = mc.thePlayer.worldObj;
+			ItemStack itemStack = player.getCurrentEquippedItem();
+			MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
+			
+			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator)
+			{
+				int xPos = MathHelper.floor_double(pos.blockX);
+				int yPos = MathHelper.floor_double(pos.blockY);
+				int zPos = MathHelper.floor_double(pos.blockZ);
+				
+				Object3D obj = new Object3D(xPos, yPos, zPos);
+				
+				if(obj.equals(Object3D.get(tileEntity)))
+				{
+					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[pos.sideHit];
+					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
+					int offset = MekanismUtils.getSideOffset(side);
+					
+					push();
+					
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+					
+					bindTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
+					GL11.glTranslatef((float)x, (float)y, (float)z);
+					GL11.glScalef(0.5F, 0.5F, 0.5F);
+					GL11.glTranslatef(0.5F*Math.abs(offset), 0.5F*Math.abs(offset), 0.5F*Math.abs(offset));
+					
+					int display = getOverlayDisplay(world, side, mode).display;
+					GL11.glCallList(display);
+					
+					pop();
+				}
+			}
+		}
+	}
+
+	private void pop()
+	{
+		GL11.glPopAttrib();
+		MekanismRenderer.glowOff();
+		MekanismRenderer.blendOff();
+		GL11.glPopMatrix();
+	}
+	
+	private void push()
+	{
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		MekanismRenderer.glowOn();
+		MekanismRenderer.blendOn();
+	}
+	
+	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, int mode)
+	{
+		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode))
+		{
+			return cachedOverlays.get(side).get(mode);
+		}
+		
+		Icon icon = null;
+		
+		switch(mode)
+		{
+			case 0:
+				icon = Item.gunpowder.getIcon(new ItemStack(Item.gunpowder), 0);
+				break;
+			case 1:
+				icon = Block.torchRedstoneActive.getIcon(0, 0);
+				break;
+			case 2:
+				icon = Block.torchRedstoneIdle.getIcon(0, 0);
+				break;
+		}
+		
+		Model3D toReturn = new Model3D();
+		toReturn.baseBlock = Block.stone;
+		toReturn.setTexture(icon);
+		
+		DisplayInteger display = new DisplayInteger();
+		
+		if(cachedOverlays.containsKey(side))
+		{
+			cachedOverlays.get(side).put(mode, display);
+		}
+		else {
+			HashMap<Integer, DisplayInteger> map = new HashMap<Integer, DisplayInteger>();
+			map.put(mode, display);
+			cachedOverlays.put(side, map);
+		}
+		
+		display.display = GLAllocation.generateDisplayLists(1);
+		GL11.glNewList(display.display, 4864);
+		
+		switch(side)
+		{
+			case DOWN:
+			{
+				toReturn.minY = -0.01;
+				toReturn.maxY = 0;
+				
+				toReturn.minX = 0;
+				toReturn.minZ = 0;
+				toReturn.maxX = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			case UP:
+			{
+				toReturn.minY = 1;
+				toReturn.maxY = 1.01;
+				
+				toReturn.minX = 0;
+				toReturn.minZ = 0;
+				toReturn.maxX = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			case NORTH:
+			{
+				toReturn.minZ = -0.01;
+				toReturn.maxZ = 0;
+				
+				toReturn.minX = 0;
+				toReturn.minY = 0;
+				toReturn.maxX = 1;
+				toReturn.maxY = 1;
+				break;
+			}
+			case SOUTH:
+			{
+				toReturn.minZ = 1;
+				toReturn.maxZ = 1.01;
+				
+				toReturn.minX = 0;
+				toReturn.minY = 0;
+				toReturn.maxX = 1;
+				toReturn.maxY = 1;
+				break;
+			}
+			case WEST:
+			{
+				toReturn.minX = -0.01;
+				toReturn.maxX = 0;
+				
+				toReturn.minY = 0;
+				toReturn.minZ = 0;
+				toReturn.maxY = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			case EAST:
+			{
+				toReturn.minX = 1;
+				toReturn.maxX = 1.01;
+				
+				toReturn.minY = 0;
+				toReturn.minZ = 0;
+				toReturn.maxY = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+		
+		MekanismRenderer.renderObject(toReturn);
+		GL11.glEndList();
+		
+		return display;
 	}
 }

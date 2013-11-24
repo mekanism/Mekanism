@@ -157,6 +157,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		for(ITransmitter<FluidNetwork> pipe : iterPipes)
 		{
 			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe)pipe).isActive) continue;
+			
 			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
 		
 			for(IFluidHandler acceptor : acceptors)

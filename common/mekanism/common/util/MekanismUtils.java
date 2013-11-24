@@ -1069,6 +1069,24 @@ public final class MekanismUtils
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
+    public static int getSideOffset(ForgeDirection side)
+    {
+    	if(side.offsetX != 0)
+    	{
+    		return side.offsetX;
+    	}
+    	else if(side.offsetY != 0)
+    	{
+    		return side.offsetY;
+    	}
+    	else if(side.offsetZ != 0)
+    	{
+    		return side.offsetZ;
+    	}
+    	
+    	return 0;
+    }
+    
     public static enum ResourceType
     {
     	GUI("gui"),

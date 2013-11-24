@@ -55,27 +55,20 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 				
-				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-				{
-					MekanismRenderer.glowOn();
-				}
-				
-				boolean gas = tileEntity.structure.fluidStored.getFluid().isGaseous();
+				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				
 				int[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
-				if(gas)
+				
+				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
-					GL11.glColor4f(1.F, 1.F, 1.F, (float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity);
+					GL11.glColor4f(1F, 1F, 1F, (float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity);
 					GL11.glCallList(displayList[getStages(data.height)-1]);
 				}
 				else {
 					GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
 				}
 				
-				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-				{
-					MekanismRenderer.glowOff();
-				}
+				MekanismRenderer.glowOff();
 				
 				pop();
 				
@@ -87,18 +80,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 						
-						if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-						{
-							MekanismRenderer.glowOn();
-						}
+						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 						
 						int display = getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).display;
 						GL11.glCallList(display);
 						
-						if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-						{
-							MekanismRenderer.glowOff();
-						}
+						MekanismRenderer.glowOff();
 						
 						pop();
 					}

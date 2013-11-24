@@ -58,6 +58,7 @@ public class ItemConfigurator extends ItemEnergized
 	    		{
 	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
 	    			tileEntity.isActive = !tileEntity.isActive;
+	    			tileEntity.getTransmitterNetwork().refresh();
 	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 	    			return true;
 	    		}

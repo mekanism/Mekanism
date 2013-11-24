@@ -53,7 +53,7 @@ public class TransmitterRenderingHandler implements ISimpleBlockRenderingHandler
     			break;
     	}
     	
-    	if(metadata != 3 && metadata != 4 && metadata != 5)
+    	if(metadata != 2 && metadata != 3 && metadata != 4 && metadata != 5)
     	{
 	    	smallTransmitter.renderSide(ForgeDirection.UP, true);
 	    	smallTransmitter.renderSide(ForgeDirection.DOWN, true);

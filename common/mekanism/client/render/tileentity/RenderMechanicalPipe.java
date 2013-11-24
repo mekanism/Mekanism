@@ -26,12 +26,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model = new ModelTransmitter(Size.SMALL);
+	private ModelTransmitter model = new ModelTransmitter(Size.LARGE);
 	
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	
-	private static final int stages = 40;
-	
+	private static final int stages = 100;
+	private static final double height = 0.45;
 	private static final double offset = 0.015;
 	
 	@Override
@@ -64,13 +64,12 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		{
 			push();
 			
-			if(tileEntity.refFluid.getFluid() == FluidRegistry.LAVA)
-			{
-				MekanismRenderer.glowOn();
-			}
+			MekanismRenderer.glowOn(tileEntity.refFluid.getFluid().getLuminosity());
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
+			
+			boolean gas = tileEntity.refFluid.getFluid().isGaseous();
 			
 			for(int i = 0; i < 6; i++)
 			{
@@ -80,7 +79,14 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 					
 					if(displayLists != null)
 					{
-						displayLists[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
+						if(!gas)
+						{
+							displayLists[Math.max(0, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
+						}
+						else {
+							GL11.glColor4f(1F, 1F, 1F, tileEntity.fluidScale);
+							displayLists[stages-1].render();
+						}
 					}
 				}
 			}
@@ -89,13 +95,17 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			
 			if(displayLists != null)
 			{
-				displayLists[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
+				if(!gas)
+				{
+					displayLists[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
+				}
+				else {
+					GL11.glColor4f(1F, 1F, 1F, tileEntity.fluidScale);
+					displayLists[stages-1].render();
+				}
 			}
 			
-			if(tileEntity.refFluid.getFluid() == FluidRegistry.LAVA)
-			{
-				MekanismRenderer.glowOff();
-			}
+			MekanismRenderer.glowOff();
 			
 			pop();
 		}
@@ -158,79 +168,79 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			{
 				case UNKNOWN:
 				{
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
+					toReturn.minX = 0.25 + offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.25 + offset;
 					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
+					toReturn.maxX = 0.75 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 				case DOWN:
 				{
-					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
+					toReturn.minX = 0.5 - (((float)i / (float)stages)*height)/2;
 					toReturn.minY = 0.0;
-					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
+					toReturn.minZ = 0.5 - (((float)i / (float)stages)*height)/2;
 					
-					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
-					toReturn.maxY = 0.3 + offset;
-					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
+					toReturn.maxX = 0.5 + (((float)i / (float)stages)*height)/2;
+					toReturn.maxY = 0.25 + offset;
+					toReturn.maxZ = 0.5 + (((float)i / (float)stages)*height)/2;
 					break;
 				}
 				case UP:
 				{
-					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
-					toReturn.minY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
+					toReturn.minX = 0.5 - (((float)i / (float)stages)*height)/2;
+					toReturn.minY = 0.25 - offset + ((float)i / (float)stages)*height;
+					toReturn.minZ = 0.5 - (((float)i / (float)stages)*height)/2;
 					
-					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
+					toReturn.maxX = 0.5 + (((float)i / (float)stages)*height)/2;
 					toReturn.maxY = 1.0;
-					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
+					toReturn.maxZ = 0.5 + (((float)i / (float)stages)*height)/2;
 					break;
 				}
 				case NORTH:
 				{
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
+					toReturn.minX = 0.25 + offset;
+					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.0;
 					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.3 + offset;
+					toReturn.maxX = 0.75 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.25 + offset;
 					break;
 				}
 				case SOUTH:
 				{
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.7 - offset;
+					toReturn.minX = 0.25 + offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.75 - offset;
 					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
+					toReturn.maxX = 0.75 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 1.0;
 					break;
 				}
 				case WEST:
 				{
 					toReturn.minX = 0.0;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.25 + offset;
 					
-					toReturn.maxX = 0.3 + offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
+					toReturn.maxX = 0.25 + offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 				case EAST:
 				{
-					toReturn.minX = 0.7 - offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
+					toReturn.minX = 0.75 - offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.25 + offset;
 					
 					toReturn.maxX = 1.0;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 			}

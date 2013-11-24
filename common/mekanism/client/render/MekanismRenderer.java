@@ -188,10 +188,14 @@ public class MekanismRenderer
 	
     public static void glowOn() 
     {
+    	glowOn(15);
+    }
+    
+    public static void glowOn(int glow)
+    {
         GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
         
-        try
-        {
+        try {
         	lightmapLastX = OpenGlHelper.lastBrightnessX;
         	lightmapLastY = OpenGlHelper.lastBrightnessY;
         } catch(NoSuchFieldError e) {
@@ -200,11 +204,13 @@ public class MekanismRenderer
         
         RenderHelper.disableStandardItemLighting();
         
+        float glowRatioX = Math.min(((float)glow/15F)*240F + lightmapLastX, 240);
+        float glowRatioY = Math.min(((float)glow/15F)*240F + lightmapLastY, 240);
+        
         if(!optifineBreak)
         {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);        	
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);        	
         }
-        
     }
 
     public static void glowOff() 
@@ -343,7 +349,7 @@ public class MekanismRenderer
 	    float cG = (color >> 8 & 0xFF) / 255.0F;
 	    float cB = (color & 0xFF) / 255.0F;
 	    
-	    GL11.glColor4f(cR, cG, cB, 1.0F);
+	    GL11.glColor3f(cR, cG, cB);
 	}
     
     public static class DisplayInteger

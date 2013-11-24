@@ -66,7 +66,7 @@ public class BlockTransmitter extends Block
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 		
-		if(metadata < 3)
+		if(metadata < 2)
 		{
 			return SMALL_MIN_BOUND;
 		}
@@ -79,7 +79,7 @@ public class BlockTransmitter extends Block
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 		
-		if(metadata < 3)
+		if(metadata < 2)
 		{
 			return SMALL_MAX_BOUND;
 		}
