@@ -670,12 +670,8 @@ public class Mekanism
 		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
 		{
+			RecipeHandler.addOsmiumCompressorRecipe(MekanismUtils.size(ore, 1), new ItemStack(Ingot, 1, 0));
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 6));
-		}
-		
-		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
-		{
-			RecipeHandler.addOsmiumCompressorRecipe(MekanismUtils.size(ore, 2), new ItemStack(Ingot, 1, 0));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("clumpIron"))
@@ -889,7 +885,7 @@ public class Mekanism
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
-			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 1), new ItemStack(Block.obsidian));
+			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 2), new ItemStack(Block.obsidian));
 			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("DIAMOND"), 10, MekanismUtils.size(ore, 1)), new ItemStack(Dust, 1, 3));
 		}
 		
