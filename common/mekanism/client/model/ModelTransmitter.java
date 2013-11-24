@@ -59,7 +59,7 @@ public class ModelTransmitter extends ModelBase
 			setRotation(Front, 0F, 1.570796F, 0F);
 			Back = new ModelRendererSelectiveFace(this, 0, 49);
 			Back.addBox(0F, 0F, 0F, 4, 8, 8);
-			Back.setRotationPoint(-4F, 12F, 8F);//
+			Back.setRotationPoint(-4F, 12F, 8F);
 			Back.setTextureSize(64, 64);
 			Back.mirror = true;
 			setRotation(Back, 0F, 1.570796F, 0F);

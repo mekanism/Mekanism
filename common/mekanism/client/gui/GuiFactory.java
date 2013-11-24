@@ -46,6 +46,11 @@ public class GuiFactory extends GuiMekanism
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		
+		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
+		{
+			drawCreativeTabHoveringText("Secondary energy: " + tileEntity.secondaryEnergyStored, xAxis, yAxis);
+		}
     }
 
     @Override

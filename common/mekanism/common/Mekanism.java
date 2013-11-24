@@ -112,7 +112,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
- * Mekanism - the mod in which no true definition fits.
+ * Mekanism - the mod that doesn't have a category.
  * @author AidanBrady
  *
  */
