@@ -29,11 +29,9 @@ import universalelectricity.prefab.tile.IRotatable;
 import universalelectricity.prefab.tile.TileEntityAdvanced;
 import universalelectricity.prefab.tile.TileEntityElectrical;
 import buildcraft.api.power.IPowerReceptor;
+import cofh.api.energy.TileEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 /**
  * Block that detects power.
@@ -70,9 +68,9 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 	{
 		super.updateEntity();
 
-		if(!worldObj.isRemote)
+		if (!worldObj.isRemote)
 		{
-			if(ticks % 20 == 0)
+			if (ticks % 20 == 0)
 			{
 				float prevDetectedEnergy = detectedEnergy;
 				updateDetection(doGetDetectedEnergy());
@@ -100,22 +98,22 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 						break;
 				}
 
-				if(outputRedstone != redstoneOn)
+				if (outputRedstone != redstoneOn)
 				{
 					redstoneOn = outputRedstone;
 					worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, MekanismInduction.Multimeter.blockID);
 				}
 
-				if(prevDetectedEnergy != detectedEnergy)
+				if (prevDetectedEnergy != detectedEnergy)
 				{
 					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if (!worldObj.isRemote)
 		{
-			for(EntityPlayer player : playersUsing)
+			for (EntityPlayer player : playersUsing)
 			{
 				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
 			}
@@ -144,20 +142,20 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add((byte)1);
-		data.add((byte)detectMode.ordinal());
+		data.add((byte) 1);
+		data.add((byte) detectMode.ordinal());
 		data.add(detectedEnergy);
 		data.add(energyLimit);
-		
+
 		return data;
 	}
-	
+
 	@Override
 	public void validate()
 	{
 		super.validate();
-		
-		if(worldObj.isRemote)
+
+		if (worldObj.isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
 		}
@@ -172,34 +170,34 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 
 	public static float getDetectedEnergy(ForgeDirection side, TileEntity tileEntity)
 	{
-		if(tileEntity instanceof TileEntityElectrical)
+		if (tileEntity instanceof TileEntityElectrical)
 		{
 			return ((TileEntityElectrical) tileEntity).getEnergyStored();
 		}
-		else if(tileEntity instanceof IElectricalStorage)
+		else if (tileEntity instanceof IElectricalStorage)
 		{
 			return ((IElectricalStorage) tileEntity).getEnergyStored();
 		}
-		else if(tileEntity instanceof IConductor)
+		else if (tileEntity instanceof IConductor)
 		{
 			IElectricityNetwork network = ((IConductor) tileEntity).getNetwork();
 
-			if(MultimeterEventHandler.getCache(tileEntity.worldObj).containsKey(network) && MultimeterEventHandler.getCache(tileEntity.worldObj).get(network) instanceof Float)
+			if (MultimeterEventHandler.getCache(tileEntity.worldObj).containsKey(network) && MultimeterEventHandler.getCache(tileEntity.worldObj).get(network) instanceof Float)
 			{
 				return MultimeterEventHandler.getCache(tileEntity.worldObj).get(network);
 			}
 		}
-		else if(tileEntity instanceof IEnergyStorage)
+		else if (tileEntity instanceof IEnergyStorage)
 		{
 			return ((IEnergyStorage) tileEntity).getStored();
 		}
-		else if(tileEntity instanceof IEnergyStorage)
+		else if (tileEntity instanceof TileEnergyHandler)
 		{
-			return ((IEnergyStorage) tileEntity).getStored();
+			return ((TileEnergyHandler) tileEntity).getEnergyStored(side.getOpposite());
 		}
-		else if(tileEntity instanceof IPowerReceptor)
+		else if (tileEntity instanceof IPowerReceptor)
 		{
-			if(((IPowerReceptor) tileEntity).getPowerReceiver(side) != null)
+			if (((IPowerReceptor) tileEntity).getPowerReceiver(side) != null)
 			{
 				return ((IPowerReceptor) tileEntity).getPowerReceiver(side).getEnergyStored();
 			}
