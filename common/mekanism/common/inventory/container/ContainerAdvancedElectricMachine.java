@@ -84,7 +84,7 @@ public class ContainerAdvancedElectricMachine extends Container
             {
 	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 	            {
-	                if (!mergeItemStack(slotStack, 3, 4, false))
+	                if(!mergeItemStack(slotStack, 3, 4, false))
 	                {
 	                    return null;
 	                }
@@ -96,11 +96,11 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
 	            }
             }
-            else if(tileEntity.getFuelTicks(slotStack) > 0 || (tileEntity instanceof TileEntityPurificationChamber && slotStack.getItem() instanceof IStorageTank))
+            else if(tileEntity.getFuelTicks(slotStack) > 0)
             {
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             	{
-                    if (!mergeItemStack(slotStack, 1, 2, false))
+                    if(!mergeItemStack(slotStack, 1, 2, false))
 	                {
 	                    return null;
 	                }

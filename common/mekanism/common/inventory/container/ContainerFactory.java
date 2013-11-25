@@ -163,6 +163,22 @@ public class ContainerFactory extends Container
 	            	}
 	            }
             }
+            else if(RecipeType.values()[tileEntity.recipeType].getFuelTicks(slotStack) > 0)
+            {
+            	if(slotID > tileEntity.inventory.length-1)
+            	{
+                    if(!mergeItemStack(slotStack, 4, 5, false))
+	                {
+	                    return null;
+	                }
+            	}
+            	else {
+	            	if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+	            	{
+	            		return null;
+	            	}
+            	}
+            }
             else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, false) != null)
     		{
             	if(!isInputSlot(slotID))
@@ -245,7 +261,10 @@ public class ContainerFactory extends Container
     	{
     		if(itemStack.getItemDamage() == MachineType.ENERGIZED_SMELTER.meta || 
     				itemStack.getItemDamage() == MachineType.ENRICHMENT_CHAMBER.meta || 
-    				itemStack.getItemDamage() == MachineType.CRUSHER.meta)
+    				itemStack.getItemDamage() == MachineType.CRUSHER.meta ||
+    				itemStack.getItemDamage() == MachineType.OSMIUM_COMPRESSOR.meta ||
+    				itemStack.getItemDamage() == MachineType.COMBINER.meta ||
+    				itemStack.getItemDamage() == MachineType.PURIFICATION_CHAMBER.meta)
     		{
     			return true;
     		}
