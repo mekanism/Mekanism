@@ -15,6 +15,7 @@ import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -433,26 +434,9 @@ public final class TransporterPathfinder
 						
 						TileEntity currTile = currentNode.getTileEntity(worldObj);
 						
-						if(currTile instanceof TileEntityDiversionTransporter)
+						if(!TransporterUtils.checkDiversionLogic(currTile, tile, i))
 						{
-							int mode = ((TileEntityDiversionTransporter)currTile).modes[i];
-							boolean redstone = currTile.worldObj.isBlockIndirectlyGettingPowered(currTile.xCoord, currTile.yCoord, currTile.zCoord);
-							
-							if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
-							{
-								continue;
-							}
-						}
-						
-						if(tile instanceof TileEntityDiversionTransporter)
-						{
-							int mode = ((TileEntityDiversionTransporter)tile).modes[ForgeDirection.getOrientation(i).getOpposite().ordinal()];
-							boolean redstone = tile.worldObj.isBlockIndirectlyGettingPowered(tile.xCoord, tile.yCoord, tile.zCoord);
-							
-							if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
-							{
-								continue;
-							}
+							continue;
 						}
 
 						if(!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor)) 

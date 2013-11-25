@@ -213,6 +213,33 @@ public final class TransporterUtils
 		
 		return colors.get(colors.indexOf(color)+1);
 	}
+    
+    public static boolean checkDiversionLogic(TileEntity currTile, TileEntity tile, int side)
+    {
+		if(currTile instanceof TileEntityDiversionTransporter)
+		{
+			int mode = ((TileEntityDiversionTransporter)currTile).modes[side];
+			boolean redstone = currTile.worldObj.isBlockIndirectlyGettingPowered(currTile.xCoord, currTile.yCoord, currTile.zCoord);
+			
+			if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+			{
+				return false;
+			}
+		}
+		
+		if(tile instanceof TileEntityDiversionTransporter)
+		{
+			int mode = ((TileEntityDiversionTransporter)tile).modes[ForgeDirection.getOrientation(side).getOpposite().ordinal()];
+			boolean redstone = tile.worldObj.isBlockIndirectlyGettingPowered(tile.xCoord, tile.yCoord, tile.zCoord);
+			
+			if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+			{
+				return false;
+			}
+		}
+		
+		return true;
+    }
 	
 	public static void drop(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
 	{

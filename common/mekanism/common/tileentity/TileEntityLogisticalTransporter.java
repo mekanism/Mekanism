@@ -174,7 +174,20 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						}
 					}
 					else {
-						if(!stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj)))
+						TileEntity next = stack.getNext(this).getTileEntity(worldObj);
+						boolean recalculate = false;
+						
+						if(!stack.canInsertToTransporter(next))
+						{
+							recalculate = true;
+						}
+						
+						if(!TransporterUtils.checkDiversionLogic(this, next, stack.getSide(this)))
+						{
+							recalculate = true;
+						}
+						
+						if(recalculate)
 						{
 							if(!recalculate(stack, null))
 							{
