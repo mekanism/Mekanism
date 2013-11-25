@@ -145,12 +145,12 @@ public class TransporterStack
 	
 	public boolean hasPath()
 	{
-		return pathToTarget != null;
+		return pathToTarget != null && pathToTarget.size() >= 2;
 	}
 	
-	public ItemStack recalculatePath(TileEntityLogisticalTransporter tileEntity)
+	public ItemStack recalculatePath(TileEntityLogisticalTransporter tileEntity, int min)
 	{
-		Destination newPath = TransporterPathfinder.getNewBasePath(tileEntity, this);
+		Destination newPath = TransporterPathfinder.getNewBasePath(tileEntity, this, min);
 		
 		if(newPath == null)
 		{
@@ -165,9 +165,9 @@ public class TransporterStack
 		return newPath.rejected;
 	}
 	
-	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity)
+	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, int min)
 	{
-		Destination newPath = TransporterPathfinder.getNewRRPath(tileEntity, this, outputter);
+		Destination newPath = TransporterPathfinder.getNewRRPath(tileEntity, this, outputter, min);
 		
 		if(newPath == null)
 		{

@@ -59,33 +59,27 @@ public final class InvStack
 		{
 			ItemStack stack = itemStacks.get(i);
 			
-			if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize)
+			if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize && stack.stackSize <= amount)
 			{
 				inventory.setInventorySlotContents(slotIDs.get(i), null);
+				amount -= stack.stackSize;
 			}
 			else {
 				ItemStack ret = stack.copy();
-				ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - stack.stackSize;
+				ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - Math.min(stack.stackSize, amount);
 				inventory.setInventorySlotContents(slotIDs.get(i), ret);
+				amount -= ret.stackSize;
+			}
+			
+			if(amount == 0)
+			{
+				return;
 			}
 		}
 	}
 	
 	public void use()
 	{
-		for(int i = 0; i < slotIDs.size(); i++)
-		{
-			ItemStack stack = itemStacks.get(i);
-			
-			if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize)
-			{
-				inventory.setInventorySlotContents(slotIDs.get(i), null);
-			}
-			else {
-				ItemStack ret = stack.copy();
-				ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - stack.stackSize;
-				inventory.setInventorySlotContents(slotIDs.get(i), ret);
-			}
-		}
+		use(getStack().stackSize);
 	}
 }

@@ -11,14 +11,23 @@ import java.util.Set;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.FluidNetwork.FluidTransferEvent;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 {
+	public int transferDelay = 0;
+	
+	public float gasScale;
+	public float prevGasScale;
+	
+	public EnumGas refGas = null;
+	
 	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
@@ -48,6 +57,11 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	
 	public synchronized int emit(int gasToSend, EnumGas transferType, TileEntity emitter)
 	{
+		if(refGas != null && refGas != transferType)
+		{
+			return gasToSend;
+		}
+		
 		List availableAcceptors = Arrays.asList(getAcceptors(transferType).toArray());
 		
 		Collections.shuffle(availableAcceptors);
@@ -79,12 +93,54 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			}
 		}
 		
-		if(prevSending > gasToSend && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		int sent = prevSending-gasToSend;
+		
+		if(sent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, transferType));
+			if(transferType == refGas)
+			{
+				gasScale = Math.min(1, gasScale+((float)sent/100));
+			}
+			else if(refGas == null)
+			{
+				refGas = transferType;
+				gasScale = Math.min(1, ((float)sent/100));
+			}
+			
+			transferDelay = 2;
 		}
 		
 		return gasToSend;
+	}
+	
+	@Override
+	public void tick()
+	{
+		super.tick();
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			if(transferDelay == 0)
+			{
+				if(gasScale > 0)
+				{
+					gasScale -= .02;
+				}
+				else {
+					refGas = null;
+				}
+			}
+			else {
+				transferDelay--;
+			}
+			
+			if(gasScale != prevGasScale)
+			{
+				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas, gasScale));
+			}
+			
+			prevGasScale = gasScale;
+		}
 	}
 	
 	@Override
@@ -163,11 +219,13 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		public final GasNetwork gasNetwork;
 		
 		public final EnumGas transferType;
+		public final float gasScale;
 		
-		public GasTransferEvent(GasNetwork network, EnumGas type)
+		public GasTransferEvent(GasNetwork network, EnumGas type, float scale)
 		{
 			gasNetwork = network;
 			transferType = type;
+			gasScale = scale;
 		}
 	}
 	

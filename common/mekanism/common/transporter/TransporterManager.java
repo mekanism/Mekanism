@@ -25,15 +25,11 @@ public class TransporterManager
 	public static void add(TransporterStack stack)
 	{
 		flowingStacks.add(stack);
-		
-		System.out.println("Added " + flowingStacks.size());
 	}
 	
 	public static void remove(TransporterStack stack)
 	{
 		flowingStacks.remove(stack);
-		
-		System.out.println("Removed " + flowingStacks.size());
 	}
 	
 	public static List<TransporterStack> getStacksToDest(Object3D dest)
@@ -42,7 +38,7 @@ public class TransporterManager
 		
 		for(TransporterStack stack : flowingStacks)
 		{
-			if(stack != null && stack.pathType != Path.NONE)
+			if(stack != null && stack.pathType != Path.NONE && stack.hasPath())
 			{
 				if(stack.getDest().equals(dest))
 				{
@@ -64,18 +60,23 @@ public class TransporterManager
 		{
 			for(int i = 0; i <= inv.getSizeInventory() - 1; i++)
 			{
-				ret[i] = inv.getStackInSlot(i).copy();
+				ret[i] = inv.getStackInSlot(i) != null ? inv.getStackInSlot(i).copy() : null;
 			}
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inv;
 			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
 			
+			if(slots == null || slots.length == 0)
+			{
+				return null;
+			}
+			
 			for(int get = 0; get <= slots.length - 1; get++)
 			{
 				int slotID = slots[get];
 				
-				ret[slotID] = sidedInventory.getStackInSlot(slotID).copy();
+				ret[slotID] = sidedInventory.getStackInSlot(slotID) != null ? sidedInventory.getStackInSlot(slotID).copy() : null;
 			}
 		}
 		
@@ -97,6 +98,11 @@ public class TransporterManager
     			return;
     		}
     	}
+    	
+    	if(inv instanceof TileEntityBin)
+    	{
+    		return;
+    	}
 		
 		if(!(inv instanceof ISidedInventory))
 		{
@@ -110,7 +116,7 @@ public class TransporterManager
 					}
 				}
 				
-				ItemStack inSlot = inv.getStackInSlot(i);
+				ItemStack inSlot = testInv[i];
 	
 				if(inSlot == null)
 				{
@@ -166,7 +172,7 @@ public class TransporterManager
 						}
 					}
 					
-					ItemStack inSlot = inv.getStackInSlot(slotID);
+					ItemStack inSlot = testInv[slotID];
 	
 					if(inSlot == null) 
 					{
@@ -241,6 +247,11 @@ public class TransporterManager
     	
     	IInventory inventory = (IInventory)tileEntity;
     	ItemStack[] testInv = copyInvFromSide(inventory, side);
+    	
+    	if(testInv == null)
+    	{
+    		return itemStack;
+    	}
     	
     	List<TransporterStack> insertQueue = getStacksToDest(Object3D.get(tileEntity));
     	

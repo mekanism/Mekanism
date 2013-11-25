@@ -190,14 +190,14 @@ public final class TransporterUtils
     	return inventories;
     }
     
-    public static ItemStack insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit)
+    public static ItemStack insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
     {
-    	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color, doEmit);
+    	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color, doEmit, min);
     }
     
-    public static ItemStack insertRR(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit)
+    public static ItemStack insertRR(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
     {
-    	return tileEntity.insertRR(outputter, itemStack.copy(), color, doEmit);
+    	return tileEntity.insertRR(outputter, itemStack.copy(), color, doEmit, min);
     }
     
     public static EnumColor increment(EnumColor color)

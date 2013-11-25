@@ -4,8 +4,8 @@ import java.io.DataOutputStream;
 
 import mekanism.api.gas.EnumGas;
 import mekanism.api.transmitters.ITransmitter;
-import mekanism.client.GasClientUpdate;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
+import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -24,6 +24,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	public double power;
 	
 	public String gasName;
+	public float gasScale;
 	
 	public int fluidType;
 	public float fluidScale;
@@ -31,7 +32,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	@Override
 	public String getName() 
 	{
-		return "TransmitterTransferUpdate";
+		return "TransmitterUpdate";
 	}
 	
 	@Override
@@ -46,7 +47,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				power = (Double)data[2];
 				break;
 			case GAS:
-				gasName = ((EnumGas)data[2]).name;
+				gasName = data[2] != null ? ((EnumGas)data[2]).name : "null";
+				gasScale = (Float)data[3];
 				break;
 			case FLUID:
 				fluidType = (Integer)data[2];
@@ -88,13 +90,16 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		}
 		else if(transmitterType == 2)
 	    {
-    		EnumGas type = EnumGas.getFromName(dataStream.readUTF());
-    		
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    		
+    		String type = dataStream.readUTF();
+    		EnumGas gasType = type.equals("null") ? null : EnumGas.getFromName(type);
+    		gasScale = dataStream.readFloat();
     		
     		if(tileEntity != null)
     		{
-    			new GasClientUpdate(tileEntity, type).clientUpdate();
+    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().refGas = gasType;
+    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().gasScale = gasScale;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -103,7 +108,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		int type = dataStream.readInt();
     		Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
-    		float fluidScale = dataStream.readFloat();
+    		fluidScale = dataStream.readFloat();
     		
     		if(tileEntity != null)
     		{
@@ -129,6 +134,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				break;
 			case GAS:
 				dataStream.writeUTF(gasName);
+				dataStream.writeFloat(gasScale);
 				break;
 			case FLUID:
 				dataStream.writeInt(fluidType);

@@ -209,7 +209,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		needsSync.add(stack);
 		
-		if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this)))
+		if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this, 0)))
 		{
 			if(!stack.calculateIdle(this))
 			{
@@ -226,7 +226,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return true;
 	}
 	
-	public ItemStack insert(Object3D original, ItemStack itemStack, EnumColor color, boolean doEmit)
+	public ItemStack insert(Object3D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -239,7 +239,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			return itemStack;
 		}
 		
-		ItemStack rejected = stack.recalculatePath(this);
+		ItemStack rejected = stack.recalculatePath(this, min);
 		
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
@@ -255,7 +255,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return itemStack;
 	}
 	
-	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit)
+	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -268,7 +268,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			return itemStack;
 		}
 		
-		ItemStack rejected = stack.recalculateRRPath(outputter, this);
+		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
 		
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
@@ -507,7 +507,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		{
 			TileEntity tile = Object3D.get(this).getFromSide(from).getTileEntity(worldObj);
 			
-			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true);
+			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
 			return TransporterManager.getToUse(stack, rejects).stackSize;
 		}
 		

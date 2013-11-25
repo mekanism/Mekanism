@@ -206,7 +206,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 						}
 					}
 					
-					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);					
+					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);
 					newNetwork.refresh();
 				}
 			}

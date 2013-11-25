@@ -200,7 +200,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 				else if(getEjectInv() instanceof TileEntityLogisticalTransporter)
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true, 0);
 					
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{

@@ -22,6 +22,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
@@ -112,36 +113,28 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
+		
+		EnumGas gasType = tileEntity.getTransmitterNetwork().refGas;
+		float scale = tileEntity.getTransmitterNetwork().gasScale;
 	
-		if(tileEntity.gasScale > 0 && tileEntity.refGas != null && tileEntity.refGas.hasTexture())
+		if(scale > 0 && gasType != null && gasType.hasTexture())
 		{
 			push();
 			
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.gasScale);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, scale);
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			
-			if(!Mekanism.proxy.isPaused())
-			{
-				if(tileEntity.gasScale > 0)
-				{
-					tileEntity.gasScale = Math.max(0, tileEntity.gasScale - .008F);
-				}
-				else {
-					tileEntity.refGas = null;
-				}
-			}
 			
 			for(int i = 0; i < 6; i++)
 			{
 				if(connectable[i])
 				{
 					Block b = Block.blocksList[Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getBlockId(tileEntity.worldObj)];
-					getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas, b).render();
+					getListAndRender(ForgeDirection.getOrientation(i), gasType, b).render();
 				}
 			}
 			
-			getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refGas, null).render();
+			getListAndRender(ForgeDirection.UNKNOWN, gasType, null).render();
 			
 			pop();
 		}

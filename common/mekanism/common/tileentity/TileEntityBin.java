@@ -172,7 +172,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
 					
-					ItemStack rejects = TransporterUtils.insert(this, transporter, getStack(), null, true);
+					ItemStack rejects = TransporterUtils.insert(this, transporter, getStack(), null, true, 0);
 					
 					if(TransporterManager.didEmit(getStack(), rejects))
 					{
@@ -294,7 +294,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public int getSizeInventory() 
 	{
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -408,7 +408,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return new int[] {0};		
 		}
 		
-		return null;
+		return new int[0];
 	}
 
 	@Override

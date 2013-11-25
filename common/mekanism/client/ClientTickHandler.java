@@ -43,7 +43,7 @@ public class ClientTickHandler implements ITickHandler
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
-		if(!preloadedSounds && mc.sndManager.sndSystem != null)
+		if(!preloadedSounds && mc.sndManager.sndSystem != null && MekanismClient.enableSounds)
 		{
 			new Thread(new Runnable() {
 				@Override

@@ -87,7 +87,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					InvStack inInventory = null;
 					boolean hasFilter = false;
 					EnumColor filterColor = color;
-					TItemStackFilter itemFilter = null;
+					int min = 0;
 					
 					for(TransporterFilter filter : filters)
 					{
@@ -103,7 +103,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 								
 								if(filter instanceof TItemStackFilter)
 								{
-									itemFilter = (TItemStackFilter)filter;
+									TItemStackFilter itemFilter = (TItemStackFilter)filter;
+									
+									if(itemFilter.sizeMode)
+									{
+										min = itemFilter.min;
+									}
 								}
 								
 								break;
@@ -122,31 +127,25 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 						
 						if(!roundRobin)
 						{
-							ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, false);
+							ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
 							
 							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 							{
-								if(itemFilter == null || itemFilter.canFilter(TransporterManager.getToUse(inInventory.getStack(), rejects)))
-								{
-									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-								}
+								used = TransporterManager.getToUse(inInventory.getStack(), rejects);
 							}
 						}
 						else {
-							ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, false);
+							ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
 							
 							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 							{
-								if(itemFilter == null || itemFilter.canFilter(TransporterManager.getToUse(inInventory.getStack(), rejects)))
-								{
-									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-								}
+								used = TransporterManager.getToUse(inInventory.getStack(), rejects);
 							}
 						}
 						
 						if(used != null)
 						{
-							inInventory.use();
+							inInventory.use(used.stackSize);
 							inventory.onInventoryChanged();
 							setActive(true);
 						}

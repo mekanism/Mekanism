@@ -244,7 +244,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Destination> getPaths(TileEntityLogisticalTransporter start, TransporterStack stack)
+	public static List<Destination> getPaths(TileEntityLogisticalTransporter start, TransporterStack stack, int min)
 	{
 		DestChecker checker = new DestChecker()
 		{
@@ -265,7 +265,10 @@ public final class TransporterPathfinder
 			
 			if(p.getPath().size() >= 2)
 			{
-				paths.add(new Destination(p.getPath(), p.finalScore, false, d.rejects.get(obj)));
+				if(TransporterManager.getToUse(stack.itemStack, d.rejects.get(obj)).stackSize >= min)
+				{
+					paths.add(new Destination(p.getPath(), p.finalScore, false, d.rejects.get(obj)));
+				}
 			}
 		}
 		
@@ -274,9 +277,9 @@ public final class TransporterPathfinder
 		return paths;
 	}
 	
-	public static Destination getNewBasePath(TileEntityLogisticalTransporter start, TransporterStack stack)
+	public static Destination getNewBasePath(TileEntityLogisticalTransporter start, TransporterStack stack, int min)
 	{
-		List<Destination> paths = getPaths(start, stack);
+		List<Destination> paths = getPaths(start, stack, min);
 		
 		if(paths.isEmpty())
 		{
@@ -286,9 +289,9 @@ public final class TransporterPathfinder
 		return paths.get(0);
 	}
 	
-	public static Destination getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter)
+	public static Destination getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter, int min)
 	{
-		List<Destination> paths = getPaths(start, stack);
+		List<Destination> paths = getPaths(start, stack, min);
 		
 		Map<Object3D, Destination> destPaths = new HashMap<Object3D, Destination>();
 		

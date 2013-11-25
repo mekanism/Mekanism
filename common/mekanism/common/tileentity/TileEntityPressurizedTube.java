@@ -15,13 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements ITubeConnection, IGasTransmitter
-{
-	/** The gas currently displayed in this tube. */
-	public EnumGas refGas = null;
-	
-	/** The scale of the gas (0F -> 1F) currently inside this tube. */
-	public float gasScale;
-	
+{	
 	@Override
 	public TransmissionType getTransmissionType()
 	{
@@ -112,19 +106,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 		}
 		
 		getTransmitterNetwork().refresh();
-	}
-	
-	public void onTransfer(EnumGas type)
-	{
-		if(type == refGas)
-		{
-			gasScale = Math.min(1, gasScale+.03F);
-		}
-		else if(refGas == null)
-		{
-			refGas = type;
-			gasScale += Math.min(1, gasScale+.03F);
-		}
 	}
 	
 	@Override

@@ -160,7 +160,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return new int[0];
 		}
 		
 		return getInv().getBoundSlots(Object3D.get(this), slotID);

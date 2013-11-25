@@ -128,7 +128,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			else if(refFluid == null)
 			{
 				refFluid = sendStack.getFluid();
-				fluidScale += Math.min(1, ((float)sendStack.amount/1000F));
+				fluidScale = Math.min(1, ((float)sendStack.amount/1000F));
 			}
 			
 			transferDelay = 2;
