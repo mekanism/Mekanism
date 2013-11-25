@@ -6,6 +6,7 @@ import java.util.Random;
 
 import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
+import mekanism.common.ConnectedTextureRenderer;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ItemAttacher;
@@ -63,6 +64,8 @@ public class BlockBasic extends Block
 {
 	public Icon[][] icons = new Icon[256][6];
 	
+	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", blockID, 10);
+	
 	public BlockBasic(int id)
 	{
 		super(id, Material.iron);
@@ -105,6 +108,8 @@ public class BlockBasic extends Block
 		icons[9][0] = register.registerIcon("mekanism:DynamicTank");
 		icons[10][0] = register.registerIcon("mekanism:DynamicGlass");
 		icons[11][0] = register.registerIcon("mekanism:DynamicValve");
+		
+		glassRenderer.registerIcons(register);
 	}
 	
 	@Override
@@ -113,11 +118,8 @@ public class BlockBasic extends Block
     {
     	int metadata = world.getBlockMetadata(x, y, z);
     	
-    	if(metadata != 6)
+    	if(metadata == 6)
     	{
-    		return getIcon(side, metadata);
-    	}
-    	else {
     		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     		
     		if(side == 0 || side == 1)
@@ -131,6 +133,13 @@ public class BlockBasic extends Block
 			else {
 				return icons[6][0];
 			}
+    	}
+    	else if(metadata == 10)
+    	{
+    		return glassRenderer.getIcon(world, x, y, z, side);
+    	}
+    	else {
+     		return getIcon(side, metadata);
     	}
     }
 	
@@ -650,5 +659,18 @@ public class BlockBasic extends Block
         }
         
         return itemStack;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	{
+		if(world.getBlockMetadata(x, y, z) == 10)
+		{
+			return glassRenderer.shouldRenderSide(world, x, y, z, side);
+		}
+		else {
+			return super.shouldSideBeRendered(world, x, y, z, side);
+		}
 	}
 }

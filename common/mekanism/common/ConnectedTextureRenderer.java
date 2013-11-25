@@ -30,7 +30,7 @@ public class ConnectedTextureRenderer
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerTextures(IconRegister register)
+	public void registerIcons(IconRegister register)
 	{
 	    glassMap.put(0, register.registerIcon("mekanism:" + iconTitle + "_13"));
 	    glassMap.put(1, register.registerIcon("mekanism:" + iconTitle + "_20"));
@@ -116,6 +116,7 @@ public class ConnectedTextureRenderer
 	    return (block.getBlockId(access) == blockID && block.getMetadata(access) == metadata) && (blockabove.getBlockId(access) != blockID || blockabove.getMetadata(access) != metadata);
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Object3D obj = new Object3D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
