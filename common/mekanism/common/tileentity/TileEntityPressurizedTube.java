@@ -10,6 +10,7 @@ import mekanism.api.gas.IGasTransmitter;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -43,7 +44,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 				}
 			}
 			
-			if(connectedNets.size() == 0 || worldObj.isRemote)
+			if(connectedNets.size() == 0)
 			{
 				theNetwork = new GasNetwork(this);
 			}
@@ -68,11 +69,21 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	}
 
 	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		getTransmitterNetwork().split(this);
+	}
+	
+	@Override
 	public void invalidate()
 	{
+		getTransmitterNetwork().split(this);
+		
 		if(!worldObj.isRemote)
 		{
-			getTransmitterNetwork().split(this);
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 		}
 		
 		super.invalidate();
@@ -90,20 +101,17 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	@Override
 	public void refreshTransmitterNetwork() 
 	{
-		if(!worldObj.isRemote)
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-				
-				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
-				{
-					getTransmitterNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork());
-				}
-			}
+			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
-			getTransmitterNetwork().refresh();
+			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
+			{
+				getTransmitterNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork());
+			}
 		}
+		
+		getTransmitterNetwork().refresh();
 	}
 	
 	public void onTransfer(EnumGas type)
@@ -123,12 +131,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return true;
-	}
-	
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
 	}
 	
 	@Override

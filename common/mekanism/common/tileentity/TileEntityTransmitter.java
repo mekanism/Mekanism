@@ -1,19 +1,18 @@
 package mekanism.common.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketDataRequest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class TileEntityTransmitter<N> extends TileEntity implements ITransmitter<N>
 {
 	public N theNetwork;
+	
+	public int delayTicks = 0;
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -23,10 +22,39 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	}
 	
 	@Override
+	public boolean canUpdate()
+	{
+		return FMLCommonHandler.instance().getEffectiveSide().isClient();
+	}
+	
+	@Override
+	public void updateEntity()
+	{
+		super.updateEntity();
+		
+		if(worldObj.isRemote)
+		{
+			if(delayTicks == 3)
+			{
+				delayTicks++;
+				refreshTransmitterNetwork();
+			}
+			else if(delayTicks < 3)
+			{
+				delayTicks++;
+			}
+		}
+	}
+	
+	@Override
 	public void onChunkUnload() 
 	{
-		invalidate();
-		TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+		super.onChunkUnload();
+		
+		if(!worldObj.isRemote)
+		{
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+		}
 	}
 	
 	@Override

@@ -1,10 +1,8 @@
 package mekanism.api.transmitters;
 
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
@@ -138,19 +136,14 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			try {
 			    if(c != null)
 	            {
-			    	Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
-			    	
-	                for(Object obj : copy.values())
+	                for(Iterator iter = c.chunkTileEntityMap.values().iterator(); iter.hasNext();)
 	                {
-	                    if(obj instanceof TileEntity)
+	                	Object obj = iter.next();
+	                	
+	                    if(obj instanceof ITransmitter && !((TileEntity)obj).worldObj.isRemote)
 	                    {
-	                        TileEntity tileEntity = (TileEntity)obj;
-	
-	                        if(tileEntity instanceof ITransmitter)
-	                        {
-	                            ((ITransmitter)tileEntity).refreshTransmitterNetwork();
-	                            ((ITransmitter)tileEntity).chunkLoad();
-	                        }
+                            ((ITransmitter)obj).refreshTransmitterNetwork();
+                            ((ITransmitter)obj).chunkLoad();
 	                    }
 	                }
 	            }

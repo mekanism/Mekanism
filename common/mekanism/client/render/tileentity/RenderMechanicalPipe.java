@@ -60,47 +60,50 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 		
-		if(tileEntity.fluidScale > 0 && tileEntity.refFluid != null)
+		Fluid fluid = tileEntity.getTransmitterNetwork().refFluid;
+		float scale = tileEntity.getTransmitterNetwork().fluidScale;
+		
+		if(scale > 0 && fluid != null)
 		{
 			push();
 			
-			MekanismRenderer.glowOn(tileEntity.refFluid.getFluid().getLuminosity());
+			MekanismRenderer.glowOn(fluid.getLuminosity());
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			boolean gas = tileEntity.refFluid.getFluid().isGaseous();
+			boolean gas = fluid.isGaseous();
 			
 			for(int i = 0; i < 6; i++)
 			{
 				if(connectable[i])
 				{
-					DisplayInteger[] displayLists = getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refFluid.getFluid());
+					DisplayInteger[] displayLists = getListAndRender(ForgeDirection.getOrientation(i), fluid);
 					
 					if(displayLists != null)
 					{
 						if(!gas)
 						{
-							displayLists[Math.max(0, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
+							displayLists[Math.max(0, (int)((float)scale*(stages-1)))].render();
 						}
 						else {
-							GL11.glColor4f(1F, 1F, 1F, tileEntity.fluidScale);
+							GL11.glColor4f(1F, 1F, 1F, scale);
 							displayLists[stages-1].render();
 						}
 					}
 				}
 			}
 			
-			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refFluid.getFluid());
+			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, fluid);
 			
 			if(displayLists != null)
 			{
 				if(!gas)
 				{
-					displayLists[Math.max(3, (int)((float)tileEntity.fluidScale*(stages-1)))].render();
+					displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
 				}
 				else {
-					GL11.glColor4f(1F, 1F, 1F, tileEntity.fluidScale);
+					GL11.glColor4f(1F, 1F, 1F, scale);
 					displayLists[stages-1].render();
 				}
 			}

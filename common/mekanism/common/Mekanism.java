@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,7 @@ import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
@@ -72,8 +74,8 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTransmitterTransferUpdate;
-import mekanism.common.network.PacketTransmitterTransferUpdate.TransmitterTransferType;
+import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
@@ -97,6 +99,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import thermalexpansion.api.crafting.CraftingManagers;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -1120,7 +1123,7 @@ public class Mekanism
 		
 		//Packet registrations
 		PacketHandler.registerPacket(PacketRobit.class);
-		PacketHandler.registerPacket(PacketTransmitterTransferUpdate.class);
+		PacketHandler.registerPacket(PacketTransmitterUpdate.class);
 		PacketHandler.registerPacket(PacketElectricChest.class);
 		PacketHandler.registerPacket(PacketElectricBowState.class);
 		PacketHandler.registerPacket(PacketConfiguratorState.class);
@@ -1160,7 +1163,7 @@ public class Mekanism
 	public void onEnergyTransferred(EnergyTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.ENERGY, event.energyNetwork.transmitters.iterator().next(), event.power));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.ENERGY, event.energyNetwork.transmitters.iterator().next(), event.power));
 		} catch(Exception e) {}
 	}
 	
@@ -1168,7 +1171,7 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.GAS, event.gasNetwork.transmitters.iterator().next(), event.transferType));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.GAS, event.gasNetwork.transmitters.iterator().next(), event.transferType));
 		} catch(Exception e) {}
 	}
 	
@@ -1176,7 +1179,7 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterTransferUpdate().setParams(TransmitterTransferType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidSent));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.fluidScale));
 		} catch(Exception e) {}
 	}
 	
@@ -1185,10 +1188,10 @@ public class Mekanism
 	{
 		 if(event.getChunk() != null)
          {
-			 Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
-			 
-             for(Object obj : copy.values())
+             for(Iterator iter = event.getChunk().chunkTileEntityMap.values().iterator(); iter.hasNext();)
              {
+            	 Object obj = iter.next();
+            	 
                  if(obj instanceof TileEntity)
                  {
                      TileEntity tileEntity = (TileEntity)obj;

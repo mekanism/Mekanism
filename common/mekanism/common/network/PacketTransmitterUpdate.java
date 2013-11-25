@@ -3,19 +3,21 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.api.gas.EnumGas;
-import mekanism.client.EnergyClientUpdate;
-import mekanism.client.FluidClientUpdate;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.GasClientUpdate;
+import mekanism.common.tileentity.TileEntityMechanicalPipe;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class PacketTransmitterTransferUpdate implements IMekanismPacket
+public class PacketTransmitterUpdate implements IMekanismPacket
 {
-	public TransmitterTransferType activeType;
+	public PacketType packetType;
 	
 	public TileEntity tileEntity;
 	
@@ -23,7 +25,8 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	
 	public String gasName;
 	
-	public FluidStack fluidStack;
+	public int fluidType;
+	public float fluidScale;
 	
 	@Override
 	public String getName() 
@@ -34,10 +37,10 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		activeType = (TransmitterTransferType)data[0];
+		packetType = (PacketType)data[0];
 		tileEntity = (TileEntity)data[1];
 		
-		switch(activeType)
+		switch(packetType)
 		{
 			case ENERGY:
 				power = (Double)data[2];
@@ -46,7 +49,8 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 				gasName = ((EnumGas)data[2]).name;
 				break;
 			case FLUID:
-				fluidStack = (FluidStack)data[2];
+				fluidType = (Integer)data[2];
+				fluidScale = (Float)data[3];
 				break;
 		}
 		
@@ -64,16 +68,25 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 		
 		if(transmitterType == 0)
 		{
+			ITransmitter transmitter = (ITransmitter)world.getBlockTileEntity(x, y, z);
+			
+			if(transmitter != null)
+			{
+				transmitter.refreshTransmitterNetwork();
+			}
+		}
+		if(transmitterType == 1)
+		{
 			double powerLevel = dataStream.readDouble();
 			
 			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 			
 			if(tileEntity != null)
 			{
-				new EnergyClientUpdate(tileEntity, powerLevel).clientUpdate();
+				((TileEntityUniversalCable)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
 			}
 		}
-		else if(transmitterType == 1)
+		else if(transmitterType == 2)
 	    {
     		EnumGas type = EnumGas.getFromName(dataStream.readUTF());
     		
@@ -84,14 +97,18 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
     			new GasClientUpdate(tileEntity, type).clientUpdate();
     		}
 	    }
-	    else if(transmitterType == 2)
+	    else if(transmitterType == 3)
 	    {
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    		FluidStack fluidStack = new FluidStack(dataStream.readInt(), dataStream.readInt());
+    		
+    		int type = dataStream.readInt();
+    		Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
+    		float fluidScale = dataStream.readFloat();
     		
     		if(tileEntity != null)
     		{
-    			new FluidClientUpdate(tileEntity, fluidStack).clientUpdate();
+    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().refFluid = fluidType;
+    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().fluidScale = fluidScale;
     		}
 	    }
 	}
@@ -99,13 +116,13 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 	@Override
 	public void write(DataOutputStream dataStream) throws Exception 
 	{
-		dataStream.writeInt(activeType.ordinal());
+		dataStream.writeInt(packetType.ordinal());
 		
 		dataStream.writeInt(tileEntity.xCoord);
 		dataStream.writeInt(tileEntity.yCoord);
 		dataStream.writeInt(tileEntity.zCoord);
 		
-		switch(activeType)
+		switch(packetType)
 		{
 			case ENERGY:
 				dataStream.writeDouble(power);
@@ -114,14 +131,15 @@ public class PacketTransmitterTransferUpdate implements IMekanismPacket
 				dataStream.writeUTF(gasName);
 				break;
 			case FLUID:
-				dataStream.writeInt(fluidStack.fluidID);
-				dataStream.writeInt(fluidStack.amount);
+				dataStream.writeInt(fluidType);
+				dataStream.writeFloat(fluidScale);
 				break;
 		}
 	}
 	
-	public static enum TransmitterTransferType
+	public static enum PacketType
 	{
+		UPDATE,
 		ENERGY,
 		GAS,
 		FLUID

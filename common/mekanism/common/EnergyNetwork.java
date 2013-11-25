@@ -39,9 +39,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	
-	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
-	
-	private boolean needsUpdate = false;
+	public double clientEnergyScale = 0;
 	
 	public EnergyNetwork(ITransmitter<EnergyNetwork>... varCables)
 	{
@@ -72,6 +70,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public synchronized double getEnergyNeeded(List<TileEntity> ignored)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			return 0;
+		}
+		
 		double totalNeeded = 0;
 		
 		for(TileEntity acceptor : getAcceptors())
@@ -109,6 +112,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public synchronized double emit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			return energyToSend;
+		}
+		
 		double prevEnergy = energyToSend;
 		double sent;
 
@@ -206,6 +214,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public synchronized Set<TileEntity> getAcceptors(Object... data)
 	{
 		Set<TileEntity> toReturn = new HashSet<TileEntity>();
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			return toReturn;
+		}
 		
 		Set<TileEntity> copy = (Set<TileEntity>)possibleAcceptors.clone();
 		
@@ -355,31 +368,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 	@Override
 	public void tick()
-	{
-		clearJoulesTransmitted();
-		
+	{	
 		super.tick();
+		
+		clearJoulesTransmitted();
 		
 		double currentPowerScale = getPowerScale();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			Iterator<DelayQueue> i = updateQueue.iterator();
-			
-			while(i.hasNext())
-			{
-				DelayQueue q = i.next();
-				
-				if(q.delay > 0)
-				{
-					q.delay--;
-				}
-				else {
-					needsUpdate = true;
-					i.remove();
-				}
-			}
-			
 			if(currentPowerScale != lastPowerScale)
 			{
 				needsUpdate = true;
@@ -409,11 +406,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public double getPower()
 	{
 		return joulesLastTick * 20;
-	}
-	
-	public void addUpdate(EntityPlayer player)
-	{
-		updateQueue.add(new DelayQueue(player));
 	}
 	
 	@Override
@@ -450,17 +442,5 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public String getFlow()
 	{
 		return ElectricityDisplay.getDisplay((float)(getPower()*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.JOULES);
-	}
-	
-	public static class DelayQueue
-	{
-		public EntityPlayer player;
-		public int delay;
-		
-		public DelayQueue(EntityPlayer p)
-		{
-			player = p;
-			delay = 5;
-		}
 	}
 }

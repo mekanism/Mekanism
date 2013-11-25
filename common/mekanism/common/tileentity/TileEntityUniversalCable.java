@@ -12,6 +12,7 @@ import java.util.Set;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
@@ -60,12 +61,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	}
 	
 	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-	
-	@Override
 	public EnergyNetwork getTransmitterNetwork(boolean createIfNull)
 	{
 		if(theNetwork == null && createIfNull)
@@ -81,7 +76,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 				}
 			}
 			
-			if(connectedNets.size() == 0 || worldObj.isRemote)
+			if(connectedNets.size() == 0)
 			{
 				theNetwork = new EnergyNetwork(this);
 			}
@@ -108,15 +103,28 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public void invalidate()
 	{
+		getTransmitterNetwork().split(this);
+		
 		if(!worldObj.isRemote)
 		{
-			getTransmitterNetwork().split(this);
-			
-			Mekanism.ic2Registered.remove(Object3D.get(this));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 		}
 		
 		super.invalidate();
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		getTransmitterNetwork().split(this);
+		
+		if(!worldObj.isRemote)
+		{			
+			Mekanism.ic2Registered.remove(Object3D.get(this));
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+		}
 	}
 	
 	@Override
@@ -131,21 +139,18 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public void refreshTransmitterNetwork() 
 	{
-		if(!worldObj.isRemote)
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-				
-				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
-				{
-					getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
-				}
-			}
+			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
-			getTransmitterNetwork().refresh();
-			reconfigure();
+			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
+			{
+				getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
+			}
 		}
+		
+		getTransmitterNetwork().refresh();
+		reconfigure();
 	}
 	
 	@Override

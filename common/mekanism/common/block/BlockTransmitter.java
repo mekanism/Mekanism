@@ -8,7 +8,11 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.PipeUtils;
+import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
@@ -311,6 +315,7 @@ public class BlockTransmitter extends Block
 			if(tileEntity instanceof ITransmitter)
 			{
 				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tileEntity), world.provider.dimensionId);
 			}
 		}
 	}
@@ -325,6 +330,7 @@ public class BlockTransmitter extends Block
 			if(tileEntity instanceof ITransmitter)
 			{
 				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tileEntity), world.provider.dimensionId);
 				
 				if(tileEntity instanceof TileEntityUniversalCable)
 				{

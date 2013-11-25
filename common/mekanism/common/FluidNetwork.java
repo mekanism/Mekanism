@@ -25,6 +25,13 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
+	public int transferDelay = 0;
+	
+	public float fluidScale;
+	public float prevFluidScale;
+	
+	public Fluid refFluid = null;
+	
 	public FluidNetwork(ITransmitter<FluidNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
@@ -74,6 +81,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	
 	public synchronized int emit(FluidStack fluidToSend, boolean doTransfer, TileEntity emitter)
 	{
+		if(refFluid != null && refFluid != fluidToSend.getFluid())
+		{
+			return 0;
+		}
+		
 		List availableAcceptors = Arrays.asList(getAcceptors(fluidToSend).toArray());
 		
 		Collections.shuffle(availableAcceptors);
@@ -108,10 +120,51 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			FluidStack sendStack = fluidToSend.copy();
 			sendStack.amount = fluidSent;
-			MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, sendStack));
+			
+			if(sendStack.getFluid() == refFluid)
+			{
+				fluidScale = Math.min(1, fluidScale+((float)sendStack.amount/1000F));
+			}
+			else if(refFluid == null)
+			{
+				refFluid = sendStack.getFluid();
+				fluidScale += Math.min(1, ((float)sendStack.amount/1000F));
+			}
+			
+			transferDelay = 2;
 		}
 		
 		return fluidSent;
+	}
+	
+	@Override
+	public void tick()
+	{
+		super.tick();
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			if(transferDelay == 0)
+			{
+				if(fluidScale > 0)
+				{
+					fluidScale -= .02;
+				}
+				else {
+					refFluid = null;
+				}
+			}
+			else {
+				transferDelay--;
+			}
+			
+			if(fluidScale != prevFluidScale)
+			{
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, refFluid != null ? refFluid.getID() : -1, fluidScale));
+			}
+			
+			prevFluidScale = fluidScale;
+		}
 	}
 	
 	@Override
@@ -188,12 +241,14 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		public final FluidNetwork fluidNetwork;
 		
-		public final FluidStack fluidSent;
+		public final int fluidType;
+		public final float fluidScale;
 		
-		public FluidTransferEvent(FluidNetwork network, FluidStack fluid)
+		public FluidTransferEvent(FluidNetwork network, int type, float scale)
 		{
 			fluidNetwork = network;
-			fluidSent = fluid;
+			fluidType = type;
+			fluidScale = scale;
 		}
 	}
 		

@@ -6,12 +6,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import mekanism.api.Object3D;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -23,9 +26,13 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	public HashSet<A> possibleAcceptors = new HashSet<A>();
 	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
 	
+	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
+	
 	protected int ticksSinceCreate = 0;
 	
 	protected boolean fixed = false;
+	
+	protected boolean needsUpdate = false;
 	
 	protected abstract ITransmitterNetwork<A, N> create(ITransmitter<N>... varTransmitters);
 	
@@ -92,6 +99,25 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 				ticksSinceCreate = 0;
 				fixMessedUpNetwork(transmitters.iterator().next());
+			}
+		}
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			Iterator<DelayQueue> i = updateQueue.iterator();
+			
+			while(i.hasNext())
+			{
+				DelayQueue q = i.next();
+				
+				if(q.delay > 0)
+				{
+					q.delay--;
+				}
+				else {
+					needsUpdate = true;
+					i.remove();
+				}
 			}
 		}
 	}
@@ -195,6 +221,11 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 		fixed = value;
 	}
 	
+	public void addUpdate(EntityPlayer player)
+	{
+		updateQueue.add(new DelayQueue(player));
+	}
+	
 	public static class NetworkFinder
 	{
 		public TransmissionType transmissionType;
@@ -252,6 +283,18 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			loopAll(start);
 			
 			return iterated;
+		}
+	}
+	
+	public static class DelayQueue
+	{
+		public EntityPlayer player;
+		public int delay;
+		
+		public DelayQueue(EntityPlayer p)
+		{
+			player = p;
+			delay = 5;
 		}
 	}
 }

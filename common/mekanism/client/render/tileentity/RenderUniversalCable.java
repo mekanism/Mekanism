@@ -64,7 +64,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 
-		if(tileEntity.getEnergyScale() <= 0 || !MekanismClient.fancyUniversalCableRender)
+		if(tileEntity.getTransmitterNetwork().clientEnergyScale <= 0 || !MekanismClient.fancyUniversalCableRender)
 		{
 			return;
 		}
@@ -72,7 +72,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		push();
 		
 		MekanismRenderer.glowOn();
-		GL11.glColor4f(1F, 1F, 1F, tileEntity.getEnergyScale());
+		GL11.glColor4f(1F, 1F, 1F, (float)tileEntity.getTransmitterNetwork().clientEnergyScale);
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		
