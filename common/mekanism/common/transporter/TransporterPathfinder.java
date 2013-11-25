@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
@@ -66,8 +65,11 @@ public final class TransporterPathfinder
 				
 				if(transportStack.canInsertToTransporter(tile) && !currentPath.contains(Object3D.get(tile)))
 				{
-					loop(Object3D.get(tile), (ArrayList<Object3D>)currentPath.clone(), dist);
-					found = true;
+					if(TransporterUtils.checkDiversionLogic(pointer.getTileEntity(worldObj), tile, side.ordinal()))
+					{
+						loop(Object3D.get(tile), (ArrayList<Object3D>)currentPath.clone(), dist);
+						found = true;
+					}
 				}
 			}
 			

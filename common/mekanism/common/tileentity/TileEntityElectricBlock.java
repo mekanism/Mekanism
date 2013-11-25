@@ -211,8 +211,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 				setEnergy(getEnergy() + toAdd);
 			}
 			
-			System.out.println("Add " + toAdd);
-			
 			return (float)(toAdd*Mekanism.TO_UE);
 		}
 		
@@ -225,8 +223,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(getOutputtingSide() == from)
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), request.getWatts()*Mekanism.FROM_UE));
-			
-			System.out.println("Provide " + toSend);
 			
 			if(doProvide)
 			{

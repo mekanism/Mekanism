@@ -40,7 +40,7 @@ public class GuiFactory extends GuiMekanism
 		
         fontRenderer.drawString(tileEntity.fullName, 48, 4, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 93) + 2, 0x404040);
-        fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 124, (ySize - 93) + 2, 0x404040);
+        fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 104, (ySize - 93) + 2, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
