@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -124,7 +125,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 					MekanismRenderer.glowOn();
 					GL11.glDisable(GL11.GL_CULL_FACE);
 					GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
-					GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1] - entityItem.yOffset - (stack.itemStack.itemID < 256 ? 0.1 : 0)), (float)(z + pos[2]));
+					GL11.glTranslatef((float)(x + pos[0]), (float)(y + pos[1] - entityItem.yOffset - ((stack.itemStack.getItem() instanceof ItemBlock) ? 0.1 : 0)), (float)(z + pos[2]));
 					modelBox.render(0.0625F);
 					MekanismRenderer.glowOff();
 					GL11.glPopMatrix();
