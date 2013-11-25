@@ -13,7 +13,9 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.InvStack;
+import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.transporter.TransporterFilter;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -85,6 +87,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					InvStack inInventory = null;
 					boolean hasFilter = false;
 					EnumColor filterColor = color;
+					TItemStackFilter itemFilter = null;
 					
 					for(TransporterFilter filter : filters)
 					{
@@ -97,6 +100,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 								filterColor = filter.color;
 								hasFilter = true;
 								inInventory = invStack;
+								
+								if(filter instanceof TItemStackFilter)
+								{
+									itemFilter = (TItemStackFilter)filter;
+								}
+								
 								break;
 							}
 						}
@@ -109,23 +118,33 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(inInventory != null && inInventory.getStack() != null)
 					{
-						boolean inserted = false;
+						ItemStack used = null;
 						
 						if(!roundRobin)
 						{
-							if(TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor))
+							ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, false);
+							
+							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 							{
-								inserted = true;
+								if(itemFilter == null || itemFilter.canFilter(TransporterManager.getToUse(inInventory.getStack(), rejects)))
+								{
+									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+								}
 							}
 						}
 						else {
-							if(TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor))
+							ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, false);
+							
+							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 							{
-								inserted = true;
+								if(itemFilter == null || itemFilter.canFilter(TransporterManager.getToUse(inInventory.getStack(), rejects)))
+								{
+									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+								}
 							}
 						}
 						
-						if(inserted)
+						if(used != null)
 						{
 							inInventory.use();
 							inventory.onInventoryChanged();

@@ -84,7 +84,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 		}
 		else {
 			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
-			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + (getVoltage(itemstack)*Mekanism.FROM_UE) + "v");
 			
 			if(hasTank(itemstack))
 			{

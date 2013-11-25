@@ -12,6 +12,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
@@ -112,6 +113,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 										
 										if(rejected == null)
 										{
+											TransporterManager.remove(stack);
 											remove.add(stack);
 											continue;
 										}
@@ -207,7 +209,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		needsSync.add(stack);
 		
-		if(!stack.recalculatePath(this))
+		if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this)))
 		{
 			if(!stack.calculateIdle(this))
 			{
@@ -224,7 +226,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return true;
 	}
 	
-	public boolean insert(Object3D original, ItemStack itemStack, EnumColor color)
+	public ItemStack insert(Object3D original, ItemStack itemStack, EnumColor color, boolean doEmit)
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -234,21 +236,26 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		if(!stack.canInsertToTransporter(this))
 		{
-			return false;
+			return itemStack;
 		}
 		
-		if(stack.recalculatePath(this))
+		ItemStack rejected = stack.recalculatePath(this);
+		
+		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
+			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
+			
 			transit.add(stack);
+			TransporterManager.add(stack);
 			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
 			MekanismUtils.saveChunk(this);
-			return true;
+			return rejected;
 		}
 		
-		return false;
+		return itemStack;
 	}
 	
-	public boolean insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color)
+	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit)
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -258,17 +265,23 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		if(!stack.canInsertToTransporter(this))
 		{
-			return false;
+			return itemStack;
 		}
 		
-		if(stack.recalculateRRPath(outputter, this))
+		ItemStack rejected = stack.recalculateRRPath(outputter, this);
+		
+		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
+			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
+			
 			transit.add(stack);
+			TransporterManager.add(stack);
 			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
-			return true;
+			MekanismUtils.saveChunk(this);
+			return rejected;
 		}
 		
-		return false;
+		return itemStack;
 	}
 	
 	public void entityEntering(TransporterStack stack)
@@ -393,7 +406,10 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
     		
     		for(int i = 0; i < tagList.tagCount(); i++)
     		{
-    			transit.add(TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+    			TransporterStack stack = TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i));
+    			
+    			transit.add(stack);
+    			TransporterManager.add(stack);
     		}
     	}
     }
@@ -491,13 +507,8 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		{
 			TileEntity tile = Object3D.get(this).getFromSide(from).getTileEntity(worldObj);
 			
-			if(TransporterUtils.insert(tile, this, stack, null))
-			{
-				return stack.stackSize;
-			}
-			else {
-				return 0;
-			}
+			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true);
+			return TransporterManager.getToUse(stack, rejects).stackSize;
 		}
 		
 		return 0;

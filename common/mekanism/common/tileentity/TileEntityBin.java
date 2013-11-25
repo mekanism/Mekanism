@@ -8,6 +8,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -171,9 +172,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
 					
-					if(TransporterUtils.insert(this, transporter, getStack(), null))
+					ItemStack rejects = TransporterUtils.insert(this, transporter, getStack(), null, true);
+					
+					if(TransporterManager.didEmit(getStack(), rejects))
 					{
-						setInventorySlotContents(0, null);
+						setInventorySlotContents(0, rejects);
 					}
 				}
 				else if(tile instanceof IInventory)

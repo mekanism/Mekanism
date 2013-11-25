@@ -29,6 +29,7 @@ import mekanism.common.miner.ThreadMinerSearch;
 import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.InvStack;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -199,9 +200,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 				else if(getEjectInv() instanceof TileEntityLogisticalTransporter)
 				{
-					if(TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null))
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true);
+					
+					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{
-						getTopEject(true, null);
+						getTopEject(true, rejected);
 					}
 				}
 			}

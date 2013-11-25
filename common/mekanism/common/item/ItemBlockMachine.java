@@ -128,8 +128,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				list.add(EnumColor.INDIGO + "Locked: " + EnumColor.GREY + getLocked(itemstack));
 			}
 			
-			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
-			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			if(itemstack.getItemDamage() != MachineType.LOGISTICAL_SORTER.meta)
+			{
+				list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
+				list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
+			}
 			
 			if(hasTank(itemstack))
 			{

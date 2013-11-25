@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.TransporterPathfinder.Destination;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -147,38 +148,38 @@ public class TransporterStack
 		return pathToTarget != null;
 	}
 	
-	public boolean recalculatePath(TileEntityLogisticalTransporter tileEntity)
+	public ItemStack recalculatePath(TileEntityLogisticalTransporter tileEntity)
 	{
-		List<Object3D> newPath = TransporterPathfinder.getNewBasePath(tileEntity, this);
+		Destination newPath = TransporterPathfinder.getNewBasePath(tileEntity, this);
 		
 		if(newPath == null)
 		{
-			return false;
+			return itemStack;
 		}
 		
-		pathToTarget = newPath;
+		pathToTarget = newPath.path;
 		
 		pathType = Path.DEST;
 		initiatedPath = true;
 		
-		return true;
+		return newPath.rejected;
 	}
 	
-	public boolean recalculateRRPath(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity)
+	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity)
 	{
-		List<Object3D> newPath = TransporterPathfinder.getNewRRPath(tileEntity, this, outputter);
+		Destination newPath = TransporterPathfinder.getNewRRPath(tileEntity, this, outputter);
 		
 		if(newPath == null)
 		{
-			return false;
+			return itemStack;
 		}
 		
-		pathToTarget = newPath;
+		pathToTarget = newPath.path;
 		
 		pathType = Path.DEST;
 		initiatedPath = true;
 		
-		return true;
+		return newPath.rejected;
 	}
 	
 	public boolean calculateIdle(TileEntityLogisticalTransporter tileEntity)

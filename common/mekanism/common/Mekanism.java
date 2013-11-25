@@ -19,7 +19,6 @@ import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
-import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
@@ -81,6 +80,7 @@ import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
@@ -99,7 +99,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import thermalexpansion.api.crafting.CraftingManagers;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -1044,6 +1043,7 @@ public class Mekanism
 		teleporters.clear();
 		dynamicInventories.clear();
 		ic2Registered.clear();
+		TransporterManager.flowingStacks.clear();
 	}
 	
 	@EventHandler

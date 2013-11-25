@@ -53,6 +53,24 @@ public final class InvStack
 		itemStacks.add(stack);
 	}
 	
+	public void use(int amount)
+	{
+		for(int i = 0; i < slotIDs.size(); i++)
+		{
+			ItemStack stack = itemStacks.get(i);
+			
+			if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize)
+			{
+				inventory.setInventorySlotContents(slotIDs.get(i), null);
+			}
+			else {
+				ItemStack ret = stack.copy();
+				ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - stack.stackSize;
+				inventory.setInventorySlotContents(slotIDs.get(i), ret);
+			}
+		}
+	}
+	
 	public void use()
 	{
 		for(int i = 0; i < slotIDs.size(); i++)

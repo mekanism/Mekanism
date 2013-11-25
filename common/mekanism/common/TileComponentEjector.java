@@ -10,6 +10,7 @@ import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -121,9 +122,11 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				}
 				else if(tile instanceof TileEntityLogisticalTransporter)
 				{
-					if(TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, outputColor))
+					ItemStack rejects = TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, outputColor, true);
+					
+					if(TransporterManager.didEmit(stack, rejects))
 					{
-						stack = null;
+						stack = rejects;
 					}
 				}
 				

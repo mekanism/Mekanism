@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
-import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -190,14 +190,14 @@ public final class TransporterUtils
     	return inventories;
     }
     
-    public static boolean insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color)
+    public static ItemStack insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit)
     {
-    	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color);
+    	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color, doEmit);
     }
     
-    public static boolean insertRR(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color)
+    public static ItemStack insertRR(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit)
     {
-    	return tileEntity.insertRR(outputter, itemStack.copy(), color);
+    	return tileEntity.insertRR(outputter, itemStack.copy(), color, doEmit);
     }
     
     public static EnumColor increment(EnumColor color)
@@ -226,6 +226,8 @@ public final class TransporterUtils
 			pos = new float[] {0, 0, 0};
 		}
 		
+		TransporterManager.remove(stack);
+		
 		EntityItem entityItem = new EntityItem(tileEntity.worldObj, tileEntity.xCoord + pos[0], tileEntity.yCoord + pos[1], tileEntity.zCoord + pos[2], stack.itemStack);
 		
 		entityItem.motionX = 0;
@@ -242,7 +244,7 @@ public final class TransporterUtils
 		
 		float itemFix = 0;
 		
-		if(stack.itemStack.itemID >= 256)
+		if(!(stack.itemStack.getItem() instanceof ItemBlock))
 		{
 			itemFix = 0.1F;
 		}
