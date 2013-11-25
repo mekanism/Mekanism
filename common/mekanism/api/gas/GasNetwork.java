@@ -210,6 +210,6 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	@Override
 	public String getFlow()
 	{
-		return "Not defined yet for Fluid networks";
+		return "Not defined yet for Gas networks";
 	}
 }
