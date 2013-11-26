@@ -55,6 +55,7 @@ tile.MachineBlock.ElectricPump.name=Elektrische Pumpe
 tile.MachineBlock.ElectricChest.name=Elektrische Truhe
 tile.MachineBlock.Chargepad.name=Ladepad
 tile.MachineBlock.LogisticalSorter.name=Logistischer Sortierer
+tile.MachineBlock.DigitalMiner.name=Digitalbergbaugerät
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -65,6 +66,7 @@ tile.Transmitter.UniversalCable.name=Universelles Kabel
 tile.Transmitter.MechanicalPipe.name=Mechanisches Rohr
 tile.Transmitter.LogisticalTransporter.name=Logistischer Transporter
 tile.Transmitter.RestrictiveTransporter.name=Restriktiver Transporter
+tile.Transmitter.DiversionTransporter.name=Diversionstransporter
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basisenergiewürfel
@@ -189,28 +191,28 @@ item.BronzeHoe.name=Bronzehacke
 item.BronzeSword.name=Bronzeschwert
 
 //Glow
+item.GlowstoneHelmet.name=Glowstone-Helm
+item.GlowstoneChestplate.name=Glowstone-Brustpanzer
+item.GlowstoneLeggings.name=Glowstone-Beinschutz
+item.GlowstoneBoots.name=Glowstone-Stiefel
 item.GlowstonePaxel.name=Glowstone-Paxel
 item.GlowstonePickaxe.name=Glowstone-Spitzhacke
 item.GlowstoneAxe.name=Glowstone-Axt
 item.GlowstoneShovel.name=Glowstone-Schaufel
 item.GlowstoneHoe.name=Glowstone-Hacke
 item.GlowstoneSword.name=Glowstone-Schwert
-item.GlowstoneHelmet.name=Glowstone-Helm
-item.GlowstoneChestplate.name=Glowstone-Brustpanzer
-item.GlowstoneLeggings.name=Glowstone-Beinschutz
-item.GlowstoneBoots.name=Glowstone-Stiefel
 
 //Steel
+item.SteelHelmet.name=Stahlhelm
+item.SteelChestplate.name=Stahlbrustpanzer
+item.SteelLeggings.name=Stahlbeinschutz
+item.SteelBoots.name=Stahlstiefel
 item.SteelPaxel.name=Stahl-Paxel
 item.SteelPickaxe.name=Stahlspitzhacke
 item.SteelAxe.name=Stahlaxt
 item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
-item.SteelHelmet.name=Stahlhelm
-item.SteelChestplate.name=Stahlbrustpanzer
-item.SteelLeggings.name=Stahlbeinschutz
-item.SteelBoots.name=Stahlstiefel
 
 //*********//
 //INDUCTION//
