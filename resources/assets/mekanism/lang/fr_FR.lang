@@ -1,0 +1,228 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=TNT en Obsidienne
+item.EnrichedAlloy.name=Alliage Enrichi
+item.EnergyTablet.name=Tablette Energétique
+item.SpeedUpgrade.name=Amélioration de Vitesse
+item.EnergyUpgrade.name=Amélioration d'Energie
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Désassembleur Atomique
+item.AtomicCore.name=Noyau Atomique
+item.ElectricBow.name=Arc Electrique
+item.BoundingBlock.name=Bloc de Limite
+tile.GasTank.name=Réservoir de Gaz
+item.StorageTank.name=Réservoir de Stockage
+item.ControlCircuit.name=Circuit de Contrôle
+item.EnrichedIron.name=Fer Enrichi
+item.CompressedCarbon.name=Carbonne Compressé
+item.PortableTeleporter.name=Téléporteur Portable
+item.TeleportationCore.name=Noyau de Téléportation
+item.Configurator.name=Configurateur
+item.NetworkReader.name=Analyseur de Réseaux
+item.ManganeseAlloy.name=Alliage de Manganèse
+item.WalkieTalkie.name=Talkie-Walkie
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Bloc d'Osmium
+tile.BasicBlock.BronzeBlock.name=Bloc de Bronze
+tile.BasicBlock.RefinedObsidian.name=Obsidienne Rafinée
+tile.BasicBlock.CoalBlock.name=Bloc de Charbon
+tile.BasicBlock.RefinedGlowstone.name=Pierre Lumineuse Rafinée
+tile.BasicBlock.SteelBlock.name=Bloc d'Acier
+tile.BasicBlock.Bin.name=Silo
+tile.BasicBlock.TeleporterFrame.name=Cadre de Téléporteur
+tile.BasicBlock.SteelCasing.name=Boîtier en Acier
+tile.BasicBlock.DynamicTank.name=Réservoir Dynamique
+tile.BasicBlock.DynamicGlass.name=Vitre Dynamique
+tile.BasicBlock.DynamicValve.name=Valve Dynamique
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Chambre d'Enrichissement
+tile.MachineBlock.OsmiumCompressor.name=Compresseur d'Osmium
+tile.MachineBlock.Combiner.name=Combinateur
+tile.MachineBlock.Crusher.name=Broyeur
+tile.MachineBlock.BasicFactory.name=Usine Basique
+tile.MachineBlock.AdvancedFactory.name=Usine Avancée
+tile.MachineBlock.EliteFactory.name=Usine Elite
+tile.MachineBlock.MetallurgicInfuser.name=Infuseur Métallurgique
+tile.MachineBlock.PurificationChamber.name=Chambre de Purification
+tile.MachineBlock.EnergizedSmelter.name=Fonderie Alimentée
+tile.MachineBlock.Teleporter.name=Teleporteur
+tile.MachineBlock.ElectricPump.name=Pompe Electrique
+tile.MachineBlock.ElectricChest.name=Coffre Electrique
+tile.MachineBlock.Chargepad.name=Plaque de Chargement
+tile.MachineBlock.LogisticalSorter.name=Trieur Logistique
+tile.MachineBlock.DigitalMiner.name=Mineur Digital
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Minerai d'Osmium
+
+//Transmitters
+tile.Transmitter.PressurizedTube.name=Tube Sous-Pression
+tile.Transmitter.UniversalCable.name=Cable Universel
+tile.Transmitter.MechanicalPipe.name=Tuyeau Mécanique
+tile.Transmitter.LogisticalTransporter.name=Transporteur Logistique
+tile.Transmitter.RestrictiveTransporter.name=Transporteur Restrictif
+tile.Transmitter.DiversionTransporter.name=Transporteur Diversif
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Cube d'Energie Basique
+tile.EnergyCube.Advanced.name=Cube d'Energie Avancé
+tile.EnergyCube.Elite.name=Cube d'Energie Elite
+tile.EnergyCube.Ultimate.name=Cube d'Energie Ultime
+
+//Dust
+item.ironDust.name=Poussière de Fer
+item.goldDust.name=Poussière d'Or
+item.osmiumDust.name=Poussière d'Osmium
+item.obsidianDust.name=Poussière d'Obsidienne Rafinée
+item.diamondDust.name=Poussière de Diamant
+item.steelDust.name=Poussière d'Acier
+item.copperDust.name=Poussière de Cuivre
+item.tinDust.name=Poussière d'Etain
+item.silverDust.name=Poussière d'Argent
+
+//Clumps
+item.ironClump.name=Tesson de Fer
+item.goldClump.name=Tesson d'Or
+item.osmiumClump.name=Tesson d'Osmium
+item.copperClump.name=Tesson de Cuivre
+item.tinClump.name=Tesson d'Etain
+item.silverClump.name=Tesson d'Argent
+item.obsidianClump.name=Tesson d'Obsidienne
+
+//Dirty Dust
+item.dirtyIronDust.name=Poussière de Fer Sale
+item.dirtyGoldDust.name=Poussière d'Or Sale
+item.dirtyOsmiumDust.name=Poussière d'Osmium Sale
+item.dirtyCopperDust.name=Poussière de Cuivre Sale
+item.dirtyTinDust.name=Poussière d'Etain Sale
+item.dirtySilverDust.name=Poussière d'Argent Sale
+item.dirtyObsidianDust.name=Poussière d'Obsidienne Sale
+
+//Ingots
+item.obsidianIngot.name=Lingot d'Obsidienne
+item.osmiumIngot.name=Lingot d'Osmium
+item.bronzeIngot.name=Lingot de Bronze
+item.glowstoneIngot.name=Lingot de Pierre Lumineuse
+item.steelIngot.name=Lingot d'Acier
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=Biocombustible
+item.ElectrolyticCore.name=Noyau Electrolytique
+item.SolarPanel.name=Panneau Solaire
+
+//Generators
+tile.Generator.HeatGenerator.name=Générateur Thermique
+tile.Generator.SolarGenerator.name=Générateur Solaire
+tile.Generator.ElectrolyticSeparator.name=Séparateur Electrolytique
+tile.Generator.HydrogenGenerator.name=Générateur à Hydrogène
+tile.Generator.BioGenerator.name=Bio-Générateur
+tile.Generator.AdvancedSolarGenerator.name=Générateur Solaire Avancé
+tile.Generator.WindTurbine.name=Eolienne
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Piopèche en Bois
+item.StonePaxel.name=Piopèche en Pierre
+item.IronPaxel.name=Piopèche en Fer
+item.DiamondPaxel.name=Piopèche en Diamant
+item.GoldPaxel.name=Piopèche en Or
+
+//Obsidian
+item.ObsidianHelmet.name=Casque en Obsidienne
+item.ObsidianChestplate.name=Plastron en Obsidienne
+item.ObsidianLeggings.name=Jambières en Obsidienne
+item.ObsidianBoots.name=Bottes en Obsidienne
+item.ObsidianPaxel.name=Piopèche en Obsidienne
+item.ObsidianPickaxe.name=Pioche en Obsidienne
+item.ObsidianAxe.name=Hache en Obsidienne
+item.ObsidianShovel.name=Pelle en Obsidienne
+item.ObsidianHoe.name=Houe en Obsidienne
+item.ObsidianSword.name=Epée en Obsidienne
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Casque en Lapis Lazuli
+item.LazuliChestplate.name=Plastron en Lapis Lazuli
+item.LazuliLeggings.name=Jambières en Lapis Lazuli
+item.LazuliBoots.name=Bottes en Lapis Lazuli
+item.LazuliPaxel.name=Piopèche en Lapis Lazuli
+item.LazuliPickaxe.name=Pioche en Lapis Lazuli
+item.LazuliAxe.name=Hache en Lapis Lazuli
+item.LazuliShovel.name=Pelle en Lapis Lazuli
+item.LazuliHoe.name=Houe en Lapis Lazuli
+item.LazuliSword.name=Epée en Lapis Lazuli
+
+//Osmium
+item.OsmiumHelmet.name=Casque en Osmium
+item.OsmiumChestplate.name=Plastron en Osmium
+item.OsmiumLeggings.name=Jambières en Osmium
+item.OsmiumBoots.name=Bottes en Osmium
+item.OsmiumPaxel.name=Piopèche en Osmium
+item.OsmiumPickaxe.name=Pioche en Osmium
+item.OsmiumAxe.name=Hache en Osmium
+item.OsmiumShovel.name=Pelle en Osmium
+item.OsmiumHoe.name=Houe en Osmium
+item.OsmiumSword.name=Epée en Osmium
+
+//Bronze
+item.BronzeHelmet.name=Casque en Bronze
+item.BronzeChestplate.name=Plastron en Bronze
+item.BronzeLeggings.name=Jambières en Bronze
+item.BronzeBoots.name=Bottes en Bronze
+item.BronzePaxel.name=Piopèche en Bronze
+item.BronzePickaxe.name=Pioche en Bronze
+item.BronzeAxe.name=Hache en Bronze
+item.BronzeShovel.name=Pelle en Bronze
+item.BronzeHoe.name=Houe en Bronze
+item.BronzeSword.name=Epée en Bronze
+
+//Glow
+item.GlowstoneHelmet.name=Casque en Pierre Lumineuse
+item.GlowstoneChestplate.name=Plastron en Pierre Lumineuse
+item.GlowstoneLeggings.name=Jambières en Pierre Lumineuse
+item.GlowstoneBoots.name=Bottes en Pierre Lumineuse
+item.GlowstonePaxel.name=Piopèche en Pierre Lumineuse
+item.GlowstonePickaxe.name=Pioche en Pierre Lumineuse
+item.GlowstoneAxe.name=Hache en Pierre Lumineuse
+item.GlowstoneShovel.name=Pelle en Pierre Lumineuse
+item.GlowstoneHoe.name=Houe en Pierre Lumineuse
+item.GlowstoneSword.name=Epée en Pierre Lumineuse
+
+//Steel
+item.SteelHelmet.name=Casque en Acier
+item.SteelChestplate.name=Plastron en Acier
+item.SteelLeggings.name=Jambières en Acier
+item.SteelBoots.name=Bottes en Acier
+item.SteelPaxel.name=Piopèche en Acier
+item.SteelPickaxe.name=Pioche en Acier
+item.SteelAxe.name=Hache en Acier
+item.SteelShovel.name=Pelle en Acier
+item.SteelHoe.name=Houe en Acier
+item.SteelSword.name=Epée en Acier
+
+//*********//
+//INDUCTION//
+//*********//
+
+//Blocks
+tile.Tesla.name=Bobine Tesla
+tile.Multimeter.name=Multimètre
+tile.ElectromagneticContractor.name=Contracteur Electromagnétique
+tile.Battery.name=Batterie Modulaire
+
+//Items
+item.Linker.name=Lieur Electrostatique
