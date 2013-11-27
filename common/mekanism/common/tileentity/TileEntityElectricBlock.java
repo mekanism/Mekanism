@@ -3,7 +3,6 @@ package mekanism.common.tileentity;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.tile.IEnergyStorage;
 import ic2.api.tile.IWrenchable;
@@ -34,7 +33,7 @@ import cofh.api.energy.IEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -343,7 +342,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int getMaxSafeInput()
 	{
-		return 2048;
+		return Integer.MAX_VALUE;
 	}
 
 	@Override
@@ -402,33 +401,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public double getOfferedEnergy() 
-	{
-		return Math.min(getEnergy()*Mekanism.TO_IC2, getOutput());
-	}
-	
-	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
 		return side != getOutputtingSide();
 	}
 
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
-	{
-		return direction == getOutputtingSide() && !(receiver instanceof TileEntityUniversalCable);
-	}
-
-	@Override
 	public double getOutputEnergyUnitsPerTick()
 	{
 		return getMaxOutput()*Mekanism.TO_IC2;
-	}
-
-	@Override
-	public void drawEnergy(double amount)
-	{
-		setEnergy(getEnergy()-amount*Mekanism.FROM_IC2);
 	}
 
 	@Override

@@ -47,6 +47,7 @@ import mekanism.common.tileentity.TileEntityObsidianTNT;
 import mekanism.common.tileentity.TileEntityOsmiumCompressor;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityPurificationChamber;
+import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,6 +98,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
 		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
+		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 	}
 	
 	/**
@@ -261,7 +263,7 @@ public class CommonProxy
 			case 6:
 				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:
-				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				//return new ContainerRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity); TODO
 			case 8:
 				return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:

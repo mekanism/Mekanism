@@ -24,7 +24,6 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityDisplay;
 import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -131,7 +130,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			prevEnergy = energyToSend;
 			sent = 0;
 			
-			energyToSend = doEmit(energyToSend, ignored);
+			energyToSend -= (energyToSend - doEmit(energyToSend, ignored));
 			sent = prevEnergy-energyToSend;
 			
 			if(energyToSend > 0 && sent > 0)
@@ -143,6 +142,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return energyToSend;
 	}
 	
+	/**
+	 * @return rejects
+	 */
 	public synchronized double doEmit(double energyToSend, ArrayList<TileEntity> ignored)
 	{
 		double energyAvailable = energyToSend;		
@@ -180,7 +182,8 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 					else if(acceptor instanceof IEnergySink)
 					{
-						double toSend = Math.min(currentSending, (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
+						double toSend = Math.min(currentSending, ((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2);
+						toSend = Math.min(toSend, ((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2);
 						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
 					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
@@ -440,12 +443,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getNeeded()
 	{
-		return ElectricityDisplay.getDisplay((float)(getEnergyNeeded(new ArrayList<TileEntity>())*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.JOULES);
+		return MekanismUtils.getEnergyDisplay(getEnergyNeeded(new ArrayList<TileEntity>()));
 	}
 
 	@Override
 	public String getFlow()
 	{
-		return ElectricityDisplay.getDisplay((float)(getPower()*Mekanism.TO_UE), ElectricityDisplay.ElectricUnit.JOULES);
+		return MekanismUtils.getEnergyDisplay(getPower());
 	}
 }

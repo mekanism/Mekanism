@@ -6,6 +6,7 @@ import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
+import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
@@ -29,6 +30,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelChargepad chargepad = new ModelChargepad();
 	public ModelLogisticalSorter logisticalSorter = new ModelLogisticalSorter();
 	public ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
+	public ModelRotaryCondensentrator rotaryCondensentrator = new ModelRotaryCondensentrator();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -79,6 +81,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(-0.2F, -0.3F, 0.0F);
 		  	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
 		  	digitalMiner.render(0.03125F, false);
+		}
+		else if(MachineType.get(block.blockID, metadata) == MachineType.ROTARY_CONDENSENTRATOR)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1F, -0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
+			rotaryCondensentrator.render(0.0625F);
 		}
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);

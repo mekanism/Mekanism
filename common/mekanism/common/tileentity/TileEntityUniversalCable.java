@@ -108,6 +108,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		if(!worldObj.isRemote)
 		{
 			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+			
+			Mekanism.ic2Registered.remove(Object3D.get(this));
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 		
 		super.invalidate();
@@ -279,13 +282,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
     {
 		ArrayList list = new ArrayList();
 		list.add(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj));
-    	return i - (getTransmitterNetwork().emit(i*Mekanism.FROM_IC2, list)*Mekanism.TO_IC2);
+    	return getTransmitterNetwork().emit(i*Mekanism.FROM_IC2, list)*Mekanism.TO_IC2;
     }
 
 	@Override
 	public int getMaxSafeInput()
 	{
-		return 2048;
+		return Integer.MAX_VALUE;
 	}
 
 	@Override

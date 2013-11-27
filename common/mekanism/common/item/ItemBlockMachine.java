@@ -100,9 +100,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(MachineType.get(itemstack.itemID, itemstack.getItemDamage()) != null)
+		if(MachineType.get(itemstack) != null)
 		{
-			return getUnlocalizedName() + "." + MachineType.get(itemstack.itemID, itemstack.getItemDamage()).name;
+			return getUnlocalizedName() + "." + MachineType.get(itemstack).name;
 		}
 		
 		return "null";
