@@ -29,8 +29,6 @@ public class GuiEnergyCube extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -41,6 +39,8 @@ public class GuiEnergyCube extends GuiMekanism
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
 		fontRenderer.drawString(outputInfo, 45, 49, 0x00CD00);
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class GuiEnergyCube extends GuiMekanism
         int xAxis = mouseX - guiWidth;
  		int yAxis = mouseY - guiHeight;
         
-        int scale = (int)((tileEntity.electricityStored / tileEntity.tier.MAX_ELECTRICITY) * 72);
-        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
+        int displayInt = tileEntity.getScaledEnergyLevel(72);
+        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, displayInt, 10);
     }
 }

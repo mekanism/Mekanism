@@ -89,7 +89,7 @@ public class GuiCredits extends GuiScreen
 	}
 	
 	@Override
-	public void drawScreen(int i, int j, float f)
+	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
 		if(updatedRecently && ThreadClientUpdate.modulesBeingDownloaded == 0 && !updateProgress.contains("Error"))
 		{
@@ -135,6 +135,7 @@ public class GuiCredits extends GuiScreen
   		writeText(EnumColor.GREY + "*Code, textures, and ideas by aidancbrady", size+27);
   		writeText(EnumColor.GREY + "Recent news: " + EnumColor.DARK_BLUE + (!Mekanism.recentNews.contains("null") ? Mekanism.recentNews : "couldn't access."), size+36);
   		writeText(EnumColor.GREY + updateProgress, size+45);
-  		super.drawScreen(i, j, f);
+  		
+  		super.drawScreen(mouseX, mouseY, partialTick);
 	}
 }

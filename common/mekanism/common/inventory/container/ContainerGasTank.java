@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.api.IStorageTank;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tileentity.TileEntityGasTank;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +16,8 @@ public class ContainerGasTank extends Container
 	public ContainerGasTank(InventoryPlayer inventory, TileEntityGasTank tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, EnumGas.NONE, true, 0, 8, 8));
-		addSlotToContainer(new SlotStorageTank(tentity, EnumGas.NONE, true, 1, 8, 40));
+		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 8, 8));
+		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 8, 40));
 		
 		int slotX;
 		
@@ -65,7 +64,7 @@ public class ContainerGasTank extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IStorageTank)
+            if(slotStack.getItem() instanceof IGasItem)
             {
 	            if(slotID != 0 && slotID != 1)
 	            {

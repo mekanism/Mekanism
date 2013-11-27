@@ -104,6 +104,8 @@ public class GuiElectricChest extends GuiContainer
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(getEnergy()), xAxis, yAxis);
 		}
+    	
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 	
 	@Override
@@ -135,7 +137,7 @@ public class GuiElectricChest extends GuiContainer
 	}
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricChest.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -143,8 +145,8 @@ public class GuiElectricChest extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-		int xAxis = (par2 - (width - xSize) / 2);
-		int yAxis = (par3 - (height - ySize) / 2);
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
         
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
 		{

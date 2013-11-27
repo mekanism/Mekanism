@@ -27,17 +27,17 @@ public class GuiGasTank extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 			
-		String capacityInfo = tileEntity.gasStored + "/" + tileEntity.MAX_GAS;
+		String capacityInfo = (tileEntity.getGas() != null ? tileEntity.getGas().amount : 0) + "/" + tileEntity.MAX_GAS;
 		
 		fontRenderer.drawString("Gas Tank", 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
-		fontRenderer.drawString("Gas: " + tileEntity.gasType.name, 45, 49, 0x404040);
+		fontRenderer.drawString("Gas: " + (tileEntity.getGas() != null ? tileEntity.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override
@@ -51,10 +51,10 @@ public class GuiGasTank extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-        
-        int scale = (int)(((double)tileEntity.gasStored / tileEntity.MAX_GAS) * 72);
-        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
+		if(tileEntity.getGas() != null)
+		{
+	        int scale = (int)(((double)tileEntity.getGas().amount / tileEntity.MAX_GAS) * 72);
+	        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
+		}
     }
 }

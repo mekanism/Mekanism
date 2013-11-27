@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEjector;
-import mekanism.api.IStorageTank;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
@@ -259,32 +261,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		{
 			if(recipeType == RecipeType.PURIFYING.ordinal())
 			{
-				if(inventory[4].getItem() instanceof IStorageTank)
-				{
-					if(((IStorageTank)inventory[4].getItem()).getGasType(inventory[4]) == EnumGas.OXYGEN)
-					{
-						IStorageTank item = (IStorageTank)inventory[4].getItem();
-						
-						if(item.canProvideGas(inventory[4], EnumGas.OXYGEN))
-						{
-							int received = 0;
-							int gasNeeded = getMaxSecondaryEnergy() - secondaryEnergyStored;
-							
-							if(item.getRate() <= gasNeeded)
-							{
-								received = item.removeGas(inventory[4], EnumGas.OXYGEN, item.getRate());
-							}
-							else if(item.getRate() > gasNeeded)
-							{
-								received = item.removeGas(inventory[4], EnumGas.OXYGEN, gasNeeded);
-							}
-							
-							setGas(EnumGas.OXYGEN, secondaryEnergyStored + received);
-						}
-					}
-					
-					return;
-				}
+				GasStack removed = GasUtils.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
+				setSecondaryEnergy(secondaryEnergyStored - (removed != null ? removed.amount : 0));
+				
+				return;
 			}
 			
 			int fuelTicks = RecipeType.values()[recipeType].getFuelTicks(inventory[4]);
@@ -863,71 +843,57 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	}
 	
 	@Override
-	public int getGas(EnumGas type, Object... data) 
+	public GasStack getGas(Object... data) 
 	{
-		if(type == EnumGas.OXYGEN)
+		if(secondaryEnergyStored == 0)
 		{
-			return secondaryEnergyStored;
+			return null;
 		}
 		
-		return 0;
+		return new GasStack(GasRegistry.getGas("oxygen"), secondaryEnergyStored);
 	}
 
 	@Override
-	public void setGas(EnumGas type, int amount, Object... data) 
+	public void setGas(GasStack stack, Object... data) 
 	{
-		if(type == EnumGas.OXYGEN)
+		if(stack == null)
 		{
-			setSecondaryEnergy(amount);
+			setSecondaryEnergy(0);
+		}
+		else if(stack.getGas() == GasRegistry.getGas("oxygen"))
+		{
+			setSecondaryEnergy(stack.amount);
 		}
 		
 		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
-	public int getMaxGas(EnumGas type, Object... data)
+	public int getMaxGas(Object... data)
 	{
-		if(type == EnumGas.OXYGEN)
+		return getMaxSecondaryEnergy();
+	}
+
+	@Override
+	public int receiveGas(GasStack stack) 
+	{
+		if(stack.getGas() == GasRegistry.getGas("oxygen"))
 		{
-			return getMaxSecondaryEnergy();
+			int stored = getGas() != null ? getGas().amount : 0;
+			int toUse = Math.min(getMaxGas()-stored, stack.amount);
+			
+			setGas(new GasStack(stack.getGas(), stored + toUse));
+	    	
+	    	return toUse;
 		}
 		
 		return 0;
 	}
 
 	@Override
-	public int transferGasToAcceptor(int amount, EnumGas type) 
+	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		if(type == EnumGas.OXYGEN && recipeType == RecipeType.PURIFYING.ordinal())
-		{
-	    	int rejects = 0;
-	    	int neededGas = getMaxSecondaryEnergy()-secondaryEnergyStored;
-	    	
-	    	if(amount <= neededGas)
-	    	{
-	    		secondaryEnergyStored += amount;
-	    	}
-	    	else if(amount > neededGas)
-	    	{
-	    		secondaryEnergyStored += neededGas;
-	    		rejects = amount-neededGas;
-	    	}
-	    	
-	    	return rejects;
-		}
-		
-		return amount;
-	}
-
-	@Override
-	public boolean canReceiveGas(ForgeDirection side, EnumGas type)
-	{
-		if(recipeType != RecipeType.PURIFYING.ordinal())
-		{
-			return false;
-		}
-		
-		return type == EnumGas.OXYGEN;
+		return type == GasRegistry.getGas("oxygen");
 	}
 
 	@Override

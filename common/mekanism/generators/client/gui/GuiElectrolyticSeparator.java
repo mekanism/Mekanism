@@ -3,7 +3,8 @@ package mekanism.generators.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
@@ -40,48 +41,48 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			String nameToSet = "";
+			Gas gasToSet = null;
 			
-			if(tileEntity.outputType == EnumGas.HYDROGEN)
+			if(tileEntity.outputType == GasRegistry.getGas("hydrogen"))
 			{
-				nameToSet = EnumGas.OXYGEN.name;
+				gasToSet = GasRegistry.getGas("oxygen");
 			}
-			else if(tileEntity.outputType == EnumGas.OXYGEN)
+			else if(tileEntity.outputType == GasRegistry.getGas("oxygen"))
 			{
-				nameToSet = EnumGas.NONE.name;
+				gasToSet = null;
 			}
-			else if(tileEntity.outputType == EnumGas.NONE)
+			else if(tileEntity.outputType == null)
 			{
-				nameToSet = EnumGas.HYDROGEN.name;
+				gasToSet = GasRegistry.getGas("hydrogen");
 			}
 			
 			ArrayList data = new ArrayList();
 			data.add((byte)0);
-			data.add(nameToSet);
+			data.add(GasRegistry.getGasID(gasToSet));
 			
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
 		{
-			String nameToSet = "";
+			Gas gasToSet = null;
 			
-			if(tileEntity.dumpType == EnumGas.NONE)
+			if(tileEntity.dumpType == null)
 			{
-				nameToSet = EnumGas.OXYGEN.name;
+				gasToSet = GasRegistry.getGas("oxygen");
 			}
-			else if(tileEntity.dumpType == EnumGas.OXYGEN)
+			else if(tileEntity.dumpType == GasRegistry.getGas("oxygen"))
 			{
-				nameToSet = EnumGas.HYDROGEN.name;
+				gasToSet = GasRegistry.getGas("hydrogen");
 			}
-			else if(tileEntity.dumpType == EnumGas.HYDROGEN)
+			else if(tileEntity.dumpType == GasRegistry.getGas("hydrogen"))
 			{
-				nameToSet = EnumGas.NONE.name;
+				gasToSet = null;
 			}
 			
 			ArrayList data = new ArrayList();
 			data.add((byte)1);
-			data.add(nameToSet);
+			data.add(GasRegistry.getGasID(gasToSet));
 			
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
@@ -113,10 +114,10 @@ public class GuiElectrolyticSeparator extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int outputDisplay = tileEntity.outputType == EnumGas.OXYGEN ? 82 : (tileEntity.outputType == EnumGas.HYDROGEN ? 90 : 98);
+        int outputDisplay = tileEntity.outputType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.outputType == GasRegistry.getGas("hydrogen") ? 90 : 98);
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, outputDisplay, 8, 8);
         
-        int dumpDisplay = tileEntity.dumpType == EnumGas.OXYGEN ? 82 : (tileEntity.dumpType == EnumGas.HYDROGEN ? 90 : 98);
+        int dumpDisplay = tileEntity.dumpType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.dumpType == GasRegistry.getGas("hydrogen") ? 90 : 98);
         drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, dumpDisplay, 8, 8);
         
         int displayInt;

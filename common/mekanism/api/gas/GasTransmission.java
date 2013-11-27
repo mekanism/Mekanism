@@ -88,56 +88,17 @@ public final class GasTransmission
      * @param amount - amount of gas to send
      * @param sender - the sender of the gas
      * @param facing - side the sender is outputting from
-     * @return rejected gas
+     * @return gas sent
      */
-    public static int emitGasToNetwork(EnumGas type, int amount, TileEntity sender, ForgeDirection facing)
+    public static int emitGasToNetwork(GasStack stack, TileEntity sender, ForgeDirection facing)
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{
-	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(amount, type, sender);
+	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack, sender);
     	}
     	
-    	return amount;
-    }
-    
-    /**
-     * Emits gas from all sides of a TileEntity.
-     * @param type - gas type to send
-     * @param amount - amount of gas to send
-     * @param pointer - sending TileEntity
-     * @return rejected gas
-     */
-    public static int emitGasFromAllSides(EnumGas type, int amount, TileEntity pointer)
-    {
-    	if(pointer != null)
-    	{
-       		Set<GasNetwork> networks = new HashSet<GasNetwork>();
-    		int totalRemaining = 0;
-    		
-    		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-    		{
-    			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
-    			
-    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.GAS, pointer))
-    			{
-    				networks.add(((ITransmitter<GasNetwork>)sideTile).getTransmitterNetwork());
-    			}
-    		}
-    		
-    		int remaining = amount%networks.size();
-    		int splitGas = (amount-remaining)/networks.size();
-    		
-    		for(GasNetwork network : networks)
-    		{
-    			totalRemaining += network.emit(splitGas+remaining, type, pointer);
-    			remaining = 0;
-    		}
-    		
-    		return totalRemaining;
-    	}
-    	
-    	return amount;
+    	return 0;
     }
 }

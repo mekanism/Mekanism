@@ -3,7 +3,6 @@ package mekanism.common.tileentity;
 import java.util.HashSet;
 
 import mekanism.api.Object3D;
-import mekanism.api.gas.EnumGas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasTransmitter;

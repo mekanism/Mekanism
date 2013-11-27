@@ -1,7 +1,10 @@
 package mekanism.common.miner;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import mekanism.common.util.ListUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -9,6 +12,8 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class MItemStackFilter extends MinerFilter
 {
+	private static List<Integer> metaIgnoreArray = ListUtils.asList(Block.planks.blockID);
+	
 	public ItemStack itemType;
 	
 	public MItemStackFilter(ItemStack item)
@@ -24,6 +29,11 @@ public class MItemStackFilter extends MinerFilter
 		if(itemStack == null)
 		{
 			return false;
+		}
+		
+		if(itemStack.itemID == itemType.itemID && metaIgnoreArray.contains(itemType.itemID))
+		{
+			return true;
 		}
 	
 		return itemType.isItemEqual(itemStack);

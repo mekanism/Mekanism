@@ -11,7 +11,6 @@ import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
@@ -28,7 +27,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRobitRepair extends GuiContainer implements ICrafting
+public class GuiRobitRepair extends GuiMekanism implements ICrafting
 {
 	public int entityId;
     private ContainerRepair repairContainer;
@@ -118,6 +117,8 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
         }
 
         GL11.glEnable(GL11.GL_LIGHTING);
+        
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
@@ -177,9 +178,10 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float par3)
+    public void drawScreen(int mouseX, int mouseY, float partialTick)
     {
-        super.drawScreen(mouseX, mouseY, par3);
+        super.drawScreen(mouseX, mouseY, partialTick);
+        
         GL11.glDisable(GL11.GL_LIGHTING);
         itemNameField.drawTextBox();
     }
@@ -187,6 +189,8 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitRepair.png"));
         int guiWidth = (width - xSize) / 2;

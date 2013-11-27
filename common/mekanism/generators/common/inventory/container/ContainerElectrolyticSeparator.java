@@ -1,9 +1,9 @@
 package mekanism.generators.common.inventory.container;
 
-import mekanism.api.IStorageTank;
-import mekanism.api.gas.EnumGas;
-import mekanism.common.inventory.slot.SlotStorageTank;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,8 +23,8 @@ public class ContainerElectrolyticSeparator extends Container
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 17, 35));
-        addSlotToContainer(new SlotStorageTank(tentity, EnumGas.HYDROGEN, false, 1, 59, 52));
-        addSlotToContainer(new SlotStorageTank(tentity, EnumGas.OXYGEN, false, 2, 101, 52));
+        addSlotToContainer(new SlotStorageTank(tentity, GasRegistry.getGas("hydrogen"), false, 1, 59, 52));
+        addSlotToContainer(new SlotStorageTank(tentity, GasRegistry.getGas("oxygen"), false, 2, 101, 52));
         addSlotToContainer(new SlotDischarge(tentity, 3, 143, 35));
         int slotX;
 
@@ -79,23 +79,26 @@ public class ContainerElectrolyticSeparator extends Container
             			return null;
             		}
             	}
-            	else if(slotStack.getItem() instanceof IStorageTank)
+            	else if(slotStack.getItem() instanceof IGasItem)
             	{
-            		if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.HYDROGEN)
+            		if(((IGasItem)slotStack.getItem()).getGas(slotStack) != null)
             		{
-            			if(!mergeItemStack(slotStack, 1, 2, false))
-            			{
-            				return null;
-            			}
+	            		if(((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == GasRegistry.getGas("hydrogen"))
+	            		{
+	            			if(!mergeItemStack(slotStack, 1, 2, false))
+	            			{
+	            				return null;
+	            			}
+	            		}
+	            		else if(((IGasItem)slotStack.getItem()).getGas(slotStack).getGas() == GasRegistry.getGas("oxygen"))
+	            		{
+	            			if(!mergeItemStack(slotStack, 2, 3, false))
+	            			{
+	            				return null;
+	            			}
+	            		}
             		}
-            		else if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.OXYGEN)
-            		{
-            			if(!mergeItemStack(slotStack, 2, 3, false))
-            			{
-            				return null;
-            			}
-            		}
-            		else if(((IStorageTank)slotStack.getItem()).getGasType(slotStack) == EnumGas.NONE)
+            		else if(((IGasItem)slotStack.getItem()).getGas(slotStack) == null)
             		{
             			if(!mergeItemStack(slotStack, 1, 2, false))
             			{

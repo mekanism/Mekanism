@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.tileentity.TileEntityElectricMachine;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -27,9 +28,7 @@ public class GuiElectricMachine extends GuiMekanism
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    	
+    {    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -38,8 +37,12 @@ public class GuiElectricMachine extends GuiMekanism
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
+			GL11.glPushMatrix();
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			GL11.glPopMatrix();
 		}
+		
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override

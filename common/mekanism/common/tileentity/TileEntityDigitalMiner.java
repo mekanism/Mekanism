@@ -227,15 +227,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		if(silkTouch)
 		{
-			ret *= 6;
+			ret *= 6F;
 		}
+		
+		int baseRad = Math.max(radius-10, 0);
+		ret *= (1 + ((float)baseRad/22F));
+		
+		int baseHeight = Math.max((maxY-minY)-60, 0);
+		ret *= (1 + ((float)baseHeight/195F));
 		
 		return ret;
 	}
 	
 	public int getDelay()
 	{
-		return (int)Math.pow((9-getSpeedMultiplier()), 2);
+		return MekanismUtils.getTicks(getSpeedMultiplier(), 100);
 	}
 	
 	public void setReplace(Object3D obj)

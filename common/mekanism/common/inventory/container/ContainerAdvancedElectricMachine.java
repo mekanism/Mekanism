@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.api.IStorageTank;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;

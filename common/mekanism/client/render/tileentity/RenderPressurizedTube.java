@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import mekanism.api.Object3D;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.model.ModelTransmitter;
@@ -13,7 +13,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityGasTank;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +21,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
@@ -36,7 +34,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	
 	private boolean[] connectable;
 	
-	private HashMap<BooleanArray, HashMap<EnumGas, DisplayInteger>> cachedCenterGasses = new HashMap<BooleanArray, HashMap<EnumGas, DisplayInteger>>();
+	private HashMap<BooleanArray, HashMap<Gas, DisplayInteger>> cachedCenterGasses = new HashMap<BooleanArray, HashMap<Gas, DisplayInteger>>();
 	
 	private static final double offset = 0.015;
 	
@@ -114,10 +112,10 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 		
-		EnumGas gasType = tileEntity.getTransmitterNetwork().refGas;
+		Gas gasType = tileEntity.getTransmitterNetwork().refGas;
 		float scale = tileEntity.getTransmitterNetwork().gasScale;
 	
-		if(scale > 0 && gasType != null && gasType.hasTexture())
+		if(scale > 0 && gasType != null && gasType.getIcon() != null)
 		{
 			push();
 			
@@ -157,7 +155,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger getListAndRender(ForgeDirection side, EnumGas type, Block block)
+	private DisplayInteger getListAndRender(ForgeDirection side, Gas type, Block block)
 	{
 		if(side == ForgeDirection.UNKNOWN)
 		{
@@ -169,7 +167,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			Model3D toReturn = new Model3D();
 			toReturn.baseBlock = Block.waterStill;
 			
-			toReturn.setTexture(type.gasIcon);
+			toReturn.setTexture(type.getIcon());
 			
 			toReturn.minX = 0.3 + offset;
 			toReturn.minY = 0.3 + offset;
@@ -193,7 +191,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				cachedCenterGasses.get(side).put(type, display);
 			}
 			else {
-				HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
+				HashMap<Gas, DisplayInteger> map = new HashMap<Gas, DisplayInteger>();
 				map.put(type, display);
 				
 				cachedCenterGasses.put(new BooleanArray(connectable), map);
@@ -204,7 +202,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
-		toReturn.setTexture(type.gasIcon);
+		toReturn.setTexture(type.getIcon());
 		
 		toReturn.setSideRender(side, false);
 		toReturn.setSideRender(side.getOpposite(), false);

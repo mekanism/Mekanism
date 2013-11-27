@@ -2,7 +2,8 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
@@ -23,7 +24,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	
 	public double power;
 	
-	public String gasName;
+	public int gasType;
 	public float gasScale;
 	
 	public int fluidType;
@@ -47,7 +48,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				power = (Double)data[2];
 				break;
 			case GAS:
-				gasName = data[2] != null ? ((EnumGas)data[2]).name : "null";
+				gasType = (Integer)data[2];
 				gasScale = (Float)data[3];
 				break;
 			case FLUID:
@@ -92,8 +93,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	    {
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
-    		String type = dataStream.readUTF();
-    		EnumGas gasType = type.equals("null") ? null : EnumGas.getFromName(type);
+    		Gas gasType = GasRegistry.getGas(dataStream.readInt());
     		gasScale = dataStream.readFloat();
     		
     		if(tileEntity != null)
@@ -133,7 +133,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				dataStream.writeDouble(power);
 				break;
 			case GAS:
-				dataStream.writeUTF(gasName);
+				dataStream.writeInt(gasType);
 				dataStream.writeFloat(gasScale);
 				break;
 			case FLUID:

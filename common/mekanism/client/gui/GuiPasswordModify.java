@@ -186,7 +186,7 @@ public class GuiPasswordModify extends GuiScreen
 	}
 	
 	@Override
-	public void drawScreen(int i, int j, float f)
+	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiPasswordModify.png"));
@@ -195,7 +195,9 @@ public class GuiPasswordModify extends GuiScreen
         int guiHeight = (height - ySize) / 2;
         
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        super.drawScreen(i, j, f);
+        
+        super.drawScreen(mouseX, mouseY, partialTick);
+        
         fontRenderer.drawString("Password", guiWidth + 64, guiHeight + 5, 0x404040);
         fontRenderer.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
         fontRenderer.drawString("Enter:", guiWidth + 27, guiHeight + 37, 0x404040);

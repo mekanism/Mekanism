@@ -2,7 +2,7 @@ package mekanism.common.block;
 
 import java.util.Random;
 
-import mekanism.api.IStorageTank;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -210,9 +210,8 @@ public class BlockGasTank extends BlockContainer
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
         
-        IStorageTank storageTank = (IStorageTank)itemStack.getItem();
-        storageTank.setGasType(itemStack, tileEntity.gasType);
-        storageTank.setGas(tileEntity.gasType, tileEntity.gasStored, itemStack);
+        IGasItem storageTank = (IGasItem)itemStack.getItem();
+        storageTank.setGas(tileEntity.gasStored, itemStack);
         
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

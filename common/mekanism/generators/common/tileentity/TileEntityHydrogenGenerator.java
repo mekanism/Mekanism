@@ -2,9 +2,12 @@ package mekanism.generators.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.IStorageTank;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.util.ChargeUtils;
@@ -44,27 +47,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			
 			if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 			{
-				if(inventory[0].getItem() instanceof IStorageTank)
-				{
-					IStorageTank item = (IStorageTank)inventory[0].getItem();
-					
-					if(item.canProvideGas(inventory[0], EnumGas.HYDROGEN) && item.getGasType(inventory[0]) == EnumGas.HYDROGEN)
-					{
-						int received = 0;
-						int hydrogenNeeded = MAX_HYDROGEN - hydrogenStored;
-						
-						if(item.getRate() <= hydrogenNeeded)
-						{
-							received = item.removeGas(inventory[0], EnumGas.HYDROGEN, item.getRate());
-						}
-						else if(item.getRate() > hydrogenNeeded)
-						{
-							received = item.removeGas(inventory[0], EnumGas.HYDROGEN, hydrogenNeeded);
-						}
-						
-						setGas(EnumGas.HYDROGEN, hydrogenStored + received);
-					}
-				}
+				GasStack removed = GasUtils.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), getMaxGas()-hydrogenStored);
+				setGas(new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored - (removed != null ? removed.amount : 0)));
 			}
 			
 			if(canOperate())
@@ -89,7 +73,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		}
 		else if(slotID == 0)
 		{
-			return (itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.NONE, itemstack) == 0);
+			return (itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null);
 		}
 		
 		return false;
@@ -100,7 +84,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		if(slotID == 0)
 		{
-			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.HYDROGEN;
+			return itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+					((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogen");
 		}
 		else if(slotID == 1)
 		{
@@ -116,26 +101,30 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
     
-    @Override
-	public void setGas(EnumGas type, int amount, Object... data)
+	@Override
+	public GasStack getGas(Object... data) 
 	{
-		if(type == EnumGas.HYDROGEN)
+		if(hydrogenStored == 0)
 		{
-			hydrogenStored = Math.max(Math.min(amount, MAX_HYDROGEN), 0);
+			return null;
+		}
+		
+		return new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored);
+	}
+
+	@Override
+	public void setGas(GasStack stack, Object... data) 
+	{
+		if(stack == null)
+		{
+			hydrogenStored = 0;
+		}
+		else if(stack.getGas() == GasRegistry.getGas("hydrogen"))
+		{
+			hydrogenStored = Math.max(Math.min(stack.amount, getMaxGas()), 0);
 		}
 		
 		MekanismUtils.saveChunk(this);
-	}
-    
-	@Override
-	public int getGas(EnumGas type, Object... data)
-	{
-		if(type == EnumGas.HYDROGEN)
-		{
-			return hydrogenStored;
-		}
-		
-		return 0;
 	}
 	
 	@Override
@@ -205,26 +194,19 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public int transferGasToAcceptor(int amount, EnumGas type)
+	public int receiveGas(GasStack stack) 
 	{
-		if(type == EnumGas.HYDROGEN)
+		if(stack.getGas() == GasRegistry.getGas("hydrogen"))
 		{
-	    	int rejects = 0;
-	    	int neededHydrogen = MAX_HYDROGEN-hydrogenStored;
-	    	if(amount <= neededHydrogen)
-	    	{
-	    		hydrogenStored += amount;
-	    	}
-	    	else if(amount > neededHydrogen)
-	    	{
-	    		hydrogenStored += neededHydrogen;
-	    		rejects = amount-neededHydrogen;
-	    	}
+			int stored = getGas() != null ? getGas().amount : 0;
+			int toUse = Math.min(getMaxGas()-stored, stack.amount);
+			
+			setGas(new GasStack(stack.getGas(), stored + toUse));
 	    	
-	    	return rejects;
+	    	return toUse;
 		}
 		
-		return amount;
+		return 0;
 	}
 	
 	@Override
@@ -244,9 +226,9 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
     }
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, EnumGas type) 
+	public boolean canReceiveGas(ForgeDirection side, Gas type) 
 	{
-		return type == EnumGas.HYDROGEN && side != ForgeDirection.getOrientation(facing);
+		return type == GasRegistry.getGas("hydrogen") && side != ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
@@ -256,13 +238,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public int getMaxGas(EnumGas type, Object... data) 
+	public int getMaxGas(Object... data) 
 	{
-		if(type == EnumGas.HYDROGEN)
-		{
-			return MAX_HYDROGEN;
-		}
-		
-		return 0;
+		return MAX_HYDROGEN;
 	}
 }

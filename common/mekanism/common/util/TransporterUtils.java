@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
@@ -23,26 +24,8 @@ import buildcraft.api.power.PowerHandler.Type;
 
 public final class TransporterUtils 
 {
-	public static ArrayList<EnumColor> colors = buildColors();
-	
-	public static ArrayList<EnumColor> buildColors()
-	{
-		ArrayList<EnumColor> ret = new ArrayList<EnumColor>();
-		
-		ret.add(EnumColor.DARK_BLUE);
-		ret.add(EnumColor.DARK_GREEN);
-		ret.add(EnumColor.DARK_AQUA);
-		ret.add(EnumColor.DARK_RED);
-		ret.add(EnumColor.PURPLE);
-		ret.add(EnumColor.INDIGO);
-		ret.add(EnumColor.BRIGHT_GREEN);
-		ret.add(EnumColor.AQUA);
-		ret.add(EnumColor.RED);
-		ret.add(EnumColor.PINK);
-		ret.add(EnumColor.YELLOW);
-		
-		return ret;
-	}
+	public static List<EnumColor> colors = ListUtils.asList(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
+			EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK, EnumColor.YELLOW, EnumColor.BLACK);
 
     /**
      * Gets all the transporters around a tile entity.

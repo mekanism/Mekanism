@@ -11,7 +11,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Keyboard;
@@ -21,7 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRobitMain extends GuiContainer
+public class GuiRobitMain extends GuiMekanism
 {
 	public EntityRobit robit;
 	
@@ -138,11 +137,15 @@ public class GuiRobitMain extends GuiContainer
 		{
 			drawCreativeTabHoveringText("Toggle 'drop pickup' mode", xAxis, yAxis);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
     	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;

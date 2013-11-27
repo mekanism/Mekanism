@@ -32,9 +32,7 @@ public class GuiFactory extends GuiMekanism
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    	
+    {    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
@@ -51,6 +49,8 @@ public class GuiFactory extends GuiMekanism
 		{
 			drawCreativeTabHoveringText("Secondary energy: " + tileEntity.secondaryEnergyStored, xAxis, yAxis);
 		}
+		
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override

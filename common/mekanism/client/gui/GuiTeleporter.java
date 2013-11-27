@@ -10,7 +10,6 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -19,7 +18,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTeleporter extends GuiContainer
+public class GuiTeleporter extends GuiMekanism
 {
     public TileEntityTeleporter tileEntity;
 
@@ -43,6 +42,8 @@ public class GuiTeleporter extends GuiContainer
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
     
 	@Override
@@ -94,8 +95,10 @@ public class GuiTeleporter extends GuiContainer
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
     	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;

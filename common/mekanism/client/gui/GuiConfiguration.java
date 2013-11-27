@@ -59,6 +59,8 @@ public class GuiConfiguration extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+		
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiConfiguration.png"));
         
@@ -145,9 +147,7 @@ public class GuiConfiguration extends GuiMekanism
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-		
+	{		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
         
@@ -218,6 +218,8 @@ public class GuiConfiguration extends GuiMekanism
         {
         	drawCreativeTabHoveringText("Strict Input", xAxis, yAxis);
         }
+        
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override

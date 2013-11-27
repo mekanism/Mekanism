@@ -3,9 +3,7 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IStorageTank;
 import mekanism.api.SideData;
-import mekanism.api.gas.EnumGas;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
 import mekanism.common.TileComponentEjector;

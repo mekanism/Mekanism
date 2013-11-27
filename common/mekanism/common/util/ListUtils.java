@@ -162,6 +162,11 @@ public class ListUtils
 
 	public static <V> List<V> asList(Set<V> set)
 	{
-		return (List<V>) Arrays.asList(set.toArray());
+		return (List<V>)Arrays.asList(set.toArray());
+	}
+	
+	public static <V> List<V> asList(V... values)
+	{
+		return (List<V>)Arrays.asList(values);
 	}
 }

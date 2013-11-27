@@ -148,7 +148,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				if(fluidScale > 0)
 				{
-					fluidScale -= .02;
+					fluidScale = Math.max(0, fluidScale-.02F);
 				}
 				else {
 					refFluid = null;

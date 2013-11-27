@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -66,8 +66,8 @@ public class MekanismRenderer
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
 			
-			EnumGas.HYDROGEN.gasIcon = event.map.registerIcon("mekanism:LiquidHydrogen");
-			EnumGas.OXYGEN.gasIcon = event.map.registerIcon("mekanism:LiquidOxygen");
+			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
+			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
 		}
 	}
     

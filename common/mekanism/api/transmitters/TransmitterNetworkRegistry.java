@@ -11,6 +11,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -109,7 +110,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		@ForgeSubscribe
 		public void onChunkLoad(ChunkEvent.Load event)
 		{
-			if(event.getChunk() != null)
+			if(event.getChunk() != null && !event.world.isRemote)
 			{
 				int x = event.getChunk().xPosition;
 				int z = event.getChunk().zPosition;
@@ -136,16 +137,19 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			try {
 			    if(c != null)
 	            {
-	                for(Iterator iter = c.chunkTileEntityMap.values().iterator(); iter.hasNext();)
-	                {
-	                	Object obj = iter.next();
-	                	
-	                    if(obj instanceof ITransmitter && !((TileEntity)obj).worldObj.isRemote)
-	                    {
-                            ((ITransmitter)obj).refreshTransmitterNetwork();
-                            ((ITransmitter)obj).chunkLoad();
-	                    }
-	                }
+			    	synchronized(INSTANCE)
+			    	{
+		                for(Iterator iter = c.chunkTileEntityMap.values().iterator(); iter.hasNext();)
+		                {
+		                	Object obj = iter.next();
+		                	
+		                    if(obj instanceof ITransmitter)
+		                    {
+	                            ((ITransmitter)obj).refreshTransmitterNetwork();
+	                            ((ITransmitter)obj).chunkLoad();
+		                    }
+		                }
+			    	}
 	            }
 			} catch(Exception e) {
 				e.printStackTrace();

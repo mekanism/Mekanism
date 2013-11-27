@@ -5,13 +5,15 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.Random;
 
-import mekanism.api.IStorageTank;
 import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
-import mekanism.api.gas.IGasStorage;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -24,7 +26,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +44,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IGasStorage, IEnergySink, IFluidHandler, IPeripheral, ITubeConnection, IStrictEnergyAcceptor, ISustainedTank
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IEnergySink, IFluidHandler, IPeripheral, ITubeConnection, IStrictEnergyAcceptor, ISustainedTank
 {
 	/** This separator's water slot. */
 	public FluidTank waterTank = new FluidTank(24000);
@@ -61,17 +62,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public int output = 16;
 	
 	/** The type of gas this block is outputting. */
-	public EnumGas outputType;
+	public Gas outputType;
 	
 	/** Type type of gas this block is dumping. */
-	public EnumGas dumpType;
+	public Gas dumpType;
 
 	public TileEntityElectrolyticSeparator()
 	{
 		super("Electrolytic Separator", GeneratorType.ELECTROLYTIC_SEPARATOR.maxEnergy);
 		inventory = new ItemStack[4];
-		outputType = EnumGas.HYDROGEN;
-		dumpType = EnumGas.NONE;
+		outputType = GasRegistry.getGas("oxygen");
+		dumpType = null;
 	}
 	
 	@Override
@@ -113,58 +114,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && hydrogenStored > 0)
 				{
-					if(inventory[1].getItem() instanceof IStorageTank)
-					{
-						if(((IStorageTank)inventory[1].getItem()).getGasType(inventory[1]) == EnumGas.HYDROGEN || ((IStorageTank)inventory[1].getItem()).getGasType(inventory[1]) == EnumGas.NONE)
-						{
-							IStorageTank item = (IStorageTank)inventory[1].getItem();
-							
-							if(item.canReceiveGas(inventory[1], EnumGas.HYDROGEN))
-							{
-								int sendingGas = 0;
-								
-								if(item.getRate() <= hydrogenStored)
-								{
-									sendingGas = item.getRate();
-								}
-								else if(item.getRate() > hydrogenStored)
-								{
-									sendingGas = hydrogenStored;
-								}
-								
-								int rejects = item.addGas(inventory[1], EnumGas.HYDROGEN, sendingGas);
-								setGas(EnumGas.HYDROGEN, hydrogenStored - (sendingGas - rejects));
-							}
-						}
-					}
+					hydrogenStored -= GasUtils.addGas(inventory[0], new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored));
+					MekanismUtils.saveChunk(this);
 				}
 				
 				if(inventory[2] != null && oxygenStored > 0)
 				{
-					if(inventory[2].getItem() instanceof IStorageTank)
-					{
-						if(((IStorageTank)inventory[2].getItem()).getGasType(inventory[2]) == EnumGas.OXYGEN || ((IStorageTank)inventory[2].getItem()).getGasType(inventory[2]) == EnumGas.NONE)
-						{
-							IStorageTank item = (IStorageTank)inventory[2].getItem();
-							
-							if(item.canReceiveGas(inventory[2], EnumGas.OXYGEN))
-							{
-								int sendingGas = 0;
-								
-								if(item.getRate() <= oxygenStored)
-								{
-									sendingGas = item.getRate();
-								}
-								else if(item.getRate() > oxygenStored)
-								{
-									sendingGas = oxygenStored;
-								}
-								
-								int rejects = item.addGas(inventory[2], EnumGas.OXYGEN, sendingGas);
-								setGas(EnumGas.OXYGEN, oxygenStored - (sendingGas - rejects));
-							}
-						}
-					}
+					hydrogenStored -= GasUtils.addGas(inventory[0], new GasStack(GasRegistry.getGas("oxygen"), oxygenStored));
+					MekanismUtils.saveChunk(this);
 				}
 			}
 			
@@ -172,13 +129,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				waterTank.drain(2, true);
 				setEnergy(getEnergy() - MekanismGenerators.electrolyticSeparatorUsage);
-				setGas(EnumGas.OXYGEN, oxygenStored + 1);
-				setGas(EnumGas.HYDROGEN, hydrogenStored + 2);
+				setStored(GasRegistry.getGas("oxygen"), oxygenStored + 1);
+				setStored(GasRegistry.getGas("hydrogen"), hydrogenStored + 2);
 			}
 			
-			if(outputType != EnumGas.NONE && getGas(outputType) > 0)
+			if(outputType != null && getStored(outputType) > 0)
 			{
-				setGas(outputType, getGas(outputType) - (Math.min(getGas(outputType), output) - GasTransmission.emitGasToNetwork(outputType, Math.min(getGas(outputType), output), this, ForgeDirection.getOrientation(facing))));
+				GasStack toSend = new GasStack(outputType, Math.min(getStored(outputType), output));
+				setStored(outputType, getStored(outputType) - GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing)));
 				
 				TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
@@ -186,16 +144,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					if(((IGasAcceptor)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputType))
 					{
-						int sendingGas = Math.min(getGas(outputType), output);
-						int rejects = ((IGasAcceptor)tileEntity).transferGasToAcceptor(Math.min(getGas(outputType), output), outputType);
-						setGas(outputType, getGas(outputType) - (sendingGas - rejects));
+						int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(outputType, Math.min(getStored(outputType), output)));
+						
+						setStored(outputType, getStored(outputType) - added);
 					}
 				}
 			}
 			
-			if(dumpType != EnumGas.NONE && getGas(dumpType) > 0)
+			if(dumpType != null && getStored(dumpType) > 0)
 			{
-				setGas(dumpType, (getGas(dumpType) - 8));
+				setStored(dumpType, (getStored(dumpType) - 8));
 				
 				if(new Random().nextInt(3) == 2)
 				{
@@ -203,6 +161,34 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				}
 			}
 		}
+	}
+	
+	public int getStored(Gas gas)
+	{
+		if(gas == GasRegistry.getGas("oxygen"))
+		{
+			return oxygenStored;
+		}
+		else if(gas == GasRegistry.getGas("hydrogen"))
+		{
+			return hydrogenStored;
+		}
+		
+		return 0;
+	}
+	
+	public void setStored(Gas type, int amount)
+	{
+		if(type == GasRegistry.getGas("hydrogen"))
+		{
+			hydrogenStored = Math.max(Math.min(amount, MAX_GAS), 0);
+		}
+		else if(type == GasRegistry.getGas("oxygen"))
+		{
+			oxygenStored = Math.max(Math.min(amount, MAX_GAS), 0);
+		}
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	public void spawnParticle()
@@ -235,13 +221,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return FluidContainerRegistry.isEmptyContainer(itemstack);
 		}
-		else if(slotID == 1)
+		else if(slotID == 1 || slotID == 2)
 		{
-			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.HYDROGEN, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.HYDROGEN, itemstack);
-		}
-		else if(slotID == 2)
-		{
-			return itemstack.getItem() instanceof IStorageTank && ((IStorageTank)itemstack.getItem()).getGas(EnumGas.OXYGEN, itemstack) == ((IStorageTank)itemstack.getItem()).getMaxGas(EnumGas.OXYGEN, itemstack);
+			return itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null && 
+					((IGasItem)itemstack.getItem()).getGas(itemstack).amount == ((IGasItem)itemstack.getItem()).getMaxGas(itemstack);
 		}
 		
 		return false;
@@ -256,11 +239,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IStorageTank && (((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.HYDROGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE);
+			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogen"));
 		}
 		else if(slotID == 2)
 		{
-			return itemstack.getItem() instanceof IStorageTank && (((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE);
+			return itemstack.getItem() instanceof IGasItem && (((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen"));
 		}
 		else if(slotID == 3)
 		{
@@ -358,12 +341,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			
 			if(type == 0)
 			{
-				outputType = EnumGas.getFromName(dataStream.readUTF());
+				outputType = GasRegistry.getGas(dataStream.readInt());
 				return;
 			}
 			else if(type == 1)
 			{
-				dumpType = EnumGas.getFromName(dataStream.readUTF());
+				dumpType = GasRegistry.getGas(dataStream.readInt());
 				return;
 			}
 		}
@@ -382,8 +365,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		oxygenStored = dataStream.readInt();
 		hydrogenStored = dataStream.readInt();
-		outputType = EnumGas.getFromName(dataStream.readUTF());
-		dumpType = EnumGas.getFromName(dataStream.readUTF());
+		outputType = GasRegistry.getGas(dataStream.readInt());
+		dumpType = GasRegistry.getGas(dataStream.readInt());
 	}
 	
 	@Override
@@ -401,46 +384,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		
 		data.add(oxygenStored);
 		data.add(hydrogenStored);
-		data.add(outputType.name);
-		data.add(dumpType.name);
+		data.add(GasRegistry.getGasID(outputType));
+		data.add(GasRegistry.getGasID(dumpType));
 		
 		return data;
-	}
-	
-	@Override
-	public int getMaxGas(EnumGas type, Object... data)
-	{
-		return MAX_GAS;
-	}
-	
-	@Override
-	public void setGas(EnumGas type, int amount, Object... data)
-	{
-		if(type == EnumGas.HYDROGEN)
-		{
-			hydrogenStored = Math.max(Math.min(amount, MAX_GAS), 0);
-		}
-		else if(type == EnumGas.OXYGEN)
-		{
-			oxygenStored = Math.max(Math.min(amount, MAX_GAS), 0);
-		}
-		
-		MekanismUtils.saveChunk(this);
-	}
-	
-	@Override
-	public int getGas(EnumGas type, Object... data)
-	{
-		if(type == EnumGas.HYDROGEN)
-		{
-			return hydrogenStored;
-		}
-		else if(type == EnumGas.OXYGEN)
-		{
-			return oxygenStored;
-		}
-		
-		return 0;
 	}
 	
 	@Override
@@ -498,8 +445,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         	waterTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
         }
         
-        outputType = EnumGas.getFromName(nbtTags.getString("outputType"));
-        dumpType = EnumGas.getFromName(nbtTags.getString("dumpType"));
+        outputType = Gas.readFromNBT(nbtTags.getCompoundTag("outputType"));
+        dumpType = Gas.readFromNBT(nbtTags.getCompoundTag("dumpType"));
     }
 
 	@Override
@@ -515,8 +462,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         	nbtTags.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
         }
         
-        nbtTags.setString("outputType", outputType.name);
-        nbtTags.setString("dumpType", dumpType.name);
+        if(outputType != null)
+        {
+        	nbtTags.setCompoundTag("outputType", outputType.write(new NBTTagCompound()));
+        }
+        
+        if(dumpType != null)
+        {
+        	nbtTags.setCompoundTag("dumpType", dumpType.write(new NBTTagCompound()));
+        }
     }
 
 	@Override

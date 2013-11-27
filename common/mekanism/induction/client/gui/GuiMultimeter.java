@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
@@ -59,7 +60,11 @@ public class GuiMultimeter extends GuiContainer
 	protected void keyTyped(char par1, int par2)
 	{
 		super.keyTyped(par1, par2);
-		textFieldLimit.textboxKeyTyped(par1, par2);
+		
+		if(Character.isDigit(par1) || par2 == Keyboard.KEY_DELETE || par2 == Keyboard.KEY_LEFT || par2 == Keyboard.KEY_RIGHT)
+		{
+			textFieldLimit.textboxKeyTyped(par1, par2);
+		}
 
 		ArrayList data = new ArrayList();
 		data.add((byte)3);
@@ -87,6 +92,14 @@ public class GuiMultimeter extends GuiContainer
 		fontRenderer.drawString("KiloJoules", 35, 100, 4210752);
 
 		textFieldLimit.drawTextBox();
+	}
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		textFieldLimit.updateCursorCounter();
 	}
 
 	@Override

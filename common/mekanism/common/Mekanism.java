@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import mekanism.api.Object3D;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
@@ -1063,6 +1064,9 @@ public class Mekanism
 			System.out.println("[Mekanism] Detected Tekkit in root directory - hello, fellow user!");
 		}
 		
+		GasRegistry.registerHydrogen();
+		GasRegistry.registerOxygen();
+		
 		Mekanism.proxy.preInit();
 		
 		MinecraftForge.EVENT_BUS.register(hooks);
@@ -1186,7 +1190,7 @@ public class Mekanism
 	@ForgeSubscribe
 	public void onChunkLoad(ChunkEvent.Load event)
 	{
-		 if(event.getChunk() != null)
+		 if(event.getChunk() != null && !event.world.isRemote)
          {
              for(Iterator iter = event.getChunk().chunkTileEntityMap.values().iterator(); iter.hasNext();)
              {

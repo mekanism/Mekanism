@@ -14,12 +14,12 @@ public interface IGasAcceptor
 	 * @param amount - amount to transfer
 	 * @return rejects
 	 */
-	public int transferGasToAcceptor(int amount, EnumGas type);
+	public int receiveGas(GasStack stack);
 	
 	/**
 	 * Whether or not this tile entity accepts gas from a certain side.
 	 * @param side - side to check
 	 * @return if tile entity accepts gas
 	 */
-	public boolean canReceiveGas(ForgeDirection side, EnumGas type);
+	public boolean canReceiveGas(ForgeDirection side, Gas type);
 }

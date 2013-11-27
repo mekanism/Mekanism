@@ -1,17 +1,17 @@
 package mekanism.common.inventory.slot;
 
-import mekanism.api.IStorageTank;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.IGasItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class SlotStorageTank extends Slot
 {
-	public EnumGas type;
+	public Gas type;
 	public boolean acceptsAllGasses;
 	
-	public SlotStorageTank(IInventory inventory, EnumGas gas, boolean all, int index, int x, int y)
+	public SlotStorageTank(IInventory inventory, Gas gas, boolean all, int index, int x, int y)
 	{
 		super(inventory, index, x, y);
 		type = gas;
@@ -23,13 +23,14 @@ public class SlotStorageTank extends Slot
 	{
 		if(acceptsAllGasses) 
 		{
-			return itemstack.getItem() instanceof IStorageTank;
+			return itemstack.getItem() instanceof IGasItem;
 		}
 		
-		if(itemstack.getItem() instanceof IStorageTank)
+		if(itemstack.getItem() instanceof IGasItem)
 		{
-			return ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == type || ((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.NONE;
+			return ((IGasItem)itemstack.getItem()).getGas(itemstack) == null || ((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == type;
 		}
+		
 		return false;
 	}
 }

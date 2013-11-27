@@ -30,10 +30,7 @@ public class GuiRecipeType extends GuiElement
 	}
 
 	@Override
-	public void renderForeground(int xAxis, int yAxis) 
-	{
-		
-	}
+	public void renderForeground(int xAxis, int yAxis) {}
 
 	@Override
 	public void preMouseClicked(int xAxis, int yAxis, int button) 
