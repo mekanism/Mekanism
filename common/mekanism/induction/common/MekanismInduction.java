@@ -2,6 +2,7 @@ package mekanism.induction.common;
 
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismRecipe;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Version;
 import mekanism.common.util.MekanismUtils;
@@ -129,23 +130,20 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-		/** Capacitor **/
-		GameRegistry.addRecipe(new ShapedOreRecipe(Mekanism.EnergyTablet, "RRR", "RIR", "RRR", 'R', Item.redstone, 'I', UniversalRecipes.PRIMARY_METAL));
-
 		/** Linker **/
-		GameRegistry.addRecipe(new ShapedOreRecipe(Linker, " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'G', UniversalRecipes.SECONDARY_METAL));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Linker), new Object[] {" E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', UniversalRecipes.SECONDARY_METAL}));
 
 		/** Tesla - by Jyzarc */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Tesla, "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet, 'I', new ItemStack(Mekanism.BasicBlock, 1, 8)));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] {"WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8)}));
 
 		/** Multimeter */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Multimeter, "WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', Mekanism.EnergyTablet, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Multimeter), new Object[] {"WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', UniversalRecipes.PRIMARY_METAL}));
 
 		/** Battery */
-		GameRegistry.addRecipe(new ShapedOreRecipe(Battery, "III", "IRI", "III", 'R', Block.blockRedstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Battery), new Object[] {"III", "IRI", "III", 'R', Block.blockRedstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)}));
 
 		/** EM Contractor */
-		GameRegistry.addRecipe(new ShapedOreRecipe(ElectromagneticContractor, " I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', Mekanism.EnergyTablet, 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(ElectromagneticContractor), new Object[] {" I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL}));
 	}
 
 	@Override

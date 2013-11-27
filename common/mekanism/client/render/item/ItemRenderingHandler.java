@@ -277,7 +277,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				MekanismRenderer.glowOff();
 			}
 		}
-		else if(item.getItem() instanceof ItemBlockMachine && item.getItemDamage() == MachineType.ELECTRIC_CHEST.meta)
+		else if(MachineType.get(item) == MachineType.ELECTRIC_CHEST)
 		{
 			IElectricChest chest = (IElectricChest)item.getItem();
 			

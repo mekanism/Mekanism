@@ -112,23 +112,25 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
+		MachineType type = MachineType.get(itemstack);
+		
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
 		}
 		else {
-			if(isFactory(itemstack))
+			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
 				list.add(EnumColor.INDIGO + "Recipe Type: " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
 			}
 			
-			if(isElectricChest(itemstack))
+			if(type == MachineType.ELECTRIC_CHEST)
 			{
 				list.add(EnumColor.INDIGO + "Authenticated: " + EnumColor.GREY + getAuthenticated(itemstack));
 				list.add(EnumColor.INDIGO + "Locked: " + EnumColor.GREY + getLocked(itemstack));
 			}
 			
-			if(itemstack.getItemDamage() != MachineType.LOGISTICAL_SORTER.meta)
+			if(type != MachineType.LOGISTICAL_SORTER)
 			{
 				list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
 				list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
@@ -148,7 +150,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				list.add(EnumColor.PURPLE + "Speed: " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
 			}
 			
-			if(itemstack.getItemDamage() != 14)
+			if(type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER)
 			{
 				list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
@@ -166,7 +168,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     {
     	boolean place = true;
     	
-    	if(stack.getItemDamage() == MachineType.DIGITAL_MINER.meta)
+    	if(MachineType.get(stack) == MachineType.DIGITAL_MINER)
     	{
     		for(int xPos = x-1; xPos <= x+1; xPos++)
     		{
@@ -344,7 +346,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public void onUpdate(ItemStack itemstack, World world, Entity entity, int i, boolean flag)
 	{
-		if(isElectricChest(itemstack))
+		if(MachineType.get(itemstack) == MachineType.ELECTRIC_CHEST)
 		{
 			if(world != null && !world.isRemote)
 			{
@@ -493,7 +495,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	{
 		if(!world.isRemote)
 		{
-			if(isElectricChest(itemstack))
+			if(MachineType.get(itemstack) == MachineType.ELECTRIC_CHEST)
 			{
 		 		if(!getAuthenticated(itemstack))
 		 		{
@@ -533,12 +535,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		}
 
 		itemStack.stackTagCompound.setInteger("recipeType", type);
-	}
-	
-	@Override
-	public boolean isFactory(ItemStack itemStack)
-	{
-		return itemStack.getItem() instanceof ItemBlockMachine && itemStack.getItemDamage() >= 5 && itemStack.getItemDamage() <= 7;
 	}
 
 	@Override
@@ -620,7 +616,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public boolean hasTank(Object... data) 
 	{
-		return data[0] instanceof ItemStack && ((ItemStack)data[0]).getItem() instanceof ISustainedTank && ((ItemStack)data[0]).getItemDamage() == 12;
+		return data[0] instanceof ItemStack && ((ItemStack)data[0]).getItem() instanceof ISustainedTank && MachineType.get((ItemStack)data[0]) == MachineType.ELECTRIC_PUMP;
 	}
 
 	@Override
@@ -643,12 +639,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		}
 		
 		return itemStack.stackTagCompound.getBoolean("authenticated");
-	}
-
-	@Override
-	public boolean isElectricChest(ItemStack itemStack) 
-	{
-		return itemStack.getItemDamage() == 13;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.block.BlockMachine.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -312,7 +313,7 @@ public class MekanismRecipe implements IRecipe
             }
             else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
             {
-            	if(((IFactory)target.getItem()).isFactory(target) && ((IFactory)input.getItem()).isFactory(input))
+            	if(isFactory(target) && isFactory(input))
             	{
             		if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
             		{
@@ -323,6 +324,11 @@ public class MekanismRecipe implements IRecipe
         }
         
         return true;
+    }
+    
+    private static boolean isFactory(ItemStack stack)
+    {
+    	return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
     }
 
     public MekanismRecipe setMirrored(boolean mirror)

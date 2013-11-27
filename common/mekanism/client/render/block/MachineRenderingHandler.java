@@ -41,7 +41,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    GL11.glPushMatrix();
 	    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 	    
-		if(metadata == MachineType.ELECTRIC_PUMP.meta)
+		if(MachineType.get(block.blockID, metadata) == MachineType.ELECTRIC_PUMP)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
@@ -49,7 +49,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
 	    	electricPump.render(0.0560F);
 		}
-		else if(metadata == MachineType.METALLURGIC_INFUSER.meta)
+		else if(MachineType.get(block.blockID, metadata) == MachineType.METALLURGIC_INFUSER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
@@ -57,14 +57,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
 	    	metallurgicInfuser.render(0.0625F);
 		}
-		else if(metadata == MachineType.CHARGEPAD.meta)
+		else if(MachineType.get(block.blockID, metadata) == MachineType.CHARGEPAD)
 		{
 			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
 			chargepad.render(0.0625F);
 		}
-		else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
+		else if(MachineType.get(block.blockID, metadata) == MachineType.LOGISTICAL_SORTER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
@@ -72,7 +72,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
 	    	logisticalSorter.render(0.0625F, false);
 		}
-		else if(metadata == MachineType.DIGITAL_MINER.meta)
+		else if(MachineType.get(block.blockID, metadata) == MachineType.DIGITAL_MINER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);

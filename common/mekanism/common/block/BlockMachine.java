@@ -113,34 +113,37 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
-		icons[blockID][0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
-		icons[blockID][0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
-		icons[blockID][0][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[blockID][1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
-		icons[blockID][1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
-		icons[blockID][1][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[blockID][2][0] = register.registerIcon("mekanism:CombinerFrontOff");
-		icons[blockID][2][1] = register.registerIcon("mekanism:CombinerFrontOn");
-		icons[blockID][2][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[blockID][3][0] = register.registerIcon("mekanism:CrusherFrontOff");
-		icons[blockID][3][1] = register.registerIcon("mekanism:CrusherFrontOn");
-		icons[blockID][3][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[blockID][5][0] = register.registerIcon("mekanism:BasicFactoryFront");
-		icons[blockID][5][1] = register.registerIcon("mekanism:BasicFactorySide");
-		icons[blockID][5][2] = register.registerIcon("mekanism:BasicFactoryTop");
-		icons[blockID][6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
-		icons[blockID][6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
-		icons[blockID][6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
-		icons[blockID][7][0] = register.registerIcon("mekanism:EliteFactoryFront");
-		icons[blockID][7][1] = register.registerIcon("mekanism:EliteFactorySide");
-		icons[blockID][7][2] = register.registerIcon("mekanism:EliteFactoryTop");
-		icons[blockID][9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
-		icons[blockID][9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
-		icons[blockID][9][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[blockID][10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
-		icons[blockID][10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
-		icons[blockID][10][2] = register.registerIcon("mekanism:SteelCasing");
-		icons[blockID][11][0] = register.registerIcon("mekanism:Teleporter");
+		if(blockID == Mekanism.machineBlockID)
+		{
+			icons[blockID][0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
+			icons[blockID][0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
+			icons[blockID][0][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[blockID][1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
+			icons[blockID][1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
+			icons[blockID][1][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[blockID][2][0] = register.registerIcon("mekanism:CombinerFrontOff");
+			icons[blockID][2][1] = register.registerIcon("mekanism:CombinerFrontOn");
+			icons[blockID][2][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[blockID][3][0] = register.registerIcon("mekanism:CrusherFrontOff");
+			icons[blockID][3][1] = register.registerIcon("mekanism:CrusherFrontOn");
+			icons[blockID][3][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[blockID][5][0] = register.registerIcon("mekanism:BasicFactoryFront");
+			icons[blockID][5][1] = register.registerIcon("mekanism:BasicFactorySide");
+			icons[blockID][5][2] = register.registerIcon("mekanism:BasicFactoryTop");
+			icons[blockID][6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
+			icons[blockID][6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
+			icons[blockID][6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
+			icons[blockID][7][0] = register.registerIcon("mekanism:EliteFactoryFront");
+			icons[blockID][7][1] = register.registerIcon("mekanism:EliteFactorySide");
+			icons[blockID][7][2] = register.registerIcon("mekanism:EliteFactoryTop");
+			icons[blockID][9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
+			icons[blockID][9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
+			icons[blockID][9][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[blockID][10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
+			icons[blockID][10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
+			icons[blockID][10][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[blockID][11][0] = register.registerIcon("mekanism:Teleporter");
+		}
 	}
 	
 	@Override
@@ -398,111 +401,114 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	int metadata = world.getBlockMetadata(x, y, z);
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
         
-    	if(metadata == 0)
+    	if(blockID == Mekanism.machineBlockID)
     	{
-	        if(side == tileEntity.facing)
-	        {
-	        	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][0][1] : icons[blockID][0][0];
-	        }
-	        else {
-	        	return icons[blockID][0][2];
-	        }
-    	}
-    	else if(metadata == 1)
-    	{
-            if(side == tileEntity.facing)
-            {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][1][1] : icons[blockID][1][0];
-            }
-            else {
-            	return icons[blockID][1][2];
-            }
-    	}
-    	else if(metadata == 2)
-    	{
-            if(side == tileEntity.facing)
-            {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][2][1] : icons[blockID][2][0];
-            }
-            else {
-            	return icons[blockID][2][2];
-            }
-    	}
-    	else if(metadata == 3)
-    	{
-            if(side == tileEntity.facing)
-            {
-            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][3][1] : icons[blockID][3][0];
-            }
-            else {
-            	return icons[blockID][3][2];
-            }
-    	}
-    	else if(metadata == 5)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return icons[blockID][5][0];
-    		}
-    		else if(side == 0 || side == 1)
-    		{
-    			return icons[blockID][5][2];
-    		}
-    		else {
-    			return icons[blockID][5][1];
-    		}
-    	}
-    	else if(metadata == 6)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return icons[blockID][6][0];
-    		}
-       		else if(side == 0 || side == 1)
-    		{
-    			return icons[blockID][6][2];
-    		}
-    		else {
-    			return icons[blockID][6][1];
-    		}
-    	}
-    	else if(metadata == 7)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return icons[blockID][7][0];
-    		}
-       		else if(side == 0 || side == 1)
-    		{
-    			return icons[blockID][7][2];
-    		}
-    		else {
-    			return icons[blockID][7][1];
-    		}
-    	}
-    	else if(metadata == 9)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][9][1] : icons[blockID][9][0];
-    		}
-    		else {
-    			return icons[blockID][9][2];
-    		}
-    	}
-    	else if(metadata == 10)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][10][1] : icons[blockID][10][0];
-    		}
-    		else {
-    			return icons[blockID][10][2];
-    		}
-    	}
-    	else if(metadata == 11)
-    	{
-    		return icons[blockID][11][0];
+	    	if(metadata == 0)
+	    	{
+		        if(side == tileEntity.facing)
+		        {
+		        	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][0][1] : icons[blockID][0][0];
+		        }
+		        else {
+		        	return icons[blockID][0][2];
+		        }
+	    	}
+	    	else if(metadata == 1)
+	    	{
+	            if(side == tileEntity.facing)
+	            {
+	            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][1][1] : icons[blockID][1][0];
+	            }
+	            else {
+	            	return icons[blockID][1][2];
+	            }
+	    	}
+	    	else if(metadata == 2)
+	    	{
+	            if(side == tileEntity.facing)
+	            {
+	            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][2][1] : icons[blockID][2][0];
+	            }
+	            else {
+	            	return icons[blockID][2][2];
+	            }
+	    	}
+	    	else if(metadata == 3)
+	    	{
+	            if(side == tileEntity.facing)
+	            {
+	            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][3][1] : icons[blockID][3][0];
+	            }
+	            else {
+	            	return icons[blockID][3][2];
+	            }
+	    	}
+	    	else if(metadata == 5)
+	    	{
+	    		if(side == tileEntity.facing)
+	    		{
+	    			return icons[blockID][5][0];
+	    		}
+	    		else if(side == 0 || side == 1)
+	    		{
+	    			return icons[blockID][5][2];
+	    		}
+	    		else {
+	    			return icons[blockID][5][1];
+	    		}
+	    	}
+	    	else if(metadata == 6)
+	    	{
+	    		if(side == tileEntity.facing)
+	    		{
+	    			return icons[blockID][6][0];
+	    		}
+	       		else if(side == 0 || side == 1)
+	    		{
+	    			return icons[blockID][6][2];
+	    		}
+	    		else {
+	    			return icons[blockID][6][1];
+	    		}
+	    	}
+	    	else if(metadata == 7)
+	    	{
+	    		if(side == tileEntity.facing)
+	    		{
+	    			return icons[blockID][7][0];
+	    		}
+	       		else if(side == 0 || side == 1)
+	    		{
+	    			return icons[blockID][7][2];
+	    		}
+	    		else {
+	    			return icons[blockID][7][1];
+	    		}
+	    	}
+	    	else if(metadata == 9)
+	    	{
+	    		if(side == tileEntity.facing)
+	    		{
+	    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][9][1] : icons[blockID][9][0];
+	    		}
+	    		else {
+	    			return icons[blockID][9][2];
+	    		}
+	    	}
+	    	else if(metadata == 10)
+	    	{
+	    		if(side == tileEntity.facing)
+	    		{
+	    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][10][1] : icons[blockID][10][0];
+	    		}
+	    		else {
+	    			return icons[blockID][10][2];
+	    		}
+	    	}
+	    	else if(metadata == 11)
+	    	{
+	    		return icons[blockID][11][0];
+	    	}
     	}
     	
     	return null;
@@ -518,30 +524,24 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
-		list.add(new ItemStack(i, 1, 0));
-		list.add(new ItemStack(i, 1, 1));
-		list.add(new ItemStack(i, 1, 2));
-		list.add(new ItemStack(i, 1, 3));
-		list.add(new ItemStack(i, 1, 4));
-		
-		for(FactoryTier tier : FactoryTier.values())
+		for(MachineType type : MachineType.values())
 		{
-			for(RecipeType type : RecipeType.values())
+			if(type.typeId == blockID)
 			{
-				ItemStack stack = new ItemStack(i, 1, 5+tier.ordinal());
-				((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
-				list.add(stack);
+				if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+				{
+					for(RecipeType recipe : RecipeType.values())
+					{
+						ItemStack stack = new ItemStack(i, 1, type.meta);
+						((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
+						list.add(stack);
+					}
+				}
+				else {
+					list.add(new ItemStack(i, 1, type.meta));
+				}
 			}
 		}
-		
-		list.add(new ItemStack(i, 1, 8));
-		list.add(new ItemStack(i, 1, 9));
-		list.add(new ItemStack(i, 1, 10));
-		list.add(new ItemStack(i, 1, 11));
-		list.add(new ItemStack(i, 1, 12));
-		list.add(new ItemStack(i, 1, 13));
-		list.add(new ItemStack(i, 1, 14));
-		list.add(new ItemStack(i, 1, 15));
 	}
     
     @Override
@@ -1053,6 +1053,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 				e.printStackTrace();
 				return null;
 			}
+		}
+		
+		public ItemStack getStack()
+		{
+			return new ItemStack(typeId, 1, meta);
+		}
+		
+		public static MachineType get(ItemStack stack)
+		{
+			return get(stack.itemID, stack.getItemDamage());
 		}
 		
 		@Override

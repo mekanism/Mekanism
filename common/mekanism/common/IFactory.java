@@ -27,21 +27,14 @@ public interface IFactory
 	 */
 	public void setRecipeType(int type, ItemStack itemStack);
 	
-	/**
-	 * Whether or not this item is a Smelting Factory.
-	 * @param itemStack - stack to check
-	 * @return if the item is a smelting factory
-	 */
-	public boolean isFactory(ItemStack itemStack);
-	
 	public static enum RecipeType
 	{
-		SMELTING("Smelting", "Smelter.ogg", new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENERGIZED_SMELTER.meta), false),
-		ENRICHING("Enriching", "Chamber.ogg", new ItemStack(Mekanism.MachineBlock, 1, MachineType.ENRICHMENT_CHAMBER.meta), false),
-		CRUSHING("Crushing", "Crusher.ogg", new ItemStack(Mekanism.MachineBlock, 1, MachineType.CRUSHER.meta), false),
-		COMPRESSING("Compressing", "Compressor.ogg", new ItemStack(Mekanism.MachineBlock, 1, MachineType.OSMIUM_COMPRESSOR.meta), true),
-		COMBINING("Combining", "Combiner.ogg", new ItemStack(Mekanism.MachineBlock, 1, MachineType.COMBINER.meta), true),
-		PURIFYING("Purifying", "PurificationChamber.ogg", new ItemStack(Mekanism.MachineBlock, 1, MachineType.PURIFICATION_CHAMBER.meta), true);
+		SMELTING("Smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false),
+		ENRICHING("Enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false),
+		CRUSHING("Crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false),
+		COMPRESSING("Compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true),
+		COMBINING("Combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true),
+		PURIFYING("Purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true);
 		
 		private String name;
 		private String sound;

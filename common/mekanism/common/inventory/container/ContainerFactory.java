@@ -259,12 +259,11 @@ public class ContainerFactory extends Container
     {
     	if(itemStack != null && itemStack.getItem() instanceof ItemBlockMachine)
     	{
-    		if(itemStack.getItemDamage() == MachineType.ENERGIZED_SMELTER.meta || 
-    				itemStack.getItemDamage() == MachineType.ENRICHMENT_CHAMBER.meta || 
-    				itemStack.getItemDamage() == MachineType.CRUSHER.meta ||
-    				itemStack.getItemDamage() == MachineType.OSMIUM_COMPRESSOR.meta ||
-    				itemStack.getItemDamage() == MachineType.COMBINER.meta ||
-    				itemStack.getItemDamage() == MachineType.PURIFICATION_CHAMBER.meta)
+    		MachineType type = MachineType.get(itemStack);
+    		
+    		if(type == MachineType.ENERGIZED_SMELTER || type == MachineType.ENRICHMENT_CHAMBER || 
+    				type == MachineType.CRUSHER || type == MachineType.OSMIUM_COMPRESSOR ||
+    				type == MachineType.COMBINER || type == MachineType.PURIFICATION_CHAMBER)
     		{
     			return true;
     		}

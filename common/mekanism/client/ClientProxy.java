@@ -61,6 +61,7 @@ import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
@@ -181,7 +182,7 @@ public class ClientProxy extends CommonProxy
 				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 				
-				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 				{
     				InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
 		    		FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
@@ -198,7 +199,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 				
-				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 				{
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
 				}
@@ -213,7 +214,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 				
-				if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 				{
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
 				}
@@ -264,6 +265,7 @@ public class ClientProxy extends CommonProxy
 		
 		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlock2ID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, handler);

@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0: Osmium Block
  * 1: Bronze Block
  * 2: Refined Obsidian
- * 3: Coal Block
+ * 3: Charcoal Block
  * 4: Refined Glowstone
  * 5: Steel Block
  * 6: Bin
@@ -165,7 +165,7 @@ public class ItemBlockBasic extends ItemBlock
 				name = "RefinedObsidian";
 				break;
 			case 3:
-				name = "CoalBlock";
+				name = "CharcoalBlock";
 				break;
 			case 4:
 				name = "RefinedGlowstone";

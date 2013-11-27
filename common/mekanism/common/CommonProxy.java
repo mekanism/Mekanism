@@ -152,6 +152,7 @@ public class CommonProxy
 	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", 3005).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
 	  	Mekanism.transmitterID = Mekanism.configuration.getBlock("Transmitter", 3007).getInt();
+		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", 3008).getInt();
 	  	
 	  	Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);

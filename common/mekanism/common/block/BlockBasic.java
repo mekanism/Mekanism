@@ -49,7 +49,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0: Osmium Block
  * 1: Bronze Block
  * 2: Refined Obsidian
- * 3: Coal Block
+ * 3: Charcoal Block
  * 4: Refined Glowstone
  * 5: Steel Block
  * 6: Bin

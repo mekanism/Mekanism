@@ -12,6 +12,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
@@ -31,7 +32,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -258,10 +258,13 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		{
 			if(recipeType == RecipeType.PURIFYING.ordinal())
 			{
-				GasStack removed = GasUtils.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
-				setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
-				
-				return;
+				if(inventory[4].getItem() instanceof IGasItem)
+				{
+					GasStack removed = GasUtils.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
+					setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+					
+					return;
+				}
 			}
 			
 			int fuelTicks = RecipeType.values()[recipeType].getFuelTicks(inventory[4]);

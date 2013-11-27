@@ -173,14 +173,15 @@ public class Mekanism
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     
 	//Block IDs
-    public static int basicBlockID = 3000;
-    public static int machineBlockID = 3001;
-    public static int oreBlockID = 3002;
-	public static int obsidianTNTID = 3003;
-	public static int energyCubeID = 3004;
-	public static int boundingBlockID = 3005;
-	public static int gasTankID = 3006;
-	public static int transmitterID = 3007;
+    public static int basicBlockID;
+    public static int machineBlockID;
+    public static int machineBlock2ID;
+    public static int oreBlockID;
+	public static int obsidianTNTID;
+	public static int energyCubeID;
+	public static int boundingBlockID;
+	public static int gasTankID;
+	public static int transmitterID;
 	
 	//Items
 	public static ItemElectricBow ElectricBow;
@@ -205,6 +206,7 @@ public class Mekanism
 	//Blocks
 	public static Block BasicBlock;
 	public static Block MachineBlock;
+	public static Block MachineBlock2;
 	public static Block OreBlock;
 	public static Block ObsidianTNT;
 	public static Block EnergyCube;
@@ -260,7 +262,7 @@ public class Mekanism
 	{
 		//Storage Recipes
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 3), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), Item.coal
+			"***", "***", "***", Character.valueOf('*'), new ItemStack(Item.coal, 1, 1)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Item.coal, 9), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 3)
@@ -575,6 +577,7 @@ public class Mekanism
 		//Declarations
 		BasicBlock = new BlockBasic(basicBlockID).setUnlocalizedName("BasicBlock");
 		MachineBlock = new BlockMachine(machineBlockID).setUnlocalizedName("MachineBlock");
+		MachineBlock2 = new BlockMachine(machineBlock2ID).setUnlocalizedName("MachineBlock2");
 		OreBlock = new BlockOre(oreBlockID).setUnlocalizedName("OreBlock");
 		EnergyCube = new BlockEnergyCube(energyCubeID).setUnlocalizedName("EnergyCube");
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setUnlocalizedName("ObsidianTNT").setCreativeTab(tabMekanism);
@@ -589,6 +592,7 @@ public class Mekanism
 		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setUnlocalizedName("BasicBlock");
 		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setUnlocalizedName("MachineBlock");
+		Item.itemsList[machineBlock2ID] = new ItemBlockMachine(machineBlock2ID - 256, MachineBlock2).setUnlocalizedName("MachineBlock2");
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setUnlocalizedName("OreBlock");
 		Item.itemsList[energyCubeID] = new ItemBlockEnergyCube(energyCubeID - 256, EnergyCube).setUnlocalizedName("EnergyCube");
 		Item.itemsList[gasTankID] = new ItemBlockGasTank(gasTankID - 256, GasTank).setUnlocalizedName("GasTank");

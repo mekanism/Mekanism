@@ -8,6 +8,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.IFactory;
 import mekanism.common.MekanismRecipe;
+import mekanism.common.block.BlockMachine.MachineType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -122,7 +123,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
             }
             else if(stack1.getItem() instanceof IFactory && stack2.getItem() instanceof IFactory)
             {
-            	if(((IFactory)stack1.getItem()).isFactory(stack1) && ((IFactory)stack2.getItem()).isFactory(stack2))
+            	if(isFactory(stack1) && isFactory(stack2))
             	{
             		if(((IFactory)stack1.getItem()).getRecipeType(stack1) != ((IFactory)stack2.getItem()).getRecipeType(stack2))
             		{
@@ -133,6 +134,11 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
         }
     	
     	return true;
+    }
+    
+    private static boolean isFactory(ItemStack stack)
+    {
+    	return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
     }
 	
 	public class CachedEnergyRecipe extends CachedRecipe
