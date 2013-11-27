@@ -234,7 +234,20 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			
 			if(type == 0)
 			{
-				color = TransporterUtils.increment(color);
+				int clickType = dataStream.readInt();
+				
+				if(clickType == 0)
+				{
+					color = TransporterUtils.increment(color);
+				}
+				else if(clickType == 1)
+				{
+					color = TransporterUtils.decrement(color);
+				}
+				else if(clickType == 2)
+				{
+					color = null;
+				}
 			}
 			else if(type == 1)
 			{

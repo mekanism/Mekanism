@@ -197,6 +197,20 @@ public final class TransporterUtils
 		return colors.get(colors.indexOf(color)+1);
 	}
     
+    public static EnumColor decrement(EnumColor color)
+    {
+    	if(color == null)
+    	{
+    		return colors.get(colors.size()-1);
+    	}
+    	else if(colors.indexOf(color) == 0)
+    	{
+    		return null;
+    	}
+    	
+    	return colors.get(colors.indexOf(color)-1);
+    }
+    
     public static boolean checkDiversionLogic(TileEntity currTile, TileEntity tile, int side)
     {
 		if(currTile instanceof TileEntityDiversionTransporter)

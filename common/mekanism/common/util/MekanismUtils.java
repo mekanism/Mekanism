@@ -550,6 +550,21 @@ public final class MekanismUtils
     	}
     }
     
+    public static void decrementOutput(IConfigurable config, int side)
+    {
+    	int max = config.getSideData().size()-1;
+    	int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
+    	
+    	if(current > 0)
+    	{
+    		config.getConfiguration()[side] = (byte)(current-1);
+    	}
+    	else if(current == 0)
+    	{
+    		config.getConfiguration()[side] = (byte)max;
+    	}
+    }
+    
     /**
      * Gets the operating ticks required for a machine via it's upgrades.
      * @param speedUpgrade - number of speed upgrades

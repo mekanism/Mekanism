@@ -26,6 +26,8 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 	
 	public int inputSide;
 	
+	public int clickType;
+	
 	public ConfigurationPacket packetType;
 	
 	@Override
@@ -41,14 +43,21 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 		
 		object3D = (Object3D)data[1];
 		
+		if(packetType == ConfigurationPacket.EJECT_COLOR)
+		{
+			clickType = (Integer)data[2];
+		}
+		
 		if(packetType == ConfigurationPacket.SIDE_DATA)
 		{
-			configIndex = (Integer)data[2];
+			clickType = (Integer)data[2];
+			configIndex = (Integer)data[3];
 		}
 		
 		if(packetType == ConfigurationPacket.INPUT_COLOR)
 		{
-			inputSide = (Integer)data[2];
+			clickType = (Integer)data[2];
+			inputSide = (Integer)data[3];
 		}
 		
 		return this;
@@ -73,20 +82,60 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 			}
 			else if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
+				clickType = dataStream.readInt();
 				configIndex = dataStream.readInt();
 				
-				MekanismUtils.incrementOutput((IConfigurable)tile, configIndex);
+				if(clickType == 0)
+				{
+					MekanismUtils.incrementOutput((IConfigurable)tile, configIndex);
+				}
+				else if(clickType == 1)
+				{
+					MekanismUtils.decrementOutput((IConfigurable)tile, configIndex);
+				}
+				else if(clickType == 2)
+				{
+					((IConfigurable)tile).getConfiguration()[configIndex] = 0;
+				}
+				
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);
 			}
 			else if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{
-				config.getEjector().setOutputColor(TransporterUtils.increment(config.getEjector().getOutputColor()));
+				clickType = dataStream.readInt();
+				
+				if(clickType == 0)
+				{
+					config.getEjector().setOutputColor(TransporterUtils.increment(config.getEjector().getOutputColor()));
+				}
+				else if(clickType == 1)
+				{
+					config.getEjector().setOutputColor(TransporterUtils.decrement(config.getEjector().getOutputColor()));
+				}
+				else if(clickType == 2)
+				{
+					config.getEjector().setOutputColor(null);
+				}
 			}
 			else if(packetType == ConfigurationPacket.INPUT_COLOR)
 			{
+				clickType = dataStream.readInt();
 				inputSide = dataStream.readInt();
+				
 				ForgeDirection side = ForgeDirection.getOrientation(inputSide);
-				config.getEjector().setInputColor(side, TransporterUtils.increment(config.getEjector().getInputColor(side)));
+				
+				if(clickType == 0)
+				{
+					config.getEjector().setInputColor(side, TransporterUtils.increment(config.getEjector().getInputColor(side)));
+				}
+				else if(clickType == 1)
+				{
+					config.getEjector().setInputColor(side, TransporterUtils.decrement(config.getEjector().getInputColor(side)));
+				}
+				else if(clickType == 2)
+				{
+					config.getEjector().setInputColor(side, null);
+				}
 			}
 			else if(packetType == ConfigurationPacket.STRICT_INPUT)
 			{

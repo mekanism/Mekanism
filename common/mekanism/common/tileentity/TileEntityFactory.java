@@ -1,7 +1,5 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
@@ -9,7 +7,6 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IEjector;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -43,7 +40,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl, IGasAcceptor, IGasStorage, ITubeConnection
+public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IRedstoneControl, IGasAcceptor, IGasStorage, ITubeConnection
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -262,7 +259,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 			if(recipeType == RecipeType.PURIFYING.ordinal())
 			{
 				GasStack removed = GasUtils.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
-				setSecondaryEnergy(secondaryEnergyStored - (removed != null ? removed.amount : 0));
+				setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
 				
 				return;
 			}
@@ -550,12 +547,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 		
 		return data;
 	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
-	{
-		return true;
-	}
 	
 	public int getInputSlot(int operation)
 	{
@@ -565,30 +556,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	public int getOutputSlot(int operation)
 	{
 		return tier.processes+5+operation;
-	}
-	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return true;
 	}
 
 	@Override
@@ -673,12 +640,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
 	{
 		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
-
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy()-getEnergy())*Mekanism.TO_IC2;
-	}
 	
 	@Override
     public void setActive(boolean active)
@@ -698,37 +659,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IEnerg
     public boolean getActive()
     {
     	return isActive;
-    }
-    
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
-		{
-			return i;
-		}
-		
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override

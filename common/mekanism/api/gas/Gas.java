@@ -81,13 +81,15 @@ public class Gas
 		return fluid != null;
 	}
 	
-	public void registerFluid()
+	public Gas registerFluid()
 	{
 		if(fluid == null)
 		{
 			fluid = new Fluid(getName()).setGaseous(true);
 			FluidRegistry.registerFluid(fluid);
 		}
+		
+		return this;
 	}
 	
 	@Override

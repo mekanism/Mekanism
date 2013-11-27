@@ -1,14 +1,11 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 
 import mekanism.api.IConfigurable;
 import mekanism.api.IEjector;
 import mekanism.api.Object3D;
 import mekanism.api.SideData;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IElectricMachine;
@@ -22,16 +19,14 @@ import mekanism.common.TileComponentUpgrade;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
@@ -206,43 +201,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			Mekanism.proxy.unregisterSound(this);
 		}
 	}
-	
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy()-getEnergy())*Mekanism.TO_IC2;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
-		{
-			return i;
-		}
-		
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-	
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return true;
-	}
 
 	/**
 	 * Gets the scaled progress level for the GUI.
@@ -279,30 +237,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     		clientActive = active;
     	}
     }
-	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return true;
-	}
     
 	@Override
     public String getType()
@@ -332,12 +266,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
-	}
-	
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
 	}
 	
 	@Override

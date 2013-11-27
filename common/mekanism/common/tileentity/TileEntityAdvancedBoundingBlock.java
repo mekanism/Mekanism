@@ -415,14 +415,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(double amount) 
+	public double transferEnergyToAcceptor(ForgeDirection side, double amount) 
 	{
 		if(getInv() == null)
 		{
 			return amount;
 		}
 		
-		return getInv().transferEnergyToAcceptor(amount);
+		return getInv().transferEnergyToAcceptor(side, amount);
 	}
 
 	@Override

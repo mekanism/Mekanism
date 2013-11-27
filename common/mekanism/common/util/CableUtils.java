@@ -241,7 +241,7 @@ public final class CableUtils
 				{
 					IStrictEnergyAcceptor acceptor = (IStrictEnergyAcceptor)tileEntity;
 					double toSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
-					emitter.setEnergy(emitter.getEnergy() - (toSend - acceptor.transferEnergyToAcceptor(toSend)));
+					emitter.setEnergy(emitter.getEnergy() - (toSend - acceptor.transferEnergyToAcceptor(emitter.getOutputtingSide().getOpposite(), toSend)));
 				}
 				else if(tileEntity instanceof IEnergyHandler)
 				{

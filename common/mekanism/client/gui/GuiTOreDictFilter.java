@@ -279,21 +279,15 @@ public class GuiTOreDictFilter extends GuiMekanism
         
         oreDictText.mouseClicked(mouseX, mouseY, button);
         
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+        
     	if(button == 0)
-		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-			
+		{	
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
-			}
-			
-			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
-			{
-	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-				filter.color = TransporterUtils.increment(filter.color);
 			}
 			
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
@@ -301,6 +295,24 @@ public class GuiTOreDictFilter extends GuiMekanism
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				setOreDictKey();
 			}
+		}
+    	
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
+		{
+           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+           	
+           	if(button == 0)
+           	{
+           		filter.color = TransporterUtils.increment(filter.color);
+           	}
+           	else if(button == 1)
+           	{
+           		filter.color = TransporterUtils.decrement(filter.color);
+           	}
+           	else if(button == 2)
+           	{
+           		filter.color = null;
+           	}
 		}
     }
     

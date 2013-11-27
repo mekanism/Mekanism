@@ -48,7 +48,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 			{
 				GasStack removed = GasUtils.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), getMaxGas()-hydrogenStored);
-				setGas(new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored - (removed != null ? removed.amount : 0)));
+				setGas(new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored + (removed != null ? removed.amount : 0)));
 			}
 			
 			if(canOperate())

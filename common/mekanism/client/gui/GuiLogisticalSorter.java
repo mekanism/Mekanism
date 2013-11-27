@@ -137,11 +137,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
 		if(button == 0)
 		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-			
 			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
 				dragOffset = yAxis - (getScroll()+18);
@@ -172,15 +172,6 @@ public class GuiLogisticalSorter extends GuiMekanism
 				}
 			}
 			
-			if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
-	           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-			}
-			
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 			{
 				ArrayList data = new ArrayList();
@@ -198,6 +189,16 @@ public class GuiLogisticalSorter extends GuiMekanism
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
+		}
+		
+		if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
+		{
+			ArrayList data = new ArrayList();
+			data.add(0);
+			data.add(button);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 		}
 	}
 	

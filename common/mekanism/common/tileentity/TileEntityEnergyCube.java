@@ -1,19 +1,16 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.tile.IEnergyStorage;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 
 import mekanism.api.Object3D;
-import mekanism.api.energy.ICableOutputter;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -30,7 +27,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEnergySink, IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, ICableOutputter, IStrictEnergyAcceptor, IRedstoneControl
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPowerReceptor, IPeripheral, IRedstoneControl
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -40,6 +37,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
+	
+	public int prevScale;
 	
 	/**
 	 * A block used to store and transfer electricity.
@@ -110,114 +109,11 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	{
 		return ForgeDirection.getOrientation(facing);
 	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return direction != getOutputtingSide();
-	}
-
-	@Override
-	public int getStored() 
-	{
-		return (int)(getEnergy()*Mekanism.TO_IC2);
-	}
-
-	@Override
-	public int getCapacity() 
-	{
-		return (int)(getMaxEnergy()*Mekanism.TO_IC2);
-	}
-
-	@Override
-	public int getOutput() 
-	{
-		return (int)(tier.OUTPUT*Mekanism.TO_IC2);
-	}
-
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
-	}
-	
-	@Override
-	public double getOfferedEnergy() 
-	{
-		return Math.min(getEnergy()*Mekanism.TO_IC2, getOutput());
-	}
-
-	@Override
-	public void drawEnergy(double amount)
-	{
-		setEnergy(getEnergy()-amount*Mekanism.FROM_IC2);
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
-		{
-			return i;
-		}
-		
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
 	
 	@Override
 	public boolean canSetFacing(int side)
 	{
 		return true;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return side != getOutputtingSide();
-	}
-
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
-	{
-		return direction == getOutputtingSide() && !(receiver instanceof TileEntityUniversalCable);
-	}
-
-	@Override
-	public double getOutputEnergyUnitsPerTick()
-	{
-		return tier.OUTPUT*Mekanism.TO_IC2;
 	}
 
 	@Override
@@ -339,37 +235,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
     }
 	
 	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-	public void setStored(int energy)
-	{
-		setEnergy(energy*Mekanism.FROM_IC2);
-	}
-
-	@Override
-	public int addEnergy(int amount)
-	{
-		setEnergy(getEnergy() + amount*Mekanism.FROM_IC2);
-		return (int)(getEnergy()*Mekanism.TO_IC2);
-	}
-
-	@Override
-	public boolean isTeleporterCompatible(ForgeDirection side) 
-	{
-		return side == getOutputtingSide();
-	}
-	
-	@Override
-	public boolean canOutputTo(ForgeDirection side)
-	{
-		return side == getOutputtingSide();
-	}
-	
-	@Override
 	public void setEnergy(double energy) 
 	{
 	    super.setEnergy(energy);
@@ -380,6 +245,18 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IEn
 	    {
 	        onInventoryChanged();
 	        currentRedstoneLevel = newRedstoneLevel;
+	    }
+	    
+	    if(!worldObj.isRemote)
+	    {
+		    int newScale = getScaledEnergyLevel(100);
+		    
+		    if(newScale != prevScale)
+		    {
+		    	PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		    }
+		    
+		    prevScale = newScale;
 	    }
 	}
 

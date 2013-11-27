@@ -102,7 +102,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY)
 		{
 			GasStack removed = GasUtils.removeGas(inventory[1], GasRegistry.getGas("oxygen"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
-			setSecondaryEnergy(secondaryEnergyStored - (removed != null ? removed.amount : 0));
+			setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
 		}
 		
 		super.handleSecondaryFuel();

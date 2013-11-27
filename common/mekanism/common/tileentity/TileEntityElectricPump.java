@@ -1,7 +1,5 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -33,7 +30,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IEnergySink, IStrictEnergyAcceptor
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank
 {
 	/** This pump's tank */
 	public FluidTank fluidTank;
@@ -422,68 +419,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
-	}
-	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return getConsumingSides().contains(side);
-	}
-	
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
-	}
-	
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-	
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return getConsumingSides().contains(direction);
 	}
 	
 	@Override

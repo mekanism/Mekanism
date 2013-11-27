@@ -19,7 +19,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -171,7 +170,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					
 					if(acceptor instanceof IStrictEnergyAcceptor)
 					{
-						energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(currentSending));
+						energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending));
 					}
 					else if(acceptor instanceof IEnergyHandler)
 					{
@@ -224,11 +223,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		
 		for(TileEntity acceptor : copy)
 		{
+			ForgeDirection side = acceptorDirections.get(acceptor);
+			
 			if(acceptor instanceof IStrictEnergyAcceptor)
 			{
 				IStrictEnergyAcceptor handler = (IStrictEnergyAcceptor)acceptor;
 				
-				if(handler.canReceiveEnergy(acceptorDirections.get(acceptor).getOpposite()))
+				if(handler.canReceiveEnergy(side.getOpposite()))
 				{
 					if(handler.getMaxEnergy() - handler.getEnergy() > 0)
 					{
@@ -240,9 +241,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				IEnergyHandler handler = (IEnergyHandler)acceptor;
 				
-				if(handler.canInterface(acceptorDirections.get(acceptor).getOpposite()))
+				if(handler.canInterface(side.getOpposite()))
 				{
-					if(handler.receiveEnergy(acceptorDirections.get(acceptor).getOpposite(), 1, true) > 0)
+					if(handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
+					{
+						toReturn.add(acceptor);
+					}
+					else if(handler.getMaxEnergyStored(side.getOpposite()) - handler.getEnergyStored(side.getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}
@@ -252,7 +257,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				IEnergySink handler = (IEnergySink)acceptor;
 				
-				if(handler.acceptsEnergyFrom(null, acceptorDirections.get(acceptor).getOpposite()))
+				if(handler.acceptsEnergyFrom(null, side.getOpposite()))
 				{
 					if(Math.min((handler.demandedEnergyUnits()*Mekanism.FROM_IC2), (handler.getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
 					{
@@ -264,9 +269,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				IElectrical handler = (IElectrical)acceptor;
 				
-				if(handler.canConnect(acceptorDirections.get(acceptor).getOpposite()))
+				if(handler.canConnect(side.getOpposite()))
 				{
-					if(handler.getRequest(acceptorDirections.get(acceptor).getOpposite()) > 0)
+					if(handler.getRequest(side.getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}
@@ -276,11 +281,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				IPowerReceptor handler = (IPowerReceptor)acceptor;
 				
-				if(handler.getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()) != null)
+				if(handler.getPowerReceiver(side.getOpposite()) != null)
 				{
-					if((handler.getPowerReceiver(acceptorDirections.get(acceptor).getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
+					if((handler.getPowerReceiver(side.getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
-						TileEntityUniversalCable cable = (TileEntityUniversalCable)Object3D.get(acceptor).getFromSide(acceptorDirections.get(acceptor).getOpposite()).getTileEntity(acceptor.worldObj);
+						TileEntityUniversalCable cable = (TileEntityUniversalCable)Object3D.get(acceptor).getFromSide(side.getOpposite()).getTileEntity(acceptor.worldObj);
 						
 						if(cable != null && !cable.getBuildCraftIgnored().contains(acceptor))
 						{

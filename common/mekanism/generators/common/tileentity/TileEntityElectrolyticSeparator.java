@@ -1,12 +1,9 @@
 package mekanism.generators.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 import java.util.Random;
 
 import mekanism.api.Object3D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -44,7 +41,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IEnergySink, IFluidHandler, IPeripheral, ITubeConnection, IStrictEnergyAcceptor, ISustainedTank
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedTank
 {
 	/** This separator's water slot. */
 	public FluidTank waterTank = new FluidTank(24000);
@@ -268,30 +265,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return new int[] {0};
 	}
 	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return true;
-	}
-	
 	/**
 	 * Gets the scaled hydrogen level for the GUI.
 	 * @param i - multiplier
@@ -388,48 +361,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		data.add(GasRegistry.getGasID(dumpType));
 		
 		return data;
-	}
-	
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (MAX_ELECTRICITY - electricityStored)*Mekanism.TO_IC2;
-	}
-	
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
-		{
-			return i;
-		}
-		
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(i <= neededEnergy)
-    	{
-    		electricityStored += i;
-    	}
-    	else if(i > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = i-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-	
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return direction != ForgeDirection.getOrientation(facing);
 	}
 	
 	@Override

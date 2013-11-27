@@ -1,7 +1,5 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
@@ -52,7 +49,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IEnergySink, IStrictEnergyAcceptor, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
 {
 	public List<Object3D> oresToMine = new ArrayList<Object3D>();
 	
@@ -791,77 +788,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		return data;
 	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return true;
-	}
-	
-	public double demandedEnergyUnits()
-	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
-	}
-
-	@Override
-	public double injectEnergyUnits(ForgeDirection direction, double amount)
-	{
-		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
-		{
-			return amount;
-		}
-		
-		double givenEnergy = amount*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy < neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-	}
-
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededGas = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededGas)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededGas;
-    		rejects = amount-neededGas;
-    	}
-    	
-    	return rejects;
-	}
 	
 	@Override
 	public double getMaxEnergy() 
 	{
 		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return true;
 	}
 	
 	@Override
