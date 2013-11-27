@@ -85,6 +85,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public double prevEnergy;
 	
+	public boolean initCalc = false;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -115,6 +117,17 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		if(!worldObj.isRemote)
 		{
+			if(!initCalc)
+			{
+				if(searcher.state == State.FINISHED)
+				{
+					reset();
+					start();
+				}
+			     
+				initCalc = true;
+			}
+			
 			ChargeUtils.discharge(27, this);
 			
 			if(running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0)
@@ -494,16 +507,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     			filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
-    	
-    	if(nbtTags.hasKey("oresToMine"))
-    	{
-    		NBTTagList tagList = nbtTags.getTagList("oresToMine");
-    		
-    		for(int i = 0; i < tagList.tagCount(); i++)
-    		{
-    			oresToMine.add(Object3D.read((NBTTagCompound)tagList.tagAt(i)));
-    		}
-    	}
     }
 
 	@Override
@@ -543,18 +546,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         if(filterTags.tagCount() != 0)
         {
         	nbtTags.setTag("filters", filterTags);
-        }
-        
-        NBTTagList miningOreTags = new NBTTagList();
-        
-        for(Object3D obj : oresToMine)
-        {
-        	miningOreTags.appendTag(obj.write(new NBTTagCompound()));
-        }
-        
-        if(miningOreTags.tagCount() != 0)
-        {
-        	nbtTags.setTag("oresToMine", miningOreTags);
         }
     }
 	
