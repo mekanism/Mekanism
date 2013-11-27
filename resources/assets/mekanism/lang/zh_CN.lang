@@ -55,6 +55,7 @@ tile.MachineBlock.ElectricPump.name=电动泵
 tile.MachineBlock.ElectricChest.name=电动箱子
 tile.MachineBlock.Chargepad.name=充电台
 tile.MachineBlock.LogisticalSorter.name=物流整理机
+tile.MachineBlock.DigitalMiner.name=数字型采矿机
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=锇矿石
@@ -65,6 +66,7 @@ tile.Transmitter.UniversalCable.name=通用线缆
 tile.Transmitter.MechanicalPipe.name=机械管道
 tile.Transmitter.LogisticalTransporter.name=物流传送器
 tile.Transmitter.RestrictiveTransporter.name=限制传送器
+tile.Transmitter.DiversionTransporter.name=转移传送器
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=基础能量方块
