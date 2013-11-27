@@ -16,7 +16,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.power.IPowerReceptor;
@@ -91,17 +90,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
-		HashSet<ForgeDirection> set = new HashSet<ForgeDirection>();
+		EnumSet set = EnumSet.allOf(ForgeDirection.class);
+		set.remove(getOutputtingSide());
 		
-		for(ForgeDirection dir : ForgeDirection.values())
-		{
-			if(dir != getOutputtingSide())
-			{
-				set.add(dir);
-			}
-		}
-		
-		return EnumSet.copyOf(set);
+		return set;
 	}
 	
 	@Override
