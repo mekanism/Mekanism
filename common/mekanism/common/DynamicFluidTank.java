@@ -3,6 +3,7 @@ package mekanism.common;
 import mekanism.api.Object3D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
@@ -25,7 +26,7 @@ public class DynamicFluidTank implements IFluidTank
 	@Override
 	public int getCapacity()
 	{
-		return dynamicTank.structure != null ? dynamicTank.structure.volume*16000 : 0;
+		return dynamicTank.structure != null ? dynamicTank.structure.volume*TankUpdateProtocol.FLUID_PER_TANK : 0;
 	}
 
     @Override
@@ -49,6 +50,7 @@ public class DynamicFluidTank implements IFluidTank
 	                
 	    	        if(resource.amount > 0 && doFill)
 	    	        {
+	    	         	MekanismUtils.saveChunk(dynamicTank);
 	    	        	updateValveData(true);
 	    	        	dynamicTank.sendPacketToRenderer();
 	    	        	updateValveData(false);
@@ -65,6 +67,7 @@ public class DynamicFluidTank implements IFluidTank
 	                
 	    	        if(getCapacity() > 0 && doFill)
 	    	        {
+	    	         	MekanismUtils.saveChunk(dynamicTank);
 	    	        	updateValveData(true);
 	    	        	dynamicTank.sendPacketToRenderer();
 	    	        	updateValveData(false);
@@ -90,6 +93,7 @@ public class DynamicFluidTank implements IFluidTank
 	            
 		        if(resource.amount > 0 && doFill)
 		        {
+		         	MekanismUtils.saveChunk(dynamicTank);
 		        	updateValveData(true);
     	        	dynamicTank.sendPacketToRenderer();
     	        	updateValveData(false);
@@ -105,6 +109,7 @@ public class DynamicFluidTank implements IFluidTank
 	            
 		        if(space > 0 && doFill)
 		        {
+		         	MekanismUtils.saveChunk(dynamicTank);
 		        	updateValveData(true);
     	        	dynamicTank.sendPacketToRenderer();
     	        	updateValveData(false);
@@ -167,6 +172,7 @@ public class DynamicFluidTank implements IFluidTank
 	        
 	        if(drained.amount > 0 && doDrain)
 	        {
+	        	MekanismUtils.saveChunk(dynamicTank);
 	        	dynamicTank.sendPacketToRenderer();
 	        }
 	

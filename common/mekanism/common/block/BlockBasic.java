@@ -13,6 +13,7 @@ import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityBasicBlock;
@@ -419,7 +420,7 @@ public class BlockBasic extends Block
 			else if(FluidContainerRegistry.isFilledContainer(itemStack))
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-				int max = tileEntity.structure.volume*16000;
+				int max = tileEntity.structure.volume*TankUpdateProtocol.FLUID_PER_TANK;
 				
 				if(tileEntity.structure.fluidStored == null || (tileEntity.structure.fluidStored.isFluidEqual(itemFluid) && (tileEntity.structure.fluidStored.amount+itemFluid.amount <= max)))
 				{

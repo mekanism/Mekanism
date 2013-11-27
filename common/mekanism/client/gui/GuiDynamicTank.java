@@ -1,12 +1,12 @@
 package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
@@ -36,7 +36,7 @@ public class GuiDynamicTank extends GuiMekanism
 		
         fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
-        fontRenderer.drawString("Volume: " + tileEntity.clientCapacity/16000, 53, 26, 0x00CD00);
+        fontRenderer.drawString("Volume: " + tileEntity.clientCapacity/TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
         fontRenderer.drawString(tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.getFluid().getName() + ":" : "No fluid.", 53, 44, 0x00CD00);
         
         if(tileEntity.structure.fluidStored != null)

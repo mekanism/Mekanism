@@ -195,7 +195,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	
 	public void manageInventory()
 	{
-		int max = structure.volume*16000;
+		int max = structure.volume*TankUpdateProtocol.FLUID_PER_TANK;
 		
 		if(structure.inventory[0] != null)
 		{
@@ -303,7 +303,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 		
 		data.add(isRendering);
 		data.add(structure != null);
-		data.add(structure != null ? structure.volume*16000 : 0);
+		data.add(structure != null ? structure.volume*TankUpdateProtocol.FLUID_PER_TANK : 0);
 		
 		if(structure != null && structure.fluidStored != null)
 		{

@@ -8,6 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SynchronizedTankData.ValveData;
+import mekanism.common.TankUpdateProtocol;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
@@ -17,7 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -145,9 +145,9 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			toReturn.minY = 0 + .01;
 			toReturn.minZ = 0 + .01;
 			
-			toReturn.maxX = data.length-2 - .01;
+			toReturn.maxX = data.length - .01;
 			toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
-			toReturn.maxZ = data.width-2 - .01;
+			toReturn.maxZ = data.width - .01;
 			
 			MekanismRenderer.renderObject(toReturn);
 			GL11.glEndList();
@@ -275,7 +275,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	
 	private int getStages(int height)
 	{
-		return (height-2)*1600;
+		return (height-2)*(TankUpdateProtocol.FLUID_PER_TANK/10);
 	}
 	
 	private double getX(int x)
