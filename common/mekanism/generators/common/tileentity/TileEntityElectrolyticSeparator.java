@@ -376,8 +376,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
         	waterTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
         }
         
-        outputType = Gas.readFromNBT(nbtTags.getCompoundTag("outputType"));
-        dumpType = Gas.readFromNBT(nbtTags.getCompoundTag("dumpType"));
+        try {
+	        outputType = Gas.readFromNBT(nbtTags.getCompoundTag("outputType"));
+	        dumpType = Gas.readFromNBT(nbtTags.getCompoundTag("dumpType"));
+        } catch(Exception e) {} //TODO remove next major release
     }
 
 	@Override
