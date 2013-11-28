@@ -22,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -265,6 +266,11 @@ public class GuiConfiguration extends GuiMekanism
 	        	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.STRICT_INPUT, Object3D.get(tile)));
 	        }
+		}
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
+		{
+			button = 2;
 		}
         
         if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)

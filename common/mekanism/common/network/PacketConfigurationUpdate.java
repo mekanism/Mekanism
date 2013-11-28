@@ -160,6 +160,11 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 		
 		dataStream.writeInt(object3D.dimensionId);
 		
+		if(packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT)
+		{
+			dataStream.writeInt(clickType);
+		}
+		
 		if(packetType == ConfigurationPacket.SIDE_DATA)
 		{
 			dataStream.writeInt(configIndex);

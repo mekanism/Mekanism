@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -189,6 +190,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
+		}
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
+		{
+			button = 2;
 		}
 		
 		if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)

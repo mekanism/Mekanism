@@ -320,6 +320,11 @@ public class GuiTItemStackFilter extends GuiMekanism
 			}
 		}
     	
+    	if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
+		{
+			button = 2;
+		}
+    	
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
            	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);

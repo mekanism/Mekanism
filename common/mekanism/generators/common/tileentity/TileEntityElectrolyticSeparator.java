@@ -111,13 +111,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && hydrogenStored > 0)
 				{
-					hydrogenStored -= GasUtils.addGas(inventory[0], new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored));
+					hydrogenStored -= GasUtils.addGas(inventory[1], new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored));
 					MekanismUtils.saveChunk(this);
 				}
 				
 				if(inventory[2] != null && oxygenStored > 0)
 				{
-					hydrogenStored -= GasUtils.addGas(inventory[0], new GasStack(GasRegistry.getGas("oxygen"), oxygenStored));
+					hydrogenStored -= GasUtils.addGas(inventory[2], new GasStack(GasRegistry.getGas("oxygen"), oxygenStored));
 					MekanismUtils.saveChunk(this);
 				}
 			}
