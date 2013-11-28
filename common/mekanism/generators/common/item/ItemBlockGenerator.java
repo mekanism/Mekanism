@@ -184,7 +184,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public int getTier(ItemStack itemStack)
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override

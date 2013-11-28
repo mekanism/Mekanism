@@ -101,7 +101,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public int getTier(ItemStack itemStack)
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override

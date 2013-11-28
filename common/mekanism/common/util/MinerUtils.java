@@ -34,7 +34,12 @@ public final class MinerUtils
         	List<ItemStack> ret = new ArrayList<ItemStack>();
         	ret.add(new ItemStack(block.blockID, 1, meta));
         	
-        	return ret;
+        	if(block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0) != null && block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0).size() > 0)
+        	{
+        		return ret;
+        	}
         }
+        
+        return new ArrayList<ItemStack>();
 	}
 }

@@ -37,7 +37,7 @@ public final class ChargeUtils
 				
 				if(item.canProvideEnergy(storer.inventory[slotID]))
 				{
-					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 4, false, false)*Mekanism.FROM_IC2;
 					storer.setEnergy(storer.getEnergy() + gain);
 				}
 			}

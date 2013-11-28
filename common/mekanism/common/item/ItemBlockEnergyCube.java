@@ -159,7 +159,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	@Override
 	public int getTier(ItemStack itemStack)
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override

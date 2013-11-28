@@ -350,7 +350,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public int getTier(ItemStack itemStack)
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override
