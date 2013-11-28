@@ -7,6 +7,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IUpgradeManagement;
 import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.gas.IGasItem;
 import mekanism.client.ClientProxy;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
@@ -77,22 +78,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple machine block IDs.
- * 0: Enrichment Chamber
- * 1: Osmium Compressor
- * 2: Combiner
- * 3: Crusher
- * 4: Digital Miner
- * 5: Basic Factory
- * 6: Advanced Factory
- * 7: Elite Factory
- * 8: Metallurgic Infuser
- * 9: Purification Chamber
- * 10: Energized Smelter
- * 11: Teleporter
- * 12: Electric Pump
- * 13: Electric Chest
- * 14: Chargepad
- * 15: Logistical Sorter
+ * 0:0: Enrichment Chamber
+ * 0:1: Osmium Compressor
+ * 0:2: Combiner
+ * 0:3: Crusher
+ * 0:4: Digital Miner
+ * 0:5: Basic Factory
+ * 0:6: Advanced Factory
+ * 0:7: Elite Factory
+ * 0:8: Metallurgic Infuser
+ * 0:9: Purification Chamber
+ * 0:10: Energized Smelter
+ * 0:11: Teleporter
+ * 0:12: Electric Pump
+ * 0:13: Electric Chest
+ * 0:14: Chargepad
+ * 0:15: Logistical Sorter
+ * 1:0: Rotary Condensentrator
  * @author AidanBrady
  *
  */
@@ -223,7 +225,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	
-        if(MekanismUtils.isActive(world, x, y, z) && !(tileEntity instanceof TileEntityChargepad) && !(tileEntity instanceof TileEntityLogisticalSorter) && !(tileEntity instanceof TileEntityCrusher))
+        if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate())
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -918,6 +920,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         {
         	IFactory factoryItem = (IFactory)itemStack.getItem();
         	factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
+        }
+        
+        if(tileEntity instanceof TileEntityRotaryCondensentrator)
+        {
+        	IGasItem gasItem = (IGasItem)itemStack.getItem();
+        	gasItem.setGas(((TileEntityRotaryCondensentrator)tileEntity).getGas(), itemStack);
         }
         
         return itemStack;

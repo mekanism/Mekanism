@@ -475,7 +475,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() != resource.getFluid() && from == ForgeDirection.getOrientation(1))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.getOrientation(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -509,6 +509,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid) 
 	{
-		return true;
+		return from == ForgeDirection.getOrientation(1);
 	}
 }

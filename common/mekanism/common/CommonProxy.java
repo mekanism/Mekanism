@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
+import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
@@ -263,7 +264,7 @@ public class CommonProxy
 			case 6:
 				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:
-				//return new ContainerRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity); TODO
+				return new ContainerRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity);
 			case 8:
 				return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:

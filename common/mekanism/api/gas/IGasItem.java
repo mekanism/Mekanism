@@ -13,23 +13,23 @@ public interface IGasItem extends IGasStorage
 	 * Gets the rate of transfer this item can handle.
 	 * @return
 	 */
-	public int getRate();
+	public int getRate(ItemStack itemstack);
 	
 	/**
-	 * Adds a defined about of a certain gas to a Storage Tank.
-	 * @param itemstack - the itemstack of a Storage Tank to add gas to
+	 * Adds a defined amount of a certain gas to an item.
+	 * @param itemstack - the itemstack to add gas to
 	 * @param type - the type of gas to add
 	 * @param amount - the amount of gas to add
-	 * @return used gas
+	 * @return the gas that was accepted by the item
 	 */
 	public int addGas(ItemStack itemstack, GasStack stack);
 	
 	/**
 	 * Removes the defined amount of a certain gas from the item.
-	 * @param itemstack - the itemstack of a Storage Tank to remove gas from
+	 * @param itemstack - the itemstack to remove gas from
 	 * @param type - the type of gas to remove
 	 * @param amount - the amount of gas to remove
-	 * @return removed gas
+	 * @return the gas that was removed by the item
 	 */
 	public GasStack removeGas(ItemStack itemstack, int amount);
 	
@@ -42,9 +42,9 @@ public interface IGasItem extends IGasStorage
 	public boolean canReceiveGas(ItemStack itemstack, Gas type);
 	
 	/**
-	 * Whether or not this energized item can give a gas receiver a certain amount of gas.
+	 * Whether or not this item can give a gas receiver a certain type of gas.
 	 * @param itemstack - the itemstack to check
-	 * @param type - the type of gas the tank can possibly provide
+	 * @param type - the type of gas the tank can provide
 	 * @return if the item can provide gas
 	 */
 	public boolean canProvideGas(ItemStack itemstack, Gas type);

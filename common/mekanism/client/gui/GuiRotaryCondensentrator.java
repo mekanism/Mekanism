@@ -1,12 +1,12 @@
 package mekanism.client.gui;
 
+import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.inventory.container.ContainerElectricPump;
-import mekanism.common.tileentity.TileEntityElectricPump;
+import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
+import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
@@ -15,16 +15,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiElectricPump extends GuiMekanism
+public class GuiRotaryCondensentrator extends GuiMekanism
 {
-	public TileEntityElectricPump tileEntity;
+	public TileEntityRotaryCondensentrator tileEntity;
 	
 	private int guiWidth;
 	private int guiHeight;
 	
-	public GuiElectricPump(InventoryPlayer inventory, TileEntityElectricPump tentity)
+	public GuiRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tentity)
     {
-        super(new ContainerElectricPump(inventory, tentity));
+        super(new ContainerRotaryCondensentrator(inventory, tentity));
         tileEntity = tentity;
     }
 	
@@ -45,7 +45,7 @@ public class GuiElectricPump extends GuiMekanism
 			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluid().amount + "mB" : "Empty", xAxis, yAxis);
 		}
 		
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
@@ -58,7 +58,7 @@ public class GuiElectricPump extends GuiMekanism
     {
     	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     	
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         guiWidth = (width - xSize) / 2;
         guiHeight = (height - ySize) / 2;
@@ -66,18 +66,20 @@ public class GuiElectricPump extends GuiMekanism
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
         
         if(tileEntity.getScaledFluidLevel(58) > 0) 
         {
-			displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid());
+			displayGauge(26, 14, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid(), null);
 		}
+        
+        if(tileEntity.getScaledGasLevel(58) > 0)
+        {
+        	displayGauge(134, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank);
+        }
     }
 	
-	/*
-	 * Credit to BuildCraft for both the gauge texture and parts of the code.
-	 */
-	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid)
+	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
 	{
 	    if(fluid == null)
 	    {
@@ -101,7 +103,16 @@ public class GuiElectricPump extends GuiMekanism
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-			drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			
+			if(fluid != null)
+			{
+				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			}
+			else if(gas != null)
+			{
+				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
+			}
+			
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)
@@ -110,7 +121,7 @@ public class GuiElectricPump extends GuiMekanism
 			}
 		}
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 52, 16, 60);
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"));
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 60);
 	}
 }

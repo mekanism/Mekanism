@@ -61,7 +61,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 			}
 		}
 		
-		if(!worldObj.isRemote && gasStored != null && MekanismUtils.canFunction(this))
+		if(!worldObj.isRemote && getGas() != null && MekanismUtils.canFunction(this))
 		{
 			GasStack toSend = new GasStack(getGas().getGas(), Math.min(getGas().amount, output));
 			setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing))));

@@ -1,8 +1,11 @@
 package mekanism.common.inventory.container;
 
+import mekanism.api.gas.IGasItem;
+import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
+import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -17,10 +20,12 @@ public class ContainerRotaryCondensentrator extends Container
     public ContainerRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tentity)
     {
         tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 8, 8));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 8, 40));
-        addSlotToContainer(new Slot(tentity, 0, 146, 20));
-        addSlotToContainer(new SlotOutput(tentity, 1, 146, 51));
+		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 5, 25));
+		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 5, 56));
+        addSlotToContainer(new Slot(tentity, 2, 155, 25));
+        addSlotToContainer(new SlotOutput(tentity, 3, 155, 56));
+        addSlotToContainer(new SlotDischarge(tentity, 4, 155, 5));
+        
         int slotX;
 
         for(slotX = 0; slotX < 3; ++slotX)
@@ -66,39 +71,81 @@ public class ContainerRotaryCondensentrator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             
-            if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+            if(ChargeUtils.canBeDischarged(slotStack))
             {
-            	if(slotID != 0 && slotID != 1)
+	            if(slotID != 4)
+	            {
+	                if(!mergeItemStack(slotStack, 4, 5, false))
+	                {
+	                	return null;
+	                }
+	            }
+	            else {
+	            	if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+	            	{
+	            		return null;
+	            	}
+	            }
+            }
+            else if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+            {
+            	if(slotID != 2 && slotID != 3)
             	{
-            		if(!mergeItemStack(slotStack, 0, 1, false))
+            		if(!mergeItemStack(slotStack, 2, 3, false))
             		{
             			return null;
             		}
             	}
             	else {
-            	 	if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+            	 	if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
             	}
             }
+            else if(slotStack.getItem() instanceof IGasItem)
+            {
+            	if(slotID != 0 && slotID != 1)
+            	{
+	            	if(((IGasItem)slotStack.getItem()).canProvideGas(slotStack, tileEntity.gasTank != null ? tileEntity.gasTank.getGas() : null))
+	            	{
+	            		if(!mergeItemStack(slotStack, 0, 1, false))
+	            		{
+	            			return null;
+	            		}
+	            	}
+	            	else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.gasTank != null ? tileEntity.gasTank.getGas() : null))
+	    			{
+	            		if(!mergeItemStack(slotStack, 1, 2, false))
+	            		{
+	            			return null;
+	            		}
+	    			}
+            	}
+            	else {
+              		if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
+            }
             else {
-	        	if(slotID >= 2 && slotID <= 8)
-	        	{
-	        		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
-	        		{
-	        			return null;
-	        		}
-	        	}
-	        	else if(slotID > 28)
-	        	{
-	        		if(!mergeItemStack(slotStack, 2, 28, false))
-	        		{
-	        			return null;
-	        		}
-	        	}
-	        	else {
-            		if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+             	if(slotID >= 5 && slotID <= 31)
+            	{
+            		if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
+            		{
+            			return null;
+            		}
+            	}
+            	else if(slotID > 31)
+            	{
+            		if(!mergeItemStack(slotStack, 5, 31, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else {
+            		if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
             		{
             			return null;
             		}

@@ -28,6 +28,7 @@ public class ContainerAdvancedElectricMachine extends Container
         addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
         addSlotToContainer(new SlotDischarge(tentity, 3, 31, 35));
         addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 180, 11));
+        
         int slotX;
 
         for(slotX = 0; slotX < 3; ++slotX)
@@ -82,7 +83,7 @@ public class ContainerAdvancedElectricMachine extends Container
             }
             else if(ChargeUtils.canBeDischarged(slotStack))
             {
-	            if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+	            if(slotID != 3)
 	            {
 	                if(!mergeItemStack(slotStack, 3, 4, false))
 	                {
@@ -98,7 +99,7 @@ public class ContainerAdvancedElectricMachine extends Container
             }
             else if(tileEntity.getFuelTicks(slotStack) > 0)
             {
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+            	if(slotID != 1)
             	{
                     if(!mergeItemStack(slotStack, 1, 2, false))
 	                {
@@ -114,9 +115,9 @@ public class ContainerAdvancedElectricMachine extends Container
             }
             else if(RecipeHandler.getOutput(slotStack, false, tileEntity.getRecipes()) != null)
     		{
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+            	if(slotID != 0)
             	{
-                    if (!mergeItemStack(slotStack, 0, 1, false))
+                    if(!mergeItemStack(slotStack, 0, 1, false))
 	                {
 	                    return null;
 	                }
@@ -130,7 +131,7 @@ public class ContainerAdvancedElectricMachine extends Container
     		}
             else if(slotStack.getItem() instanceof ItemMachineUpgrade)
             {
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
+            	if(slotID != 4)
             	{
             		if(!mergeItemStack(slotStack, 4, 5, false))
             		{

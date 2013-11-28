@@ -30,7 +30,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	public int MAX_GAS = 96000;
 	
 	/** How fast this tank can transfer gas. */
-	public int TRANSFER_RATE = 16;
+	public static final int TRANSFER_RATE = 16;
 	
 	public ItemBlockGasTank(int id, Block block)
 	{
@@ -190,7 +190,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public int getRate() 
+	public int getRate(ItemStack itemstack) 
 	{
 		return TRANSFER_RATE;
 	}
@@ -203,7 +203,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			return 0;
 		}
 		
-		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(), stack.amount));
+		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
 		setGas(new GasStack(stack.getGas(), getStored(itemstack)+toUse), itemstack);
 		
 		return toUse;
@@ -219,7 +219,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		
 		Gas type = getGas(itemstack).getGas();
 		
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(), amount));
+		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
 		setGas(new GasStack(type, getStored(itemstack)-gasToUse), itemstack);
 		
 		return new GasStack(type, gasToUse);

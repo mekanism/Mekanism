@@ -304,6 +304,7 @@ public class ClientProxy extends CommonProxy
 				return new GuiCrusher(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:
 				//return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity); TODO
+				return null;
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:

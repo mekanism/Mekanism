@@ -75,8 +75,7 @@ public class ContainerElectricPump extends Container
 	                	return null;
 	                }
 	            }
-	            else if(slotID == 2)
-	            {
+	            else {
 	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 	            	{
 	            		return null;
