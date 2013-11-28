@@ -1,9 +1,16 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+
+import mekanism.api.Object3D;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -34,13 +41,15 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
-        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-        fontRenderer.drawString(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getName() + ": " + tileEntity.fluidTank.getFluid().amount : "No fluid.", 51, 35, 0x00CD00);
-        fontRenderer.drawString(tileEntity.getVoltage() + "v", 51, 44, 0x00CD00);
+        fontRenderer.drawString("Rotary Condensentrator", 26, 4, 0x404040);
+        fontRenderer.drawString(tileEntity.mode == 0 ? "Condensentrating" : "Decondensentrating", 6, (ySize - 94) + 2, 0x404040);
         
-		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
+		{
+			drawCreativeTabHoveringText(tileEntity.gasTank != null ? tileEntity.gasTank.getGas().getLocalizedName() + ": " + tileEntity.gasTank.amount : "Empty", xAxis, yAxis);
+		}
+		
+		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
 		{
 			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluid().amount + "mB" : "Empty", xAxis, yAxis);
 		}
@@ -48,6 +57,11 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
+		{
+			drawCreativeTabHoveringText("Toggle operation", xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -65,19 +79,51 @@ public class GuiRotaryCondensentrator extends GuiMekanism
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt;
         
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+        
         displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
         
-        if(tileEntity.getScaledFluidLevel(58) > 0) 
+        if(tileEntity.getScaledGasLevel(58) > 0) 
         {
-			displayGauge(26, 14, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid(), null);
+        	displayGauge(26, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank);
 		}
         
-        if(tileEntity.getScaledGasLevel(58) > 0)
+        if(tileEntity.getScaledFluidLevel(58) > 0)
         {
-        	displayGauge(134, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank);
+			displayGauge(134, 14, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid(), null);
         }
+        
+		if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
+		{
+			drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, 0, 18, 18);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, 18, 18, 18);
+		}
     }
+	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (mouseX - (width - xSize) / 2);
+			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+		}
+	}
 	
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
 	{

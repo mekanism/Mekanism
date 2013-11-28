@@ -7,6 +7,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
@@ -18,11 +19,13 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -87,20 +90,129 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			
 			ChargeUtils.discharge(4, this);
 			
-			if(mode == 1 && getGas() != null)
+			if(mode == 0)
 			{
-				GasStack toSend = new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput));
-				setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing))));
-				
-				TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
-				
-				if(tileEntity instanceof IGasAcceptor)
+				if(inventory[1] != null && (getGas() == null || getGas().amount < getMaxGas()))
 				{
-					if(((IGasAcceptor)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), getGas().getGas()))
+					if(getGas() == null)
 					{
-						int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput)));
+						setGas(GasUtils.removeGas(inventory[1], null, getMaxGas()));
+					}
+					else {
+						GasStack removed = GasUtils.removeGas(inventory[1], getGas().getGas(), getMaxGas()-getGas().amount);
+						setGas(new GasStack(getGas().getGas(), getGas().amount + (removed != null ? removed.amount : 0)));
+					}
+				}
+				
+				if(inventory[2] != null)
+				{
+					if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
+					{
+						if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+						{
+							ItemStack filled = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[2]);
+							
+							if(filled != null)
+							{
+								if(inventory[3] == null || (inventory[3].isItemEqual(filled) && inventory[3].stackSize+1 <= filled.getMaxStackSize()))
+								{
+									inventory[2].stackSize--;
+									
+									if(inventory[2].stackSize <= 0)
+									{
+										inventory[2] = null;
+									}
+									
+									if(inventory[3] == null)
+									{
+										inventory[3] = filled;
+									}
+									else {
+										inventory[3].stackSize++;
+									}
+									
+									fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
+								}
+							}
+						}
+					}
+				}
+			}
+			else if(mode == 1)
+			{
+				if(getGas() != null)
+				{
+					if(inventory[0] != null)
+					{
+						setGas(new GasStack(getGas().getGas(), getGas().amount - GasUtils.addGas(inventory[0], getGas())));
+					}
+				}
+				
+				if(getGas() != null)
+				{
+					GasStack toSend = new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput));
+					setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing))));
+					
+					TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+					
+					if(tileEntity instanceof IGasAcceptor)
+					{
+						if(((IGasAcceptor)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), getGas().getGas()))
+						{
+							int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput)));
+							
+							setGas(new GasStack(getGas().getGas(), getGas().amount - added));
+						}
+					}
+				}
+				
+				if(FluidContainerRegistry.isFilledContainer(inventory[2]))
+				{
+					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[2]);
+					
+					if((fluidTank.getFluid() == null && itemFluid.amount <= 10000) || fluidTank.getFluid().amount+itemFluid.amount <= 10000)
+					{
+						if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+						{
+							return;
+						}
 						
-						setGas(new GasStack(getGas().getGas(), getGas().amount - added));
+						ItemStack containerItem = inventory[2].getItem().getContainerItemStack(inventory[2]);
+						
+						boolean filled = false;
+						
+						if(containerItem != null)
+						{
+							if(inventory[3] == null || (inventory[3].isItemEqual(containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
+							{
+								inventory[2] = null;
+								
+								if(inventory[3] == null)
+								{
+									inventory[3] = containerItem;
+								}
+								else {
+									inventory[3].stackSize++;
+								}
+								
+								filled = true;
+							}
+						}
+						else {						
+							inventory[2].stackSize--;
+							
+							if(inventory[2].stackSize == 0)
+							{
+								inventory[2] = null;
+							}
+							
+							filled = true;
+						}
+						
+						if(filled)
+						{
+							fluidTank.fill(itemFluid, true);
+						}
 					}
 				}
 			}
@@ -110,11 +222,28 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				mode = mode == 0 ? 1 : 0;
+			}
+			
+			for(EntityPlayer player : playersUsing)
+			{
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
+			}
+			
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		mode = dataStream.readInt();
 		
-		if(dataStream.readInt() == 1)
+		if(dataStream.readBoolean())
 		{
 			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
 		}
@@ -143,12 +272,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		
 		if(fluidTank.getFluid() != null)
 		{
-			data.add(1);
+			data.add(true);
 			data.add(fluidTank.getFluid().fluidID);
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
-			data.add(0);
+			data.add(false);
 		}
 		
 		if(gasTank != null)

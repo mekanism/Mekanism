@@ -13,7 +13,6 @@ public final class ItemAttacher
 	
 	static {
 		attachable.add(new ItemStack(Block.lever));
-		attachable.add(new ItemStack(Item.redstone));
 		attachable.add(new ItemStack(Block.torchRedstoneIdle));
 		attachable.add(new ItemStack(Block.torchWood));
 		

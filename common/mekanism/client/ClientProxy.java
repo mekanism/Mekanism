@@ -29,6 +29,7 @@ import mekanism.client.gui.GuiRobitInventory;
 import mekanism.client.gui.GuiRobitMain;
 import mekanism.client.gui.GuiRobitRepair;
 import mekanism.client.gui.GuiRobitSmelting;
+import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
@@ -303,8 +304,7 @@ public class ClientProxy extends CommonProxy
 			case 6:
 				return new GuiCrusher(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:
-				//return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity); TODO
-				return null;
+				return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity);
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:

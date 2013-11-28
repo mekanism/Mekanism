@@ -53,7 +53,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 					{
 						lavaTank.fill(fluid, true);
 						
-						if(inventory[0].getItem().hasContainerItem())
+						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 						{
 							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
 						}
@@ -78,7 +78,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						{
 							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
 							
-							if(inventory[0].getItem().hasContainerItem())
+							if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 							{
 								inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
 							}

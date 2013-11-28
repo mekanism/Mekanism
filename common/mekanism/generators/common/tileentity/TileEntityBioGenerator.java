@@ -61,17 +61,17 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.setFluid(bioFuelSlot.fluidStored+fluidToAdd);
 						
-						if(FluidContainerRegistry.isBucket(inventory[0]))
+						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 						{
-							inventory[0] = new ItemStack(Item.bucketEmpty);
+							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
 						}
 						else {
 							inventory[0].stackSize--;
-
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
+						}
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
 						}
 					}
 				}
@@ -83,20 +83,23 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 				if(fuel > 0)
 				{
 					int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
+					
 					if(fuel <= fuelNeeded)
 					{
 						bioFuelSlot.fluidStored += fuel;
-						inventory[0].stackSize--;
-
-						if(prevStack.isItemEqual(new ItemStack(Item.bucketLava)))
+						
+						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 						{
-							inventory[0] = new ItemStack(Item.bucketEmpty);
+							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
 						}
-					}
-
-					if(inventory[0].stackSize == 0)
-					{
-						inventory[0] = null;
+						else {
+							inventory[0].stackSize--;
+						}
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
+						}
 					}
 				}
 			}

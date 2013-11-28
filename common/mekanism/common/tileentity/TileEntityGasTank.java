@@ -44,14 +44,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	@Override
 	public void onUpdate()
 	{
-		if(inventory[0] != null && gasStored != null)
+		if(inventory[0] != null && getGas() != null)
 		{
-			setGas(new GasStack(getGas().getGas(), gasStored.amount - GasUtils.addGas(inventory[0], getGas())));
+			setGas(new GasStack(getGas().getGas(), getGas().amount - GasUtils.addGas(inventory[0], getGas())));
 		}
 		
-		if(inventory[1] != null && (gasStored == null || gasStored.amount < getMaxGas()))
+		if(inventory[1] != null && (getGas() == null || getGas().amount < getMaxGas()))
 		{
-			if(gasStored == null)
+			if(getGas() == null)
 			{
 				setGas(GasUtils.removeGas(inventory[1], null, getMaxGas()));
 			}

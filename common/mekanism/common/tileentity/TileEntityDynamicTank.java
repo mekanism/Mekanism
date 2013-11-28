@@ -247,19 +247,19 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						return;
 					}
 					
-					ItemStack bucket = FluidContainerRegistry.isBucket(structure.inventory[0]) ? new ItemStack(Item.bucketEmpty) : null;
+					ItemStack containerItem = structure.inventory[0].getItem().getContainerItemStack(structure.inventory[0]);
 					
 					boolean filled = false;
 					
-					if(bucket != null)
+					if(containerItem != null)
 					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(bucket) && structure.inventory[1].stackSize+1 <= bucket.getMaxStackSize()))
+						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(containerItem) && structure.inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
 							structure.inventory[0] = null;
 							
 							if(structure.inventory[1] == null)
 							{
-								structure.inventory[1] = bucket;
+								structure.inventory[1] = containerItem;
 							}
 							else {
 								structure.inventory[1].stackSize++;

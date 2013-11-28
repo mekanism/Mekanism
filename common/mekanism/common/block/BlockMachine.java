@@ -535,7 +535,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 					for(RecipeType recipe : RecipeType.values())
 					{
 						ItemStack stack = new ItemStack(i, 1, type.meta);
-						((IFactory)stack.getItem()).setRecipeType(type.ordinal(), stack);
+						((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
 						list.add(stack);
 					}
 				}
