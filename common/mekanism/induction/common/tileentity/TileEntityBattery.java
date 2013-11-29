@@ -11,40 +11,33 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.common.ITileNetwork;
+import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.induction.common.BatteryUpdateProtocol;
 import mekanism.induction.common.SynchronizedBatteryData;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.compatibility.TileEntityUniversalElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 /**
  * A modular battery with no GUI.
  * 
  * @author AidanBrady
  */
-public class TileEntityBattery extends TileEntityUniversalElectrical implements ITileNetwork, IInventory
+public class TileEntityBattery extends TileEntityElectricBlock
 {
 	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 
@@ -52,12 +45,17 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 
 	public SynchronizedBatteryData prevStructure;
 
-	public float clientEnergy;
+	public double clientEnergy;
 	public int clientCells;
-	public float clientMaxEnergy;
+	public double clientMaxEnergy;
 	public int clientVolume;
 
 	private EnumSet inputSides = EnumSet.allOf(ForgeDirection.class);
+	
+	public TileEntityBattery()
+	{
+		super("Battery", 0);
+	}
 
 	@Override
 	public void updateEntity()
@@ -66,7 +64,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 
 		if(!worldObj.isRemote)
 		{
-			if(ticks == 5 && !structure.isMultiblock)
+			if(ticker == 5 && !structure.isMultiblock)
 			{
 				update();
 			}
@@ -84,88 +82,33 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 					}
 				}
 			}
-
-			/**
-			 * Attempt to charge entities above it.
-			 */
-			ItemStack chargeItem = null;
-
-			if(worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+			
+			if(structure.visibleInventory[1] != null)
 			{
-				List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord + 1, zCoord, xCoord + 1, yCoord + 2, zCoord + 1));
+				ItemStack itemStack = structure.visibleInventory[1];
+				IEnergizedItem battery = (IEnergizedItem)itemStack.getItem();
 
-				electricItemLoop:
-				for (Entity entity : entities)
-				{
-					if(entity instanceof EntityPlayer)
-					{
-						IInventory inventory = ((EntityPlayer) entity).inventory;
-						for (int i = 0; i < inventory.getSizeInventory(); i++)
-						{
-							ItemStack checkStack = inventory.getStackInSlot(i);
+				double energyStored = getMaxEnergy();
+				double batteryNeeded = battery.getMaxEnergy(itemStack) - battery.getEnergy(itemStack);
+				double toGive = Math.min(energyStored, Math.min(battery.getMaxTransfer(itemStack), batteryNeeded));
 
-							if(checkStack != null)
-							{
-								if(checkStack.getItem() instanceof IItemElectric)
-								{
-									if(((IItemElectric) checkStack.getItem()).recharge(checkStack, provideElectricity(getTransferThreshhold(), false).getWatts(), false) > 0)
-									{
-										chargeItem = checkStack;
-										break electricItemLoop;
-									}
-								}
-							}
-						}
-					}
-					else if(entity instanceof EntityItem)
-					{
-						ItemStack checkStack = ((EntityItem) entity).getEntityItem();
-
-						if(checkStack != null)
-						{
-							if(checkStack.getItem() instanceof IItemElectric)
-							{
-								if(((IItemElectric) checkStack.getItem()).recharge(checkStack, provideElectricity(getTransferThreshhold(), false).getWatts(), false) > 0)
-								{
-									chargeItem = checkStack;
-									break electricItemLoop;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			if(chargeItem == null)
-			{
-				chargeItem = structure.visibleInventory[1];
-			}
-
-			if(chargeItem != null)
-			{
-				ItemStack itemStack = chargeItem;
-				IItemElectric battery = (IItemElectric) itemStack.getItem();
-
-				float energyStored = getMaxEnergyStored();
-				float batteryNeeded = battery.recharge(itemStack, provideElectricity(getTransferThreshhold(), false).getWatts(), false);
-				float toGive = Math.min(energyStored, Math.min(battery.getTransfer(itemStack), batteryNeeded));
-				battery.recharge(itemStack, provideElectricity(toGive, true).getWatts(), true);
+				battery.setEnergy(itemStack, battery.getEnergy(itemStack) + remove(toGive, true));
 			}
 
 			if(structure.visibleInventory[2] != null)
 			{
 				ItemStack itemStack = structure.visibleInventory[2];
-				IItemElectric battery = (IItemElectric) itemStack.getItem();
+				IEnergizedItem battery = (IEnergizedItem)itemStack.getItem();
 
-				float energyNeeded = getMaxEnergyStored() - getEnergyStored();
-				float batteryStored = battery.getElectricityStored(itemStack);
-				float toReceive = Math.min(energyNeeded, Math.min(getTransferThreshhold(), Math.min(battery.getTransfer(itemStack), batteryStored)));
-				battery.discharge(itemStack, receiveElectricity(toReceive, true), true);
+				double energyNeeded = getMaxEnergy() - getEnergy();
+				double batteryStored = battery.getEnergy(itemStack);
+				double toReceive = Math.min(energyNeeded, Math.min(battery.getMaxTransfer(itemStack), batteryStored));
+				battery.setEnergy(itemStack, battery.getEnergy(itemStack) - add(toReceive, true));
 			}
 
 			if(prevStructure != structure)
 			{
-				for (EntityPlayer player : playersUsing)
+				for(EntityPlayer player : playersUsing)
 				{
 					player.closeScreen();
 				}
@@ -183,18 +126,13 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 				updateClient();
 			}
 
-			for (EntityPlayer player : playersUsing)
+			for(EntityPlayer player : playersUsing)
 			{
 				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
 			}
 
-			produce();
+			CableUtils.emit(this);
 		}
-	}
-
-	public float getTransferThreshhold()
-	{
-		return structure.getVolume() * 50;
 	}
 
 	public void updateClient()
@@ -204,21 +142,10 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 
 	public void updateAllClients()
 	{
-		for (Vector3 vec : structure.locations)
+		for(Object3D vec : structure.locations)
 		{
-			TileEntityBattery battery = (TileEntityBattery) vec.getTileEntity(worldObj);
+			TileEntityBattery battery = (TileEntityBattery)vec.getTileEntity(worldObj);
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(battery), battery.getNetworkedData(new ArrayList())));
-		}
-	}
-
-	@Override
-	public void validate()
-	{
-		super.validate();
-		
-		if(worldObj.isRemote)
-		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
 		}
 	}
 
@@ -233,7 +160,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 			NBTTagList tagList = nbtTags.getTagList("Items");
 			structure.inventory = new ArrayList<ItemStack>();
 
-			for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
 				NBTTagCompound tagCompound = (NBTTagCompound) tagList.tagAt(tagCount);
 				int slotID = tagCompound.getInteger("Slot");
@@ -247,7 +174,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 			NBTTagList tagList = nbtTags.getTagList("VisibleItems");
 			structure.visibleInventory = new ItemStack[3];
 
-			for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
 				NBTTagCompound tagCompound = (NBTTagCompound) tagList.tagAt(tagCount);
 				byte slotID = tagCompound.getByte("Slot");
@@ -258,8 +185,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 					{
 						setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
 					}
-					else
-					{
+					else {
 						setInventorySlotContents(slotID + 1, ItemStack.loadItemStackFromNBT(tagCompound));
 					}
 				}
@@ -270,7 +196,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 
 		NBTTagList tagList = nbtTags.getTagList("inputSides");
 
-		for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
 			NBTTagCompound tagCompound = (NBTTagCompound) tagList.tagAt(tagCount);
 			byte side = tagCompound.getByte("side");
@@ -287,7 +213,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 
 		if(!structure.wroteInventory)
 		{
-			// Inventory
+			//Inventory
 			if(structure.inventory != null)
 			{
 				NBTTagList tagList = new NBTTagList();
@@ -306,7 +232,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 				nbt.setTag("Items", tagList);
 			}
 
-			// Visible inventory
+			//Visible inventory
 			if(structure.visibleInventory != null)
 			{
 				NBTTagList tagList = new NBTTagList();
@@ -338,7 +264,7 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 			NBTTagList tagList = new NBTTagList();
 			Iterator<ForgeDirection> it = inputSides.iterator();
 
-			while (it.hasNext())
+			while(it.hasNext())
 			{
 				ForgeDirection dir = it.next();
 
@@ -367,24 +293,22 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 		}
 	}
 
-	@Override
-	public float receiveElectricity(ElectricityPack receive, boolean doAdd)
+	public double add(double amount, boolean doAdd)
 	{
-		float amount = receive.getWatts();
-		float added = 0;
+		double added = 0;
 
-		for (ItemStack itemStack : structure.inventory)
+		for(ItemStack itemStack : structure.inventory)
 		{
-			if(itemStack.getItem() instanceof IItemElectric)
+			if(itemStack.getItem() instanceof IEnergizedItem)
 			{
-				IItemElectric battery = (IItemElectric) itemStack.getItem();
+				IEnergizedItem battery = (IEnergizedItem)itemStack.getItem();
 
-				float needed = amount - added;
-				float itemAdd = Math.min(battery.getMaxElectricityStored(itemStack) - battery.getElectricityStored(itemStack), needed);
+				double needed = amount - added;
+				double itemAdd = Math.min(battery.getMaxEnergy(itemStack) - battery.getEnergy(itemStack), needed);
 
 				if(doAdd)
 				{
-					battery.setElectricity(itemStack, battery.getElectricityStored(itemStack) + itemAdd);
+					battery.setEnergy(itemStack, battery.getEnergy(itemStack) + itemAdd);
 				}
 
 				added += itemAdd;
@@ -399,26 +323,24 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 		return added;
 	}
 
-	@Override
-	public ElectricityPack provideElectricity(ElectricityPack pack, boolean doRemove)
+	public double remove(double amount, boolean doRemove)
 	{
-		float amount = pack.getWatts();
-
 		List<ItemStack> inverse = ListUtils.inverse(structure.inventory);
 
 		float removed = 0;
-		for (ItemStack itemStack : inverse)
+		
+		for(ItemStack itemStack : inverse)
 		{
-			if(itemStack.getItem() instanceof IItemElectric)
+			if(itemStack.getItem() instanceof IEnergizedItem)
 			{
-				IItemElectric battery = (IItemElectric) itemStack.getItem();
+				IEnergizedItem battery = (IEnergizedItem)itemStack.getItem();
 
-				float needed = amount - removed;
-				float itemRemove = Math.min(battery.getElectricityStored(itemStack), needed);
+				double needed = amount - removed;
+				double itemRemove = Math.min(battery.getEnergy(itemStack), needed);
 
 				if(doRemove)
 				{
-					battery.setElectricity(itemStack, battery.getElectricityStored(itemStack) - itemRemove);
+					battery.setEnergy(itemStack, battery.getEnergy(itemStack) - itemRemove);
 				}
 
 				removed += itemRemove;
@@ -430,23 +352,23 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 			}
 		}
 
-		return ElectricityPack.getFromWatts(removed, getVoltage());
+		return removed;
 	}
 
 	@Override
-	public float getMaxEnergyStored()
+	public double getMaxEnergy()
 	{
 		if(!worldObj.isRemote)
 		{
 			float max = 0;
 
-			for (ItemStack itemStack : structure.inventory)
+			for(ItemStack itemStack : structure.inventory)
 			{
 				if(itemStack != null)
 				{
-					if(itemStack.getItem() instanceof IItemElectric)
+					if(itemStack.getItem() instanceof IEnergizedItem)
 					{
-						max += ((IItemElectric) itemStack.getItem()).getMaxElectricityStored(itemStack);
+						max += ((IEnergizedItem)itemStack.getItem()).getMaxEnergy(itemStack);
 					}
 				}
 			}
@@ -459,19 +381,19 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 	}
 
 	@Override
-	public float getEnergyStored()
+	public double getEnergy()
 	{
 		if(!worldObj.isRemote)
 		{
-			float energy = 0;
+			double energy = 0;
 
 			for(ItemStack itemStack : structure.inventory)
 			{
 				if(itemStack != null)
 				{
-					if(itemStack.getItem() instanceof IItemElectric)
+					if(itemStack.getItem() instanceof IEnergizedItem)
 					{
-						energy += ((IItemElectric) itemStack.getItem()).getElectricityStored(itemStack);
+						energy += ((IEnergizedItem)itemStack.getItem()).getEnergy(itemStack);
 					}
 				}
 			}
@@ -488,9 +410,9 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 	{
 		structure.isMultiblock = input.readBoolean();
 
-		clientEnergy = input.readFloat();
+		clientEnergy = input.readDouble();
 		clientCells = input.readInt();
-		clientMaxEnergy = input.readFloat();
+		clientMaxEnergy = input.readDouble();
 		clientVolume = input.readInt();
 	}
 
@@ -499,9 +421,9 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 	{
 		data.add(structure.isMultiblock);
 
-		data.add(getEnergyStored());
+		data.add(getEnergy());
 		data.add(structure.inventory.size());
-		data.add(getMaxEnergyStored());
+		data.add(getMaxEnergy());
 		data.add(structure.getVolume());
 
 		return data;
@@ -602,71 +524,19 @@ public class TileEntityBattery extends TileEntityUniversalElectrical implements 
 	}
 
 	@Override
-	public String getInvName()
+	public boolean isItemValidForSlot(int i, ItemStack itemStack)
 	{
-		return "Battery";
+		return itemStack.getItem() instanceof IItemElectric;
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
-	{
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
-	{
-		return true;
-	}
-
-	@Override
-	public void openChest() {}
-
-	@Override
-	public void closeChest() {}
-
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemsSack)
-	{
-		return itemsSack.getItem() instanceof IItemElectric;
-	}
-
-	@Override
-	public float getRequest(ForgeDirection direction)
-	{
-		if(getInputDirections().contains(direction))
-		{
-			return Math.min(getMaxEnergyStored() - getEnergyStored(), getTransferThreshhold());
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		if(getOutputDirections().contains(direction))
-		{
-			return Math.min(getEnergyStored(), getTransferThreshhold());
-		}
-
-		return 0;
-	}
-
-	@Override
-	public EnumSet<ForgeDirection> getInputDirections()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return inputSides;
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputDirections()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.complementOf(inputSides);
 	}

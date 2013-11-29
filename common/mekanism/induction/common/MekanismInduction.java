@@ -131,19 +131,19 @@ public class MekanismInduction implements IModule
 	public void postInit(FMLPostInitializationEvent evt)
 	{
 		/** Linker **/
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Linker), new Object[] {" E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', UniversalRecipes.SECONDARY_METAL}));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Linker), new Object[] {" E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium"}));
 
 		/** Tesla - by Jyzarc */
 		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] {"WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8)}));
 
 		/** Multimeter */
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Multimeter), new Object[] {"WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', UniversalRecipes.PRIMARY_METAL}));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Multimeter), new Object[] {"WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', "ingotSteel"}));
 
 		/** Battery */
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Battery), new Object[] {"III", "IRI", "III", 'R', Block.blockRedstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)}));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Battery, 4), new Object[] {"RRR", "CIC", "RRR", 'R', Item.redstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), 'C', "circuitBasic"}));
 
 		/** EM Contractor */
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(ElectromagneticContractor), new Object[] {" I ", "GCG", "WWW", 'W', UniversalRecipes.PRIMARY_METAL, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', UniversalRecipes.SECONDARY_METAL, 'I', UniversalRecipes.PRIMARY_METAL}));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(ElectromagneticContractor), new Object[] {" I ", "GCG", "WWW", 'W', "ingotSteel", 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium", 'I', "ingotSteel"}));
 	}
 
 	@Override

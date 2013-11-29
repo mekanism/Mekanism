@@ -5,15 +5,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.common.util.ListUtils;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
 
 public class SynchronizedBatteryData
 {
-	public Set<Vector3> locations = new HashSet<Vector3>();
+	public Set<Object3D> locations = new HashSet<Object3D>();
 
 	public List<ItemStack> inventory = new ArrayList<ItemStack>();
 
@@ -42,10 +42,10 @@ public class SynchronizedBatteryData
 	
 	public boolean addCell(ItemStack cell)
 	{
-		if (this.inventory.size() < this.getMaxCells())
+		if(inventory.size() < getMaxCells())
 		{
-			this.inventory.add(cell);
-			this.sortInventory();
+			inventory.add(cell);
+			sortInventory();
 			return true;
 		}
 
@@ -58,7 +58,7 @@ public class SynchronizedBatteryData
 
 		ItemStack[] toSort = new ItemStack[array.length];
 
-		for (int i = 0; i < array.length; i++)
+		for(int i = 0; i < array.length; i++)
 		{
 			toSort[i] = (ItemStack) array[i];
 		}
@@ -66,13 +66,13 @@ public class SynchronizedBatteryData
 		boolean cont = true;
 		ItemStack temp;
 
-		while (cont)
+		while(cont)
 		{
 			cont = false;
 
-			for (int i = 0; i < toSort.length - 1; i++)
+			for(int i = 0; i < toSort.length - 1; i++)
 			{
-				if (((IItemElectric) toSort[i].getItem()).getElectricityStored(toSort[i]) < ((IItemElectric) toSort[i + 1].getItem()).getElectricityStored(toSort[i + 1]))
+				if(((IItemElectric) toSort[i].getItem()).getElectricityStored(toSort[i]) < ((IItemElectric) toSort[i + 1].getItem()).getElectricityStored(toSort[i + 1]))
 				{
 					temp = toSort[i];
 					toSort[i] = toSort[i + 1];
@@ -84,7 +84,7 @@ public class SynchronizedBatteryData
 
 		inventory = new ArrayList<ItemStack>();
 
-		for (ItemStack itemStack : toSort)
+		for(ItemStack itemStack : toSort)
 		{
 			inventory.add(itemStack);
 		}
@@ -92,9 +92,9 @@ public class SynchronizedBatteryData
 
 	public boolean hasVisibleInventory()
 	{
-		for (ItemStack itemStack : visibleInventory)
+		for(ItemStack itemStack : visibleInventory)
 		{
-			if (itemStack != null)
+			if(itemStack != null)
 			{
 				return true;
 			}
@@ -114,7 +114,7 @@ public class SynchronizedBatteryData
 	public static SynchronizedBatteryData getBase(TileEntityBattery tileEntity)
 	{
 		SynchronizedBatteryData structure = new SynchronizedBatteryData();
-		structure.locations.add(new Vector3(tileEntity));
+		structure.locations.add(Object3D.get(tileEntity));
 
 		return structure;
 	}
@@ -130,14 +130,14 @@ public class SynchronizedBatteryData
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (!(obj instanceof SynchronizedBatteryData))
+		if(!(obj instanceof SynchronizedBatteryData))
 		{
 			return false;
 		}
 
 		SynchronizedBatteryData data = (SynchronizedBatteryData) obj;
 
-		if (!data.locations.equals(locations))
+		if(!data.locations.equals(locations))
 		{
 			return false;
 		}

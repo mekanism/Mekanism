@@ -1,11 +1,11 @@
 package mekanism.induction.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.common.util.ListUtils;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.entity.item.EntityItem;
@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.vector.Vector3;
 
 public class BatteryUpdateProtocol
 {
@@ -42,7 +41,7 @@ public class BatteryUpdateProtocol
 			boolean isCorner = true;
 			boolean rightBlocks = true;
 
-			Set<Vector3> locations = new HashSet<Vector3>();
+			Set<Object3D> locations = new HashSet<Object3D>();
 
 			int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 
@@ -59,7 +58,7 @@ public class BatteryUpdateProtocol
 				{
 					xmin = 0;
 
-					while (isBattery(origX + x + 1, origY, origZ))
+					while(isBattery(origX + x + 1, origY, origZ))
 					{
 						x++;
 					}
@@ -69,7 +68,7 @@ public class BatteryUpdateProtocol
 				else {
 					xmax = 0;
 
-					while (isBattery(origX + x - 1, origY, origZ))
+					while(isBattery(origX + x - 1, origY, origZ))
 					{
 						x--;
 					}
@@ -113,7 +112,7 @@ public class BatteryUpdateProtocol
 				else {
 					zmax = 0;
 
-					while (isBattery(origX, origY, origZ + z - 1))
+					while(isBattery(origX, origY, origZ + z - 1))
 					{
 						z--;
 					}
@@ -133,7 +132,7 @@ public class BatteryUpdateProtocol
 								break;
 							}
 							else {
-								locations.add(new Vector3(tile).translate(new Vector3(x, y, z)));
+								locations.add(Object3D.get(tile).translate(x, y, z));
 							}
 						}
 
@@ -162,7 +161,7 @@ public class BatteryUpdateProtocol
 						structure.isMultiblock = true;
 					}
 
-					if(structure.locations.contains(new Vector3(pointer)))
+					if(structure.locations.contains(Object3D.get(pointer)))
 					{
 						structureFound = structure;
 					}
@@ -174,7 +173,7 @@ public class BatteryUpdateProtocol
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = new Vector3(tile).modifyPositionFromSide(side).getTileEntity(tile.worldObj);
+			TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
 
 			if(tileEntity instanceof TileEntityBattery)
 			{
@@ -198,70 +197,55 @@ public class BatteryUpdateProtocol
 
 	private void disperseCells()
 	{
-		Set<SynchronizedBatteryData> structures = new HashSet<SynchronizedBatteryData>();
-		
-		List<ItemStack> mergedInv = new ArrayList<ItemStack>();
-		List<ItemStack[]> visibleInvs = new ArrayList<ItemStack[]>();
+		SynchronizedBatteryData oldStructure = null;
 
 		for(TileEntityBattery tile : iteratedNodes)
 		{
-			structures.add(tile.structure);
-		}
-		
-		for(SynchronizedBatteryData data : structures)
-		{
-			mergedInv = ListUtils.merge(mergedInv, data.inventory);
-			
-			if(data.hasVisibleInventory())
+			if(tile.structure.isMultiblock)
 			{
-				visibleInvs.add(data.visibleInventory);
+				oldStructure = tile.structure;
+				break;
 			}
 		}
 
-		int maxCells = iteratedNodes.size() * BatteryManager.CELLS_PER_BATTERY;
-
-		List<ItemStack> rejected = ListUtils.capRemains(mergedInv, maxCells);
-		ejectItems(rejected, new Vector3(pointer));
-
-		ArrayList<List<ItemStack>> inventories = ListUtils.split(ListUtils.cap(mergedInv, maxCells), iteratedNodes.size());
-		List<TileEntityBattery> iterList = ListUtils.asList(iteratedNodes);
-
-		for(int i = 0; i < iterList.size(); i++)
+		if(oldStructure != null)
 		{
-			TileEntityBattery tile = iterList.get(i);
-			tile.structure = SynchronizedBatteryData.getBase(tile, inventories.get(i));
+			int maxCells = iteratedNodes.size() * BatteryManager.CELLS_PER_BATTERY;
 
-			if(!visibleInvs.isEmpty())
+			List<ItemStack> rejected = ListUtils.capRemains(oldStructure.inventory, maxCells);
+			ejectItems(rejected, Object3D.get(pointer));
+
+			ArrayList<List<ItemStack>> inventories = ListUtils.split(ListUtils.cap(oldStructure.inventory, maxCells), iteratedNodes.size());
+			List<TileEntityBattery> iterList = ListUtils.asList(iteratedNodes);
+
+			boolean didVisibleInventory = false;
+
+			for(int i = 0; i < iterList.size(); i++)
 			{
-				tile.structure.visibleInventory = visibleInvs.get(0);
-				visibleInvs.remove(0);
-			}
-		}
-		
-		if(!visibleInvs.isEmpty())
-		{
-			for(ItemStack[] inv : visibleInvs)
-			{
-				ejectItems(Arrays.asList(inv), new Vector3(pointer));
+				TileEntityBattery tile = iterList.get(i);
+				tile.structure = SynchronizedBatteryData.getBase(tile, inventories.get(i));
+
+				if(!didVisibleInventory)
+				{
+					tile.structure.visibleInventory = oldStructure.visibleInventory;
+					didVisibleInventory = true;
+				}
 			}
 		}
 	}
 
-	private void ejectItems(List<ItemStack> items, Vector3 vec)
+	private void ejectItems(List<ItemStack> items, Object3D vec)
 	{
 		for(ItemStack itemStack : items)
 		{
-			if(itemStack != null)
-			{
-				float motion = 0.7F;
-				double motionX = (pointer.worldObj.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-				double motionY = (pointer.worldObj.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-				double motionZ = (pointer.worldObj.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-	
-				EntityItem entityItem = new EntityItem(pointer.worldObj, vec.x + motionX, vec.y + motionY, vec.z + motionZ, itemStack);
-	
-				pointer.worldObj.spawnEntityInWorld(entityItem);
-			}
+			float motion = 0.7F;
+			double motionX = (pointer.worldObj.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (pointer.worldObj.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (pointer.worldObj.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+			EntityItem entityItem = new EntityItem(pointer.worldObj, vec.xCoord + motionX, vec.yCoord + motionY, vec.zCoord + motionZ, itemStack);
+
+			pointer.worldObj.spawnEntityInWorld(entityItem);
 		}
 	}
 
@@ -273,39 +257,30 @@ public class BatteryUpdateProtocol
 		{
 			for(TileEntityBattery tileEntity : iteratedNodes)
 			{
-				if(!structureFound.locations.contains(new Vector3(tileEntity)))
+				if(!structureFound.locations.contains(Object3D.get(tileEntity)))
 				{
 					disperseCells();
 
 					return;
 				}
 			}
-			
-			boolean foundVisibleInv = false;
 
-			for(Vector3 obj : structureFound.locations)
+			for(Object3D obj : structureFound.locations)
 			{
-				TileEntityBattery tileEntity = (TileEntityBattery)obj.getTileEntity(pointer.worldObj);
+				TileEntityBattery tileEntity = (TileEntityBattery) obj.getTileEntity(pointer.worldObj);
 
 				structureFound.inventory = ListUtils.merge(structureFound.inventory, tileEntity.structure.inventory);
 
 				if(tileEntity.structure.hasVisibleInventory())
 				{
-					if(foundVisibleInv)
-					{
-						ejectItems(Arrays.asList(tileEntity.structure.visibleInventory), obj);
-					}
-					else {
-						structureFound.visibleInventory = tileEntity.structure.visibleInventory;
-						foundVisibleInv = true;
-					}
+					structureFound.visibleInventory = tileEntity.structure.visibleInventory;
 				}
 
 				tileEntity.structure = structureFound;
 			}
 
 			List<ItemStack> rejected = ListUtils.capRemains(structureFound.inventory, structureFound.getMaxCells());
-			ejectItems(rejected, new Vector3(pointer));
+			ejectItems(rejected, Object3D.get(pointer));
 
 			structureFound.inventory = ListUtils.cap(structureFound.inventory, structureFound.getMaxCells());
 		}
