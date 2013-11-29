@@ -293,7 +293,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		for(FluidNetwork iterNet : networks)
 		{
-			if(iterNet.refFluid != null && iterNet.fluidScale > 0)
+			if(iterNet.refFluid != null && iterNet.fluidScale > network.fluidScale)
 			{
 				network.refFluid = iterNet.refFluid;
 				network.fluidScale = iterNet.fluidScale;

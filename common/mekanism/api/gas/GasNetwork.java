@@ -266,18 +266,18 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	protected GasNetwork create(Set<GasNetwork> networks) 
 	{
 		GasNetwork network = new GasNetwork(networks);
-		network.refGas = refGas;
-		network.gasScale = gasScale;
 		
 		for(GasNetwork iterNet : networks)
 		{
-			if(iterNet.refGas != null && iterNet.gasScale > 0)
+			if(iterNet.refGas != null && iterNet.gasScale > network.gasScale)
 			{
 				network.refGas = iterNet.refGas;
 				network.gasScale = iterNet.gasScale;
 				break;
 			}
 		}
+		
+		System.out.println(network.gasScale);
 		
 		return network;
 	}

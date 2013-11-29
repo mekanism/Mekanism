@@ -84,20 +84,20 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				switch(ForgeDirection.getOrientation(i))
 				{
 					case NORTH:
-						GL11.glScalef(1, 1, 1.7f);
-						GL11.glTranslatef(0, 0, -.077f);
+						GL11.glScalef(1, 1, 1.7F);
+						GL11.glTranslatef(0, 0, -.077F);
 						break;
 					case SOUTH:
-						GL11.glScalef(1, 1, 1.7f);
-						GL11.glTranslatef(0, 0, .077f);
+						GL11.glScalef(1, 1, 1.7F);
+						GL11.glTranslatef(0, 0, .077F);
 						break;
 					case WEST:
-						GL11.glScalef(1.7f, 1, 1);
-						GL11.glTranslatef(.077f, 0, 0);
+						GL11.glScalef(1.7F, 1, 1);
+						GL11.glTranslatef(.077F, 0, 0);
 						break;
 					case EAST:
-						GL11.glScalef(1.7f, 1, 1);
-						GL11.glTranslatef(-.077f, 0, 0);
+						GL11.glScalef(1.7F, 1, 1);
+						GL11.glTranslatef(-.077F, 0, 0);
 						break;
 				}
 				
@@ -128,7 +128,9 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			{
 				if(connectable[i])
 				{
-					Block b = Block.blocksList[Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getBlockId(tileEntity.worldObj)];
+					Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i));
+					Block b = Block.blocksList[obj.getBlockId(tileEntity.worldObj)];
+					b.setBlockBoundsBasedOnState(tileEntity.worldObj, obj.xCoord, obj.yCoord, obj.zCoord);
 					getListAndRender(ForgeDirection.getOrientation(i), gasType, b).render();
 				}
 			}

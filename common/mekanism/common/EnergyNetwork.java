@@ -419,19 +419,34 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	protected EnergyNetwork create(ITransmitter<EnergyNetwork>... varTransmitters) 
 	{
-		return new EnergyNetwork(varTransmitters);
+		EnergyNetwork network = new EnergyNetwork(varTransmitters);
+		network.clientEnergyScale = clientEnergyScale;
+		return network;
 	}
 
 	@Override
 	protected EnergyNetwork create(Collection<ITransmitter<EnergyNetwork>> collection) 
 	{
-		return new EnergyNetwork(collection);
+		EnergyNetwork network = new EnergyNetwork(collection);
+		network.clientEnergyScale = clientEnergyScale;
+		return network;
 	}
 
 	@Override
 	protected EnergyNetwork create(Set<EnergyNetwork> networks) 
 	{
-		return new EnergyNetwork(networks);
+		EnergyNetwork network = new EnergyNetwork(networks);
+		network.clientEnergyScale = clientEnergyScale;
+		
+		for(EnergyNetwork iterNet : networks)
+		{
+			if(iterNet.clientEnergyScale > network.clientEnergyScale)
+			{
+				network.clientEnergyScale = iterNet.clientEnergyScale;
+			}
+		}
+		
+		return network;
 	}
 	
 	@Override
