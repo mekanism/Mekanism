@@ -19,16 +19,15 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ListUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.induction.common.BatteryUpdateProtocol;
 import mekanism.induction.common.SynchronizedBatteryData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -353,6 +352,23 @@ public class TileEntityBattery extends TileEntityElectricBlock
 		}
 
 		return removed;
+	}
+	
+	@Override
+	public void setEnergy(double energy)
+	{
+		double stored = getEnergy();
+		
+		if(energy > stored)
+		{
+			add(energy-stored, true);
+		}
+		else if(energy < stored)
+		{
+			remove(stored-energy, true);
+		}
+		
+		MekanismUtils.saveChunk(this);
 	}
 
 	@Override
