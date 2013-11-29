@@ -462,6 +462,11 @@ public final class MekanismUtils
     	return hasResource;
     }
     
+    /**
+     * Gets the ore dictionary name of a defined ItemStack.
+     * @param check - ItemStack to check OreDict name of
+     * @return OreDict name
+     */
     public static String getOreDictName(ItemStack check)
     {
         HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
@@ -531,6 +536,11 @@ public final class MekanismUtils
     	return side;
     }
     
+    /**
+     * Localizes the defined string.
+     * @param s - string to localized
+     * @return localized string
+     */
     public static String localize(String s)
     {
     	return StatCollector.translateToLocal(s);
@@ -556,6 +566,11 @@ public final class MekanismUtils
     	}
     }
     
+    /**
+     * Decrements the output type of a machine's side.
+     * @param config - configurable machine
+     * @param side - side to increment output of
+     */
     public static void decrementOutput(IConfigurable config, int side)
     {
     	int max = config.getSideData().size()-1;
@@ -623,6 +638,14 @@ public final class MekanismUtils
 		}
     }
     
+    /**
+     * Places a fake advanced bounding block at the defined location.
+     * @param world - world to place block in
+     * @param x - x coordinate
+     * @param y - y coordinate
+     * @param z - z coordinate
+     * @param orig - original block
+     */
     public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Object3D orig)
     {
 		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 3);
@@ -1004,6 +1027,10 @@ public final class MekanismUtils
 		return didRemove;
 	}
     
+    /**
+     * Marks the chunk this TileEntity is in as modified. Call this method to be sure NBT is written by the defined tile entity.
+     * @param tileEntity - TileEntity to save
+     */
     public static void saveChunk(TileEntity tileEntity)
     {
     	if(tileEntity == null || tileEntity.isInvalid() || tileEntity.worldObj == null)
@@ -1036,11 +1063,11 @@ public final class MekanismUtils
     	}
     	else if(control.getControlType() == RedstoneControl.HIGH)
     	{
-    		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) > 0;
+    		return world.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
     	}
     	else if(control.getControlType() == RedstoneControl.LOW)
     	{
-    		return world.getBlockPowerInput(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) == 0;
+    		return !world.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
     	}
     	
     	return false;
@@ -1057,7 +1084,7 @@ public final class MekanismUtils
         return world.rayTraceBlocks_do_do(headVec, endVec, true, false);
     }
     
-    public static Vec3 getHeadVec(EntityPlayer player)
+    private static Vec3 getHeadVec(EntityPlayer player)
     {
         Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
         
@@ -1082,24 +1109,6 @@ public final class MekanismUtils
     public static boolean useBuildcraft()
     {
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
-    }
-    
-    public static int getSideOffset(ForgeDirection side)
-    {
-    	if(side.offsetX != 0)
-    	{
-    		return side.offsetX;
-    	}
-    	else if(side.offsetY != 0)
-    	{
-    		return side.offsetY;
-    	}
-    	else if(side.offsetZ != 0)
-    	{
-    		return side.offsetZ;
-    	}
-    	
-    	return 0;
     }
     
     public static enum ResourceType

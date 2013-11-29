@@ -52,6 +52,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			if(net != null)
 			{
+				if(net.refFluid != null && net.fluidScale > fluidScale)
+				{
+					refFluid = net.refFluid;
+					fluidScale = net.fluidScale;
+				}
+				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
@@ -288,17 +294,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	protected FluidNetwork create(Set<FluidNetwork> networks) 
 	{
 		FluidNetwork network = new FluidNetwork(networks);
-		network.refFluid = refFluid;
-		network.fluidScale = fluidScale;
 		
-		for(FluidNetwork iterNet : networks)
+		if(refFluid != null && fluidScale > network.fluidScale)
 		{
-			if(iterNet.refFluid != null && iterNet.fluidScale > network.fluidScale)
-			{
-				network.refFluid = iterNet.refFluid;
-				network.fluidScale = iterNet.fluidScale;
-				break;
-			}
+			network.refFluid = refFluid;
+			network.fluidScale = fluidScale;
 		}
 		
 		return network;

@@ -57,6 +57,14 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		{
 			if(net != null)
 			{
+				if(net.joulesLastTick > joulesLastTick || net.clientEnergyScale > clientEnergyScale)
+				{
+					clientEnergyScale = net.clientEnergyScale;
+					joulesLastTick = net.joulesLastTick;
+					joulesTransmitted = net.joulesTransmitted;
+					lastPowerScale = net.lastPowerScale;
+				}
+				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
@@ -421,6 +429,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		EnergyNetwork network = new EnergyNetwork(varTransmitters);
 		network.clientEnergyScale = clientEnergyScale;
+		network.joulesLastTick = joulesLastTick;
+		network.joulesTransmitted = joulesTransmitted;
+		network.lastPowerScale = lastPowerScale;
 		return network;
 	}
 
@@ -429,6 +440,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		EnergyNetwork network = new EnergyNetwork(collection);
 		network.clientEnergyScale = clientEnergyScale;
+		network.joulesLastTick = joulesLastTick;
+		network.joulesTransmitted = joulesTransmitted;
+		network.lastPowerScale = lastPowerScale;
 		return network;
 	}
 
@@ -436,14 +450,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	protected EnergyNetwork create(Set<EnergyNetwork> networks) 
 	{
 		EnergyNetwork network = new EnergyNetwork(networks);
-		network.clientEnergyScale = clientEnergyScale;
 		
-		for(EnergyNetwork iterNet : networks)
+		if(joulesLastTick > network.joulesLastTick || clientEnergyScale > network.clientEnergyScale)
 		{
-			if(iterNet.clientEnergyScale > network.clientEnergyScale)
-			{
-				network.clientEnergyScale = iterNet.clientEnergyScale;
-			}
+			network.clientEnergyScale = clientEnergyScale;
+			network.joulesLastTick = joulesLastTick;
+			network.joulesTransmitted = joulesTransmitted;
+			network.lastPowerScale = lastPowerScale;
 		}
 		
 		return network;

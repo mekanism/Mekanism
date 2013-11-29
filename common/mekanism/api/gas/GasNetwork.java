@@ -45,6 +45,12 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		{
 			if(net != null)
 			{
+				if(net.refGas != null && net.gasScale > gasScale)
+				{
+					refGas = net.refGas;
+					gasScale = net.gasScale;
+				}
+				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
@@ -267,17 +273,11 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	{
 		GasNetwork network = new GasNetwork(networks);
 		
-		for(GasNetwork iterNet : networks)
+		if(refGas != null && gasScale > network.gasScale)
 		{
-			if(iterNet.refGas != null && iterNet.gasScale > network.gasScale)
-			{
-				network.refGas = iterNet.refGas;
-				network.gasScale = iterNet.gasScale;
-				break;
-			}
+			network.refGas = refGas;
+			network.gasScale = gasScale;
 		}
-		
-		System.out.println(network.gasScale);
 		
 		return network;
 	}

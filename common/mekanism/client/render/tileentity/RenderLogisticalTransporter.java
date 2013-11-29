@@ -152,7 +152,6 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 				{
 					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[pos.sideHit];
 					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
-					int offset = MekanismUtils.getSideOffset(side);
 					
 					push();
 					
@@ -161,7 +160,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 					bindTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
 					GL11.glTranslatef((float)x, (float)y, (float)z);
 					GL11.glScalef(0.5F, 0.5F, 0.5F);
-					GL11.glTranslatef(0.5F*Math.abs(offset), 0.5F*Math.abs(offset), 0.5F*Math.abs(offset));
+					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 					
 					int display = getOverlayDisplay(world, side, mode).display;
 					GL11.glCallList(display);

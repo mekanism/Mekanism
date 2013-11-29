@@ -434,7 +434,7 @@ public class Mekanism
 			"ACA", "SES", "TIT", Character.valueOf('A'), AtomicCore, Character.valueOf('C'), "circuitBasic", Character.valueOf('S'), new ItemStack(MachineBlock, 1, 15), Character.valueOf('E'), Robit.getUnchargedItem(),
 			Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('T'), TeleportationCore
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 1, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Transmitter, 1, 5), new Object[] {
 			"RRR", "SBS", "RRR", Character.valueOf('R'), Item.redstone, Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Block.fenceIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 0), new Object[] {
