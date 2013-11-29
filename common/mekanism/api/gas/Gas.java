@@ -1,5 +1,6 @@
 package mekanism.api.gas;
 
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 import net.minecraftforge.fluids.Fluid;
@@ -9,7 +10,7 @@ public class Gas
 {
 	private String name;
 	
-	private String localizedName;
+	private String unlocalizedName;
 	
 	private Fluid fluid;
 	
@@ -17,7 +18,7 @@ public class Gas
 	
 	public Gas(String s)
 	{
-		name = s;
+		unlocalizedName = name = s;
 	}
 	
 	public String getName()
@@ -25,14 +26,19 @@ public class Gas
 		return name;
 	}
 	
-	public String getLocalizedName()
+	public String getUnlocalizedName()
 	{
-		return localizedName;
+		return "gas." + unlocalizedName;
 	}
 	
-	public Gas setLocalizedName(String s)
+	public String getLocalizedName()
 	{
-		localizedName = s;
+		return MekanismUtils.localize(getUnlocalizedName());
+	}
+	
+	public Gas setUnlocalizedName(String s)
+	{
+		unlocalizedName = s;
 		
 		return this;
 	}
@@ -79,6 +85,11 @@ public class Gas
 	public boolean hasFluid()
 	{
 		return fluid != null;
+	}
+	
+	public Fluid getFluid()
+	{
+		return fluid;
 	}
 	
 	public Gas registerFluid()

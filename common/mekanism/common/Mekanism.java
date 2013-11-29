@@ -14,8 +14,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import mekanism.api.Object3D;
-import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -254,6 +255,7 @@ public class Mekanism
 	public static double purificationChamberUsage;
 	public static double energizedSmelterUsage;
 	public static double digitalMinerUsage;
+	public static double rotaryCondensentratorUsage;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -1072,8 +1074,8 @@ public class Mekanism
 			System.out.println("[Mekanism] Detected Tekkit in root directory - hello, fellow user!");
 		}
 		
-		GasRegistry.registerHydrogen();
-		GasRegistry.registerOxygen();
+		GasRegistry.register(new Gas("hydrogen")).registerFluid();
+		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		
 		Mekanism.proxy.preInit();
 		
@@ -1183,7 +1185,7 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.GAS, event.gasNetwork.transmitters.iterator().next(), event.transferType, event.gasScale));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.GAS, event.gasNetwork.transmitters.iterator().next(), event.transferType, event.didTransfer));
 		} catch(Exception e) {}
 	}
 	
@@ -1191,7 +1193,7 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.fluidScale));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.didTransfer));
 		} catch(Exception e) {}
 	}
 	

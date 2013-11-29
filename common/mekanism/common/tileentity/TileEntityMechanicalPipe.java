@@ -9,7 +9,6 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.FluidNetwork;
-import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.PipeUtils;
@@ -30,7 +29,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IFluidHandler, ITileNetwork
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IFluidHandler
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
@@ -145,11 +144,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 					
 					if(container != null)
 					{
-						FluidStack received = container.drain(side, 100, false);
+						FluidStack received = container.drain(side.getOpposite(), 100, false);
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side, getTransmitterNetwork().emit(received, true, (TileEntity)container), true);
+							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true, (TileEntity)container), true);
 						}
 					}
 				}

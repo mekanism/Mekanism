@@ -187,6 +187,7 @@ public class CommonProxy
 		Mekanism.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 50).getDouble(50);
 		Mekanism.energizedSmelterUsage = Mekanism.configuration.get("usage", "EnergizedSmelterUsage", 50).getDouble(50);
 		Mekanism.digitalMinerUsage = Mekanism.configuration.get("usage", "DigitalMinerUsage", 100).getDouble(100);
+		Mekanism.rotaryCondensentratorUsage = Mekanism.configuration.get("usage", "RotaryCondensentratorUsage", 50).getDouble(50);
 	  	Mekanism.configuration.save();
 	}
 	

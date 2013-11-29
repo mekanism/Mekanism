@@ -14,7 +14,6 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork;
-import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -34,9 +33,7 @@ import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 
-import com.google.common.io.ByteArrayDataInput;
-
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor, ITileNetwork, IEnergyHandler
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor, IEnergyHandler
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -244,17 +241,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		}
 	}
 	
-	@Override
-	public void validate()
-	{
-		super.validate();
-		
-		if(worldObj.isRemote)
-		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
-		}
-	}
-	
 	public void setCachedEnergy(double scale)
 	{
 		energyScale = scale;
@@ -349,15 +335,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	public float getCurrentCapacity()
 	{
 		return Integer.MAX_VALUE;
-	}
-	
-	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
-
-	@Override
-	public ArrayList getNetworkedData(ArrayList data) 
-	{
-		return data;
 	}
 
 	@Override

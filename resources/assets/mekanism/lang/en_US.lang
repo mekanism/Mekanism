@@ -113,6 +113,14 @@ item.bronzeIngot.name=Bronze Ingot
 item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
 
+//Gasses
+gas.hydrogen=Hydrogen
+gas.oxygen=Oxygen
+
+//Fluids
+fluid.hydrogen=Liquid Hydrogen
+fluid.oxygen=Liquid Oxygen
+
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 

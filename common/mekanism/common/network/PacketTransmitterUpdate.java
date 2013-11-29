@@ -25,10 +25,10 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	public double power;
 	
 	public int gasType;
-	public float gasScale;
+	public boolean didGasTransfer;
 	
 	public int fluidType;
-	public float fluidScale;
+	public boolean didFluidTransfer;
 	
 	@Override
 	public String getName() 
@@ -49,11 +49,11 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				break;
 			case GAS:
 				gasType = (Integer)data[2];
-				gasScale = (Float)data[3];
+				didGasTransfer = (Boolean)data[3];
 				break;
 			case FLUID:
 				fluidType = (Integer)data[2];
-				fluidScale = (Float)data[3];
+				didFluidTransfer = (Boolean)data[3];
 				break;
 		}
 		
@@ -94,12 +94,12 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
     		Gas gasType = GasRegistry.getGas(dataStream.readInt());
-    		gasScale = dataStream.readFloat();
+    		didGasTransfer = dataStream.readBoolean();
     		
     		if(tileEntity != null)
     		{
     			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().refGas = gasType;
-    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().gasScale = gasScale;
+    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -108,12 +108,12 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		int type = dataStream.readInt();
     		Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
-    		fluidScale = dataStream.readFloat();
+    		didFluidTransfer = dataStream.readBoolean();
     		
     		if(tileEntity != null)
     		{
     			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().refFluid = fluidType;
-    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().fluidScale = fluidScale;
+    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
     		}
 	    }
 	}
@@ -134,11 +134,11 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				break;
 			case GAS:
 				dataStream.writeInt(gasType);
-				dataStream.writeFloat(gasScale);
+				dataStream.writeBoolean(didGasTransfer);
 				break;
 			case FLUID:
 				dataStream.writeInt(fluidType);
-				dataStream.writeFloat(fluidScale);
+				dataStream.writeBoolean(didFluidTransfer);
 				break;
 		}
 	}

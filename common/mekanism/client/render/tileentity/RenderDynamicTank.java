@@ -315,7 +315,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		@Override
 		public boolean equals(Object data)
 		{
-			return data instanceof RenderData && ((RenderData)data).location.equals(location) && ((RenderData)data).height == height;
+			return data instanceof RenderData && ((RenderData)data).location.equals(location) && ((RenderData)data).height == height && 
+					((RenderData)data).length == length && ((RenderData)data).width == width;
 		}
 	}
 	

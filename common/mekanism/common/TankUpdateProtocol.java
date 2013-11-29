@@ -14,7 +14,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TankUpdateProtocol 
 {
-	public static final int FLUID_PER_TANK = 32000;
+	public static final int FLUID_PER_TANK = 16000;
 	
 	/** The dynamic tank nodes that have already been iterated over. */
 	public Set<TileEntityDynamicTank> iteratedNodes = new HashSet<TileEntityDynamicTank>();

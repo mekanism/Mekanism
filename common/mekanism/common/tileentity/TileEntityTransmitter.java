@@ -1,14 +1,19 @@
 package mekanism.common.tileentity;
 
+import java.util.ArrayList;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.ITileNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class TileEntityTransmitter<N> extends TileEntity implements ITransmitter<N>
+public abstract class TileEntityTransmitter<N> extends TileEntity implements ITransmitter<N>, ITileNetwork
 {
 	public N theNetwork;
 	
@@ -81,4 +86,13 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	
 	@Override
 	public void chunkLoad() {}
+	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data) 
+	{
+		return data;
+	}
 }

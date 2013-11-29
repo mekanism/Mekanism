@@ -431,12 +431,9 @@ public class ClientProxy extends CommonProxy
 		{
 			GuiScreen screen = FMLClientHandler.instance().getClient().currentScreen;
 			
-			if(screen != null)
+			if(screen != null && screen.doesGuiPauseGame())
 			{
-				if(screen.doesGuiPauseGame())
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		

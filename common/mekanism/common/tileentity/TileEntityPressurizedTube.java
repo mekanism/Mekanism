@@ -10,6 +10,9 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 

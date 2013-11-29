@@ -49,6 +49,7 @@ import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -424,9 +425,9 @@ public final class MekanismUtils
     		case 3:
     			return ForgeDirection.WEST;
     		case 4:
-    			return ForgeDirection.SOUTH;
-    		default:
     			return ForgeDirection.NORTH;
+    		default:
+    			return ForgeDirection.SOUTH;
     	}
     }
     
@@ -528,6 +529,11 @@ public final class MekanismUtils
     	}
     	
     	return side;
+    }
+    
+    public static String localize(String s)
+    {
+    	return StatCollector.translateToLocal(s);
     }
     
     /**

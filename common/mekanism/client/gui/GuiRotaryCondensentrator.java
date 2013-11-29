@@ -33,6 +33,8 @@ public class GuiRotaryCondensentrator extends GuiMekanism
     {
         super(new ContainerRotaryCondensentrator(inventory, tentity));
         tileEntity = tentity;
+        
+        guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
     }
 	
 	@Override
@@ -102,6 +104,15 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, 18, 18, 18);
 		}
+		
+		if(tileEntity.mode == 0)
+		{
+			drawTexturedModalRect(guiWidth + 64, guiHeight + 39, 176, tileEntity.isActive ? 123 : 107, 48, 8);
+		}
+		else if(tileEntity.mode == 1)
+		{
+			drawTexturedModalRect(guiWidth + 64, guiHeight + 39, 176, tileEntity.isActive ? 115 : 99, 48, 8);
+		}
     }
 	
 	@Override
@@ -127,7 +138,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 	
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
 	{
-	    if(fluid == null)
+	    if(fluid == null && gas == null)
 	    {
 	        return;
 	    }
@@ -168,6 +179,6 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		}
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 60);
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 59);
 	}
 }

@@ -21,9 +21,10 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 {
 	public int transferDelay = 0;
 	
-	public float gasScale;
-	public float prevGasScale;
+	public boolean didTransfer;
+	public boolean prevTransfer;
 	
+	public float gasScale;
 	public Gas refGas = null;
 	
 	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
@@ -96,16 +97,8 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		
 		if(sent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(stack.getGas() == refGas)
-			{
-				gasScale = Math.min(1, gasScale+((float)sent/100));
-			}
-			else if(refGas == null)
-			{
-				refGas = stack.getGas();
-				gasScale = Math.min(1, ((float)sent/100));
-			}
-			
+			refGas = stack.getGas();
+			didTransfer = true;
 			transferDelay = 2;
 		}
 		
@@ -121,24 +114,39 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		{
 			if(transferDelay == 0)
 			{
-				if(gasScale > 0)
-				{
-					gasScale = Math.max(0, gasScale-.02F);
-				}
-				else {
-					refGas = null;
-				}
+				didTransfer = false;
 			}
 			else {
 				transferDelay--;
 			}
 			
-			if(gasScale != prevGasScale)
+			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas != null ? refGas.getID() : -1, gasScale));
+				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas != null ? refGas.getID() : -1, didTransfer));
+				needsUpdate = false;
 			}
 			
-			prevGasScale = gasScale;
+			prevTransfer = didTransfer;
+		}
+	}
+	
+	@Override
+	public void clientTick()
+	{
+		super.clientTick();
+		
+		if(didTransfer && gasScale < 1)
+		{
+			gasScale = Math.min(1, gasScale+0.02F);
+		}
+		else if(!didTransfer && gasScale > 0)
+		{
+			gasScale = Math.max(0, gasScale-0.02F);
+			
+			if(gasScale == 0)
+			{
+				refGas = null;
+			}
 		}
 	}
 	
@@ -210,7 +218,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			Set<GasNetwork> networks = new HashSet();
 			networks.add(this);
 			networks.add(network);
-			GasNetwork newNetwork = new GasNetwork(networks);
+			GasNetwork newNetwork = create(networks);
 			newNetwork.refresh();
 		}
 	}
@@ -220,13 +228,13 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		public final GasNetwork gasNetwork;
 		
 		public final int transferType;
-		public final float gasScale;
+		public final boolean didTransfer;
 		
-		public GasTransferEvent(GasNetwork network, int type, float scale)
+		public GasTransferEvent(GasNetwork network, int type, boolean did)
 		{
 			gasNetwork = network;
 			transferType = type;
-			gasScale = scale;
+			didTransfer = did;
 		}
 	}
 	
@@ -239,19 +247,39 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	@Override
 	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
 	{
-		return new GasNetwork(varTransmitters);
+		GasNetwork network = new GasNetwork(varTransmitters);
+		network.refGas = refGas;
+		network.gasScale = gasScale;
+		return network;
 	}
 
 	@Override
 	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
 	{
-		return new GasNetwork(collection);
+		GasNetwork network = new GasNetwork(collection);
+		network.refGas = refGas;
+		network.gasScale = gasScale;
+		return network;
 	}
 
 	@Override
 	protected GasNetwork create(Set<GasNetwork> networks) 
 	{
-		return new GasNetwork(networks);
+		GasNetwork network = new GasNetwork(networks);
+		network.refGas = refGas;
+		network.gasScale = gasScale;
+		
+		for(GasNetwork iterNet : networks)
+		{
+			if(iterNet.refGas != null && iterNet.gasScale > 0)
+			{
+				network.refGas = iterNet.refGas;
+				network.gasScale = iterNet.gasScale;
+				break;
+			}
+		}
+		
+		return network;
 	}
 	
 	@Override

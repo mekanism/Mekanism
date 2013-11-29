@@ -492,7 +492,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         super.readFromNBT(nbtTags);
         
         clientActive = isActive = nbtTags.getBoolean("isActive");
-        recipeType = nbtTags.getInteger("recipeType");
+        recipeType = Math.min(5, nbtTags.getInteger("recipeType"));
         recipeTicks = nbtTags.getInteger("recipeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");

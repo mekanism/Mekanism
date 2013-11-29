@@ -3,29 +3,22 @@ package mekanism.api.gas;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.fluids.Fluid;
+
 public class GasRegistry
 {
 	private static ArrayList<Gas> registeredGasses = new ArrayList<Gas>();
 	
-	public static void registerOxygen()
+	public static Gas register(Gas gas)
 	{
-		if(getGas("oxygen") == null)
+		if(gas == null)
 		{
-			register(new Gas("oxygen").setLocalizedName("Oxygen"));
+			return null;
 		}
-	}
-	
-	public static void registerHydrogen()
-	{
-		if(getGas("hydrogen") == null)
-		{
-			register(new Gas("hydrogen").setLocalizedName("Hydrogen"));
-		}
-	}
-	
-	public static void register(Gas gas)
-	{
+		
 		registeredGasses.add(gas);
+		
+		return getGas(gas.getName());
 	}
 	
 	public static Gas getGas(int id)
@@ -36,6 +29,19 @@ public class GasRegistry
 		}
 		
 		return registeredGasses.get(id);
+	}
+	
+	public static Gas getGas(Fluid f)
+	{
+		for(Gas gas : getRegisteredGasses())
+		{
+			if(gas.hasFluid() && gas.getFluid() == f)
+			{
+				return gas;
+			}
+		}
+		
+		return null;
 	}
 	
 	public static boolean containsGas(String name)

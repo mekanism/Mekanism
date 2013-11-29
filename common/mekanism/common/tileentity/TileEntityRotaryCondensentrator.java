@@ -12,7 +12,9 @@ import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IActiveState;
+import mekanism.common.IRedstoneControl;
 import mekanism.common.ISustainedTank;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -33,7 +35,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedTank, IFluidHandler, IGasStorage, IGasAcceptor, ITubeConnection
+public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedTank, IFluidHandler, IGasStorage, IGasAcceptor, ITubeConnection, IRedstoneControl
 {
 	public GasStack gasTank;
 	
@@ -51,6 +53,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public boolean isActive;
 	
 	public boolean clientActive;
+	
+	public double prevEnergy;
+	
+	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
+	
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileEntityRotaryCondensentrator()
 	{
@@ -137,6 +146,20 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 						}
 					}
 				}
+				
+				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < 10000 && gasEquals(gasTank, fluidTank.getFluid()))))
+				{
+					setActive(true);
+					fluidTank.fill(new FluidStack(getGas().getGas().getFluid(), 1), true);
+					setGas(new GasStack(getGas().getGas(), getGas().amount-1));
+					setEnergy(getEnergy() - ENERGY_USAGE);
+				}
+				else {
+					if(prevEnergy >= getEnergy())
+					{
+						setActive(false);
+					}
+				}
 			}
 			else if(mode == 1)
 			{
@@ -215,8 +238,54 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 						}
 					}
 				}
+				
+				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank == null || (gasTank.amount < MAX_GAS && gasEquals(gasTank, fluidTank.getFluid()))))
+				{
+					setActive(true);
+					setGas(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), getGas() != null ? getGas().amount+1 : 1));
+					fluidTank.drain(1, true);
+					setEnergy(getEnergy() - ENERGY_USAGE);
+				}
+				else {
+					if(prevEnergy >= getEnergy())
+					{
+						setActive(false);
+					}
+				}
 			}
+			
+			prevEnergy = getEnergy();
 		}
+	}
+	
+	public boolean isValidGas(GasStack g)
+	{
+		if(g == null)
+		{
+			return false;
+		}
+		
+		return g.getGas().hasFluid();
+	}
+	
+	public boolean gasEquals(GasStack gas, FluidStack fluid)
+	{
+		if(fluid == null || gas == null || !gas.getGas().hasFluid())
+		{
+			return false;
+		}
+		
+		return gas.getGas().getFluid() == fluid.getFluid();
+	}
+	
+	public boolean isValidFluid(FluidStack f)
+	{
+		if(f == null)
+		{
+			return false;
+		}
+		
+		return GasRegistry.getGas(f.getFluid()) != null;
 	}
 	
 	@Override
@@ -242,6 +311,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		super.handlePacketData(dataStream);
 		
 		mode = dataStream.readInt();
+		isActive = dataStream.readBoolean();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		if(dataStream.readBoolean())
 		{
@@ -269,6 +340,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		super.getNetworkedData(data);
 		
 		data.add(mode);
+		data.add(isActive);
+		data.add(controlType.ordinal());
 		
 		if(fluidTank.getFluid() != null)
 		{
@@ -299,6 +372,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
         super.readFromNBT(nbtTags);
 
         mode = nbtTags.getInteger("mode");
+        isActive = nbtTags.getBoolean("isActive");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        
         gasTank = GasStack.readFromNBT(nbtTags.getCompoundTag("gasTank"));
         
     	if(nbtTags.hasKey("fluidTank"))
@@ -313,6 +389,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
         super.writeToNBT(nbtTags);
         
         nbtTags.setInteger("mode", mode);
+        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("controlType", controlType.ordinal());
         
         if(gasTank != null)
         {
@@ -324,6 +402,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
         	nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
         }
     }
+	
+	@Override
+	public boolean canSetFacing(int i)
+	{
+		return i != 0 && i != 1;
+	}
 	
 	public int getScaledFluidLevel(int i)
 	{
@@ -493,5 +577,18 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public RedstoneControl getControlType() 
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type) 
+	{
+		controlType = type;
+		MekanismUtils.saveChunk(this);
 	}
 }

@@ -2,9 +2,13 @@ package mekanism.client;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import mekanism.api.IClientTicker;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -40,6 +44,8 @@ public class ClientTickHandler implements ITickHandler
 	private Map<String, CapeBufferDownload> donateDownload = new HashMap<String, CapeBufferDownload>();
 	private Map<String, CapeBufferDownload> aidanDownload = new HashMap<String, CapeBufferDownload>();
 	
+	public static Set<IClientTicker> tickingSet = new HashSet<IClientTicker>();
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData)
 	{
@@ -61,6 +67,21 @@ public class ClientTickHandler implements ITickHandler
 		{
 			MekanismUtils.checkForUpdates(mc.thePlayer);
 			hasNotified = true;
+		}
+		
+		if(!Mekanism.proxy.isPaused())
+		{
+			for(Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext();)
+			{
+				IClientTicker ticker = iter.next();
+				
+				ticker.clientTick();
+				
+				if(!ticker.needsTicks())
+				{
+					iter.remove();
+				}
+			}
 		}
 		
 		if(mc.theWorld != null)

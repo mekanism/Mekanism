@@ -3,23 +3,26 @@ package mekanism.api.transmitters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import mekanism.api.IClientTicker;
 import mekanism.api.Object3D;
+import mekanism.client.ClientTickHandler;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
+public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>, IClientTicker
 {
 	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
 	
@@ -62,9 +65,15 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 		try {
 			ITransmitter<N> aTransmitter = transmitters.iterator().next();
 			
-			if(aTransmitter instanceof TileEntity && !((TileEntity)aTransmitter).worldObj.isRemote)
+			if(aTransmitter instanceof TileEntity)
 			{
-				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+				if(!((TileEntity)aTransmitter).worldObj.isRemote)
+				{
+					TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+				}
+				else {
+					ClientTickHandler.tickingSet.add(this);
+				}
 			}
 		} catch(NoSuchElementException e) {}
 	}
@@ -73,7 +82,14 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 	public void deregister()
 	{
 		transmitters.clear();
-		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			TransmitterNetworkRegistry.getInstance().removeNetwork(this);
+		}
+		else {
+			ClientTickHandler.tickingSet.remove(this);
+		}
 	}
 	
 	@Override
@@ -221,6 +237,24 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 		fixed = value;
 	}
 	
+	@Override
+	public boolean needsTicks()
+	{
+		return getSize() > 0;
+	}
+	
+	@Override
+	public void clientTick() 
+	{
+		ticksSinceCreate++;
+		
+		if(ticksSinceCreate == 5 && getSize() > 0)
+		{
+			TileEntity tile = (TileEntity)transmitters.iterator().next();
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(tile)));
+		}
+	}
+	
 	public void addUpdate(EntityPlayer player)
 	{
 		updateQueue.add(new DelayQueue(player));
@@ -247,7 +281,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>
 			{
 			    for(int i = 0; i < ignore.length; i++)
 			    {
-			        this.toIgnore.add(ignore[i]);
+			        toIgnore.add(ignore[i]);
 			    }
 			}
 		}

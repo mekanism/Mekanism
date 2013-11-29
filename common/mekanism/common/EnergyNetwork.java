@@ -350,7 +350,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			Set<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
 			networks.add(this);
 			networks.add(network);
-			EnergyNetwork newNetwork = new EnergyNetwork(networks);
+			EnergyNetwork newNetwork = create(networks);
 			newNetwork.refresh();
 		}
 	}

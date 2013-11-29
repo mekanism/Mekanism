@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.gas.GasNetwork;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -27,9 +28,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
 	public int transferDelay = 0;
 	
-	public float fluidScale;
-	public float prevFluidScale;
+	public boolean didTransfer;
+	public boolean prevTransfer;
 	
+	public float fluidScale;
 	public Fluid refFluid = null;
 	
 	public FluidNetwork(ITransmitter<FluidNetwork>... varPipes)
@@ -118,18 +120,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		if(doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			FluidStack sendStack = fluidToSend.copy();
-			sendStack.amount = fluidSent;
-			
-			if(sendStack.getFluid() == refFluid)
-			{
-				fluidScale = Math.min(1, fluidScale+((float)sendStack.amount/1000F));
-			}
-			else if(refFluid == null)
-			{
-				refFluid = sendStack.getFluid();
-				fluidScale = Math.min(1, ((float)sendStack.amount/1000F));
-			}
+			refFluid = fluidToSend.getFluid();
+			didTransfer = true;
+			transferDelay = 2;
 			
 			transferDelay = 2;
 		}
@@ -146,24 +139,39 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			if(transferDelay == 0)
 			{
-				if(fluidScale > 0)
-				{
-					fluidScale = Math.max(0, fluidScale-.02F);
-				}
-				else {
-					refFluid = null;
-				}
+				didTransfer = false;
 			}
 			else {
 				transferDelay--;
 			}
 			
-			if(fluidScale != prevFluidScale)
+			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, refFluid != null ? refFluid.getID() : -1, fluidScale));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, refFluid != null ? refFluid.getID() : -1, didTransfer));
+				needsUpdate = false;
 			}
 			
-			prevFluidScale = fluidScale;
+			prevTransfer = didTransfer;
+		}
+	}
+	
+	@Override
+	public void clientTick()
+	{
+		super.clientTick();
+		
+		if(didTransfer && fluidScale < 1)
+		{
+			fluidScale = Math.min(1, fluidScale+0.02F);
+		}
+		else if(!didTransfer && fluidScale > 0)
+		{
+			fluidScale = Math.max(0, fluidScale-0.02F);
+			
+			if(fluidScale == 0)
+			{
+				refFluid = null;
+			}
 		}
 	}
 	
@@ -232,7 +240,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			Set<FluidNetwork> networks = new HashSet<FluidNetwork>();
 			networks.add(this);
 			networks.add(network);
-			FluidNetwork newNetwork = new FluidNetwork(networks);
+			FluidNetwork newNetwork = create(networks);
 			newNetwork.refresh();
 		}
 	}
@@ -242,13 +250,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		public final FluidNetwork fluidNetwork;
 		
 		public final int fluidType;
-		public final float fluidScale;
+		public final boolean didTransfer;
 		
-		public FluidTransferEvent(FluidNetwork network, int type, float scale)
+		public FluidTransferEvent(FluidNetwork network, int type, boolean did)
 		{
 			fluidNetwork = network;
 			fluidType = type;
-			fluidScale = scale;
+			didTransfer = did;
 		}
 	}
 		
@@ -261,19 +269,39 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	protected FluidNetwork create(ITransmitter<FluidNetwork>... varTransmitters) 
 	{
-		return new FluidNetwork(varTransmitters);
+		FluidNetwork network = new FluidNetwork(varTransmitters);
+		network.refFluid = refFluid;
+		network.fluidScale = fluidScale;
+		return network;
 	}
 
 	@Override
 	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork>> collection) 
 	{
-		return new FluidNetwork(collection);
+		FluidNetwork network = new FluidNetwork(collection);
+		network.refFluid = refFluid;
+		network.fluidScale = fluidScale;
+		return network;
 	}
 
 	@Override
 	protected FluidNetwork create(Set<FluidNetwork> networks) 
 	{
-		return new FluidNetwork(networks);
+		FluidNetwork network = new FluidNetwork(networks);
+		network.refFluid = refFluid;
+		network.fluidScale = fluidScale;
+		
+		for(FluidNetwork iterNet : networks)
+		{
+			if(iterNet.refFluid != null && iterNet.fluidScale > 0)
+			{
+				network.refFluid = iterNet.refFluid;
+				network.fluidScale = iterNet.fluidScale;
+				break;
+			}
+		}
+		
+		return network;
 	}
 	
 	@Override

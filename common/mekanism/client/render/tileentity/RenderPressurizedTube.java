@@ -35,6 +35,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 	private boolean[] connectable;
 	
 	private HashMap<BooleanArray, HashMap<Gas, DisplayInteger>> cachedCenterGasses = new HashMap<BooleanArray, HashMap<Gas, DisplayInteger>>();
+	private HashMap<TubeRenderData, HashMap<Gas, DisplayInteger>> cachedSideGasses = new HashMap<TubeRenderData, HashMap<Gas, DisplayInteger>>();
 	
 	private static final double offset = 0.015;
 	
@@ -200,14 +201,31 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			return display;
 		}
 		
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
-		toReturn.setTexture(type.getIcon());
+		TubeRenderData data = TubeRenderData.get(side, block);
 		
-		toReturn.setSideRender(side, false);
-		toReturn.setSideRender(side.getOpposite(), false);
-		
-		DisplayInteger display = DisplayInteger.createAndStart();
+        if(cachedSideGasses.containsKey(data) && cachedSideGasses.get(data).containsKey(type))
+        {
+			return cachedSideGasses.get(data).get(type);
+        }
+        
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = Block.waterStill;
+        toReturn.setTexture(type.getIcon());
+        
+        toReturn.setSideRender(side, false);
+        toReturn.setSideRender(side.getOpposite(), false);
+        
+        DisplayInteger display = DisplayInteger.createAndStart();
+        
+        if(cachedSideGasses.containsKey(data))
+        {
+			cachedSideGasses.get(data).put(type, display);
+        }
+        else {
+			HashMap<Gas, DisplayInteger> map = new HashMap<Gas, DisplayInteger>();
+			map.put(type, display);
+			cachedSideGasses.put(data, map);
+        }
 				
 		switch(side)
 		{
@@ -283,5 +301,54 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		DisplayInteger.endList();
 		
 		return display;
+	}
+	
+	public static class TubeRenderData
+	{
+		public double minX;
+		public double maxX;
+		public double minY;
+		public double maxY;
+		public double minZ;
+		public double maxZ;
+		
+		public ForgeDirection side;
+		
+		@Override
+		public int hashCode() 
+		{
+			int code = 1;
+			code = 31 * code + new Double(minX).hashCode();
+			code = 31 * code + new Double(maxX).hashCode();
+			code = 31 * code + new Double(minY).hashCode();
+			code = 31 * code + new Double(maxY).hashCode();
+			code = 31 * code + new Double(minZ).hashCode();
+			code = 31 * code + new Double(maxZ).hashCode();
+			code = 31 * code + side.ordinal();
+			return code;
+		}
+		
+		@Override
+		public boolean equals(Object data)
+		{
+			return data instanceof TubeRenderData && ((TubeRenderData)data).minX == minX && ((TubeRenderData)data).maxX == maxX && 
+					((TubeRenderData)data).minY == minY && ((TubeRenderData)data).maxY == maxY && ((TubeRenderData)data).minZ == minZ &&
+					((TubeRenderData)data).maxZ == maxZ && ((TubeRenderData)data).side == side;
+		}
+		
+		public static TubeRenderData get(ForgeDirection dir, Block b)
+		{
+			TubeRenderData data = new TubeRenderData();
+			
+			data.side = dir;
+			data.minX = b.getBlockBoundsMinX();
+			data.maxX = b.getBlockBoundsMaxX();
+			data.minY = b.getBlockBoundsMinY();
+			data.maxY = b.getBlockBoundsMaxY();
+			data.minZ = b.getBlockBoundsMinZ();
+			data.maxZ = b.getBlockBoundsMaxZ();
+			
+			return data;
+		}
 	}
 }
