@@ -17,6 +17,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 public class TransporterManager
 {
@@ -99,7 +100,7 @@ public class TransporterManager
     		}
     	}
     	
-    	if(inv instanceof TileEntityBin)
+    	if(inv instanceof IDeepStorageUnit)
     	{
     		return;
     	}
@@ -300,10 +301,10 @@ public class TransporterManager
 
 			if(slots != null && slots.length != 0)
 			{
-				if(sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				/*if(sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
 				{
 					slots = sidedInventory.getAccessibleSlotsFromSide(1);
-				}
+				}*/
 				
 				for(int get = 0; get <= slots.length - 1; get++) 
 				{

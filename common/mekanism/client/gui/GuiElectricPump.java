@@ -38,7 +38,6 @@ public class GuiElectricPump extends GuiMekanism
         fontRenderer.drawString("Inventory", 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
         fontRenderer.drawString(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getName() + ": " + tileEntity.fluidTank.getFluid().amount : "No fluid.", 51, 35, 0x00CD00);
-        fontRenderer.drawString(tileEntity.getVoltage()*Mekanism.FROM_UE + "v", 51, 44, 0x00CD00);
         
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{

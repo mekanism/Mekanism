@@ -19,10 +19,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit
 {
 	public boolean isActive;
 	
@@ -458,5 +459,35 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public boolean lightUpdate() 
 	{
 		return true;
+	}
+
+	@Override
+	public ItemStack getStoredItemType()
+	{
+		return MekanismUtils.size(itemType, itemCount);
+	}
+
+	@Override
+	public void setStoredItemCount(int amount)
+	{
+		if(amount == 0)
+		{
+			setStoredItemType(null, 0);
+		}
+		
+		itemCount = amount;
+	}
+
+	@Override
+	public void setStoredItemType(ItemStack type, int amount)
+	{
+		itemType = type;
+		itemCount = amount;
+	}
+
+	@Override
+	public int getMaxStoredCount()
+	{
+		return MAX_STORAGE;
 	}
 }

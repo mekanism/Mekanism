@@ -5,7 +5,6 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.tile.IEnergyStorage;
-import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -33,7 +32,7 @@ import cofh.api.energy.IEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IWrenchable, ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -419,27 +418,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		{
 			return i;
 		}
-		
-		if(!getConsumingSides().contains(direction))
-		{
-			return i;
-		}
-		
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
     	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		setEnergy(getEnergy() + givenEnergy);
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		setEnergy(getEnergy() + neededEnergy);
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
+    	return transferEnergyToAcceptor(direction, i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
     }
 	
 	@Override
@@ -450,18 +430,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			return amount;
 		}
 		
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
+    	double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
+    	setEnergy(getEnergy() + toUse);
     	
-    	if(amount <= neededElectricity)
-    	{
-    		setEnergy(getEnergy() + amount);
-    	}
-    	else {
-    		setEnergy(getEnergy() + neededElectricity);
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
+    	return amount-toUse;
 	}
 }
