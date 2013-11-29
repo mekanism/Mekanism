@@ -269,21 +269,31 @@ public final class CableUtils
 		double remains = totalToSend%outputtingSides.size();
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
 		
+		List<ForgeDirection> toRemove = new ArrayList<ForgeDirection>();
+		
     	for(ForgeDirection side : outputtingSides)
 		{
 			TileEntity tileEntity = Object3D.get(emitter).getFromSide(side).getTileEntity(emitter.worldObj);
 			double toSend = splitSend+remains;
 			remains = 0;
 			
+			double prev = totalToSend;
 			totalToSend -= (toSend - emit_do_do(emitter, tileEntity, side, toSend));
+			
+			if(prev-totalToSend == 0)
+			{
+				toRemove.add(side);
+			}
 		}
+    	
+    	for(ForgeDirection side : toRemove)
+    	{
+    		outputtingSides.remove(side);
+    	}
     	
     	return totalToSend;
     }
     
-    /**
-     * @return rejects
-     */
     private static double emit_do_do(TileEntityElectricBlock from, TileEntity tileEntity, ForgeDirection side, double sendingEnergy)
     {
 		if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
