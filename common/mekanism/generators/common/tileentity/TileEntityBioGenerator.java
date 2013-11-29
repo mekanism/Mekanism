@@ -1,13 +1,13 @@
 package mekanism.generators.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.client.sound.Sound;
 import mekanism.common.FluidSlot;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
@@ -220,9 +220,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 	
 	@Override
-	public ForgeDirection getOutputtingSide()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return ForgeDirection.getOrientation(facing).getOpposite();
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 
 	@Override

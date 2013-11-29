@@ -178,9 +178,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public ForgeDirection getOutputtingSide()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return ForgeDirection.getOrientation(0);
+		return EnumSet.of(ForgeDirection.getOrientation(0));
 	}
 	
 	@Override

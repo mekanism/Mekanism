@@ -1,10 +1,12 @@
 package mekanism.generators.common.tileentity;
 
-import net.minecraftforge.common.ForgeDirection;
+import java.util.EnumSet;
+
 import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
+import net.minecraftforge.common.ForgeDirection;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock
 {
@@ -14,9 +16,9 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 	
 	@Override
-	public ForgeDirection getOutputtingSide()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return ForgeDirection.getOrientation(facing);
+		return EnumSet.of(ForgeDirection.getOrientation(facing));
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package mekanism.induction.common.tileentity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -590,8 +591,8 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 	}
 	
 	@Override
-	public ForgeDirection getOutputtingSide()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return ForgeDirection.DOWN;
+		return EnumSet.of(ForgeDirection.DOWN);
 	}
 }

@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IEnergySource, IEnergyStorage, IPowerReceptor, IPeripheral, IActiveState, IHasSound, ICableOutputter, IRedstoneControl, IPowerEmitter
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPowerReceptor, IPeripheral, IActiveState, IHasSound, IRedstoneControl, IPowerEmitter
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -121,15 +121,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public ForgeDirection getOutputtingSide()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return ForgeDirection.getOrientation(facing);
-	}
-	
-	@Override
-	public float getRequest(ForgeDirection direction)
-	{
-		return 0;
+		return EnumSet.of(ForgeDirection.getOrientation(facing));
 	}
 	
 	@Override
@@ -188,69 +182,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public void detach(IComputerAccess computer) {}
 	
 	@Override
-	public double getOutputEnergyUnitsPerTick()
-	{
-		return output*Mekanism.TO_IC2;
-	}
-	
-	@Override
 	public boolean canSetFacing(int side)
 	{
 		return side != 0 && side != 1;
-	}
-	
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
-	{
-		return direction == getOutputtingSide() && !(receiver instanceof TileEntityUniversalCable);
-	}
-	
-	@Override
-	public int getStored() 
-	{
-		return (int)(getEnergy()*Mekanism.TO_IC2);
-	}
-
-	@Override
-	public int getCapacity() 
-	{
-		return (int)(getMaxEnergy()*Mekanism.TO_IC2);
-	}
-
-	@Override
-	public int getOutput() 
-	{
-		return (int)(output*Mekanism.TO_IC2);
-	}
-	
-	@Override
-	public boolean isTeleporterCompatible(ForgeDirection side) 
-	{
-		return getOutputtingSide() == side;
-	}
-	
-	@Override
-	public int addEnergy(int amount)
-	{
-		return (int)(getEnergy()*Mekanism.TO_IC2);
-	}
-	
-	@Override
-	public void setStored(int energy)
-	{
-		setEnergy(energy*Mekanism.FROM_IC2);
-	}
-	
-	@Override
-	public double getOfferedEnergy() 
-	{
-		return Math.min(getEnergy()*Mekanism.TO_IC2, getOutput());
-	}
-
-	@Override
-	public void drawEnergy(double amount)
-	{
-		setEnergy(getEnergy()-amount*Mekanism.FROM_IC2);
 	}
 	
 	@Override
@@ -306,12 +240,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean canOutputTo(ForgeDirection side)
-	{
-		return getOutputtingSide() == side;
-	}
-	
-	@Override
 	public String getSoundPath()
 	{
 		return fullName.replace(" ", "").replace("-","").replace("Advanced", "") + ".ogg";
@@ -351,7 +279,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public boolean canEmitPowerFrom(ForgeDirection side) 
 	{
-		return getOutputtingSide() == side;
+		return getOutputtingSides().contains(side);
 	}
 	
 	@Override

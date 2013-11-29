@@ -77,7 +77,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		reconfigure();
 	}
 	
-	public ForgeDirection getOutputtingSide()
+	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return null;
 	}
@@ -95,7 +95,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return getConsumingSides().contains(direction) || getOutputtingSide() == direction;
+		return getConsumingSides().contains(direction) || getOutputtingSides().contains(direction);
 	}
 	
 	@Override
@@ -224,7 +224,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
 	{
-		if(getOutputtingSide() == from)
+		if(getOutputtingSides().contains(from))
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), request.getWatts()*Mekanism.FROM_UE));
 			
@@ -253,7 +253,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public float getProvide(ForgeDirection direction)
 	{
-		return getOutputtingSide() == direction ? Math.min(getEnergyStored(), (float)(getMaxOutput()*Mekanism.TO_UE)) : 0;
+		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(getMaxOutput()*Mekanism.TO_UE)) : 0;
 	}
 	
 	@Override
@@ -305,7 +305,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
-		if(getOutputtingSide() == from)
+		if(getOutputtingSides().contains(from))
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*Mekanism.FROM_TE));
 			
@@ -360,19 +360,19 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean isTeleporterCompatible(ForgeDirection side) 
 	{
-		return side == getOutputtingSide();
+		return getOutputtingSides().contains(side);
 	}
 	
 	@Override
 	public boolean canOutputTo(ForgeDirection side)
 	{
-		return side == getOutputtingSide();
+		return getOutputtingSides().contains(side);
 	}
 	
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return direction != getOutputtingSide();
+		return !getOutputtingSides().contains(direction);
 	}
 
 	@Override
@@ -402,7 +402,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return side != getOutputtingSide();
+		return !getOutputtingSides().contains(side);
 	}
 
 	@Override

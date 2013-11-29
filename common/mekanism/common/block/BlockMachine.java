@@ -100,7 +100,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockMachine extends BlockContainer implements ISpecialBounds
 {
-	public Icon[][][] icons = new Icon[4096][16][16];
+	public Icon[][] icons = new Icon[16][16];
 	public Random machineRand = new Random();
 	
 	public BlockMachine(int id)
@@ -117,34 +117,34 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		if(blockID == Mekanism.machineBlockID)
 		{
-			icons[blockID][0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
-			icons[blockID][0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
-			icons[blockID][0][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[blockID][1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
-			icons[blockID][1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
-			icons[blockID][1][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[blockID][2][0] = register.registerIcon("mekanism:CombinerFrontOff");
-			icons[blockID][2][1] = register.registerIcon("mekanism:CombinerFrontOn");
-			icons[blockID][2][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[blockID][3][0] = register.registerIcon("mekanism:CrusherFrontOff");
-			icons[blockID][3][1] = register.registerIcon("mekanism:CrusherFrontOn");
-			icons[blockID][3][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[blockID][5][0] = register.registerIcon("mekanism:BasicFactoryFront");
-			icons[blockID][5][1] = register.registerIcon("mekanism:BasicFactorySide");
-			icons[blockID][5][2] = register.registerIcon("mekanism:BasicFactoryTop");
-			icons[blockID][6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
-			icons[blockID][6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
-			icons[blockID][6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
-			icons[blockID][7][0] = register.registerIcon("mekanism:EliteFactoryFront");
-			icons[blockID][7][1] = register.registerIcon("mekanism:EliteFactorySide");
-			icons[blockID][7][2] = register.registerIcon("mekanism:EliteFactoryTop");
-			icons[blockID][9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
-			icons[blockID][9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
-			icons[blockID][9][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[blockID][10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
-			icons[blockID][10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
-			icons[blockID][10][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[blockID][11][0] = register.registerIcon("mekanism:Teleporter");
+			icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
+			icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
+			icons[0][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
+			icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
+			icons[1][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
+			icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
+			icons[2][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
+			icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
+			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
+			icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
+			icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
+			icons[6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
+			icons[6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
+			icons[6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
+			icons[7][0] = register.registerIcon("mekanism:EliteFactoryFront");
+			icons[7][1] = register.registerIcon("mekanism:EliteFactorySide");
+			icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
+			icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
+			icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
+			icons[9][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
+			icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
+			icons[10][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[11][0] = register.registerIcon("mekanism:Teleporter");
 		}
 	}
 	
@@ -289,107 +289,107 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	    	{
 	        	if(side == 3)
 	        	{
-	        		return icons[blockID][0][0];
+	        		return icons[0][0];
 	        	}
 	        	else {
-	        		return icons[blockID][0][2];
+	        		return icons[0][2];
 	        	}
 	    	}
 	    	else if(meta == 1)
 	    	{
 	        	if(side == 3)
 	        	{
-	        		return icons[blockID][1][0];
+	        		return icons[1][0];
 	        	}
 	        	else {
-	        		return icons[blockID][1][2];
+	        		return icons[1][2];
 	        	}
 	    	}
 	    	else if(meta == 2)
 	    	{
 	        	if(side == 3)
 	        	{
-	        		return icons[blockID][2][0];
+	        		return icons[2][0];
 	        	}
 	        	else {
-	        		return icons[blockID][2][2];
+	        		return icons[2][2];
 	        	}
 	    	}
 	    	else if(meta == 3)
 	    	{
 	        	if(side == 3)
 	        	{
-	        		return icons[blockID][3][0];
+	        		return icons[3][0];
 	        	}
 	        	else {
-	        		return icons[blockID][3][2];
+	        		return icons[3][2];
 	        	}
 	    	}
 	    	else if(meta == 5)
 	    	{
 	    		if(side == 3)
 	    		{
-	    			return icons[blockID][5][0];
+	    			return icons[5][0];
 	    		}
 	     		else if(side == 0 || side == 1)
 	    		{
-	    			return icons[blockID][5][2];
+	    			return icons[5][2];
 	    		}
 	    		else {
-	    			return icons[blockID][5][1];
+	    			return icons[5][1];
 	    		}
 	    	}
 	    	else if(meta == 6)
 	    	{
 	    		if(side == 3)
 	    		{
-	    			return icons[blockID][6][0];
+	    			return icons[6][0];
 	    		}
 	     		else if(side == 0 || side == 1)
 	    		{
-	    			return icons[blockID][6][2];
+	    			return icons[6][2];
 	    		}
 	    		else {
-	    			return icons[blockID][6][1];
+	    			return icons[6][1];
 	    		}
 	    	}
 	    	else if(meta == 7)
 	    	{
 	    		if(side == 3)
 	    		{
-	    			return icons[blockID][7][0];
+	    			return icons[7][0];
 	    		}
 	     		else if(side == 0 || side == 1)
 	    		{
-	    			return icons[blockID][7][2];
+	    			return icons[7][2];
 	    		}
 	    		else {
-	    			return icons[blockID][7][1];
+	    			return icons[7][1];
 	    		}
 	    	}
 	    	else if(meta == 9)
 	    	{
 	    		if(side == 3)
 	    		{
-	    			return icons[blockID][9][0];
+	    			return icons[9][0];
 	    		}
 	    		else {
-	    			return icons[blockID][9][2];
+	    			return icons[9][2];
 	    		}
 	    	}
 	    	else if(meta == 10)
 	    	{
 	    		if(side == 3)
 	    		{
-	    			return icons[blockID][10][0];
+	    			return icons[10][0];
 	    		}
 	    		else {
-	    			return icons[blockID][10][2];
+	    			return icons[10][2];
 	    		}
 	    	}
 	    	else if(meta == 11)
 	    	{
-	    		return icons[blockID][11][0];
+	    		return icons[11][0];
 	    	}
 		}
     	
@@ -409,107 +409,107 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	    	{
 		        if(side == tileEntity.facing)
 		        {
-		        	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][0][1] : icons[blockID][0][0];
+		        	return MekanismUtils.isActive(world, x, y, z) ? icons[0][1] : icons[0][0];
 		        }
 		        else {
-		        	return icons[blockID][0][2];
+		        	return icons[0][2];
 		        }
 	    	}
 	    	else if(metadata == 1)
 	    	{
 	            if(side == tileEntity.facing)
 	            {
-	            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][1][1] : icons[blockID][1][0];
+	            	return MekanismUtils.isActive(world, x, y, z) ? icons[1][1] : icons[1][0];
 	            }
 	            else {
-	            	return icons[blockID][1][2];
+	            	return icons[1][2];
 	            }
 	    	}
 	    	else if(metadata == 2)
 	    	{
 	            if(side == tileEntity.facing)
 	            {
-	            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][2][1] : icons[blockID][2][0];
+	            	return MekanismUtils.isActive(world, x, y, z) ? icons[2][1] : icons[2][0];
 	            }
 	            else {
-	            	return icons[blockID][2][2];
+	            	return icons[2][2];
 	            }
 	    	}
 	    	else if(metadata == 3)
 	    	{
 	            if(side == tileEntity.facing)
 	            {
-	            	return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][3][1] : icons[blockID][3][0];
+	            	return MekanismUtils.isActive(world, x, y, z) ? icons[3][1] : icons[3][0];
 	            }
 	            else {
-	            	return icons[blockID][3][2];
+	            	return icons[3][2];
 	            }
 	    	}
 	    	else if(metadata == 5)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
-	    			return icons[blockID][5][0];
+	    			return icons[5][0];
 	    		}
 	    		else if(side == 0 || side == 1)
 	    		{
-	    			return icons[blockID][5][2];
+	    			return icons[5][2];
 	    		}
 	    		else {
-	    			return icons[blockID][5][1];
+	    			return icons[5][1];
 	    		}
 	    	}
 	    	else if(metadata == 6)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
-	    			return icons[blockID][6][0];
+	    			return icons[6][0];
 	    		}
 	       		else if(side == 0 || side == 1)
 	    		{
-	    			return icons[blockID][6][2];
+	    			return icons[6][2];
 	    		}
 	    		else {
-	    			return icons[blockID][6][1];
+	    			return icons[6][1];
 	    		}
 	    	}
 	    	else if(metadata == 7)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
-	    			return icons[blockID][7][0];
+	    			return icons[7][0];
 	    		}
 	       		else if(side == 0 || side == 1)
 	    		{
-	    			return icons[blockID][7][2];
+	    			return icons[7][2];
 	    		}
 	    		else {
-	    			return icons[blockID][7][1];
+	    			return icons[7][1];
 	    		}
 	    	}
 	    	else if(metadata == 9)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
-	    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][9][1] : icons[blockID][9][0];
+	    			return MekanismUtils.isActive(world, x, y, z) ? icons[9][1] : icons[9][0];
 	    		}
 	    		else {
-	    			return icons[blockID][9][2];
+	    			return icons[9][2];
 	    		}
 	    	}
 	    	else if(metadata == 10)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
-	    			return MekanismUtils.isActive(world, x, y, z) ? icons[blockID][10][1] : icons[blockID][10][0];
+	    			return MekanismUtils.isActive(world, x, y, z) ? icons[10][1] : icons[10][0];
 	    		}
 	    		else {
-	    			return icons[blockID][10][2];
+	    			return icons[10][2];
 	    		}
 	    	}
 	    	else if(metadata == 11)
 	    	{
-	    		return icons[blockID][11][0];
+	    		return icons[11][0];
 	    	}
     	}
     	
