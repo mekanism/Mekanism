@@ -2,7 +2,6 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -15,6 +14,7 @@ import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;

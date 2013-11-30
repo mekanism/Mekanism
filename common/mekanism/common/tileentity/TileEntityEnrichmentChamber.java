@@ -11,7 +11,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("Chamber.ogg", "Enrichment Chamber", new ResourceLocation("mekanism", "gui/GuiChamber.png"), Mekanism.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
+		super("Chamber.ogg", "EnrichmentChamber", new ResourceLocation("mekanism", "gui/GuiChamber.png"), Mekanism.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
 	}
 	
 	@Override

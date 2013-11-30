@@ -73,7 +73,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         GL11.glDisable(GL11.GL_LIGHTING);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.repair"), 60, 6, 4210752);
+        fontRenderer.drawString(MekanismUtils.localize("container.repair"), 60, 6, 4210752);
 
         if(repairContainer.maximumCost > 0)
         {
@@ -83,7 +83,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 
             if(repairContainer.maximumCost >= 40 && !mc.thePlayer.capabilities.isCreativeMode)
             {
-                s = StatCollector.translateToLocal("container.repair.expensive");
+                s = MekanismUtils.localize("container.repair.expensive");
                 k = 16736352;
             }
             else if(!repairContainer.getSlot(2).getHasStack())

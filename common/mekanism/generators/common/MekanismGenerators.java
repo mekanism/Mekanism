@@ -106,7 +106,7 @@ public class MekanismGenerators implements IModule
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		try {
-			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
+			/*for(ItemStack ore : OreDictionary.getOres("treeSapling")) //TODO later!
 			{
 				ArrayList<ItemStack> list = new ArrayList();
 				ore.getItem().getSubItems(ore.itemID, CreativeTabs.tabDecorations, list);
@@ -115,7 +115,7 @@ public class MekanismGenerators implements IModule
 				{
 					RecipeHandler.addCrusherRecipe(MekanismUtils.size(sapling, 1), new ItemStack(BioFuel, 2));
 				}
-			}
+			}*/
 		} catch(Exception e) {}
 	}
 	

@@ -2,10 +2,10 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.tileentity.TileEntityElectricChest;

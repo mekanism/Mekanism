@@ -14,7 +14,7 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 {
 	public TileEntityEnergizedSmelter()
 	{
-		super("Smelter.ogg", "Energized Smelter", new ResourceLocation("mekanism", "gui/GuiEnergizedSmelter.png"), Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
+		super("Smelter.ogg", "EnergizedSmelter", new ResourceLocation("mekanism", "gui/GuiEnergizedSmelter.png"), Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
 	}
 	
 	@Override

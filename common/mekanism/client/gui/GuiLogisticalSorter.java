@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
@@ -243,8 +243,8 @@ public class GuiLogisticalSorter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
-		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, MekanismUtils.localize("gui.itemstack")));
+		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, MekanismUtils.localize("gui.oredict")));
 	}
 	
 	@Override
@@ -268,9 +268,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString("Logistical Sorter", 43, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		
-		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.logisticalSorter.filters") + ":", 11, 19, 0x00CD00);
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
@@ -278,10 +278,10 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRenderer.drawString("RR:", 12, 74, 0x00CD00);
 		fontRenderer.drawString(tileEntity.roundRobin ? "On" : "Off", 27, 86, 0x00CD00);
 		
-		fontRenderer.drawString("Auto:", 12, 100, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
 		fontRenderer.drawString(tileEntity.autoEject ? "On" : "Off", 27, 112, 0x00CD00);
 		
-		fontRenderer.drawString("Default:", 12, 126, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -303,8 +303,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 					
-					fontRenderer.drawString("Item Filter", 78, yStart + 2, 0x404040);
-					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
+					fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TOreDictFilter)
 				{
@@ -325,7 +325,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 					
 					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
-					fontRenderer.drawString(filter.color != null ? filter.color.getName() : "None", 78, yStart + 11, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 			}
 		}
@@ -351,18 +351,18 @@ public class GuiLogisticalSorter extends GuiMekanism
 				drawCreativeTabHoveringText(tileEntity.color.getName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText("None", xAxis, yAxis);
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 		
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 		{
-			drawCreativeTabHoveringText("Auto-eject", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
 		{
-			drawCreativeTabHoveringText("Round robin", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.logisticalSorter.roundRobin"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

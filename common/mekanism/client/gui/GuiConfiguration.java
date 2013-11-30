@@ -3,12 +3,12 @@ package mekanism.client.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
-import mekanism.api.Object3D;
-import mekanism.api.SideData;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.EnumColor;
+import mekanism.common.IConfigurable;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
+import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
@@ -152,7 +152,7 @@ public class GuiConfiguration extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
         
-        fontRenderer.drawString("Configuration", 60, 5, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("gui.configuration"), 60, 5, 0x404040);
         fontRenderer.drawString("Eject: " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
         
         fontRenderer.drawString("Input (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);

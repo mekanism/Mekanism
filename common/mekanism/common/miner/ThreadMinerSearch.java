@@ -2,8 +2,8 @@ package mekanism.common.miner;
 
 import java.util.Collections;
 
-import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;

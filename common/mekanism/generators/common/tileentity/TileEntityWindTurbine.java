@@ -1,7 +1,7 @@
 package mekanism.generators.common.tileentity;
 
-import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.Object3D;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -16,7 +16,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	
 	public TileEntityWindTurbine() 
 	{
-		super("Wind Turbine", 200000, (MekanismGenerators.windGeneration*8)*2);
+		super("WindTurbine", 200000, (MekanismGenerators.windGeneration*8)*2);
 		inventory = new ItemStack[1];
 	}
 	

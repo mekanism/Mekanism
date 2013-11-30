@@ -2,9 +2,9 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.IUpgradeManagement;
-import mekanism.api.Object3D;
+import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

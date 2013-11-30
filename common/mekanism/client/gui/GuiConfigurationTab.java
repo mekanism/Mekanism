@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
-import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketSimpleGui;
@@ -48,7 +48,7 @@ public class GuiConfigurationTab extends GuiElement
 		
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			displayTooltip("Configuration", xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.configuration"), xAxis, yAxis);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);

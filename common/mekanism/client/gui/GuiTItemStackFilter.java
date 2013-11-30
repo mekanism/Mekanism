@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.EnumColor;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -67,8 +67,8 @@ public class GuiTItemStackFilter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, "Save"));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, "Delete"));
+		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.delete")));
 		
 		if(isNew)
 		{
@@ -161,17 +161,17 @@ public class GuiTItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString((isNew ? "New" : "Edit") + " Item Filter", 43, 6, 0x404040);
-		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString("ItemStack Details:", 35, 32, 0x00CD00);
+		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
 		
-		fontRenderer.drawString("Min:", 128, 20, 0x404040);
-		fontRenderer.drawString("Max:", 128, 32, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
 		fontRenderer.drawString(filter.sizeMode ? "On" : "Off", 141, 46, 0x404040);
 		
 		if(filter.itemType != null)
 		{
-			fontRenderer.drawString("Item: " + filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
+			fontRenderer.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
 		}
 		
 		if(filter.itemType != null)
@@ -204,7 +204,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText("None", xAxis, yAxis);
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 		
@@ -224,7 +224,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			ticker--;
 		}
 		else {
-			status = EnumColor.DARK_GREEN + "All OK";
+			status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		}
 	}
 

@@ -3,11 +3,6 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
-import mekanism.api.IEjector;
-import mekanism.api.Object3D;
-import mekanism.api.SideData;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterManager;

@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.api.Object3D;
+import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityBin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

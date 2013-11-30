@@ -27,8 +27,8 @@ public class GuiRobitSmelting extends GuiMekanism
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-    	fontRenderer.drawString("Robit Smelting", 8, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 8, ySize - 96 + 3, 0x404040);
+    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.smelting"), 8, 6, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 3, 0x404040);
         
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

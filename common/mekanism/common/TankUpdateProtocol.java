@@ -3,7 +3,6 @@ package mekanism.common;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.Object3D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;

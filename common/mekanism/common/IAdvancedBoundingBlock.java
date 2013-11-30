@@ -7,7 +7,6 @@ import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.block.IElectricalStorage;
 import buildcraft.api.power.IPowerReceptor;
 import cofh.api.energy.IEnergyHandler;
-import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import net.minecraft.inventory.ISidedInventory;

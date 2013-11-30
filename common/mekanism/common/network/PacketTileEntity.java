@@ -3,8 +3,8 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
 import mekanism.common.ITileNetwork;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

@@ -2,11 +2,6 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
-import mekanism.api.IEjector;
-import mekanism.api.Object3D;
-import mekanism.api.SideData;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -18,10 +13,15 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.EnumColor;
+import mekanism.common.IConfigurable;
+import mekanism.common.IEjector;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
+import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.TileComponentEjector;
@@ -105,7 +105,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super(type.name + " Factory", machine.baseEnergy);
+		super(type.name + "Factory", machine.baseEnergy);
 		
 		tier = type;
 		inventory = new ItemStack[5+type.processes*2];

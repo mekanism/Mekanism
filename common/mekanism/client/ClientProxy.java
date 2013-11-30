@@ -4,7 +4,6 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
-import mekanism.api.IConfigurable;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -61,6 +60,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
+import mekanism.common.IConfigurable;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;

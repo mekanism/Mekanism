@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
@@ -282,7 +282,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString("Digital Miner Config", 43, 6, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 		
 		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);

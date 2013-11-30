@@ -36,7 +36,7 @@ public class GuiPortableTeleporter extends GuiScreen
     public void initGui()
     {
     	buttonList.clear();
-    	buttonList.add(new GuiButton(0, 173, 105, 80, 20, "Teleport"));
+    	buttonList.add(new GuiButton(0, 173, 105, 80, 20, MekanismUtils.localize("gui.teleport")));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class GuiPortableTeleporter extends GuiScreen
         ((GuiButton)buttonList.get(0)).xPosition = guiWidth+48;
         ((GuiButton)buttonList.get(0)).yPosition = guiHeight+68;
         
-        fontRenderer.drawString("Portable Teleporter", guiWidth+39, guiHeight+6, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("gui.portableTeleporter"), guiWidth+39, guiHeight+6, 0x404040);
         fontRenderer.drawString(item.getStatusAsString(item.getStatus(itemStack)), guiWidth+53, guiHeight+19, 0x00CD00);
         
         super.drawScreen(mouseX, mouseY, partialTick);

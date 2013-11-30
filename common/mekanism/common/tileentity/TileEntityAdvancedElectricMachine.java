@@ -2,10 +2,10 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.EnumColor;
-import mekanism.api.SideData;
+import mekanism.common.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
+import mekanism.common.SideData;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;

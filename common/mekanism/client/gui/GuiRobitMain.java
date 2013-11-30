@@ -71,7 +71,7 @@ public class GuiRobitMain extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, "Confirm"));
+		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, MekanismUtils.localize("gui.confirm")));
 		confirmName.drawButton = displayNameChange;
 		
 		nameChangeField = new GuiTextField(fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
@@ -103,11 +103,11 @@ public class GuiRobitMain extends GuiMekanism
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-    	fontRenderer.drawString("Robit", 76, 6, 0x404040);
+    	fontRenderer.drawString(MekanismUtils.localize("gui.robit"), 76, 6, 0x404040);
     	
     	if(!displayNameChange)
     	{
-	    	fontRenderer.drawString("Hi, I'm " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
+	    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
 	    	fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
 	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
 	    	fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
@@ -123,19 +123,19 @@ public class GuiRobitMain extends GuiMekanism
 		}
 		else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText("Toggle 'follow' mode", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText("Rename this Robit", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.rename"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 		{
-			drawCreativeTabHoveringText("Teleport back home", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.teleport"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 		{
-			drawCreativeTabHoveringText("Toggle 'drop pickup' mode", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

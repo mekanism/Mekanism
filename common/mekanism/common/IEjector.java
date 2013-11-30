@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.common;
 
 import net.minecraftforge.common.ForgeDirection;
 

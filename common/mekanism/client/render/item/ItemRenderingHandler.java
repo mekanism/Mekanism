@@ -1,6 +1,5 @@
 package mekanism.client.render.item;
 
-import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
@@ -11,6 +10,7 @@ import mekanism.client.model.ModelObsidianTNT;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderBin;
+import mekanism.common.EnumColor;
 import mekanism.common.IElectricChest;
 import mekanism.common.IEnergyCube;
 import mekanism.common.Mekanism;

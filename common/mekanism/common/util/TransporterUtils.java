@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.common.EnumColor;
+import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;

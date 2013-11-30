@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import mekanism.api.EnumColor;
+import mekanism.common.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

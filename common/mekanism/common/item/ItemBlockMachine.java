@@ -7,9 +7,6 @@ import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
 
-import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
-import mekanism.api.IUpgradeManagement;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.Gas;
@@ -19,8 +16,11 @@ import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
+import mekanism.common.EnumColor;
+import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
+import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;

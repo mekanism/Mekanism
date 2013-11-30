@@ -1,18 +1,20 @@
 package mekanism.common;
 
+import mekanism.common.util.MekanismUtils;
+
 public interface IRedstoneControl 
 {
 	public static enum RedstoneControl
 	{
-		DISABLED("Disabled"),
-		HIGH("High"),
-		LOW("Low");
+		DISABLED("control.disabled"),
+		HIGH("control.high"),
+		LOW("control.low");
 		
 		private String display;
 	
 		public String getDisplay()
 		{
-			return display;
+			return MekanismUtils.localize(display);
 		}
 		
 		private RedstoneControl(String s)

@@ -2,22 +2,22 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
-import mekanism.api.IEjector;
-import mekanism.api.Object3D;
-import mekanism.api.SideData;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.sound.IHasSound;
+import mekanism.common.EnumColor;
 import mekanism.common.IActiveState;
+import mekanism.common.IConfigurable;
+import mekanism.common.IEjector;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
+import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
 import mekanism.common.RecipeHandler.Recipe;
@@ -82,7 +82,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	
 	public TileEntityMetallurgicInfuser()
 	{
-		super("Metallurgic Infuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
+		super("MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));

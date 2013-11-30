@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Object3D;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
@@ -43,7 +43,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	public TileEntityElectricPump()
 	{
-		super("Electric Pump", 10000);
+		super("ElectricPump", 10000);
 		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[3];
 	}

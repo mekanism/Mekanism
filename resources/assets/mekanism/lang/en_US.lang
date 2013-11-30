@@ -121,6 +121,121 @@ gas.oxygen=Oxygen
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
 
+//Gui text
+gui.configuration=Configuration
+gui.removeSpeedUpgrade=Remove speed upgrade
+gui.removeEnergyUpgrade=Remove energy upgrade
+gui.condensentrating=Condensentrating
+gui.decondensentrating=Decondensentrating
+gui.power=Power
+gui.confirm=Confirm
+gui.open=Open
+gui.allOK=All OK
+gui.none=None
+gui.new=New
+gui.edit=Edit
+gui.save=Save
+gui.output=Output
+gui.delete=Delete
+gui.status=Status
+gui.autoEject=Auto-eject
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.out=Out
+gui.noFluid=No fluid
+gui.empty=Empty
+gui.volume=Volume
+gui.start=Start
+gui.stop=Stop
+gui.config=Config
+gui.teleport=Teleport
+
+gui.factory.secondaryEnergy=Secondary energy
+gui.factory.smelting=Smelting
+gui.factory.enriching=Enriching
+gui.factory.crushing=Crushing
+gui.factory.compressing=Compressing
+gui.factory.combining=Combining
+gui.factory.purifying=Purifying
+
+gui.oredictFilter=OreDict Filter
+gui.oredictFilter.noKey=No key entered
+gui.oredictFilter.sameKey=Same key
+
+gui.itemFilter=Item Filter
+gui.itemFilter.details=ItemStack Details
+gui.itemFilter.min=Min
+gui.itemFilter.max=Max
+
+gui.portableTeleporter=Portable Teleporter
+
+gui.teleporter.notReady=Not Ready
+gui.teleporter.ready=Ready
+gui.teleporter.needsEnergy=Needs energy
+gui.teleporter.linksCapacity=Links > 2
+gui.teleporter.noLink=No link found
+
+gui.robit=Robit
+gui.robit.smelting=Robit Smelting
+gui.robit.inventory=Robit Inventory
+gui.robit.crafting=Robit Crafting
+gui.robit.greeting=Hi, I'm
+gui.robit.toggleFollow=Toggle 'follow' mode
+gui.robit.rename=Rename this Robit
+gui.robit.teleport=Teleport back home
+gui.robit.togglePickup=Toggle 'drop pickup' mode
+
+gui.password.setPassword=Set password
+gui.password.enterPassword=Enter password
+gui.password.fieldsEmpty=Field(s) empty
+gui.password.notMatching=Not matching
+gui.password.identical=Identical
+gui.password.invalid=Invalid
+gui.password=Password
+
+gui.logisticalSorter.filters=Filters
+gui.logisticalSorter.default=Default
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round robin
+
+gui.electricChest.editPassword=Edit Password
+
+gui.digitalMinerConfig=Digital Miner Config
+
+gui.digitalMiner.autoPull=Auto-pull
+gui.digitalMiner.replaceBlock=Replace block
+gui.digitalMiner.reset=Reset
+gui.digitalMiner.silkTouch=Silk touch
+gui.digitalMiner.eject=Eject
+gui.digitalMiner.pull=Pull
+gui.digitalMiner.silk=Silk
+gui.digitalMiner.toMine=To mine
+gui.digitalMiner.running=Running
+gui.digitalMiner.idle=Idle
+
+//Redstone control
+control.disabled=Disabled
+control.high=High
+control.low=Low
+
+//Colors
+color.black=Black
+color.darkBlue=Dark Blue
+color.darkGreen=Dark Green
+color.darkAqua=Dark Aqua
+color.darkRed=Dark Red
+color.purple=Purple
+color.orange=Orange
+color.grey=Grey
+color.darkGrey=Dark Grey
+color.indigo=Indigo
+color.brightGreen=Bright Green
+color.aqua=Aqua
+color.red=Red
+color.pink=Pink
+color.yellow=Yellow
+color.white=White
+
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -237,3 +352,12 @@ tile.Battery.name=Modular Battery
 
 //Items
 item.Linker.name=Electrostatic Linker
+
+//Gui text
+gui.heatGenerator.fuel=Fuel
+
+gui.solarGenerator.sun=Sun
+
+gui.bioGenerator.biofuel=BioFuel
+
+gui.electrolyticSeparator.dump=Dump

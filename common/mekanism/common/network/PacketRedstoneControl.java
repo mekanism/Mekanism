@@ -3,8 +3,8 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.Random;
 
-import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.Object3D;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

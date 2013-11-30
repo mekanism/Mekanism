@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.IConfigurable;
-import mekanism.api.SideData;
+import mekanism.common.IConfigurable;
+import mekanism.common.SideData;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import net.minecraft.client.gui.inventory.GuiContainer;

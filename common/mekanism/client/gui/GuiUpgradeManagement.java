@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
-import mekanism.api.Object3D;
 import mekanism.common.IUpgradeTile;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRemoveUpgrade;
@@ -48,12 +48,12 @@ public class GuiUpgradeManagement extends GuiElement
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 		{
-			displayTooltip("Remove speed upgrade", xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.removeEnergyUpgrade"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
 		{
-			displayTooltip("Remove energy upgrade", xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.removeSpeedUpgrade"), xAxis, yAxis);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -3,10 +3,10 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -52,7 +52,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 	
 	public List<ItemStack> iterStacks;
 	
-	public String status = EnumColor.DARK_GREEN + "All OK";
+	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 	
 	public GuiTOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
@@ -82,8 +82,8 @@ public class GuiTOreDictFilter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, "Save"));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, "Delete"));
+		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.delete")));
 		
 		if(isNew)
 		{
@@ -140,7 +140,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
 			}
 			else {
-				status = EnumColor.DARK_RED + "No key";
+				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
 				ticker = 20;
 			}
 		}
@@ -157,8 +157,8 @@ public class GuiTOreDictFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString((isNew ? "New" : "Edit") + " OreDict Filter", 43, 6, 0x404040);
-		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
 		
 		if(renderStack != null)
@@ -191,7 +191,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText("None", xAxis, yAxis);
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 		
@@ -243,7 +243,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			ticker--;
 		}
 		else {
-			status = EnumColor.DARK_GREEN + "All OK";
+			status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		}
 		
 		if(stackSwitch > 0)
@@ -385,12 +385,12 @@ public class GuiTOreDictFilter extends GuiMekanism
     	
     	if(oreName == null || oreName.isEmpty())
     	{
-    		status = EnumColor.DARK_RED + "No key entered";
+    		status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
     		return;
     	}
     	else if(oreName.equals(filter.oreDictName))
     	{
-    		status = EnumColor.DARK_RED + "Same key";
+    		status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.sameKey");
     		return;
     	}
     	

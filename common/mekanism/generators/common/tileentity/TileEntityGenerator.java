@@ -6,12 +6,12 @@ import ic2.api.tile.IEnergyStorage;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.Object3D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
@@ -242,7 +242,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	@Override
 	public String getSoundPath()
 	{
-		return fullName.replace(" ", "").replace("-","").replace("Advanced", "") + ".ogg";
+		return fullName.replace("Advanced", "") + ".ogg";
 	}
 	
 	@Override

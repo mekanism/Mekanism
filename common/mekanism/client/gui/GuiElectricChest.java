@@ -1,10 +1,10 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.EnumColor;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerElectricChest;
@@ -72,7 +72,7 @@ public class GuiElectricChest extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, "Edit Password"));
+		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, MekanismUtils.localize("gui.electricChest.editPassword")));
 	}
 	
 	@Override
@@ -96,9 +96,9 @@ public class GuiElectricChest extends GuiContainer
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString("Electric Chest", 8, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 8, 6, 0x404040);
         fontRenderer.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         
     	if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
 		{

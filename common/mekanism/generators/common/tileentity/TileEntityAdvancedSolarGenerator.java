@@ -2,8 +2,8 @@ package mekanism.generators.common.tileentity;
 
 import java.util.EnumSet;
 
-import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.Object3D;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraftforge.common.ForgeDirection;
@@ -12,7 +12,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
-		super("Advanced Solar Generator", 200000, 360, MekanismGenerators.advancedSolarGeneration);
+		super("AdvancedSolarGenerator", 200000, 360, MekanismGenerators.advancedSolarGeneration);
 	}
 	
 	@Override

@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
@@ -13,6 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityGasTank;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.util.MekanismUtils;

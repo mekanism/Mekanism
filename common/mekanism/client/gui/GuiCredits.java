@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
 import mekanism.client.ThreadClientUpdate;
+import mekanism.common.EnumColor;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;

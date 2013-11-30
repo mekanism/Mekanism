@@ -5,7 +5,7 @@ package mekanism.induction.common.item;
 
 import java.util.List;
 
-import mekanism.api.Object3D;
+import mekanism.common.Object3D;
 import mekanism.common.item.ItemMekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

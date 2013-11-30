@@ -11,15 +11,14 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import mekanism.api.IClientTicker;
-import mekanism.api.Object3D;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketDataRequest;
+import mekanism.common.Object3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>, IClientTicker
@@ -251,7 +250,17 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>,
 		if(ticksSinceCreate == 5 && getSize() > 0)
 		{
 			TileEntity tile = (TileEntity)transmitters.iterator().next();
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(tile)));
+			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile));
+		}
+	}
+	
+	public static class NetworkClientRequest extends Event
+	{
+		public TileEntity tileEntity;
+		
+		public NetworkClientRequest(TileEntity tile)
+		{
+			tileEntity = tile;
 		}
 	}
 	

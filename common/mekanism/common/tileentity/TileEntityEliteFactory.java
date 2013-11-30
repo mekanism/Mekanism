@@ -1,7 +1,7 @@
 package mekanism.common.tileentity;
 
-import mekanism.api.EnumColor;
-import mekanism.api.SideData;
+import mekanism.common.EnumColor;
+import mekanism.common.SideData;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;

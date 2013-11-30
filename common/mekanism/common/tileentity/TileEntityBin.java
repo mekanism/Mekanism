@@ -2,8 +2,8 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemBlockBasic;
@@ -364,7 +364,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public String getInvName() 
 	{
-		return "Bin";
+		return MekanismUtils.localize("tile.BasicBlock.Bin.name");
 	}
 
 	@Override

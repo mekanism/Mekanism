@@ -8,13 +8,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.Object3D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.EntityRobit;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;

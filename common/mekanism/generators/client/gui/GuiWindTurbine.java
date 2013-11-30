@@ -1,8 +1,8 @@
 package mekanism.generators.client.gui;
 
-import mekanism.api.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRedstoneControl;
+import mekanism.common.EnumColor;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
@@ -35,11 +35,11 @@ public class GuiWindTurbine extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-        fontRenderer.drawString("Power: " + MekanismGenerators.windGeneration*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
-        fontRenderer.drawString("Out: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.power") + ": " + MekanismGenerators.windGeneration*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
         
         int size = 44;
         

@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import mekanism.api.EnumColor;
 import net.minecraft.util.ResourceLocation;
 
 /**

@@ -36,7 +36,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 	public TileEntityBioGenerator()
 	{
-		super("Bio-Generator", 160000, MekanismGenerators.bioGeneration*2);
+		super("BioGenerator", 160000, MekanismGenerators.bioGeneration*2);
 		inventory = new ItemStack[2];
 	}
 

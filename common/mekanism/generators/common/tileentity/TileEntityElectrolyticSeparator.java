@@ -3,7 +3,6 @@ package mekanism.generators.common.tileentity;
 import java.util.ArrayList;
 import java.util.Random;
 
-import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -14,6 +13,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tileentity.TileEntityElectricBlock;
@@ -66,7 +66,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("Electrolytic Separator", GeneratorType.ELECTROLYTIC_SEPARATOR.maxEnergy);
+		super("ElectrolyticSeparator", GeneratorType.ELECTROLYTIC_SEPARATOR.maxEnergy);
 		inventory = new ItemStack[4];
 		outputType = GasRegistry.getGas("oxygen");
 		dumpType = null;

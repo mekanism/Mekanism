@@ -9,13 +9,13 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import mekanism.api.Object3D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

@@ -3,8 +3,8 @@ package mekanism.client.render;
 import java.util.Arrays;
 import java.util.List;
 
-import mekanism.api.EnumColor;
 import mekanism.api.gas.GasRegistry;
+import mekanism.common.EnumColor;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -61,7 +61,7 @@ public class MekanismRenderer
 		{
 			for(EnumColor color : EnumColor.values())
 			{
-				colors[color.ordinal()] = event.map.registerIcon("mekanism:Overlay" + color.friendlyName.replace(" ", ""));
+				colors[color.ordinal()] = event.map.registerIcon("mekanism:Overlay" + color.getLocalizedName().replace(" ", ""));
 			}
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");

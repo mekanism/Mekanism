@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Object3D;
+import mekanism.common.Object3D;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

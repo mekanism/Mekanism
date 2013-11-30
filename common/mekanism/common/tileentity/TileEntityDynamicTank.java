@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.SynchronizedTankData;
 import mekanism.common.TankUpdateProtocol;
@@ -58,7 +58,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	
 	public TileEntityDynamicTank()
 	{
-		this("Dynamic Tank");
+		this("DynamicTank");
 	}
 	
 	public TileEntityDynamicTank(String name)

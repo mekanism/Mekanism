@@ -2,7 +2,7 @@ package mekanism.common.transporter;
 
 import java.util.ArrayList;
 
-import mekanism.api.EnumColor;
+import mekanism.common.EnumColor;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

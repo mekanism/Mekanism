@@ -3,7 +3,6 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mekanism.api.IUpgradeManagement;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.block.BlockMachine.MachineType;
 import net.minecraft.block.Block;

@@ -3,11 +3,11 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SynchronizedTankData.ValveData;
+import mekanism.common.Object3D;
 import mekanism.common.TankUpdateProtocol;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import net.minecraft.block.Block;

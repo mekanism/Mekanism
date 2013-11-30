@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.Object3D;
 import mekanism.client.ClientProxy;
 import mekanism.common.ConnectedTextureRenderer;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TankUpdateProtocol;

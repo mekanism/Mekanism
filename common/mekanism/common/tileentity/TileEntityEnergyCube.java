@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 
-import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -46,7 +46,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 	 */
 	public TileEntityEnergyCube()
 	{
-		super("Energy Cube", 0);
+		super("EnergyCube", 0);
 		
 		inventory = new ItemStack[2];
 		controlType = RedstoneControl.DISABLED;
@@ -64,6 +64,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 		{
 			CableUtils.emit(this);
 		}
+	}
+	
+	@Override
+	public String getInvName()
+	{
+		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + fullName + ".name");
 	}
 	
 	@Override

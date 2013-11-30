@@ -13,9 +13,9 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

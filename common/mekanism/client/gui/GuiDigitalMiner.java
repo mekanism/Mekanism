@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
@@ -54,21 +54,21 @@ public class GuiDigitalMiner extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, "Start");
+		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, MekanismUtils.localize("gui.start"));
 		
 		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
 		
-		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, "Stop");
+		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, MekanismUtils.localize("gui.stop"));
 		
 		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
 		
-		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, "Config");
+		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, MekanismUtils.localize("gui.config"));
 		
 		if(tileEntity.searcher.state != State.IDLE)
 		{
@@ -141,17 +141,17 @@ public class GuiDigitalMiner extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.fullName, 69, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 69, 6, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         
-        fontRenderer.drawString(tileEntity.running ? "Running" : "Idle", 9, 10, 0x00CD00);
+        fontRenderer.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.digitalMiner.idle"), 9, 10, 0x00CD00);
         fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
         
-        fontRenderer.drawString("Eject: " + (tileEntity.doEject ? "On" : "Off"), 9, 30, 0x00CD00);
-        fontRenderer.drawString("Pull: " + (tileEntity.doPull ? "On" : "Off"), 9, 39, 0x00CD00);
-        fontRenderer.drawString("Silk: " + (tileEntity.silkTouch ? "On" : "Off"), 9, 48, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.eject") + ": " + (tileEntity.doEject ? "On" : "Off"), 9, 30, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.pull") + ": " + (tileEntity.doPull ? "On" : "Off"), 9, 39, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.silk") + ": " + (tileEntity.silkTouch ? "On" : "Off"), 9, 48, 0x00CD00);
         
-        fontRenderer.drawString("To mine:", 9, 59, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
         fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
         
     	if(tileEntity.replaceStack != null)
@@ -170,27 +170,27 @@ public class GuiDigitalMiner extends GuiMekanism
 		
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
 		{
-			drawCreativeTabHoveringText("Auto-eject", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText("Auto-pull", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 		{
-			drawCreativeTabHoveringText("Replace block", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.replaceBlock"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
 		{
-			drawCreativeTabHoveringText("Reset", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText("Silk touch", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
 		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.common;
 
 /**
  * Implement this if your block or item can store Mekanism-based upgrades.

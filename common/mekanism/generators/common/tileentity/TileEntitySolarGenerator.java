@@ -3,7 +3,7 @@ package mekanism.generators.common.tileentity;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.Object3D;
+import mekanism.common.Object3D;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -29,7 +29,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	
 	public TileEntitySolarGenerator()
 	{
-		super("Solar Generator", 96000, MekanismGenerators.solarGeneration*2);
+		super("SolarGenerator", 96000, MekanismGenerators.solarGeneration*2);
 		GENERATION_RATE = MekanismGenerators.solarGeneration;
 		inventory = new ItemStack[1];
 	}

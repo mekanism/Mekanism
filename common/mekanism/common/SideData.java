@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.common;
 
 public class SideData 
 {

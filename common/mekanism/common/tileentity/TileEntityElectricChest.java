@@ -26,7 +26,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	
 	public TileEntityElectricChest()
 	{
-		super("Electric Chest", 12000);
+		super("ElectricChest", 12000);
 		inventory = new ItemStack[55];
 	}
 	

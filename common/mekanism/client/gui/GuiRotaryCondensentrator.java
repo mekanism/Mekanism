@@ -2,9 +2,9 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
@@ -43,8 +43,8 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString("Rotary Condensentrator", 26, 4, 0x404040);
-        fontRenderer.drawString(tileEntity.mode == 0 ? "Condensentrating" : "Decondensentrating", 6, (ySize - 94) + 2, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 26, 4, 0x404040);
+        fontRenderer.drawString(tileEntity.mode == 0 ? MekanismUtils.localize("gui.condensentrating") : MekanismUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
 		{

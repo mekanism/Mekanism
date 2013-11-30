@@ -6,13 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Object3D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.TileComponentUpgrade;
@@ -91,7 +91,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public TileEntityDigitalMiner()
 	{
-		super("Digital Miner", MachineType.DIGITAL_MINER.baseEnergy);
+		super("DigitalMiner", MachineType.DIGITAL_MINER.baseEnergy);
 		inventory = new ItemStack[29];
 		radius = 10;
 	}

@@ -3,6 +3,7 @@ package mekanism.common;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
@@ -29,12 +30,12 @@ public interface IFactory
 	
 	public static enum RecipeType
 	{
-		SMELTING("Smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false),
-		ENRICHING("Enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false),
-		CRUSHING("Crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false),
-		COMPRESSING("Compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true),
-		COMBINING("Combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true),
-		PURIFYING("Purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true);
+		SMELTING("smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false),
+		ENRICHING("enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false),
+		CRUSHING("crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false),
+		COMPRESSING("compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true),
+		COMBINING("combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true),
+		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true);
 		
 		private String name;
 		private String sound;
@@ -132,7 +133,7 @@ public interface IFactory
 		
 		public String getName()
 		{
-			return name;
+			return MekanismUtils.localize("gui.factory." + name);
 		}
 		
 		public String getSound()

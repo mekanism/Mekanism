@@ -32,10 +32,10 @@ public class GuiGasTank extends GuiMekanism
 			
 		String capacityInfo = (tileEntity.getGas() != null ? tileEntity.getGas().amount : 0) + "/" + tileEntity.MAX_GAS;
 		
-		fontRenderer.drawString("Gas Tank", 43, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
 		fontRenderer.drawString("Gas: " + (tileEntity.getGas() != null ? tileEntity.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
-		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

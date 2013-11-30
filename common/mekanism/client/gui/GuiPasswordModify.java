@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.common.EnumColor;
 import mekanism.common.IElectricChest;
+import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketElectricChest;
@@ -37,7 +37,7 @@ public class GuiPasswordModify extends GuiScreen
 	
 	public GuiTextField confirmPasswordField;
 	
-	public String displayText = EnumColor.BRIGHT_GREEN + "Set password";
+	public String displayText = EnumColor.BRIGHT_GREEN + MekanismUtils.localize("gui.password.setPassword");
 	
 	public int ticker = 0;
 	
@@ -62,7 +62,7 @@ public class GuiPasswordModify extends GuiScreen
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, "Confirm"));
+		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, MekanismUtils.localize("gui.confirm")));
 		
 		newPasswordField = new GuiTextField(fontRenderer, guiWidth + 60, guiHeight + 34, 80, 12);
 		newPasswordField.setMaxStringLength(12);
@@ -130,7 +130,7 @@ public class GuiPasswordModify extends GuiScreen
 			ticker--;
 		}
 		else {
-			displayText = EnumColor.BRIGHT_GREEN + "Set password";
+			displayText = EnumColor.BRIGHT_GREEN + MekanismUtils.localize("gui.password.setPassword");
 		}
 	}
 	
@@ -147,17 +147,17 @@ public class GuiPasswordModify extends GuiScreen
 	{
 		if(newPasswordField.getText() == null || newPasswordField.getText().equals("") || confirmPasswordField.getText() == null || confirmPasswordField.getText().equals(""))
 		{
-			displayText = EnumColor.DARK_RED + "Field(s) empty";
+			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.fieldsEmpty");
 			ticker = 30;
 		}
 		else if(!newPasswordField.getText().equals(confirmPasswordField.getText()))
 		{
-			displayText = EnumColor.DARK_RED + "Not matching";
+			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.notMatching");
 			ticker = 30;
 		}
 		else if(confirmPasswordField.getText().equals(getPassword()))
 		{
-			displayText = EnumColor.DARK_RED + "Identical";
+			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.identical");
 			ticker = 30;
 		}
 		else {
@@ -198,7 +198,7 @@ public class GuiPasswordModify extends GuiScreen
         
         super.drawScreen(mouseX, mouseY, partialTick);
         
-        fontRenderer.drawString("Password", guiWidth + 64, guiHeight + 5, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
         fontRenderer.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
         fontRenderer.drawString("Enter:", guiWidth + 27, guiHeight + 37, 0x404040);
         fontRenderer.drawString("Repeat:", guiWidth + 21, guiHeight + 54, 0x404040);
