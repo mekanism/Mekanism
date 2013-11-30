@@ -24,7 +24,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 	
 	public GuiMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
     {
-        super(new ContainerMetallurgicInfuser(inventory, tentity));
+        super(tentity, new ContainerMetallurgicInfuser(inventory, tentity));
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));

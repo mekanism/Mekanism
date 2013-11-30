@@ -18,7 +18,7 @@ public class GuiElectricMachine extends GuiMekanism
 
     public GuiElectricMachine(InventoryPlayer inventory, TileEntityElectricMachine tentity)
     {
-        super(new ContainerElectricMachine(inventory, tentity));
+        super(tentity, new ContainerElectricMachine(inventory, tentity));
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));

@@ -1,23 +1,24 @@
 package mekanism.generators.common;
 
+import java.util.ArrayList;
+
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismRecipe;
-import mekanism.common.item.ItemMekanism;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
+import mekanism.common.item.ItemMekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
-import mekanism.generators.common.tileentity.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLeaves;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -27,11 +28,11 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "5.6.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -101,6 +102,23 @@ public class MekanismGenerators implements IModule
 		Mekanism.logger.info("[MekanismGenerators] Loaded module.");
 	}
 	
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		try {
+			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
+			{
+				ArrayList<ItemStack> list = new ArrayList();
+				ore.getItem().getSubItems(ore.itemID, CreativeTabs.tabDecorations, list);
+				
+				for(ItemStack sapling : list)
+				{
+					RecipeHandler.addCrusherRecipe(MekanismUtils.size(sapling, 1), new ItemStack(BioFuel, 2));
+				}
+			}
+		} catch(Exception e) {}
+	}
+	
 	public void addRecipes()
 	{
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 0), new Object[] {
@@ -132,7 +150,6 @@ public class MekanismGenerators implements IModule
 		}));
 		
 		//BioFuel Crusher Recipes
-        RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling), new ItemStack(BioFuel, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.tallGrass), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.reed), new ItemStack(BioFuel, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.seeds), new ItemStack(BioFuel, 2));
@@ -143,11 +160,6 @@ public class MekanismGenerators implements IModule
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.carrot), new ItemStack(BioFuel, 4));
-        
-        for(int i = 0; i < BlockLeaves.LEAF_TYPES.length; i++)
-        {
-        	RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling, 1, i), new ItemStack(BioFuel, 2));
-        }
         
         InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
 	}

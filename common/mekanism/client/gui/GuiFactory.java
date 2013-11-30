@@ -19,7 +19,7 @@ public class GuiFactory extends GuiMekanism
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
-        super(new ContainerFactory(inventory, tentity));
+        super(tentity, new ContainerFactory(inventory, tentity));
         tileEntity = tentity;
         
         ySize += 11;

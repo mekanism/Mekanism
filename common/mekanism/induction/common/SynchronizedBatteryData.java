@@ -114,7 +114,7 @@ public class SynchronizedBatteryData
 	public static SynchronizedBatteryData getBase(TileEntityBattery tileEntity)
 	{
 		SynchronizedBatteryData structure = new SynchronizedBatteryData();
-		structure.locations.add(Object3D.get(tileEntity));
+		structure.locations.add(new Object3D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord));
 
 		return structure;
 	}
