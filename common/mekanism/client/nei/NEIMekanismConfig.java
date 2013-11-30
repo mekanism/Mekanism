@@ -36,11 +36,11 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new MekanismRecipeHandler());
 		API.registerUsageHandler(new MekanismRecipeHandler());
 		
-		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 5);
-		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 5);
-		API.setGuiOffset(GuiCrusher.class, 16, 5);
-		API.setGuiOffset(GuiCombiner.class, 16, 5);
-		API.setGuiOffset(GuiPurificationChamber.class, 16, 5);
+		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
+		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
+		API.setGuiOffset(GuiCrusher.class, 16, 6);
+		API.setGuiOffset(GuiCombiner.class, 16, 6);
+		API.setGuiOffset(GuiPurificationChamber.class, 16, 6);
 		API.setGuiOffset(GuiMetallurgicInfuser.class, 5, 15);
 		
 		API.hideItem(Mekanism.boundingBlockID);

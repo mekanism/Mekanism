@@ -512,9 +512,6 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 		return returnBool;
 	}
 	
-	/**
-	 * Reads a tile entity from NBT.
-	 */
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -530,9 +527,6 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 		}
 	}
 	
-	/**
-	 * Writes a tile entity to NBT.
-	 */
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
