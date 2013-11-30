@@ -526,11 +526,21 @@ public final class MekanismUtils
     	}
     	else if(blockFacing == 4)
     	{
-    		return getRight(side).ordinal();
+    		if(side == 2 || side == 3)
+    		{
+    			return getRight(side).ordinal();
+    		}
+    		
+    		return getLeft(side).ordinal();
     	}
     	else if(blockFacing == 5)
     	{
-    		return getLeft(side).ordinal();
+    		if(side == 2 || side == 3)
+    		{
+    			return getLeft(side).ordinal();
+    		}
+    		
+    		return getRight(side).ordinal();
     	}
     	
     	return side;
