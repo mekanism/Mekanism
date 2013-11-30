@@ -29,7 +29,7 @@ item.WalkieTalkie.name=Walkie-Talkie
 tile.BasicBlock.OsmiumBlock.name=Osmiumblock
 tile.BasicBlock.BronzeBlock.name=Bronzeblock
 tile.BasicBlock.RefinedObsidian.name=Raffiniertes Obsidian
-tile.BasicBlock.CoalBlock.name=Kohleblock
+tile.BasicBlock.CharcoalBlock.name=Holzkohleblock
 tile.BasicBlock.RefinedGlowstone.name=Raffiniertes Glowstone
 tile.BasicBlock.SteelBlock.name=Stahlblock
 tile.BasicBlock.Bin.name=Silo
@@ -56,6 +56,9 @@ tile.MachineBlock.ElectricChest.name=Elektrische Truhe
 tile.MachineBlock.Chargepad.name=Ladepad
 tile.MachineBlock.LogisticalSorter.name=Logistischer Sortierer
 tile.MachineBlock.DigitalMiner.name=Digitalbergbaugerät
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Rotationskondensentrator
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -109,6 +112,146 @@ item.osmiumIngot.name=Osmiumbarren
 item.bronzeIngot.name=Bronzebarren
 item.glowstoneIngot.name=Glowstonebarren
 item.steelIngot.name=Stahlbarren
+
+//Gasses
+gas.hydrogen=Wasserstoff
+gas.oxygen=Sauerstoff
+
+//Fluids
+fluid.hydrogen=Flüssiger Wasserstoff
+fluid.oxygen=Flüssiger Sauerstoff
+
+//Gui text
+gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
+gui.removeEnergyUpgrade=Entferne Energieupgrade
+gui.condensentrating=Kondensentrieren
+gui.decondensentrating=Dekondensentrieren
+gui.power=Energie
+gui.confirm=Bestätigen
+gui.open=Öffnen
+gui.allOK=Alles OK
+gui.none=Nichts
+gui.new=Neu
+gui.edit=Ändern
+gui.save=Speichern
+gui.output=Output
+gui.delete=Löschen
+gui.status=Status
+gui.autoEject=Auto-Auswerfen
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.out=Out
+gui.noFluid=Keine Flüssigk.
+gui.empty=Leer
+gui.volume=Volumen
+gui.start=Start
+gui.stop=Stopp
+gui.config=Konfigurieren
+gui.teleport=Teleport
+gui.eject=Auswerfen
+gui.input=Input
+gui.slots=Slots
+
+gui.configuration=Konfiguration
+gui.configuration.strictInput=Strikter Input
+
+gui.factory.secondaryEnergy=Sekundärenergie
+gui.factory.smelting=Schmelzen
+gui.factory.enriching=Anreichern
+gui.factory.crushing=Zerstoßen
+gui.factory.compressing=Komprimieren
+gui.factory.combining=Kombinieren
+gui.factory.purifying=Purifizieren
+
+gui.oredictFilter=OreDict-Filter
+gui.oredictFilter.noKey=Kein Kennwort eingegeben
+gui.oredictFilter.sameKey=Selbes Kennwort
+
+gui.itemFilter=Item-Filter
+gui.itemFilter.details=ItemStack-Details
+gui.itemFilter.min=Min
+gui.itemFilter.max=Max
+
+gui.portableTeleporter=Tragbarer Teleporter
+
+gui.teleporter.notReady=Nicht bereit
+gui.teleporter.ready=Bereit
+gui.teleporter.needsEnergy=Benötigt Energie
+gui.teleporter.linksCapacity=Links > 2
+gui.teleporter.noLink=Keinen Link gefunden
+
+gui.robit=Robit
+gui.robit.smelting=Robit-Schmelzen
+gui.robit.inventory=Robit-Inventar
+gui.robit.crafting=Robit-Werkbank
+gui.robit.greeting=Hallo, Ich bin
+gui.robit.toggleFollow=Schalte 'Folgen'-Modus
+gui.robit.rename=Benenne diesen Robit um
+gui.robit.teleport=Teleport zurück nach Hause
+gui.robit.togglePickup=Schalte 'Drop-Aufsammel'-Modus
+
+gui.password.setPassword=Passwort einstellen
+gui.password.enterPassword=Gib Passwort ein
+gui.password.fieldsEmpty=Feld(er) leer
+gui.password.notMatching=Passt nicht
+gui.password.identical=Identisch
+gui.password.invalid=Ungültig
+gui.password=Passwort
+
+gui.logisticalSorter.filters=Filter
+gui.logisticalSorter.default=Standard
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round-Robin
+
+gui.electricChest.editPassword=Passwort ändern
+
+gui.digitalMinerConfig=Digitalbergbaukonfig
+
+gui.digitalMiner.autoPull=Auto-Anziehen
+gui.digitalMiner.replaceBlock=Ersetze Block
+gui.digitalMiner.reset=Reset
+gui.digitalMiner.silkTouch=Behutsamkeit
+gui.digitalMiner.pull=Anziehen
+gui.digitalMiner.silk=Behutsam
+gui.digitalMiner.toMine=Zum Abbauen
+gui.digitalMiner.running=Arbeitend
+gui.digitalMiner.idle=Bereit
+
+//Item and block tooltip text
+tooltip.configurator.modify=Verändern
+tooltip.configurator.empty=Leeren
+tooltip.configurator.wrench=Schraubenschlüssel
+tooltip.configurator.pumpReset=Kalkulation der Elektrischen Pumpe neu stellen
+tooltip.configurator.toggleDiverter=Divertermodus geändert zu
+tooltip.configurator.toggleColor=Farbe geändert zu
+tooltip.configurator.viewColor=Aktuelle Farbe
+tooltip.configurator.unauth=Diese Truhe ist verschlossen
+
+//Redstone control
+control.disabled=Deaktiviert
+control.high=High
+control.low=Low
+control.disabled.desc=Immer aktiv
+control.high.desc=Aktiv mit Signal
+control.low.desc=Aktiv ohne Signal
+
+//Colors
+color.black=Schwarz
+color.darkBlue=Dunkelblau
+color.darkGreen=Dunkelgrün
+color.darkAqua=Dunkelcyan
+color.darkRed=Dunkelrot
+color.purple=Violett
+color.orange=Orange
+color.grey=Grau
+color.darkGrey=Dunkelgrau
+color.indigo=Indigo
+color.brightGreen=Hellgrün
+color.aqua=Cyan
+color.red=Rot
+color.pink=Pink
+color.yellow=Gelb
+color.white=Weiß
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
@@ -226,3 +369,12 @@ tile.Battery.name=Modulare Batterie
 
 //Items
 item.Linker.name=Elektrostatischer Linker
+
+//Gui text
+gui.heatGenerator.fuel=Brennstoff
+
+gui.solarGenerator.sun=Sonne
+
+gui.bioGenerator.biofuel=Biobrennstoff
+
+gui.electrolyticSeparator.dump=Entsorge
