@@ -173,7 +173,7 @@ public class TankUpdateProtocol
 		
 		volume += locations.size();
 		
-		if(volume > 0 && volume <= 5832 && locations.size() >= 9)
+		if(volume >= 27 && volume <= 5832 && locations.size() >= 26)
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
