@@ -153,11 +153,11 @@ public class GuiConfiguration extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
         
         fontRenderer.drawString(MekanismUtils.localize("gui.configuration"), 60, 5, 0x404040);
-        fontRenderer.drawString("Eject: " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
         
-        fontRenderer.drawString("Input (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);
-        fontRenderer.drawString("Output", 72, 68, 0x787878);
-        fontRenderer.drawString("Slots", 122, 81, 0x787878);
+        fontRenderer.drawString(MekanismUtils.localize("gui.input") + " (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);
+        fontRenderer.drawString(MekanismUtils.localize("gui.output"), 72, 68, 0x787878);
+        fontRenderer.drawString(MekanismUtils.localize("gui.slots"), 122, 81, 0x787878);
         
         if(configurable.getEjector().getOutputColor() != null)
   		{
@@ -182,7 +182,7 @@ public class GuiConfiguration extends GuiMekanism
         	
         	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
         	{
-        		drawCreativeTabHoveringText(data.color != null ? data.color.getName() : "None", xAxis, yAxis);
+        		drawCreativeTabHoveringText(data.color != null ? data.color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
         	}
         }
         
@@ -195,7 +195,7 @@ public class GuiConfiguration extends GuiMekanism
         	
         	if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
         	{
-        		drawCreativeTabHoveringText(color != null ? color.getName() : "None", xAxis, yAxis);
+        		drawCreativeTabHoveringText(color != null ? color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
         	}
         }
         
@@ -206,18 +206,18 @@ public class GuiConfiguration extends GuiMekanism
 				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText("None", xAxis, yAxis);
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
         
         if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
         {
-        	drawCreativeTabHoveringText("Auto-eject", xAxis, yAxis);
+        	drawCreativeTabHoveringText(MekanismUtils.localize("gui.autoEject"), xAxis, yAxis);
         }
         
         if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
         {
-        	drawCreativeTabHoveringText("Strict Input", xAxis, yAxis);
+        	drawCreativeTabHoveringText(MekanismUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
         }
         
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

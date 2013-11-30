@@ -122,7 +122,6 @@ fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
 
 //Gui text
-gui.configuration=Configuration
 gui.removeSpeedUpgrade=Remove speed upgrade
 gui.removeEnergyUpgrade=Remove energy upgrade
 gui.condensentrating=Condensentrating
@@ -149,6 +148,12 @@ gui.start=Start
 gui.stop=Stop
 gui.config=Config
 gui.teleport=Teleport
+gui.eject=Eject
+gui.input=Input
+gui.slots=Slots
+
+gui.configuration=Configuration
+gui.configuration.strictInput=Strict Input
 
 gui.factory.secondaryEnergy=Secondary energy
 gui.factory.smelting=Smelting
@@ -206,17 +211,29 @@ gui.digitalMiner.autoPull=Auto-pull
 gui.digitalMiner.replaceBlock=Replace block
 gui.digitalMiner.reset=Reset
 gui.digitalMiner.silkTouch=Silk touch
-gui.digitalMiner.eject=Eject
 gui.digitalMiner.pull=Pull
 gui.digitalMiner.silk=Silk
 gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
 gui.digitalMiner.idle=Idle
 
+//Item and block tooltip text
+tooltip.configurator.modify=Modify
+tooltip.configurator.empty=Empty
+tooltip.configurator.wrench=Wrench
+tooltip.configurator.pumpReset=Reset Electric Pump calculation
+tooltip.configurator.toggleDiverter=Diverter mode changed to
+tooltip.configurator.toggleColor=Color bumped to
+tooltip.configurator.viewColor=Current color
+tooltip.configurator.unauth=This chest is locked
+
 //Redstone control
 control.disabled=Disabled
 control.high=High
 control.low=Low
+control.disabled.desc=Always active
+control.high.desc=Active with signal
+control.low.desc=Active without signal
 
 //Colors
 color.black=Black

@@ -68,7 +68,7 @@ public class ItemConfigurator extends ItemEnergized
 	    			tileEntity.recurringNodes.clear();
 	    			tileEntity.cleaningNodes.clear();
 	    			
-	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation."));
+	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
 	    			return true;
 	    		}
 	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
@@ -84,17 +84,17 @@ public class ItemConfigurator extends ItemEnergized
 						switch(newMode)
 						{
 							case 0:
-								description = "Always active";
+								description = MekanismUtils.localize("control.disabled.desc");
 								break;
 							case 1:
-								description = "Active with signal";
+								description = MekanismUtils.localize("control.high.desc");
 								break;
 							case 2:
-								description = "Active without signal";
+								description = MekanismUtils.localize("control.low.desc");
 								break;
 						}
 						
-						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Diverter mode changed to: " + EnumColor.RED + description));
+						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
 						return true;
 					} 
@@ -102,7 +102,7 @@ public class ItemConfigurator extends ItemEnergized
 						TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
 						TransporterUtils.incrementColor(transporter);
 						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
-						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + "None")));
+						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 						return true;
 					}
 	    		}
@@ -127,7 +127,7 @@ public class ItemConfigurator extends ItemEnergized
 	    			
 	    			if(!player.isSneaking())
 	    			{
-	        			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Current color: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+	        			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 	        			return true;
 	    			}
 	    			else {
@@ -135,7 +135,7 @@ public class ItemConfigurator extends ItemEnergized
 	    				{
 	    					setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 		    				MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-		    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+		    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 		    				
 		    				if(config instanceof TileEntityBasicBlock)
 		    				{
@@ -205,7 +205,7 @@ public class ItemConfigurator extends ItemEnergized
 	    				return true;
     				}
     				else {
-    					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "You are not authenticated on this chest.");
+    					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.unauth"));
 	    				return true;
     				}
     			}
@@ -246,11 +246,11 @@ public class ItemConfigurator extends ItemEnergized
     	switch(state)
     	{
     		case 0:
-    			return "modify";
+    			return MekanismUtils.localize("tooltip.configurator.modify");
     		case 1:
-    			return "empty";
+    			return MekanismUtils.localize("tooltip.configurator.empty");
     		case 2:
-    			return "wrench";
+    			return MekanismUtils.localize("tooltip.configurator.wrench");
     	}
     	
     	return "unknown";
