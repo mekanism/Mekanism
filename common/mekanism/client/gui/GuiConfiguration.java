@@ -5,7 +5,7 @@ import java.util.Map;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.EnumColor;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
@@ -32,9 +32,9 @@ public class GuiConfiguration extends GuiMekanism
 	
 	public Map<Integer, GuiPos> inputPosMap = new HashMap<Integer, GuiPos>();
     
-    public IConfigurable configurable;
+    public IInvConfiguration configurable;
     
-    public GuiConfiguration(EntityPlayer player, IConfigurable tile)
+    public GuiConfiguration(EntityPlayer player, IInvConfiguration tile)
     {
     	super(new ContainerNull(player, (TileEntityContainerBlock)tile));
     	

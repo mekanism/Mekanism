@@ -1206,11 +1206,13 @@ public class Mekanism
 	}
 	
 	@ForgeSubscribe
-	public void onChunkLoad(ChunkEvent.Load event)
+	public synchronized void onChunkLoad(ChunkEvent.Load event)
 	{
 		 if(event.getChunk() != null && !event.world.isRemote)
          {
-             for(Iterator iter = event.getChunk().chunkTileEntityMap.values().iterator(); iter.hasNext();)
+			 Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
+			 
+             for(Iterator iter = copy.values().iterator(); iter.hasNext();)
              {
             	 Object obj = iter.next();
             	 

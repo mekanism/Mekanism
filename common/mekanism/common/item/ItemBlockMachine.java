@@ -17,7 +17,7 @@ import mekanism.common.IFactory;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.EnumColor;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
@@ -209,9 +209,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     			((IUpgradeManagement)tileEntity).setSpeedMultiplier(getSpeedMultiplier(stack));
     		}
     		
-    		if(tileEntity instanceof IConfigurable)
+    		if(tileEntity instanceof IInvConfiguration)
     		{
-    			IConfigurable config = (IConfigurable)tileEntity;
+    			IInvConfiguration config = (IInvConfiguration)tileEntity;
     			
     			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasSideData"))
     			{

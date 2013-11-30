@@ -13,6 +13,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.PipeUtils;
 import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketTileEntity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -272,5 +274,15 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	public String getTransmitterNetworkFlow()
 	{
 		return getTransmitterNetwork().getFlow();
+	}
+	
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		isActive = !isActive;
+		getTransmitterNetwork().refresh();
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+		
+		return true;
 	}
 }

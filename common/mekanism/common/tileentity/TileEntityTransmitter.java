@@ -2,18 +2,21 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class TileEntityTransmitter<N> extends TileEntity implements ITransmitter<N>, ITileNetwork
+public abstract class TileEntityTransmitter<N> extends TileEntity implements ITransmitter<N>, ITileNetwork, IConfigurable
 {
 	public N theNetwork;
 	
@@ -94,5 +97,18 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 	public ArrayList getNetworkedData(ArrayList data) 
 	{
 		return data;
+	}
+	
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		fixTransmitterNetwork();
+		return true;
 	}
 }

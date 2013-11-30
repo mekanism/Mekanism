@@ -30,18 +30,21 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     {
         super.readFromNBT(nbtTags);
         
-        NBTTagList tagList = nbtTags.getTagList("Items");
-        inventory = new ItemStack[getSizeInventory()];
-
-        for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+        if(handleInventory())
         {
-            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
-            byte slotID = tagCompound.getByte("Slot");
-
-            if(slotID >= 0 && slotID < getSizeInventory())
-            {
-                setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
-            }
+	        NBTTagList tagList = nbtTags.getTagList("Items");
+	        inventory = new ItemStack[getSizeInventory()];
+	
+	        for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+	        {
+	            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
+	            byte slotID = tagCompound.getByte("Slot");
+	
+	            if(slotID >= 0 && slotID < getSizeInventory())
+	            {
+	                setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
+	            }
+	        }
         }
     }
 
@@ -50,20 +53,23 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     {
         super.writeToNBT(nbtTags);
         
-        NBTTagList tagList = new NBTTagList();
-
-        for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
+        if(handleInventory())
         {
-            if(getStackInSlot(slotCount) != null)
-            {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte("Slot", (byte)slotCount);
-                getStackInSlot(slotCount).writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
-            }
+	        NBTTagList tagList = new NBTTagList();
+	
+	        for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
+	        {
+	            if(getStackInSlot(slotCount) != null)
+	            {
+	                NBTTagCompound tagCompound = new NBTTagCompound();
+	                tagCompound.setByte("Slot", (byte)slotCount);
+	                getStackInSlot(slotCount).writeToNBT(tagCompound);
+	                tagList.appendTag(tagCompound);
+	            }
+	        }
+	
+	        nbtTags.setTag("Items", tagList);
         }
-
-        nbtTags.setTag("Items", tagList);
     }
 
 	@Override
@@ -189,7 +195,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public void setInventory(NBTTagList nbtTags, Object... data) 
 	{
-		if(nbtTags == null || nbtTags.tagCount() == 0)
+		if(nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory())
 		{
 			return;
 		}
@@ -213,17 +219,25 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
         NBTTagList tagList = new NBTTagList();
 
-        for(int slots = 0; slots < inventory.length; slots++)
+        if(handleInventory())
         {
-            if(inventory[slots] != null)
-            {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte("Slot", (byte)slots);
-                inventory[slots].writeToNBT(tagCompound);
-                tagList.appendTag(tagCompound);
-            }
+	        for(int slots = 0; slots < inventory.length; slots++)
+	        {
+	            if(inventory[slots] != null)
+	            {
+	                NBTTagCompound tagCompound = new NBTTagCompound();
+	                tagCompound.setByte("Slot", (byte)slots);
+	                inventory[slots].writeToNBT(tagCompound);
+	                tagList.appendTag(tagCompound);
+	            }
+	        }
         }
 
         return tagList;
+	}
+	
+	public boolean handleInventory()
+	{
+		return true;
 	}
 }

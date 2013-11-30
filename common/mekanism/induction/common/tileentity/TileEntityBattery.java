@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.item.IItemElectric;
 
@@ -77,7 +78,9 @@ public class TileEntityBattery extends TileEntityElectricBlock
 						structure.inventory.add(structure.visibleInventory[0]);
 						structure.visibleInventory[0] = null;
 						structure.sortInventory();
+						
 						updateAllClients();
+						MekanismUtils.saveChunk(this);
 					}
 				}
 			}
@@ -133,6 +136,12 @@ public class TileEntityBattery extends TileEntityElectricBlock
 			CableUtils.emit(this);
 		}
 	}
+	
+	@Override
+	public double getMaxOutput()
+	{
+		return structure.getVolume()*1000;
+	}
 
 	public void updateClient()
 	{
@@ -153,21 +162,22 @@ public class TileEntityBattery extends TileEntityElectricBlock
 	{
 		super.readFromNBT(nbtTags);
 
-		// Main inventory
-		if(nbtTags.hasKey("Items"))
+		//Main inventory
+		if(nbtTags.hasKey("CellItems"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("Items");
+			System.out.println("yay");
+			NBTTagList tagList = nbtTags.getTagList("CellItems");
 			structure.inventory = new ArrayList<ItemStack>();
 
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
-				NBTTagCompound tagCompound = (NBTTagCompound) tagList.tagAt(tagCount);
+				NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
 				int slotID = tagCompound.getInteger("Slot");
 				structure.inventory.add(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
 			}
 		}
 
-		// Visible inventory
+		//Visible inventory
 		if(nbtTags.hasKey("VisibleItems"))
 		{
 			NBTTagList tagList = nbtTags.getTagList("VisibleItems");
@@ -175,7 +185,7 @@ public class TileEntityBattery extends TileEntityElectricBlock
 
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
-				NBTTagCompound tagCompound = (NBTTagCompound) tagList.tagAt(tagCount);
+				NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
 				byte slotID = tagCompound.getByte("Slot");
 
 				if(slotID >= 0 && slotID < structure.visibleInventory.length)
@@ -206,10 +216,10 @@ public class TileEntityBattery extends TileEntityElectricBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.writeToNBT(nbt);
-
+		super.writeToNBT(nbtTags);
+		
 		if(!structure.wroteInventory)
 		{
 			//Inventory
@@ -228,7 +238,7 @@ public class TileEntityBattery extends TileEntityElectricBlock
 					}
 				}
 
-				nbt.setTag("Items", tagList);
+				nbtTags.setTag("CellItems", tagList);
 			}
 
 			//Visible inventory
@@ -252,7 +262,7 @@ public class TileEntityBattery extends TileEntityElectricBlock
 					}
 				}
 
-				nbt.setTag("VisibleItems", tagList);
+				nbtTags.setTag("VisibleItems", tagList);
 			}
 
 			structure.wroteInventory = true;
@@ -275,7 +285,7 @@ public class TileEntityBattery extends TileEntityElectricBlock
 				}
 			}
 
-			nbt.setTag("inputSides", tagList);
+			nbtTags.setTag("inputSides", tagList);
 		}
 	}
 
@@ -476,6 +486,8 @@ public class TileEntityBattery extends TileEntityElectricBlock
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
+		MekanismUtils.saveChunk(this);
+		
 		if(getStackInSlot(slotID) != null)
 		{
 			ItemStack tempStack;
@@ -511,6 +523,8 @@ public class TileEntityBattery extends TileEntityElectricBlock
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
+		MekanismUtils.saveChunk(this);
+		
 		if(i == 0)
 		{
 			structure.visibleInventory[0] = itemstack;
@@ -548,13 +562,17 @@ public class TileEntityBattery extends TileEntityElectricBlock
 	@Override
 	public EnumSet<ForgeDirection> getConsumingSides()
 	{
-		return inputSides;
+		EnumSet set = inputSides.clone();
+		set.remove(ForgeDirection.UNKNOWN);
+		return set;
 	}
 
 	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return EnumSet.complementOf(inputSides);
+		EnumSet set = EnumSet.complementOf(inputSides);
+		set.remove(ForgeDirection.UNKNOWN);
+		return set;
 	}
 
 	/**
@@ -571,5 +589,11 @@ public class TileEntityBattery extends TileEntityElectricBlock
 			inputSides.add(orientation);
 			return true;
 		}
+	}
+	
+	@Override
+	public boolean handleInventory()
+	{
+		return false;
 	}
 }

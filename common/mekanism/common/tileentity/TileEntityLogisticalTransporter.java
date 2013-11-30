@@ -6,6 +6,7 @@ import java.util.Set;
 
 import mekanism.common.EnumColor;
 import mekanism.common.HashList;
+import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
@@ -18,12 +19,14 @@ import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,7 +39,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, IPipeTile
+public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, IPipeTile, IConfigurable
 {
 	public static final int SPEED = 5;
 	
@@ -531,5 +534,21 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	public boolean isPipeConnected(ForgeDirection with) 
 	{
 		return true;
+	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		TransporterUtils.incrementColor(this);
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
+		
+		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		return false;
 	}
 }

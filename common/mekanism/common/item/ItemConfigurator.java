@@ -4,25 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.EnumColor;
 import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityBasicBlock;
-import mekanism.common.tileentity.TileEntityBin;
-import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityElectricPump;
-import mekanism.common.tileentity.TileEntityDiversionTransporter;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -34,6 +28,8 @@ public class ItemConfigurator extends ItemEnergized
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
+	
+	private Random random = new Random();
 	
     public ItemConfigurator(int id)
     {
@@ -52,78 +48,26 @@ public class ItemConfigurator extends ItemEnergized
     {
     	if(!world.isRemote)
     	{
-    		if(player.isSneaking())
+    		TileEntity tile = world.getBlockTileEntity(x, y, z);
+    		
+    		if(tile instanceof IConfigurable)
     		{
-	    		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityMechanicalPipe)
-	    		{
-	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
-	    			tileEntity.isActive = !tileEntity.isActive;
-	    			tileEntity.getTransmitterNetwork().refresh();
-	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
-	    			return true;
-	    		}
-	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityElectricPump)
-	    		{
-	    			TileEntityElectricPump tileEntity = (TileEntityElectricPump)world.getBlockTileEntity(x, y, z);
-	    			tileEntity.recurringNodes.clear();
-	    			tileEntity.cleaningNodes.clear();
-	    			
-	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
-	    			return true;
-	    		}
-	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
-	    		{
-					if(world.getBlockTileEntity(x, y, z) instanceof TileEntityDiversionTransporter)
-					{
-						TileEntityDiversionTransporter transporter = (TileEntityDiversionTransporter)world.getBlockTileEntity(x, y, z);
-						int newMode = (transporter.modes[side] + 1) % 3;
-						String description = "ERROR";
-						
-						transporter.modes[side] = newMode;
-						
-						switch(newMode)
-						{
-							case 0:
-								description = MekanismUtils.localize("control.disabled.desc");
-								break;
-							case 1:
-								description = MekanismUtils.localize("control.high.desc");
-								break;
-							case 2:
-								description = MekanismUtils.localize("control.low.desc");
-								break;
-						}
-						
-						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
-						return true;
-					} 
-					else {
-						TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
-						TransporterUtils.incrementColor(transporter);
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(transporter), transporter.getNetworkedData(new ArrayList())), Object3D.get(transporter), 50D);
-						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (transporter.color != null ? transporter.color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
-						return true;
-					}
-	    		}
-	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityBin)
-	    		{
-	    			TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
-	    			bin.setActive(!bin.getActive());
-	    			world.playSoundEffect(x, y, z, "random.click", 0.3F, 1);
-	    			return true;
-	    		}
-    		}
-    		else if(world.getBlockTileEntity(x, y, z) instanceof ITransmitter)
-    		{
-    			((ITransmitter)world.getBlockTileEntity(x, y, z)).fixTransmitterNetwork();
+    			IConfigurable config = (IConfigurable)tile;
+    			
+    			if(player.isSneaking())
+    			{
+    				config.onSneakRightClick(player, side);
+    			}
+    			else {
+    				config.onRightClick(player, side);
+    			}
     		}
     		
     		if(getState(stack) == 0)
     		{
-	    		if(world.getBlockTileEntity(x, y, z) instanceof IConfigurable)
+	    		if(tile instanceof IInvConfiguration)
 	    		{
-	    			IConfigurable config = (IConfigurable)world.getBlockTileEntity(x, y, z);
+	    			IInvConfiguration config = (IInvConfiguration)tile;
 	    			
 	    			if(!player.isSneaking())
 	    			{
@@ -150,17 +94,16 @@ public class ItemConfigurator extends ItemEnergized
     		}
     		else if(getState(stack) == 1)
     		{
-    			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityContainerBlock)
+    			if(tile instanceof IInventory)
     			{
     				int itemAmount = 0;
-    				Random random = new Random();
-    				TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
+    				IInventory inv = (IInventory)tile;
     				
-    				if(!(tileEntity instanceof TileEntityElectricChest) || (((TileEntityElectricChest)tileEntity).canAccess()))
+    				if(!(inv instanceof TileEntityElectricChest) || (((TileEntityElectricChest)inv).canAccess()))
     				{
-	    				for(int i = 0; i < tileEntity.getSizeInventory(); i++)
+	    				for(int i = 0; i < inv.getSizeInventory(); i++)
 	    	            {
-	    	                ItemStack slotStack = tileEntity.getStackInSlot(i);
+	    	                ItemStack slotStack = inv.getStackInSlot(i);
 	
 	    	                if(slotStack != null)
 	    	                {
@@ -196,7 +139,7 @@ public class ItemConfigurator extends ItemEnergized
 	    	                        item.motionZ = random.nextGaussian() * k;
 	    	                        world.spawnEntityInWorld(item);
 	    	                        
-	    	                        tileEntity.inventory[i] = null;
+	    	                        inv.setInventorySlotContents(i, null);
 	    	                        setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
 	    	                    }
 	    	                }
@@ -212,11 +155,9 @@ public class ItemConfigurator extends ItemEnergized
     		}
     		else if(getState(stack) == 2)
     		{
-    			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    			
-    			if(tileEntity instanceof TileEntityBasicBlock)
+    			if(tile instanceof TileEntityBasicBlock)
     			{
-    				TileEntityBasicBlock basicBlock = (TileEntityBasicBlock)tileEntity;
+    				TileEntityBasicBlock basicBlock = (TileEntityBasicBlock)tile;
     				int newSide = basicBlock.facing;
     				
     				if(!player.isSneaking())

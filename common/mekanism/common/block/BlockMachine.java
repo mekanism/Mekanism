@@ -11,7 +11,7 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
@@ -790,9 +790,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
     	}
     	
-    	if(tileEntity instanceof IConfigurable)
+    	if(tileEntity instanceof IInvConfiguration)
     	{
-    		IConfigurable config = (IConfigurable)tileEntity;
+    		IInvConfiguration config = (IInvConfiguration)tileEntity;
     		
     		if(itemStack.stackTagCompound == null)
     		{

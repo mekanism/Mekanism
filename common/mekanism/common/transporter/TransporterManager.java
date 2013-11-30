@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.common.EnumColor;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.transporter.TransporterStack.Path;
@@ -88,9 +88,9 @@ public class TransporterManager
 	{
 		ItemStack toInsert = stack.itemStack.copy();
 		
-    	if(stack.pathType != Path.HOME && inv instanceof IConfigurable)
+    	if(stack.pathType != Path.HOME && inv instanceof IInvConfiguration)
     	{
-    		IConfigurable config = (IConfigurable)inv;
+    		IInvConfiguration config = (IInvConfiguration)inv;
     		int tileSide = config.getOrientation();
     		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
     		
@@ -234,9 +234,9 @@ public class TransporterManager
     		return itemStack;
     	}
     	
-    	if(tileEntity instanceof IConfigurable)
+    	if(tileEntity instanceof IInvConfiguration)
     	{
-    		IConfigurable config = (IConfigurable)tileEntity;
+    		IInvConfiguration config = (IInvConfiguration)tileEntity;
     		int tileSide = config.getOrientation();
     		EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
     		

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IEjector;
 import mekanism.common.IElectricMachine;
 import mekanism.common.IRedstoneControl;
@@ -26,7 +26,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IRedstoneControl
+public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;

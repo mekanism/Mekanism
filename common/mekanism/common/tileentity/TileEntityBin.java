@@ -3,6 +3,7 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 
 import mekanism.common.IActiveState;
+import mekanism.common.IConfigurable;
 import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -23,7 +24,7 @@ import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable
 {
 	public boolean isActive;
 	
@@ -489,5 +490,19 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public int getMaxStoredCount()
 	{
 		return MAX_STORAGE;
+	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		setActive(!getActive());
+		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		return false;
 	}
 }

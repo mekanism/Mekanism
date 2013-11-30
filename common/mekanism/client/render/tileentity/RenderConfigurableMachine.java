@@ -6,7 +6,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.EnumColor;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.Object3D;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
@@ -39,10 +39,10 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((IConfigurable)tileEntity, x, y, z, partialTick);
+		renderAModelAt((IInvConfiguration)tileEntity, x, y, z, partialTick);
 	}
 
-	public void renderAModelAt(IConfigurable configurable, double x, double y, double z, float partialTick)
+	public void renderAModelAt(IInvConfiguration configurable, double x, double y, double z, float partialTick)
 	{
 		TileEntity tileEntity = (TileEntity)configurable; 
 		EntityPlayer player = mc.thePlayer;

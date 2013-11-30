@@ -84,7 +84,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		
 		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
 		
-		IConfigurable configurable = (IConfigurable)tileEntity;
+		IInvConfiguration configurable = (IInvConfiguration)tileEntity;
 		
 		for(int i = 0; i < configurable.getConfiguration().length; i++)
 		{

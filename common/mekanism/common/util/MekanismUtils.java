@@ -15,7 +15,7 @@ import java.util.Map;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.EnumColor;
 import mekanism.common.IActiveState;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IFactory;
 import mekanism.common.Object3D;
 import mekanism.common.IFactory.RecipeType;
@@ -551,7 +551,7 @@ public final class MekanismUtils
      * @param config - configurable machine
      * @param side - side to increment output of
      */
-    public static void incrementOutput(IConfigurable config, int side)
+    public static void incrementOutput(IInvConfiguration config, int side)
     {
     	int max = config.getSideData().size()-1;
     	int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
@@ -571,7 +571,7 @@ public final class MekanismUtils
      * @param config - configurable machine
      * @param side - side to increment output of
      */
-    public static void decrementOutput(IConfigurable config, int side)
+    public static void decrementOutput(IInvConfiguration config, int side)
     {
     	int max = config.getSideData().size()-1;
     	int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));

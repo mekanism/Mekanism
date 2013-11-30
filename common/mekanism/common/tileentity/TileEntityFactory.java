@@ -14,7 +14,7 @@ import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.EnumColor;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IEjector;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
@@ -40,7 +40,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IRedstoneControl, IGasAcceptor, IGasStorage, ITubeConnection
+public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl, IGasAcceptor, IGasStorage, ITubeConnection
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;

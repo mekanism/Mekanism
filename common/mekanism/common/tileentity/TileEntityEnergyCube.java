@@ -98,6 +98,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 	{
 		EnumSet set = EnumSet.allOf(ForgeDirection.class);
 		set.remove(getOutputtingSides());
+		set.remove(ForgeDirection.UNKNOWN);
 		
 		return set;
 	}

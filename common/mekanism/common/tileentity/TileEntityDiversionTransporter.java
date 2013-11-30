@@ -2,12 +2,18 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
+import mekanism.common.EnumColor;
+import mekanism.common.Object3D;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterStack;
-import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatMessageComponent;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter
 {
@@ -70,5 +76,32 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 		data.add(modes[5]);
 		
 		return data;
+	}
+	
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		int newMode = (modes[side] + 1) % 3;
+		String description = "ERROR";
+		
+		modes[side] = newMode;
+		
+		switch(newMode)
+		{
+			case 0:
+				description = MekanismUtils.localize("control.disabled.desc");
+				break;
+			case 1:
+				description = MekanismUtils.localize("control.high.desc");
+				break;
+			case 2:
+				description = MekanismUtils.localize("control.low.desc");
+				break;
+		}
+		
+		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		
+		return true;
 	}
 }

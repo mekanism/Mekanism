@@ -60,7 +60,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -308,7 +308,7 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
-				return new GuiConfiguration(player, (IConfigurable)tileEntity);
+				return new GuiConfiguration(player, (IInvConfiguration)tileEntity);
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

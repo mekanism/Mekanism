@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
@@ -72,9 +72,9 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 		
 		TileEntity tile = object3D.getTileEntity(world);
 		
-		if(tile instanceof IConfigurable)
+		if(tile instanceof IInvConfiguration)
 		{
-			IConfigurable config = (IConfigurable)tile;
+			IInvConfiguration config = (IInvConfiguration)tile;
 			
 			if(packetType == ConfigurationPacket.EJECT)
 			{
@@ -87,15 +87,15 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 				
 				if(clickType == 0)
 				{
-					MekanismUtils.incrementOutput((IConfigurable)tile, configIndex);
+					MekanismUtils.incrementOutput((IInvConfiguration)tile, configIndex);
 				}
 				else if(clickType == 1)
 				{
-					MekanismUtils.decrementOutput((IConfigurable)tile, configIndex);
+					MekanismUtils.decrementOutput((IInvConfiguration)tile, configIndex);
 				}
 				else if(clickType == 2)
 				{
-					((IConfigurable)tile).getConfiguration()[configIndex] = 0;
+					((IInvConfiguration)tile).getConfiguration()[configIndex] = 0;
 				}
 				
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);

@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.SideData;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tileentity.TileEntityContainerBlock;
@@ -75,7 +75,7 @@ public abstract class GuiMekanism extends GuiContainer
 	{
 		if(slot.slotNumber < tileEntity.getSizeInventory())
 		{
-			IConfigurable config = (IConfigurable)tileEntity;
+			IInvConfiguration config = (IInvConfiguration)tileEntity;
 			
 			for(SideData data : config.getSideData())
 			{
