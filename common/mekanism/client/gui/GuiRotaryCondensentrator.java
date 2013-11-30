@@ -48,12 +48,12 @@ public class GuiRotaryCondensentrator extends GuiMekanism
         
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.gasTank != null ? tileEntity.gasTank.getGas().getLocalizedName() + ": " + tileEntity.gasTank.amount : "Empty", xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.gasTank != null ? tileEntity.gasTank.getGas().getLocalizedName() + ": " + tileEntity.gasTank.amount : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluid().amount + "mB" : "Empty", xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluid().amount + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
@@ -63,7 +63,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		
 		if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
 		{
-			drawCreativeTabHoveringText("Toggle operation", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.rotaryCondensentrator.toggleOperation"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

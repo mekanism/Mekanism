@@ -13,7 +13,6 @@ item.AtomicDisassembler.name=Atomic Disassembler
 item.AtomicCore.name=Atomic Core
 item.ElectricBow.name=Electric Bow
 item.BoundingBlock.name=Bounding Block
-tile.GasTank.name=Gas Tank
 item.StorageTank.name=Storage Tank
 item.ControlCircuit.name=Control Circuit
 item.EnrichedIron.name=Enriched Iron
@@ -24,6 +23,9 @@ item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.ManganeseAlloy.name=Manganese Alloy
 item.WalkieTalkie.name=Walkie-Talkie
+
+//Gas Tank
+tile.GasTank.GasTank.name=Gas Tank
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Block
@@ -154,6 +156,8 @@ gui.slots=Slots
 
 gui.configuration=Configuration
 gui.configuration.strictInput=Strict Input
+
+gui.rotaryCondensentrator.toggleOperation=Toggle operation
 
 gui.factory.secondaryEnergy=Secondary energy
 gui.factory.smelting=Smelting

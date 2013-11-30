@@ -56,6 +56,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 	
 	@Override
+	public String getUnlocalizedName(ItemStack itemstack)
+	{
+		return getUnlocalizedName() + "." + "GasTank";
+	}
+	
+	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
     	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);

@@ -69,7 +69,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 	@Override
 	public String getInvName()
 	{
-		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + fullName + ".name");
+		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + ".name");
 	}
 	
 	@Override

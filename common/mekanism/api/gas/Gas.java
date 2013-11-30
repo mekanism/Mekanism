@@ -67,7 +67,7 @@ public class Gas
 	
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("id", getID());
+		nbtTags.setString("gasName", getName());
 		
 		return nbtTags;
 	}
@@ -79,7 +79,7 @@ public class Gas
 			return null;
 		}
 		
-		return GasRegistry.getGas(nbtTags.getInteger("id"));
+		return GasRegistry.getGas(nbtTags.getString("gasName"));
 	}
 	
 	public boolean hasFluid()

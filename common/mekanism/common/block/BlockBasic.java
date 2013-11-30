@@ -250,12 +250,15 @@ public class BlockBasic extends Block
 	@Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
     {
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-		
     	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(metadata != 6)
+    	{
+			if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+			{
+				return false;
+			}
+    	}
     	
     	if(metadata == 2)
     	{
