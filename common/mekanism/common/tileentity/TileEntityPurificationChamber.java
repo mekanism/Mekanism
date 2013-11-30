@@ -5,7 +5,7 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasUtils;
+import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
@@ -101,7 +101,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY)
 		{
-			GasStack removed = GasUtils.removeGas(inventory[1], GasRegistry.getGas("oxygen"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
+			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("oxygen"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
 			setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
 		}
 		

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasUtils;
+import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
@@ -47,7 +47,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			
 			if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 			{
-				GasStack removed = GasUtils.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), getMaxGas()-hydrogenStored);
+				GasStack removed = GasTransmission.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), getMaxGas()-hydrogenStored);
 				setGas(new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored + (removed != null ? removed.amount : 0)));
 			}
 			

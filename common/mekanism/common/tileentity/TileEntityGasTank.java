@@ -6,7 +6,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
@@ -46,17 +45,17 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	{
 		if(inventory[0] != null && getGas() != null)
 		{
-			setGas(new GasStack(getGas().getGas(), getGas().amount - GasUtils.addGas(inventory[0], getGas())));
+			setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.addGas(inventory[0], getGas())));
 		}
 		
 		if(inventory[1] != null && (getGas() == null || getGas().amount < getMaxGas()))
 		{
 			if(getGas() == null)
 			{
-				setGas(GasUtils.removeGas(inventory[1], null, getMaxGas()));
+				setGas(GasTransmission.removeGas(inventory[1], null, getMaxGas()));
 			}
 			else {
-				GasStack removed = GasUtils.removeGas(inventory[1], getGas().getGas(), getMaxGas()-getGas().amount);
+				GasStack removed = GasTransmission.removeGas(inventory[1], getGas().getGas(), getMaxGas()-getGas().amount);
 				setGas(new GasStack(getGas().getGas(), getGas().amount + (removed != null ? removed.amount : 0)));
 			}
 		}

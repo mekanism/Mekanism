@@ -7,7 +7,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.GasUtils;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -111,13 +110,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && hydrogenStored > 0)
 				{
-					hydrogenStored -= GasUtils.addGas(inventory[1], new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored));
+					hydrogenStored -= GasTransmission.addGas(inventory[1], new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored));
 					MekanismUtils.saveChunk(this);
 				}
 				
 				if(inventory[2] != null && oxygenStored > 0)
 				{
-					hydrogenStored -= GasUtils.addGas(inventory[2], new GasStack(GasRegistry.getGas("oxygen"), oxygenStored));
+					hydrogenStored -= GasTransmission.addGas(inventory[2], new GasStack(GasRegistry.getGas("oxygen"), oxygenStored));
 					MekanismUtils.saveChunk(this);
 				}
 			}

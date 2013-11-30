@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasUtils;
+import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
@@ -260,7 +260,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			{
 				if(inventory[4].getItem() instanceof IGasItem)
 				{
-					GasStack removed = GasUtils.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
+					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
 					setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
 					
 					return;

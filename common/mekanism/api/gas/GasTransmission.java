@@ -6,6 +6,7 @@ import java.util.Set;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Object3D;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -101,4 +102,31 @@ public final class GasTransmission
     	
     	return 0;
     }
+
+	public static GasStack removeGas(ItemStack itemStack, Gas type, int amount)
+	{
+		if(itemStack != null && itemStack.getItem() instanceof IGasItem)
+		{
+			IGasItem item = (IGasItem)itemStack.getItem();
+			
+			if(type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type))
+			{
+				return null;
+			}
+			
+			return item.removeGas(itemStack, amount);
+		}
+		
+		return null;
+	}
+
+	public static int addGas(ItemStack itemStack, GasStack stack)
+	{
+		if(itemStack != null && itemStack.getItem() instanceof IGasItem && ((IGasItem)itemStack.getItem()).canReceiveGas(itemStack, stack.getGas()))
+		{
+			return ((IGasItem)itemStack.getItem()).addGas(itemStack, stack.copy());
+		}
+		
+		return 0;
+	}
 }
