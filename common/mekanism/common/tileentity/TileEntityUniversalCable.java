@@ -5,9 +5,7 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -15,16 +13,13 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Object3D;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.block.IConductor;
+import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerEmitter;
@@ -33,7 +28,7 @@ import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IConductor, IEnergyHandler
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IEnergyHandler, IElectrical
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -45,7 +40,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	
 	public TileEntityUniversalCable()
 	{
-		ueNetwork = new FakeUENetwork();
 		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
 		powerHandler.configurePowerPerdition(0, 0);
 		powerHandler.configure(0, 0, 0, 0);
@@ -302,42 +296,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	}
 
 	@Override
-	public IElectricityNetwork getNetwork()
-	{
-		return ueNetwork;
-	}
-
-	@Override
-	public void setNetwork(IElectricityNetwork network) {}
-
-	@Override
-	public TileEntity[] getAdjacentConnections()
-	{
-		return new TileEntity[6];
-	}
-
-	@Override
-	public void refresh() {}
-
-	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		return true;
-	}
-
-	@Override
-	public float getResistance()
-	{
-		return 0;
-	}
-
-	@Override
-	public float getCurrentCapacity()
-	{
-		return Integer.MAX_VALUE;
-	}
-
-	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) 
 	{
 		ArrayList list = new ArrayList();
@@ -377,60 +335,49 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_TE);
 	}
 	
-	public class FakeUENetwork implements IElectricityNetwork
+	@Override
+	public boolean canConnect(ForgeDirection direction)
 	{
-		@Override
-		public void split(IConductor connection) {}
+		return true;
+	}
+
+	@Override
+	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
 		
-		@Override
-		public void refresh() {}
-		
-		@Override
-		public void merge(IElectricityNetwork network) {}
-		
-		@Override
-		public ArrayList<ForgeDirection> getPossibleDirections(TileEntity tile)
+		if(doReceive && receive != null && receive.getWatts() > 0)
 		{
-			return new ArrayList<ForgeDirection>();
+			return receive.getWatts() - (float)(getTransmitterNetwork().emit(receive.getWatts()*Mekanism.FROM_UE, list));
 		}
 		
-		@Override
-		public Set<IConductor> getConductors()
-		{
-			return new HashSet<IConductor>();
-		}
-		
-		@Override
-		public Set<TileEntity> getAcceptors()
-		{
-			return getTransmitterNetwork().getAcceptors();
-		}
-		
-		@Override
-		public float produce(ElectricityPack electricityPack, TileEntity... ignoreTiles)
-		{
-			ArrayList<TileEntity> ignore = new ArrayList<TileEntity>();
-			ignore.addAll(Arrays.asList(ignoreTiles));
-			double energy = electricityPack.getWatts() * Mekanism.FROM_UE;
-			return (float)getTransmitterNetwork().emit(energy, ignore);
-		}
-		
-		@Override
-		public float getTotalResistance()
-		{
-			return 0;
-		}
-		
-		@Override
-		public ElectricityPack getRequest(TileEntity... ignoreTiles)
-		{
-			return ElectricityPack.getFromWatts((float)getTransmitterNetwork().getEnergyNeeded(new ArrayList<TileEntity>()), 0.12F);
-		}
-		
-		@Override
-		public float getLowestCurrentCapacity()
-		{
-			return Integer.MAX_VALUE;
-		}
+		return 0;
+	}
+
+	@Override
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide)
+	{
+		return null;
+	}
+
+	@Override
+	public float getRequest(ForgeDirection direction)
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj));
+		return (float)(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_UE);
+	}
+
+	@Override
+	public float getProvide(ForgeDirection direction)
+	{
+		return 0;
+	}
+
+	@Override
+	public float getVoltage()
+	{
+		return 120;
 	}
 }
