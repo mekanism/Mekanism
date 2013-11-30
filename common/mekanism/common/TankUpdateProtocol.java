@@ -405,14 +405,19 @@ public class TankUpdateProtocol
 			structureFound.fluidStored = cache.fluid;
 			structureFound.inventory = cache.inventory;
 			
+			if(structureFound.fluidStored != null)
+			{
+				structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
+			}
+			
 			for(Object3D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.worldObj);
 				
 				tileEntity.inventoryID = idFound;
 				tileEntity.structure = structureFound;
-				tileEntity.cachedFluid = cache.fluid;
-				tileEntity.inventory = cache.inventory;
+				tileEntity.cachedFluid = structureFound.fluidStored;
+				tileEntity.inventory = structureFound.inventory;
 			}
 		}
 		else {
