@@ -290,12 +290,12 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		{
 			for(InvID invID2 : invStacks)
 			{
-				if(invID1.ID == invID2.ID || invID1.id() != invID2.id() || Math.abs(invID1.size()-invID2.size()) < 2) continue;
+				if(invID1.ID == invID2.ID || StackUtils.diffIgnoreNull(invID1.stack, invID2.stack) || Math.abs(invID1.size()-invID2.size()) < 2) continue;
 				
 				List<ItemStack> evened = StackUtils.even(inventory[invID1.ID], inventory[invID2.ID]);
 				inventory[invID1.ID] = evened.get(0);
 				inventory[invID2.ID] = evened.get(1);
-				System.out.println("op");
+				
 				didOp = true;
 				break;
 			}
@@ -346,12 +346,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			}
 			
 			return 0;
-		}
-		
-		@Override
-		public String toString()
-		{
-			return size() + " " + id() + " " + ID;
 		}
 		
 		public static InvID get(int id, ItemStack[] inv)

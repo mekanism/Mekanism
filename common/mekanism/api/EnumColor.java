@@ -1,6 +1,6 @@
 package mekanism.api;
 
-import mekanism.common.util.MekanismUtils;
+import net.minecraft.util.StatCollector;
 
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
@@ -43,7 +43,7 @@ public enum EnumColor
 	
 	public String getLocalizedName()
 	{
-		return MekanismUtils.localize("color." + unlocalizedName);
+		return StatCollector.translateToLocal("color." + unlocalizedName);
 	}
 	
 	public String getName()

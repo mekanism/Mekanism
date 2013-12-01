@@ -31,6 +31,16 @@ public final class StackUtils
 		return ret;
 	}
 	
+	public static boolean diffIgnoreNull(ItemStack stack1, ItemStack stack2)
+	{
+		if(stack1 == null || stack2 == null)
+		{
+			return false;
+		}
+		
+		return stack1.itemID != stack2.itemID;
+	}
+	
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)
 	{
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
