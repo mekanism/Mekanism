@@ -11,7 +11,8 @@ package buildcraft.api.core;
 
 import net.minecraft.world.World;
 
-public interface IBox {
+public interface IBox
+{
 
 	public void expand(int amount);
 
