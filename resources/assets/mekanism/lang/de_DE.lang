@@ -13,7 +13,6 @@ item.AtomicDisassembler.name=Atomar-Disassembler
 item.AtomicCore.name=Atomar-Kern
 item.ElectricBow.name=Elektrischer Bogen
 item.BoundingBlock.name=Begrenzungsblock
-tile.GasTank.name=Gastank
 item.StorageTank.name=Speichertank
 item.ControlCircuit.name=Kontrollschaltkreis
 item.EnrichedIron.name=Angereichertes Eisen
@@ -24,6 +23,9 @@ item.Configurator.name=Konfigurator
 item.NetworkReader.name=Netzwerklesegerät
 item.ManganeseAlloy.name=Manganlegierung
 item.WalkieTalkie.name=Walkie-Talkie
+
+//Gas Tank
+tile.GasTank.GasTank.name=Gastank
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmiumblock
@@ -155,6 +157,8 @@ gui.slots=Slots
 gui.configuration=Konfiguration
 gui.configuration.strictInput=Strikter Input
 
+gui.rotaryCondensentrator.toggleOperation=Schalte Betrieb
+
 gui.factory.secondaryEnergy=Sekundärenergie
 gui.factory.smelting=Schmelzen
 gui.factory.enriching=Anreichern
@@ -164,7 +168,7 @@ gui.factory.combining=Kombinieren
 gui.factory.purifying=Purifizieren
 
 gui.oredictFilter=OreDict-Filter
-gui.oredictFilter.noKey=Kein Kennwort eingegeben
+gui.oredictFilter.noKey=Keine Kennung eingegeben
 gui.oredictFilter.sameKey=Selbes Kennwort
 
 gui.itemFilter=Item-Filter
@@ -190,7 +194,7 @@ gui.robit.rename=Benenne diesen Robit um
 gui.robit.teleport=Teleport zurück nach Hause
 gui.robit.togglePickup=Schalte 'Drop-Aufsammel'-Modus
 
-gui.password.setPassword=Passwort einstellen
+gui.password.setPassword=Passwort setzen
 gui.password.enterPassword=Gib Passwort ein
 gui.password.fieldsEmpty=Feld(er) leer
 gui.password.notMatching=Passt nicht
@@ -205,7 +209,7 @@ gui.logisticalSorter.roundRobin=Round-Robin
 
 gui.electricChest.editPassword=Passwort ändern
 
-gui.digitalMinerConfig=Digitalbergbaukonfig
+gui.digitalMinerConfig=Konfiguration
 
 gui.digitalMiner.autoPull=Auto-Anziehen
 gui.digitalMiner.replaceBlock=Ersetze Block
