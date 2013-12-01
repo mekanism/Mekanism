@@ -166,6 +166,7 @@ gui.factory.crushing=Zerstoßen
 gui.factory.compressing=Komprimieren
 gui.factory.combining=Kombinieren
 gui.factory.purifying=Purifizieren
+gui.factory.autoSort=Auto-Sortieren
 
 gui.oredictFilter=OreDict-Filter
 gui.oredictFilter.noKey=Keine Kennung eingegeben
