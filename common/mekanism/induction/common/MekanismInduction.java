@@ -150,7 +150,7 @@ public class MekanismInduction implements IModule
 		{
 			try
 			{
-				itemPartWire = (Item) Class.forName("mekanism.induction.common.wire.ItemPartWire").getConstructor(Integer.TYPE).newInstance(getNextItemID());
+				itemPartWire = (Item) Class.forName("mekanism.induction.common.wire.ItemPartWire").getDeclaredConstructor(Integer.TYPE).newInstance(getNextItemID());
 				Mekanism.logger.fine("Mekanism Induction multipart loaded.");
 			}
 			catch (Exception e)
