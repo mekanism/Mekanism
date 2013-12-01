@@ -104,6 +104,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import thermalexpansion.api.crafting.CraftingManagers;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -1070,6 +1071,7 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		logger.setParent(FMLLog.getLogger());
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration
