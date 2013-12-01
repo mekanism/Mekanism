@@ -149,12 +149,6 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 								
 								transferTeslaCoils.add(tesla);
 							}
-							else {
-								System.out.println("Connected already");
-							}
-						}
-						else {
-							System.out.println("outta range");
 						}
 					}
 					
@@ -186,7 +180,6 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 					
 					if(transferTeslaCoils.size() > 0)
 					{
-						System.out.println("yes");
 						double transferEnergy = getEnergy() / transferTeslaCoils.size();
 						int count = 0;
 						boolean sentPacket = false;
