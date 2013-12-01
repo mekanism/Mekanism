@@ -158,6 +158,10 @@ public class MekanismInduction implements IModule
 				Mekanism.logger.severe("Failed to load multipart wire.");
 			}
 		}
+		else
+		{
+			Mekanism.logger.fine("Mekanism Induction Multipart disabled due to Forge Multipart not found.");
+		}
 
 		// Blocks
 		Tesla = new BlockTesla(Mekanism.configuration.getBlock("Tesla", getNextBlockID()).getInt()).setUnlocalizedName("Tesla");
