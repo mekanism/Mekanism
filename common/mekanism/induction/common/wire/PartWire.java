@@ -103,7 +103,7 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 	}
 
 	@Override
-	public boolean connectionPrevented(TileEntity tile, ForgeDirection side)
+	public boolean isConnectionPrevented(TileEntity tile, ForgeDirection side)
 	{
 		if (tile instanceof IWireMaterial)
 		{

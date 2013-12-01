@@ -75,7 +75,7 @@ public abstract class PartConductor extends PartAdvanced implements IConductor
 
 	public boolean canConnectBothSides(TileEntity tile, ForgeDirection side)
 	{
-		boolean notPrevented = !connectionPrevented(tile, side);
+		boolean notPrevented = !this.isConnectionPrevented(tile, side);
 
 		if (tile instanceof IConnector)
 		{
@@ -97,7 +97,7 @@ public abstract class PartConductor extends PartAdvanced implements IConductor
 	 * @param side The side we're checking
 	 * @return Whether we're preventing connections on given side or to given tileEntity
 	 */
-	public boolean connectionPrevented(TileEntity tile, ForgeDirection side)
+	public boolean isConnectionPrevented(TileEntity tile, ForgeDirection side)
 	{
 		return false;
 	}
@@ -217,7 +217,7 @@ public abstract class PartConductor extends PartAdvanced implements IConductor
 	{
 		Vector3 connectPos = new Vector3(tile()).modifyPositionFromSide(direction);
 		TileEntity connectTile = connectPos.getTileEntity(this.world());
-		return !connectionPrevented(connectTile, direction);
+		return !isConnectionPrevented(connectTile, direction);
 	}
 
 	@Override

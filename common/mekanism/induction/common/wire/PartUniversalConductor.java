@@ -56,6 +56,17 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	}
 
 	@Override
+	public boolean isConnectionPrevented(TileEntity tile, ForgeDirection side)
+	{
+		if (tile instanceof IEnergyHandler)
+		{
+			return !((IEnergyHandler) tile).canInterface(side);
+		}
+		
+		return super.isConnectionPrevented(tile, side);
+	}
+
+	@Override
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
@@ -208,7 +219,6 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	/**
 	 * Thermal Expansion Functions
 	 */
-
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
