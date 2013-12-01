@@ -156,6 +156,7 @@ public class MekanismInduction implements IModule
 			catch (Exception e)
 			{
 				Mekanism.logger.severe("Failed to load multipart wire.");
+				e.printStackTrace();
 			}
 		}
 		else
