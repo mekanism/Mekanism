@@ -51,7 +51,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0", dependencies = "required-after:Mekanism;after:MekanismGenerators")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
@@ -132,6 +132,10 @@ public class MekanismInduction implements IModule
 		LO_FI_INSULATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Use lo-fi insulation texture", LO_FI_INSULATION).getBoolean(LO_FI_INSULATION);
 		SHINY_SILVER = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Shiny silver wires", SHINY_SILVER).getBoolean(SHINY_SILVER);
 		MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MAX_CONTRACTOR_DISTANCE).getInt(MAX_CONTRACTOR_DISTANCE);
+
+		// Enable advanced vanilla furnace with Mekanism Generators is NOT installed.
+		ENABLE_ADVANCED_FURNACE = Loader.isModLoaded("MekanismGenerators");
+
 		ENABLE_ADVANCED_FURNACE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Enable Vanilla Electric Furnace", ENABLE_ADVANCED_FURNACE).getBoolean(ENABLE_ADVANCED_FURNACE);
 
 		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
