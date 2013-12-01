@@ -1088,9 +1088,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		
 		Mekanism.proxy.preInit();
-		
-		registerOreDict();
-		
+				
 		MinecraftForge.EVENT_BUS.register(hooks);
 		
 		//Register infuses
@@ -1134,6 +1132,8 @@ public class Mekanism
 		addBlocks();
 		addRecipes();
 		addEntities();
+		
+		registerOreDict();
 		
 		//Packet registrations
 		PacketHandler.registerPacket(PacketRobit.class);
