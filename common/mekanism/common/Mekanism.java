@@ -616,6 +616,7 @@ public class Mekanism
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods. @Calclavia
 		OreDictionary.registerOre("universalCable", new ItemStack(Transmitter, 8, 1));
+		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		
 		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
 		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));
