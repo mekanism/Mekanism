@@ -165,7 +165,6 @@ public class TileEntityBattery extends TileEntityElectricBlock
 		//Main inventory
 		if(nbtTags.hasKey("CellItems"))
 		{
-			System.out.println("yay");
 			NBTTagList tagList = nbtTags.getTagList("CellItems");
 			structure.inventory = new ArrayList<ItemStack>();
 

@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketSimpleGui;
@@ -26,8 +25,6 @@ public class GuiConfigurationTab extends GuiElement
 		
 		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
 		
-		IRedstoneControl control = (IRedstoneControl)tileEntity;
-		
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
 			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
@@ -43,8 +40,6 @@ public class GuiConfigurationTab extends GuiElement
 	public void renderForeground(int xAxis, int yAxis)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
-		
-		IRedstoneControl control = (IRedstoneControl)tileEntity;
 		
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{

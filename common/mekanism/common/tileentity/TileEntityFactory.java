@@ -84,6 +84,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
 	
+	public boolean sorting;
+	
 	public int secondaryEnergyStored;
 	
 	/** This machine's current RedstoneControl type. */
@@ -152,7 +154,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			ChargeUtils.discharge(1, this);
 			
 			handleSecondaryFuel();
-			//sortInventory();
+			sortInventory();
 			
 			if(inventory[2] != null && inventory[3] == null)
 			{
@@ -248,63 +250,52 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	
 	public void sortInventory()
 	{
-		boolean didOp = false;
-		
-		int[] inputSlots = null;
-		
-		List<InvID> invStacks = new ArrayList<InvID>();
-		
-		List<Integer> nullSlots = new ArrayList<Integer>();
-		List<Integer> fullSlots = new ArrayList<Integer>();
-		
-		if(tier == FactoryTier.BASIC)
+		if(sorting)
 		{
-			inputSlots = new int[] {5, 6, 7};
-		}
-		else if(tier == FactoryTier.ADVANCED)
-		{
-			inputSlots = new int[] {5, 6, 7, 8, 9};
-		}
-		else if(tier == FactoryTier.ELITE)
-		{
-			inputSlots = new int[] {5, 6, 7, 8, 9, 10, 11};
-		}
-		
-		for(int id : inputSlots)
-		{
-			invStacks.add(InvID.get(id, inventory));
+			boolean didOp = false;
 			
-			if(inventory[id] == null)
+			int[] inputSlots = null;
+			
+			List<InvID> invStacks = new ArrayList<InvID>();
+			
+			if(tier == FactoryTier.BASIC)
 			{
-				nullSlots.add(id);
+				inputSlots = new int[] {5, 6, 7};
 			}
-			else if(inventory[id].stackSize > 1)
+			else if(tier == FactoryTier.ADVANCED)
 			{
-				fullSlots.add(id);
+				inputSlots = new int[] {5, 6, 7, 8, 9};
 			}
-		}
-		
-		Collections.sort(invStacks);
-		
-		for(InvID invID1 : invStacks)
-		{
-			for(InvID invID2 : invStacks)
+			else if(tier == FactoryTier.ELITE)
 			{
-				if(invID1.ID == invID2.ID || StackUtils.diffIgnoreNull(invID1.stack, invID2.stack) || Math.abs(invID1.size()-invID2.size()) < 2) continue;
-				
-				List<ItemStack> evened = StackUtils.even(inventory[invID1.ID], inventory[invID2.ID]);
-				inventory[invID1.ID] = evened.get(0);
-				inventory[invID2.ID] = evened.get(1);
-				
-				didOp = true;
-				break;
+				inputSlots = new int[] {5, 6, 7, 8, 9, 10, 11};
 			}
 			
-			if(didOp) break;
+			for(int id : inputSlots)
+			{
+				invStacks.add(InvID.get(id, inventory));
+			}
+			
+			for(InvID invID1 : invStacks)
+			{
+				for(InvID invID2 : invStacks)
+				{
+					if(invID1.ID == invID2.ID || StackUtils.diffIgnoreNull(invID1.stack, invID2.stack) || Math.abs(invID1.size()-invID2.size()) < 2) continue;
+					
+					List<ItemStack> evened = StackUtils.even(inventory[invID1.ID], inventory[invID2.ID]);
+					inventory[invID1.ID] = evened.get(0);
+					inventory[invID2.ID] = evened.get(1);
+					
+					didOp = true;
+					break;
+				}
+				
+				if(didOp) break;
+			}
 		}
 	}
 	
-	public static class InvID implements Comparable<InvID>
+	public static class InvID
 	{
 		public ItemStack stack;
 		public int ID;
@@ -323,29 +314,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		public int id()
 		{
 			return stack != null ? stack.itemID : 0;
-		}
-
-		@Override
-		public int compareTo(InvID arg0)
-		{
-			if(arg0.id() < id())
-			{
-				return 1;
-			}
-			else if(arg0.id() > id())
-			{
-				return -1;
-			}
-			else if(arg0.size() < size())
-			{
-				return 1;
-			}
-			else if(arg0.size() > size())
-			{
-				return -1;
-			}
-			
-			return 0;
 		}
 		
 		public static InvID get(int id, ItemStack[] inv)
@@ -572,6 +540,18 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				sorting = !sorting;
+			}
+			
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		clientActive = dataStream.readBoolean();
@@ -579,6 +559,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		secondaryEnergyStored = dataStream.readInt();
+		sorting = dataStream.readBoolean();
 		
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -608,6 +589,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         recipeTicks = nbtTags.getInteger("recipeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
+        sorting = nbtTags.getBoolean("sorting");
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -633,6 +615,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         nbtTags.setInteger("recipeTicks", recipeTicks);
         nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setInteger("secondaryEnergyStored", secondaryEnergyStored);
+        nbtTags.setBoolean("sorting", sorting);
         
         for(int i = 0; i < tier.processes; i++)
         {
@@ -657,6 +640,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		data.add(recipeTicks);
 		data.add(controlType.ordinal());
 		data.add(secondaryEnergyStored);
+		data.add(sorting);
 		data.add(progress);
 		data.add(sideConfig);
 		

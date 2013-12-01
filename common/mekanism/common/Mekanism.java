@@ -238,6 +238,7 @@ public class Mekanism
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;	
+	public static int VOICE_PORT = 36123;
 	public static double ENERGY_PER_REDSTONE = 10000;
 	
 	public static double TO_IC2;
