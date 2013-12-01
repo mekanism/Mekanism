@@ -20,8 +20,9 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+import cofh.api.energy.IEnergyHandler;
 
-public abstract class PartUniversalConductor extends PartConductor implements IEnergySink, IPowerReceptor
+public abstract class PartUniversalConductor extends PartConductor implements IEnergySink, IPowerReceptor, IEnergyHandler
 {
 
 	protected boolean isAddedToEnergyNet;
@@ -38,14 +39,19 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	@Override
 	public boolean isValidAcceptor(TileEntity tile)
 	{
-		if (Compatibility.isIndustrialCraft2Loaded() && tile instanceof IEnergyTile)
+		if (tile instanceof IEnergyTile)
 		{
 			return true;
 		}
-		else if (Compatibility.isBuildcraftLoaded() && tile instanceof IPowerReceptor)
+		else if (tile instanceof IPowerReceptor)
 		{
 			return true;
 		}
+		else if (tile instanceof IEnergyHandler)
+		{
+			return true;
+		}
+
 		return super.isValidAcceptor(tile);
 	}
 
@@ -197,5 +203,52 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	public World getWorld()
 	{
 		return world();
+	}
+
+	/**
+	 * Thermal Expansion Functions
+	 */
+
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	{
+		ElectricityPack pack = ElectricityPack.getFromWatts(maxReceive * Compatibility.TE_RATIO, 1);
+		float request = this.getMaxEnergyStored(from);
+
+		if (!simulate)
+		{
+			if (request > 0)
+			{
+				return (int) (maxReceive - (this.getNetwork().produce(pack, new Vector3(tile()).modifyPositionFromSide(from).getTileEntity(this.world())) * Compatibility.TO_TE_RATIO));
+			}
+
+			return 0;
+		}
+
+		return (int) Math.min(maxReceive, request * Compatibility.TO_TE_RATIO);
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canInterface(ForgeDirection from)
+	{
+		return true;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from)
+	{
+		return 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from)
+	{
+		return (int) (this.getNetwork().getRequest(new Vector3(tile()).modifyPositionFromSide(from).getTileEntity(this.world())).getWatts() * Compatibility.TO_TE_RATIO);
 	}
 }
