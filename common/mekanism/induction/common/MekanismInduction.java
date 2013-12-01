@@ -12,7 +12,6 @@ import mekanism.induction.common.block.BlockMultimeter;
 import mekanism.induction.common.block.BlockTesla;
 import mekanism.induction.common.item.ItemBlockContractor;
 import mekanism.induction.common.item.ItemBlockMultimeter;
-import mekanism.induction.common.item.ItemLinker;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
 import mekanism.induction.common.tileentity.TileEntityMultimeter;
@@ -20,12 +19,9 @@ import mekanism.induction.common.tileentity.TileEntityTesla;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import universalelectricity.compatibility.Compatibility;
 import universalelectricity.core.vector.Vector3;
-import calclavia.lib.UniversalRecipes;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -72,9 +68,6 @@ public class MekanismInduction implements IModule
 		return NEXT_ITEM_ID++;
 	}
 
-	//Items
-	public static Item Linker;
-
 	//Blocks
 	public static Block Tesla;
 	public static Block Multimeter;
@@ -91,9 +84,6 @@ public class MekanismInduction implements IModule
 		MinecraftForge.EVENT_BUS.register(new MultimeterEventHandler());
 		Mekanism.configuration.load();
 
-		//Items
-		Linker = new ItemLinker(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "Linker", getNextItemID()).getInt()).setUnlocalizedName("Linker");
-
 		//Blocks
 		Tesla = new BlockTesla(Mekanism.configuration.getBlock("Tesla", getNextBlockID()).getInt()).setUnlocalizedName("Tesla");
 		Multimeter = new BlockMultimeter(Mekanism.configuration.getBlock("Multimeter", getNextBlockID()).getInt()).setUnlocalizedName("Multimeter");
@@ -101,8 +91,6 @@ public class MekanismInduction implements IModule
 		Battery = new BlockBattery(Mekanism.configuration.getBlock("Battery", getNextBlockID()).getInt()).setUnlocalizedName("Battery");
 
 		Mekanism.configuration.save();
-
-		GameRegistry.registerItem(Linker, "Linker");
 
 		GameRegistry.registerBlock(Tesla, "Tesla");
 		GameRegistry.registerBlock(Multimeter, ItemBlockMultimeter.class, "Multimeter");
@@ -130,9 +118,6 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-		/** Linker **/
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Linker), new Object[] {" E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium"}));
-
 		/** Tesla - by Jyzarc */
 		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] {"WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8)}));
 

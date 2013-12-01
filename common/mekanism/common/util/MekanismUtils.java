@@ -1121,6 +1121,11 @@ public final class MekanismUtils
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
+    public static String getCoordDisplay(Object3D obj)
+    {
+    	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
+    }
+    
     public static enum ResourceType
     {
     	GUI("gui"),

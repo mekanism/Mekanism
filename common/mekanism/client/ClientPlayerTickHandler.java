@@ -52,9 +52,9 @@ public class ClientPlayerTickHandler implements ITickHandler
 		    		{
 		    			if(!lastTickUpdate)
 		    			{
-			    			item.setState(stack, (byte)(item.getState(stack) < 2 ? item.getState(stack)+1 : 0));
+			    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
 			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
-			    			entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getState(item.getState(stack))));
+			    			entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
 			    			lastTickUpdate = true;
 		    			}
 		    		}
