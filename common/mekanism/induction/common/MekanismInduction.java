@@ -15,6 +15,8 @@ import mekanism.induction.common.block.BlockEMContractor;
 import mekanism.induction.common.block.BlockMultimeter;
 import mekanism.induction.common.block.BlockTesla;
 import mekanism.induction.common.block.BlockWire;
+import mekanism.induction.common.furnace.BlockAdvancedFurnace;
+import mekanism.induction.common.furnace.TileEntityAdvancedFurnace;
 import mekanism.induction.common.item.ItemBlockContractor;
 import mekanism.induction.common.item.ItemBlockMultimeter;
 import mekanism.induction.common.item.ItemBlockWire;
@@ -63,7 +65,6 @@ public class MekanismInduction implements IModule
 	public static Version versionNumber = new Version(5, 6, 0);
 
 	/**
-	 * Directory Information
 	 */
 	public static final String DOMAIN = "mekanism";
 	public static final String PREFIX = DOMAIN + ":";
@@ -77,11 +78,11 @@ public class MekanismInduction implements IModule
 	/**
 	 * Settings
 	 */
-	public static float FURNACE_WATTAGE = 10;
+	public static float FURNACE_WATTAGE = 0.5f;
 	public static boolean SOUND_FXS = true;
 	public static boolean LO_FI_INSULATION = false;
 	public static boolean SHINY_SILVER = true;
-	public static boolean REPLACE_FURNACE = true;
+	public static boolean ENABLE_ADVANCED_FURNACE = false;
 
 	/** Block ID by Jyzarc */
 	private static final int BLOCK_ID_PREFIX = 3200;
@@ -126,12 +127,12 @@ public class MekanismInduction implements IModule
 		Mekanism.configuration.load();
 
 		// Config
-		FURNACE_WATTAGE = (float) Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Furnace Wattage", FURNACE_WATTAGE).getDouble(FURNACE_WATTAGE) / 20;
+		FURNACE_WATTAGE = (float) Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Furnace Wattage", FURNACE_WATTAGE).getDouble(FURNACE_WATTAGE);
 		SOUND_FXS = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Tesla Sound FXs", SOUND_FXS).getBoolean(SOUND_FXS);
 		LO_FI_INSULATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Use lo-fi insulation texture", LO_FI_INSULATION).getBoolean(LO_FI_INSULATION);
 		SHINY_SILVER = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Shiny silver wires", SHINY_SILVER).getBoolean(SHINY_SILVER);
 		MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MAX_CONTRACTOR_DISTANCE).getInt(MAX_CONTRACTOR_DISTANCE);
-		REPLACE_FURNACE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Replace vanilla furnace", REPLACE_FURNACE).getBoolean(REPLACE_FURNACE);
+		ENABLE_ADVANCED_FURNACE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Enable Vanilla Electric Furnace", ENABLE_ADVANCED_FURNACE).getBoolean(ENABLE_ADVANCED_FURNACE);
 
 		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
 		TileEntityEMContractor.MAX_REACH = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Max Item Reach", TileEntityEMContractor.MAX_REACH).getInt(TileEntityEMContractor.MAX_REACH);
@@ -164,7 +165,7 @@ public class MekanismInduction implements IModule
 			blockWire = new BlockWire(getNextBlockID());
 		}
 
-		if (REPLACE_FURNACE)
+		if (ENABLE_ADVANCED_FURNACE)
 		{
 			blockAdvancedFurnaceIdle = BlockAdvancedFurnace.createNew(false);
 			blockAdvancedFurnaceBurning = BlockAdvancedFurnace.createNew(true);
@@ -288,7 +289,7 @@ public class MekanismInduction implements IModule
 			GameRegistry.addRecipe(new ShapelessOreRecipe(EnumWireMaterial.COPPER.getWire(), "universalCable"));
 		}
 
-		if (REPLACE_FURNACE)
+		if (ENABLE_ADVANCED_FURNACE)
 		{
 			/** Inject new furnace tile class */
 			replaceTileEntity(TileEntityFurnace.class, TileEntityAdvancedFurnace.class);
