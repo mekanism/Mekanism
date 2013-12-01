@@ -51,7 +51,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0", dependencies = "required-after:Mekanism;after:MekanismGenerators")
+@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0", dependencies = "required-after:Mekanism;after:MekanismGenerators;after:ForgeMultipart")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
@@ -150,7 +150,8 @@ public class MekanismInduction implements IModule
 		{
 			try
 			{
-				itemPartWire = (Item) Class.forName("resonantinduction.wire.multipart.ItemPartWire").getConstructor(Integer.TYPE).newInstance(getNextItemID());
+				itemPartWire = (Item) Class.forName("mekanism.induction.common.wire.ItemPartWire").getConstructor(Integer.TYPE).newInstance(getNextItemID());
+				System.out.println("Mekanism Induction multipart loaded.");
 			}
 			catch (Exception e)
 			{
@@ -234,12 +235,12 @@ public class MekanismInduction implements IModule
 		{
 			try
 			{
-				Class.forName("mekanism.induction.common..MultipartMI").newInstance();
+				Class.forName("mekanism.induction.common.MultipartMI").newInstance();
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
-				Mekanism.logger.severe("Failed to initiate Resonant Induction multipart module.");
+				Mekanism.logger.severe("Failed to initiate Mekanism Induction multipart module.");
 			}
 		}
 

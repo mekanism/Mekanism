@@ -134,9 +134,9 @@ public class RenderPartWire
 
 	public static void registerIcons(IconRegister iconReg)
 	{
-		wireIcon = iconReg.registerIcon("resonantinduction:models/wire");
-		insulationIcon = iconReg.registerIcon("resonantinduction:models/insulation" + (MekanismInduction.LO_FI_INSULATION ? "tiny" : ""));
-		breakIcon = iconReg.registerIcon("resonantinduction:wire");
+		wireIcon = iconReg.registerIcon(MekanismInduction.PREFIX + MekanismInduction.MODEL_TEXTURE_DIRECTORY + "Wire");
+		insulationIcon = iconReg.registerIcon(MekanismInduction.PREFIX + MekanismInduction.MODEL_TEXTURE_DIRECTORY + "Insulation" + (MekanismInduction.LO_FI_INSULATION ? "Tiny" : ""));
+		breakIcon = iconReg.registerIcon(MekanismInduction.PREFIX + "wire");
 	}
 
 	public void renderStatic(PartWire wire)

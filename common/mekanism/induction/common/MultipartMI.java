@@ -28,9 +28,9 @@ public class MultipartMI implements IPartFactory
 		MultiPartRegistry.registerParts(this, new String[] { "resonant_induction_wire" });
 		MultipartGenerator.registerPassThroughInterface("universalelectricity.core.block.IConductor");
 		MultipartGenerator.registerPassThroughInterface("buildcraft.api.power.IPowerReceptor");
-		MultipartGenerator.registerPassThroughInterface("resonantinduction.wire.IInsulatedMaterial");
-		MultipartGenerator.registerPassThroughInterface("resonantinduction.wire.multipart.IBlockableConnection");
-		MultipartGenerator.registerTrait("ic2.api.energy.tile.IEnergySink", "resonantinduction.wire.multipart.javatraits.TEnergySink");
+		MultipartGenerator.registerPassThroughInterface("mekanism.induction.common.wire.IInsulatedMaterial");
+		MultipartGenerator.registerPassThroughInterface("mekanism.induction.common.wire.IBlockableConnection");
+		MultipartGenerator.registerTrait("ic2.api.energy.tile.IEnergySink", "mekanism.induction.common.wire.TEnergySink");
 	}
 
 }
