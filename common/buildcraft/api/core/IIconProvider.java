@@ -1,12 +1,13 @@
 package buildcraft.api.core;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public interface IIconProvider {
-	
+public interface IIconProvider
+{
+
 	/**
 	 * @param iconIndex
 	 * @return
@@ -15,7 +16,9 @@ public interface IIconProvider {
 	public Icon getIcon(int iconIndex);
 
 	/**
-	 * A call for the provider to register its Icons. This may be called multiple times but should only be executed once per provider
+	 * A call for the provider to register its Icons. This may be called multiple times but should
+	 * only be executed once per provider
+	 * 
 	 * @param iconRegister
 	 */
 	@SideOnly(Side.CLIENT)
