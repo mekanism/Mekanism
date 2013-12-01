@@ -23,9 +23,11 @@ import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
 import codechicken.lib.render.IconTransformation;
 import codechicken.lib.render.TextureUtils;
+import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.SwapYZ;
+import codechicken.lib.vec.Transformation;
 import codechicken.lib.vec.Translation;
+import codechicken.lib.vec.VariableTransformation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -51,7 +53,7 @@ public class RenderPartWire
 
 	static
 	{
-		models = CCModel.parseObjModels(new ResourceLocation("resonantinduction", "models/wire.obj"), 7, new SwapYZ());
+		models = CCModel.parseObjModels(new ResourceLocation("resonantinduction", "models/wire.obj"), 7, new InvertX());
 		for (CCModel c : models.values())
 		{
 			c.apply(new Translation(.5, 0, .5));
@@ -59,7 +61,7 @@ public class RenderPartWire
 			c.shrinkUVs(0.0005);
 		}
 
-		shinyModels = CCModel.parseObjModels(new ResourceLocation("resonantinduction", "models/wireShine.obj"), 7, new SwapYZ());
+		shinyModels = CCModel.parseObjModels(new ResourceLocation("resonantinduction", "models/wireShine.obj"), 7, new InvertX());
 		for (CCModel c : shinyModels.values())
 		{
 			c.apply(new Translation(.5, 0, .5));
@@ -185,5 +187,25 @@ public class RenderPartWire
 	public void renderPartShine(CCModel cc)
 	{
 		cc.render(null, 0, 0);
+	}
+
+	public static class InvertX extends VariableTransformation
+	{
+		public InvertX()
+		{
+			super(new Matrix4(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1));
+		}
+
+		@Override
+		public Transformation inverse()
+		{
+			return this;
+		}
+
+		@Override
+		public void apply(codechicken.lib.vec.Vector3 vec)
+		{
+			vec.x = -vec.x;
+		}
 	}
 }
