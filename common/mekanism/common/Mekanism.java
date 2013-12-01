@@ -609,10 +609,9 @@ public class Mekanism
 	}
 	
 	/**
-	 * Integrates the mod with other mods -- registering items and blocks with the Forge Ore Dictionary
-	 * and adding machine recipes with other items' corresponding resources.
+	 * Registers specified items with the Ore Dictionary.
 	 */
-	public void addIntegratedItems()
+	public void registerOreDict()
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods. @Calclavia
 		OreDictionary.registerOre("universalCable", new ItemStack(Transmitter, 8, 1));
@@ -661,7 +660,14 @@ public class Mekanism
 		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
-		
+	}
+	
+	/**
+	 * Integrates the mod with other mods -- registering items and blocks with the Forge Ore Dictionary
+	 * and adding machine recipes with other items' corresponding resources.
+	 */
+	public void addIntegratedItems()
+	{		
 		try {
 			CraftingManagers.pulverizerManager.addRecipe(400, new ItemStack(OreBlock, 1, 0), new ItemStack(Dust, 2, 2), false);
 			
@@ -1083,6 +1089,8 @@ public class Mekanism
 		
 		Mekanism.proxy.preInit();
 		
+		registerOreDict();
+		
 		MinecraftForge.EVENT_BUS.register(hooks);
 		
 		//Register infuses
@@ -1163,18 +1171,17 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
-		
-		hooks.hook();
-		
-		addIntegratedItems();
-		
-		System.out.println("[Mekanism] Hooking complete.");
 	}	
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{		
 		proxy.loadSoundHandler();
+		hooks.hook();
+		
+		addIntegratedItems();
+		
+		System.out.println("[Mekanism] Hooking complete.");
 	}
 	
 	@ForgeSubscribe
