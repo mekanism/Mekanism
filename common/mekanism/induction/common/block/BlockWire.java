@@ -26,7 +26,7 @@ public class BlockWire extends BlockConductor
 {
 	public BlockWire(int id)
 	{
-		super(MekanismInduction.CONFIGURATION.getBlock("wire", id).getInt(id), Material.cloth);
+		super(Mekanism.configuration.getBlock("wire", id).getInt(id), Material.cloth);
 		this.setUnlocalizedName(MekanismInduction.PREFIX + "wire");
 		this.setStepSound(soundClothFootstep);
 		this.setResistance(0.2F);
