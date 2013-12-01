@@ -361,15 +361,22 @@ item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
 
-//*********//
-//INDUCTION//
-//*********//
+//*****//
+//TOOLS//
+//*****//
 
 //Blocks
 tile.Tesla.name=Tesla Coil
 tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Electromagnetic Contractor
 tile.Battery.name=Modular Battery
+
+tile.mekanism:wire.copper.name=Copper Wire
+tile.mekanism:wire.tin.name=Tin Wire
+tile.mekanism:wire.iron.name=Iron Wire
+tile.mekanism:wire.aluminum.name=Aluminum Wire
+tile.mekanism:wire.silver.name=Silver Wire
+tile.mekanism:wire.superconductor.name=Superconductor Wire
 
 //Items
 item.Linker.name=Electrostatic Linker

@@ -4,7 +4,6 @@
 package mekanism.induction.common;
 
 import mekanism.common.Mekanism;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.induction.common.inventory.container.ContainerBattery;
 import mekanism.induction.common.inventory.container.ContainerMultimeter;
 import mekanism.induction.common.tileentity.TileEntityBattery;
@@ -23,12 +22,10 @@ import cpw.mods.fml.common.network.IGuiHandler;
  */
 public class InductionCommonProxy implements IGuiHandler
 {
-	public void registerRenderers() {}
-	
-	public void loadConfiguration()
+	public void registerRenderers()
 	{
 		Mekanism.configuration.load();
-		MekanismInduction.FURNACE_WATTAGE = (float)Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Furnace Wattage Per Tick", MekanismInduction.FURNACE_WATTAGE).getDouble(MekanismInduction.FURNACE_WATTAGE);
+		MekanismInduction.FURNACE_WATTAGE = (float) Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Furnace Wattage Per Tick", MekanismInduction.FURNACE_WATTAGE).getDouble(MekanismInduction.FURNACE_WATTAGE);
 		MekanismInduction.MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MekanismInduction.MAX_CONTRACTOR_DISTANCE).getInt(MekanismInduction.MAX_CONTRACTOR_DISTANCE);
 
 		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
@@ -61,6 +58,11 @@ public class InductionCommonProxy implements IGuiHandler
 		return null;
 	}
 
+	public boolean isPaused()
+	{
+		return false;
+	}
+
 	public void renderElectricShock(World world, Vector3 start, Vector3 target, float r, float g, float b, boolean split)
 	{
 
@@ -68,31 +70,33 @@ public class InductionCommonProxy implements IGuiHandler
 
 	public void renderElectricShock(World world, Vector3 start, Vector3 target, float r, float g, float b)
 	{
-		renderElectricShock(world, start, target, r, g, b, true);
+		this.renderElectricShock(world, start, target, r, g, b, true);
 	}
 
 	public void renderElectricShock(World world, Vector3 start, Vector3 target, Vector3 color)
 	{
-		renderElectricShock(world, start, target, (float) color.x, (float) color.y, (float) color.z);
+		this.renderElectricShock(world, start, target, (float) color.x, (float) color.y, (float) color.z);
 	}
 
 	public void renderElectricShock(World world, Vector3 start, Vector3 target, Vector3 color, boolean split)
 	{
-		renderElectricShock(world, start, target, (float) color.x, (float) color.y, (float) color.z, split);
+		this.renderElectricShock(world, start, target, (float) color.x, (float) color.y, (float) color.z, split);
 	}
 
 	public void renderElectricShock(World world, Vector3 start, Vector3 target)
 	{
-		renderElectricShock(world, start, target, true);
+		this.renderElectricShock(world, start, target, true);
 	}
 
 	public void renderElectricShock(World world, Vector3 start, Vector3 target, boolean b)
 	{
-		renderElectricShock(world, start, target, 0.55f, 0.7f, 1f, b);
+		this.renderElectricShock(world, start, target, 0.55f, 0.7f, 1f, b);
+
 	}
 
 	public boolean isFancy()
 	{
 		return false;
 	}
+
 }
