@@ -1092,18 +1092,6 @@ public class Mekanism
 	}
 	
 	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
-		hooks.hook();
-		
-		addIntegratedItems();
-		
-		System.out.println("[Mekanism] Hooking complete.");
-		
-		proxy.loadSoundHandler();
-	}
-	
-	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
 		//Register the mod's ore handler
@@ -1175,6 +1163,18 @@ public class Mekanism
 		
 		//Success message
 		logger.info("[Mekanism] Mod loaded.");
+		
+		hooks.hook();
+		
+		addIntegratedItems();
+		
+		System.out.println("[Mekanism] Hooking complete.");
+	}	
+	
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{		
+		proxy.loadSoundHandler();
 	}
 	
 	@ForgeSubscribe
