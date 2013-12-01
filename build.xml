@@ -23,10 +23,10 @@
 			<fileset dir="../Minecraft Forge Latest/"/>
 		</copy>
 
-		<get src="https://www.dropbox.com/s/kq64jh9y6v27gc9/CodeChickenCore-dev-latest.jar?dl=1"
+		<get src="https://www.dropbox.com/s/0txj0orswr2ru5z/CodeChickenCore-dev-latest.jar?dl=1"
 			dest = "${dir.mcp}/lib/CCC-dev.jar"/>
 
-		<get src="https://www.dropbox.com/s/k87amrbzcglbpnd/NotEnoughItems-dev-latest.jar?dl=1"
+		<get src="https://www.dropbox.com/s/6lsq0qk00h38ktm/NotEnoughItems-dev-latest.jar?dl=1"
 			dest="${dir.mcp}/lib/NEI-dev.jar"/>
 
 		<copy todir="${dir.mcp}/src/minecraft">
