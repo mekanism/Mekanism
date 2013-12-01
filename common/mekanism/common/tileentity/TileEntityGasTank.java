@@ -2,6 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -11,7 +12,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.Object3D;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

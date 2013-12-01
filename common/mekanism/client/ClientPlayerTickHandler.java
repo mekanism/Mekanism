@@ -4,8 +4,8 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.common.EnumColor;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;

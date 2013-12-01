@@ -6,12 +6,12 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.EnumColor;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;

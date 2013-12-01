@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.Object3D;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;

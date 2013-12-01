@@ -2,8 +2,8 @@ package mekanism.generators.common.tileentity;
 
 import java.util.EnumSet;
 
+import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.Object3D;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraftforge.common.ForgeDirection;

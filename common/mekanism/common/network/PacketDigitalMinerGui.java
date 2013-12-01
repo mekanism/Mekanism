@@ -3,11 +3,11 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.GuiMItemStackFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;

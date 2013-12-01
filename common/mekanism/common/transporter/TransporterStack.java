@@ -3,8 +3,8 @@ package mekanism.common.transporter;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Object3D;
 import mekanism.common.EnumColor;
-import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Destination;

@@ -2,12 +2,12 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
+import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.EnumColor;
 import mekanism.common.IInvConfiguration;
-import mekanism.common.Object3D;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

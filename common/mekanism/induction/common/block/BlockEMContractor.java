@@ -1,7 +1,7 @@
 package mekanism.induction.common.block;
 
+import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.induction.client.render.BlockRenderingHandler;
 import mekanism.induction.common.item.ItemCoordLink;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;

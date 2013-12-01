@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.common.EnumColor;
 import mekanism.common.IInvConfiguration;
-import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;

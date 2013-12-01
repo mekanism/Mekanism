@@ -2,8 +2,8 @@ package mekanism.client.render;
 
 import java.util.EnumSet;
 
+import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;

@@ -2,9 +2,9 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;

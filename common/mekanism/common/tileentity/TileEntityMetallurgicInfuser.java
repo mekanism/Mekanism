@@ -2,6 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -15,7 +16,6 @@ import mekanism.common.IEjector;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;

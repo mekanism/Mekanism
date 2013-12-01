@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.HashSet;
 
+import mekanism.api.Object3D;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 

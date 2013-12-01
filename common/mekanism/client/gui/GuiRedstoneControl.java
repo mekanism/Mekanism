@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.Object3D;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;

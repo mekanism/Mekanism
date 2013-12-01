@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.common.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;

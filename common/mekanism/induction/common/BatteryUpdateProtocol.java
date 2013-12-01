@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.common.Object3D;
+import mekanism.api.Object3D;
 import mekanism.common.util.ListUtils;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import net.minecraft.entity.item.EntityItem;

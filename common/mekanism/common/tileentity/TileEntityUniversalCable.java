@@ -7,12 +7,12 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;

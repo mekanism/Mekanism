@@ -9,12 +9,12 @@ import ic2.api.tile.IEnergyStorage;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.Object3D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

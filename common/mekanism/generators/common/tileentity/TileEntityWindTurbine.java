@@ -1,7 +1,7 @@
 package mekanism.generators.common.tileentity;
 
+import mekanism.api.Object3D;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.Object3D;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;

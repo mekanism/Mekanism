@@ -11,8 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import mekanism.api.IClientTicker;
-import mekanism.client.ClientTickHandler;
-import mekanism.common.Object3D;
+import mekanism.api.Object3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -71,7 +70,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>,
 					TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
 				}
 				else {
-					ClientTickHandler.tickingSet.add(this);
+					MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte)1));
 				}
 			}
 		} catch(NoSuchElementException e) {}
@@ -87,7 +86,7 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>,
 			TransmitterNetworkRegistry.getInstance().removeNetwork(this);
 		}
 		else {
-			ClientTickHandler.tickingSet.remove(this);
+			MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte)0));
 		}
 	}
 	
@@ -251,6 +250,18 @@ public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>,
 		{
 			TileEntity tile = (TileEntity)transmitters.iterator().next();
 			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile));
+		}
+	}
+	
+	public static class ClientTickUpdate extends Event
+	{
+		public DynamicNetwork network;
+		public byte operation; /*0 remove, 1 add*/
+		
+		public ClientTickUpdate(DynamicNetwork net, byte b)
+		{
+			network = net;
+			operation = b;
 		}
 	}
 	

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -20,8 +21,10 @@ import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
+import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.client.ClientTickHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
@@ -1202,6 +1205,20 @@ public class Mekanism
 	{
 		try {
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(event.tileEntity)));
+		} catch(Exception e) {}
+	}
+	
+	@ForgeSubscribe
+	public void onClientTickUpdate(ClientTickUpdate event)
+	{
+		try {
+			if(event.operation == 0)
+			{
+				ClientTickHandler.tickingSet.remove(event.network);
+			}
+			else {
+				ClientTickHandler.tickingSet.add(event.network);
+			}
 		} catch(Exception e) {}
 	}
 	

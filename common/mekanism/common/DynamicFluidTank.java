@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.Object3D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;

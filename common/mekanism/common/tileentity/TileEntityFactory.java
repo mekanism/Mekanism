@@ -1,7 +1,9 @@
 package mekanism.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -11,18 +13,17 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
-import mekanism.common.IFactory.RecipeType;
 import mekanism.common.EnumColor;
-import mekanism.common.IInvConfiguration;
+import mekanism.common.IActiveState;
 import mekanism.common.IEjector;
+import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
-import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
@@ -30,6 +31,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.ForgeDirection;
@@ -149,6 +151,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			ChargeUtils.discharge(1, this);
 			
 			handleSecondaryFuel();
+			//sortInventory();
 			
 			if(inventory[2] != null && inventory[3] == null)
 			{
@@ -239,6 +242,91 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			}
 			
 			prevEnergy = getEnergy();
+		}
+	}
+	
+	public void sortInventory()
+	{
+		int[] inputSlots = null;
+		
+		List<Integer> nullSlots = new ArrayList<Integer>();
+		List<Integer> fullSlots = new ArrayList<Integer>();
+		
+		if(tier == FactoryTier.BASIC)
+		{
+			inputSlots = new int[] {5, 6, 7};
+		}
+		else if(tier == FactoryTier.ADVANCED)
+		{
+			inputSlots = new int[] {5, 6, 7, 8, 9};
+		}
+		else if(tier == FactoryTier.ELITE)
+		{
+			inputSlots = new int[] {5, 6, 7, 8, 9, 10, 11};
+		}
+		
+		for(int id : inputSlots)
+		{
+			if(inventory[id] == null)
+			{
+				nullSlots.add(id);
+			}
+			else if(inventory[id].stackSize > 1)
+			{
+				fullSlots.add(id);
+			}
+		}
+		
+		if(nullSlots.size() > 0 && fullSlots.size() > 0)
+		{
+			int fullID = fullSlots.get(0);
+			List<ItemStack> split = StackUtils.split(inventory[fullID]);
+			
+			inventory[fullID] = split.get(0);
+			inventory[nullSlots.get(0)] = split.get(1);
+		}
+	}
+	
+	public static class InvID implements Comparable<InvID>
+	{
+		public ItemStack stack;
+		public int ID;
+		
+		public InvID(ItemStack s, int i)
+		{
+			stack = s;
+			ID = i;
+		}
+
+		@Override
+		public int compareTo(InvID arg0)
+		{
+			if(arg0.stack == null && stack == null)
+			{
+				return 0;
+			}
+			else if(arg0.stack == null && stack != null)
+			{
+				return 1;
+			}
+			else if(arg0.stack != null && stack == null)
+			{
+				return -1;
+			}
+			else if(arg0.stack.itemID == stack.itemID)
+			{
+				return 0;
+			}
+			else if(arg0.stack.itemID < stack.itemID)
+			{
+				return 1;
+			}
+			else if(arg0.stack.itemID > stack.itemID)
+			{
+				return -1;
+			}
+			
+			return 0;
 		}
 	}
 	

@@ -3,9 +3,9 @@ package mekanism.api.gas;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Object3D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

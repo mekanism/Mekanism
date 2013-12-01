@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 
+import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;

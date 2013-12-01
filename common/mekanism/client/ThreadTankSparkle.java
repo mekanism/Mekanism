@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

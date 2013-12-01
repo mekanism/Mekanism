@@ -3,6 +3,7 @@ package mekanism.common.block;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.ClientProxy;
@@ -19,7 +20,6 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.Object3D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.miner.MinerFilter;

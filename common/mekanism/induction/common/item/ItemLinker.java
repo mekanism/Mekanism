@@ -3,7 +3,7 @@
  */
 package mekanism.induction.common.item;
 
-import mekanism.common.Object3D;
+import mekanism.api.Object3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
