@@ -3,8 +3,8 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.common.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;

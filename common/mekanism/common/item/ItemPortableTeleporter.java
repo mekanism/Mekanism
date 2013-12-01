@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.common.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.Entity;

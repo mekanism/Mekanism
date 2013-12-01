@@ -1,8 +1,8 @@
 package mekanism.common.item;
 
+import mekanism.api.EnumColor;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.EnumColor;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

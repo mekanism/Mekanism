@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import mekanism.common.EnumColor;
+import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tileentity.TileEntityBin;

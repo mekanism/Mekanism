@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.common.EnumColor;
 import mekanism.common.IElectricChest;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;

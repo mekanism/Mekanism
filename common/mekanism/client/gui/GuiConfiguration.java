@@ -3,9 +3,9 @@ package mekanism.client.gui;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.EnumColor;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;

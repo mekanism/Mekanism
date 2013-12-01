@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.api;
 
 import mekanism.common.util.MekanismUtils;
 

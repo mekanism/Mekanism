@@ -2,6 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
@@ -9,7 +10,6 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.sound.IHasSound;
-import mekanism.common.EnumColor;
 import mekanism.common.IActiveState;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IEjector;

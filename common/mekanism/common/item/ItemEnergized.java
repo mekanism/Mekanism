@@ -5,8 +5,8 @@ import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.util.MekanismUtils;

@@ -1,6 +1,6 @@
 package mekanism.common.tileentity;
 
-import mekanism.common.EnumColor;
+import mekanism.api.EnumColor;
 import mekanism.common.SideData;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.Tier.FactoryTier;

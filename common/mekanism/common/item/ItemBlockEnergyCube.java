@@ -6,9 +6,9 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.EnumColor;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;

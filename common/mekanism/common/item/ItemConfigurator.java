@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.common.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;

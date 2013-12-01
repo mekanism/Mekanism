@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import mekanism.common.EnumColor;
+import mekanism.api.EnumColor;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;

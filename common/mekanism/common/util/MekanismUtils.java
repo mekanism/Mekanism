@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.DynamicTankCache;
-import mekanism.common.EnumColor;
 import mekanism.common.IActiveState;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IFactory;

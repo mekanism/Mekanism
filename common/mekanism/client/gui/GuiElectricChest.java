@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.EnumColor;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;

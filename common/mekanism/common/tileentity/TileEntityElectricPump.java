@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.common.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedTank;
 import mekanism.common.PacketHandler;

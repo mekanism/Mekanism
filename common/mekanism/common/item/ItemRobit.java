@@ -2,9 +2,9 @@ package mekanism.common.item;
 
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.EntityRobit;
-import mekanism.common.EnumColor;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.tileentity.TileEntityChargepad;
 import net.minecraft.client.renderer.texture.IconRegister;

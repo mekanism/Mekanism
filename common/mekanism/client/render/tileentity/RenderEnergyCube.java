@@ -1,10 +1,10 @@
 package mekanism.client.render.tileentity;
 
+import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.EnumColor;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

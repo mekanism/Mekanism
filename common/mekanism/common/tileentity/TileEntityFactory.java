@@ -1,8 +1,10 @@
 package mekanism.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -13,7 +15,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
-import mekanism.common.EnumColor;
 import mekanism.common.IActiveState;
 import mekanism.common.IEjector;
 import mekanism.common.IFactory.RecipeType;
@@ -247,7 +248,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	
 	public void sortInventory()
 	{
+		boolean didOp = false;
+		
 		int[] inputSlots = null;
+		
+		List<InvID> invStacks = new ArrayList<InvID>();
 		
 		List<Integer> nullSlots = new ArrayList<Integer>();
 		List<Integer> fullSlots = new ArrayList<Integer>();
@@ -267,6 +272,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		
 		for(int id : inputSlots)
 		{
+			invStacks.add(InvID.get(id, inventory));
+			
 			if(inventory[id] == null)
 			{
 				nullSlots.add(id);
@@ -277,13 +284,23 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			}
 		}
 		
-		if(nullSlots.size() > 0 && fullSlots.size() > 0)
+		Collections.sort(invStacks);
+		
+		for(InvID invID1 : invStacks)
 		{
-			int fullID = fullSlots.get(0);
-			List<ItemStack> split = StackUtils.split(inventory[fullID]);
+			for(InvID invID2 : invStacks)
+			{
+				if(invID1.ID == invID2.ID || invID1.id() != invID2.id() || Math.abs(invID1.size()-invID2.size()) < 2) continue;
+				
+				List<ItemStack> evened = StackUtils.even(inventory[invID1.ID], inventory[invID2.ID]);
+				inventory[invID1.ID] = evened.get(0);
+				inventory[invID2.ID] = evened.get(1);
+				System.out.println("op");
+				didOp = true;
+				break;
+			}
 			
-			inventory[fullID] = split.get(0);
-			inventory[nullSlots.get(0)] = split.get(1);
+			if(didOp) break;
 		}
 	}
 	
@@ -297,36 +314,49 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			stack = s;
 			ID = i;
 		}
+		
+		public int size()
+		{
+			return stack != null ? stack.stackSize : 0;
+		}
+		
+		public int id()
+		{
+			return stack != null ? stack.itemID : 0;
+		}
 
 		@Override
 		public int compareTo(InvID arg0)
 		{
-			if(arg0.stack == null && stack == null)
-			{
-				return 0;
-			}
-			else if(arg0.stack == null && stack != null)
+			if(arg0.id() < id())
 			{
 				return 1;
 			}
-			else if(arg0.stack != null && stack == null)
+			else if(arg0.id() > id())
 			{
 				return -1;
 			}
-			else if(arg0.stack.itemID == stack.itemID)
-			{
-				return 0;
-			}
-			else if(arg0.stack.itemID < stack.itemID)
+			else if(arg0.size() < size())
 			{
 				return 1;
 			}
-			else if(arg0.stack.itemID > stack.itemID)
+			else if(arg0.size() > size())
 			{
 				return -1;
 			}
 			
 			return 0;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return size() + " " + id() + " " + ID;
+		}
+		
+		public static InvID get(int id, ItemStack[] inv)
+		{
+			return new InvID(inv[id], id);
 		}
 	}
 	
