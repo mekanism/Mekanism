@@ -29,14 +29,12 @@ public class BlockWire extends BlockConductor
 	{
 		super(Mekanism.configuration.getBlock("wire", id).getInt(id), Material.cloth);
 		
-		setUnlocalizedName(MekanismInduction.PREFIX + "wire");
 		setStepSound(soundClothFootstep);
 		setResistance(0.2F);
 		setHardness(0.1f);
 		setBlockBounds(0.3f, 0.3f, 0.3f, 0.7f, 0.7f, 0.7f);
 		setCreativeTab(CreativeTabs.tabRedstone);
 		Block.setBurnProperties(blockID, 30, 60);
-		setTextureName(MekanismInduction.PREFIX + "wire");
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
@@ -56,8 +54,7 @@ public class BlockWire extends BlockConductor
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
 	{
-		TileEntity t = world.getBlockTileEntity(x, y, z);
-		TileEntityWire tileEntity = (TileEntityWire)t;
+		TileEntityWire tileEntity = (TileEntityWire)world.getBlockTileEntity(x, y, z);
 
 		if(entityPlayer.getCurrentEquippedItem() != null)
 		{
@@ -120,11 +117,11 @@ public class BlockWire extends BlockConductor
 	@Override
 	public void breakBlock(World world, int x, int y, int z, int par5, int par6)
 	{
-		TileEntity t = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
 
-		if(t instanceof TileEntityWire)
+		if(tile instanceof TileEntityWire)
 		{
-			TileEntityWire tileEntity = (TileEntityWire) t;
+			TileEntityWire tileEntity = (TileEntityWire) tile;
 
 			if(tileEntity.isInsulated)
 			{

@@ -16,24 +16,32 @@ import universalelectricity.core.vector.Vector3;
 
 public enum EnumWireMaterial
 {
-	COPPER(12.5f, 3, 2, new Vector3(184, 115, 51)), TIN(13, 2, 0.5f, new Vector3(132, 132, 130)),
-	IRON(0.1f, 2, 4, new Vector3(97, 102, 105)),
-	ALUMINUM(0.025f, 6, 0.15f, new Vector3(215, 205, 181)),
-	SILVER(0.005f, 1, 2, new Vector3(192, 192, 192)),
-	SUPERCONDUCTOR(0, 8, Float.MAX_VALUE, new Vector3(212, 175, 55));
+	COPPER("Copper", 12.5F, 3, 2, new Vector3(184, 115, 51)), 
+	TIN("Tin", 13, 2, 0.5F, new Vector3(132, 132, 130)),
+	IRON("Iron", 0.1F, 2, 4, new Vector3(97, 102, 105)),
+	ALUMINUM("Aluminum", 0.025F, 6, 0.15F, new Vector3(215, 205, 181)),
+	SILVER("Silver", 0.005F, 1, 2, new Vector3(192, 192, 192)),
+	SUPERCONDUCTOR("Superconductor", 0, 8, Float.MAX_VALUE, new Vector3(212, 175, 55));
 
 	public final float resistance;
 	public final float damage;
 	public final float maxAmps;
 	public final Vector3 color;
 	private ItemStack wire;
+	private final String name;
 
-	EnumWireMaterial(float resist, float electrocution, float max, Vector3 vec)
+	private EnumWireMaterial(String s, float resist, float electrocution, float max, Vector3 vec)
 	{
+		name = s;
 		resistance = resist;
 		damage = electrocution;
 		maxAmps = max;
 		color = vec.scale(1D / 255D);
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 
 	public ItemStack getWire()
@@ -54,7 +62,7 @@ public enum EnumWireMaterial
 		if(wire == null)
 		{
 			wire = item;
-			OreDictionary.registerOre(name().toLowerCase() + "Wire", wire);
+			OreDictionary.registerOre(getName().toLowerCase() + "Wire", wire);
 		}
 	}
 

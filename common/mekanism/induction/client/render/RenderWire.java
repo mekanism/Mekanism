@@ -18,12 +18,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/**
- * TODO: Use ISBRH.
- * 
- * @author Calclavia
- * 
- */
 @SideOnly(Side.CLIENT)
 public class RenderWire extends TileEntitySpecialRenderer
 {
@@ -32,17 +26,23 @@ public class RenderWire extends TileEntitySpecialRenderer
 	
 	public static final ModelWire WIRE_MODEL = new ModelWire();
 	public static final ModelInsulation INSULATION_MODEL = new ModelInsulation();
+	
+	@Override
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	{
+		renderAModelAt((TileEntityWire)tileEntity, x, y, z, partialTick);
+	}
 
-	public void renderModelAt(TileEntityWire tileEntity, double x, double y, double z, float f)
+	public void renderAModelAt(TileEntityWire tileEntity, double x, double y, double z, float partialTick)
 	{
 		if(tileEntity != null)
 		{
 			GL11.glPushMatrix();
-			GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+			GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 			GL11.glScalef(1, -1, -1);
 
 			EnumWireMaterial material = tileEntity.getMaterial();
-			//Texture file
+			
 			FMLClientHandler.instance().getClient().renderEngine.bindTexture(WIRE_TEXTURE);
 			GL11.glColor4d(material.color.x, material.color.y, material.color.z, 1);
 
@@ -128,11 +128,5 @@ public class RenderWire extends TileEntitySpecialRenderer
 
 			GL11.glPopMatrix();
 		}
-	}
-
-	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double var2, double var4, double var6, float var8)
-	{
-		renderModelAt((TileEntityWire)tileEntity, var2, var4, var6, var8);
 	}
 }

@@ -28,7 +28,6 @@ public class ItemPartWire extends JItemMultiPart
 	public ItemPartWire(int id)
 	{
 		super(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "wireMultipart", id).getInt(id));
-		setUnlocalizedName(MekanismInduction.PREFIX + "wire");
 		setCreativeTab(Mekanism.tabMekanism);
 		setHasSubtypes(true);
 		setMaxDamage(0);
@@ -41,12 +40,6 @@ public class ItemPartWire extends JItemMultiPart
 	}
 
 	@Override
-	public String getUnlocalizedName()
-	{
-		return super.getUnlocalizedName().replace("item", "tile");
-	}
-
-	@Override
 	public int getMetadata(int damage)
 	{
 		return damage;
@@ -55,26 +48,26 @@ public class ItemPartWire extends JItemMultiPart
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack)
 	{
-		return getUnlocalizedName() + "." + EnumWireMaterial.values()[itemStack.getItemDamage()].name().toLowerCase();
+		return "tile.Wire." + EnumWireMaterial.values()[itemStack.getItemDamage()].getName();
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List par3List, boolean par4)
+	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean par4)
 	{
-		par3List.add("Resistance: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].resistance, ElectricUnit.RESISTANCE));
-		par3List.add("Max Amperage: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].maxAmps, ElectricUnit.AMPERE));
+		list.add("Resistance: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].resistance, ElectricUnit.RESISTANCE));
+		list.add("Max Amperage: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].maxAmps, ElectricUnit.AMPERE));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister)
-	{
-		for(int i = 0; i < EnumWireMaterial.values().length; i++)
+	public void registerIcons(IconRegister register)
+	{	
+		for(EnumWireMaterial material : EnumWireMaterial.values())
 		{
-			icons[i] = iconRegister.registerIcon(getUnlocalizedName(new ItemStack(itemID, 1, i)).replaceAll("tile.", ""));
+			icons[material.ordinal()] = register.registerIcon("mekanism:" + material.getName() + "Wire");
 		}
 
-		RenderPartWire.registerIcons(iconRegister);
+		RenderPartWire.registerIcons(register);
 	}
 
 	@Override

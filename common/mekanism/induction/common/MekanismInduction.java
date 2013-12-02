@@ -60,15 +60,6 @@ public class MekanismInduction implements IModule
 	/** MekanismInduction version number */
 	public static Version versionNumber = new Version(5, 6, 0);
 
-	public static final String DOMAIN = "mekanism";
-	public static final String PREFIX = DOMAIN + ":";
-	public static final String DIRECTORY = "/assets/" + DOMAIN + "/";
-	public static final String TEXTURE_DIRECTORY = "textures/";
-	public static final String GUI_DIRECTORY = "gui/";
-	public static final String BLOCK_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "blocks/";
-	public static final String ITEM_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "items/";
-	public static final String MODEL_TEXTURE_DIRECTORY = "render/";
-
 	/**
 	 * Settings
 	 */
@@ -118,7 +109,7 @@ public class MekanismInduction implements IModule
 		if(Loader.isModLoaded("ForgeMultipart"))
 		{
 			try {
-				itemPartWire = (Item)Class.forName("mekanism.induction.common.wire.ItemPartWire").getDeclaredConstructor(Integer.TYPE).newInstance(getNextItemID());
+				itemPartWire = ((Item)Class.forName("mekanism.induction.common.wire.ItemPartWire").getDeclaredConstructor(Integer.TYPE).newInstance(getNextItemID())).setUnlocalizedName("Wire");
 				Mekanism.logger.fine("Mekanism Induction multipart loaded.");
 			} catch(Exception e) {
 				Mekanism.logger.severe("Failed to load multipart wire.");
@@ -137,7 +128,7 @@ public class MekanismInduction implements IModule
 
 		if(itemPartWire == null)
 		{
-			blockWire = new BlockWire(getNextBlockID());
+			blockWire = new BlockWire(getNextBlockID()).setUnlocalizedName("Wire");
 		}
 
 		Mekanism.configuration.save();

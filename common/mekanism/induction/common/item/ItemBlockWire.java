@@ -20,8 +20,8 @@ public class ItemBlockWire extends ItemBlock
 	public ItemBlockWire(int id)
 	{
 		super(id);
-		this.setHasSubtypes(true);
-		this.setMaxDamage(0);
+		setHasSubtypes(true);
+		setMaxDamage(0);
 	}
 
 	@Override
@@ -33,23 +33,23 @@ public class ItemBlockWire extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack)
 	{
-		return this.getUnlocalizedName() + "." + EnumWireMaterial.values()[itemStack.getItemDamage()].name().toLowerCase();
+		return getUnlocalizedName() + "." + EnumWireMaterial.values()[itemStack.getItemDamage()].getName().toLowerCase();
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List par3List, boolean par4)
+	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean par4)
 	{
-		par3List.add("Resistance: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].resistance, ElectricUnit.RESISTANCE));
-		par3List.add("Max Amperage: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].maxAmps, ElectricUnit.AMPERE));
+		list.add("Resistance: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].resistance, ElectricUnit.RESISTANCE));
+		list.add("Max Amperage: " + ElectricityDisplay.getDisplay(EnumWireMaterial.values()[itemstack.getItemDamage()].maxAmps, ElectricUnit.AMPERE));
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister)
+	public void registerIcons(IconRegister register)
 	{
-		for (int i = 0; i < EnumWireMaterial.values().length; i++)
+		for(EnumWireMaterial material : EnumWireMaterial.values())
 		{
-			this.icons[i] = iconRegister.registerIcon(this.getUnlocalizedName(new ItemStack(this.itemID, 1, i)).replaceAll("tile.", ""));
+			icons[material.ordinal()] = register.registerIcon("mekanism:" + material.getName() + "Wire");
 		}
 	}
 
@@ -57,6 +57,6 @@ public class ItemBlockWire extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public Icon getIconFromDamage(int meta)
 	{
-		return this.icons[meta];
+		return icons[meta];
 	}
 }

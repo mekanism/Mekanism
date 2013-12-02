@@ -47,7 +47,7 @@ public class RenderBattery extends TileEntitySpecialRenderer
 
 	@Override
 	@SuppressWarnings("incomplete-switch")
-	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
+	public void renderTileEntityAt(TileEntity t, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslated(x + 0.5, y + 1.5, z + 0.5);

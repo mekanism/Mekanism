@@ -61,7 +61,7 @@ public class MekanismRenderer
 		{
 			for(EnumColor color : EnumColor.values())
 			{
-				colors[color.ordinal()] = event.map.registerIcon("mekanism:Overlay" + color.getLocalizedName().replace(" ", ""));
+				colors[color.ordinal()] = event.map.registerIcon("mekanism:overlay/Overlay" + color.getLocalizedName().replace(" ", ""));
 			}
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");

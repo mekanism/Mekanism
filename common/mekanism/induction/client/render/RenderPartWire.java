@@ -146,7 +146,7 @@ public class RenderPartWire
 	{
 		wireIcon = iconReg.registerIcon("mekanism:render/Wire");
 		insulationIcon = iconReg.registerIcon("mekanism:render/" + "Insulation" + (MekanismInduction.LO_FI_INSULATION ? "Tiny" : ""));
-		breakIcon = iconReg.registerIcon("mekanism:wire");
+		breakIcon = iconReg.registerIcon("mekanism:Wire");
 	}
 
 	public void renderStatic(PartWire wire)
