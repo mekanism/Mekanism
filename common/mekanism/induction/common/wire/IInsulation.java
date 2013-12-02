@@ -8,5 +8,5 @@ public interface IInsulation
 
 	public int getInsulationColor();
 
-	public void setInsulationColor(int dyeID);
+	public void setInsulationColor(int dye);
 }

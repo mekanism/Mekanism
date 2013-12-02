@@ -9,23 +9,26 @@ import codechicken.multipart.TMultiPart;
 
 public class MultipartMI implements IPartFactory
 {
-
 	public MultipartMI()
 	{
-		this.init();
+		init();
 	}
 
 	@Override
 	public TMultiPart createPart(String name, boolean client)
 	{
-		if (name == "resonant_induction_wire")
+		if(name == "resonant_induction_wire")
+		{
 			return new PartWire(EnumWireMaterial.COPPER.ordinal());
+		}
+		
 		return null;
 	}
 
 	public void init()
 	{
-		MultiPartRegistry.registerParts(this, new String[] { "resonant_induction_wire" });
+		MultiPartRegistry.registerParts(this, new String[] {"resonant_induction_wire"});
+		
 		MultipartGenerator.registerPassThroughInterface("universalelectricity.core.block.IConductor");
 		MultipartGenerator.registerPassThroughInterface("buildcraft.api.power.IPowerReceptor");
 		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
@@ -33,5 +36,4 @@ public class MultipartMI implements IPartFactory
 		MultipartGenerator.registerPassThroughInterface("mekanism.induction.common.wire.IBlockableConnection");
 		MultipartGenerator.registerTrait("ic2.api.energy.tile.IEnergySink", "mekanism.induction.common.wire.TEnergySink");
 	}
-
 }

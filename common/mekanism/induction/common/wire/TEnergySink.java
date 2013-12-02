@@ -18,41 +18,54 @@ public class TEnergySink extends TileMultipart implements IEnergySink
 	public void copyFrom(TileMultipart that)
 	{
 		super.copyFrom(that);
-		if (that instanceof TEnergySink)
-			ic2Sinks = ((TEnergySink) that).ic2Sinks;
+		
+		if(that instanceof TEnergySink)
+		{
+			ic2Sinks = ((TEnergySink)that).ic2Sinks;
+		}
 	}
 
 	@Override
 	public void bindPart(TMultiPart part)
 	{
 		super.bindPart(part);
-		if (part instanceof IEnergySink)
+		
+		if(part instanceof IEnergySink)
+		{
 			ic2Sinks.add((IEnergySink) part);
+		}
 	}
 
 	@Override
 	public void partRemoved(TMultiPart part, int p)
 	{
 		super.partRemoved(part, p);
-		if (part instanceof IEnergySink)
+		
+		if(part instanceof IEnergySink)
+		{
 			ic2Sinks.remove(part);
+		}
 	}
 
 	@Override
 	public void clearParts()
 	{
 		super.clearParts();
+		
 		ic2Sinks.clear();
 	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		for (IEnergySink sink : this.ic2Sinks)
+		for(IEnergySink sink : ic2Sinks)
 		{
-			if (sink.acceptsEnergyFrom(emitter, direction))
+			if(sink.acceptsEnergyFrom(emitter, direction))
+			{
 				return true;
+			}
 		}
+		
 		return false;
 	}
 
@@ -61,20 +74,22 @@ public class TEnergySink extends TileMultipart implements IEnergySink
 	{
 		double demanded = 0;
 
-		for (IEnergySink sink : this.ic2Sinks)
+		for(IEnergySink sink : ic2Sinks)
 		{
 			demanded += sink.demandedEnergyUnits();
 		}
+		
 		return demanded;
 	}
 
 	@Override
 	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
-		for (IEnergySink sink : this.ic2Sinks)
+		for(IEnergySink sink : ic2Sinks)
 		{
 			amount = sink.injectEnergyUnits(directionFrom, Math.min(amount, sink.demandedEnergyUnits()));
 		}
+		
 		return amount;
 	}
 
@@ -82,10 +97,12 @@ public class TEnergySink extends TileMultipart implements IEnergySink
 	public int getMaxSafeInput()
 	{
 		int safe = 0;
-		for (IEnergySink sink : this.ic2Sinks)
+		
+		for(IEnergySink sink : ic2Sinks)
 		{
 			safe += sink.getMaxSafeInput();
 		}
+		
 		return safe;
 	}
 

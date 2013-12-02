@@ -28,16 +28,16 @@ public class ItemPartWire extends JItemMultiPart
 	public ItemPartWire(int id)
 	{
 		super(Mekanism.configuration.get(Configuration.CATEGORY_ITEM, "wireMultipart", id).getInt(id));
-		this.setUnlocalizedName(MekanismInduction.PREFIX + "wire");
-		this.setCreativeTab(Mekanism.tabMekanism);
-		this.setHasSubtypes(true);
-		this.setMaxDamage(0);
+		setUnlocalizedName(MekanismInduction.PREFIX + "wire");
+		setCreativeTab(Mekanism.tabMekanism);
+		setHasSubtypes(true);
+		setMaxDamage(0);
 	}
 
 	@Override
 	public TMultiPart newPart(ItemStack arg0, EntityPlayer arg1, World arg2, BlockCoord arg3, int arg4, Vector3 arg5)
 	{
-		return new PartWire(this.getDamage(arg0));
+		return new PartWire(getDamage(arg0));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ItemPartWire extends JItemMultiPart
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack)
 	{
-		return this.getUnlocalizedName() + "." + EnumWireMaterial.values()[itemStack.getItemDamage()].name().toLowerCase();
+		return getUnlocalizedName() + "." + EnumWireMaterial.values()[itemStack.getItemDamage()].name().toLowerCase();
 	}
 
 	@Override
@@ -69,9 +69,9 @@ public class ItemPartWire extends JItemMultiPart
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister iconRegister)
 	{
-		for (int i = 0; i < EnumWireMaterial.values().length; i++)
+		for(int i = 0; i < EnumWireMaterial.values().length; i++)
 		{
-			this.icons[i] = iconRegister.registerIcon(this.getUnlocalizedName(new ItemStack(this.itemID, 1, i)).replaceAll("tile.", ""));
+			icons[i] = iconRegister.registerIcon(getUnlocalizedName(new ItemStack(itemID, 1, i)).replaceAll("tile.", ""));
 		}
 
 		RenderPartWire.registerIcons(iconRegister);
@@ -81,13 +81,13 @@ public class ItemPartWire extends JItemMultiPart
 	@SideOnly(Side.CLIENT)
 	public Icon getIconFromDamage(int meta)
 	{
-		return this.icons[meta];
+		return icons[meta];
 	}
 
 	@Override
 	public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
 	{
-		for (EnumWireMaterial mat : EnumWireMaterial.values())
+		for(EnumWireMaterial mat : EnumWireMaterial.values())
 		{
 			listToAddTo.add(new ItemStack(itemID, 1, mat.ordinal()));
 		}
@@ -99,5 +99,4 @@ public class ItemPartWire extends JItemMultiPart
 	{
 		return 0;
 	}
-
 }

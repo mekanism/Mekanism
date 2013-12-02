@@ -24,30 +24,29 @@ import cofh.api.energy.IEnergyHandler;
 
 public abstract class PartUniversalConductor extends PartConductor implements IEnergySink, IPowerReceptor, IEnergyHandler
 {
-
 	protected boolean isAddedToEnergyNet;
 	public PowerHandler powerHandler;
 	public float buildcraftBuffer = Compatibility.BC3_RATIO * 50;
 
 	public PartUniversalConductor()
 	{
-		this.powerHandler = new PowerHandler(this, Type.PIPE);
-		this.powerHandler.configure(0, this.buildcraftBuffer, this.buildcraftBuffer, this.buildcraftBuffer * 2);
-		this.powerHandler.configurePowerPerdition(0, 0);
+		powerHandler = new PowerHandler(this, Type.PIPE);
+		powerHandler.configure(0, buildcraftBuffer, buildcraftBuffer, buildcraftBuffer * 2);
+		powerHandler.configurePowerPerdition(0, 0);
 	}
 
 	@Override
 	public boolean isValidAcceptor(TileEntity tile)
 	{
-		if (tile instanceof IEnergyTile)
+		if(tile instanceof IEnergyTile)
 		{
 			return true;
 		}
-		else if (tile instanceof IPowerReceptor)
+		else if(tile instanceof IPowerReceptor)
 		{
 			return true;
 		}
-		else if (tile instanceof IEnergyHandler)
+		else if(tile instanceof IEnergyHandler)
 		{
 			return true;
 		}
@@ -58,7 +57,7 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	@Override
 	public boolean isConnectionPrevented(TileEntity tile, ForgeDirection side)
 	{
-		if (tile instanceof IEnergyHandler)
+		if(tile instanceof IEnergyHandler)
 		{
 			return !((IEnergyHandler) tile).canInterface(side);
 		}
@@ -70,11 +69,12 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
-		if (!this.world().isRemote)
+		
+		if(!world().isRemote)
 		{
-			if (!this.isAddedToEnergyNet)
+			if(!isAddedToEnergyNet)
 			{
-				this.initIC();
+				initIC();
 			}
 		}
 	}
@@ -83,11 +83,12 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	public void onAdded()
 	{
 		super.onAdded();
-		if (!this.world().isRemote)
+		
+		if(!world().isRemote)
 		{
-			if (!this.isAddedToEnergyNet)
+			if(!isAddedToEnergyNet)
 			{
-				this.initIC();
+				initIC();
 			}
 		}
 	}
@@ -96,11 +97,12 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	public void onChunkLoad()
 	{
 		super.onChunkLoad();
-		if (!this.world().isRemote)
+		
+		if(!world().isRemote)
 		{
-			if (!this.isAddedToEnergyNet)
+			if(!isAddedToEnergyNet)
 			{
-				this.initIC();
+				initIC();
 			}
 		}
 	}
@@ -108,69 +110,67 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	@Override
 	public void onWorldSeparate()
 	{
-		this.unloadTileIC2();
+		unloadTileIC2();
 		super.onWorldSeparate();
 	}
 
 	@Override
 	public void onChunkUnload()
 	{
-		this.unloadTileIC2();
+		unloadTileIC2();
 		super.onChunkUnload();
 	}
 
 	@Override
-	public void onRemoved()
-	{
-	}
+	public void onRemoved() {}
 
 	@Override
 	public void preRemove()
 	{
-		this.unloadTileIC2();
+		unloadTileIC2();
 		super.preRemove();
 	}
 
 	protected void initIC()
 	{
-		if (Compatibility.isIndustrialCraft2Loaded())
+		if(Compatibility.isIndustrialCraft2Loaded())
 		{
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) tile()));
 		}
 
-		this.isAddedToEnergyNet = true;
+		isAddedToEnergyNet = true;
 	}
 
 	private void unloadTileIC2()
 	{
-		if (this.isAddedToEnergyNet && this.world() != null)
+		if(isAddedToEnergyNet && world() != null)
 		{
-			if (Compatibility.isIndustrialCraft2Loaded())
+			if(Compatibility.isIndustrialCraft2Loaded())
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) tile()));
 			}
 
-			this.isAddedToEnergyNet = false;
+			isAddedToEnergyNet = false;
 		}
 	}
 
 	@Override
 	public double demandedEnergyUnits()
 	{
-		if (this.getNetwork() == null)
+		if(getNetwork() == null)
 		{
 			return 0.0;
 		}
 
-		return this.getNetwork().getRequest(tile()).getWatts() * Compatibility.TO_IC2_RATIO;
+		return getNetwork().getRequest(tile()).getWatts() * Compatibility.TO_IC2_RATIO;
 	}
 
 	@Override
 	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
-		TileEntity tile = VectorHelper.getTileEntityFromSide(this.world(), new Vector3(tile()), directionFrom);
+		TileEntity tile = VectorHelper.getTileEntityFromSide(world(), new Vector3(tile()), directionFrom);
 		ElectricityPack pack = ElectricityPack.getFromWatts((float) (amount * Compatibility.IC2_RATIO), 120);
-		return this.getNetwork().produce(pack, tile(), tile) * Compatibility.TO_IC2_RATIO;
+		return getNetwork().produce(pack, tile(), tile) * Compatibility.TO_IC2_RATIO;
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
-		return this.powerHandler.getPowerReceiver();
+		return powerHandler.getPowerReceiver();
 	}
 
 	@Override
@@ -200,14 +200,14 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 		Set<TileEntity> ignoreTiles = new HashSet<TileEntity>();
 		ignoreTiles.add(tile());
 
-		for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+		for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tile = new Vector3(tile()).modifyPositionFromSide(direction).getTileEntity(this.world());
+			TileEntity tile = new Vector3(tile()).modifyPositionFromSide(direction).getTileEntity(world());
 			ignoreTiles.add(tile);
 		}
 
-		ElectricityPack pack = ElectricityPack.getFromWatts(workProvider.useEnergy(0, this.getNetwork().getRequest(tile()).getWatts() * Compatibility.TO_BC_RATIO, true) * Compatibility.BC3_RATIO, 120);
-		this.getNetwork().produce(pack, ignoreTiles.toArray(new TileEntity[0]));
+		ElectricityPack pack = ElectricityPack.getFromWatts(workProvider.useEnergy(0, getNetwork().getRequest(tile()).getWatts() * Compatibility.TO_BC_RATIO, true) * Compatibility.BC3_RATIO, 120);
+		getNetwork().produce(pack, ignoreTiles.toArray(new TileEntity[0]));
 	}
 
 	@Override
@@ -223,19 +223,19 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		ElectricityPack pack = ElectricityPack.getFromWatts(maxReceive * Compatibility.TE_RATIO, 1);
-		float request = this.getMaxEnergyStored(from);
+		float request = getMaxEnergyStored(from);
 
-		if (!simulate)
+		if(!simulate)
 		{
-			if (request > 0)
+			if(request > 0)
 			{
-				return (int) (maxReceive - (this.getNetwork().produce(pack, new Vector3(tile()).modifyPositionFromSide(from).getTileEntity(this.world())) * Compatibility.TO_TE_RATIO));
+				return (int) (maxReceive - (getNetwork().produce(pack, new Vector3(tile()).modifyPositionFromSide(from).getTileEntity(world())) * Compatibility.TO_TE_RATIO));
 			}
 
 			return 0;
 		}
 
-		return (int) Math.min(maxReceive, request * Compatibility.TO_TE_RATIO);
+		return (int)Math.min(maxReceive, request * Compatibility.TO_TE_RATIO);
 	}
 
 	@Override
@@ -259,6 +259,6 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int) (this.getNetwork().getRequest(new Vector3(tile()).modifyPositionFromSide(from).getTileEntity(this.world())).getWatts() * Compatibility.TO_TE_RATIO);
+		return (int)Math.round(getNetwork().getRequest(new Vector3(tile()).modifyPositionFromSide(from).getTileEntity(world())).getWatts() * Compatibility.TO_TE_RATIO);
 	}
 }

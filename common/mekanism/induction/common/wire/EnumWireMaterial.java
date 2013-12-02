@@ -28,42 +28,43 @@ public enum EnumWireMaterial
 	public final Vector3 color;
 	private ItemStack wire;
 
-	EnumWireMaterial(float resistance, float electrocutionDamage, float maxAmps, Vector3 color)
+	EnumWireMaterial(float resist, float electrocution, float max, Vector3 vec)
 	{
-		this.resistance = resistance;
-		this.damage = electrocutionDamage;
-		this.maxAmps = maxAmps;
-		this.color = color.scale(1D / 255D);
+		resistance = resist;
+		damage = electrocution;
+		maxAmps = max;
+		color = vec.scale(1D / 255D);
 	}
 
 	public ItemStack getWire()
 	{
-		return this.getWire(1);
+		return getWire(1);
 	}
 
 	public ItemStack getWire(int amount)
 	{
-		ItemStack returnStack = this.wire.copy();
+		ItemStack returnStack = wire.copy();
 		returnStack.stackSize = amount;
+		
 		return returnStack;
 	}
 
 	public void setWire(ItemStack item)
 	{
-		if (this.wire == null)
+		if(wire == null)
 		{
-			this.wire = item;
-			OreDictionary.registerOre(this.name().toLowerCase() + "Wire", this.wire);
+			wire = item;
+			OreDictionary.registerOre(name().toLowerCase() + "Wire", wire);
 		}
 	}
 
 	public void setWire(Item item)
 	{
-		this.setWire(new ItemStack(item, 1, this.ordinal()));
+		setWire(new ItemStack(item, 1, ordinal()));
 	}
 
 	public void setWire(Block block)
 	{
-		this.setWire(new ItemStack(block, 1, this.ordinal()));
+		setWire(new ItemStack(block, 1, ordinal()));
 	}
 }
