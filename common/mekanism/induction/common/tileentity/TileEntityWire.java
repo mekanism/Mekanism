@@ -73,7 +73,7 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 
 					if (tileEntity != null)
 					{
-						if (/* tileEntity.getClass().isInstance(this) && */tileEntity instanceof INetworkProvider)
+						if (tileEntity instanceof INetworkProvider)
 						{
 							this.getNetwork().merge(((INetworkProvider) tileEntity).getNetwork());
 						}
