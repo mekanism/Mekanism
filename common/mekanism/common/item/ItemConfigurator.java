@@ -23,8 +23,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
 
-public class ItemConfigurator extends ItemEnergized
+public class ItemConfigurator extends ItemEnergized implements IToolWrench
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -302,4 +303,13 @@ public class ItemConfigurator extends ItemEnergized
 	{
 		return false;
 	}
+
+	@Override
+	public boolean canWrench(EntityPlayer player, int x, int y, int z)
+	{
+		return true;
+	}
+
+	@Override
+	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
 }

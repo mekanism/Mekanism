@@ -61,7 +61,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				
 				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
-					GL11.glColor4f(1F, 1F, 1F, (float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity);
+					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+0.3F));
 					GL11.glCallList(displayList[getStages(data.height)-1]);
 				}
 				else {

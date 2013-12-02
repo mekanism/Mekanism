@@ -48,6 +48,20 @@ public class ItemBlockOre extends ItemBlock
 				list.add("It is known to have many uses in");
 				list.add("the construction of machinery.");
 			}
+			else if(itemstack.getItemDamage() == 1)
+			{
+				list.add("A common, conductive material that");
+				list.add("can be used in the production of.");
+				list.add("wires. It's ability to withstand");
+				list.add("high heats also makes it essential");
+				list.add("to advanced machinery.");
+			}
+			else if(itemstack.getItemDamage() == 2)
+			{
+				list.add("A lightweight, yet sturdy, conductive");
+				list.add("material that is found slighly less");
+				list.add("commonly than  Copper.");
+			}
 		}
 	}
 	
