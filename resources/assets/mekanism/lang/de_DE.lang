@@ -21,7 +21,6 @@ item.PortableTeleporter.name=Tragbarer Teleporter
 item.TeleportationCore.name=Teleportationskern
 item.Configurator.name=Konfigurator
 item.NetworkReader.name=Netzwerklesegerät
-item.ManganeseAlloy.name=Manganlegierung
 item.WalkieTalkie.name=Walkie-Talkie
 
 //Gas Tank
@@ -64,6 +63,8 @@ tile.MachineBlock2.RotaryCondensentrator.name=Rotationskondensentrator
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
+tile.OreBlock.CopperOre.name=Kupfererz
+tile.OreBlock.TinOre.name=Zinnerz
 
 //Transmitters
 tile.Transmitter.PressurizedTube.name=Druckröhre
@@ -114,6 +115,8 @@ item.osmiumIngot.name=Osmiumbarren
 item.bronzeIngot.name=Bronzebarren
 item.glowstoneIngot.name=Glowstonebarren
 item.steelIngot.name=Stahlbarren
+item.copperIngot.name=Kupferbarren
+item.tinIngot.name=Zinnbarren
 
 //Gasses
 gas.hydrogen=Wasserstoff
@@ -153,6 +156,7 @@ gui.teleport=Teleport
 gui.eject=Auswerfen
 gui.input=Input
 gui.slots=Slots
+gui.state=Status
 
 gui.configuration=Konfiguration
 gui.configuration.strictInput=Strikter Input
@@ -226,11 +230,15 @@ gui.digitalMiner.idle=Bereit
 tooltip.configurator.modify=Verändern
 tooltip.configurator.empty=Leeren
 tooltip.configurator.wrench=Schraubenschlüssel
+tooltip.configurator.link=Verbinden
 tooltip.configurator.pumpReset=Kalkulation der Elektrischen Pumpe neu stellen
 tooltip.configurator.toggleDiverter=Divertermodus geändert zu
 tooltip.configurator.toggleColor=Farbe geändert zu
 tooltip.configurator.viewColor=Aktuelle Farbe
 tooltip.configurator.unauth=Diese Truhe ist verschlossen
+tooltip.configurator.noLink=Kein Link
+tooltip.configurator.linkMsg=Verbunden mit
+tooltip.configurator.dim=Dimension
 
 //Redstone control
 control.disabled=Deaktiviert
@@ -362,9 +370,9 @@ item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
 
-//*********//
-//INDUCTION//
-//*********//
+//*****//
+//TOOLS//
+//*****//
 
 //Blocks
 tile.Tesla.name=Teslaspule
@@ -372,8 +380,16 @@ tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Elektromagnetischer Kontraktor
 tile.Battery.name=Modulare Batterie
 
-//Items
-item.Linker.name=Elektrostatischer Linker
+tile.mekanism:wire.copper.name=Kupferkabel
+tile.mekanism:wire.tin.name=Zinnkabel
+tile.mekanism:wire.iron.name=Eisenkabel
+tile.mekanism:wire.aluminum.name=Aluminiumkabel
+tile.mekanism:wire.silver.name=Silberkabel
+tile.mekanism:wire.superconductor.name=Supraleitkabel
+
+//General text
+text.contractor.success=Kontraktor erfolgreich verbunden
+text.tesla.success=Teslaspule erfolgreich verbunden
 
 //Gui text
 gui.heatGenerator.fuel=Brennstoff
