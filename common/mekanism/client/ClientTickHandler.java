@@ -136,7 +136,7 @@ public class ClientTickHandler implements ITickHandler
 	                    		MekanismUtils.setPrivateValue(player, download.getResourceLocation(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
 	                    	}
 	                    }
-	                    else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.username)) || player.username.contains("Player"))
+	                    else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.username)))
 	                    {
 	                    	CapeBufferDownload download = donateDownload.get(player.username);
 	                    	

@@ -251,7 +251,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public int getDelay()
 	{
-		return MekanismUtils.getTicks(getSpeedMultiplier(), 100);
+		return MekanismUtils.getTicks(getSpeedMultiplier(), 80);
 	}
 	
 	public void setReplace(Object3D obj)
