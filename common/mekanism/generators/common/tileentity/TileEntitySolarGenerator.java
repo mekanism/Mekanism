@@ -11,7 +11,7 @@ import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -94,7 +94,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + getBoost());
+				setEnergy(electricityStored + getProduction());
 			}
 			else {
 				setActive(false);
@@ -130,9 +130,26 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		return electricityStored < MAX_ELECTRICITY && seesSun && MekanismUtils.canFunction(this);
 	}
 	
-	public double getBoost()
+	public double getProduction()
 	{
-		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier() : 1)) : 0;
+		double ret = 0;
+		
+		if(seesSun)
+		{
+			ret = GENERATION_RATE;
+			
+			if(worldObj.provider instanceof ISolarLevel)
+			{
+				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
+			}
+			
+			if(worldObj.provider.getBiomeGenForCoords(xCoord << 4, zCoord << 4) instanceof BiomeGenDesert)
+			{
+				ret *= 1.5;
+			}
+		}
+		
+		return 0;
 	}
 
 	@Override
