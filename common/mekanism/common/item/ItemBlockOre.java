@@ -16,6 +16,8 @@ import net.minecraft.util.Icon;
 /**
  * Item class for handling multiple ore block IDs.
  * 0: Osmium Ore
+ * 1: Copper Ore
+ * 2: Tin Ore
  * @author AidanBrady
  *
  */
@@ -70,6 +72,12 @@ public class ItemBlockOre extends ItemBlock
 		{
 			case 0:
 				name = "OsmiumOre";
+				break;
+			case 1:
+				name = "CopperOre";
+				break;
+			case 2:
+				name = "TinOre";
 				break;
 			default:
 				name = "Unknown";

@@ -63,6 +63,8 @@ tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
+tile.OreBlock.CopperOre.name=Copper Ore
+tile.OreBlock.TinOre.name=Tin Ore
 
 //Transmitters
 tile.Transmitter.PressurizedTube.name=Pressurized Tube
@@ -113,6 +115,8 @@ item.osmiumIngot.name=Osmium Ingot
 item.bronzeIngot.name=Bronze Ingot
 item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
+item.copperIngot.name=Copper Ingot
+item.tinIngot.name=Tin Ingot
 
 //Gasses
 gas.hydrogen=Hydrogen
