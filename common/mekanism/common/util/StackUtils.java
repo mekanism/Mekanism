@@ -23,10 +23,10 @@ public final class StackUtils
 		}
 		
 		int remain = stack.stackSize % 2;
-		int split = (int)((float)stack.stackSize/2F);
+		int split = (int)((float)(stack.stackSize)/2F);
 		
-		ret.add(MekanismUtils.size(stack, split+remain));
-		ret.add(MekanismUtils.size(stack, split));
+		ret.add(size(stack, split+remain));
+		ret.add(size(stack, split));
 		
 		return ret;
 	}
@@ -60,7 +60,7 @@ public final class StackUtils
 			List<ItemStack> split = split(size(stack1, diff));
 			
 			ret.add(subtract(stack1, split.get(0)));
-			ret.add(add(stack2, split.get(1)));
+			ret.add(add(stack2, split.get(0)));
 		}
 		else if(getSize(stack2) > getSize(stack1))
 		{
@@ -69,7 +69,7 @@ public final class StackUtils
 			List<ItemStack> split = split(size(stack2, diff));
 			
 			ret.add(subtract(stack2, split.get(0)));
-			ret.add(add(stack1, split.get(1)));
+			ret.add(add(stack1, split.get(0)));
 		}
 		
 		return ret;

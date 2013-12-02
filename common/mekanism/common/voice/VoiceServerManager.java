@@ -6,13 +6,7 @@ import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.NetLoginHandler;
-import net.minecraft.network.packet.NetHandler;
-import net.minecraft.network.packet.Packet1Login;
-import net.minecraft.server.MinecraftServer;
-import cpw.mods.fml.common.network.IConnectionHandler;
-import cpw.mods.fml.common.network.Player;
+import mekanism.common.Mekanism;
 
 public class VoiceServerManager
 {
@@ -31,7 +25,7 @@ public class VoiceServerManager
 		System.out.println("[Mekanism] VoiceServer: Starting up server...");
 		
 		try {
-			serverSocket = new ServerSocket(36123);
+			serverSocket = new ServerSocket(Mekanism.VOICE_PORT);
 			(listenThread = new ListenThread()).start();
 		} catch(Exception e) {}
 		

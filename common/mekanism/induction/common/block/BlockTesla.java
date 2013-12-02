@@ -3,10 +3,12 @@
  */
 package mekanism.induction.common.block;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.util.MekanismUtils;
 import mekanism.induction.client.render.BlockRenderingHandler;
-import mekanism.induction.common.item.ItemCoordLink;
 import mekanism.induction.common.tileentity.TileEntityTesla;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -29,8 +31,8 @@ public class BlockTesla extends Block implements ITileEntityProvider
 	public BlockTesla(int id)
 	{
 		super(id, Material.piston);
-		this.setCreativeTab(Mekanism.tabMekanism);
-		this.setTextureName("mekanism:machine");
+		setCreativeTab(Mekanism.tabMekanism);
+		setTextureName("mekanism:machine");
 		setHardness(5F);
 		setResistance(10F);
 	}
@@ -44,64 +46,68 @@ public class BlockTesla extends Block implements ITileEntityProvider
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
 	{
 		TileEntity t = world.getBlockTileEntity(x, y, z);
 		TileEntityTesla tileEntity = ((TileEntityTesla) t).getControllingTelsa();
 
-		if(entityPlayer.getCurrentEquippedItem() != null)
+		if(player.getCurrentEquippedItem() != null)
 		{
-			if(entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
+			if(player.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
 			{
-				tileEntity.setDye(entityPlayer.getCurrentEquippedItem().getItemDamage());
+				tileEntity.setDye(player.getCurrentEquippedItem().getItemDamage());
 
-				if(!entityPlayer.capabilities.isCreativeMode)
+				if(!player.capabilities.isCreativeMode)
 				{
-					entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
+					player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				}
 
 				return true;
 			}
-			else if(entityPlayer.getCurrentEquippedItem().itemID == Item.redstone.itemID)
+			else if(player.getCurrentEquippedItem().itemID == Item.redstone.itemID)
 			{
 				boolean status = tileEntity.toggleEntityAttack();
 
-				if(!entityPlayer.capabilities.isCreativeMode)
+				if(!player.capabilities.isCreativeMode)
 				{
-					entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
+					player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				}
 
 				if(!world.isRemote)
 				{
-					entityPlayer.addChatMessage("Toggled entity attack to: " + status);
+					player.addChatMessage("Toggled entity attack to: " + status);
 				}
 
 				return true;
 			}
-			else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemCoordLink)
+			else if(player.getCurrentEquippedItem().getItem() instanceof ItemConfigurator)
 			{
 				if(tileEntity.linked == null)
 				{
-					ItemCoordLink link = ((ItemCoordLink) entityPlayer.getCurrentEquippedItem().getItem());
-					Object3D linkObj = link.getLink(entityPlayer.getCurrentEquippedItem());
-
-					if(linkObj != null)
+					ItemConfigurator item = ((ItemConfigurator)player.getCurrentEquippedItem().getItem());
+					
+					if(item.getState(player.getCurrentEquippedItem()) == 3)
 					{
-						if(!world.isRemote)
+						Object3D linkObj = item.getLink(player.getCurrentEquippedItem());
+	
+						if(linkObj != null)
 						{
-							int dimID = link.getLinkDim(entityPlayer.getCurrentEquippedItem());
-							World otherWorld = MinecraftServer.getServer().worldServerForDimension(dimID);
-
-							if(linkObj.getTileEntity(otherWorld) instanceof TileEntityTesla)
+							if(!world.isRemote)
 							{
-								tileEntity.setLink(new Vector3(((TileEntityTesla) linkObj.getTileEntity(otherWorld)).getTopTelsa()), dimID, true);
-
-								entityPlayer.addChatMessage("Linked " + this.getLocalizedName() + " with " + " [" + (int) linkObj.xCoord + ", " + (int) linkObj.yCoord + ", " + (int) linkObj.zCoord + "]");
-
-								link.clearLink(entityPlayer.getCurrentEquippedItem());
-								world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "ambient.weather.thunder", 5, 1);
-
-								return true;
+								int dimID = item.getLink(player.getCurrentEquippedItem()).dimensionId;
+								World otherWorld = MinecraftServer.getServer().worldServerForDimension(dimID);
+	
+								if(linkObj.getTileEntity(otherWorld) instanceof TileEntityTesla)
+								{
+									tileEntity.setLink(new Vector3(((TileEntityTesla)linkObj.getTileEntity(otherWorld)).getTopTelsa()), dimID, true);
+									
+									player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("text.tesla.success") + "!");
+	
+									item.clearLink(player.getCurrentEquippedItem());
+									world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "ambient.weather.thunder", 5, 1);
+	
+									return true;
+								}
 							}
 						}
 					}
@@ -111,7 +117,7 @@ public class BlockTesla extends Block implements ITileEntityProvider
 
 					if(!world.isRemote)
 					{
-						entityPlayer.addChatMessage("Unlinked Tesla.");
+						player.addChatMessage("Unlinked Tesla.");
 					}
 
 					return true;
@@ -123,10 +129,10 @@ public class BlockTesla extends Block implements ITileEntityProvider
 
 			if(world.isRemote)
 			{
-				entityPlayer.addChatMessage("Tesla receive mode is now " + receiveMode);
+				player.addChatMessage("Tesla receive mode is now " + receiveMode);
 			}
+			
 			return true;
-
 		}
 
 		return false;

@@ -1,9 +1,11 @@
 package mekanism.induction.common.block;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.util.MekanismUtils;
 import mekanism.induction.client.render.BlockRenderingHandler;
-import mekanism.induction.common.item.ItemCoordLink;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -36,42 +38,46 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int par2, int par3, int par4, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float posX, float posY, float posZ)
 	{
-		TileEntityEMContractor contractor = (TileEntityEMContractor) world.getBlockTileEntity(par2, par3, par4);
+		TileEntityEMContractor contractor = (TileEntityEMContractor)world.getBlockTileEntity(x, y, z);
 
-		if(entityPlayer.getCurrentEquippedItem() != null)
+		if(player.getCurrentEquippedItem() != null)
 		{
-			if(entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
+			if(player.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
 			{
-				contractor.setDye(entityPlayer.getCurrentEquippedItem().getItemDamage());
+				contractor.setDye(player.getCurrentEquippedItem().getItemDamage());
 
-				if(!entityPlayer.capabilities.isCreativeMode)
+				if(!player.capabilities.isCreativeMode)
 				{
-					entityPlayer.inventory.decrStackSize(entityPlayer.inventory.currentItem, 1);
+					player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				}
 				
 				return true;
 			}
-			else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemCoordLink)
+			else if(player.getCurrentEquippedItem().getItem() instanceof ItemConfigurator)
 			{
-				ItemCoordLink link = ((ItemCoordLink) entityPlayer.getCurrentEquippedItem().getItem());
-				Object3D linkVec = link.getLink(entityPlayer.getCurrentEquippedItem());
-
-				if(linkVec != null)
+				ItemConfigurator item = ((ItemConfigurator)player.getCurrentEquippedItem().getItem());
+				
+				if(item.getState(player.getCurrentEquippedItem()) == 3)
 				{
-					if(linkVec.getTileEntity(world) instanceof TileEntityEMContractor)
+					Object3D linkVec = item.getLink(player.getCurrentEquippedItem());
+	
+					if(linkVec != null)
 					{
-						contractor.setLink((TileEntityEMContractor) linkVec.getTileEntity(world), true);
-
-						if(world.isRemote)
+						if(linkVec.getTileEntity(world) instanceof TileEntityEMContractor)
 						{
-							entityPlayer.addChatMessage("Linked " + getLocalizedName() + " with " + " [" + (int) linkVec.xCoord + ", " + (int) linkVec.yCoord + ", " + (int) linkVec.zCoord + "]");
+							contractor.setLink((TileEntityEMContractor)linkVec.getTileEntity(world), true);
+	
+							if(world.isRemote)
+							{
+								player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("text.contractor.success") + "!");
+							}
+	
+							item.clearLink(player.getCurrentEquippedItem());
+	
+							return true;
 						}
-
-						link.clearLink(entityPlayer.getCurrentEquippedItem());
-
-						return true;
 					}
 				}
 
@@ -79,7 +85,7 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 			}
 		}
 
-		if(!entityPlayer.isSneaking())
+		if(!player.isSneaking())
 		{
 			contractor.incrementFacing();
 		}
@@ -94,7 +100,7 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		TileEntityEMContractor tileContractor = (TileEntityEMContractor) world.getBlockTileEntity(x, y, z);
+		TileEntityEMContractor tileContractor = (TileEntityEMContractor)world.getBlockTileEntity(x, y, z);
 
 		if(!world.isRemote && !tileContractor.isLatched())
 		{

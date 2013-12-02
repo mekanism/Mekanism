@@ -547,7 +547,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	}
     
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float posX, float posY, float posZ)
     {
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{

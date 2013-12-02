@@ -21,7 +21,6 @@ item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
-item.ManganeseAlloy.name=Manganese Alloy
 item.WalkieTalkie.name=Walkie-Talkie
 
 //Gas Tank
@@ -64,6 +63,8 @@ tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
+tile.OreBlock.CopperOre.name=Copper Ore
+tile.OreBlock.TinOre.name=Tin Ore
 
 //Transmitters
 tile.Transmitter.PressurizedTube.name=Pressurized Tube
@@ -114,6 +115,8 @@ item.osmiumIngot.name=Osmium Ingot
 item.bronzeIngot.name=Bronze Ingot
 item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
+item.copperIngot.name=Copper Ingot
+item.tinIngot.name=Tin Ingot
 
 //Gasses
 gas.hydrogen=Hydrogen
@@ -153,6 +156,7 @@ gui.teleport=Teleport
 gui.eject=Eject
 gui.input=Input
 gui.slots=Slots
+gui.state=State
 
 gui.configuration=Configuration
 gui.configuration.strictInput=Strict Input
@@ -166,6 +170,7 @@ gui.factory.crushing=Crushing
 gui.factory.compressing=Compressing
 gui.factory.combining=Combining
 gui.factory.purifying=Purifying
+gui.factory.autoSort=Auto-sort
 
 gui.oredictFilter=OreDict Filter
 gui.oredictFilter.noKey=No key entered
@@ -225,11 +230,15 @@ gui.digitalMiner.idle=Idle
 tooltip.configurator.modify=Modify
 tooltip.configurator.empty=Empty
 tooltip.configurator.wrench=Wrench
+tooltip.configurator.link=Link
 tooltip.configurator.pumpReset=Reset Electric Pump calculation
 tooltip.configurator.toggleDiverter=Diverter mode changed to
 tooltip.configurator.toggleColor=Color bumped to
 tooltip.configurator.viewColor=Current color
 tooltip.configurator.unauth=This chest is locked
+tooltip.configurator.noLink=No link
+tooltip.configurator.linkMsg=Bound to
+tooltip.configurator.dim=dimension
 
 //Redstone control
 control.disabled=Disabled
@@ -371,6 +380,7 @@ tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Electromagnetic Contractor
 tile.Battery.name=Modular Battery
 
+<<<<<<< HEAD
 tile.mekanism:wire.copper.name=Copper Wire
 tile.mekanism:wire.tin.name=Tin Wire
 tile.mekanism:wire.iron.name=Iron Wire
@@ -380,6 +390,11 @@ tile.mekanism:wire.superconductor.name=Superconductor Wire
 
 //Items
 item.Linker.name=Electrostatic Linker
+=======
+//General text
+text.contractor.success=Linked contractor successfully
+text.tesla.success=Linked tesla successfully
+>>>>>>> master
 
 //Gui text
 gui.heatGenerator.fuel=Fuel

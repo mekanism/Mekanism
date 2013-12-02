@@ -20,7 +20,6 @@ import mekanism.induction.common.furnace.TileEntityAdvancedFurnace;
 import mekanism.induction.common.item.ItemBlockContractor;
 import mekanism.induction.common.item.ItemBlockMultimeter;
 import mekanism.induction.common.item.ItemBlockWire;
-import mekanism.induction.common.item.ItemLinker;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
 import mekanism.induction.common.tileentity.TileEntityMultimeter;
@@ -103,8 +102,6 @@ public class MekanismInduction implements IModule
 		return NEXT_ITEM_ID++;
 	}
 
-	// Items
-	public static Item Linker;
 	/** With Forge Multipart; Use EnumWireMaterial reference. **/
 	private static Item itemPartWire;
 
@@ -143,9 +140,7 @@ public class MekanismInduction implements IModule
 		TileEntityEMContractor.MAX_SPEED = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Max Item Speed", TileEntityEMContractor.MAX_SPEED).getDouble(TileEntityEMContractor.MAX_SPEED);
 		TileEntityEMContractor.PUSH_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Push Delay", TileEntityEMContractor.PUSH_DELAY).getInt(TileEntityEMContractor.PUSH_DELAY);
 
-		// Items
-		Linker = new ItemLinker(Mekanism.configuration.get(Mekanism.configuration.CATEGORY_ITEM, "Linker", getNextItemID()).getInt()).setUnlocalizedName("Linker");
-
+		//Register Items
 		if (Loader.isModLoaded("ForgeMultipart"))
 		{
 			try
@@ -187,8 +182,6 @@ public class MekanismInduction implements IModule
 		}
 
 		Mekanism.configuration.save();
-
-		GameRegistry.registerItem(Linker, "Linker");
 
 		GameRegistry.registerBlock(Tesla, "Tesla");
 		GameRegistry.registerBlock(Multimeter, ItemBlockMultimeter.class, "Multimeter");
@@ -255,14 +248,10 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-
 		/**
 		 * Recipes
 		 */
 		final ItemStack defaultWire = EnumWireMaterial.IRON.getWire();
-
-		/** Linker **/
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Linker), new Object[] { " E ", "GCG", " E ", 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium" }));
 
 		/** Tesla - by Jyzarc */
 		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] { "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8) }));

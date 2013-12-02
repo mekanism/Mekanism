@@ -134,7 +134,6 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 					{
 						if(new Vector3((TileEntity)tesla).distance(new Vector3(this)) < getRange())
 						{
-							
 							//Make sure Tesla is not part of this tower.
 							if(!connectedTeslas.contains(tesla) && tesla.canReceive(this))
 							{
@@ -257,7 +256,7 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 	@Override
 	public boolean canReceive(TileEntity tileEntity)
 	{
-		return canReceive && !outputBlacklist.contains(tileEntity) && getRequest(ForgeDirection.UNKNOWN) > 0;
+		return canReceive && !outputBlacklist.contains(tileEntity) && getMaxEnergy()-getEnergy() > 0;
 	}
 	
 	@Override
@@ -528,19 +527,19 @@ public class TileEntityTesla extends TileEntityElectricBlock implements ITesla
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.writeToNBT(nbt);
-		nbt.setInteger("dyeID", dyeID);
-		nbt.setBoolean("canReceive", canReceive);
-		nbt.setBoolean("attackEntities", attackEntities);
+		super.writeToNBT(nbtTags);
+		nbtTags.setInteger("dyeID", dyeID);
+		nbtTags.setBoolean("canReceive", canReceive);
+		nbtTags.setBoolean("attackEntities", attackEntities);
 		
 		if(linked != null)
 		{
-			nbt.setInteger("link_x", (int)linked.x);
-			nbt.setInteger("link_y", (int)linked.y);
-			nbt.setInteger("link_z", (int)linked.z);
-			nbt.setInteger("linkDim", linkDim);
+			nbtTags.setInteger("link_x", (int)linked.x);
+			nbtTags.setInteger("link_y", (int)linked.y);
+			nbtTags.setInteger("link_z", (int)linked.z);
+			nbtTags.setInteger("linkDim", linkDim);
 		}
 	}
 	

@@ -40,7 +40,20 @@ public class ItemConfigurator extends ItemEnergized
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add(EnumColor.PINK + "State: " + EnumColor.GREY + getState(getState(itemstack)));
+		list.add(EnumColor.PINK + MekanismUtils.localize("gui.state") + ": " + EnumColor.GREY + getStateDisplay(getState(itemstack)));
+		
+		if(getState(itemstack) == 3)
+		{
+			if(hasLink(itemstack))
+			{
+				Object3D obj = getLink(itemstack);
+
+				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.linkMsg") + " " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", " + MekanismUtils.localize("tooltip.configurator.dim") + " " + EnumColor.INDIGO + obj.dimensionId);
+			}
+			else {
+				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.noLink"));
+			}
+		}
 	}
     
     @Override
@@ -177,12 +190,23 @@ public class ItemConfigurator extends ItemEnergized
     				return true;
     			}
     		}
+    		else if(getState(stack) == 3)
+    		{
+    			if(!world.isRemote && player.isSneaking())
+    			{
+    				Object3D obj = new Object3D(x, y, z, world.provider.dimensionId);
+    				player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Set link to block " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", dimension " + EnumColor.INDIGO + obj.dimensionId);
+    				setLink(stack, obj);
+    				
+    				return true;
+    			}
+    		}
     	}
     	
         return false;
     }
     
-    public String getState(int state)
+    public String getStateDisplay(int state)
     {
     	switch(state)
     	{
@@ -192,6 +216,8 @@ public class ItemConfigurator extends ItemEnergized
     			return MekanismUtils.localize("tooltip.configurator.empty");
     		case 2:
     			return MekanismUtils.localize("tooltip.configurator.wrench");
+    		case 3:
+    			return MekanismUtils.localize("tooltip.configurator.link");
     	}
     	
     	return "unknown";
@@ -207,6 +233,8 @@ public class ItemConfigurator extends ItemEnergized
     			return EnumColor.AQUA;
     		case 2:
     			return EnumColor.YELLOW;
+    		case 3:
+    			return EnumColor.PINK;
     	}
     	
     	return EnumColor.GREY;
@@ -238,6 +266,36 @@ public class ItemConfigurator extends ItemEnergized
 		
 		return state;
     }
+    
+    public boolean hasLink(ItemStack itemStack)
+	{
+		return getLink(itemStack) != null;
+	}
+
+	public Object3D getLink(ItemStack itemStack)
+	{
+		if(itemStack.stackTagCompound == null || !itemStack.getTagCompound().hasKey("position"))
+		{
+			return null;
+		}
+		
+		return Object3D.read(itemStack.getTagCompound().getCompoundTag("position"));
+	}
+
+	public void setLink(ItemStack itemStack, Object3D obj)
+	{
+		if(itemStack.getTagCompound() == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.getTagCompound().setCompoundTag("position", obj.write(new NBTTagCompound()));
+	}
+
+	public void clearLink(ItemStack itemStack)
+	{
+		itemStack.getTagCompound().removeTag("position");
+	}
 	
 	@Override
 	public boolean canSend(ItemStack itemStack)
