@@ -52,35 +52,16 @@ public class InductionClientProxy extends InductionCommonProxy
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-		if (tileEntity instanceof TileEntityMultimeter)
+		if(tileEntity instanceof TileEntityMultimeter)
 		{
 			return new GuiMultimeter(player.inventory, ((TileEntityMultimeter) tileEntity));
 		}
-		else if (tileEntity instanceof TileEntityBattery)
+		else if(tileEntity instanceof TileEntityBattery)
 		{
 			return new GuiBattery(player.inventory, ((TileEntityBattery) tileEntity));
 		}
 
 		return null;
-	}
-
-	@Override
-	public boolean isPaused()
-	{
-		if (FMLClientHandler.instance().getClient().isSingleplayer() && !FMLClientHandler.instance().getClient().getIntegratedServer().getPublic())
-		{
-			GuiScreen screen = FMLClientHandler.instance().getClient().currentScreen;
-
-			if (screen != null)
-			{
-				if (screen.doesGuiPauseGame())
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	@Override
@@ -92,7 +73,7 @@ public class InductionClientProxy extends InductionCommonProxy
 	@Override
 	public void renderElectricShock(World world, Vector3 start, Vector3 target, float r, float g, float b, boolean split)
 	{
-		if (world.isRemote)
+		if(world.isRemote)
 		{
 			FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FXElectricBolt(world, start, target, split).setColor(r, g, b));
 		}
