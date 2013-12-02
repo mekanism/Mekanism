@@ -3,6 +3,8 @@ package mekanism.induction.client.render;
 import java.nio.FloatBuffer;
 import java.util.Map;
 
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.wire.PartConductor;
 import mekanism.induction.common.wire.PartWire;
@@ -53,16 +55,18 @@ public class RenderPartWire
 
 	static
 	{
-		models = CCModel.parseObjModels(new ResourceLocation("resonantinduction", "models/wire.obj"), 7, new InvertX());
-		for (CCModel c : models.values())
+		models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "wire.obj"), 7, new InvertX());
+		
+		for(CCModel c : models.values())
 		{
 			c.apply(new Translation(.5, 0, .5));
 			c.computeLighting(LightModel.standardLightModel);
 			c.shrinkUVs(0.0005);
 		}
 
-		shinyModels = CCModel.parseObjModels(new ResourceLocation("resonantinduction", "models/wireShine.obj"), 7, new InvertX());
-		for (CCModel c : shinyModels.values())
+		shinyModels = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "wireShine.obj"), 7, new InvertX());
+		
+		for(CCModel c : shinyModels.values())
 		{
 			c.apply(new Translation(.5, 0, .5));
 			c.computeLighting(LightModel.standardLightModel);
@@ -81,8 +85,7 @@ public class RenderPartWire
 		GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, specular);
 		GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, zero);
 		GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, zero);
-		GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, 128f);
-
+		GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, 128F);
 	}
 
 	public static void loadBuffer(FloatBuffer buffer, float... src)
@@ -94,7 +97,7 @@ public class RenderPartWire
 
 	public void renderShine(PartWire wire, double x, double y, double z, float f)
 	{
-		if (wire != null)
+		if(wire != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_BLEND);
@@ -113,12 +116,17 @@ public class RenderPartWire
 			CCRenderState.changeTexture(WIRE_SHINE);
 			CCRenderState.startDrawing(7);
 			renderSideShine(ForgeDirection.UNKNOWN, wire);
+			
 			byte renderSides = wire.getAllCurrentConnections();
-			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				if (PartConductor.connectionMapContainsSide(renderSides, side))
+				if(PartConductor.connectionMapContainsSide(renderSides, side))
+				{
 					renderSideShine(side, wire);
+				}
 			}
+			
 			CCRenderState.draw();
 
 			GL11.glDisable(GL11.GL_LIGHTING);
@@ -149,10 +157,13 @@ public class RenderPartWire
 		CCRenderState.setBrightness(wire.world(), wire.x(), wire.y(), wire.z());
 		renderSide(ForgeDirection.UNKNOWN, wire);
 		byte renderSides = wire.getAllCurrentConnections();
-		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if (PartConductor.connectionMapContainsSide(renderSides, side))
+			if(PartConductor.connectionMapContainsSide(renderSides, side))
+			{
 				renderSide(side, wire);
+			}
 		}
 	}
 
@@ -163,7 +174,8 @@ public class RenderPartWire
 		Vector3 materialColour = wire.getMaterial().color;
 		Colour colour = new ColourRGBA(materialColour.x, materialColour.y, materialColour.z, 1);
 		renderPart(wireIcon, models.get(name), wire.x(), wire.y(), wire.z(), colour);
-		if (wire.isInsulated())
+		
+		if(wire.isInsulated())
 		{
 			Vector3 vecColour = MekanismInduction.DYE_COLORS[wire.dyeID];
 			Colour insulationColour = new ColourRGBA(vecColour.x, vecColour.y, vecColour.z, 1);

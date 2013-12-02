@@ -1133,6 +1133,7 @@ public final class MekanismUtils
     	RENDER("render"),
     	TEXTURE_BLOCKS("textures/blocks"),
     	TEXTURE_ITEMS("textures/items"),
+    	MODEL("models"),
     	INFUSE("infuse");
     	
     	private String prefix;
