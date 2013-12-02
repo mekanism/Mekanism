@@ -236,9 +236,9 @@ public class Mekanism
 	public static boolean forceBuildcraft = false;
 	public static boolean overrideUERatios = true;
 	public static int obsidianTNTBlastRadius = 12;
-	public static int osmiumGenerationAmount = 8;
-	public static int copperGenerationAmount = 12;
-	public static int tinGenerationAmount = 10;
+	public static int osmiumGenerationAmount = 12;
+	public static int copperGenerationAmount = 16;
+	public static int tinGenerationAmount = 14;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;	
 	public static int VOICE_PORT = 36123;

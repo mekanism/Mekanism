@@ -60,7 +60,7 @@ public class ItemBlockOre extends ItemBlock
 			{
 				list.add("A lightweight, yet sturdy, conductive");
 				list.add("material that is found slighly less");
-				list.add("commonly than  Copper.");
+				list.add("commonly than Copper.");
 			}
 		}
 	}
