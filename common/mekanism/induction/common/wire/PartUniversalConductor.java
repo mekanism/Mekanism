@@ -59,7 +59,7 @@ public abstract class PartUniversalConductor extends PartConductor implements IE
 	{
 		if(tile instanceof IEnergyHandler)
 		{
-			return !((IEnergyHandler) tile).canInterface(side);
+			return !((IEnergyHandler)tile).canInterface(side);
 		}
 		
 		return super.isConnectionPrevented(tile, side);

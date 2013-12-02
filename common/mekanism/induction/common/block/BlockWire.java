@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import universalelectricity.core.block.IConductor;
 import universalelectricity.prefab.block.BlockConductor;
 
 /**
@@ -27,31 +28,45 @@ public class BlockWire extends BlockConductor
 	public BlockWire(int id)
 	{
 		super(Mekanism.configuration.getBlock("wire", id).getInt(id), Material.cloth);
-		this.setUnlocalizedName(MekanismInduction.PREFIX + "wire");
-		this.setStepSound(soundClothFootstep);
-		this.setResistance(0.2F);
-		this.setHardness(0.1f);
-		this.setBlockBounds(0.3f, 0.3f, 0.3f, 0.7f, 0.7f, 0.7f);
-		this.setCreativeTab(CreativeTabs.tabRedstone);
-		Block.setBurnProperties(this.blockID, 30, 60);
-		this.setTextureName(MekanismInduction.PREFIX + "wire");
-		this.setCreativeTab(Mekanism.tabMekanism);
+		
+		setUnlocalizedName(MekanismInduction.PREFIX + "wire");
+		setStepSound(soundClothFootstep);
+		setResistance(0.2F);
+		setHardness(0.1f);
+		setBlockBounds(0.3f, 0.3f, 0.3f, 0.7f, 0.7f, 0.7f);
+		setCreativeTab(CreativeTabs.tabRedstone);
+		Block.setBurnProperties(blockID, 30, 60);
+		setTextureName(MekanismInduction.PREFIX + "wire");
+		setCreativeTab(Mekanism.tabMekanism);
+	}
+	
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
+	{
+		super.onNeighborBlockChange(world, x, y, z, blockID);
+		
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(tileEntity instanceof IConductor)
+		{
+			world.markBlockForUpdate(x, y, z);
+		}
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
 	{
 		TileEntity t = world.getBlockTileEntity(x, y, z);
-		TileEntityWire tileEntity = (TileEntityWire) t;
+		TileEntityWire tileEntity = (TileEntityWire)t;
 
-		if (entityPlayer.getCurrentEquippedItem() != null)
+		if(entityPlayer.getCurrentEquippedItem() != null)
 		{
-			if (entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
+			if(entityPlayer.getCurrentEquippedItem().itemID == Item.dyePowder.itemID)
 			{
 				tileEntity.setDye(entityPlayer.getCurrentEquippedItem().getItemDamage());
 				return true;
 			}
-			else if (entityPlayer.getCurrentEquippedItem().itemID == Block.cloth.blockID && !tileEntity.isInsulated)
+			else if(entityPlayer.getCurrentEquippedItem().itemID == Block.cloth.blockID && !tileEntity.isInsulated)
 			{
 				tileEntity.setInsulated();
 				tileEntity.setDye(BlockColored.getDyeFromBlock(entityPlayer.getCurrentEquippedItem().getItemDamage()));
@@ -63,30 +78,18 @@ public class BlockWire extends BlockConductor
 		return false;
 	}
 
-	/**
-	 * Is this block (a) opaque and (b) a full 1m cube? This determines whether or not to render the
-	 * shared face of two adjacent blocks and also whether the player can attach torches, redstone
-	 * wire, etc to this block.
-	 */
 	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
 	}
 
-	/**
-	 * If this block doesn't render as an ordinary block it will return False (examples: signs,
-	 * buttons, stairs, etc)
-	 */
 	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
 	}
 
-	/**
-	 * The type of render function that is called for this block
-	 */
 	@Override
 	public int getRenderType()
 	{
@@ -100,17 +103,17 @@ public class BlockWire extends BlockConductor
 	}
 
 	@Override
-	public int damageDropped(int par1)
+	public int damageDropped(int i)
 	{
-		return par1;
+		return i;
 	}
 
 	@Override
-	public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List)
+	public void getSubBlocks(int i, CreativeTabs par2CreativeTabs, List list)
 	{
-		for (int i = 0; i < EnumWireMaterial.values().length; i++)
+		for(EnumWireMaterial material : EnumWireMaterial.values())
 		{
-			par3List.add(new ItemStack(par1, 1, i));
+			list.add(new ItemStack(i, 1, material.ordinal()));
 		}
 	}
 
@@ -119,16 +122,13 @@ public class BlockWire extends BlockConductor
 	{
 		TileEntity t = world.getBlockTileEntity(x, y, z);
 
-		/**
-		 * Drop wool insulation if the wire is insulated.
-		 */
-		if (t instanceof TileEntityWire)
+		if(t instanceof TileEntityWire)
 		{
 			TileEntityWire tileEntity = (TileEntityWire) t;
 
-			if (tileEntity.isInsulated)
+			if(tileEntity.isInsulated)
 			{
-				this.dropBlockAsItem_do(world, x, y, z, new ItemStack(Block.cloth, 1, BlockColored.getBlockFromDye(tileEntity.dyeID)));
+				dropBlockAsItem_do(world, x, y, z, new ItemStack(Block.cloth, 1, BlockColored.getBlockFromDye(tileEntity.dyeID)));
 			}
 		}
 

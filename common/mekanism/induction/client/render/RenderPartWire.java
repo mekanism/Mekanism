@@ -41,7 +41,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderPartWire
 {
-	private static final ResourceLocation WIRE_SHINE = new ResourceLocation(MekanismInduction.DOMAIN, MekanismInduction.MODEL_TEXTURE_DIRECTORY + "white.png");
+	private static final ResourceLocation WIRE_SHINE = MekanismUtils.getResource(ResourceType.RENDER, "white.png");
 	public static final Map<String, CCModel> models;
 	public static final Map<String, CCModel> shinyModels;
 	public static Icon wireIcon;
@@ -108,7 +108,7 @@ public class RenderPartWire
 			GL11.glEnable(GL11.GL_LIGHT3);
 			GL11.glLight(GL11.GL_LIGHT3, GL11.GL_POSITION, location);
 
-			GL11.glTranslatef((float) x, (float) y, (float) z);
+			GL11.glTranslatef((float)x, (float)y, (float)z);
 			GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, zero);
 
 			CCRenderState.reset();
@@ -144,9 +144,9 @@ public class RenderPartWire
 
 	public static void registerIcons(IconRegister iconReg)
 	{
-		wireIcon = iconReg.registerIcon(MekanismInduction.PREFIX + MekanismInduction.MODEL_TEXTURE_DIRECTORY + "Wire");
-		insulationIcon = iconReg.registerIcon(MekanismInduction.PREFIX + MekanismInduction.MODEL_TEXTURE_DIRECTORY + "Insulation" + (MekanismInduction.LO_FI_INSULATION ? "Tiny" : ""));
-		breakIcon = iconReg.registerIcon(MekanismInduction.PREFIX + "wire");
+		wireIcon = iconReg.registerIcon("mekanism:render/Wire");
+		insulationIcon = iconReg.registerIcon("mekanism:render/" + "Insulation" + (MekanismInduction.LO_FI_INSULATION ? "Tiny" : ""));
+		breakIcon = iconReg.registerIcon("mekanism:wire");
 	}
 
 	public void renderStatic(PartWire wire)

@@ -178,6 +178,7 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 		dyeID = dye;
 		refresh();
 		world().markBlockForUpdate(x(), y(), z());
+		tile().notifyPartChange(this);
 	}
 	
 	public void setMaterialFromID(int id)
@@ -347,6 +348,7 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 				{
 					tile().dropItems(Collections.singletonList(new ItemStack(Block.cloth, 1, BlockColored.getBlockFromDye(dyeID))));
 				}
+				
 				setInsulated(BlockColored.getDyeFromBlock(item.getItemDamage()));
 				player.inventory.decrStackSize(player.inventory.currentItem, 1);
 				return true;
@@ -399,8 +401,10 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 	public void setInsulationColor(int dye)
 	{
 		dyeID = dye;
+		
 		refresh();
 		world().markBlockForUpdate(x(), y(), z());
+		tile().notifyPartChange(this);
 	}
 	
 	@Override
@@ -408,6 +412,7 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 	{
 		isInsulated = insulated;
 		dyeID = DEFAULT_COLOR;
+		
 		refresh();
 		world().markBlockForUpdate(x(), y(), z());
 		tile().notifyPartChange(this);
@@ -417,6 +422,7 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 	{
 		isInsulated = true;
 		dyeID = dyeColour;
+		
 		refresh();
 		world().markBlockForUpdate(x(), y(), z());
 		tile().notifyPartChange(this);

@@ -28,28 +28,29 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		if (this.worldObj.isBlockIndirectlyGettingPowered(this.xCoord, this.yCoord, this.zCoord))
+		if(worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
 		{
 			return false;
 		}
 
 		Vector3 connectPos = new Vector3(this).modifyPositionFromSide(direction);
-		TileEntity connectTile = connectPos.getTileEntity(this.worldObj);
-		if (connectTile instanceof IWireMaterial)
+		TileEntity connectTile = connectPos.getTileEntity(worldObj);
+		
+		if(connectTile instanceof IWireMaterial)
 		{
 			IWireMaterial wireTile = (IWireMaterial) connectTile;
 
-			if (wireTile.getMaterial() != this.getMaterial())
+			if(wireTile.getMaterial() != getMaterial())
 			{
 				return false;
 			}
 		}
 
-		if (this.isInsulated() && connectTile instanceof IInsulation)
+		if(isInsulated() && connectTile instanceof IInsulation)
 		{
 			IInsulation insulatedTile = (IInsulation) connectTile;
 
-			if ((insulatedTile.isInsulated() && insulatedTile.getInsulationColor() != this.getInsulationColor() && this.getInsulationColor() != DEFAULT_COLOR && insulatedTile.getInsulationColor() != DEFAULT_COLOR))
+			if((insulatedTile.isInsulated() && insulatedTile.getInsulationColor() != getInsulationColor() && getInsulationColor() != DEFAULT_COLOR && insulatedTile.getInsulationColor() != DEFAULT_COLOR))
 			{
 				return false;
 			}
@@ -61,27 +62,27 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 	@Override
 	public void refresh()
 	{
-		if (!this.worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			this.adjacentConnections = null;
+			adjacentConnections = null;
 
-			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				if (this.canConnect(side.getOpposite()))
+				if(canConnect(side.getOpposite()))
 				{
-					TileEntity tileEntity = VectorHelper.getConnectorFromSide(this.worldObj, new Vector3(this), side);
+					TileEntity tileEntity = VectorHelper.getConnectorFromSide(worldObj, new Vector3(this), side);
 
-					if (tileEntity != null)
+					if(tileEntity != null)
 					{
-						if (tileEntity instanceof INetworkProvider)
+						if(tileEntity instanceof INetworkProvider)
 						{
-							this.getNetwork().merge(((INetworkProvider) tileEntity).getNetwork());
+							getNetwork().merge(((INetworkProvider)tileEntity).getNetwork());
 						}
 					}
 				}
 			}
 
-			this.getNetwork().refresh();
+			getNetwork().refresh();
 		}
 	}
 
@@ -100,29 +101,35 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 	@Override
 	public EnumWireMaterial getMaterial()
 	{
-		return EnumWireMaterial.values()[this.getTypeID()];
+		return EnumWireMaterial.values()[getTypeID()];
 	}
 
 	public int getTypeID()
 	{
-		return this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+		return worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 	}
 
 	/**
 	 * @param dyeID
 	 */
-	public void setDye(int dyeID)
+	public void setDye(int dye)
 	{
-		this.dyeID = dyeID;
-		this.refresh();
-		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		dyeID = dye;
+		refresh();
+		
+		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
 	}
 
 	public void setInsulated()
 	{
-		this.isInsulated = true;
-		this.refresh();
-		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		isInsulated = true;
+		refresh();
+		
+		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
 	}
 
 	@Override
@@ -135,46 +142,40 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput input)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		try
-		{
-			this.isInsulated = input.readBoolean();
-			this.dyeID = input.readInt();
-		}
-		catch (Exception e)
-		{
+		try {
+			isInsulated = dataStream.readBoolean();
+			dyeID = dataStream.readInt();
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Reads a tile entity from NBT.
-	 */
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.dyeID = nbt.getInteger("dyeID");
-		this.isInsulated = nbt.getBoolean("isInsulated");
+		
+		dyeID = nbt.getInteger("dyeID");
+		isInsulated = nbt.getBoolean("isInsulated");
 	}
 
-	/**
-	 * Writes a tile entity to NBT.
-	 */
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		nbt.setInteger("dyeID", this.dyeID);
-		nbt.setBoolean("isInsulated", this.isInsulated);
+		
+		nbt.setInteger("dyeID", dyeID);
+		nbt.setBoolean("isInsulated", isInsulated);
 	}
 
 	@Override
 	public void doWork(PowerHandler workProvider)
 	{
-		this.buildcraftBuffer = Compatibility.BC3_RATIO * 25 * this.getMaterial().maxAmps;
-		this.powerHandler.configure(0, this.buildcraftBuffer, this.buildcraftBuffer, this.buildcraftBuffer * 2);
+		buildcraftBuffer = Compatibility.BC3_RATIO * 25 * getMaterial().maxAmps;
+		powerHandler.configure(0, buildcraftBuffer, buildcraftBuffer, buildcraftBuffer * 2);
+		
 		super.doWork(workProvider);
 	}
 
@@ -187,9 +188,10 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 	@Override
 	public void setInsulated(boolean insulated)
 	{
-		if (insulated && !isInsulated())
+		if(insulated && !isInsulated())
+		{
 			setInsulated();
-
+		}
 	}
 
 	@Override
