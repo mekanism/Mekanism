@@ -862,11 +862,11 @@ public class Mekanism
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 6, MekanismUtils.size(OreDictionary.getOres("ingotCopper").get(0), 1), 1.0F);
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 6, new ItemStack(Ingot, 1, 5), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 7, MekanismUtils.size(OreDictionary.getOres("ingotTin").get(0), 1), 1.0F);
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 7, new ItemStack(Ingot, 1, 6), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
