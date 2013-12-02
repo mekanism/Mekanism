@@ -305,6 +305,29 @@ public final class CableUtils
 			IStrictEnergyAcceptor acceptor = (IStrictEnergyAcceptor)tileEntity;
 			sendingEnergy -= (sendingEnergy - acceptor.transferEnergyToAcceptor(side.getOpposite(), sendingEnergy));
 		}
+		else if(tileEntity instanceof IConductor)
+		{
+			ForgeDirection outputDirection = side;
+			float provide = from.getProvide(outputDirection);
+
+			if(provide > 0)
+			{
+				IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
+	
+				if(outputNetwork != null)
+				{
+					ElectricityPack request = outputNetwork.getRequest(from);
+					
+					if(request.getWatts() > 0)
+					{
+						float ueSend = (float)(sendingEnergy*Mekanism.TO_UE);
+						ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(ueSend, from.getVoltage()), ElectricityPack.getFromWatts(provide, from.getVoltage()));
+						float rejectedPower = outputNetwork.produce(sendPack, from);
+						sendingEnergy -= (sendPack.getWatts() - rejectedPower)*Mekanism.FROM_UE;
+					}
+				}
+			}
+		}
 		else if(tileEntity instanceof IEnergyHandler)
 		{
 			IEnergyHandler handler = (IEnergyHandler)tileEntity;
@@ -332,29 +355,6 @@ public final class CableUtils
             	double transferEnergy = Math.min(sendingEnergy, receiver.powerRequest()*Mekanism.FROM_BC);
             	float sent = receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), side.getOpposite());
             	sendingEnergy -= sent;
-			}
-		}
-		else if(tileEntity instanceof IConductor)
-		{
-			ForgeDirection outputDirection = side;
-			float provide = from.getProvide(outputDirection);
-
-			if(provide > 0)
-			{
-				IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
-	
-				if(outputNetwork != null)
-				{
-					ElectricityPack request = outputNetwork.getRequest(from);
-					
-					if(request.getWatts() > 0)
-					{
-						float ueSend = (float)(sendingEnergy*Mekanism.TO_UE);
-						ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(ueSend, from.getVoltage()), ElectricityPack.getFromWatts(provide, from.getVoltage()));
-						float rejectedPower = outputNetwork.produce(sendPack, from);
-						sendingEnergy -= (sendPack.getWatts() - rejectedPower)*Mekanism.FROM_UE;
-					}
-				}
 			}
 		}
 		
