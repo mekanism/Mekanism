@@ -1200,7 +1200,7 @@ public class Mekanism
 				Compatibility.TO_IC2_RATIO = (float)TO_IC2;
 				Compatibility.TE_RATIO = (float)FROM_TE;
 				Compatibility.TO_TE_RATIO = (float)TO_TE;
-			} catch(Exception e) {}
+			} catch(Throwable t) {}
 		}
 		
 		System.out.println("[Mekanism] Hooking complete.");
