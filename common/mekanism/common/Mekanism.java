@@ -103,6 +103,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import thermalexpansion.api.crafting.CraftingManagers;
+import universalelectricity.compatibility.Compatibility;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -233,6 +234,7 @@ public class Mekanism
 	public static boolean dynamicTankEasterEgg = false;
 	public static boolean voiceServerEnabled = true;
 	public static boolean forceBuildcraft = false;
+	public static boolean overrideUERatios = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;	
@@ -1181,6 +1183,16 @@ public class Mekanism
 		hooks.hook();
 		
 		addIntegratedItems();
+		
+		if(overrideUERatios)
+		{
+			Compatibility.BC3_RATIO = (float)FROM_BC;
+			Compatibility.TO_BC_RATIO = (float)TO_BC;
+			Compatibility.IC2_RATIO = (float)FROM_IC2;
+			Compatibility.TO_IC2_RATIO = (float)TO_IC2;
+			Compatibility.TE_RATIO = (float)FROM_TE;
+			Compatibility.TO_TE_RATIO = (float)TO_TE;
+		}
 		
 		System.out.println("[Mekanism] Hooking complete.");
 	}
