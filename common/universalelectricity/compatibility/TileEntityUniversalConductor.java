@@ -109,8 +109,10 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 	}
 
 	@Override
-	public void updateEntity()
+	public void validate()
 	{
+		super.validate();
+
 		if (!this.worldObj.isRemote)
 		{
 			if (!this.isAddedToEnergyNet)
@@ -136,15 +138,11 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 
 	protected void initIC()
 	{
-		if (Compatibility.isIndustrialCraft2Loaded())
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-		}
-
+		MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 		this.isAddedToEnergyNet = true;
 	}
 
-	private void unloadTileIC2()
+	protected void unloadTileIC2()
 	{
 		if (this.isAddedToEnergyNet && this.worldObj != null)
 		{
@@ -172,7 +170,7 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
 		TileEntity tile = VectorHelper.getTileEntityFromSide(this.worldObj, new Vector3(this), directionFrom);
-		ElectricityPack pack = ElectricityPack.getFromWatts((float) (amount * Compatibility.IC2_RATIO), 120);
+		ElectricityPack pack = ElectricityPack.getFromWatts((float) (amount * Compatibility.IC2_RATIO), 1);
 		return this.getNetwork().produce(pack, this, tile) * Compatibility.TO_IC2_RATIO;
 	}
 
@@ -209,7 +207,7 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 			ignoreTiles.add(tile);
 		}
 
-		ElectricityPack pack = ElectricityPack.getFromWatts(workProvider.useEnergy(0, this.getNetwork().getRequest(this).getWatts() * Compatibility.TO_BC_RATIO, true) * Compatibility.BC3_RATIO, 120);
+		ElectricityPack pack = ElectricityPack.getFromWatts(workProvider.useEnergy(0, this.getNetwork().getRequest(this).getWatts() * Compatibility.TO_BC_RATIO, true) * Compatibility.BC3_RATIO, 1);
 		this.getNetwork().produce(pack, ignoreTiles.toArray(new TileEntity[0]));
 	}
 
@@ -233,7 +231,8 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 		{
 			if (request > 0)
 			{
-				return (int) (maxReceive - (this.getNetwork().produce(pack, new Vector3(this).modifyPositionFromSide(from).getTileEntity(this.worldObj)) * Compatibility.TO_TE_RATIO));
+				float reject = this.getNetwork().produce(pack, new Vector3(this).modifyPositionFromSide(from).getTileEntity(this.worldObj));
+				return (int) (maxReceive - (reject * Compatibility.TO_TE_RATIO));
 			}
 
 			return 0;
