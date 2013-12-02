@@ -461,10 +461,14 @@ public class Mekanism
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
-		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 2, new ItemStack(Ingot, 1, 1), 1.0F);
-		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 0, new ItemStack(Item.ingotIron), 1.0F);
-		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 1, new ItemStack(Item.ingotGold), 1.0F);
-		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 5, new ItemStack(Ingot, 1, 4), 1.0F);
+		FurnaceRecipes.smelting().addSmelting(oreBlockID, 1, new ItemStack(Ingot, 1, 5), 1.0F);
+		FurnaceRecipes.smelting().addSmelting(oreBlockID, 2, new ItemStack(Ingot, 1, 6), 1.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 2, new ItemStack(Ingot, 1, 1), 0.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 0, new ItemStack(Item.ingotIron), 0.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 1, new ItemStack(Item.ingotGold), 0.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 5, new ItemStack(Ingot, 1, 4), 0.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 6, new ItemStack(Ingot, 1, 5), 0.0F);
+		FurnaceRecipes.smelting().addSmelting(Dust.itemID, 7, new ItemStack(Ingot, 1, 6), 0.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 12));
@@ -930,7 +934,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("dustCopper"))
 			{
-				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreCopper").get(0), 1));
+				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(OreBlock, 1, 1));
 			}
 		} catch(Exception e) {}
 		
@@ -944,7 +948,7 @@ public class Mekanism
 		try {
 			for(ItemStack ore : OreDictionary.getOres("dustTin"))
 			{
-				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreTin").get(0), 1));
+				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(OreBlock, 1, 2));
 				InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 50));
 			}
 		} catch(Exception e) {}
