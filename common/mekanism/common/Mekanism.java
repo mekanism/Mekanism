@@ -236,6 +236,9 @@ public class Mekanism
 	public static boolean forceBuildcraft = false;
 	public static boolean overrideUERatios = true;
 	public static int obsidianTNTBlastRadius = 12;
+	public static int osmiumGenerationAmount = 8;
+	public static int copperGenerationAmount = 12;
+	public static int tinGenerationAmount = 10;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;	
 	public static int VOICE_PORT = 36123;
@@ -1250,24 +1253,24 @@ public class Mekanism
 	@ForgeSubscribe
 	public synchronized void onChunkLoad(ChunkEvent.Load event)
 	{
-		 if(event.getChunk() != null && !event.world.isRemote)
-         {
-			 Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
+		if(event.getChunk() != null && !event.world.isRemote)
+		{
+			Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
 			 
-             for(Iterator iter = copy.values().iterator(); iter.hasNext();)
-             {
-            	 Object obj = iter.next();
-            	 
-                 if(obj instanceof TileEntity)
-                 {
-                     TileEntity tileEntity = (TileEntity)obj;
-
-                     if(tileEntity instanceof TileEntityElectricBlock)
-                     {
-                		 ((TileEntityElectricBlock)tileEntity).register();
-                     }
-                 }
-             }
-         }
+			for(Iterator iter = copy.values().iterator(); iter.hasNext();)
+			{
+				Object obj = iter.next();
+	        	 
+				if(obj instanceof TileEntity)
+				{
+					TileEntity tileEntity = (TileEntity)obj;
+	
+					if(tileEntity instanceof TileEntityElectricBlock)
+					{
+						((TileEntityElectricBlock)tileEntity).register();
+					}
+				}
+			}
+		}
 	}
 }
