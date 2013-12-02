@@ -48,7 +48,7 @@ public class ItemPartWire extends JItemMultiPart
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack)
 	{
-		return "tile.Wire." + EnumWireMaterial.values()[itemStack.getItemDamage()].getName();
+		return "tile.Wire." + EnumWireMaterial.values()[itemStack.getItemDamage()].getName() + "Wire";
 	}
 
 	@Override

@@ -1193,12 +1193,14 @@ public class Mekanism
 		
 		if(overrideUERatios)
 		{
-			Compatibility.BC3_RATIO = (float)FROM_BC;
-			Compatibility.TO_BC_RATIO = (float)TO_BC;
-			Compatibility.IC2_RATIO = (float)FROM_IC2;
-			Compatibility.TO_IC2_RATIO = (float)TO_IC2;
-			Compatibility.TE_RATIO = (float)FROM_TE;
-			Compatibility.TO_TE_RATIO = (float)TO_TE;
+			try {
+				Compatibility.BC3_RATIO = (float)FROM_BC;
+				Compatibility.TO_BC_RATIO = (float)TO_BC;
+				Compatibility.IC2_RATIO = (float)FROM_IC2;
+				Compatibility.TO_IC2_RATIO = (float)TO_IC2;
+				Compatibility.TE_RATIO = (float)FROM_TE;
+				Compatibility.TO_TE_RATIO = (float)TO_TE;
+			} catch(Exception e) {}
 		}
 		
 		System.out.println("[Mekanism] Hooking complete.");
