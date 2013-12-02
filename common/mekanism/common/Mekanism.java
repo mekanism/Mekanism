@@ -269,7 +269,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 3), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), new ItemStack(Item.coal, 1, 1)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Item.coal, 9), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Item.coal, 1, 9), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 3)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 2), new Object[] {
@@ -627,6 +627,8 @@ public class Mekanism
 		OreDictionary.registerOre("ingotBronze", new ItemStack(Ingot, 1, 2));
 		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(Ingot, 1, 3));
 		OreDictionary.registerOre("ingotSteel", new ItemStack(Ingot, 1, 4));
+		OreDictionary.registerOre("ingotCopper", new ItemStack(Ingot, 1, 5));
+		OreDictionary.registerOre("ingotTin", new ItemStack(Ingot, 1, 6));
 		
 		OreDictionary.registerOre("blockOsmium", new ItemStack(BasicBlock, 1, 0));
 		OreDictionary.registerOre("blockBronze", new ItemStack(BasicBlock, 1, 1));
@@ -655,6 +657,8 @@ public class Mekanism
 		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
+		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));
+		OreDictionary.registerOre("oreTin", new ItemStack(OreBlock, 1, 2));
 	}
 	
 	/**
