@@ -90,7 +90,7 @@ public class UniversalNetwork extends ElectricityNetwork
 										}
 									}
 								}
-								else if (Compatibility.isIndustrialCraft2Loaded() && tileEntity instanceof IEnergySink)
+								else if (tileEntity instanceof IEnergySink)
 								{
 									IEnergySink electricalTile = (IEnergySink) tileEntity;
 
@@ -109,7 +109,7 @@ public class UniversalNetwork extends ElectricityNetwork
 										}
 									}
 								}
-								else if (Compatibility.isBuildcraftLoaded() && tileEntity instanceof IPowerReceptor)
+								else if (tileEntity instanceof IPowerReceptor)
 								{
 									IPowerReceptor electricalTile = (IPowerReceptor) tileEntity;
 
@@ -132,7 +132,7 @@ public class UniversalNetwork extends ElectricityNetwork
 										}
 									}
 								}
-								else if (Compatibility.isThermalExpansionLoaded() && tileEntity instanceof IEnergyHandler)
+								else if (tileEntity instanceof IEnergyHandler)
 								{
 									IEnergyHandler receiver = (IEnergyHandler) tileEntity;
 
@@ -205,7 +205,30 @@ public class UniversalNetwork extends ElectricityNetwork
 						continue;
 					}
 
-					if (Compatibility.isIndustrialCraft2Loaded() && tileEntity instanceof IEnergySink)
+					if (tileEntity instanceof IEnergyHandler)
+					{
+						IEnergyHandler receiver = (IEnergyHandler) tileEntity;
+
+						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+						{
+							TileEntity conductor = VectorHelper.getConnectorFromSide(tileEntity.worldObj, new Vector3(tileEntity), direction);
+
+							if (receiver.canInterface(direction) && this.getConductors().contains(conductor))
+							{
+								ElectricityPack pack = ElectricityPack.getFromWatts(receiver.receiveEnergy(direction, (int) Integer.MAX_VALUE, true) * Compatibility.TE_RATIO, 1);
+
+								if (pack.getWatts() > 0)
+								{
+									requests.add(pack);
+									break;
+								}
+							}
+						}
+
+						continue;
+					}
+
+					if (tileEntity instanceof IEnergySink)
 					{
 						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 						{
@@ -223,36 +246,13 @@ public class UniversalNetwork extends ElectricityNetwork
 						continue;
 					}
 
-					if (Compatibility.isBuildcraftLoaded() && tileEntity instanceof IPowerReceptor)
+					if (tileEntity instanceof IPowerReceptor)
 					{
 						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 						{
 							if (((IPowerReceptor) tileEntity).getPowerReceiver(direction) != null)
 							{
 								ElectricityPack pack = ElectricityPack.getFromWatts(((IPowerReceptor) tileEntity).getPowerReceiver(direction).powerRequest() * Compatibility.BC3_RATIO, 1);
-
-								if (pack.getWatts() > 0)
-								{
-									requests.add(pack);
-									break;
-								}
-							}
-						}
-
-						continue;
-					}
-
-					if (Compatibility.isThermalExpansionLoaded() && tileEntity instanceof IEnergyHandler)
-					{
-						IEnergyHandler receiver = (IEnergyHandler) tileEntity;
-
-						for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-						{
-							TileEntity conductor = VectorHelper.getConnectorFromSide(tileEntity.worldObj, new Vector3(tileEntity), direction);
-
-							if (receiver.canInterface(direction))
-							{
-								ElectricityPack pack = ElectricityPack.getFromWatts(receiver.receiveEnergy(direction, (int) Integer.MAX_VALUE, true) * Compatibility.TE_RATIO, 1);
 
 								if (pack.getWatts() > 0)
 								{
@@ -290,10 +290,17 @@ public class UniversalNetwork extends ElectricityNetwork
 				if (conductor == null)
 				{
 					it.remove();
+					continue;
 				}
-				else if (((TileEntity) conductor).isInvalid())
+				else if (((TileEntity) conductor).isInvalid() || ((TileEntity) conductor).getWorldObj() == null)
 				{
 					it.remove();
+					continue;
+				}
+				else if (((TileEntity) conductor).getWorldObj().getBlockTileEntity(((TileEntity) conductor).xCoord, ((TileEntity) conductor).yCoord, ((TileEntity) conductor).zCoord) != conductor)
+				{
+					it.remove();
+					continue;
 				}
 				else
 				{
@@ -303,10 +310,12 @@ public class UniversalNetwork extends ElectricityNetwork
 				for (int i = 0; i < conductor.getAdjacentConnections().length; i++)
 				{
 					TileEntity acceptor = conductor.getAdjacentConnections()[i];
+					// The direction is from the perspective of the conductor.
+					ForgeDirection direction = ForgeDirection.getOrientation(i);
 
 					if (!(acceptor instanceof IConductor))
 					{
-						if (acceptor instanceof IElectrical)
+						if (acceptor instanceof IElectrical || acceptor instanceof IEnergyHandler || acceptor instanceof IEnergyAcceptor || acceptor instanceof IPowerReceptor)
 						{
 							ArrayList<ForgeDirection> possibleDirections = null;
 
@@ -319,56 +328,28 @@ public class UniversalNetwork extends ElectricityNetwork
 								possibleDirections = new ArrayList<ForgeDirection>();
 							}
 
-							if (((IElectrical) acceptor).canConnect(ForgeDirection.getOrientation(i)) && this.getConductors().contains(VectorHelper.getConnectorFromSide(acceptor.worldObj, new Vector3(acceptor), ForgeDirection.getOrientation(i))))
+							if (acceptor instanceof IElectrical && ((IElectrical) acceptor).canConnect(direction))
 							{
-								possibleDirections.add(ForgeDirection.getOrientation(i));
+								possibleDirections.add(direction);
+							}
+							else if (acceptor instanceof IEnergyHandler && ((IEnergyHandler) acceptor).canInterface(direction))
+							{
+								possibleDirections.add(direction);
+							}
+							else if (acceptor instanceof IEnergyAcceptor && ((IEnergyAcceptor) acceptor).acceptsEnergyFrom((TileEntity) conductor, direction))
+							{
+								possibleDirections.add(direction);
+							}
+							else if (acceptor instanceof IPowerReceptor && ((IPowerReceptor) acceptor).getPowerReceiver(direction) != null)
+							{
+								possibleDirections.add(direction);
 							}
 
-							this.electricalTiles.put(acceptor, possibleDirections);
-							continue;
-						}
-
-						if (Compatibility.isIndustrialCraft2Loaded() && acceptor instanceof IEnergyAcceptor)
-						{
-							ArrayList<ForgeDirection> possibleDirections = null;
-
-							if (this.electricalTiles.containsKey(acceptor))
+							if (!possibleDirections.isEmpty())
 							{
-								possibleDirections = this.electricalTiles.get(acceptor);
-							}
-							else
-							{
-								possibleDirections = new ArrayList<ForgeDirection>();
+								this.electricalTiles.put(acceptor, possibleDirections);
 							}
 
-							if (((IEnergyAcceptor) acceptor).acceptsEnergyFrom(VectorHelper.getTileEntityFromSide(acceptor.worldObj, new Vector3(acceptor), ForgeDirection.getOrientation(i)), ForgeDirection.getOrientation(i)) && this.getConductors().contains(VectorHelper.getConnectorFromSide(acceptor.worldObj, new Vector3(acceptor), ForgeDirection.getOrientation(i))))
-							{
-								possibleDirections.add(ForgeDirection.getOrientation(i));
-							}
-
-							this.electricalTiles.put(acceptor, possibleDirections);
-							continue;
-						}
-
-						if (Compatibility.isBuildcraftLoaded() && acceptor instanceof IPowerReceptor)
-						{
-							ArrayList<ForgeDirection> possibleDirections = null;
-
-							if (this.electricalTiles.containsKey(acceptor))
-							{
-								possibleDirections = this.electricalTiles.get(acceptor);
-							}
-							else
-							{
-								possibleDirections = new ArrayList<ForgeDirection>();
-							}
-
-							if (this.getConductors().contains(VectorHelper.getConnectorFromSide(acceptor.worldObj, new Vector3(acceptor), ForgeDirection.getOrientation(i))))
-							{
-								possibleDirections.add(ForgeDirection.getOrientation(i));
-							}
-
-							this.electricalTiles.put(acceptor, possibleDirections);
 							continue;
 						}
 					}
