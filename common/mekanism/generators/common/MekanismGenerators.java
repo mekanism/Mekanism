@@ -6,7 +6,6 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismRecipe;
-import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
 import mekanism.common.item.ItemMekanism;
@@ -14,9 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
-import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLeaves;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -92,9 +89,6 @@ public class MekanismGenerators implements IModule
 		addBlocks();
 		addItems();
 		addRecipes();
-		
-		//Packet registrations
-		PacketHandler.registerPacket(PacketElectrolyticSeparatorParticle.class);
 		
 		//Finalization
 		Mekanism.logger.info("[MekanismGenerators] Loaded module.");

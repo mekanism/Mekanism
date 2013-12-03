@@ -12,16 +12,14 @@ import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
-import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -151,9 +149,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				setStored(dumpType, (getStored(dumpType) - 8));
 				
-				if(new Random().nextInt(3) == 2)
+				if(worldObj.rand.nextInt(3) == 2)
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketElectrolyticSeparatorParticle().setParams(this), Object3D.get(this), 40D);
+					ArrayList data = new ArrayList();
+					data.add(2);
+					
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), data), Object3D.get(this), 40D);
 				}
 			}
 		}
@@ -320,6 +321,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				dumpType = GasRegistry.getGas(dataStream.readInt());
 				return;
+			}
+			else if(type == 2)
+			{
+				spawnParticle();
 			}
 		}
 		
