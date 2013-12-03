@@ -388,10 +388,6 @@ tile.Wire.TinWire.name=Zinnkabel
 tile.Wire.IronWire.name=Eisenkabel
 tile.Wire.AluminumWire.name=Aluminiumkabel
 tile.Wire.SilverWire.name=Silberkabel
-tile.Wire.SuperconductorWire.name=Supraleitkabel
-
-//Items
-item.Linker.name=Elektrostatischer Linker
 
 //General text
 text.contractor.success=Kontraktor erfolgreich verbunden
