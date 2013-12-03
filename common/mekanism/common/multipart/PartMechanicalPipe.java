@@ -25,9 +25,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
-	
-	/** The scale (0F -> 1F) of this pipe's fluid level. */
-	public float fluidScale;
 
 	@Override
 	public String getType()
@@ -39,19 +36,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.FLUID;
-	}
-	
-	public void clientUpdate(FluidStack fluidStack)
-	{
-		if(fluidStack.isFluidEqual(transmitting))
-		{
-			fluidScale = Math.min(1, fluidScale+((float)fluidStack.amount/50F));
-		}
-		else if(transmitting == null)
-		{
-			transmitting = fluidStack.copy();
-			fluidScale += Math.min(1, ((float)fluidStack.amount/50F));
-		}
 	}
 
 	@Override
@@ -129,17 +113,8 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack
 	@Override
 	public void update()
 	{
-		if(world().isRemote)
+		if(!world().isRemote)
 		{
-			if(fluidScale > 0)
-			{
-				fluidScale -= .01;
-			}
-			else {
-				transmitting = null;
-			}
-		}	
-		else {		
 			if(isActive)
 			{
 				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
@@ -161,9 +136,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack
 			}
 		}
 	}
-
-	@Override
-	public void chunkLoad() {}
 
 	@Override
 	public int getTransmitterNetworkSize()

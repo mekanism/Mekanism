@@ -43,13 +43,6 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork, Gas>
 	}
 
 	@Override
-	public void chunkLoad()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public int getTransmitterNetworkSize()
 	{
 		return getTransmitterNetwork().getSize();

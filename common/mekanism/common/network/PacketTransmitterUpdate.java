@@ -3,16 +3,17 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.transmitters.ITransmitter;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
-import mekanism.common.tileentity.TileEntityPressurizedTube;
-import mekanism.common.tileentity.TileEntityUniversalCable;
+import mekanism.common.EnergyNetwork;
+import mekanism.common.FluidNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -86,7 +87,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 			
 			if(tileEntity != null)
 			{
-				((TileEntityUniversalCable)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
+				((ITransmitter<EnergyNetwork, Double>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
 			}
 		}
 		else if(transmitterType == 2)
@@ -98,8 +99,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().refGas = gasType;
-    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
+    			((ITransmitter<GasNetwork, Gas>)tileEntity).getTransmitterNetwork().refGas = gasType;
+    			((ITransmitter<GasNetwork, Gas>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -112,8 +113,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().refFluid = fluidType;
-    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
+    			((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
+    			((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
     		}
 	    }
 	}

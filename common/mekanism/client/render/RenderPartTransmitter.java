@@ -39,7 +39,7 @@ public class RenderPartTransmitter implements IIconRegister
 	public static Icon[] uniCableTextures = new Icon[2];
 	public static Icon[] mechPipeTextures = new Icon[2];
 	public static Icon[] pressTubeTextures = new Icon[2];
-	public static Icon liquidEnergyTexture;
+	
 	public static Icon sideTexture;
 	public static Map<TransmissionType, Icon[]> typeMap = new HashMap<TransmissionType, Icon[]>();
 	
@@ -47,20 +47,25 @@ public class RenderPartTransmitter implements IIconRegister
 	public static Map<String, CCModel> cableContentsModels;
 	
 	private static final int stages = 40;
+	private static final double height = 0.45;
 	private static final double offset = 0.015;
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	
 	static
 	{
 		models = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter.obj"), 7, null);
-        for (CCModel c : models.values()) {
+        
+		for(CCModel c : models.values()) 
+        {
             c.apply(new Translation(.5, .5, .5));
             c.computeLighting(LightModel.standardLightModel);
             c.shrinkUVs(0.0005);
         }
         
 		cableContentsModels = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitterEnergy.obj"), 7, null);
-        for (CCModel c : cableContentsModels.values()) {
+        
+		for(CCModel c : cableContentsModels.values()) 
+        {
             c.apply(new Translation(.5, .5, .5));
             c.computeLighting(LightModel.standardLightModel);
             c.shrinkUVs(0.0005);
@@ -100,63 +105,65 @@ public class RenderPartTransmitter implements IIconRegister
 	
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
 	{
-		if(cable.transmitting == 0)
+		if(cable.getTransmitterNetwork().clientEnergyScale == 0)
+		{
 			return;
+		}
+		
 		GL11.glPushMatrix();
 		CCRenderState.reset();
 		CCRenderState.useNormals(true);
 		CCRenderState.useModelColours(true);
-		//CCRenderState.setBrightness(255);
 		CCRenderState.startDrawing(7);
 		GL11.glTranslated(pos.x, pos.y, pos.z);
-		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderEnergySide(side, cable);			
 		}
-		//MekanismRenderer.glowOn();
+		
+		MekanismRenderer.glowOn();
 		CCRenderState.draw();
-		//MekanismRenderer.glowOff();
+		MekanismRenderer.glowOff();
+		
 		GL11.glPopMatrix();
 	}
 	
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
-		if(pipe.fluidScale > 0 && pipe.transmitting != null)
+		if(pipe.getTransmitterNetwork().fluidScale > 0)
 		{
+			Fluid fluid = pipe.getTransmitterNetwork().refFluid;
+			float scale = pipe.getTransmitterNetwork().fluidScale;
+			
 			push();
 			
-			if(pipe.transmitting.getFluid() == FluidRegistry.LAVA)
-			{
-				MekanismRenderer.glowOn();
-			}
+			MekanismRenderer.glowOn(fluid.getLuminosity());
 			
 			CCRenderState.changeTexture((MekanismRenderer.getBlocksTexture()));
 			GL11.glTranslated(pos.x, pos.y, pos.z);
 			
-			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				if(PartTransmitter.connectionMapContainsSide(pipe.getAllCurrentConnections(), side))
 				{
-					DisplayInteger[] displayLists = getListAndRender(side, pipe.transmitting.getFluid());
+					DisplayInteger[] displayLists = getListAndRender(side, fluid);
 					
 					if(displayLists != null)
 					{
-						displayLists[Math.max(3, (int)((float)pipe.fluidScale*(stages-1)))].render();
+						displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
 					}
 				}
 			}
 			
-			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, pipe.transmitting.getFluid());
+			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, fluid);
 			
 			if(displayLists != null)
 			{
-				displayLists[Math.max(3, (int)((float)pipe.fluidScale*(stages-1)))].render();
+				displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
 			}
 			
-			if(pipe.transmitting.getFluid() == FluidRegistry.LAVA)
-			{
-				MekanismRenderer.glowOff();
-			}
+			MekanismRenderer.glowOff();
 			
 			pop();
 		}
@@ -204,79 +211,79 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				case UNKNOWN:
 				{
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
+					toReturn.minX = 0.25 + offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.25 + offset;
 					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
+					toReturn.maxX = 0.75 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 				case DOWN:
 				{
-					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
+					toReturn.minX = 0.5 - (((float)i / (float)stages)*height)/2;
 					toReturn.minY = 0.0;
-					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
+					toReturn.minZ = 0.5 - (((float)i / (float)stages)*height)/2;
 					
-					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
-					toReturn.maxY = 0.3 + offset;
-					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
+					toReturn.maxX = 0.5 + (((float)i / (float)stages)*height)/2;
+					toReturn.maxY = 0.25 + offset;
+					toReturn.maxZ = 0.5 + (((float)i / (float)stages)*height)/2;
 					break;
 				}
 				case UP:
 				{
-					toReturn.minX = 0.5 + offset - ((float)i / (float)100)/2;
-					toReturn.minY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.minZ = 0.5 + offset - ((float)i / (float)100)/2;
+					toReturn.minX = 0.5 - (((float)i / (float)stages)*height)/2;
+					toReturn.minY = 0.25 - offset + ((float)i / (float)stages)*height;
+					toReturn.minZ = 0.5 - (((float)i / (float)stages)*height)/2;
 					
-					toReturn.maxX = 0.5 - offset + ((float)i / (float)100)/2;
+					toReturn.maxX = 0.5 + (((float)i / (float)stages)*height)/2;
 					toReturn.maxY = 1.0;
-					toReturn.maxZ = 0.5 - offset + ((float)i / (float)100)/2;
+					toReturn.maxZ = 0.5 + (((float)i / (float)stages)*height)/2;
 					break;
 				}
 				case NORTH:
 				{
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
+					toReturn.minX = 0.25 + offset;
+					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.0;
 					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.3 + offset;
+					toReturn.maxX = 0.75 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.25 + offset;
 					break;
 				}
 				case SOUTH:
 				{
-					toReturn.minX = 0.3 + offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.7 - offset;
+					toReturn.minX = 0.25 + offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.75 - offset;
 					
-					toReturn.maxX = 0.7 - offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
+					toReturn.maxX = 0.75 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 1.0;
 					break;
 				}
 				case WEST:
 				{
 					toReturn.minX = 0.0;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.25 + offset;
 					
-					toReturn.maxX = 0.3 + offset;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
+					toReturn.maxX = 0.25 + offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 				case EAST:
 				{
-					toReturn.minX = 0.7 - offset;
-					toReturn.minY = 0.3 + offset;
-					toReturn.minZ = 0.3 + offset;
+					toReturn.minX = 0.75 - offset;
+					toReturn.minY = 0.25 + offset;
+					toReturn.minZ = 0.25 + offset;
 					
 					toReturn.maxX = 1.0;
-					toReturn.maxY = 0.3 - offset + ((float)i / (float)100);
-					toReturn.maxZ = 0.7 - offset;
+					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
+					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 			}
@@ -322,7 +329,7 @@ public class RenderPartTransmitter implements IIconRegister
 		boolean connected = PartTransmitter.connectionMapContainsSide(cable.getAllCurrentConnections(), side);
 		String name = side.name().toLowerCase();
 		name += connected ? "Out" : "In";
-		renderTransparency(liquidEnergyTexture, cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, cable.transmitting));
+		renderTransparency(MekanismRenderer.energyIcon, cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, cable.getTransmitterNetwork().clientEnergyScale));
 	}
 
     public void renderPart(Icon icon, CCModel cc, double x, double y, double z) {
@@ -351,8 +358,6 @@ public class RenderPartTransmitter implements IIconRegister
 		pressTubeTextures[1] = pressTubeTextures[0];
 		mechPipeTextures[0] = register.registerIcon("mekanism:models/MechanicalPipe");
 		mechPipeTextures[1] = register.registerIcon("mekanism:models/MechanicalPipeActive");
-		
-		liquidEnergyTexture = register.registerIcon("mekanism:LiquidEnergy");
 	}
 
 	@Override

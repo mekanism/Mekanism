@@ -30,13 +30,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> implements IEnergySink
 {
-	public Double setLevel = 0.0;
-	private int ticks;
-	
 	public PartUniversalCable()
 	{
 		super();
-		transmitting = 0.0;
 	}
 
 	@Override
@@ -108,21 +104,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> i
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
 		if(pass == 1)
-			RenderPartTransmitter.getInstance().renderContents(this, pos);
-	}
-	
-	@Override
-	public void update()
-	{
-		if(world().isRemote)
 		{
-			System.out.println("print");
-			if(transmitting != setLevel)
-			{
-				transmitting = (transmitting *4.0 + setLevel)/5.0;
-				if(Math.max(transmitting - setLevel, setLevel - transmitting) < 0.05)
-					transmitting = setLevel;
-			}
+			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
 	}
 	
