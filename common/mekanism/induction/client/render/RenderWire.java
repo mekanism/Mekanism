@@ -21,8 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderWire extends TileEntitySpecialRenderer
 {
-	private static final ResourceLocation WIRE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "WireSimple.png");
-	private static final ResourceLocation INSULATION_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "InsulationSimple.png");
+	private static final ResourceLocation WIRE_TEXTURE = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "render/WireSimple.png");
+	private static final ResourceLocation INSULATION_TEXTURE = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "render/InsulationSimple.png");
 	
 	public static final ModelWire WIRE_MODEL = new ModelWire();
 	public static final ModelInsulation INSULATION_MODEL = new ModelInsulation();
