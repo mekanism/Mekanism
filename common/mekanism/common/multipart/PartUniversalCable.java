@@ -65,7 +65,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> i
 	@Override
 	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
 	{
-		return CableUtils.canConnectToAcceptor(side, acceptor);
+		return CableUtils.isConnectable(tile(), acceptor, side.getOpposite());
 	}
 	
 	@Override

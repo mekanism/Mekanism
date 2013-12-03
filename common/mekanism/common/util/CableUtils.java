@@ -164,6 +164,11 @@ public final class CableUtils
     	
     	TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
     	
+    	return isConnectable(tile, tileEntity, side);
+    }
+    
+    public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, ForgeDirection side)
+    {
     	if(tileEntity instanceof ITransmitter)
     	{
     		return false;
@@ -174,7 +179,7 @@ public final class CableUtils
     		return true;
     	}
     	
-    	if(tileEntity instanceof IEnergyAcceptor && ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(tile, side.getOpposite()))
+    	if(tileEntity instanceof IEnergyAcceptor && ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(orig, side.getOpposite()))
     	{
     		return true;
     	}
