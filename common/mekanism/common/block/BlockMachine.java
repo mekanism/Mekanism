@@ -781,7 +781,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-    	ItemStack itemStack = new ItemStack(Mekanism.MachineBlock, 1, world.getBlockMetadata(x, y, z));
+    	ItemStack itemStack = new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
         
     	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
     	{
@@ -881,6 +881,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	
     	if(tileEntity instanceof IRedstoneControl)
     	{
+    		if(itemStack.stackTagCompound == null)
+    		{
+    			itemStack.setTagCompound(new NBTTagCompound());
+    		}
+    		
     		IRedstoneControl control = (IRedstoneControl)tileEntity;
     		itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
     	}
