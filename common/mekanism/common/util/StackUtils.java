@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public final class StackUtils
 {
@@ -39,6 +40,11 @@ public final class StackUtils
 		}
 		
 		return stack1.itemID != stack2.itemID;
+	}
+	
+	public static boolean equalsWildcard(ItemStack wild, ItemStack check)
+	{
+		return wild.itemID == check.itemID && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 	
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)

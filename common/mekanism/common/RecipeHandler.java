@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 
 /** 
@@ -92,9 +93,11 @@ public final class RecipeHandler
 		{
 			for(Map.Entry entry : recipes.entrySet())
 			{
-				if(((InfusionInput)entry.getKey()).inputStack.isItemEqual(infusion.inputStack) && infusion.inputStack.stackSize >= ((InfusionInput)entry.getKey()).inputStack.stackSize)
+				InfusionInput input = (InfusionInput)entry.getKey();
+				
+				if(StackUtils.equalsWildcard(input.inputStack, infusion.inputStack) && infusion.inputStack.stackSize >= input.inputStack.stackSize)
 				{
-					if(infusion.infusionType == ((InfusionInput)entry.getKey()).infusionType)
+					if(infusion.infusionType == input.infusionType)
 					{
 						if(stackDecrease)
 						{
@@ -123,11 +126,13 @@ public final class RecipeHandler
 		{
 			for(Map.Entry entry : recipes.entrySet())
 			{
-				if(((ItemStack)entry.getKey()).isItemEqual(itemstack) && itemstack.stackSize >= ((ItemStack)entry.getKey()).stackSize)
+				ItemStack stack = (ItemStack)entry.getKey();
+				
+				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
 				{
 					if(stackDecrease)
 					{
-						itemstack.stackSize -= ((ItemStack)entry.getKey()).stackSize;
+						itemstack.stackSize -= stack.stackSize;
 					}
 					
 					return ((ItemStack)entry.getValue()).copy();

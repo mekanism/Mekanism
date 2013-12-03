@@ -106,7 +106,10 @@ public class MekanismGenerators implements IModule
 		try {
 			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
 			{
-				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(BioFuel, 2));
+				if(ore.getItemDamage() == 0 || ore.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+				{
+					RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(BioFuel, 2));
+				}
 			}
 		} catch(Exception e) {}
 	}
@@ -152,13 +155,6 @@ public class MekanismGenerators implements IModule
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.carrot), new ItemStack(BioFuel, 4));
-        
-        try {
-			for(int i = 0; i < BlockLeaves.LEAF_TYPES.length; i++)
-			{
-				RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling, 1, i), new ItemStack(BioFuel, 2));
-			}
-		} catch(Exception e) {}
         
         InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
 	}
