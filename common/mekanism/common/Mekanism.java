@@ -61,6 +61,7 @@ import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
+import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketDataRequest;
@@ -1114,6 +1115,8 @@ public class Mekanism
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		
 		Mekanism.proxy.preInit();
+		
+		new MultipartMekanism();
 				
 		MinecraftForge.EVENT_BUS.register(hooks);
 		

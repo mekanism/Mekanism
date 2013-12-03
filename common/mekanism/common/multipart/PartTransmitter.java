@@ -39,7 +39,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-public abstract class PartTransmitter<N extends DynamicNetwork<?,N, D>, D> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N, D>
+public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N, D>
 {
 	public N theNetwork;
 	public D transmitting;
