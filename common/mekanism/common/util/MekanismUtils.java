@@ -16,9 +16,9 @@ import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.IActiveState;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
@@ -1114,11 +1114,6 @@ public final class MekanismUtils
     public static String getEnergyDisplay(double energy)
     {
     	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.JOULES);
-    }
-    
-    public static boolean useBuildcraft()
-    {
-    	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
     public static String getCoordDisplay(Object3D obj)

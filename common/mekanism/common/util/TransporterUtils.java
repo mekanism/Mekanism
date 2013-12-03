@@ -86,7 +86,7 @@ public final class TransporterUtils
 				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
 				
 				//Immature BuildCraft inv check
-				if(MekanismUtils.useBuildcraft() && inventory instanceof IPowerReceptor)
+				if(inventory instanceof IPowerReceptor)
 				{
 					if(((IPowerReceptor)inventory).getPowerReceiver(forgeSide) != null && ((IPowerReceptor)inventory).getPowerReceiver(forgeSide).getType() == Type.MACHINE)
 					{

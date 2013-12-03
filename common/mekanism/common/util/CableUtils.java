@@ -6,7 +6,6 @@ import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import mekanism.api.Object3D;
@@ -24,9 +23,6 @@ import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import buildcraft.api.power.PowerHandler.Type;
 import cofh.api.energy.IEnergyHandler;
 
 public final class CableUtils
@@ -44,10 +40,7 @@ public final class CableUtils
     	{
 			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(acceptor instanceof IStrictEnergyAcceptor || 
-					acceptor instanceof IEnergySink || 
-					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && MekanismUtils.useBuildcraft()) ||
-					acceptor instanceof IElectrical || acceptor instanceof IEnergyHandler)
+			if(acceptor instanceof IStrictEnergyAcceptor || acceptor instanceof IEnergySink || acceptor instanceof IElectrical || acceptor instanceof IEnergyHandler)
 			{
 				acceptors[orientation.ordinal()] = acceptor;
 			}
@@ -182,17 +175,6 @@ public final class CableUtils
     	if(tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canInterface(side.getOpposite()))
     	{
     		return true;
-    	}
-    	
-    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof ITransmitter) && MekanismUtils.useBuildcraft())
-    	{
-    		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, side.getOpposite()))
-    		{
-    			if(!(tileEntity instanceof IEnergySource) || ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite()))
-    			{
-    				return true;
-    			}
-    		}
     	}
     	
     	return false;
@@ -345,17 +327,6 @@ public final class CableUtils
 			double toSend = Math.min(sendingEnergy, ((IElectrical)tileEntity).getRequest(side.getOpposite())*Mekanism.FROM_UE);
 			ElectricityPack pack = ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), ((IElectrical)tileEntity).getVoltage());
 			sendingEnergy -= (((IElectrical)tileEntity).receiveElectricity(side.getOpposite(), pack, true)*Mekanism.FROM_UE);
-		}
-		else if(tileEntity instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
-		{
-			PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(side.getOpposite());
-			
-			if(receiver != null)
-			{
-            	double transferEnergy = Math.min(sendingEnergy, receiver.powerRequest()*Mekanism.FROM_BC);
-            	float sent = receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), side.getOpposite());
-            	sendingEnergy -= sent;
-			}
 		}
 		
 		return sendingEnergy;

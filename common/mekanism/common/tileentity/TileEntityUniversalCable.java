@@ -14,36 +14,20 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
-import buildcraft.api.power.IPowerEmitter;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IEnergyHandler, IElectrical
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IEnergySink, IEnergyHandler, IElectrical
 {
-	/** A fake power handler used to initiate energy transfer calculations. */
-	public PowerHandler powerHandler;
-	
 	/** A fake UE ElectricityNetwork used to accept power from EU machines */
 	public IElectricityNetwork ueNetwork;
 	
 	public double energyScale;
-	
-	public TileEntityUniversalCable()
-	{
-		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
-		powerHandler.configurePowerPerdition(0, 0);
-		powerHandler.configure(0, 0, 0, 0);
-	}
 	
 	@Override
 	public TransmissionType getTransmissionType()
@@ -144,7 +128,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		}
 		
 		getTransmitterNetwork().refresh();
-		reconfigure();
 	}
 	
 	@Override
@@ -162,76 +145,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 				Mekanism.ic2Registered.add(Object3D.get(this));
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			}
-		}
-	}
-
-	@Override
-	public PowerReceiver getPowerReceiver(ForgeDirection side) 
-	{
-		if(getTransmitterNetwork().getEnergyNeeded(new ArrayList()) == 0)
-		{
-			return null;
-		}
-		
-		return powerHandler.getPowerReceiver();
-	}
-	
-	@Override
-	public World getWorld()
-	{
-		return worldObj;
-	}
-	
-	private void reconfigure()
-	{
-		if(MekanismUtils.useBuildcraft())
-		{
-			float needed = (float)(getTransmitterNetwork().getEnergyNeeded(getBuildCraftIgnored())*Mekanism.TO_BC);
-			powerHandler.configure(1, needed, 0, needed);
-		}
-	}
-	
-	public ArrayList<TileEntity> getBuildCraftIgnored()
-	{
-		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-		
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity tile = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-			
-			if(tile != null)
-			{
-				if(powerHandler.powerSources[side.ordinal()] > 0)
-				{
-					ignored.add(tile);
-				}
-				else if(tile instanceof IPowerEmitter)
-				{
-					IPowerEmitter emitter = (IPowerEmitter)tile;
-					
-					if(emitter.canEmitPowerFrom(side.getOpposite()))
-					{
-						ignored.add(tile);
-					}
-				}
-			}
-		}
-		
-		return ignored;
-	}
-
-	@Override
-	public void doWork(PowerHandler workProvider) 
-	{
-		if(MekanismUtils.useBuildcraft())
-		{
-			if(powerHandler.getEnergyStored() > 0)
-			{
-				getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC, getBuildCraftIgnored());
-			}
-			
-			powerHandler.setEnergy(0);
-			reconfigure();
 		}
 	}
 	
@@ -254,7 +167,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public double demandedEnergyUnits()
 	{
-		return getTransmitterNetwork().getEnergyNeeded(getBuildCraftIgnored())*Mekanism.TO_IC2;
+		return getTransmitterNetwork().getEnergyNeeded(new ArrayList())*Mekanism.TO_IC2;
 	}
 
 	@Override
