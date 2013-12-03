@@ -20,8 +20,7 @@ public enum EnumWireMaterial
 	TIN("Tin", 13, 2, 0.5F, new Vector3(132, 132, 130)),
 	IRON("Iron", 0.1F, 2, 4, new Vector3(97, 102, 105)),
 	ALUMINUM("Aluminum", 0.025F, 6, 0.15F, new Vector3(215, 205, 181)),
-	SILVER("Silver", 0.005F, 1, 2, new Vector3(192, 192, 192)),
-	SUPERCONDUCTOR("Superconductor", 0, 8, Float.MAX_VALUE, new Vector3(212, 175, 55));
+	SILVER("Silver", 0.005F, 1, 2, new Vector3(192, 192, 192));
 
 	public final float resistance;
 	public final float damage;

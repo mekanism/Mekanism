@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import java.util.ArrayList;
-
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -18,7 +16,7 @@ import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -106,23 +104,17 @@ public class MekanismGenerators implements IModule
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		try {
-			/*for(ItemStack ore : OreDictionary.getOres("treeSapling")) //TODO later!
+			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
 			{
-				ArrayList<ItemStack> list = new ArrayList();
-				ore.getItem().getSubItems(ore.itemID, CreativeTabs.tabDecorations, list);
-				
-				for(ItemStack sapling : list)
-				{
-					RecipeHandler.addCrusherRecipe(MekanismUtils.size(sapling, 1), new ItemStack(BioFuel, 2));
-				}
-			}*/
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(BioFuel, 2));
+			}
 		} catch(Exception e) {}
 	}
 	
 	public void addRecipes()
 	{
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 0), new Object[] {
-			"PPP", "EeE", "IRI", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('e'), Mekanism.EnrichedIron, Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
+			"III", "COC", "IFI", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingotOsmium", Character.valueOf('F'), Block.furnaceIdle
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 1), new Object[] {
 			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Item.ingotIron, Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem()
@@ -160,6 +152,13 @@ public class MekanismGenerators implements IModule
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 4));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.carrot), new ItemStack(BioFuel, 4));
+        
+        try {
+			for(int i = 0; i < BlockLeaves.LEAF_TYPES.length; i++)
+			{
+				RecipeHandler.addCrusherRecipe(new ItemStack(Block.sapling, 1, i), new ItemStack(BioFuel, 2));
+			}
+		} catch(Exception e) {}
         
         InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
 	}
