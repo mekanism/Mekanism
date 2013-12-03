@@ -28,6 +28,7 @@ import universalelectricity.core.grid.IElectricityNetwork;
 import universalelectricity.prefab.tile.IRotatable;
 import universalelectricity.prefab.tile.TileEntityAdvanced;
 import universalelectricity.prefab.tile.TileEntityElectrical;
+import buildcraft.api.power.IPowerReceptor;
 import cofh.api.energy.TileEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -193,6 +194,13 @@ public class TileEntityMultimeter extends TileEntityAdvanced implements ITileNet
 		else if (tileEntity instanceof TileEnergyHandler)
 		{
 			return ((TileEnergyHandler) tileEntity).getEnergyStored(side.getOpposite());
+		}
+		else if (tileEntity instanceof IPowerReceptor)
+		{
+			if (((IPowerReceptor) tileEntity).getPowerReceiver(side) != null)
+			{
+				return ((IPowerReceptor) tileEntity).getPowerReceiver(side).getEnergyStored();
+			}
 		}
 
 		return 0;

@@ -18,23 +18,30 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IConnector;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.block.IElectricalStorage;
 import universalelectricity.core.electricity.ElectricityPack;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
 	
 	/** Maximum amount of energy this machine can hold. */
 	public double MAX_ELECTRICITY;
+	
+	/** BuildCraft power handler. */
+	public PowerHandler powerHandler;
 	
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
@@ -46,6 +53,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
+		
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configurePowerPerdition(0, 0);
+		powerHandler.configure(0, 0, 0, 0);
 	}
 	
 	public void register()
@@ -61,7 +72,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public void onUpdate() {}
+	public void onUpdate()
+	{
+		reconfigure();
+	}
 	
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
@@ -144,6 +158,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         super.readFromNBT(nbtTags);
 
         electricityStored = nbtTags.getDouble("electricityStored");
+        reconfigure();
     }
 
 	@Override
@@ -153,6 +168,42 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         
         nbtTags.setDouble("electricityStored", getEnergy());
     }
+	
+	@Override
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
+	{
+		return powerHandler.getPowerReceiver();
+	}
+	
+	protected void reconfigure()
+	{
+		if(MekanismUtils.useBuildcraft())
+		{
+			powerHandler.configure(1, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
+		}
+	}
+	
+	@Override
+	public void doWork(PowerHandler workProvider) 
+	{
+		if(powerHandler.getEnergyStored() > 0)
+		{
+			if(getEnergy() < getMaxEnergy())
+			{
+				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+			}
+			
+			powerHandler.setEnergy(0);
+		}
+		
+		reconfigure();
+	}
+	
+	@Override
+	public World getWorld()
+	{
+		return worldObj;
+	}
 	
 	@Override
 	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive) 

@@ -2,6 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 
 import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.power.IPowerReceptor;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -24,7 +26,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPeripheral, IRedstoneControl
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPowerReceptor, IPeripheral, IRedstoneControl
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
