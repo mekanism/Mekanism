@@ -147,6 +147,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			{
 				ret *= 1.5;
 			}
+			
+			return ret;
 		}
 		
 		return 0;
