@@ -388,10 +388,6 @@ tile.Wire.TinWire.name=Tin Wire
 tile.Wire.IronWire.name=Iron Wire
 tile.Wire.AluminumWire.name=Aluminum Wire
 tile.Wire.SilverWire.name=Silver Wire
-tile.Wire.SuperconductorWire.name=Superconductor Wire
-
-//Items
-item.Linker.name=Electrostatic Linker
 
 //General text
 text.contractor.success=Linked contractor successfully
