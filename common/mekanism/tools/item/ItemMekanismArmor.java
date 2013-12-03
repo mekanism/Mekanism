@@ -12,12 +12,9 @@ import net.minecraft.item.ItemStack;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-	protected EnumArmorMaterial material;
-	
     public ItemMekanismArmor(int id, EnumArmorMaterial enumarmormaterial, int renderIndex, int armorType)
     {
         super(id, enumarmormaterial, renderIndex, armorType);
-        material = enumarmormaterial;
         setCreativeTab(Mekanism.tabMekanism);
     }
     
@@ -36,6 +33,6 @@ public class ItemMekanismArmor extends ItemArmor
 	@Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer)
     {
-		return "mekanism:armor/" + material.name().toLowerCase() + "_" + layer + ".png";
+		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + layer + ".png";
     }
 }

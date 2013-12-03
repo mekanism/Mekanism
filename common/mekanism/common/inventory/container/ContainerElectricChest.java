@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.IElectricChest;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tileentity.TileEntityElectricChest;
@@ -26,8 +27,8 @@ public class ContainerElectricChest extends Container
         
         if(isBlock)
         {
-        	tileEntity.openChest();
         	tileEntity.playersUsing.add(inventory.player);
+        	tileEntity.openChest();
         }
         else {
         	itemInventory.openChest();
@@ -77,8 +78,8 @@ public class ContainerElectricChest extends Container
 		
 		if(isBlock)
 		{
-			tileEntity.closeChest();
 			tileEntity.playersUsing.remove(entityplayer);
+			tileEntity.closeChest();
 		}
 		else {
 			itemInventory.closeChest();
@@ -165,13 +166,14 @@ public class ContainerElectricChest extends Container
     		ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
     		if(itemStack != null && itemStack.getItem() instanceof IElectricChest)
     		{
-    			if(((IElectricChest)itemStack.getItem()).isElectricChest(itemStack))
+    			if(MachineType.get(itemStack) == MachineType.ELECTRIC_CHEST)
     			{
     				return null;
     			}
     		}
 
     	}
+    	
     	return super.slotClick(slotNumber, destSlot, modifier, player);
     }
 }

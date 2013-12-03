@@ -11,7 +11,6 @@ import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
@@ -28,7 +27,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRobitRepair extends GuiContainer implements ICrafting
+public class GuiRobitRepair extends GuiMekanism implements ICrafting
 {
 	public int entityId;
     private ContainerRepair repairContainer;
@@ -49,8 +48,10 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     {
         super.initGui();
         Keyboard.enableRepeatEvents(true);
+        
         int i = (width - xSize) / 2;
         int j = (height - ySize) / 2;
+        
         itemNameField = new GuiTextField(fontRenderer, i + 62, j + 24, 103, 12);
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
@@ -72,7 +73,7 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         GL11.glDisable(GL11.GL_LIGHTING);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.repair"), 60, 6, 4210752);
+        fontRenderer.drawString(MekanismUtils.localize("container.repair"), 60, 6, 4210752);
 
         if(repairContainer.maximumCost > 0)
         {
@@ -82,7 +83,7 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
 
             if(repairContainer.maximumCost >= 40 && !mc.thePlayer.capabilities.isCreativeMode)
             {
-                s = StatCollector.translateToLocal("container.repair.expensive");
+                s = MekanismUtils.localize("container.repair.expensive");
                 k = 16736352;
             }
             else if(!repairContainer.getSlot(2).getHasStack())
@@ -116,18 +117,20 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
         }
 
         GL11.glEnable(GL11.GL_LIGHTING);
+        
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    protected void keyTyped(char par1, int par2)
+    protected void keyTyped(char c, int i)
     {
-        if(itemNameField.textboxKeyTyped(par1, par2))
+        if(itemNameField.textboxKeyTyped(c, i))
         {
             repairContainer.updateItemName(itemNameField.getText());
             mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", itemNameField.getText().getBytes()));
         }
         else {
-            super.keyTyped(par1, par2);
+            super.keyTyped(c, i);
         }
     }
 
@@ -135,6 +138,7 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     protected void mouseClicked(int mouseX, int mouseY, int button)
     {
         super.mouseClicked(mouseX, mouseY, button);
+        
         itemNameField.mouseClicked(mouseX, mouseY, button);
         
 		if(button == 0)
@@ -174,16 +178,19 @@ public class GuiRobitRepair extends GuiContainer implements ICrafting
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float par3)
+    public void drawScreen(int mouseX, int mouseY, float partialTick)
     {
-        super.drawScreen(mouseX, mouseY, par3);
+        super.drawScreen(mouseX, mouseY, partialTick);
+        
         GL11.glDisable(GL11.GL_LIGHTING);
         itemNameField.drawTextBox();
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitRepair.png"));
         int guiWidth = (width - xSize) / 2;

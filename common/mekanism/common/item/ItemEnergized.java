@@ -1,23 +1,24 @@
 package mekanism.common.item;
 
-import ic2.api.item.ICustomElectricItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
+import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import thermalexpansion.api.item.IChargeableItem;
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ICustomElectricItem, IChargeableItem
+public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
@@ -39,7 +40,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getElectricityStored(itemstack), ElectricUnit.JOULES));
+		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 		list.add(EnumColor.AQUA + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 	}
 	
@@ -74,56 +75,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	}
 	
 	@Override
-	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
-			
-			if(!simulate)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
-			}
-			
-			return (int)(energyToStore*Mekanism.TO_IC2);
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
-	{
-		if(canSend(itemStack))
-		{
-			double energyWanted = amount*Mekanism.FROM_IC2;
-			double energyToGive = Math.min(Math.min(energyWanted, getMaxEnergy(itemStack)*0.01), getEnergy(itemStack));
-			
-			if(!simulate)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - energyToGive);
-			}
-			
-			return (int)(energyToGive*Mekanism.TO_IC2);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public boolean canUse(ItemStack itemStack, int amount)
-	{
-		return getEnergy(itemStack) >= amount*Mekanism.FROM_IC2;
-	}
-	
-	@Override
-	public boolean canShowChargeToolTip(ItemStack itemStack)
-	{
-		return false;
-	}
-	
-	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return canSend(itemStack);
@@ -150,7 +101,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public int getTier(ItemStack itemStack)
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -211,27 +162,53 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	}
 
 	@Override
-	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
-		return (float)(recharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doReceive)*Mekanism.TO_BC);
+		if(canReceive(theItem))
+		{
+			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
+			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
+			
+			if(!simulate)
+			{
+				setEnergy(theItem, getEnergy(theItem) + toReceive);
+			}
+			
+			return (int)Math.round(toReceive*Mekanism.TO_TE);
+		}
+		
+		return 0;
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	public int extractEnergy(ItemStack theItem, int energy, boolean simulate) 
 	{
-		return (float)(discharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doTransfer)*Mekanism.TO_BC);
+		if(canSend(theItem))
+		{
+			double energyRemaining = getEnergy(theItem);
+			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
+			
+			if(!simulate)
+			{
+				setEnergy(theItem, getEnergy(theItem) - toSend);
+			}
+			
+			return (int)Math.round(toSend*Mekanism.TO_TE);
+		}
+		
+		return 0;
 	}
 
 	@Override
-	public float getEnergyStored(ItemStack theItem)
+	public int getEnergyStored(ItemStack theItem)
 	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_BC);
+		return (int)Math.round(getEnergy(theItem)*Mekanism.TO_TE);
 	}
 
 	@Override
-	public float getMaxEnergyStored(ItemStack theItem)
+	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
+		return (int)Math.round(getMaxEnergy(theItem)*Mekanism.TO_TE);
 	}
 	
 	@Override
@@ -300,5 +277,11 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	public float getTransfer(ItemStack itemStack)
 	{
 		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
+	}
+
+	@Override
+	public IElectricItemManager getManager(ItemStack itemStack) 
+	{
+		return IC2ItemManager.getManager(this);
 	}
 }

@@ -16,7 +16,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	
 	public TileEntityWindTurbine() 
 	{
-		super("Wind Turbine", 200000, (MekanismGenerators.windGeneration*8)*2);
+		super("WindTurbine", 200000, (MekanismGenerators.windGeneration*8)*2);
 		inventory = new ItemStack[1];
 	}
 	
@@ -80,12 +80,6 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public double getEnvironmentBoost() 
-	{
-		return getMultiplier();
-	}
-
-	@Override
 	public boolean canOperate() 
 	{
 		return electricityStored < MAX_ELECTRICITY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
@@ -112,7 +106,13 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return false;
 	}

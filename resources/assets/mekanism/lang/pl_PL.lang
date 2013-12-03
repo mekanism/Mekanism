@@ -1,0 +1,212 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsydianowe TNT
+item.EnrichedAlloy.name=Wzbogacony Stop
+item.EnergyTablet.name=Tabletka Energi
+item.SpeedUpgrade.name=Ulepszenie Prędkości
+item.EnergyUpgrade.name=Ulepszenie Energi
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Atomic Disassembler
+item.AtomicCore.name=Atomowe Jądro
+item.ElectricBow.name=Elektryczny Łuk
+item.BoundingBlock.name=Blok Graniczny
+tile.GasTank.name=Zbiornik na Gaz
+item.StorageTank.name=Zbiornik
+item.ControlCircuit.name=Obwód kontrolny
+item.EnrichedIron.name=Wzbogacone Żelazo
+item.CompressedCarbon.name=Skompresowany Węgiel
+item.PortableTeleporter.name=Przenośny Teleporter
+item.TeleportationCore.name=Jądro Teleportacji
+item.Configurator.name=Konfigurator
+item.NetworkReader.name=Czytnik Sieci
+item.ManganeseAlloy.name=Stop Manganu
+item.WalkieTalkie.name=Walkie-Talkie
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Blok Osmu
+tile.BasicBlock.BronzeBlock.name=Blok Brązu
+tile.BasicBlock.RefinedObsidian.name=Rafinowany Obsydian
+tile.BasicBlock.CoalBlock.name=Blok Węgla
+tile.BasicBlock.RefinedGlowstone.name=Rafinowany Jasnogłaz
+tile.BasicBlock.SteelBlock.name=Blok Stali
+tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.TeleporterFrame.name=Ramka Teleportera
+tile.BasicBlock.SteelCasing.name=Stalowa Obudowa
+tile.BasicBlock.DynamicTank.name=Dynamiczny Zbiornik
+tile.BasicBlock.DynamicGlass.name=Dynamiczne szkło
+tile.BasicBlock.DynamicValve.name=Dynamiczny Zawór
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Komora Wzbogacania
+tile.MachineBlock.OsmiumCompressor.name=Osmowy Kompresor
+tile.MachineBlock.Combiner.name=Combiner
+tile.MachineBlock.Crusher.name=Rozdrabniarka
+tile.MachineBlock.BasicFactory.name=Podstawowa Fabryka
+tile.MachineBlock.AdvancedFactory.name=Zaawansowana Fabryka
+tile.MachineBlock.EliteFactory.name=Elitarna Fabryka
+tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.PurificationChamber.name=Komora Oczyszczania
+tile.MachineBlock.EnergizedSmelter.name=Energetyzowana Huta
+tile.MachineBlock.Teleporter.name=Teleporter
+tile.MachineBlock.ElectricPump.name=Elektryczna Pompa
+tile.MachineBlock.ElectricChest.name=Elektryczna Skrzynia
+tile.MachineBlock.Chargepad.name=Chargepad
+tile.MachineBlock.LogisticalSorter.name=Logistyczny Magazynier
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Ruda Osmu
+
+//Transmitters
+tile.Transmitter.PressurizedTube.name=Rura Ciśnieniowa
+tile.Transmitter.UniversalCable.name=Uniwersalny Kabel
+tile.Transmitter.MechanicalPipe.name=Mechaniczna Rura
+tile.Transmitter.LogisticalTransporter.name=Logistyczny Transporter
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Podstawowa Kostka Energi
+tile.EnergyCube.Advanced.name=Zaawansowana Kostka Energi
+tile.EnergyCube.Elite.name=Elitarna Kostka Energi
+tile.EnergyCube.Ultimate.name=Najlepsza Kostka Energi
+
+//Dust
+item.ironDust.name=Żelazny Pył
+item.goldDust.name=Złoty Pył
+item.osmiumDust.name=Osmowy Pył
+item.obsidianDust.name=Rafinowany Obsydianowy Pył
+item.diamondDust.name=Diamentowy Pył
+item.steelDust.name=Stalowy Pył
+item.copperDust.name=Miedziany Pył
+item.tinDust.name=Cynowy Pył
+item.silverDust.name=Srebrny Pył
+
+//Clumps
+item.ironClump.name=Bryłka żelaza
+item.goldClump.name=Bryłka Złota
+item.osmiumClump.name=Bryłka Osmu
+item.copperClump.name=Bryłka Miedzi
+item.tinClump.name=Bryłka Cyny
+item.silverClump.name=Bryłka Srebra
+item.obsidianClump.name=Bryłka Obsydianu
+
+//Dirty Dust
+item.dirtyIronDust.name=Zanieczyszczony Żelazny Pył
+item.dirtyGoldDust.name=Zanieczyszczony Złoty Pył
+item.dirtyOsmiumDust.name=Zanieczyszczony Osmowy Pył
+item.dirtyCopperDust.name=Zanieczyszczony Miedziany Pył
+item.dirtyTinDust.name=Zanieczyszczony Cynowy Pył
+item.dirtySilverDust.name=Zanieczyszczony Srebrny Pył
+item.dirtyObsidianDust.name=Zanieczyszczony Obsydianowy Pył
+
+//Ingots
+item.obsidianIngot.name=Sztabka Obsydianu
+item.osmiumIngot.name=Sztabka Osmu
+item.bronzeIngot.name=Sztabka Brązu
+item.glowstoneIngot.name=Sztabka Jasnogłazu
+item.steelIngot.name=Sztabka Stali
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=Bio paliwo
+item.ElectrolyticCore.name=Jądro Elektrolityczne
+item.SolarPanel.name=Panel Słoneczny
+
+//Generators
+tile.Generator.HeatGenerator.name=Generator Cieplny
+tile.Generator.SolarGenerator.name=Generator Słoneczny
+tile.Generator.ElectrolyticSeparator.name=Separator Elektrolityczny
+tile.Generator.HydrogenGenerator.name=Wodorowy Generator
+tile.Generator.BioGenerator.name=Bio-Generator
+tile.Generator.AdvancedSolarGenerator.name=Zaawansowany Generator Słoneczny
+tile.Generator.WindTurbine.name=Turbina wiatrowa
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Drewniany Paxel
+item.StonePaxel.name=Kamienny Paxel
+item.IronPaxel.name=Żelazny Paxel
+item.DiamondPaxel.name=Diamentowy Paxel
+item.GoldPaxel.name=Złoty Paxel
+
+//Obsidian
+item.ObsidianHelmet.name=Obsydianowy Hełm
+item.ObsidianChestplate.name=Obsydianowy Napierśnik
+item.ObsidianLeggings.name=Obsydianowe Nogawice
+item.ObsidianBoots.name=Obsydianowe Buty
+item.ObsidianPaxel.name=Obsydianowy Paxel
+item.ObsidianPickaxe.name=Obsydianowy Kilof
+item.ObsidianAxe.name=Obsydianowa Siekiera
+item.ObsidianShovel.name=Obsydianowa Łopata
+item.ObsidianHoe.name=Obsydianowa Motyka
+item.ObsidianSword.name=Obsydianowy miecz
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lazurytowy Hełm
+item.LazuliChestplate.name=Lazurytowy Napierśnik
+item.LazuliLeggings.name=Lazurytowe Nogawice
+item.LazuliBoots.name=Lazurytowe Buty
+item.LazuliPaxel.name=Lazurytowy Paxel
+item.LazuliPickaxe.name=Lazurytowy Kilof
+item.LazuliAxe.name=Lazurytowa Siekiera
+item.LazuliShovel.name=Lazurytowa Łopata
+item.LazuliHoe.name=Lazurytowa Motyka
+item.LazuliSword.name=Lazurytowy Miecz
+
+//Osmium
+item.OsmiumHelmet.name=Osmowy Hełm
+item.OsmiumChestplate.name=Osmowy Napierśnik
+item.OsmiumLeggings.name=Osmowe Nogawice
+item.OsmiumBoots.name=Osmowe Buty
+item.OsmiumPaxel.name=Osmowy Paxel
+item.OsmiumPickaxe.name=Osmowy Kilof
+item.OsmiumAxe.name=Osmowa Siekiera
+item.OsmiumShovel.name=Osmowa Łopata
+item.OsmiumHoe.name=Osmowa Motyka
+item.OsmiumSword.name=Osmowy Miecz
+
+//Bronze
+item.BronzeHelmet.name=Hełm z Brązu
+item.BronzeChestplate.name=Napierśnik z Brązu
+item.BronzeLeggings.name=Nogawice z Brązu
+item.BronzeBoots.name=Buty z Brązu
+item.BronzePaxel.name=Paxel z Brązu
+item.BronzePickaxe.name=Kilof z Brązu
+item.BronzeAxe.name=Siekiera z Brązu
+item.BronzeShovel.name=Łopata z Brązu
+item.BronzeHoe.name=Motyka z Brązu
+item.BronzeSword.name=Miecz z Brązu
+
+//Glow
+item.GlowstonePaxel.name=Jasnogłazowy Paxel
+item.GlowstonePickaxe.name=Jasnogłazowy Kilof
+item.GlowstoneAxe.name=Jasnogłazowa Siekiera
+item.GlowstoneShovel.name=Jasnogłazowa Łopata
+item.GlowstoneHoe.name=Jasnogłazowa Motyka
+item.GlowstoneSword.name=Jasnogłazowy Miecz
+item.GlowstoneHelmet.name=Jasnogłazowy Hełm
+item.GlowstoneChestplate.name=Jasnogłazowy Napierśnik
+item.GlowstoneLeggings.name=Jasnogłazowe Nogawice
+item.GlowstoneBoots.name=Jasnogłazowe Buty
+
+//Steel
+item.SteelPaxel.name=Stalowy Paxel
+item.SteelPickaxe.name=Stalowy Kilof
+item.SteelAxe.name=Stalowa Siekiera
+item.SteelShovel.name=Stalowa Łopata
+item.SteelHoe.name=Stalowa Motyka
+item.SteelSword.name=Stalowy Miecz
+item.SteelHelmet.name=Stalowy Hełm
+item.SteelChestplate.name=Stalowy Napierśnik
+item.SteelLeggings.name=Stalowe Nogawice
+item.SteelBoots.name=Stalowe Buty

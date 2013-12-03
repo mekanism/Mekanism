@@ -3,7 +3,10 @@ package mekanism.client.render;
 import java.util.Arrays;
 import java.util.List;
 
+import mekanism.api.EnumColor;
+import mekanism.api.gas.GasRegistry;
 import mekanism.common.ISpecialBounds;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -12,16 +15,23 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,9 +40,36 @@ public class MekanismRenderer
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	
+	public static Icon[] colors = new Icon[256];
+	
+	public static Icon energyIcon;
+	
 	private static float lightmapLastX;
     private static float lightmapLastY;
 	private static boolean optifineBreak = false;
+	
+	public static void init()
+	{
+		MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
+	}
+	
+	@EventHandler
+	@ForgeSubscribe /* Screwy Forge code */
+	public void onStitch(TextureStitchEvent.Pre event)
+	{
+		if(event.map.textureType == 0)
+		{
+			for(EnumColor color : EnumColor.values())
+			{
+				colors[color.ordinal()] = event.map.registerIcon("mekanism:overlay/Overlay" + color.getLocalizedName().replace(" ", ""));
+			}
+			
+			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
+			
+			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
+			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
+		}
+	}
     
 	public static class Model3D
 	{
@@ -144,27 +181,36 @@ public class MekanismRenderer
 		}
 	}
 	
+	public static Icon getColorIcon(EnumColor color)
+	{
+		return colors[color.ordinal()];
+	}
+	
     public static void glowOn() 
+    {
+    	glowOn(15);
+    }
+    
+    public static void glowOn(int glow)
     {
         GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
         
-        try
-        {
+        try {
         	lightmapLastX = OpenGlHelper.lastBrightnessX;
         	lightmapLastY = OpenGlHelper.lastBrightnessY;
-        } 
-        catch(NoSuchFieldError e)
-        {
+        } catch(NoSuchFieldError e) {
         	optifineBreak = true;
         }
         
         RenderHelper.disableStandardItemLighting();
         
+        float glowRatioX = Math.min(((float)glow/15F)*240F + lightmapLastX, 240);
+        float glowRatioY = Math.min(((float)glow/15F)*240F + lightmapLastY, 240);
+        
         if(!optifineBreak)
         {
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);        	
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);        	
         }
-        
     }
 
     public static void glowOff() 
@@ -175,6 +221,57 @@ public class MekanismRenderer
     	}
     	
         GL11.glPopAttrib();
+    }
+    
+    public static void blendOn()
+    {
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+    
+    public static void blendOff()
+    {
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+    
+    /**
+     * Cleaned-up snip of ItemRenderer.renderItem() -- meant to render 2D items as equipped.
+     * @param item - ItemStack to render
+     */
+    public static void renderItem(ItemStack item)
+    {
+		Icon icon = item.getItem().getIconIndex(item);
+		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+
+        if(icon == null)
+        {
+            GL11.glPopMatrix();
+            return;
+        }
+
+        texturemanager.bindTexture(texturemanager.getResourceLocation(item.getItemSpriteNumber()));
+        Tessellator tessellator = Tessellator.instance;
+        
+        float minU = icon.getMinU();
+        float maxU = icon.getMaxU();
+        float minV = icon.getMinV();
+        float maxV = icon.getMaxV();
+        
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glTranslatef(0.0F, -0.3F, 0.0F);
+        
+        GL11.glScalef(1.5F, 1.5F, 1.5F);
+        GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
+        
+        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
+
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
     
 	/**
@@ -252,7 +349,7 @@ public class MekanismRenderer
 	    float cG = (color >> 8 & 0xFF) / 255.0F;
 	    float cB = (color & 0xFF) / 255.0F;
 	    
-	    GL11.glColor4f(cR, cG, cB, 1.0F);
+	    GL11.glColor3f(cR, cG, cB);
 	}
     
     public static class DisplayInteger
@@ -295,7 +392,7 @@ public class MekanismRenderer
     public static TextureMap getTextureMap(int type)
     {
     	try {
-    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, "listTickables");
+    		List l = (List)MekanismUtils.getPrivateValue(Minecraft.getMinecraft().renderEngine, TextureManager.class, ObfuscatedNames.TextureManager_listTickables);
     		
     		for(Object obj : l)
     		{
@@ -332,8 +429,7 @@ public class MekanismRenderer
     		{
     			return Arrays.equals(boolArray, (boolean[])o);
     		}
-    		else
-    		{
+    		else {
     			return false;
     		}
     	}
@@ -345,18 +441,23 @@ public class MekanismRenderer
     	}
     }
     
-    public static float getPartialTicks()
+    public static float getPartialTick()
     {
     	try {
-    		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, "timer");
+    		Timer t = (Timer)MekanismUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
     		return t.renderPartialTicks;
     	} catch(Exception e) {}
     	
     	return 0;
     }
     
-    public static ResourceLocation getLiquidTexture()
+    public static ResourceLocation getBlocksTexture()
     {
     	return TextureMap.locationBlocksTexture;
+    }
+    
+    public static ResourceLocation getItemsTexture()
+    {
+    	return TextureMap.locationItemsTexture;
     }
 }

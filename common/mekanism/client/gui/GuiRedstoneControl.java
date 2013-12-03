@@ -8,13 +8,13 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiRedstoneControl extends GuiElement
 {
-	public GuiRedstoneControl(GuiContainer gui, TileEntity tile, ResourceLocation def)
+	public GuiRedstoneControl(GuiScreen gui, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI, "GuiRedstoneControl.png"), gui, tile, def);
 	}
@@ -24,17 +24,17 @@ public class GuiRedstoneControl extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 		
-		guiContainer.drawTexturedModalRect(guiWidth + 176, guiHeight + 138, 0, 0, 26, 26);
+		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 138, 0, 0, 26, 26);
 		
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 		int renderX = 26 + (18*control.getControlType().ordinal());
 		
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 142 && yAxis <= 160)
 		{
-			guiContainer.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 0, 18, 18);
+			guiObj.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 0, 18, 18);
 		}
 		else {
-			guiContainer.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 18, 18, 18);
+			guiObj.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 18, 18, 18);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -70,6 +70,7 @@ public class GuiRedstoneControl extends GuiElement
 				RedstoneControl current = control.getControlType();
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
 				
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketRedstoneControl().setParams(Object3D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
 			}
 		}

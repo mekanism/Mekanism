@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ThreadTankSparkle extends Thread
@@ -33,7 +33,7 @@ public class ThreadTankSparkle extends Thread
 		try {
 			if(Mekanism.dynamicTankEasterEgg)
 			{
-				Mekanism.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(3)+1) + ".ogg", pointer.worldObj, Object3D.get(pointer));
+				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(3)+1) + ".ogg", pointer.worldObj, Object3D.get(pointer));
 			}
 			
 			loop(pointer);

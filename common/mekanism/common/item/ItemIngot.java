@@ -11,7 +11,7 @@ import net.minecraft.util.Icon;
 public class ItemIngot extends ItemMekanism
 {
 	public Icon[] icons = new Icon[256];
-	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", "Glowstone", "Steel"};
+	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", "Glowstone", "Steel", "Copper", "Tin"};
 	
 	public ItemIngot(int id)
 	{
@@ -23,7 +23,7 @@ public class ItemIngot extends ItemMekanism
 	@Override
 	public void registerIcons(IconRegister register)
 	{
-		for(int i = 0; i <= 4; i++)
+		for(int i = 0; i <= 6; i++)
 		{
 			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Ingot");
 		}
@@ -38,7 +38,7 @@ public class ItemIngot extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for (int counter = 0; counter <= 4; ++counter)
+		for(int counter = 0; counter <= 6; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

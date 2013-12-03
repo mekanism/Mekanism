@@ -3,16 +3,30 @@ package mekanism.client.gui;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.common.IInvConfiguration;
+import mekanism.common.SideData;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tileentity.TileEntityContainerBlock;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public abstract class GuiMekanism extends GuiContainer
 {
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
 	
+	private TileEntityContainerBlock tileEntity;
+	
 	public GuiMekanism(Container container)
 	{
 		super(container);
+	}
+	
+	public GuiMekanism(TileEntityContainerBlock tile, Container container)
+	{
+		super(container);
+		tileEntity = tile;
 	}
 	
 	@Override
@@ -27,7 +41,61 @@ public abstract class GuiMekanism extends GuiContainer
 		{
 			element.renderForeground(xAxis, yAxis);
 		}
+		
+		if(tileEntity != null)
+		{
+			Slot hovering = null;
+			
+	        for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)
+	        {
+	            Slot slot = (Slot)inventorySlots.inventorySlots.get(i);
+	
+	            if(isMouseOverSlot(slot, mouseX, mouseY))
+	            {
+	            	hovering = slot;
+	            	break;
+	            }
+	        }
+	        
+	        ItemStack stack = mc.thePlayer.inventory.getItemStack();
+	        
+	        if(stack != null && stack.getItem() instanceof ItemConfigurator && hovering != null)
+	        {
+	        	SideData data = getFromSlot(hovering);
+	        	
+	        	if(data != null)
+	        	{
+	        		drawCreativeTabHoveringText(data.color.getName(), xAxis, yAxis);
+	        	}
+	        }
+		}
 	}
+	
+	private SideData getFromSlot(Slot slot)
+	{
+		if(slot.slotNumber < tileEntity.getSizeInventory())
+		{
+			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			
+			for(SideData data : config.getSideData())
+			{
+				for(int id : data.availableSlots)
+				{
+					if(id == slot.getSlotIndex())
+					{
+						return data;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+    protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY)
+    {
+        return isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);
+    }
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)

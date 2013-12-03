@@ -92,11 +92,4 @@ public interface IElectricChest
 	 * @return prevLidAngle value
 	 */
 	public float getPrevLidAngle(ItemStack itemStack);
-	
-	/**
-	 * Whether or not the given ItemStack is an electric chest.
-	 * @param itemStack - stack to check
-	 * @return if the stack is an electric chest
-	 */
-	public boolean isElectricChest(ItemStack itemStack);
 }

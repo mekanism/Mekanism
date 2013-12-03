@@ -2,12 +2,11 @@ package mekanism.client.gui;
 
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,28 +17,29 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 
     public GuiAdvancedElectricMachine(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
     {
-        super(new ContainerAdvancedElectricMachine(inventory, tentity));
+        super(tentity, new ContainerAdvancedElectricMachine(inventory, tentity));
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation));
+        guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.guiLocation));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    	
+    {    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.fullName, 45, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override

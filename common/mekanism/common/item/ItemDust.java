@@ -40,7 +40,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for (int counter = 0; counter <= 8; ++counter)
+		for(int counter = 0; counter <= 8; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

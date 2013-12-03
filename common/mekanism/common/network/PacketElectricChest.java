@@ -6,6 +6,7 @@ import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.tileentity.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
@@ -121,7 +122,7 @@ public class PacketElectricChest implements IMekanismPacket
 	    		else {
 	    			ItemStack stack = player.getCurrentEquippedItem();
 	    			
-	    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+	    			if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 	    			{
 	    				if(energy)
 	    				{
@@ -180,7 +181,7 @@ public class PacketElectricChest implements IMekanismPacket
 	    		else {
 	    			ItemStack stack = player.getCurrentEquippedItem();
 	    			
-	    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+	    			if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 	    			{
 	    				((IElectricChest)stack.getItem()).setPassword(stack, pass);
 	    				((IElectricChest)stack.getItem()).setAuthenticated(stack, true);
@@ -209,7 +210,7 @@ public class PacketElectricChest implements IMekanismPacket
 	    		else {
 	    			ItemStack stack = player.getCurrentEquippedItem();
 	    			
-	    			if(stack != null && stack.getItem() instanceof IElectricChest && ((IElectricChest)stack.getItem()).isElectricChest(stack))
+	    			if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 	    			{
 	    				((IElectricChest)stack.getItem()).setLocked(stack, lock);
 	    			}

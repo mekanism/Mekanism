@@ -17,12 +17,11 @@ public class ItemMekanismAxe extends ItemMekanismTool
     @Override
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-        if (block != null && block.blockMaterial == Material.wood)
+        if(block != null && block.blockMaterial == Material.wood)
         {
             return efficiencyOnProperMaterial;
         }
-        else
-        {
+        else {
             return super.getStrVsBlock(itemstack, block);
         }
     }

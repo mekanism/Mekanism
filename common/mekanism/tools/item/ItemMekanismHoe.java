@@ -31,13 +31,13 @@ public class ItemMekanismHoe extends ItemMekanism
     @Override
     public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float entityX, float entityY, float entityZ)
     {
-        if (!entityplayer.canPlayerEdit(x, y, z, side, itemstack))
+        if(!entityplayer.canPlayerEdit(x, y, z, side, itemstack))
         {
             return false;
         }
-        else
-        {
+        else {
             UseHoeEvent event = new UseHoeEvent(entityplayer, itemstack, world, x, y, z);
+            
             if(MinecraftForge.EVENT_BUS.post(event))
             {
                 return false;
@@ -60,7 +60,7 @@ public class ItemMekanismHoe extends ItemMekanism
                 Block block = Block.tilledField;
                 world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getStepSound(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
 
-                if (world.isRemote)
+                if(world.isRemote)
                 {
                     return true;
                 }

@@ -1,0 +1,17 @@
+[
+{
+  "modid": "MekanismInduction",
+  "name": "MekanismInduction",
+  "description": "Induction module of Mekanism.",
+  "version": "5.6.0",
+  "mcversion": "1.6.4",
+  "updateUrl": "",
+  "authors": [
+    "aidancbrady"
+  ],
+  "credits": "Thanks to everyone who has contributed to this ongoing project.",
+  "logoFile": "logo.png",
+  "screenshots": [
+  ]
+}
+]

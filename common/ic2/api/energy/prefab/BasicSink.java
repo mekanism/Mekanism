@@ -1,5 +1,6 @@
 package ic2.api.energy.prefab;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -12,12 +13,17 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.info.Info;
+import ic2.api.item.ElectricItem;
 
 /**
  * BasicSink is a simple adapter to provide an ic2 energy sink.
  * 
  * It's designed to be attached to a tile entity as a delegate. Functionally BasicSink acts as a
  * one-time configurable input energy buffer, thus providing a common use case for machines.
+ * 
+ * Sub-classing BasicSink instead of using it as a delegate works as well, but isn't recommended.
+ * The delegate can be extended with additional functionality through a sub class though.
  * 
  * The constraints set by BasicSink like the strict tank-like energy buffering should provide a
  * more easy to use and stable interface than using IEnergySink directly while aiming for
@@ -42,14 +48,14 @@ import ic2.api.energy.tile.IEnergySink;
  * 
  *     @Override
  *     public void invalidate() {
- *         ic2EnergySink.onInvalidate(); // notify the energy sink
+ *         ic2EnergySink.invalidate(); // notify the energy sink
  *         ...
  *         super.invalidate(); // this is important for mc!
  *     }
  * 
  *     @Override
  *     public void onChunkUnload() {
- *         ic2EnergySink.onOnChunkUnload(); // notify the energy sink
+ *         ic2EnergySink.onChunkUnload(); // notify the energy sink
  *         ...
  *     }
  * 
@@ -57,7 +63,7 @@ import ic2.api.energy.tile.IEnergySink;
  *     public void readFromNBT(NBTTagCompound tag) {
  *         super.readFromNBT(tag);
  * 
- *         ic2EnergySink.onReadFromNbt(tag);
+ *         ic2EnergySink.readFromNBT(tag);
  *         ...
  *     }
  * 
@@ -65,15 +71,15 @@ import ic2.api.energy.tile.IEnergySink;
  *     public void writeToNBT(NBTTagCompound tag) {
  *         super.writeToNBT(tag);
  * 
- *         ic2EnergySink.onWriteToNbt(tag);
+ *         ic2EnergySink.writeToNBT(tag);
  *         ...
  *     }
  * 
  *     @Override
  *     public void updateEntity() {
- *         ic2EnergySink.onUpdateEntity(); // notify the energy sink
+ *         ic2EnergySink.updateEntity(); // notify the energy sink
  *         ...
- *         if (ic2EnergySink.addEnergy(5)) { // use 5 eu from the sink's buffer this tick
+ *         if (ic2EnergySink.useEnergy(5)) { // use 5 eu from the sink's buffer this tick
  *             ... // do something with the energy
  *         }
  *         ...
@@ -105,19 +111,22 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	// in-world te forwards	>>
 
 	/**
-	 * Forward for the TileEntity's updateEntity(), used for creating the energy net link.
-	 * Either onUpdateEntity or onLoaded have to be used.
+	 * Forward for the base TileEntity's updateEntity(), used for creating the energy net link.
+	 * Either updateEntity or onLoaded have to be used.
 	 */
-	public void onUpdateEntity() {
+	@Override
+	public void updateEntity() {
 		if (!addedToEnet) onLoaded();
 	}
 
 	/**
-	 * Notification that the TileEntity finished loaded, for advanced uses.
-	 * Either onUpdateEntity or onLoaded have to be used.
+	 * Notification that the base TileEntity finished loaded, for advanced uses.
+	 * Either updateEntity or onLoaded have to be used.
 	 */
 	public void onLoaded() {
-		if (!addedToEnet && !FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+		if (!addedToEnet &&
+				!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
+				Info.isIc2Available()) {
 			worldObj = parent.worldObj;
 			xCoord = parent.xCoord;
 			yCoord = parent.yCoord;
@@ -130,11 +139,24 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	}
 
 	/**
-	 * Forward for the TileEntity's invalidate(), used for destroying the energy net link.
-	 * Both onInvalidate and onOnChunkUnload have to be used.
+	 * Forward for the base TileEntity's invalidate(), used for destroying the energy net link.
+	 * Both invalidate and onChunkUnload have to be used.
 	 */
-	public void onInvalidate() {
-		if (addedToEnet) {
+	@Override
+	public void invalidate() {
+		super.invalidate();
+
+		onChunkUnload();
+	}
+
+	/**
+	 * Forward for the base TileEntity's onChunkUnload(), used for destroying the energy net link.
+	 * Both invalidate and onChunkUnload have to be used.
+	 */
+	@Override
+	public void onChunkUnload() {
+		if (addedToEnet &&
+				Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 
 			addedToEnet = false;
@@ -142,30 +164,32 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	}
 
 	/**
-	 * Forward for the TileEntity's onChunkUnload(), used for destroying the energy net link.
-	 * Both onInvalidate and onOnChunkUnload have to be used.
-	 */
-	public void onOnChunkUnload() {
-		onInvalidate();
-	}
-
-	/**
-	 * Forward for the TileEntity's readFromNBT(), used for loading the state.
+	 * Forward for the base TileEntity's readFromNBT(), used for loading the state.
 	 * 
 	 * @param tag Compound tag as supplied by TileEntity.readFromNBT()
 	 */
-	public void onReadFromNbt(NBTTagCompound tag) {
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+
 		NBTTagCompound data = tag.getCompoundTag("IC2BasicSink");
 
 		energyStored = data.getDouble("energy");
 	}
 
 	/**
-	 * Forward for the TileEntity's writeToNBT(), used for saving the state.
+	 * Forward for the base TileEntity's writeToNBT(), used for saving the state.
 	 * 
 	 * @param tag Compound tag as supplied by TileEntity.writeToNBT()
 	 */
-	public void onWriteToNbt(NBTTagCompound tag) {
+	@Override
+	public void writeToNBT(NBTTagCompound tag) {
+		try {
+			super.writeToNBT(tag);
+		} catch (RuntimeException e) {
+			// happens if this is a delegate, ignore
+		}
+
 		NBTTagCompound data = new NBTTagCompound();
 
 		data.setDouble("energy", energyStored);
@@ -175,6 +199,42 @@ public class BasicSink extends TileEntity implements IEnergySink {
 
 	// << in-world te forwards
 	// methods for using this adapter >>
+
+	/**
+	 * Get the maximum amount of energy this sink can hold in its buffer.
+	 * 
+	 * @return Capacity in EU.
+	 */
+	public int getCapacity() {
+		return capacity;
+	}
+
+	/**
+	 * Set the maximum amount of energy this sink can hold in its buffer.
+	 * 
+	 * @param capacity Capacity in EU.
+	 */
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	/**
+	 * Get the IC2 energy tier for this sink.
+	 * 
+	 * @return IC2 Tier.
+	 */
+	public int getTier() {
+		return tier;
+	}
+
+	/**
+	 * Set the IC2 energy tier for this sink.
+	 * 
+	 * @param tier IC2 Tier.
+	 */
+	public void setTier(int tier) {
+		this.tier = tier;
+	}
 
 	/**
 	 * Determine the energy stored in the sink's input buffer.
@@ -223,7 +283,58 @@ public class BasicSink extends TileEntity implements IEnergySink {
 		}
 	}
 
+	/**
+	 * Discharge the supplied ItemStack into this sink's energy buffer.
+	 * 
+	 * @param stack ItemStack to discharge (null is ignored)
+	 * @param limit Transfer limit, values <= 0 will use the battery's limit
+	 * @return true if energy was transferred
+	 */
+	public boolean discharge(ItemStack stack, int limit) {
+		if (stack == null || !Info.isIc2Available()) return false;
+
+		int amount = (int) Math.floor(capacity - energyStored);
+		if (amount <= 0) return false;
+
+		if (limit > 0 && limit < amount) amount = limit;
+
+		amount = ElectricItem.manager.discharge(stack, amount, tier, limit > 0, false);
+
+		energyStored += amount;
+
+		return amount > 0;
+	}
+
 	// << methods for using this adapter
+
+	// backwards compatibility (ignore these) >>
+
+	@Deprecated
+	public void onUpdateEntity() {
+		updateEntity();
+	}
+
+	@Deprecated
+	public void onInvalidate() {
+		invalidate();
+	}
+
+	@Deprecated
+	public void onOnChunkUnload() {
+		onChunkUnload();
+	}
+
+	@Deprecated
+	public void onReadFromNbt(NBTTagCompound tag) {
+		readFromNBT(tag);
+	}
+
+	@Deprecated
+	public void onWriteToNbt(NBTTagCompound tag) {
+		writeToNBT(tag);
+	}
+
+	// << backwards compatibility
 
 	// ******************************
 	// *** Methods for use by ic2 ***
@@ -257,9 +368,9 @@ public class BasicSink extends TileEntity implements IEnergySink {
 
 
 	public final TileEntity parent;
-	public final int capacity;
-	public final int tier;
 
+	protected int capacity;
+	protected int tier;
 	protected double energyStored;
 	protected boolean addedToEnet;
 }

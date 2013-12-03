@@ -1,11 +1,15 @@
 package mekanism.api;
 
+import java.util.ArrayList;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class Object3D 
 {
@@ -46,16 +50,28 @@ public class Object3D
 	public TileEntity getTileEntity(IBlockAccess world)
 	{
 		if(!(world instanceof World && ((World)world).blockExists(xCoord, yCoord, zCoord)))
+		{
 			return null;
+		}
+		
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
 	
-	public void write(NBTTagCompound nbtTags)
+	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("x", xCoord);
 		nbtTags.setInteger("y", yCoord);
 		nbtTags.setInteger("z", zCoord);
 		nbtTags.setInteger("dimensionId", dimensionId);
+		
+		return nbtTags;
+	}
+	
+	public void write(ArrayList data)
+	{
+		data.add(xCoord);
+		data.add(yCoord);
+		data.add(zCoord);
 	}
 	
 	public Object3D translate(int x, int y, int z)
@@ -82,6 +98,31 @@ public class Object3D
 		return new Object3D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
 	}
 	
+	public static Object3D read(ByteArrayDataInput dataStream)
+	{
+		return new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+	}
+	
+	public Object3D difference(Object3D other)
+	{
+		return new Object3D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord);
+	}
+	
+	public ForgeDirection sideDifference(Object3D other)
+	{
+		Object3D diff = difference(other);
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(side.offsetX == diff.xCoord && side.offsetY == diff.yCoord && side.offsetZ == diff.zCoord)
+			{
+				return side;
+			}
+		}
+		
+		return ForgeDirection.UNKNOWN;
+	}
+	
 	public int distanceTo(Object3D obj)
 	{
 	    int subX = xCoord - obj.xCoord;
@@ -93,6 +134,17 @@ public class Object3D
 	public boolean sideVisible(ForgeDirection side, IBlockAccess world)
 	{
 		return world.getBlockId(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ) == 0;
+	}
+	
+	public Object3D step(ForgeDirection side)
+	{
+		return translate(side.offsetX, side.offsetY, side.offsetZ);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[Object3D: " + xCoord + ", " + yCoord + ", " + zCoord + "]";
 	}
 	
 	@Override

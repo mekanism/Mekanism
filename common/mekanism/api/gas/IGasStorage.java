@@ -14,7 +14,7 @@ public interface IGasStorage
 	 * @param data - ItemStack parameter if necessary
 	 * @return gas stored
 	 */
-	public int getGas(EnumGas type, Object... data);
+	public GasStack getGas(Object... data);
 	
 	/**
 	 * Set the gas of a declared type to a new amount;
@@ -22,7 +22,7 @@ public interface IGasStorage
 	 * @param data - ItemStack parameter if necessary
 	 * @param amount - amount to store
 	 */
-	public void setGas(EnumGas type, int amount, Object... data);
+	public void setGas(GasStack stack, Object... data);
 	
 	/**
 	 * Gets the maximum amount of gas this tile entity can store.
@@ -30,5 +30,5 @@ public interface IGasStorage
 	 * @param data - ItemStack parameter if necessary
 	 * @return maximum gas
 	 */
-	public int getMaxGas(EnumGas type, Object... data);
+	public int getMaxGas(Object... data);
 }

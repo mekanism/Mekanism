@@ -15,7 +15,7 @@ public class ItemMekanismShovel extends ItemMekanismTool
     @Override
     public boolean canHarvestBlock(Block block)
     {
-        if (block == Block.snow)
+        if(block == Block.snow)
         {
             return true;
         }

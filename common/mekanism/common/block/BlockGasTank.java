@@ -2,9 +2,11 @@ package mekanism.common.block;
 
 import java.util.Random;
 
+import mekanism.api.gas.IGasItem;
+import mekanism.common.ISustainedInventory;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityBasicBlock;
-import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityGasTank;
 import net.minecraft.block.BlockContainer;
@@ -15,12 +17,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
@@ -28,7 +27,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockGasTank extends BlockContainer
 {
-	public Icon[] icons = new Icon[256];
 	public Random machineRand = new Random();
 	
 	public BlockGasTank(int id)
@@ -42,12 +40,7 @@ public class BlockGasTank extends BlockContainer
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:GasTankTop");
-		icons[1] = register.registerIcon("mekanism:GasTankSide");
-		icons[2] = register.registerIcon("mekanism:GasTankFront");
-	}
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
@@ -67,95 +60,15 @@ public class BlockGasTank extends BlockContainer
         
         tileEntity.setFacing((short)change);
     }
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-    public Icon getIcon(int side, int meta)
-	{
-		if(side == 3)
-		{
-			return icons[2];
-		}
-		else if(side == 0 || side == 1)
-		{
-			return icons[0];
-		}
-		else {
-			return icons[1];
-		}
-	}
-	
-	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-		
-		if(side == tileEntity.facing)
-		{
-			return icons[2];
-		}
-		else if(side == 0 || side == 1)
-		{
-			return icons[0];
-		}
-		else {
-			return icons[1];
-		}
-	}
-    
-    @Override
-    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
-    {
-    	TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
-
-        if(tileEntity != null)
-        {
-            for(int i = 0; i < tileEntity.getSizeInventory(); ++i)
-            {
-                ItemStack slotStack = tileEntity.getStackInSlot(i);
-
-                if(slotStack != null)
-                {
-                    float xRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float yRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-                    float zRandom = machineRand.nextFloat() * 0.8F + 0.1F;
-
-                    while(slotStack.stackSize > 0)
-                    {
-                        int j = machineRand.nextInt(21) + 10;
-
-                        if(j > slotStack.stackSize)
-                        {
-                            j = slotStack.stackSize;
-                        }
-
-                        slotStack.stackSize -= j;
-                        EntityItem item = new EntityItem(world, (double)((float)x + xRandom), (double)((float)y + yRandom), (double)((float)z + zRandom), new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
-
-                        if(slotStack.hasTagCompound())
-                        {
-                            item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-                        }
-
-                        float k = 0.05F;
-                        item.motionX = (double)((float)machineRand.nextGaussian() * k);
-                        item.motionY = (double)((float)machineRand.nextGaussian() * k + 0.2F);
-                        item.motionZ = (double)((float)machineRand.nextGaussian() * k);
-                        world.spawnEntityInWorld(item);
-                    }
-                }
-        	}
-            
-            tileEntity.invalidate();
-        }
-	        
-    	super.breakBlock(world, x, y, z, i1, i2);
-    }
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
     {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
     	if(world.isRemote)
     	{
     		return true;
@@ -216,11 +129,28 @@ public class BlockGasTank extends BlockContainer
     	return false;
     }
     
+    @Override
+    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+    {
+    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+    	{
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            
+            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+	        
+	        world.spawnEntityInWorld(entityItem);
+    	}
+    	
+        return world.setBlockToAir(x, y, z);
+    }
+    
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
 	{
-    	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
-    	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
-        
+        ItemStack itemStack = getPickBlock(null, world, x, y, z);
+
         world.setBlockToAir(x, y, z);
         
         if(!returnBlock)
@@ -239,6 +169,18 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
+	public int quantityDropped(Random random) 
+	{
+		return 0;
+	}
+
+	@Override
+	public int idDropped(int i, Random random, int j)
+	{
+		return 0;
+	}
+	
+	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
@@ -251,6 +193,12 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
+	public int getRenderType()
+	{
+		return -1;
+	}
+	
+	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
 		return new TileEntityGasTank();
@@ -259,6 +207,15 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		return new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
+    	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
+        
+        IGasItem storageTank = (IGasItem)itemStack.getItem();
+        storageTank.setGas(tileEntity.gasStored, itemStack);
+        
+        ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+        inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+        
+		return itemStack;
 	}
 }

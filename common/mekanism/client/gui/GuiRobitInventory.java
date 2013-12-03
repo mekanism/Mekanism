@@ -9,7 +9,6 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -18,7 +17,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRobitInventory extends GuiContainer
+public class GuiRobitInventory extends GuiMekanism
 {
 	public EntityRobit robit;
 	
@@ -32,13 +31,17 @@ public class GuiRobitInventory extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-    	fontRenderer.drawString("Robit Inventory", 8, 6, 0x404040);
-        fontRenderer.drawString("Inventory", 8, ySize - 96 + 3, 0x404040);
+    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.inventory"), 8, 6, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 3, 0x404040);
+        
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitInventory.png"));
         int guiWidth = (width - xSize) / 2;

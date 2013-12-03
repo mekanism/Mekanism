@@ -2,7 +2,7 @@ package mekanism.client.sound;
 
 import java.net.URL;
 
-import mekanism.common.Mekanism;
+import mekanism.client.MekanismClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -40,7 +40,7 @@ public class Sound
 	 */
 	public Sound(String id, String sound, TileEntity tileentity)
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			soundPath = sound;
 			identifier = id;
@@ -60,7 +60,7 @@ public class Sound
 				SoundHandler.getSoundSystem().activate(id);
 			}
 			
-			Mekanism.audioHandler.sounds.put(tileEntity, this);
+			MekanismClient.audioHandler.sounds.put(tileEntity, this);
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class Sound
 	 */
 	public void play()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			if(isPlaying)
 			{
@@ -91,7 +91,7 @@ public class Sound
 	 */
 	public void stopLoop()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			if(!isPlaying)
 			{
@@ -113,14 +113,14 @@ public class Sound
 	 */
 	public void remove()
 	{
-		synchronized(Mekanism.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			if(isPlaying)
 			{
 				stopLoop();
 			}
 			
-			Mekanism.audioHandler.sounds.remove(tileEntity);
+			MekanismClient.audioHandler.sounds.remove(tileEntity);
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
@@ -136,13 +136,13 @@ public class Sound
 	 */
     public void updateVolume(EntityPlayer entityplayer)
     {
-		synchronized(Mekanism.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			if(entityplayer != null && tileEntity != null && entityplayer.worldObj == tileEntity.worldObj)
 			{
 				float multiplier = ((IHasSound)tileEntity).getVolumeMultiplier();
 		    	float volume = 0;
-		    	float masterVolume = Mekanism.audioHandler.masterVolume;
+		    	float masterVolume = MekanismClient.audioHandler.masterVolume;
 		    	
 		        double distance = entityplayer.getDistance(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);

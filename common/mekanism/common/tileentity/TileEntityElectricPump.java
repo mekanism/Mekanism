@@ -1,27 +1,28 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedTank;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -32,7 +33,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IEnergySink, IStrictEnergyAcceptor
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable
 {
 	/** This pump's tank */
 	public FluidTank fluidTank;
@@ -45,7 +46,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	public TileEntityElectricPump()
 	{
-		super("Electric Pump", 10000);
+		super("ElectricPump", 10000);
 		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[3];
 	}
@@ -341,11 +342,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         
         NBTTagList cleaningList = new NBTTagList();
         
-        for(Object3D wrapper : cleaningNodes)
+        for(Object3D obj : cleaningNodes)
         {
-        	NBTTagCompound tagCompound = new NBTTagCompound();
-        	wrapper.write(tagCompound);
-        	cleaningList.appendTag(tagCompound);
+        	cleaningList.appendTag(obj.write(new NBTTagCompound()));
         }
         
         if(cleaningList.tagCount() != 0)
@@ -420,65 +419,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public double transferEnergyToAcceptor(double amount)
+	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 	
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canSetFacing(int side)
 	{
-		return true;
-	}
-	
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
-	}
-	
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-	
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return direction != ForgeDirection.getOrientation(facing);
+		return side != 0 && side != 1;
 	}
 	
 	@Override
@@ -500,7 +449,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection direction) 
 	{
-		return new FluidTankInfo[] {fluidTank.getInfo()};
+		if(direction == ForgeDirection.getOrientation(1))
+		{
+			return new FluidTankInfo[] {fluidTank.getInfo()};
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -524,7 +478,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() != resource.getFluid())
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.getOrientation(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -541,7 +495,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
 	{
-		return fluidTank.drain(maxDrain, doDrain);
+		if(from == ForgeDirection.getOrientation(1))
+		{
+			return fluidTank.drain(maxDrain, doDrain);
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -553,6 +512,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid) 
 	{
+		return from == ForgeDirection.getOrientation(1);
+	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		recurringNodes.clear();
+		cleaningNodes.clear();
+		
+		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
+		
 		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		return false;
 	}
 }

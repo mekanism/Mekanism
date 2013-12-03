@@ -7,12 +7,14 @@ import java.util.HashSet;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.FluidNetwork;
-import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
-import mekanism.common.PipeUtils;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.PipeUtils;
 import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketTileEntity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -29,32 +31,13 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork, FluidStack> implements IFluidHandler, ITileNetwork
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IFluidHandler
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 	
-	/** The FluidStack displayed on this pipe. */
-	public FluidStack refFluid = null;
-	
 	/** This pipe's active state. */
 	public boolean isActive = false;
-	
-	/** The scale (0F -> 1F) of this pipe's fluid level. */
-	public float fluidScale;
-
-	public void clientUpdate(FluidStack fluidStack)
-	{
-		if(fluidStack.isFluidEqual(refFluid))
-		{
-			fluidScale = Math.min(1, fluidScale+((float)fluidStack.amount/50F));
-		}
-		else if(refFluid == null)
-		{
-			refFluid = fluidStack.copy();
-			fluidScale += Math.min(1, ((float)fluidStack.amount/50F));
-		}
-	}
 	
 	@Override
 	public TransmissionType getTransmissionType()
@@ -72,13 +55,13 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork, FluidStack>)pipe).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<FluidNetwork, FluidStack>)pipe).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork());
 				}
 			}
 			
-			if(connectedNets.size() == 0 || worldObj.isRemote)
+			if(connectedNets.size() == 0)
 			{
 				theNetwork = new FluidNetwork(this);
 			}
@@ -103,11 +86,21 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	}
 	
 	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		getTransmitterNetwork().split(this);
+	}
+	
+	@Override
 	public void invalidate()
 	{
+		getTransmitterNetwork().split(this);
+		
 		if(!worldObj.isRemote)
 		{
-			getTransmitterNetwork().split(this);
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 		}
 		
 		super.invalidate();
@@ -125,36 +118,24 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	@Override
 	public void refreshTransmitterNetwork() 
 	{
-		if(!worldObj.isRemote)
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-				
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
-				{
-					getTransmitterNetwork().merge(((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork());
-				}
-			}
+			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
-			getTransmitterNetwork().refresh();
+			if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
+			{
+				getTransmitterNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork());
+			}
 		}
+		
+		getTransmitterNetwork().refresh();
 	}
 	
 	@Override
 	public void updateEntity()
 	{
-		if(worldObj.isRemote)
+		if(!worldObj.isRemote)
 		{
-			if(fluidScale > 0)
-			{
-				fluidScale -= .01;
-			}
-			else {
-				refFluid = null;
-			}
-		}	
-		else {		
 			if(isActive)
 			{
 				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(this);
@@ -165,11 +146,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 					
 					if(container != null)
 					{
-						FluidStack received = container.drain(side, 100, false);
+						FluidStack received = container.drain(side.getOpposite(), 100, false);
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side, getTransmitterNetwork().emit(received, true, Object3D.get(this).getFromSide(side).getTileEntity(worldObj)), true);
+							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true, (TileEntity)container), true);
 						}
 					}
 				}
@@ -269,5 +250,39 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
 	{
 		return new FluidTankInfo[] {dummyTank.getInfo()};
+	}
+	
+	@Override
+	public int getTransmitterNetworkSize()
+	{
+		return getTransmitterNetwork().getSize();
+	}
+
+	@Override
+	public int getTransmitterNetworkAcceptorSize()
+	{
+		return getTransmitterNetwork().getAcceptorSize();
+	}
+
+	@Override
+	public String getTransmitterNetworkNeeded()
+	{
+		return getTransmitterNetwork().getNeeded();
+	}
+
+	@Override
+	public String getTransmitterNetworkFlow()
+	{
+		return getTransmitterNetwork().getFlow();
+	}
+	
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		isActive = !isActive;
+		getTransmitterNetwork().refresh();
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+		
+		return true;
 	}
 }

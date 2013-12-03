@@ -6,7 +6,6 @@ import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import mekanism.api.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +19,8 @@ import net.minecraft.util.Icon;
  * 1: Universal Cable
  * 2: Mechanical Pipe
  * 3: Logistical Transporter
+ * 4: Restrictive Transporter
+ * 5: Diversion Transporter
  * @author AidanBrady
  *
  */
@@ -52,9 +53,10 @@ public class ItemBlockTransmitter extends ItemBlock
 			else if(itemstack.getItemDamage() == 1)
 			{
 				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 				list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 				list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
-				list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
+				list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism, UE)");
 			}
 			else if(itemstack.getItemDamage() == 2)
 			{
@@ -66,6 +68,20 @@ public class ItemBlockTransmitter extends ItemBlock
 				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 				list.add("- " + EnumColor.PURPLE + "Items (universal)");
 				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+			}
+			else if(itemstack.getItemDamage() == 4)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "Items (universal)");
+				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
+			}
+			else if(itemstack.getItemDamage() == 5)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "Items (universal)");
+				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				list.add("- " + EnumColor.DARK_RED + "Controllable by redstone");
 			}
 		}
 	}
@@ -86,6 +102,7 @@ public class ItemBlockTransmitter extends ItemBlock
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
+		
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
@@ -100,10 +117,17 @@ public class ItemBlockTransmitter extends ItemBlock
 			case 3:
 				name = "LogisticalTransporter";
 				break;
+			case 4:
+				name = "RestrictiveTransporter";
+				break;
+			case 5:
+				name = "DiversionTransporter";
+				break;
 			default:
 				name = "Unknown";
 				break;
 		}
+		
 		return getUnlocalizedName() + "." + name;
 	}
 }

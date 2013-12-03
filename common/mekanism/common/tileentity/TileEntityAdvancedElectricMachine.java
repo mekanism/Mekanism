@@ -3,11 +3,10 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IStorageTank;
-import mekanism.api.SideData;
-import mekanism.api.gas.EnumGas;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler;
+import mekanism.common.SideData;
+import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -64,6 +63,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
 		
 		upgradeComponent = new TileComponentUpgrade(this, 4);
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
 	}
     
     /**
@@ -84,13 +84,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			
 			handleSecondaryFuel();
 			
-			if(canOperate() && MekanismUtils.canFunction(this) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), SECONDARY_ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
 			{
 			    setActive(true);
 			    
 				operatingTicks++;
 				
-				secondaryEnergyStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), SECONDARY_ENERGY_PER_TICK);
+				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
 				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				
 				if((operatingTicks) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
@@ -101,13 +101,18 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				}
 			}
 			else {
-			    setActive(false);
+				if(prevEnergy >= getEnergy())
+				{
+					setActive(false);
+				}
 			}
 			
 			if(!canOperate())
 			{
 				operatingTicks = 0;
 			}
+			
+			prevEnergy = getEnergy();
 		}
 	}
     
@@ -160,9 +165,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 1)
 		{
-			return getFuelTicks(itemstack) > 0 || 
-					(this instanceof TileEntityPurificationChamber && itemstack.getItem() instanceof IStorageTank && 
-							((IStorageTank)itemstack.getItem()).getGasType(itemstack) == EnumGas.OXYGEN);
+			return getFuelTicks(itemstack) > 0;
 		}
 		
 		return true;
@@ -185,6 +188,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         else {
             inventory[2].stackSize += itemstack.stackSize;
         }
+        
+        onInventoryChanged();
+        ejectorComponent.onOutput();
     }
 
     @Override

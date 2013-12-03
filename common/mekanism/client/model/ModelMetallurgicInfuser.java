@@ -4,189 +4,222 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 @SideOnly(Side.CLIENT)
-public class ModelMetallurgicInfuser extends ModelBase
+public class ModelMetallurgicInfuser extends ModelBase 
 {
-	public ModelRenderer PANEL;
-	public ModelRenderer MACHINE;
-	public ModelRenderer CENTER_CIRCUIT;
-	public ModelRenderer PIPE_1;
-	public ModelRenderer PIPE_2;
-	public ModelRenderer GUI_STAND;
-	public ModelRenderer GUI_SCREEN;
-	public ModelRenderer PIPE_2_TOP;
-	public ModelRenderer PIPE_1_TOP;
-	public ModelRenderer FRONT_PANEL;
-	public ModelRenderer WIRE_1;
-	public ModelRenderer WIRE_2;
-	public ModelRenderer SIDE_WIRE_1;
-	public ModelRenderer SIDE_WIRE_2;
-	public ModelRenderer VERTICAL_WIRE;
-	public ModelRenderer TUBE;
-	
-	public ModelMetallurgicInfuser()
+	ModelRenderer Base;
+	ModelRenderer RightChamber;
+	ModelRenderer TopChamber;
+	ModelRenderer BackChamber;
+	ModelRenderer LeftChamber;
+	ModelRenderer FCTop;
+	ModelRenderer FCBottom;
+	ModelRenderer FCRight;
+	ModelRenderer FCLeft;
+	ModelRenderer FCDoor;
+	ModelRenderer Cable1;
+	ModelRenderer Cable3;
+	ModelRenderer Cable5;
+	ModelRenderer Cable2;
+	ModelRenderer Cable4;
+	ModelRenderer Cable6;
+	ModelRenderer TopPanelDec;
+	ModelRenderer BackPlate;
+	ModelRenderer TopPanel;
+	ModelRenderer TopPanelExtr;
+	ModelRenderer ConnectorRight;
+	ModelRenderer ConnectorLeft;
+	ModelRenderer ConnectorWireRight;
+	ModelRenderer ConnectorWireLeft;
+	ModelRenderer ConnectorWireTop;
+
+	public ModelMetallurgicInfuser() 
 	{
-		textureWidth = 256;
-		textureHeight = 256;
-		
-		PANEL = new ModelRenderer(this, 0, 0);
-		PANEL.addBox(-8.0F, -0.5F, -8.0F, 16, 1, 16, 0);
-		PANEL.setRotationPoint(0.0F, -0.5F, 0.0F);
-		PANEL.setTextureSize(256, 256);
-		PANEL.mirror = true;
-		setRotation(PANEL, 0F, 0F, 0F);
-		
-		MACHINE = new ModelRenderer(this, 80, 0);
-		MACHINE.addBox(-4.0F, -5.0F, -4.0F, 8, 10, 8, 0);
-		MACHINE.setRotationPoint(2.0F, -6.0F, 0.0F);
-		MACHINE.setTextureSize(256, 256);
-		MACHINE.mirror = true;
-		setRotation(MACHINE, 0F, 0F, 0F);
-		
-		CENTER_CIRCUIT = new ModelRenderer(this, 64, 0);
-		CENTER_CIRCUIT.addBox(-2.0F, -0.5F, -2.0F, 4, 1, 4, 0);
-		CENTER_CIRCUIT.setRotationPoint(2.0F, -11.5F, 0.0F);
-		CENTER_CIRCUIT.setTextureSize(256, 256);
-		CENTER_CIRCUIT.mirror = true;
-		setRotation(CENTER_CIRCUIT, 0F, 0F, 0F);
-		
-		PIPE_1 = new ModelRenderer(this, 0, 32);
-		PIPE_1.addBox(-1.0F, -5.5F, -0.5F, 2, 11, 1, 0);
-		PIPE_1.setRotationPoint(2.0F, -6.0F, -4.5F);
-		PIPE_1.setTextureSize(256, 256);
-		PIPE_1.mirror = true;
-		setRotation(PIPE_1, 0F, 0F, 0F);
-		
-		PIPE_2 = new ModelRenderer(this, 0, 32);
-		PIPE_2.addBox(-1.0F, -5.5F, -0.5F, 2, 11, 1, 0);
-		PIPE_2.setRotationPoint(2.0F, -6.0F, 4.5F);
-		PIPE_2.setTextureSize(256, 256);
-		PIPE_2.mirror = true;
-		setRotation(PIPE_2, 0F, 0F, 0F);
-		
-		GUI_STAND = new ModelRenderer(this, 32, 32);
-		GUI_STAND.addBox(-0.5F, -3.5F, -0.5F, 1, 7, 1, 0);
-		GUI_STAND.setRotationPoint(-5.0F, -4.5F, 0.0F);
-		GUI_STAND.setTextureSize(256, 256);
-		GUI_STAND.mirror = true;
-		setRotation(GUI_STAND, 0F, 0F, 0F);
-		
-		GUI_SCREEN = new ModelRenderer(this, 48, 32);
-		GUI_SCREEN.addBox(-1.5F, -0.5F, -3.0F, 3, 1, 6, 0);
-		GUI_SCREEN.setRotationPoint(-5.0F, -8.0F, 0.0F);
-		GUI_SCREEN.setTextureSize(256, 256);
-		GUI_SCREEN.mirror = true;
-		setRotation(GUI_SCREEN, 0F, 0F, -0.5F);
-		
-		PIPE_2_TOP = new ModelRenderer(this, 16, 32);
-		PIPE_2_TOP.addBox(-1.0F, -0.5F, -1.0F, 2, 1, 2, 0);
-		PIPE_2_TOP.setRotationPoint(2.0F, -11.0F, 3.0F);
-		PIPE_2_TOP.setTextureSize(256, 256);
-		PIPE_2_TOP.mirror = true;
-		setRotation(PIPE_2_TOP, 0F, 0F, 0F);
-		
-		PIPE_1_TOP = new ModelRenderer(this, 16, 32);
-		PIPE_1_TOP.addBox(-1.0F, -0.5F, -1.0F, 2, 1, 2, 0);
-		PIPE_1_TOP.setRotationPoint(2.0F, -11.0F, -3.0F);
-		PIPE_1_TOP.setTextureSize(256, 256);
-		PIPE_1_TOP.mirror = true;
-		setRotation(PIPE_1_TOP, 0F, 0F, 0F);
-		
-		FRONT_PANEL = new ModelRenderer(this, 32, 64);
-		FRONT_PANEL.addBox(-0.5F, -1.5F, -5.0F, 1, 3, 10, 0);
-		FRONT_PANEL.setRotationPoint(-7.0F, -2.5F, 0.0F);
-		FRONT_PANEL.setTextureSize(256, 256);
-		FRONT_PANEL.mirror = true;
-		setRotation(FRONT_PANEL, 0F, 0F, 0F);
-		
-		WIRE_1 = new ModelRenderer(this, 48, 48);
-		WIRE_1.addBox(-2.0F, -0.5F, -0.5F, 4, 1, 1, 0);
-		WIRE_1.setRotationPoint(-0.5F, -1.0F, -4.5F);
-		WIRE_1.setTextureSize(256, 256);
-		WIRE_1.mirror = true;
-		setRotation(WIRE_1, 0F, 0F, 0F);
-		
-		WIRE_2 = new ModelRenderer(this, 0, 48);
-		WIRE_2.addBox(-3.0F, -0.5F, -0.5F, 6, 1, 1, 0);
-		WIRE_2.setRotationPoint(-1.5F, -1.0F, 4.5F);
-		WIRE_2.setTextureSize(256, 256);
-		WIRE_2.mirror = true;
-		setRotation(WIRE_2, 0F, 0F, 0F);
-		
-		SIDE_WIRE_1 = new ModelRenderer(this, 32, 48);
-		SIDE_WIRE_1.addBox(-0.5F, -0.5F, -2.5F, 1, 1, 5, 0);
-		SIDE_WIRE_1.setRotationPoint(-4.0F, -1.0F, 2.0F);
-		SIDE_WIRE_1.setTextureSize(256, 256);
-		SIDE_WIRE_1.mirror = true;
-		setRotation(SIDE_WIRE_1, 0F, 0F, 0F);
-		
-		SIDE_WIRE_2 = new ModelRenderer(this, 64, 48);
-		SIDE_WIRE_2.addBox(-0.5F, -0.5F, -1.5F, 1, 1, 3, 0);
-		SIDE_WIRE_2.setRotationPoint(-2.0F, -1.0F, -2.5F);
-		SIDE_WIRE_2.setTextureSize(256, 256);
-		SIDE_WIRE_2.mirror = true;
-		setRotation(SIDE_WIRE_2, 0F, 0F, 0F);
-		
-		VERTICAL_WIRE = new ModelRenderer(this, 0, 64);
-		VERTICAL_WIRE.addBox(-0.5F, -3.0F, -0.5F, 1, 6, 1, 0);
-		VERTICAL_WIRE.setRotationPoint(-2.0F, -4.5F, -1.5F);
-		VERTICAL_WIRE.setTextureSize(256, 256);
-		VERTICAL_WIRE.mirror = true;
-		setRotation(VERTICAL_WIRE, 0F, 0F, 0F);
-		
-		TUBE = new ModelRenderer(this, 16, 64);
-		TUBE.addBox(-2.5F, -0.5F, -1.0F, 5, 1, 2, 0);
-		TUBE.setRotationPoint(-4.0F, -3.0F, 2.0F);
-		TUBE.setTextureSize(256, 256);
-		TUBE.mirror = true;
-		setRotation(TUBE, 0F, 0F, 0F);
-		
+		textureWidth = 128;
+		textureHeight = 64;
+
+		Base = new ModelRenderer(this, 0, 0);
+		Base.addBox(0F, 0F, 0F, 14, 2, 16);
+		Base.setRotationPoint(-7F, 22F, -8F);
+		Base.setTextureSize(128, 64);
+		Base.mirror = true;
+		setRotation(Base, 0F, 0F, 0F);
+		RightChamber = new ModelRenderer(this, 61, 0);
+		RightChamber.addBox(0F, 0F, 0F, 1, 6, 5);
+		RightChamber.setRotationPoint(5.5F, 16F, -6F);
+		RightChamber.setTextureSize(128, 64);
+		RightChamber.mirror = true;
+		setRotation(RightChamber, 0F, 0F, 0F);
+		TopChamber = new ModelRenderer(this, 86, 12);
+		TopChamber.addBox(0F, 0F, 0F, 11, 1, 5);
+		TopChamber.setRotationPoint(-5.5F, 15F, -6F);
+		TopChamber.setTextureSize(128, 64);
+		TopChamber.mirror = true;
+		setRotation(TopChamber, 0F, 0F, 0F);
+		BackChamber = new ModelRenderer(this, 74, 0);
+		BackChamber.addBox(0F, 0F, 0F, 11, 6, 1);
+		BackChamber.setRotationPoint(-5.5F, 16F, -1F);
+		BackChamber.setTextureSize(128, 64);
+		BackChamber.mirror = true;
+		setRotation(BackChamber, 0F, 0F, 0F);
+		LeftChamber = new ModelRenderer(this, 61, 0);
+		LeftChamber.addBox(0F, 0F, 0F, 1, 6, 5);
+		LeftChamber.setRotationPoint(-6.5F, 16F, -6F);
+		LeftChamber.setTextureSize(128, 64);
+		LeftChamber.mirror = true;
+		setRotation(LeftChamber, 0F, 0F, 0F);
+		FCTop = new ModelRenderer(this, 99, 6);
+		FCTop.addBox(0F, 0F, 0F, 11, 1, 1);
+		FCTop.setRotationPoint(-5.5F, 16F, -7F);
+		FCTop.setTextureSize(128, 64);
+		FCTop.mirror = true;
+		setRotation(FCTop, 0F, 0F, 0F);
+		FCBottom = new ModelRenderer(this, 99, 6);
+		FCBottom.addBox(0F, 0F, 0F, 11, 1, 1);
+		FCBottom.setRotationPoint(-5.5F, 21F, -7F);
+		FCBottom.setTextureSize(128, 64);
+		FCBottom.mirror = true;
+		setRotation(FCBottom, 0F, 0F, 0F);
+		FCRight = new ModelRenderer(this, 61, 11);
+		FCRight.addBox(0F, 0F, 0F, 1, 4, 1);
+		FCRight.setRotationPoint(4.5F, 17F, -7F);
+		FCRight.setTextureSize(128, 64);
+		FCRight.mirror = true;
+		setRotation(FCRight, 0F, 0F, 0F);
+		FCLeft = new ModelRenderer(this, 61, 11);
+		FCLeft.addBox(0F, 0F, 0F, 1, 4, 1);
+		FCLeft.setRotationPoint(-5.5F, 17F, -7F);
+		FCLeft.setTextureSize(128, 64);
+		FCLeft.mirror = true;
+		setRotation(FCLeft, 0F, 0F, 0F);
+		FCDoor = new ModelRenderer(this, 99, 0);
+		FCDoor.addBox(0F, -2F, -0.5F, 9, 4, 1);
+		FCDoor.setRotationPoint(-4.5F, 19F, -7F);
+		FCDoor.setTextureSize(128, 64);
+		FCDoor.mirror = true;
+		setRotation(FCDoor, 0F, 0F, 0F);
+		Cable1 = new ModelRenderer(this, 105, 19);
+		Cable1.addBox(0F, 0F, 0F, 1, 1, 7);
+		Cable1.setRotationPoint(-4.5F, 19.5F, 0F);
+		Cable1.setTextureSize(128, 64);
+		Cable1.mirror = true;
+		setRotation(Cable1, 0F, 0.0174533F, 0F);
+		Cable3 = new ModelRenderer(this, 86, 19);
+		Cable3.addBox(0F, 0F, 0F, 2, 2, 7);
+		Cable3.setRotationPoint(3F, 18F, 0F);
+		Cable3.setTextureSize(128, 64);
+		Cable3.mirror = true;
+		setRotation(Cable3, 0F, 0.0174533F, 0F);
+		Cable5 = new ModelRenderer(this, 105, 19);
+		Cable5.addBox(0F, 0F, 0F, 1, 1, 7);
+		Cable5.setRotationPoint(3.5F, 19.5F, 0F);
+		Cable5.setTextureSize(128, 64);
+		Cable5.mirror = true;
+		setRotation(Cable5, 0F, 0.0174533F, 0F);
+		Cable2 = new ModelRenderer(this, 86, 19);
+		Cable2.addBox(0F, 0F, 0F, 2, 2, 7);
+		Cable2.setRotationPoint(-5F, 18F, 0F);
+		Cable2.setTextureSize(128, 64);
+		Cable2.mirror = true;
+		setRotation(Cable2, 0F, 0F, 0F);
+		Cable4 = new ModelRenderer(this, 105, 19);
+		Cable4.addBox(0F, 0F, 0F, 1, 1, 7);
+		Cable4.setRotationPoint(-4.5F, 17.5F, 0F);
+		Cable4.setTextureSize(128, 64);
+		Cable4.mirror = true;
+		setRotation(Cable4, 0F, 0.0174533F, 0F);
+		Cable6 = new ModelRenderer(this, 105, 19);
+		Cable6.addBox(0F, 0F, 0F, 1, 1, 7);
+		Cable6.setRotationPoint(3.5F, 17.5F, 0F);
+		Cable6.setTextureSize(128, 64);
+		Cable6.mirror = true;
+		setRotation(Cable6, 0F, 0.0174533F, 0F);
+		TopPanelDec = new ModelRenderer(this, 33, 28);
+		TopPanelDec.addBox(0F, 0F, 0F, 13, 1, 1);
+		TopPanelDec.setRotationPoint(-6.5F, 11.5F, 5.5F);
+		TopPanelDec.setTextureSize(128, 64);
+		TopPanelDec.mirror = true;
+		setRotation(TopPanelDec, 0F, 0F, 0F);
+		BackPlate = new ModelRenderer(this, 0, 19);
+		BackPlate.addBox(0F, 0F, 0F, 14, 12, 2);
+		BackPlate.setRotationPoint(-7F, 10F, 6F);
+		BackPlate.setTextureSize(128, 64);
+		BackPlate.mirror = true;
+		setRotation(BackPlate, 0F, 0F, 0F);
+		TopPanel = new ModelRenderer(this, 33, 19);
+		TopPanel.addBox(0F, 0F, 0F, 14, 2, 3);
+		TopPanel.setRotationPoint(-7F, 10F, 3F);
+		TopPanel.setTextureSize(128, 64);
+		TopPanel.mirror = true;
+		setRotation(TopPanel, 0F, 0F, 0F);
+		TopPanelExtr = new ModelRenderer(this, 33, 25);
+		TopPanelExtr.addBox(0F, 0F, 0F, 14, 1, 1);
+		TopPanelExtr.setRotationPoint(-7F, 10F, 2F);
+		TopPanelExtr.setTextureSize(128, 64);
+		TopPanelExtr.mirror = true;
+		setRotation(TopPanelExtr, 0F, 0F, 0F);
+		ConnectorRight = new ModelRenderer(this, 68, 19);
+		ConnectorRight.addBox(0F, 0F, 0F, 3, 1, 3);
+		ConnectorRight.setRotationPoint(1.5F, 14F, -5F);
+		ConnectorRight.setTextureSize(128, 64);
+		ConnectorRight.mirror = true;
+		setRotation(ConnectorRight, 0F, 0F, 0F);
+		ConnectorLeft = new ModelRenderer(this, 68, 19);
+		ConnectorLeft.addBox(0F, 0F, 0F, 3, 1, 3);
+		ConnectorLeft.setRotationPoint(-4.5F, 14F, -5F);
+		ConnectorLeft.setTextureSize(128, 64);
+		ConnectorLeft.mirror = true;
+		setRotation(ConnectorLeft, 0F, 0F, 0F);
+		ConnectorWireRight = new ModelRenderer(this, 68, 24);
+		ConnectorWireRight.addBox(0F, 0F, 0F, 1, 3, 1);
+		ConnectorWireRight.setRotationPoint(2.5F, 11F, -4F);
+		ConnectorWireRight.setTextureSize(128, 64);
+		ConnectorWireRight.mirror = true;
+		setRotation(ConnectorWireRight, 0F, 0F, 0F);
+		ConnectorWireLeft = new ModelRenderer(this, 68, 24);
+		ConnectorWireLeft.addBox(0F, 0F, 0F, 1, 3, 1);
+		ConnectorWireLeft.setRotationPoint(-3.5F, 11F, -4F);
+		ConnectorWireLeft.setTextureSize(128, 64);
+		ConnectorWireLeft.mirror = true;
+		setRotation(ConnectorWireLeft, 0F, 0F, 0F);
+		ConnectorWireTop = new ModelRenderer(this, 68, 29);
+		ConnectorWireTop.addBox(0F, 0F, 0F, 5, 1, 1);
+		ConnectorWireTop.setRotationPoint(-2.5F, 11F, -4F);
+		ConnectorWireTop.setTextureSize(128, 64);
+		ConnectorWireTop.mirror = true;
+		setRotation(ConnectorWireTop, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
-		PANEL.render(size);
-		MACHINE.render(size);
-		CENTER_CIRCUIT.render(size);
-		PIPE_1.render(size);
-		PIPE_2.render(size);
-		GUI_STAND.render(size);
-		GUI_SCREEN.render(size);
-		PIPE_2_TOP.render(size);
-		PIPE_1_TOP.render(size);
-		FRONT_PANEL.render(size);
-		WIRE_1.render(size);
-		WIRE_2.render(size);
-		SIDE_WIRE_1.render(size);
-		SIDE_WIRE_2.render(size);
-		VERTICAL_WIRE.render(size);
-		TUBE.render(size);
+		Base.render(size);
+		RightChamber.render(size);
+		TopChamber.render(size);
+		BackChamber.render(size);
+		LeftChamber.render(size);
+		FCTop.render(size);
+		FCBottom.render(size);
+		FCRight.render(size);
+		FCLeft.render(size);
+		FCDoor.render(size);
+		Cable1.render(size);
+		Cable3.render(size);
+		Cable5.render(size);
+		Cable2.render(size);
+		Cable4.render(size);
+		Cable6.render(size);
+		TopPanelDec.render(size);
+		BackPlate.render(size);
+		TopPanel.render(size);
+		TopPanelExtr.render(size);
+		ConnectorRight.render(size);
+		ConnectorLeft.render(size);
+		ConnectorWireRight.render(size);
+		ConnectorWireLeft.render(size);
+		ConnectorWireTop.render(size);
 	}
-	
-	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-	{
-		this.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		PANEL.render(f5);
-		MACHINE.render(f5);
-		CENTER_CIRCUIT.render(f5);
-		PIPE_1.render(f5);
-		PIPE_2.render(f5);
-		GUI_STAND.render(f5);
-		GUI_SCREEN.render(f5);
-		PIPE_2_TOP.render(f5);
-		PIPE_1_TOP.render(f5);
-		FRONT_PANEL.render(f5);
-		WIRE_1.render(f5);
-		WIRE_2.render(f5);
-		SIDE_WIRE_1.render(f5);
-		SIDE_WIRE_2.render(f5);
-		VERTICAL_WIRE.render(f5);
-		TUBE.render(f5);
-	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z) 
 	{
 		model.rotateAngleX = x;

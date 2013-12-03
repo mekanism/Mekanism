@@ -14,7 +14,7 @@ public interface IStrictEnergyAcceptor extends IStrictEnergyStorage
 	 * @param amount - amount to transfer
 	 * @return rejects
 	 */
-	public double transferEnergyToAcceptor(double amount);
+	public double transferEnergyToAcceptor(ForgeDirection side, double amount);
 	
 	/**
 	 * Whether or not this tile entity accepts energy from a certain side.

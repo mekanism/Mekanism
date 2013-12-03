@@ -1,15 +1,19 @@
 package mekanism.api.transmitters;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -69,10 +73,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	}
 
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		return;
-	}
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
@@ -123,7 +124,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		@ForgeSubscribe
 		public void onChunkLoad(ChunkEvent.Load event)
 		{
-			if(event.getChunk() != null)
+			if(event.getChunk() != null && !event.world.isRemote)
 			{
 				int x = event.getChunk().xPosition;
 				int z = event.getChunk().zPosition;
@@ -145,25 +146,27 @@ public class TransmitterNetworkRegistry implements ITickHandler
 			}
 		}
 
-		public void refreshChunk(Chunk c)
+		public synchronized void refreshChunk(Chunk c)
 		{
-		    if(c != null)
-            {
-                Iterator it = c.chunkTileEntityMap.entrySet().iterator();
-                while(it.hasNext())
-                {
-                    Object obj = it.next();
-                    if(obj instanceof TileEntity)
-                    {
-                        TileEntity tileEntity = (TileEntity)obj;
-
-                        if(tileEntity instanceof ITransmitter)
-                        {
-                            ((ITransmitter)tileEntity).refreshTransmitterNetwork();
-                        }
-                    }
-                }
-            }
+			try {
+			    if(c != null)
+	            {
+			    	Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
+			    	
+	                for(Iterator iter = c.chunkTileEntityMap.values().iterator(); iter.hasNext();)
+	                {
+	                	Object obj = iter.next();
+	                	
+	                    if(obj instanceof ITransmitter)
+	                    {
+                            ((ITransmitter)obj).refreshTransmitterNetwork();
+                            ((ITransmitter)obj).chunkLoad();
+	                    }
+	                }
+	            }
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

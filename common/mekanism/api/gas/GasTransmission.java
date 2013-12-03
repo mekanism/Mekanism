@@ -6,6 +6,7 @@ import java.util.Set;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -88,56 +89,44 @@ public final class GasTransmission
      * @param amount - amount of gas to send
      * @param sender - the sender of the gas
      * @param facing - side the sender is outputting from
-     * @return rejected gas
+     * @return gas sent
      */
-    public static int emitGasToNetwork(EnumGas type, int amount, TileEntity sender, ForgeDirection facing)
+    public static int emitGasToNetwork(GasStack stack, TileEntity sender, ForgeDirection facing)
     {
     	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{
-	    	return ((ITransmitter<GasNetwork, EnumGas>)pointer).getTransmitterNetwork().emit(amount, type, sender);
+	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack, sender);
     	}
     	
-    	return amount;
+    	return 0;
     }
-    
-    /**
-     * Emits gas from all sides of a TileEntity.
-     * @param type - gas type to send
-     * @param amount - amount of gas to send
-     * @param pointer - sending TileEntity
-     * @return rejected gas
-     */
-    public static int emitGasFromAllSides(EnumGas type, int amount, TileEntity pointer)
-    {
-    	if(pointer != null)
-    	{
-       		Set<GasNetwork> networks = new HashSet<GasNetwork>();
-    		int totalRemaining = 0;
-    		
-    		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-    		{
-    			TileEntity sideTile = Object3D.get(pointer).getFromSide(side).getTileEntity(pointer.worldObj);
-    			
-    			if(TransmissionType.checkTransmissionType(sideTile, TransmissionType.GAS, pointer))
-    			{
-    				networks.add(((ITransmitter<GasNetwork, EnumGas>)sideTile).getTransmitterNetwork());
-    			}
-    		}
-    		
-    		int remaining = amount%networks.size();
-    		int splitGas = (amount-remaining)/networks.size();
-    		
-    		for(GasNetwork network : networks)
-    		{
-    			totalRemaining += network.emit(splitGas+remaining, type, pointer);
-    			remaining = 0;
-    		}
-    		
-    		return totalRemaining;
-    	}
-    	
-    	return amount;
-    }
+
+	public static GasStack removeGas(ItemStack itemStack, Gas type, int amount)
+	{
+		if(itemStack != null && itemStack.getItem() instanceof IGasItem)
+		{
+			IGasItem item = (IGasItem)itemStack.getItem();
+			
+			if(type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type))
+			{
+				return null;
+			}
+			
+			return item.removeGas(itemStack, amount);
+		}
+		
+		return null;
+	}
+
+	public static int addGas(ItemStack itemStack, GasStack stack)
+	{
+		if(itemStack != null && itemStack.getItem() instanceof IGasItem && ((IGasItem)itemStack.getItem()).canReceiveGas(itemStack, stack.getGas()))
+		{
+			return ((IGasItem)itemStack.getItem()).addGas(itemStack, stack.copy());
+		}
+		
+		return 0;
+	}
 }

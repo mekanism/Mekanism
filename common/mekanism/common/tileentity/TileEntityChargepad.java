@@ -1,6 +1,5 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 
@@ -12,13 +11,13 @@ import java.util.Random;
 import mekanism.api.Object3D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.EntityRobit;
 import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.EntityLiving;
@@ -29,13 +28,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChargepad extends TileEntityElectricBlock implements IActiveState, IEnergySink, IStrictEnergyAcceptor, IHasSound
+public class TileEntityChargepad extends TileEntityElectricBlock implements IActiveState, IHasSound
 {
 	public boolean isActive;
 	
@@ -45,7 +44,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	
 	public TileEntityChargepad()
 	{
-		super("Chargepad", 9000);
+		super("Chargepad", MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 	
@@ -58,7 +57,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 		{
 			isActive = false;
 			
-			List<EntityLiving> entities = worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
+			List<EntityLiving> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
 			
 			for(EntityLivingBase entity : entities)
 			{
@@ -138,18 +137,17 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			}
 			else if(Mekanism.hooks.IC2Loaded && itemstack.getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 4, false, false)*Mekanism.FROM_IC2;
 				setEnergy(getEnergy() - sent);
 			}
-			else if(itemstack.getItem() instanceof IChargeableItem)
+			else if(itemstack.getItem() instanceof IEnergyContainerItem)
 			{
-				IChargeableItem item = (IChargeableItem)itemstack.getItem();
+				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 				
-				float itemEnergy = (float)Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack));
-				float toTransfer = (float)Math.min(itemEnergy, (getEnergy()*Mekanism.TO_BC));
+				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE)));
 				
-				item.receiveEnergy(itemstack, toTransfer, true);
-				setEnergy(getEnergy() - (toTransfer*Mekanism.FROM_BC));
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 		}
 	}
@@ -168,7 +166,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing));
+		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing).getOpposite());
 	}
 	
 	@Override
@@ -223,65 +221,9 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 	
 	@Override
-	public double transferEnergyToAcceptor(double amount)
+	public boolean canSetFacing(int side)
 	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return side == ForgeDirection.DOWN || side == ForgeDirection.getOrientation(facing).getOpposite();
-	}
-	
-	@Override
-	public double demandedEnergyUnits() 
-	{
-		return (getMaxEnergy()-getEnergy())*Mekanism.TO_IC2;
-	}
-	
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy <= neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-    }
-	
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return direction == ForgeDirection.DOWN || direction == ForgeDirection.getOrientation(facing).getOpposite();
+		return side != 0 && side != 1;
 	}
 
 	@Override
@@ -297,7 +239,13 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return true;
 	}

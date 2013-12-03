@@ -86,13 +86,13 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		InfuseType type = ((CachedIORecipe)arecipes.get(i)).infusionType;
 		
 		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
-		drawProgressBar(67, 32, 176 + 26, 52, 32, 8, f, 0);
+		drawProgressBar(67, 32, 176, 52, 32, 8, f, 0);
 		
 		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
 		
 		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(160, 2, 176 + 26, 0, 4, 52, f, 3);
+		drawProgressBar(160, 2, 176, 0, 4, 52, f, 3);
 		
 		changeTexture(type.texture);
 		drawProgressBar(2, 2, type.texX, type.texY, 4, 52, f, 3);

@@ -21,8 +21,6 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -74,7 +72,7 @@ public class GuiElectricChest extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, "Edit Password"));
+		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, MekanismUtils.localize("gui.electricChest.editPassword")));
 	}
 	
 	@Override
@@ -98,14 +96,16 @@ public class GuiElectricChest extends GuiContainer
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString("Electric Chest", 8, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 8, 6, 0x404040);
         fontRenderer.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         
     	if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)(getEnergy()*Mekanism.TO_UE), ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(getEnergy()), xAxis, yAxis);
 		}
+    	
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 	
 	@Override
@@ -137,7 +137,7 @@ public class GuiElectricChest extends GuiContainer
 	}
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricChest.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -145,8 +145,8 @@ public class GuiElectricChest extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-		int xAxis = (par2 - (width - xSize) / 2);
-		int yAxis = (par3 - (height - ySize) / 2);
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
         
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
 		{

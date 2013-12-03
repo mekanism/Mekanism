@@ -9,6 +9,7 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
+import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
@@ -32,7 +33,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -56,7 +56,6 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockGenerator extends BlockContainer implements ISpecialBounds
 {
-	public Icon[] solarSprites = new Icon[256];
 	public Random machineRand = new Random();
 	
 	public BlockGenerator(int id)
@@ -68,13 +67,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	}
 	
 	@Override
-	public void registerIcons(IconRegister register)
-	{
-		solarSprites[0] = register.registerIcon("mekanism:SteelBlock");
-		solarSprites[1] = register.registerIcon("mekanism:SolarGeneratorTop");
-		solarSprites[2] = register.registerIcon("mekanism:SolarGeneratorSide");
-		solarSprites[3] = register.registerIcon("mekanism:SolarGeneratorFront");
-	}
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
@@ -124,7 +117,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	        	change = 0;
 	        }
         }
-        else {
+        
+        if(change != 0 && change != 1)
+        {
 	        switch(side)
 	        {
 	        	case 0: change = 2; break;
@@ -149,7 +144,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		
 		if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 		{
-			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).hasVisual())
+			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 			{
 				return 15;
 			}
@@ -157,60 +152,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		
 		return 0;
 	}
-    
-	@Override
-    public Icon getIcon(int side, int meta)
-    {
-    	if(meta == 1)
-    	{
-    		if(side == 3)
-    		{
-    			return solarSprites[3];
-    		}
-    		else if(side == 1)
-    		{
-    			return solarSprites[1];
-    		}
-    		else if(side == 0)
-    		{
-    			return solarSprites[0];
-    		}
-    		else {
-    			return solarSprites[2];
-    		}
-    	}
-    	
-    	return null;
-    }
-    
-	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-    {
-    	int metadata = world.getBlockMetadata(x, y, z);
-    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-        
-    	if(metadata == 1)
-    	{
-    		if(side == tileEntity.facing)
-    		{
-    			return solarSprites[3];
-    		}
-    		else if(side == 1)
-    		{
-    			return solarSprites[1];
-    		}
-    		else if(side == 0)
-    		{
-    			return solarSprites[0];
-    		}
-    		else {
-    			return solarSprites[2];
-    		}
-    	}
-    	
-    	return null;
-    }
     
 	@Override
     public int damageDropped(int i)
@@ -254,7 +195,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
             			world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
             			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.8, y+1, z+.8, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -269,7 +210,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	            		world.spawnParticle("flame", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 	        			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.2, y+1, z+.2, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.75, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -284,7 +225,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	            		world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 	        			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.2, y+1, z+.8, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.5, y+.2, z+.25, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -299,7 +240,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	            		world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 	        			break;
             		case BIO_GENERATOR:
-            			world.spawnParticle("smoke", x+.8, y+1, z+.2, 0.0D, 0.0D, 0.0D);
+            			world.spawnParticle("smoke", x+.5, y+.2, z+.75, 0.0D, 0.0D, 0.0D);
             			break;
             		default:
             			break;
@@ -360,7 +301,12 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
-    {    	
+    {
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		{
+			return false;
+		}
+		
         if(world.isRemote)
         {
             return true;
@@ -413,7 +359,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         	}
         }
     	
-        if (tileEntity != null)
+        if(tileEntity != null)
         {
         	if(!entityplayer.isSneaking())
         	{
@@ -421,6 +367,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         		return true;
         	}
         }
+        
         return false;
     }
     
@@ -475,7 +422,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
     	
     	if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
     	{
-    		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.4F, 1.0F);
+    		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
     	}
     	else {
     		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
@@ -549,25 +496,38 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         return itemStack;
 	}
 	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			((TileEntityElectricBlock)tileEntity).register();
+		}
+	}
+	
 	public static enum GeneratorType
 	{
-		HEAT_GENERATOR(0, 0, 160000, TileEntityHeatGenerator.class, true),
-		SOLAR_GENERATOR(1, 1, 96000, TileEntitySolarGenerator.class, false),
-		ELECTROLYTIC_SEPARATOR(2, 2, 20000, TileEntityElectrolyticSeparator.class, true),
-		HYDROGEN_GENERATOR(3, 3, 40000, TileEntityHydrogenGenerator.class, true),
-		BIO_GENERATOR(4, 4, 160000, TileEntityBioGenerator.class, true),
-		ADVANCED_SOLAR_GENERATOR(5, 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
-		WIND_TURBINE(6, 5, 200000, TileEntityWindTurbine.class, true);
+		HEAT_GENERATOR(0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true),
+		SOLAR_GENERATOR(1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true),
+		ELECTROLYTIC_SEPARATOR(2, "ElectrolyticSeparator", 2, 20000, TileEntityElectrolyticSeparator.class, true),
+		HYDROGEN_GENERATOR(3, "HydrogenGenerator", 3, 40000, TileEntityHydrogenGenerator.class, true),
+		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
+		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
+		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);
 		
 		public int meta;
+		public String name;
 		public int guiId;
 		public double maxEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
 		
-		private GeneratorType(int i, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private GeneratorType(int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
 		{
 			meta = i;
+			name = s;
 			guiId = j;
 			maxEnergy = k;
 			tileEntityClass = tileClass;
@@ -602,7 +562,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
 		{
-			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.4F, 1.0F);
+			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
 		}
 		else {
 			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);

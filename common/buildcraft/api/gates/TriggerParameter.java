@@ -66,12 +66,8 @@ public class TriggerParameter implements ITriggerParameter {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.minecraft.src.buildcraft.api.gates.ITriggerParameter#getItem()
-	 */
 	@Override
+	@Deprecated
 	public ItemStack getItem() {
 		return stack;
 	}

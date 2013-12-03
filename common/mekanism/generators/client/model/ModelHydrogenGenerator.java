@@ -173,32 +173,6 @@ public class ModelHydrogenGenerator extends ModelBase
     	S.render(size);
     }
   
-    @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
- 	{
-    	super.render(entity, f, f1, f2, f3, f4, f5);
-    	setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-    	A.renderWithRotation(f5);
-   	 	B.renderWithRotation(f5);
-   	 	C.renderWithRotation(f5);
-    	D.renderWithRotation(f5);
-    	E.renderWithRotation(f5);
-    	F.renderWithRotation(f5);
-    	G.renderWithRotation(f5);
-    	H.renderWithRotation(f5);
-    	I.renderWithRotation(f5);
-    	J.renderWithRotation(f5);
-    	K.renderWithRotation(f5);
-    	L.renderWithRotation(f5);
-    	M.renderWithRotation(f5);
-    	N.renderWithRotation(f5);
-    	O.renderWithRotation(f5);
-    	P.renderWithRotation(f5);
-    	Q.renderWithRotation(f5);
-    	R.renderWithRotation(f5);
-    	S.renderWithRotation(f5);
- 	}
-  
     private void setRotation(ModelRenderer model, float x, float y, float z)
     {
     	model.rotateAngleX = x;

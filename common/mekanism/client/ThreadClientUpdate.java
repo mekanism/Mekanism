@@ -63,16 +63,14 @@ public class ThreadClientUpdate extends Thread
 			
 			modulesBeingDownloaded--;
 			finalize();
-		} catch(Throwable e)
-		{
+		} catch(Throwable t) {
 			GuiCredits.onErrorDownloading();
-			System.err.println("[Mekanism] Error while finishing update thread: " + e.getMessage());
+			System.err.println("[Mekanism] Error while finishing update thread: " + t.getMessage());
+			
 			try {
 				modulesBeingDownloaded--;
 				finalize();
-			} catch (Throwable e1) {
-				System.err.println("[Mekanism] Error while finalizing update thread: " + e1.getMessage());
-			}
+			} catch (Throwable t1) {}
 		}
 	}
 	

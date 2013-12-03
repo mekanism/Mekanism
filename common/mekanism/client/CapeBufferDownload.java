@@ -1,75 +1,74 @@
 package mekanism.client;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.net.URL;
 
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class CapeBufferDownload implements IImageBuffer
+@SideOnly(Side.CLIENT)
+public class CapeBufferDownload extends Thread
 {
-    private int[] imageData;
-    private int imageWidth;
-    private int imageHeight;
-    
-    @Override
-    public BufferedImage parseUserSkin(BufferedImage bufferedImage)
-    {
-        if(bufferedImage == null)
-        {
-            return null;
-        }
-        
-        imageWidth = bufferedImage.getWidth(null);
-        imageHeight = bufferedImage.getHeight(null);
-        
-        BufferedImage imageBuffer = new BufferedImage(imageWidth, imageHeight, 2);
-        
-        Graphics graphics = imageBuffer.getGraphics();
-        graphics.drawImage(bufferedImage, 0, 0, null);
-        graphics.dispose();
-        
-        imageData = ((DataBufferInt)imageBuffer.getRaster().getDataBuffer()).getData();
-        
-        boolean flag = false;
-        
-        int i;
-        int j;
-        int k;
-        
-        for(i = 32; i < 64; i++)
-        {
-            for(j = 0; j < 16; j++)
-            {
-                k = imageData[i + j * 64];
-                
-                if((k >> 24 & 0xFF) >= 128)
-                {
-                    continue;
-                }
-                
-                flag = true;
-            }
-        }
-        
-        if(!flag)
-        {
-            for(i = 32; i < 64; i++)
-            {
-                for(j = 0; j < 16; j++)
-                {
-                    k = imageData[i + j * 64];
-                    
-                    if((k >> 24 & 0xFF) >= 128)
-                    {
-                        continue;
-                    }
-                    
-                    flag = true;
-                }
-            }
-        }
-        
-        return imageBuffer;
-    }
+	public String username;
+
+	public String staticCapeUrl;
+	
+	public ResourceLocation resourceLocation;
+	
+	public ThreadDownloadImageData capeImage;
+
+	boolean downloaded = false;
+
+	public CapeBufferDownload(String name, String url) 
+	{
+		username = name;
+		staticCapeUrl = url;
+		
+		setDaemon(true);
+		setName("Cape Downlaod Thread");
+	}
+
+	@Override
+	public void run() 
+	{
+		try {
+			download();
+		} catch(Exception e) {}
+	}
+
+	private void download() 
+	{
+		try {
+			resourceLocation = new ResourceLocation("mekanism/" + StringUtils.stripControlCodes(username));
+			
+			Method method = MekanismUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getDownloadImage, ResourceLocation.class, String.class, ResourceLocation.class, IImageBuffer.class);
+			Object obj = method.invoke(null, resourceLocation, staticCapeUrl, null, null);
+			
+			if(obj instanceof ThreadDownloadImageData)
+			{
+				capeImage = (ThreadDownloadImageData)obj;
+			}
+		} catch(Exception e) {}
+
+		downloaded = true;
+	}
+
+	public ThreadDownloadImageData getImage()
+	{
+		return capeImage;
+	}
+
+	public ResourceLocation getResourceLocation()
+	{
+		return resourceLocation;
+	}
 }

@@ -4,6 +4,7 @@ import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
@@ -13,6 +14,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,13 +27,17 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	/** The direction this block is facing. */
 	public int facing;
 	
+	public int clientFacing;
+	
 	/** The players currently using this block. */
 	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 	
 	/** A timer used to send packets to clients. */
-	public int packetTick;
+	public int ticker;
 	
-	public Set<ITileComponent> components = new HashSet<ITileComponent>();
+	public boolean doAutoSync = true;
+	
+	public List<ITileComponent> components = new ArrayList<ITileComponent>();
 	
 	@Override
 	public void updateEntity()
@@ -45,25 +51,46 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(!worldObj.isRemote)
 		{
-			if(playersUsing.size() > 0)
+			if(doAutoSync && playersUsing.size() > 0)
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+				for(EntityPlayer player : playersUsing)
+				{
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
+				}
 			}
-			
-			packetTick++;
 		}
+		
+		ticker++;
 	}
 	
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		facing = dataStream.readInt();
+		
+		if(clientFacing != facing)
+		{
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+			clientFacing = facing;
+		}
+		
+		for(ITileComponent component : components)
+		{
+			component.read(dataStream);
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
-	{
+	{	
 		data.add(facing);
+		
+		for(ITileComponent component : components)
+		{
+			component.write(data);
+		}
+		
 		return data;
 	}
 	
@@ -87,14 +114,29 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
     public void readFromNBT(NBTTagCompound nbtTags)
     {
         super.readFromNBT(nbtTags);
-        facing = nbtTags.getInteger("facing");
+        
+        if(nbtTags.hasKey("facing"))
+        {
+        	facing = nbtTags.getInteger("facing");
+        }
+        
+        for(ITileComponent component : components)
+        {
+        	component.read(nbtTags);
+        }
     }
 
 	@Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
+        
         nbtTags.setInteger("facing", facing);
+        
+        for(ITileComponent component : components)
+        {
+        	component.write(nbtTags);
+        }
     }
 
 	@Override
@@ -117,7 +159,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			facing = direction;
 		}
 		
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+		if(facing != clientFacing)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+			clientFacing = facing;
+		}
 	}
 	
 	/**

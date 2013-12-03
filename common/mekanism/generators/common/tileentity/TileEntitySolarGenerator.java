@@ -1,6 +1,7 @@
 package mekanism.generators.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Object3D;
 import mekanism.common.util.ChargeUtils;
@@ -10,6 +11,8 @@ import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.biome.BiomeGenDesert;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -26,7 +29,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	
 	public TileEntitySolarGenerator()
 	{
-		super("Solar Generator", 96000, MekanismGenerators.solarGeneration*2);
+		super("SolarGenerator", 96000, MekanismGenerators.solarGeneration*2);
 		GENERATION_RATE = MekanismGenerators.solarGeneration;
 		inventory = new ItemStack[1];
 	}
@@ -91,7 +94,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + getEnvironmentBoost());
+				setEnergy(electricityStored + getProduction());
 			}
 			else {
 				setActive(false);
@@ -127,10 +130,26 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		return electricityStored < MAX_ELECTRICITY && seesSun && MekanismUtils.canFunction(this);
 	}
 	
-	@Override
-	public double getEnvironmentBoost()
+	public double getProduction()
 	{
-		return seesSun ? (GENERATION_RATE*(worldObj.provider instanceof ISolarLevel ? (int)((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier() : 1)) : 0;
+		double ret = 0;
+		
+		if(seesSun)
+		{
+			ret = GENERATION_RATE;
+			
+			if(worldObj.provider instanceof ISolarLevel)
+			{
+				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
+			}
+			
+			if(worldObj.provider.getBiomeGenForCoords(xCoord << 4, zCoord << 4) instanceof BiomeGenDesert)
+			{
+				ret *= 1.5;
+			}
+		}
+		
+		return 0;
 	}
 
 	@Override
@@ -176,7 +195,19 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public EnumSet<ForgeDirection> getOutputtingSides()
+	{
+		return EnumSet.of(ForgeDirection.getOrientation(0));
+	}
+	
+	@Override
+	public boolean renderUpdate() 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return false;
 	}

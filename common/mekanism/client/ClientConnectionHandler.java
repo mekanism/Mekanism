@@ -1,5 +1,8 @@
 package mekanism.client;
 
+import java.net.InetAddress;
+
+import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
@@ -14,11 +17,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientConnectionHandler implements IConnectionHandler
 {
+	public VoiceClient voiceClient;
+	
 	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) 
-	{
-		
-	}
+	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {}
 
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager) 
@@ -26,27 +28,48 @@ public class ClientConnectionHandler implements IConnectionHandler
 		return null;
 	}
 
+	/* Remote */
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
 	{
-		
+		if(Mekanism.voiceServerEnabled)
+		{
+			try {
+				voiceClient = new VoiceClient(server, Mekanism.VOICE_PORT);
+				voiceClient.run();
+			} catch(Exception e) {}
+		}
 	}
 
+	/* Integrated */
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) 
 	{
-		
+		if(Mekanism.voiceServerEnabled)
+		{
+			try {
+				voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), Mekanism.VOICE_PORT);
+				voiceClient.run();
+			} catch(Exception e) {}
+		}
 	}
 
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{
+		if(Mekanism.voiceServerEnabled)
+		{
+			if(voiceClient != null)
+			{
+				voiceClient.disconnect();
+				voiceClient = null;
+			}
+		}
+		
+		ClientTickHandler.tickingSet.clear();
 		Mekanism.proxy.unloadSoundHandler();
 	}
 
 	@Override
-	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
-	{
-		
-	}
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) {}
 }

@@ -2,10 +2,9 @@ package mekanism.common.item;
 
 import mekanism.common.Mekanism;
 
-
 public class ItemMachineUpgrade extends ItemMekanism
 {
-	public ItemMachineUpgrade(int id, int energyBoost, int tickReduction)
+	public ItemMachineUpgrade(int id)
 	{
 		super(id);
 		setMaxStackSize(8);

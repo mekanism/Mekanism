@@ -1,14 +1,9 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
-import mekanism.api.SideData;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -16,22 +11,24 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
+import mekanism.common.IInvConfiguration;
+import mekanism.common.IEjector;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.RecipeHandler;
-import mekanism.common.TileComponentUpgrade;
+import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.RecipeHandler;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.TileComponentEjector;
+import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -39,7 +36,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IActiveState, IConfigurable, IUpgradeTile, IHasSound, IStrictEnergyAcceptor, IRedstoneControl
+public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
@@ -74,14 +71,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
 	
+	/** This machine's previous amount of energy. */
+	public double prevEnergy;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentEjector ejectorComponent;
 	
 	public TileEntityMetallurgicInfuser()
 	{
-		super("Metallurgic Infuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
+		super("MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 		
 		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
@@ -91,6 +92,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {4}));
 		
 		inventory = new ItemStack[5];
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
 	}
 	
 	@Override
@@ -101,6 +103,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.registerSound(this);
+			
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+				
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					isActive = clientActive;
+					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				}
+			}
 		}
 		
 		if(!worldObj.isRemote)
@@ -158,7 +171,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 			else {
-				setActive(false);
+				if(prevEnergy >= getEnergy())
+				{
+					setActive(false);
+				}
 			}
 			
 			if(!canOperate())
@@ -171,6 +187,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				infuseStored = 0;
 				type = null;
 			}
+			
+			prevEnergy = getEnergy();
 		}
 	}
 	
@@ -255,6 +273,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         else {
             inventory[3].stackSize += output.resource.stackSize;
         }
+        
+        ejectorComponent.onOutput();
 	}
 	
 	public boolean canOperate()
@@ -316,8 +336,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     {
     	super.readFromNBT(nbtTags);
     	
-    	upgradeComponent.read(nbtTags);
-    	
     	clientActive = isActive = nbtTags.getBoolean("isActive");
     	operatingTicks = nbtTags.getInteger("operatingTicks");
     	infuseStored = nbtTags.getInteger("infuseStored");
@@ -332,37 +350,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
         	}
         }
     }
-    
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededElectricity = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededElectricity)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededElectricity;
-    		rejects = amount-neededElectricity;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return true;
-	}
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTags)
     {
         super.writeToNBT(nbtTags);
-        
-        upgradeComponent.write(nbtTags);
         
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("operatingTicks", operatingTicks);
@@ -396,9 +388,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		upgradeComponent.read(dataStream);
-		
-		isActive = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
 		infuseStored = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -409,15 +399,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			sideConfig[i] = dataStream.readByte();
 		}
 		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		if(updateDelay == 0 && clientActive != isActive)
+		{
+			updateDelay = Mekanism.UPDATE_DELAY;
+			isActive = clientActive;
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
-		upgradeComponent.write(data);
 		
 		data.add(isActive);
 		data.add(operatingTicks);
@@ -498,11 +491,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
-
+	
 	@Override
-	public double demandedEnergyUnits() 
+	public boolean canSetFacing(int side)
 	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
+		return side != 0 && side != 1;
 	}
 	
 	@Override
@@ -523,38 +516,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     public boolean getActive()
     {
     	return isActive;
-    }
-    
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
-	{
-		return true;
-	}
-	
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
-
-	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
-		double givenEnergy = i*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy < neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
     }
 	
 	@Override
@@ -585,6 +546,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setEnergyMultiplier(int multiplier, Object... data) 
 	{
 		upgradeComponent.energyMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
 	}
 
 	@Override
@@ -597,6 +559,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setSpeedMultiplier(int multiplier, Object... data) 
 	{
 		upgradeComponent.speedMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
@@ -618,7 +581,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 	
 	@Override
-	public boolean hasVisual()
+	public boolean renderUpdate() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return true;
 	}
@@ -633,11 +602,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public void setControlType(RedstoneControl type) 
 	{
 		controlType = type;
+		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;
+	}
+	
+	@Override
+	public IEjector getEjector()
+	{
+		return ejectorComponent;
 	}
 }

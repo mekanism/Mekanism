@@ -4,10 +4,13 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 import mekanism.api.Object3D;
+import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -52,6 +55,21 @@ public class PacketDataRequest implements IMekanismPacket
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
 				((TileEntityDynamicTank)tileEntity).sendStructure = true;
+			}
+			
+			if(tileEntity instanceof ITransmitter)
+			{
+				ITransmitter transmitter = (ITransmitter)tileEntity;
+				
+				if(transmitter.getTransmitterNetwork() instanceof DynamicNetwork)
+				{
+					((DynamicNetwork)transmitter.getTransmitterNetwork()).addUpdate(player);
+				}
+				
+				if(!(tileEntity instanceof TileEntityMechanicalPipe))
+				{
+					return;
+				}
 			}
 			
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));

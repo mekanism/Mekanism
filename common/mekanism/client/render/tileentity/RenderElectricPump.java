@@ -19,7 +19,7 @@ public class RenderElectricPump extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityElectricPump)tileEntity, x, y, z, 1F);
+		renderAModelAt((TileEntityElectricPump)tileEntity, x, y, z, partialTick);
 	}
 	
 	private void renderAModelAt(TileEntityElectricPump tileEntity, double x, double y, double z, float partialTick)
@@ -28,6 +28,14 @@ public class RenderElectricPump extends TileEntitySpecialRenderer
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
+		
+	    switch(tileEntity.facing)
+	    {
+		    case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
+			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
+	    }
 		
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		model.render(0.0625F);

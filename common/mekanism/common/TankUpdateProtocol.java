@@ -14,6 +14,8 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class TankUpdateProtocol 
 {
+	public static final int FLUID_PER_TANK = 16000;
+	
 	/** The dynamic tank nodes that have already been iterated over. */
 	public Set<TileEntityDynamicTank> iteratedNodes = new HashSet<TileEntityDynamicTank>();
 	
@@ -170,7 +172,9 @@ public class TankUpdateProtocol
 		    }
 	    }
 		
-		if(volume > 0 && volume <= 4096 && locations.size() >= 9)
+		volume += locations.size();
+		
+		if(volume >= 27 && volume <= 5832 && locations.size() >= 26)
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
@@ -180,7 +184,7 @@ public class TankUpdateProtocol
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
 				structure.volume = volume;
-				structure.renderLocation = Object3D.get(tile).translate(1, 1, 1);
+				structure.renderLocation = Object3D.get(tile).translate(0, 1, 0);
 				
 				for(Object3D obj : structure.locations)
 				{
@@ -402,14 +406,19 @@ public class TankUpdateProtocol
 			structureFound.fluidStored = cache.fluid;
 			structureFound.inventory = cache.inventory;
 			
+			if(structureFound.fluidStored != null)
+			{
+				structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
+			}
+			
 			for(Object3D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.worldObj);
 				
 				tileEntity.inventoryID = idFound;
 				tileEntity.structure = structureFound;
-				tileEntity.cachedFluid = cache.fluid;
-				tileEntity.inventory = cache.inventory;
+				tileEntity.cachedFluid = structureFound.fluidStored;
+				tileEntity.inventory = structureFound.inventory;
 			}
 		}
 		else {

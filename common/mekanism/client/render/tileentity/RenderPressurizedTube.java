@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import mekanism.api.Object3D;
-import mekanism.api.gas.EnumGas;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -29,12 +30,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderPressurizedTube extends TileEntitySpecialRenderer
 {
-	private ModelTransmitter model = new ModelTransmitter();
+	private ModelTransmitter model = new ModelTransmitter(Size.SMALL);
 	
 	private boolean[] connectable;
 	
-	private HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>> cachedSideGasses = new HashMap<ForgeDirection, HashMap<EnumGas, DisplayInteger>>();
-	private HashMap<BooleanArray, HashMap<EnumGas, DisplayInteger>> cachedCenterGasses = new HashMap<BooleanArray, HashMap<EnumGas, DisplayInteger>>();
+	private HashMap<BooleanArray, HashMap<Gas, DisplayInteger>> cachedCenterGasses = new HashMap<BooleanArray, HashMap<Gas, DisplayInteger>>();
+	private HashMap<TubeRenderData, HashMap<Gas, DisplayInteger>> cachedSideGasses = new HashMap<TubeRenderData, HashMap<Gas, DisplayInteger>>();
 	
 	private static final double offset = 0.015;
 	
@@ -83,20 +84,20 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				switch(ForgeDirection.getOrientation(i))
 				{
 					case NORTH:
-						GL11.glScalef(1, 1, 1.63f);
-						GL11.glTranslatef(0, 0, -.073f);
+						GL11.glScalef(1, 1, 1.7F);
+						GL11.glTranslatef(0, 0, -.077F);
 						break;
 					case SOUTH:
-						GL11.glScalef(1, 1, 1.63f);
-						GL11.glTranslatef(0, 0, .073f);
+						GL11.glScalef(1, 1, 1.7F);
+						GL11.glTranslatef(0, 0, .077F);
 						break;
 					case WEST:
-						GL11.glScalef(1.63f, 1, 1);
-						GL11.glTranslatef(.073f, 0, 0);
+						GL11.glScalef(1.7F, 1, 1);
+						GL11.glTranslatef(.077F, 0, 0);
 						break;
 					case EAST:
-						GL11.glScalef(1.63f, 1, 1);
-						GL11.glTranslatef(-.073f, 0, 0);
+						GL11.glScalef(1.7F, 1, 1);
+						GL11.glTranslatef(-.077F, 0, 0);
 						break;
 				}
 				
@@ -111,32 +112,30 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
+		
+		Gas gasType = tileEntity.getTransmitterNetwork().refGas;
+		float scale = tileEntity.getTransmitterNetwork().gasScale;
 	
-		if(tileEntity.gasScale > 0 && tileEntity.refGas != null && tileEntity.refGas.hasTexture())
+		if(scale > 0 && gasType != null && gasType.getIcon() != null)
 		{
 			push();
 			
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, tileEntity.gasScale);
-			bindTexture(tileEntity.refGas.texturePath);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, scale);
+			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			
-			if(tileEntity.gasScale > 0)
-			{
-				tileEntity.gasScale = Math.max(0, tileEntity.gasScale - .008F);
-			}
-			else {
-				tileEntity.refGas = null;
-			}
 			
 			for(int i = 0; i < 6; i++)
 			{
 				if(connectable[i])
 				{
-					getListAndRender(ForgeDirection.getOrientation(i), tileEntity.refGas).render();
+					Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i));
+					Block b = Block.blocksList[obj.getBlockId(tileEntity.worldObj)];
+					b.setBlockBoundsBasedOnState(tileEntity.worldObj, obj.xCoord, obj.yCoord, obj.zCoord);
+					getListAndRender(ForgeDirection.getOrientation(i), gasType, b).render();
 				}
 			}
 			
-			getListAndRender(ForgeDirection.UNKNOWN, tileEntity.refGas).render();
+			getListAndRender(ForgeDirection.UNKNOWN, gasType, null).render();
 			
 			pop();
 		}
@@ -158,7 +157,8 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private DisplayInteger getListAndRender(ForgeDirection side, EnumGas type)
+	@SuppressWarnings("incomplete-switch")
+	private DisplayInteger getListAndRender(ForgeDirection side, Gas type, Block block)
 	{
 		if(side == ForgeDirection.UNKNOWN)
 		{
@@ -170,7 +170,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			Model3D toReturn = new Model3D();
 			toReturn.baseBlock = Block.waterStill;
 			
-			toReturn.setTexture(type.gasIcon);
+			toReturn.setTexture(type.getIcon());
 			
 			toReturn.minX = 0.3 + offset;
 			toReturn.minY = 0.3 + offset;
@@ -194,7 +194,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				cachedCenterGasses.get(side).put(type, display);
 			}
 			else {
-				HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
+				HashMap<Gas, DisplayInteger> map = new HashMap<Gas, DisplayInteger>();
 				map.put(type, display);
 				
 				cachedCenterGasses.put(new BooleanArray(connectable), map);
@@ -203,36 +203,38 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			return display;
 		}
 		
-		if(cachedSideGasses.containsKey(side) && cachedSideGasses.get(side).containsKey(type))
-		{
-			return cachedSideGasses.get(side).get(type);
-		}
+		TubeRenderData data = TubeRenderData.get(side, block);
 		
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
-		toReturn.setTexture(type.gasIcon);
-		
-		toReturn.setSideRender(side, false);
-		toReturn.setSideRender(side.getOpposite(), false);
-		
-		DisplayInteger display = DisplayInteger.createAndStart();
-		
-		if(cachedSideGasses.containsKey(side))
-		{
-			cachedSideGasses.get(side).put(type, display);
-		}
-		else {
-			HashMap<EnumGas, DisplayInteger> map = new HashMap<EnumGas, DisplayInteger>();
+        if(cachedSideGasses.containsKey(data) && cachedSideGasses.get(data).containsKey(type))
+        {
+			return cachedSideGasses.get(data).get(type);
+        }
+        
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = Block.waterStill;
+        toReturn.setTexture(type.getIcon());
+        
+        toReturn.setSideRender(side, false);
+        toReturn.setSideRender(side.getOpposite(), false);
+        
+        DisplayInteger display = DisplayInteger.createAndStart();
+        
+        if(cachedSideGasses.containsKey(data))
+        {
+			cachedSideGasses.get(data).put(type, display);
+        }
+        else {
+			HashMap<Gas, DisplayInteger> map = new HashMap<Gas, DisplayInteger>();
 			map.put(type, display);
-			cachedSideGasses.put(side, map);
-		}
+			cachedSideGasses.put(data, map);
+        }
 				
 		switch(side)
 		{
 			case DOWN:
 			{
 				toReturn.minX = 0.3 + offset;
-				toReturn.minY = 0.0;
+				toReturn.minY = 0.0 - (1-block.getBlockBoundsMaxY());
 				toReturn.minZ = 0.3 + offset;
 				
 				toReturn.maxX = 0.7 - offset;
@@ -247,7 +249,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				toReturn.minZ = 0.3 + offset;
 				
 				toReturn.maxX = 0.7 - offset;
-				toReturn.maxY = 1.0;
+				toReturn.maxY = 1.0 + block.getBlockBoundsMinY();
 				toReturn.maxZ = 0.7 - offset;
 				break;
 			}
@@ -255,7 +257,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			{
 				toReturn.minX = 0.3 + offset;
 				toReturn.minY = 0.3 + offset;
-				toReturn.minZ = 0.0;
+				toReturn.minZ = 0.0 - (1-block.getBlockBoundsMaxZ());
 				
 				toReturn.maxX = 0.7 - offset;
 				toReturn.maxY = 0.7 - offset;
@@ -270,12 +272,12 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				
 				toReturn.maxX = 0.7 - offset;
 				toReturn.maxY = 0.7 - offset;
-				toReturn.maxZ = 1.0;
+				toReturn.maxZ = 1.0 + block.getBlockBoundsMinZ();
 				break;
 			}
 			case WEST:
 			{
-				toReturn.minX = 0.0;
+				toReturn.minX = 0.0 - (1-block.getBlockBoundsMaxX());
 				toReturn.minY = 0.3 + offset;
 				toReturn.minZ = 0.3 + offset;
 				
@@ -290,7 +292,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 				toReturn.minY = 0.3 + offset;
 				toReturn.minZ = 0.3 + offset;
 				
-				toReturn.maxX = 1.0;
+				toReturn.maxX = 1.0 + block.getBlockBoundsMinX();
 				toReturn.maxY = 0.7 - offset;
 				toReturn.maxZ = 0.7 - offset;
 				break;
@@ -301,5 +303,54 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		DisplayInteger.endList();
 		
 		return display;
+	}
+	
+	public static class TubeRenderData
+	{
+		public double minX;
+		public double maxX;
+		public double minY;
+		public double maxY;
+		public double minZ;
+		public double maxZ;
+		
+		public ForgeDirection side;
+		
+		@Override
+		public int hashCode() 
+		{
+			int code = 1;
+			code = 31 * code + new Double(minX).hashCode();
+			code = 31 * code + new Double(maxX).hashCode();
+			code = 31 * code + new Double(minY).hashCode();
+			code = 31 * code + new Double(maxY).hashCode();
+			code = 31 * code + new Double(minZ).hashCode();
+			code = 31 * code + new Double(maxZ).hashCode();
+			code = 31 * code + side.ordinal();
+			return code;
+		}
+		
+		@Override
+		public boolean equals(Object data)
+		{
+			return data instanceof TubeRenderData && ((TubeRenderData)data).minX == minX && ((TubeRenderData)data).maxX == maxX && 
+					((TubeRenderData)data).minY == minY && ((TubeRenderData)data).maxY == maxY && ((TubeRenderData)data).minZ == minZ &&
+					((TubeRenderData)data).maxZ == maxZ && ((TubeRenderData)data).side == side;
+		}
+		
+		public static TubeRenderData get(ForgeDirection dir, Block b)
+		{
+			TubeRenderData data = new TubeRenderData();
+			
+			data.side = dir;
+			data.minX = b.getBlockBoundsMinX();
+			data.maxX = b.getBlockBoundsMaxX();
+			data.minY = b.getBlockBoundsMinY();
+			data.maxY = b.getBlockBoundsMaxY();
+			data.minZ = b.getBlockBoundsMinZ();
+			data.maxZ = b.getBlockBoundsMaxZ();
+			
+			return data;
+		}
 	}
 }

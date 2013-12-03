@@ -8,6 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.SynchronizedTankData.ValveData;
+import mekanism.common.TankUpdateProtocol;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
@@ -17,7 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -47,7 +47,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			data.length = tileEntity.structure.volLength;
 			data.width = tileEntity.structure.volWidth;
 			
-			bindTexture(MekanismRenderer.getLiquidTexture());
+			bindTexture(MekanismRenderer.getBlocksTexture());
 			
 			if(data.location != null && data.height > 0 && tileEntity.structure.fluidStored.getFluid() != null)
 			{
@@ -55,27 +55,20 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 				
-				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-				{
-					MekanismRenderer.glowOn();
-				}
-				
-				boolean gas = tileEntity.structure.fluidStored.getFluid().isGaseous();
+				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				
 				int[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
-				if(gas)
+				
+				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
-					GL11.glColor4f(1.F, 1.F, 1.F, (float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity);
+					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+0.3F));
 					GL11.glCallList(displayList[getStages(data.height)-1]);
 				}
 				else {
 					GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
 				}
 				
-				if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-				{
-					MekanismRenderer.glowOff();
-				}
+				MekanismRenderer.glowOff();
 				
 				pop();
 				
@@ -87,18 +80,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 						
-						if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-						{
-							MekanismRenderer.glowOn();
-						}
+						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 						
 						int display = getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).display;
 						GL11.glCallList(display);
 						
-						if(tileEntity.structure.fluidStored.getFluid() == FluidRegistry.LAVA)
-						{
-							MekanismRenderer.glowOff();
-						}
+						MekanismRenderer.glowOff();
 						
 						pop();
 					}
@@ -158,9 +145,9 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			toReturn.minY = 0 + .01;
 			toReturn.minZ = 0 + .01;
 			
-			toReturn.maxX = data.length-2 - .01;
+			toReturn.maxX = data.length - .01;
 			toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
-			toReturn.maxZ = data.width-2 - .01;
+			toReturn.maxZ = data.width - .01;
 			
 			MekanismRenderer.renderObject(toReturn);
 			GL11.glEndList();
@@ -288,7 +275,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	
 	private int getStages(int height)
 	{
-		return (height-2)*1600;
+		return (height-2)*(TankUpdateProtocol.FLUID_PER_TANK/10);
 	}
 	
 	private double getX(int x)
@@ -328,7 +315,8 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		@Override
 		public boolean equals(Object data)
 		{
-			return data instanceof RenderData && ((RenderData)data).location.equals(location) && ((RenderData)data).height == height;
+			return data instanceof RenderData && ((RenderData)data).location.equals(location) && ((RenderData)data).height == height && 
+					((RenderData)data).length == length && ((RenderData)data).width == width;
 		}
 	}
 	

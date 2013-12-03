@@ -33,9 +33,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.item.ElectricItemHelper;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
@@ -56,11 +56,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		setSize(0.5F, 0.5F);
 		
 		getNavigator().setAvoidsWater(true);
-		
-		tasks.addTask(1, new RobitAIFollow(this, 1.0F, 10.0F, 2.0F));
-		tasks.addTask(2, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-		tasks.addTask(2, new EntityAILookIdle(this));
-		tasks.addTask(3, new EntityAISwimming(this));
+
+		tasks.addTask(1, new RobitAIPickup(this, 1.0F));
+		tasks.addTask(2, new RobitAIFollow(this, 1.0F, 10.0F, 2.0F));
+		tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+		tasks.addTask(3, new EntityAILookIdle(this));
+		tasks.addTask(4, new EntityAISwimming(this));
 		
 		setAlwaysRenderNameTag(true);
 	}
@@ -173,20 +174,19 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					
 					if(item.canProvideEnergy(inventory[27]))
 					{
-						double gain = ElectricItem.discharge(inventory[27], (int)((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+						double gain = ElectricItem.manager.discharge(inventory[27], (int)((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_IC2), 4, false, false)*Mekanism.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
-				else if(inventory[27].getItem() instanceof IChargeableItem)
+				else if(inventory[27].getItem() instanceof IEnergyContainerItem)
 				{
 					ItemStack itemStack = inventory[27];
-					IChargeableItem item = (IChargeableItem)inventory[27].getItem();
+					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();
 					
-					float itemEnergy = (float)Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack));
-					float toTransfer = (float)Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_BC));
+					int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
+					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_TE)));
 					
-					item.transferEnergy(itemStack, toTransfer, true);
-					setEnergy(getEnergy() + (toTransfer*Mekanism.FROM_BC));
+					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 				}
 				else if(inventory[27].itemID == Item.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{

@@ -1,0 +1,22 @@
+package mekanism.common;
+
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
+import mekanism.api.Object3D;
+import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyStorage;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
+import universalelectricity.core.block.IConnector;
+import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.block.IElectricalStorage;
+import cofh.api.energy.IEnergyHandler;
+
+public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
+{
+	public int[] getBoundSlots(Object3D location, int side);
+	
+	public boolean canBoundInsert(Object3D location, int i, ItemStack itemstack);
+
+	public boolean canBoundExtract(Object3D location, int i, ItemStack itemstack, int j);
+}

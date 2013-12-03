@@ -3,24 +3,21 @@ package mekanism.common.tileentity;
 import java.util.HashSet;
 
 import mekanism.api.Object3D;
-import mekanism.api.gas.EnumGas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasTransmitter;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketDataRequest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork, EnumGas> implements ITubeConnection, IGasTransmitter
-{
-	/** The gas currently displayed in this tube. */
-	public EnumGas refGas = null;
-	
-	/** The scale of the gas (0F -> 1F) currently inside this tube. */
-	public float gasScale;
-	
+public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork> implements ITubeConnection, IGasTransmitter
+{	
 	@Override
 	public TransmissionType getTransmissionType()
 	{
@@ -37,13 +34,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork,
 			
 			for(TileEntity tube : adjacentTubes)
 			{
-				if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, this) && ((ITransmitter<GasNetwork, EnumGas>)tube).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, this) && ((ITransmitter<GasNetwork>)tube).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<GasNetwork, EnumGas>)tube).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<GasNetwork>)tube).getTransmitterNetwork());
 				}
 			}
 			
-			if(connectedNets.size() == 0 || worldObj.isRemote)
+			if(connectedNets.size() == 0)
 			{
 				theNetwork = new GasNetwork(this);
 			}
@@ -68,11 +65,21 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork,
 	}
 
 	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		getTransmitterNetwork().split(this);
+	}
+	
+	@Override
 	public void invalidate()
 	{
+		getTransmitterNetwork().split(this);
+		
 		if(!worldObj.isRemote)
 		{
-			getTransmitterNetwork().split(this);
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 		}
 		
 		super.invalidate();
@@ -90,33 +97,17 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork,
 	@Override
 	public void refreshTransmitterNetwork() 
 	{
-		if(!worldObj.isRemote)
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-				
-				if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
-				{
-					getTransmitterNetwork().merge(((ITransmitter<GasNetwork, EnumGas>)tileEntity).getTransmitterNetwork());
-				}
-			}
+			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
-			getTransmitterNetwork().refresh();
+			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
+			{
+				getTransmitterNetwork().merge(((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork());
+			}
 		}
-	}
-	
-	public void clientUpdate(EnumGas type)
-	{
-		if(type == refGas)
-		{
-			gasScale = Math.min(1, gasScale+.02F);
-		}
-		else if(refGas == null)
-		{
-			refGas = type;
-			gasScale += Math.min(1, gasScale+.02F);
-		}
+		
+		getTransmitterNetwork().refresh();
 	}
 	
 	@Override
@@ -126,11 +117,29 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork,
 	}
 	
 	@Override
-	public boolean canUpdate()
+	public int getTransmitterNetworkSize()
 	{
-		return false;
+		return getTransmitterNetwork().getSize();
 	}
-	
+
+	@Override
+	public int getTransmitterNetworkAcceptorSize()
+	{
+		return getTransmitterNetwork().getAcceptorSize();
+	}
+
+	@Override
+	public String getTransmitterNetworkNeeded()
+	{
+		return getTransmitterNetwork().getNeeded();
+	}
+
+	@Override
+	public String getTransmitterNetworkFlow()
+	{
+		return getTransmitterNetwork().getFlow();
+	}
+
     @Override
     public boolean canTransferGasToTube(TileEntity tile)
     {

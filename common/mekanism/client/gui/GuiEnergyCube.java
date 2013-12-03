@@ -29,18 +29,18 @@ public class GuiEnergyCube extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		String capacityInfo = ElectricityDisplay.getDisplayShort(tileEntity.getEnergyStored(), ElectricUnit.JOULES) + "/" + ElectricityDisplay.getDisplayShort(tileEntity.getMaxEnergyStored(), ElectricUnit.JOULES);
-		String outputInfo = "Voltage: " + tileEntity.getVoltage() + "v";
+		String capacityInfo = MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy());
+		String outputInfo = MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t";
 		
-		fontRenderer.drawString(tileEntity.tier.name + " Energy Cube", 43, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
 		fontRenderer.drawString(outputInfo, 45, 49, 0x00CD00);
-		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override
@@ -57,7 +57,7 @@ public class GuiEnergyCube extends GuiMekanism
         int xAxis = mouseX - guiWidth;
  		int yAxis = mouseY - guiHeight;
         
-        int scale = (int)((tileEntity.electricityStored / tileEntity.tier.MAX_ELECTRICITY) * 72);
-        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
+        int displayInt = tileEntity.getScaledEnergyLevel(72);
+        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, displayInt, 10);
     }
 }

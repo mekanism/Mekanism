@@ -58,6 +58,7 @@ public class PacketHandler implements IPacketHandler
 					packetType.read(dataStream, entityplayer, entityplayer.worldObj);
 				} catch(Exception e) {
 					System.err.println("[Mekanism] Error while reading '" + packetType.getName() + "' packet.");
+					e.printStackTrace();
 				}
 			} catch(Exception e) {
 				System.err.println("[Mekanism] Error while handling packet.");
@@ -73,15 +74,10 @@ public class PacketHandler implements IPacketHandler
 	 */
 	public static void registerPacket(Class<? extends IMekanismPacket> packetClass)
 	{
-		for(Class<? extends IMekanismPacket> iteration : packets)
+		if(!packets.contains(packetClass))
 		{
-			if(iteration == packetClass)
-			{
-				return;
-			}
+			packets.add(packetClass);
 		}
-		
-		packets.add(packetClass);
 	}
 	
 	/**
@@ -191,6 +187,9 @@ public class PacketHandler implements IPacketHandler
         		Object3D obj = (Object3D)transParams[0];
         		PacketDispatcher.sendPacketToAllAround(obj.xCoord, obj.yCoord, obj.zCoord, (Double)transParams[1], obj.dimensionId, packet);
         		break;
+        	case CLIENTS_DIM:
+        		PacketDispatcher.sendPacketToAllInDimension(packet, (Integer)transParams[0]);
+        		break;
         	case SINGLE_CLIENT:
         		((EntityPlayerMP)transParams[0]).playerNetServerHandler.sendPacketToPlayer(packet);
         		break;
@@ -220,6 +219,9 @@ public class PacketHandler implements IPacketHandler
 				case CLIENTS_RANGE:
 					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in a " + (Double)transParams[1] + " block range.");
 					break;
+				case CLIENTS_DIM:
+					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in dimension ID " + (Integer)transParams[0] + ".");
+					break;
 				case SINGLE_CLIENT:
 					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to " + ((EntityPlayer)transParams[0]).username);
 					break;
@@ -237,6 +239,9 @@ public class PacketHandler implements IPacketHandler
 		
 		/** 2 parameters - Object3D representing the location of the transmission, and a double of the distance this packet can be sent in. */
 		CLIENTS_RANGE(2),
+		
+		/** 1 parameter - int representing the dimension ID to send this packet to. */
+		CLIENTS_DIM(1),
 		
 		/** 1 parameter - EntityPlayer to send this packet to. */
 		SINGLE_CLIENT(1);

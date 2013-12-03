@@ -1,17 +1,15 @@
 package mekanism.common.tileentity;
 
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Teleporter;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.Entity;
@@ -29,7 +27,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IEnergySink, IPeripheral, IStrictEnergyAcceptor
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
 {
 	/** This teleporter's frequency. */
 	public Teleporter.Code code;
@@ -39,7 +37,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 	
 	public TileEntityTeleporter()
 	{
-		super("Teleporter", 1000000);
+		super("Teleporter", MachineType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
 	}
@@ -350,41 +348,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 		
 		return data;
 	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return true;
-	}
 	
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
 		return ChargeUtils.canBeOutputted(itemstack, false);
-	}
-	
-	@Override
-	public double transferEnergyToAcceptor(double amount)
-	{
-    	double rejects = 0;
-    	double neededGas = getMaxEnergy()-getEnergy();
-    	
-    	if(amount <= neededGas)
-    	{
-    		electricityStored += amount;
-    	}
-    	else {
-    		electricityStored += neededGas;
-    		rejects = amount-neededGas;
-    	}
-    	
-    	return rejects;
-	}
-	
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return true;
 	}
 
 	@Override
@@ -458,36 +426,4 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IEn
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-
-	@Override
-	public double demandedEnergyUnits()
-	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
-	}
-
-	@Override
-	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
-	{
-		double givenEnergy = amount*Mekanism.FROM_IC2;
-    	double rejects = 0;
-    	double neededEnergy = getMaxEnergy()-getEnergy();
-    	
-    	if(givenEnergy < neededEnergy)
-    	{
-    		electricityStored += givenEnergy;
-    	}
-    	else if(givenEnergy > neededEnergy)
-    	{
-    		electricityStored += neededEnergy;
-    		rejects = givenEnergy-neededEnergy;
-    	}
-    	
-    	return rejects*Mekanism.TO_IC2;
-	}
-
-	@Override
-	public int getMaxSafeInput()
-	{
-		return 2048;
-	}
 }

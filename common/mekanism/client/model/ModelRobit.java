@@ -124,56 +124,56 @@ public class ModelRobit extends ModelBase
       	eyeLeft.mirror = true;
       	setRotation(eyeLeft, 0F, 0F, 0F);
 	}
-
-	@Override
-	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) 
-	{
-		super.render(entity, f, f1, f2, f3, f4, f5);
-		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		
-		GL11.glPushMatrix();
-		GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
-		
-		Body.render(f5);
-		Bottom.render(f5);
-		RightTrack.render(f5);
-		LeftTrack.render(f5);
-		Neck.render(f5);
-		Head.render(f5);
-		Backpack.render(f5);
-		headback.render(f5);
-		rightarn.render(f5);
-		leftarm.render(f5);
-		righthand.render(f5);
-		lefthand.render(f5);
-		
-		MekanismRenderer.glowOn();
-		backLight.render(f5);
-		eyeRight.render(f5);
-		eyeLeft.render(f5);
-		MekanismRenderer.glowOff();
-		
-		GL11.glPopMatrix();
-	}
 	
-	public void render(float size)
-	{
-		Body.render(size);
-		Bottom.render(size);
-		RightTrack.render(size);
-		LeftTrack.render(size);
-		Neck.render(size);
-		Head.render(size);
-		Backpack.render(size);
-		headback.render(size);
-		rightarn.render(size);
-		leftarm.render(size);
-		righthand.render(size);
-		lefthand.render(size);
-		backLight.render(size);
-		eyeRight.render(size);
-		eyeLeft.render(size);
+    @Override
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) 
+    {
+    	super.render(entity, f, f1, f2, f3, f4, f5);
+        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        
+        GL11.glPushMatrix();
+        GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
+        
+        Body.render(f5);
+        Bottom.render(f5);
+        RightTrack.render(f5);
+        LeftTrack.render(f5);
+        Neck.render(f5);
+        Head.render(f5);
+        Backpack.render(f5);
+        headback.render(f5);
+        rightarn.render(f5);
+        leftarm.render(f5);
+        righthand.render(f5);
+        lefthand.render(f5);
+        
+        MekanismRenderer.glowOn();
+        backLight.render(f5);
+        eyeRight.render(f5);
+        eyeLeft.render(f5);
+        MekanismRenderer.glowOff();
+        
+        GL11.glPopMatrix();
 	}
+    
+    public void render(float size)
+    {
+        Body.render(size);
+        Bottom.render(size);
+        RightTrack.render(size);
+        LeftTrack.render(size);
+        Neck.render(size);
+        Head.render(size);
+        Backpack.render(size);
+        headback.render(size);
+        rightarn.render(size);
+        leftarm.render(size);
+        righthand.render(size);
+        lefthand.render(size);
+        backLight.render(size);
+        eyeRight.render(size);
+        eyeLeft.render(size);
+    }
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) 
 	{

@@ -5,41 +5,49 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import mekanism.api.IClientTicker;
 import mekanism.api.Object3D;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> implements ITransmitterNetwork<A, N, D>
+public abstract class DynamicNetwork<A, N> implements ITransmitterNetwork<A, N>, IClientTicker
 {
-	public HashSet<ITransmitter<N, D>> transmitters = new HashSet<ITransmitter<N, D>>();
+	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
 	
-	public Set<A> possibleAcceptors = new HashSet<A>();
-	public Map<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
+	public HashSet<A> possibleAcceptors = new HashSet<A>();
+	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
+	
+	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
 	protected int ticksSinceCreate = 0;
-	protected int ticksSinceSecond = 0;
 	
 	protected boolean fixed = false;
 	
-	protected abstract ITransmitterNetwork<A, N, D> create(ITransmitter<N, D>... varTransmitters);
+	protected boolean needsUpdate = false;
 	
-	protected abstract ITransmitterNetwork<A, N, D> create(Collection<ITransmitter<N, D>> collection);
+	protected abstract ITransmitterNetwork<A, N> create(ITransmitter<N>... varTransmitters);
 	
-	protected abstract ITransmitterNetwork<A, N, D> create(Set<N> networks);
+	protected abstract ITransmitterNetwork<A, N> create(Collection<ITransmitter<N>> collection);
 	
-	public void addAllTransmitters(Set<ITransmitter<N, D>> newTransmitters)
+	protected abstract ITransmitterNetwork<A, N> create(Set<N> networks);
+	
+	public void addAllTransmitters(Set<ITransmitter<N>> newTransmitters)
 	{
 		transmitters.addAll(newTransmitters);
 	}
 	
 	@Override
-	public void removeTransmitter(ITransmitter<N, D> transmitter)
+	public void removeTransmitter(ITransmitter<N> transmitter)
 	{
 		transmitters.remove(transmitter);
 		
@@ -53,11 +61,17 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 	public void register()
 	{
 		try {
-			ITransmitter<N, D> aTransmitter = transmitters.iterator().next();
+			ITransmitter<N> aTransmitter = transmitters.iterator().next();
 			
-			if(aTransmitter instanceof TileEntity && !((TileEntity)aTransmitter).worldObj.isRemote)
+			if(aTransmitter instanceof TileEntity)
 			{
-				TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+				if(!((TileEntity)aTransmitter).worldObj.isRemote)
+				{
+					TransmitterNetworkRegistry.getInstance().registerNetwork(this);			
+				}
+				else {
+					MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte)1));
+				}
 			}
 		} catch(NoSuchElementException e) {}
 	}
@@ -66,7 +80,14 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 	public void deregister()
 	{
 		transmitters.clear();
-		TransmitterNetworkRegistry.getInstance().removeNetwork(this);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			TransmitterNetworkRegistry.getInstance().removeNetwork(this);
+		}
+		else {
+			MinecraftForge.EVENT_BUS.post(new ClientTickUpdate(this, (byte)0));
+		}
 	}
 	
 	@Override
@@ -94,29 +115,48 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 				fixMessedUpNetwork(transmitters.iterator().next());
 			}
 		}
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			Iterator<DelayQueue> i = updateQueue.iterator();
+			
+			while(i.hasNext())
+			{
+				DelayQueue q = i.next();
+				
+				if(q.delay > 0)
+				{
+					q.delay--;
+				}
+				else {
+					needsUpdate = true;
+					i.remove();
+				}
+			}
+		}
 	}
 	
 	@Override
-	public void fixMessedUpNetwork(ITransmitter<N, D> transmitter)
+	public synchronized void fixMessedUpNetwork(ITransmitter<N> transmitter)
 	{
 		if(transmitter instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), getTransmissionType(), Object3D.get((TileEntity)transmitter));
 			List<Object3D> partNetwork = finder.exploreNetwork();
-			Set<ITransmitter<N, D>> newTransporters = new HashSet<ITransmitter<N, D>>();
+			Set<ITransmitter<N>> newTransporters = new HashSet<ITransmitter<N>>();
 			
 			for(Object3D node : partNetwork)
 			{
 				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
 
-				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity) transmitter))
+				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity)transmitter))
 				{
-					((ITransmitter<N, D>)nodeTile).removeFromTransmitterNetwork();
-					newTransporters.add((ITransmitter<N, D>)nodeTile);
+					((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
+					newTransporters.add((ITransmitter<N>)nodeTile);
 				}
 			}
 			
-			ITransmitterNetwork<A, N, D> newNetwork = create(newTransporters);
+			ITransmitterNetwork<A, N> newNetwork = create(newTransporters);
 			newNetwork.refresh();
 			newNetwork.setFixed(true);
 			deregister();
@@ -124,7 +164,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 	}
 	
 	@Override
-	public void split(ITransmitter<N, D> splitPoint)
+	public synchronized void split(ITransmitter<N> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -165,7 +205,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 						}
 					}
 					
-					Set<ITransmitter<N, D>> newNetCables = new HashSet<ITransmitter<N, D>>();
+					Set<ITransmitter<N>> newNetCables = new HashSet<ITransmitter<N>>();
 					
 					for(Object3D node : finder.iterated)
 					{
@@ -175,12 +215,12 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetCables.add((ITransmitter<N, D>)nodeTile);
+								newNetCables.add((ITransmitter<N>)nodeTile);
 							}
 						}
 					}
 					
-					ITransmitterNetwork<A, N, D> newNetwork = create(newNetCables);					
+					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);
 					newNetwork.refresh();
 				}
 			}
@@ -193,6 +233,51 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 	public void setFixed(boolean value)
 	{
 		fixed = value;
+	}
+	
+	@Override
+	public boolean needsTicks()
+	{
+		return getSize() > 0;
+	}
+	
+	@Override
+	public void clientTick() 
+	{
+		ticksSinceCreate++;
+		
+		if(ticksSinceCreate == 5 && getSize() > 0)
+		{
+			TileEntity tile = (TileEntity)transmitters.iterator().next();
+			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile));
+		}
+	}
+	
+	public static class ClientTickUpdate extends Event
+	{
+		public DynamicNetwork network;
+		public byte operation; /*0 remove, 1 add*/
+		
+		public ClientTickUpdate(DynamicNetwork net, byte b)
+		{
+			network = net;
+			operation = b;
+		}
+	}
+	
+	public static class NetworkClientRequest extends Event
+	{
+		public TileEntity tileEntity;
+		
+		public NetworkClientRequest(TileEntity tile)
+		{
+			tileEntity = tile;
+		}
+	}
+	
+	public void addUpdate(EntityPlayer player)
+	{
+		updateQueue.add(new DelayQueue(player));
 	}
 	
 	public static class NetworkFinder
@@ -214,9 +299,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 			
 			if(ignore != null)
 			{
-			    for (int i = 0; i < ignore.length; i++)
+			    for(int i = 0; i < ignore.length; i++)
 			    {
-			        this.toIgnore.add(ignore[i]);
+			        toIgnore.add(ignore[i]);
 			    }
 			}
 		}
@@ -227,8 +312,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 			{
 				iterated.add(location);
 			}
-			else
-			{
+			else {
 			    toIgnore.add(location);
 			}
 			
@@ -240,7 +324,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
 					
-					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)) && ((ITransmitter<?, ?>)tileEntity).canConnectMutual(direction.getOpposite()))
+					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)))
 					{
 						loopAll(obj);
 					}
@@ -253,6 +337,18 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N, D>, D> im
 			loopAll(start);
 			
 			return iterated;
+		}
+	}
+	
+	public static class DelayQueue
+	{
+		public EntityPlayer player;
+		public int delay;
+		
+		public DelayQueue(EntityPlayer p)
+		{
+			player = p;
+			delay = 5;
 		}
 	}
 }

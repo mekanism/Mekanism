@@ -82,6 +82,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		data.add(mainX);
 		data.add(mainY);
 		data.add(mainZ);
+		
 		return data;
 	}
 }

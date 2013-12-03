@@ -3,6 +3,7 @@ package mekanism.common.item;
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -49,17 +50,17 @@ public class ItemPortableTeleporter extends ItemEnergized
 		switch(i)
 		{
 			case 0:
-				return EnumColor.DARK_RED + "Not ready.";
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.notReady");
 			case 1:
-				return EnumColor.DARK_GREEN + "Ready.";
+				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
 			case 2:
-				return EnumColor.DARK_RED + "Needs energy.";
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
 			case 3:
-				return EnumColor.DARK_RED + "Links > 2.";
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.linksCapacity");
 			case 4:
-				return EnumColor.DARK_RED + "No link found.";
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
 			default:
-				return EnumColor.DARK_RED + "Not ready.";
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.notReady");
 		}
 	}
 	

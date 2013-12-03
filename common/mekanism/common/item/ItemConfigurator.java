@@ -5,32 +5,32 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.EnumColor;
-import mekanism.api.IConfigurable;
 import mekanism.api.Object3D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.common.IConfigurable;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityBasicBlock;
-import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityElectricPump;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
 
-public class ItemConfigurator extends ItemEnergized
+public class ItemConfigurator extends ItemEnergized implements IToolWrench
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
+	
+	private Random random = new Random();
 	
     public ItemConfigurator(int id)
     {
@@ -41,7 +41,20 @@ public class ItemConfigurator extends ItemEnergized
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add(EnumColor.PINK + "State: " + EnumColor.GREY + getState(getState(itemstack)));
+		list.add(EnumColor.PINK + MekanismUtils.localize("gui.state") + ": " + EnumColor.GREY + getStateDisplay(getState(itemstack)));
+		
+		if(getState(itemstack) == 3)
+		{
+			if(hasLink(itemstack))
+			{
+				Object3D obj = getLink(itemstack);
+
+				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.linkMsg") + " " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", " + MekanismUtils.localize("tooltip.configurator.dim") + " " + EnumColor.INDIGO + obj.dimensionId);
+			}
+			else {
+				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.noLink"));
+			}
+		}
 	}
     
     @Override
@@ -49,46 +62,30 @@ public class ItemConfigurator extends ItemEnergized
     {
     	if(!world.isRemote)
     	{
-    		if(player.isSneaking())
+    		TileEntity tile = world.getBlockTileEntity(x, y, z);
+    		
+    		if(tile instanceof IConfigurable)
     		{
-	    		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityMechanicalPipe)
-	    		{
-	    			TileEntityMechanicalPipe tileEntity = (TileEntityMechanicalPipe)world.getBlockTileEntity(x, y, z);
-	    			tileEntity.isActive = !tileEntity.isActive;
-	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
-	    			return true;
-	    		}
-	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalTransporter)
-	    		{
-	    			TileEntityLogisticalTransporter tileEntity = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
-	    			tileEntity.isActive = !tileEntity.isActive;
-	    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
-	    			return true;
-	    		}
-	    		else if(world.getBlockTileEntity(x, y, z) instanceof TileEntityElectricPump)
-	    		{
-	    			TileEntityElectricPump tileEntity = (TileEntityElectricPump)world.getBlockTileEntity(x, y, z);
-	    			tileEntity.recurringNodes.clear();
-	    			tileEntity.cleaningNodes.clear();
-	    			
-	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Reset Electric Pump calculation."));
-	    			return true;
-	    		}
-    		}
-    		else if(world.getBlockTileEntity(x, y, z) instanceof ITransmitter)
-    		{
-    			((ITransmitter)world.getBlockTileEntity(x, y, z)).fixTransmitterNetwork();
+    			IConfigurable config = (IConfigurable)tile;
+    			
+    			if(player.isSneaking())
+    			{
+    				config.onSneakRightClick(player, side);
+    			}
+    			else {
+    				config.onRightClick(player, side);
+    			}
     		}
     		
     		if(getState(stack) == 0)
     		{
-	    		if(world.getBlockTileEntity(x, y, z) instanceof IConfigurable)
+	    		if(tile instanceof IInvConfiguration)
 	    		{
-	    			IConfigurable config = (IConfigurable)world.getBlockTileEntity(x, y, z);
+	    			IInvConfiguration config = (IInvConfiguration)tile;
 	    			
 	    			if(!player.isSneaking())
 	    			{
-	        			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Current color: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+	        			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 	        			return true;
 	    			}
 	    			else {
@@ -96,13 +93,14 @@ public class ItemConfigurator extends ItemEnergized
 	    				{
 	    					setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 		    				MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-		    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Color bumped to: " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+		    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 		    				
 		    				if(config instanceof TileEntityBasicBlock)
 		    				{
 		    					TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
 		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Object3D.get(tileEntity), 50D);
 		    				}
+		    				
 		    				return true;
 	    				}
 	    			}
@@ -110,17 +108,16 @@ public class ItemConfigurator extends ItemEnergized
     		}
     		else if(getState(stack) == 1)
     		{
-    			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityContainerBlock)
+    			if(tile instanceof IInventory)
     			{
     				int itemAmount = 0;
-    				Random random = new Random();
-    				TileEntityContainerBlock tileEntity = (TileEntityContainerBlock)world.getBlockTileEntity(x, y, z);
+    				IInventory inv = (IInventory)tile;
     				
-    				if(!(tileEntity instanceof TileEntityElectricChest) || (((TileEntityElectricChest)tileEntity).canAccess()))
+    				if(!(inv instanceof TileEntityElectricChest) || (((TileEntityElectricChest)inv).canAccess()))
     				{
-	    				for(int i = 0; i < tileEntity.getSizeInventory(); i++)
+	    				for(int i = 0; i < inv.getSizeInventory(); i++)
 	    	            {
-	    	                ItemStack slotStack = tileEntity.getStackInSlot(i);
+	    	                ItemStack slotStack = inv.getStackInSlot(i);
 	
 	    	                if(slotStack != null)
 	    	                {
@@ -156,7 +153,7 @@ public class ItemConfigurator extends ItemEnergized
 	    	                        item.motionZ = random.nextGaussian() * k;
 	    	                        world.spawnEntityInWorld(item);
 	    	                        
-	    	                        tileEntity.inventory[i] = null;
+	    	                        inv.setInventorySlotContents(i, null);
 	    	                        setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
 	    	                    }
 	    	                }
@@ -165,18 +162,16 @@ public class ItemConfigurator extends ItemEnergized
 	    				return true;
     				}
     				else {
-    					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "You are not authenticated on this chest.");
+    					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.unauth"));
 	    				return true;
     				}
     			}
     		}
     		else if(getState(stack) == 2)
     		{
-    			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    			
-    			if(tileEntity instanceof TileEntityBasicBlock)
+    			if(tile instanceof TileEntityBasicBlock)
     			{
-    				TileEntityBasicBlock basicBlock = (TileEntityBasicBlock)tileEntity;
+    				TileEntityBasicBlock basicBlock = (TileEntityBasicBlock)tile;
     				int newSide = basicBlock.facing;
     				
     				if(!player.isSneaking())
@@ -196,21 +191,34 @@ public class ItemConfigurator extends ItemEnergized
     				return true;
     			}
     		}
+    		else if(getState(stack) == 3)
+    		{
+    			if(!world.isRemote && player.isSneaking())
+    			{
+    				Object3D obj = new Object3D(x, y, z, world.provider.dimensionId);
+    				player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Set link to block " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", dimension " + EnumColor.INDIGO + obj.dimensionId);
+    				setLink(stack, obj);
+    				
+    				return true;
+    			}
+    		}
     	}
     	
         return false;
     }
     
-    public String getState(int state)
+    public String getStateDisplay(int state)
     {
     	switch(state)
     	{
     		case 0:
-    			return "modify";
+    			return MekanismUtils.localize("tooltip.configurator.modify");
     		case 1:
-    			return "empty";
+    			return MekanismUtils.localize("tooltip.configurator.empty");
     		case 2:
-    			return "wrench";
+    			return MekanismUtils.localize("tooltip.configurator.wrench");
+    		case 3:
+    			return MekanismUtils.localize("tooltip.configurator.link");
     	}
     	
     	return "unknown";
@@ -226,6 +234,8 @@ public class ItemConfigurator extends ItemEnergized
     			return EnumColor.AQUA;
     		case 2:
     			return EnumColor.YELLOW;
+    		case 3:
+    			return EnumColor.PINK;
     	}
     	
     	return EnumColor.GREY;
@@ -257,16 +267,49 @@ public class ItemConfigurator extends ItemEnergized
 		
 		return state;
     }
+    
+    public boolean hasLink(ItemStack itemStack)
+	{
+		return getLink(itemStack) != null;
+	}
+
+	public Object3D getLink(ItemStack itemStack)
+	{
+		if(itemStack.stackTagCompound == null || !itemStack.getTagCompound().hasKey("position"))
+		{
+			return null;
+		}
+		
+		return Object3D.read(itemStack.getTagCompound().getCompoundTag("position"));
+	}
+
+	public void setLink(ItemStack itemStack, Object3D obj)
+	{
+		if(itemStack.getTagCompound() == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.getTagCompound().setCompoundTag("position", obj.write(new NBTTagCompound()));
+	}
+
+	public void clearLink(ItemStack itemStack)
+	{
+		itemStack.getTagCompound().removeTag("position");
+	}
 	
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
 		return false;
 	}
-	
+
 	@Override
-	public boolean shouldPassSneakingClickToBlock(World world, int x, int y, int z)
+	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
 		return true;
 	}
+
+	@Override
+	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
 }

@@ -4,12 +4,11 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,30 +19,39 @@ public class GuiFactory extends GuiMekanism
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tentity)
     {
-        super(new ContainerFactory(inventory, tentity));
-        xSize+=26;
+        super(tentity, new ContainerFactory(inventory, tentity));
         tileEntity = tentity;
+        
+        ySize += 11;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiSortingTab(this, tileEntity, tileEntity.tier.guiLocation));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    	
+    {    	
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.fullName, 48, 4, 0x404040);
-        fontRenderer.drawString("Inventory", 8, (ySize - 93) + 2, 0x404040);
-        fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 124, (ySize - 93) + 2, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 48, 4, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
+        fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 104, (ySize - 93) + 2, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)tileEntity.electricityStored, ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		
+		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.factory.secondaryEnergy") + ": " + tileEntity.secondaryEnergyStored, xAxis, yAxis);
+		}
+		
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
@@ -63,10 +71,7 @@ public class GuiFactory extends GuiMekanism
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
-        
-        displayInt = tileEntity.getScaledRecipeProgress(15);
-        drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 176 + 26, 86, 10, displayInt);
+        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
         
         if(tileEntity.tier == FactoryTier.BASIC)
         {
@@ -75,7 +80,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 59 + (i*38);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -85,7 +90,7 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 39 + (i*26);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
         else if(tileEntity.tier == FactoryTier.ELITE)
@@ -95,8 +100,22 @@ public class GuiFactory extends GuiMekanism
         		int xPos = 33 + (i*19);
         		
 	        	displayInt = tileEntity.getScaledProgress(20, i);
-	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176 + 26, 52, 8, displayInt);
+	        	drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
         	}
         }
+        
+        int recipeFuelY = ySize;
+        
+        if(tileEntity.recipeType == RecipeType.PURIFYING.ordinal())
+        {
+        	recipeFuelY += 5;
+        }
+        else if(tileEntity.recipeType == RecipeType.COMBINING.ordinal())
+        {
+        	recipeFuelY += 10;
+        }
+        
+        displayInt = tileEntity.getScaledSecondaryEnergy(160);
+        drawTexturedModalRect(guiWidth + 8, guiHeight + 78, 0, recipeFuelY, displayInt, 5);
     }
 }

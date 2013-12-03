@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 
 import mekanism.common.tileentity.TileEntityContainerBlock;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -60,6 +61,8 @@ public class TileComponentUpgrade implements ITileComponent
 						{
 							tileEntity.inventory[upgradeSlot] = null;
 						}
+
+						MekanismUtils.saveChunk(tileEntity);
 					}
 				}
 				else if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
@@ -79,6 +82,8 @@ public class TileComponentUpgrade implements ITileComponent
 						{
 							tileEntity.inventory[upgradeSlot] = null;
 						}
+						
+						MekanismUtils.saveChunk(tileEntity);
 					}
 				}
 				else {

@@ -6,6 +6,7 @@ import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.Tessellator;
 
+@SideOnly(Side.CLIENT)
 public class ModelBoxSelectiveFace
 {
     private PositionTextureVertex[] vertexPositions;

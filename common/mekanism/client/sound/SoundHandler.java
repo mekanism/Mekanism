@@ -1,11 +1,17 @@
 package mekanism.client.sound;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
@@ -36,13 +42,120 @@ public class SoundHandler
 	/** The current base volume Minecraft is using. */
 	public float masterVolume = 0;
 	
+	public Minecraft mc = Minecraft.getMinecraft();
+	
 	/** 
 	 * SoundHandler -- a class that handles all Sounds used by Mekanism.
 	 */
 	public SoundHandler()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+		
 		System.out.println("[Mekanism] Successfully set up SoundHandler.");
+	}
+	
+	public void preloadSounds()
+	{
+		CodeSource src = getClass().getProtectionDomain().getCodeSource();
+		String corePath = src.getLocation().getFile().split("/mekanism/client")[0];
+		List<String> listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound");
+		
+		for(String s : listings)
+		{
+			if(s.contains("etc"))
+			{
+				continue;
+			}
+			
+			if(s.contains("/mekanism/sound/"))
+			{
+				s = s.split("/mekanism/sound/")[1];
+			}
+			
+			preloadSound(s);
+		}
+		
+		System.out.println("[Mekanism] Preloaded " + listings.size() + " object sounds.");
+		
+		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/etc");
+		
+		for(String s : listings)
+		{
+			if(s.contains("/mekanism/sound/etc/"))
+			{
+				s = s.split("/mekanism/sound/etc/")[1];
+			}
+			
+			mc.sndManager.addSound("mekanism:etc/" + s);
+		}
+		
+		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");
+	}
+	
+	private List<String> listFiles(String path, String s)
+	{
+		List<String> names = new ArrayList<String>();
+		
+		File f = new File(path);
+		
+		if(!f.exists())
+		{
+			return names;
+		}
+		
+		if(!f.isDirectory())
+		{
+			try {
+				ZipInputStream zip = new ZipInputStream(new FileInputStream(path));
+				
+				while(true) 
+				{
+					ZipEntry e = zip.getNextEntry();
+					
+					if(e == null)
+					{
+						break;
+					}
+					
+					String name = e.getName();
+					
+					if(name.contains(s) && name.endsWith(".ogg"))
+					{
+						names.add(name);
+					}
+				}
+				
+				zip.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			f = new File(path + "/" + s);
+			
+			for(File file : f.listFiles())
+			{
+				if(file.getPath().contains(s) && file.getName().endsWith(".ogg"))
+				{
+					names.add(file.getName());
+				}
+			}
+		}
+		
+		return names;
+	}
+	
+	private void preloadSound(String sound)
+	{
+		String id = "pre_" + sound;
+		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
+
+		if(getSoundSystem() != null)
+		{
+			getSoundSystem().newSource(false, id, url, sound, true, 0, 0, 0, 0, 16F);
+			getSoundSystem().activate(id);
+			getSoundSystem().removeSource(id);
+		}
 	}
 	
 	/**

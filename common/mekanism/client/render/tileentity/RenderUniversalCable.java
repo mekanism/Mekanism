@@ -3,12 +3,13 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelTransmitter;
+import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.BooleanArray;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -27,9 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderUniversalCable extends TileEntitySpecialRenderer
 {
-	private static ModelTransmitter model = new ModelTransmitter();
-	
-	private static Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
+	private static ModelTransmitter model = new ModelTransmitter(Size.SMALL);
 	
 	private static Model3D[] energy = null;
 	
@@ -56,16 +55,16 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		
 		connectable = CableUtils.getConnections(tileEntity);
 		
-		//model.renderCenter(connectable);
+		model.renderCenter(connectable);
 		for(int i = 0; i < 6; i++)
 		{
-			//model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
+			model.renderSide(ForgeDirection.getOrientation(i), connectable[i]);
 		}
 		
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 
-		if(tileEntity.getEnergyScale() <= 0 || !Mekanism.fancyUniversalCableRender)
+		if(tileEntity.getTransmitterNetwork().clientEnergyScale <= 0 || !MekanismClient.fancyUniversalCableRender)
 		{
 			return;
 		}
@@ -73,8 +72,8 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		push();
 		
 		MekanismRenderer.glowOn();
-		GL11.glColor4f(1.F, 1.F, 1.F, 0.6F);
-		bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
+		GL11.glColor4f(1F, 1F, 1F, (float)tileEntity.getTransmitterNetwork().clientEnergyScale);
+		bindTexture(MekanismRenderer.getBlocksTexture());
 		GL11.glTranslatef((float)x, (float)y, (float)z);
 		
 		if(energy == null)
@@ -118,12 +117,13 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	private static Model3D[] assignEnergy()
 	{
 		Model3D[] energyArray = new Model3D[7];
 		Model3D centerModel = new Model3D();
 		centerModel.baseBlock = Block.waterStill;
-		centerModel.setTexture(renderIcon);
+		centerModel.setTexture(MekanismRenderer.energyIcon);
 		
 		centerModel.minX = 0.3 + offset;
 		centerModel.minY = 0.3 + offset;
@@ -139,7 +139,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		{
 			Model3D toReturn = new Model3D();
 			toReturn.baseBlock = Block.waterStill;
-			toReturn.setTexture(renderIcon);
+			toReturn.setTexture(MekanismRenderer.energyIcon);
 			
 			toReturn.setSideRender(side, false);
 			toReturn.setSideRender(side.getOpposite(), false);
@@ -216,18 +216,20 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			
 			energyArray[side.ordinal()] = toReturn;
 		}
+		
 		return energyArray;
 	}
 	
 	private DisplayInteger getDisplayList(ForgeDirection side)
 	{
-		
 		DisplayInteger newDisplayList;
 		
 		Model3D toRender = energy[side.ordinal()];
+		
 		if(side == ForgeDirection.UNKNOWN)
 		{
 			newDisplayList = centerDisplayLists.get(new BooleanArray(connectable));
+			
 			if(newDisplayList != null)
 			{
 				return newDisplayList;
@@ -247,6 +249,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 		}
 		else {
 			newDisplayList = sideDisplayLists.get(side);
+			
 			if(newDisplayList != null)
 			{
 				return newDisplayList;
@@ -259,6 +262,7 @@ public class RenderUniversalCable extends TileEntitySpecialRenderer
 			newDisplayList.endList();
 			sideDisplayLists.put(side, newDisplayList);
 		}
+		
 		return newDisplayList;
 	}
 }

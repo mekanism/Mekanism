@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
+import mekanism.common.tileentity.TileEntityObsidianTNT;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -9,7 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -28,29 +29,7 @@ public class BlockObsidianTNT extends Block
     
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:ObsidianTNTBottom");
-		icons[1] = register.registerIcon("mekanism:ObsidianTNTTop");
-		icons[2] = register.registerIcon("mekanism:ObsidianTNTSide");
-	}
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public Icon getIcon(int side, int meta)
-    {
-        if(side == 1)
-        {
-        	return icons[1];
-        }
-        if(side == 0)
-        {
-        	return icons[0];
-        }
-        else {
-        	return icons[2];
-        }
-    }
+	public void registerIcons(IconRegister register) {}
 
     @Override
     public void onBlockAdded(World world, int x, int y, int z)
@@ -59,7 +38,7 @@ public class BlockObsidianTNT extends Block
 
         if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
-            onBlockDestroyedByPlayer(world, x, y, z, 1);
+        	explode(world, x, y, z);
             world.setBlockToAir(x, y, z);
         }
     }
@@ -69,7 +48,7 @@ public class BlockObsidianTNT extends Block
     {
         if(world.isBlockIndirectlyGettingPowered(x, y, z))
         {
-            onBlockDestroyedByPlayer(world, x, y, z, 1);
+        	explode(world, x, y, z);
             world.setBlockToAir(x, y, z);
         }
     }
@@ -85,20 +64,13 @@ public class BlockObsidianTNT extends Block
         }
     }
 
-    @Override
-    public void onBlockDestroyedByPlayer(World world, int x, int y, int z, int meta)
+    public void explode(World world, int x, int y, int z)
     {
         if(!world.isRemote)
         {
-            if((meta & 1) == 0)
-            {
-                dropBlockAsItem_do(world, x, y, z, new ItemStack(Mekanism.ObsidianTNT, 1, 0));
-            }
-            else {
-                EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
-                world.spawnEntityInWorld(entity);
-                world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
-            }
+            EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
+            world.spawnEntityInWorld(entity);
+            world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
         }
     }
 
@@ -107,7 +79,7 @@ public class BlockObsidianTNT extends Block
     {
         if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
         {
-            onBlockDestroyedByPlayer(world, x, y, z, 1);
+            explode(world, x, y, z);
             world.setBlockToAir(x, y, z);
             return true;
         }
@@ -123,6 +95,36 @@ public class BlockObsidianTNT extends Block
     }
     
     @Override
+	public boolean hasTileEntity(int metadata)
+	{
+		return true;
+	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, int metadata)
+	{
+		return new TileEntityObsidianTNT();
+	}
+    
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	
+	@Override
+	public int getRenderType()
+	{
+		return -1;
+	}
+    
+    @Override
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
         if(entity instanceof EntityArrow && !world.isRemote)
@@ -131,15 +133,9 @@ public class BlockObsidianTNT extends Block
 
             if(entityarrow.isBurning())
             {
-                onBlockDestroyedByPlayer(world, x, y, z, 1);
+            	explode(world, x, y, z);
                 world.setBlockToAir(x, y, z);
             }
         }
-    }
-
-    @Override
-    protected ItemStack createStackedBlock(int i)
-    {
-        return null;
     }
 }

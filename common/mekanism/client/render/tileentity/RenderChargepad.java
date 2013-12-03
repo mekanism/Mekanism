@@ -19,7 +19,7 @@ public class RenderChargepad extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityChargepad)tileEntity, x, y, z, 1F);
+		renderAModelAt((TileEntityChargepad)tileEntity, x, y, z, partialTick);
 	}
 	
 	private void renderAModelAt(TileEntityChargepad tileEntity, double x, double y, double z, float partialTick)

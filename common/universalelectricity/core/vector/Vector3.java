@@ -712,7 +712,7 @@ public class Vector3 implements Cloneable
 	{
 		// Somehow this destroys the playerPosition vector -.-
 		MovingObjectPosition pickedBlock = this.rayTraceBlocks(world, rotationYaw, rotationPitch, collisionFlag, reachDistance);
-		MovingObjectPosition pickedEntity = this.rayTraceEntities(world, rotationYaw, rotationPitch, collisionFlag, reachDistance);
+		MovingObjectPosition pickedEntity = this.rayTraceEntities(world, rotationYaw, rotationPitch, reachDistance);
 
 		if (pickedBlock == null)
 		{
@@ -740,8 +740,8 @@ public class Vector3 implements Cloneable
 
 	public MovingObjectPosition rayTraceBlocks(World world, float rotationYaw, float rotationPitch, boolean collisionFlag, double reachDistance)
 	{
-		Vector3 lookVector = getDeltaPositionFromRotation(rotationYaw, rotationPitch);
-		Vector3 reachPoint = translate(this, Vector3.scale(lookVector, reachDistance));
+		Vector3 lookVector = this.getDeltaPositionFromRotation(rotationYaw, rotationPitch);
+		Vector3 reachPoint = this.clone().translate(lookVector.clone().scale(reachDistance));
 		return world.rayTraceBlocks_do_do(this.toVec3(), reachPoint.toVec3(), collisionFlag, !collisionFlag);
 	}
 
@@ -756,11 +756,19 @@ public class Vector3 implements Cloneable
 		return this.rayTraceEntities(world, getDeltaPositionFromRotation(rotationYaw, rotationPitch).scale(reachDistance));
 	}
 
+	/**
+	 * Does an entity raytrace.
+	 * 
+	 * @param world - The world object.
+	 * @param target - The rotation in terms of Vector3. Convert using
+	 * getDeltaPositionFromRotation()
+	 * @return The target hit.
+	 */
 	public MovingObjectPosition rayTraceEntities(World world, Vector3 target)
 	{
 		MovingObjectPosition pickedEntity = null;
 		Vec3 startingPosition = this.toVec3();
-		Vec3 look = target.clone().difference(this).normalize().toVec3();
+		Vec3 look = target.toVec3();
 		double reachDistance = this.distance(target);
 		Vec3 reachPoint = Vec3.createVectorHelper(startingPosition.xCoord + look.xCoord * reachDistance, startingPosition.yCoord + look.yCoord * reachDistance, startingPosition.zCoord + look.zCoord * reachDistance);
 

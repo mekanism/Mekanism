@@ -1,6 +1,9 @@
 package mekanism.common;
 
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
@@ -25,21 +28,19 @@ public interface IFactory
 	 */
 	public void setRecipeType(int type, ItemStack itemStack);
 	
-	/**
-	 * Whether or not this item is a Smelting Factory.
-	 * @param itemStack - stack to check
-	 * @return if the item is a smelting factory
-	 */
-	public boolean isFactory(ItemStack itemStack);
-	
 	public static enum RecipeType
 	{
-		SMELTING("Smelting", "Smelter.ogg"),
-		ENRICHING("Enriching", "Chamber.ogg"),
-		CRUSHING("Crushing", "Crusher.ogg");
+		SMELTING("smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false),
+		ENRICHING("enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false),
+		CRUSHING("crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false),
+		COMPRESSING("compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true),
+		COMBINING("combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true),
+		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true);
 		
 		private String name;
 		private String sound;
+		private ItemStack stack;
+		private boolean usesFuel;
 		
 		public ItemStack getCopiedOutput(ItemStack input, boolean stackDecrease)
 		{
@@ -70,13 +71,69 @@ public interface IFactory
 			{
 				return RecipeHandler.getOutput(input, stackDecrease, Recipe.CRUSHER.get());
 			}
+			else if(this == COMPRESSING)
+			{
+				return RecipeHandler.getOutput(input, stackDecrease, Recipe.OSMIUM_COMPRESSOR.get());
+			}
+			else if(this == COMBINING)
+			{
+				return RecipeHandler.getOutput(input, stackDecrease, Recipe.COMBINER.get());
+			}
+			else if(this == PURIFYING)
+			{
+				return RecipeHandler.getOutput(input, stackDecrease, Recipe.PURIFICATION_CHAMBER.get());
+			}
 			
 			return null;
 		}
 		
+		public int getFuelTicks(ItemStack itemstack)
+		{
+			if(usesFuel)
+			{
+				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
+				TileEntityAdvancedElectricMachine machine = (TileEntityAdvancedElectricMachine)type.create();
+				
+				return machine.getFuelTicks(itemstack);
+			}
+			
+			return 0;
+		}
+		
+		public int getSecondaryEnergyPerTick()
+		{
+			if(usesFuel)
+			{
+				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
+				TileEntityAdvancedElectricMachine machine = (TileEntityAdvancedElectricMachine)type.create();
+				
+				return machine.SECONDARY_ENERGY_PER_TICK;
+			}
+			
+			return 0;
+		}
+		
+		public int getMaxSecondaryEnergy()
+		{
+			if(usesFuel)
+			{
+				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
+				TileEntityAdvancedElectricMachine machine = (TileEntityAdvancedElectricMachine)type.create();
+				
+				return machine.MAX_SECONDARY_ENERGY;
+			}
+			
+			return 200;
+		}
+		
+		public ItemStack getStack()
+		{
+			return stack;
+		}
+		
 		public String getName()
 		{
-			return name;
+			return MekanismUtils.localize("gui.factory." + name);
 		}
 		
 		public String getSound()
@@ -84,10 +141,17 @@ public interface IFactory
 			return sound;
 		}
 		
-		private RecipeType(String s, String s1)
+		public boolean usesFuel()
+		{
+			return usesFuel;
+		}
+		
+		private RecipeType(String s, String s1, ItemStack is, boolean b)
 		{
 			name = s;
 			sound = s1;
+			stack = is;
+			usesFuel = b;
 		}
 	}
 }

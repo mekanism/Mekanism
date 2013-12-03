@@ -1,0 +1,404 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsidian TNT
+item.EnrichedAlloy.name=Enriched Alloy
+item.EnergyTablet.name=Energy Tablet
+item.SpeedUpgrade.name=Speed Upgrade
+item.EnergyUpgrade.name=Energy Upgrade
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Atomic Disassembler
+item.AtomicCore.name=Atomic Core
+item.ElectricBow.name=Electric Bow
+item.BoundingBlock.name=Bounding Block
+item.StorageTank.name=Storage Tank
+item.ControlCircuit.name=Control Circuit
+item.EnrichedIron.name=Enriched Iron
+item.CompressedCarbon.name=Compressed Carbon
+item.PortableTeleporter.name=Portable Teleporter
+item.TeleportationCore.name=Teleportation Core
+item.Configurator.name=Configurator
+item.NetworkReader.name=Network Reader
+item.WalkieTalkie.name=Walkie-Talkie
+
+//Gas Tank
+tile.GasTank.GasTank.name=Gas Tank
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Osmium Block
+tile.BasicBlock.BronzeBlock.name=Bronze Block
+tile.BasicBlock.RefinedObsidian.name=Refined Obsidian
+tile.BasicBlock.CharcoalBlock.name=Charcoal Block
+tile.BasicBlock.RefinedGlowstone.name=Refined Glowstone
+tile.BasicBlock.SteelBlock.name=Steel Block
+tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
+tile.BasicBlock.SteelCasing.name=Steel Casing
+tile.BasicBlock.DynamicTank.name=Dynamic Tank
+tile.BasicBlock.DynamicGlass.name=Dynamic Glass
+tile.BasicBlock.DynamicValve.name=Dynamic Valve
+tile.BasicBlock.CopperBlock.name=Copper Block
+tile.BasicBlock.TinBlock.name=Tin Block
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
+tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor
+tile.MachineBlock.Combiner.name=Combiner
+tile.MachineBlock.Crusher.name=Crusher
+tile.MachineBlock.BasicFactory.name=Basic Factory
+tile.MachineBlock.AdvancedFactory.name=Advanced Factory
+tile.MachineBlock.EliteFactory.name=Elite Factory
+tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.PurificationChamber.name=Purification Chamber
+tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
+tile.MachineBlock.Teleporter.name=Teleporter
+tile.MachineBlock.ElectricPump.name=Electric Pump
+tile.MachineBlock.ElectricChest.name=Electric Chest
+tile.MachineBlock.Chargepad.name=Chargepad
+tile.MachineBlock.LogisticalSorter.name=Logistical Sorter
+tile.MachineBlock.DigitalMiner.name=Digital Miner
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Osmium Ore
+tile.OreBlock.CopperOre.name=Copper Ore
+tile.OreBlock.TinOre.name=Tin Ore
+
+//Transmitters
+tile.Transmitter.PressurizedTube.name=Pressurized Tube
+tile.Transmitter.UniversalCable.name=Universal Cable
+tile.Transmitter.MechanicalPipe.name=Mechanical Pipe
+tile.Transmitter.LogisticalTransporter.name=Logistical Transporter
+tile.Transmitter.RestrictiveTransporter.name=Restrictive Transporter
+tile.Transmitter.DiversionTransporter.name=Diversion Transporter
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Basic Energy Cube
+tile.EnergyCube.Advanced.name=Advanced Energy Cube
+tile.EnergyCube.Elite.name=Elite Energy Cube
+tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
+
+//Dust
+item.ironDust.name=Iron Dust
+item.goldDust.name=Gold Dust
+item.osmiumDust.name=Osmium Dust
+item.obsidianDust.name=Refined Obsidian Dust
+item.diamondDust.name=Diamond Dust
+item.steelDust.name=Steel Dust
+item.copperDust.name=Copper Dust
+item.tinDust.name=Tin Dust
+item.silverDust.name=Silver Dust
+
+//Clumps
+item.ironClump.name=Iron Clump
+item.goldClump.name=Gold Clump
+item.osmiumClump.name=Osmium Clump
+item.copperClump.name=Copper Clump
+item.tinClump.name=Tin Clump
+item.silverClump.name=Silver Clump
+item.obsidianClump.name=Obsidian Clump
+
+//Dirty Dust
+item.dirtyIronDust.name=Dirty Iron Dust
+item.dirtyGoldDust.name=Dirty Gold Dust
+item.dirtyOsmiumDust.name=Dirty Osmium Dust
+item.dirtyCopperDust.name=Dirty Copper Dust
+item.dirtyTinDust.name=Dirty Tin Dust
+item.dirtySilverDust.name=Dirty Silver Dust
+item.dirtyObsidianDust.name=Dirty Obsidian Dust
+
+//Ingots
+item.obsidianIngot.name=Obsidian Ingot
+item.osmiumIngot.name=Osmium Ingot
+item.bronzeIngot.name=Bronze Ingot
+item.glowstoneIngot.name=Glowstone Ingot
+item.steelIngot.name=Steel Ingot
+item.copperIngot.name=Copper Ingot
+item.tinIngot.name=Tin Ingot
+
+//Gasses
+gas.hydrogen=Hydrogen
+gas.oxygen=Oxygen
+
+//Fluids
+fluid.hydrogen=Liquid Hydrogen
+fluid.oxygen=Liquid Oxygen
+
+//Gui text
+gui.removeSpeedUpgrade=Remove speed upgrade
+gui.removeEnergyUpgrade=Remove energy upgrade
+gui.condensentrating=Condensentrating
+gui.decondensentrating=Decondensentrating
+gui.power=Power
+gui.confirm=Confirm
+gui.open=Open
+gui.allOK=All OK
+gui.none=None
+gui.new=New
+gui.edit=Edit
+gui.save=Save
+gui.output=Output
+gui.delete=Delete
+gui.status=Status
+gui.autoEject=Auto-eject
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.out=Out
+gui.noFluid=No fluid
+gui.empty=Empty
+gui.volume=Volume
+gui.start=Start
+gui.stop=Stop
+gui.config=Config
+gui.teleport=Teleport
+gui.eject=Eject
+gui.input=Input
+gui.slots=Slots
+gui.state=State
+
+gui.configuration=Configuration
+gui.configuration.strictInput=Strict Input
+
+gui.rotaryCondensentrator.toggleOperation=Toggle operation
+
+gui.factory.secondaryEnergy=Secondary energy
+gui.factory.smelting=Smelting
+gui.factory.enriching=Enriching
+gui.factory.crushing=Crushing
+gui.factory.compressing=Compressing
+gui.factory.combining=Combining
+gui.factory.purifying=Purifying
+gui.factory.autoSort=Auto-sort
+
+gui.oredictFilter=OreDict Filter
+gui.oredictFilter.noKey=No key entered
+gui.oredictFilter.sameKey=Same key
+
+gui.itemFilter=Item Filter
+gui.itemFilter.details=ItemStack Details
+gui.itemFilter.min=Min
+gui.itemFilter.max=Max
+
+gui.portableTeleporter=Portable Teleporter
+
+gui.teleporter.notReady=Not Ready
+gui.teleporter.ready=Ready
+gui.teleporter.needsEnergy=Needs energy
+gui.teleporter.linksCapacity=Links > 2
+gui.teleporter.noLink=No link found
+
+gui.robit=Robit
+gui.robit.smelting=Robit Smelting
+gui.robit.inventory=Robit Inventory
+gui.robit.crafting=Robit Crafting
+gui.robit.greeting=Hi, I'm
+gui.robit.toggleFollow=Toggle 'follow' mode
+gui.robit.rename=Rename this Robit
+gui.robit.teleport=Teleport back home
+gui.robit.togglePickup=Toggle 'drop pickup' mode
+
+gui.password.setPassword=Set password
+gui.password.enterPassword=Enter password
+gui.password.fieldsEmpty=Field(s) empty
+gui.password.notMatching=Not matching
+gui.password.identical=Identical
+gui.password.invalid=Invalid
+gui.password=Password
+
+gui.logisticalSorter.filters=Filters
+gui.logisticalSorter.default=Default
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round robin
+
+gui.electricChest.editPassword=Edit Password
+
+gui.digitalMinerConfig=Digital Miner Config
+
+gui.digitalMiner.autoPull=Auto-pull
+gui.digitalMiner.replaceBlock=Replace block
+gui.digitalMiner.reset=Reset
+gui.digitalMiner.silkTouch=Silk touch
+gui.digitalMiner.pull=Pull
+gui.digitalMiner.silk=Silk
+gui.digitalMiner.toMine=To mine
+gui.digitalMiner.running=Running
+gui.digitalMiner.idle=Idle
+
+//Item and block tooltip text
+tooltip.configurator.modify=Modify
+tooltip.configurator.empty=Empty
+tooltip.configurator.wrench=Wrench
+tooltip.configurator.link=Link
+tooltip.configurator.pumpReset=Reset Electric Pump calculation
+tooltip.configurator.toggleDiverter=Diverter mode changed to
+tooltip.configurator.toggleColor=Color bumped to
+tooltip.configurator.viewColor=Current color
+tooltip.configurator.unauth=This chest is locked
+tooltip.configurator.noLink=No link
+tooltip.configurator.linkMsg=Bound to
+tooltip.configurator.dim=dimension
+
+//Redstone control
+control.disabled=Disabled
+control.high=High
+control.low=Low
+control.disabled.desc=Always active
+control.high.desc=Active with signal
+control.low.desc=Active without signal
+
+//Colors
+color.black=Black
+color.darkBlue=Dark Blue
+color.darkGreen=Dark Green
+color.darkAqua=Dark Aqua
+color.darkRed=Dark Red
+color.purple=Purple
+color.orange=Orange
+color.grey=Grey
+color.darkGrey=Dark Grey
+color.indigo=Indigo
+color.brightGreen=Bright Green
+color.aqua=Aqua
+color.red=Red
+color.pink=Pink
+color.yellow=Yellow
+color.white=White
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=Bio Fuel
+item.ElectrolyticCore.name=Electrolytic Core
+item.SolarPanel.name=Solar Panel
+
+//Generators
+tile.Generator.HeatGenerator.name=Heat Generator
+tile.Generator.SolarGenerator.name=Solar Generator
+tile.Generator.ElectrolyticSeparator.name=Electrolytic Separator
+tile.Generator.HydrogenGenerator.name=Hydrogen Generator
+tile.Generator.BioGenerator.name=Bio-Generator
+tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
+tile.Generator.WindTurbine.name=Wind Turbine
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Wood Paxel
+item.StonePaxel.name=Stone Paxel
+item.IronPaxel.name=Iron Paxel
+item.DiamondPaxel.name=Diamond Paxel
+item.GoldPaxel.name=Gold Paxel
+
+//Obsidian
+item.ObsidianHelmet.name=Obsidian Helmet
+item.ObsidianChestplate.name=Obsidian Chestplate
+item.ObsidianLeggings.name=Obsidian Leggings
+item.ObsidianBoots.name=Obsidian Boots
+item.ObsidianPaxel.name=Obsidian Paxel
+item.ObsidianPickaxe.name=Obsidian Pickaxe
+item.ObsidianAxe.name=Obsidian Axe
+item.ObsidianShovel.name=Obsidian Shovel
+item.ObsidianHoe.name=Obsidian Hoe
+item.ObsidianSword.name=Obsidian Sword
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lapis Lazuli Helmet
+item.LazuliChestplate.name=Lapis Lazuli Chestplate
+item.LazuliLeggings.name=Lapis Lazuli Leggings
+item.LazuliBoots.name=Lapis Lazuli Boots
+item.LazuliPaxel.name=Lapis Lazuli Paxel
+item.LazuliPickaxe.name=Lapis Lazuli Pickaxe
+item.LazuliAxe.name=Lapis Lazuli Axe
+item.LazuliShovel.name=Lapis Lazuli Shovel
+item.LazuliHoe.name=Lapis Lazuli Hoe
+item.LazuliSword.name=Lapis Lazuli Sword
+
+//Osmium
+item.OsmiumHelmet.name=Osmium Helmet
+item.OsmiumChestplate.name=Osmium Chestplate
+item.OsmiumLeggings.name=Osmium Leggings
+item.OsmiumBoots.name=Osmium Boots
+item.OsmiumPaxel.name=Osmium Paxel
+item.OsmiumPickaxe.name=Osmium Pickaxe
+item.OsmiumAxe.name=Osmium Axe
+item.OsmiumShovel.name=Osmium Shovel
+item.OsmiumHoe.name=Osmium Hoe
+item.OsmiumSword.name=Osmium Sword
+
+//Bronze
+item.BronzeHelmet.name=Bronze Helmet
+item.BronzeChestplate.name=Bronze Chestplate
+item.BronzeLeggings.name=Bronze Leggings
+item.BronzeBoots.name=Bronze Boots
+item.BronzePaxel.name=Bronze Paxel
+item.BronzePickaxe.name=Bronze Pickaxe
+item.BronzeAxe.name=Bronze Axe
+item.BronzeShovel.name=Bronze Shovel
+item.BronzeHoe.name=Bronze Hoe
+item.BronzeSword.name=Bronze Sword
+
+//Glow
+item.GlowstoneHelmet.name=Glowstone Helmet
+item.GlowstoneChestplate.name=Glowstone Chestplate
+item.GlowstoneLeggings.name=Glowstone Leggings
+item.GlowstoneBoots.name=Glowstone Boots
+item.GlowstonePaxel.name=Glowstone Paxel
+item.GlowstonePickaxe.name=Glowstone Pickaxe
+item.GlowstoneAxe.name=Glowstone Axe
+item.GlowstoneShovel.name=Glowstone Shovel
+item.GlowstoneHoe.name=Glowstone Hoe
+item.GlowstoneSword.name=Glowstone Sword
+
+//Steel
+item.SteelHelmet.name=Steel Helmet
+item.SteelChestplate.name=Steel Chestplate
+item.SteelLeggings.name=Steel Leggings
+item.SteelBoots.name=Steel Boots
+item.SteelPaxel.name=Steel Paxel
+item.SteelPickaxe.name=Steel Pickaxe
+item.SteelAxe.name=Steel Axe
+item.SteelShovel.name=Steel Shovel
+item.SteelHoe.name=Steel Hoe
+item.SteelSword.name=Steel Sword
+
+//*****//
+//TOOLS//
+//*****//
+
+//Blocks
+tile.Tesla.name=Tesla Coil
+tile.Multimeter.name=Multimeter
+tile.ElectromagneticContractor.name=Electromagnetic Contractor
+tile.Battery.name=Modular Battery
+
+//Wires
+tile.Wire.CopperWire.name=Copper Wire
+tile.Wire.TinWire.name=Tin Wire
+tile.Wire.IronWire.name=Iron Wire
+tile.Wire.AluminumWire.name=Aluminum Wire
+tile.Wire.SilverWire.name=Silver Wire
+tile.Wire.SuperconductorWire.name=Superconductor Wire
+
+//Items
+item.Linker.name=Electrostatic Linker
+
+//General text
+text.contractor.success=Linked contractor successfully
+text.tesla.success=Linked tesla successfully
+
+//Gui text
+gui.heatGenerator.fuel=Fuel
+gui.solarGenerator.sun=Sun
+gui.bioGenerator.biofuel=BioFuel
+gui.electrolyticSeparator.dump=Dump

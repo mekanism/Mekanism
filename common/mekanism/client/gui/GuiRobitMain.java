@@ -11,19 +11,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRobitMain extends GuiContainer
+public class GuiRobitMain extends GuiMekanism
 {
 	public EntityRobit robit;
 	
@@ -74,7 +71,7 @@ public class GuiRobitMain extends GuiContainer
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, "Confirm"));
+		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, MekanismUtils.localize("gui.confirm")));
 		confirmName.drawButton = displayNameChange;
 		
 		nameChangeField = new GuiTextField(fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
@@ -106,12 +103,12 @@ public class GuiRobitMain extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-    	fontRenderer.drawString("Robit", 76, 6, 0x404040);
+    	fontRenderer.drawString(MekanismUtils.localize("gui.robit"), 76, 6, 0x404040);
     	
     	if(!displayNameChange)
     	{
-	    	fontRenderer.drawString("Hi, I'm " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
-	    	fontRenderer.drawString("Energy: " + ElectricityDisplay.getDisplayShort((float)(robit.getEnergy()*Mekanism.TO_UE), ElectricUnit.JOULES), 29, 36-4, 0x00CD00);
+	    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
+	    	fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
 	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
 	    	fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
 	    	fontRenderer.drawString("Owner: " + robit.getOwnerName(), 29, 63-4, 0x00CD00);
@@ -122,29 +119,33 @@ public class GuiRobitMain extends GuiContainer
     	
 		if(xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79)
 		{
-			drawCreativeTabHoveringText(ElectricityDisplay.getDisplayShort((float)(robit.getEnergy()*Mekanism.TO_UE), ElectricUnit.JOULES), xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy()), xAxis, yAxis);
 		}
 		else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText("Toggle 'follow' mode", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText("Rename this Robit", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.rename"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 		{
-			drawCreativeTabHoveringText("Teleport back home", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.teleport"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 		{
-			drawCreativeTabHoveringText("Toggle 'drop pickup' mode", xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
     	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
@@ -241,6 +242,14 @@ public class GuiRobitMain extends GuiContainer
 	private int getScaledEnergyLevel(int i)
 	{
 		return (int)(robit.getEnergy()*i / robit.MAX_ELECTRICITY);
+	}
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		nameChangeField.updateCursorCounter();
 	}
 	
 	@Override

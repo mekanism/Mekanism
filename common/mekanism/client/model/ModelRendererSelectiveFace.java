@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class ModelRendererSelectiveFace
 {
     public float textureWidth;
@@ -113,8 +114,7 @@ public class ModelRendererSelectiveFace
                         GL11.glTranslatef(-rotationPointX * scaleFactor, -rotationPointY * scaleFactor, -rotationPointZ * scaleFactor);
                     }
                 }
-                else
-                {
+                else {
                     GL11.glPushMatrix();
                     GL11.glTranslatef(rotationPointX * scaleFactor, rotationPointY * scaleFactor, rotationPointZ * scaleFactor);
 

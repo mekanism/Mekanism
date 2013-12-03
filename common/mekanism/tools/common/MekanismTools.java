@@ -32,7 +32,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.5.7", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "5.6.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismTools implements IModule
 {
@@ -40,7 +40,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(5, 5, 7);
+	public static Version versionNumber = new Version(5, 6, 0);
 	
     //Enums: Tools
     public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 100);
@@ -154,7 +154,6 @@ public class MekanismTools implements IModule
 		
 		//Load this module
 		addItems();
-		addNames();
 		addRecipes();
 		
 		//Finalization
@@ -374,88 +373,6 @@ public class MekanismTools implements IModule
 		}));
 	}
 	
-	public void addNames()
-	{
-		//Base
-		LanguageRegistry.addName(WoodPaxel, "Wood Paxel");
-		LanguageRegistry.addName(StonePaxel, "Stone Paxel");
-		LanguageRegistry.addName(IronPaxel, "Iron Paxel");
-		LanguageRegistry.addName(DiamondPaxel, "Diamond Paxel");
-		LanguageRegistry.addName(GoldPaxel, "Gold Paxel");
-		
-		//Obsidian
-		LanguageRegistry.addName(ObsidianHelmet, "Obsidian Helmet");
-		LanguageRegistry.addName(ObsidianChestplate, "Obsidian Chestplate");
-		LanguageRegistry.addName(ObsidianLeggings, "Obsidian Leggings");
-		LanguageRegistry.addName(ObsidianBoots, "Obsidian Boots");
-		LanguageRegistry.addName(ObsidianPaxel, "Obsidian Paxel");
-		LanguageRegistry.addName(ObsidianPickaxe, "Obsidian Pickaxe");
-		LanguageRegistry.addName(ObsidianAxe, "Obsidian Axe");
-		LanguageRegistry.addName(ObsidianShovel, "Obsidian Shovel");
-		LanguageRegistry.addName(ObsidianHoe, "Obsidian Hoe");
-		LanguageRegistry.addName(ObsidianSword, "Obsidian Sword");
-		
-		//Lazuli
-		LanguageRegistry.addName(LazuliHelmet, "Lapis Lazuli Helmet");
-		LanguageRegistry.addName(LazuliChestplate, "Lapis Lazuli Chestplate");
-		LanguageRegistry.addName(LazuliLeggings, "Lapis Lazuli Leggings");
-		LanguageRegistry.addName(LazuliBoots, "Lapis Lazuli Boots");
-		LanguageRegistry.addName(LazuliPaxel, "Lapis Lazuli Paxel");
-		LanguageRegistry.addName(LazuliPickaxe, "Lapis Lazuli Pickaxe");
-		LanguageRegistry.addName(LazuliAxe, "Lapis Lazuli Axe");
-		LanguageRegistry.addName(LazuliShovel, "Lapis Lazuli Shovel");
-		LanguageRegistry.addName(LazuliHoe, "Lapis Lazuli Hoe");
-		LanguageRegistry.addName(LazuliSword, "Lapis Lazuli Sword");
-		
-		//Osmium
-		LanguageRegistry.addName(OsmiumHelmet, "Osmium Helmet");
-		LanguageRegistry.addName(OsmiumChestplate, "Osmium Chestplate");
-		LanguageRegistry.addName(OsmiumLeggings, "Osmium Leggings");
-		LanguageRegistry.addName(OsmiumBoots, "Osmium Boots");
-		LanguageRegistry.addName(OsmiumPaxel, "Osmium Paxel");
-		LanguageRegistry.addName(OsmiumPickaxe, "Osmium Pickaxe");
-		LanguageRegistry.addName(OsmiumAxe, "Osmium Axe");
-		LanguageRegistry.addName(OsmiumShovel, "Osmium Shovel");
-		LanguageRegistry.addName(OsmiumHoe, "Osmium Hoe");
-		LanguageRegistry.addName(OsmiumSword, "Osmium Sword");
-		
-		//Redstone
-		LanguageRegistry.addName(BronzeHelmet, "Bronze Helmet");
-		LanguageRegistry.addName(BronzeChestplate, "Bronze Chestplate");
-		LanguageRegistry.addName(BronzeLeggings, "Bronze Leggings");
-		LanguageRegistry.addName(BronzeBoots, "Bronze Boots");
-		LanguageRegistry.addName(BronzePaxel, "Bronze Paxel");
-		LanguageRegistry.addName(BronzePickaxe, "Bronze Pickaxe");
-		LanguageRegistry.addName(BronzeAxe, "Bronze Axe");
-		LanguageRegistry.addName(BronzeShovel, "Bronze Shovel");
-		LanguageRegistry.addName(BronzeHoe, "Bronze Hoe");
-		LanguageRegistry.addName(BronzeSword, "Bronze Sword");
-		
-		//Glowstone
-		LanguageRegistry.addName(GlowstonePaxel, "Glowstone Paxel");
-		LanguageRegistry.addName(GlowstonePickaxe, "Glowstone Pickaxe");
-		LanguageRegistry.addName(GlowstoneAxe, "Glowstone Axe");
-		LanguageRegistry.addName(GlowstoneShovel, "Glowstone Shovel");
-		LanguageRegistry.addName(GlowstoneHoe, "Glowstone Hoe");
-		LanguageRegistry.addName(GlowstoneSword, "Glowstone Sword");
-		LanguageRegistry.addName(GlowstoneHelmet, "Glowstone Helmet");
-		LanguageRegistry.addName(GlowstoneChestplate, "Glowstone Chestplate");
-		LanguageRegistry.addName(GlowstoneLeggings, "Glowstone Leggings");
-		LanguageRegistry.addName(GlowstoneBoots, "Glowstone Boots");
-		
-		//Steel
-		LanguageRegistry.addName(SteelPaxel, "Steel Paxel");
-		LanguageRegistry.addName(SteelPickaxe, "Steel Pickaxe");
-		LanguageRegistry.addName(SteelAxe, "Steel Axe");
-		LanguageRegistry.addName(SteelShovel, "Steel Shovel");
-		LanguageRegistry.addName(SteelHoe, "Steel Hoe");
-		LanguageRegistry.addName(SteelSword, "Steel Sword");
-		LanguageRegistry.addName(SteelHelmet, "Steel Helmet");
-		LanguageRegistry.addName(SteelChestplate, "Steel Chestplate");
-		LanguageRegistry.addName(SteelLeggings, "Steel Leggings");
-		LanguageRegistry.addName(SteelBoots, "Steel Boots");
-	}
-	
 	public void addItems()
 	{
 		//Declarations
@@ -472,6 +389,11 @@ public class MekanismTools implements IModule
 		BronzeHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("BronzeHoe", 11408).getInt(), toolBRONZE).setUnlocalizedName("BronzeHoe");
 		BronzeSword = new ItemMekanismSword(Mekanism.configuration.getItem("BronzeSword", 11409).getInt(), toolBRONZE).setUnlocalizedName("BronzeSword");
 		
+		MinecraftForge.setToolClass(BronzePaxel, "paxel", toolBRONZE2.getHarvestLevel());
+		MinecraftForge.setToolClass(BronzePickaxe, "pickaxe", toolBRONZE.getHarvestLevel());
+		MinecraftForge.setToolClass(BronzeAxe, "axe", toolBRONZE.getHarvestLevel());
+		MinecraftForge.setToolClass(BronzeShovel, "shovel", toolBRONZE.getHarvestLevel());
+		
 		//Osmium
 		OsmiumHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumHelmet", 11410).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
 		OsmiumChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumChestplate", 11411).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 1)).setUnlocalizedName("OsmiumChestplate");
@@ -483,6 +405,11 @@ public class MekanismTools implements IModule
 		OsmiumShovel = new ItemMekanismShovel(Mekanism.configuration.getItem("OsmiumShovel", 11417).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumShovel");
 		OsmiumHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("OsmiumHoe", 11418).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumHoe");
 		OsmiumSword = new ItemMekanismSword(Mekanism.configuration.getItem("OsmiumSword", 11419).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumSword");
+		
+		MinecraftForge.setToolClass(OsmiumPaxel, "paxel", toolOSMIUM2.getHarvestLevel());
+		MinecraftForge.setToolClass(OsmiumPickaxe, "pickaxe", toolOSMIUM.getHarvestLevel());
+		MinecraftForge.setToolClass(OsmiumAxe, "axe", toolOSMIUM.getHarvestLevel());
+		MinecraftForge.setToolClass(OsmiumShovel, "shovel", toolOSMIUM.getHarvestLevel());
 		
 		//Obsidian
 		ObsidianHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("ObsidianHelmet", 11420).getInt(), armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setUnlocalizedName("ObsidianHelmet");
@@ -496,6 +423,11 @@ public class MekanismTools implements IModule
 		ObsidianHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("ObsidianHoe", 11428).getInt(), toolOBSIDIAN).setUnlocalizedName("ObsidianHoe");
 		ObsidianSword = new ItemMekanismSword(Mekanism.configuration.getItem("ObsidianSword", 11429).getInt(), toolOBSIDIAN).setUnlocalizedName("ObsidianSword");
 		
+		MinecraftForge.setToolClass(ObsidianPaxel, "paxel", toolOBSIDIAN2.getHarvestLevel());
+		MinecraftForge.setToolClass(ObsidianPickaxe, "pickaxe", toolOBSIDIAN.getHarvestLevel());
+		MinecraftForge.setToolClass(ObsidianAxe, "axe", toolOBSIDIAN.getHarvestLevel());
+		MinecraftForge.setToolClass(ObsidianShovel, "shovel", toolOBSIDIAN.getHarvestLevel());
+		
 		//Lazuli
 		LazuliPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("LazuliPaxel", 11430).getInt(), toolLAZULI2).setUnlocalizedName("LazuliPaxel");
 		LazuliPickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("LazuliPickaxe", 11431).getInt(), toolLAZULI).setUnlocalizedName("LazuliPickaxe");
@@ -507,6 +439,11 @@ public class MekanismTools implements IModule
 		LazuliChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("LazuliChestplate", 11437).getInt(), armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setUnlocalizedName("LazuliChestplate");
 		LazuliLeggings = (new ItemMekanismArmor(Mekanism.configuration.getItem("LazuliLeggings", 11438).getInt(), armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setUnlocalizedName("LazuliLeggings");
 		LazuliBoots = (new ItemMekanismArmor(Mekanism.configuration.getItem("LazuliBoots", 11439).getInt(), armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setUnlocalizedName("LazuliBoots");
+		
+		MinecraftForge.setToolClass(LazuliPaxel, "paxel", toolLAZULI2.getHarvestLevel());
+		MinecraftForge.setToolClass(LazuliPickaxe, "pickaxe", toolLAZULI.getHarvestLevel());
+		MinecraftForge.setToolClass(LazuliAxe, "axe", toolLAZULI.getHarvestLevel());
+		MinecraftForge.setToolClass(LazuliShovel, "shovel", toolLAZULI.getHarvestLevel());
 		
 		//Glowstone
 		GlowstonePaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("GlowstonePaxel", 11440).getInt(), toolGLOWSTONE2).setUnlocalizedName("GlowstonePaxel");
@@ -520,12 +457,23 @@ public class MekanismTools implements IModule
 		GlowstoneLeggings = new ItemMekanismArmor(Mekanism.configuration.getItem("GlowstoneLeggings", 11448).getInt(), armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setUnlocalizedName("GlowstoneLeggings");
 		GlowstoneBoots = new ItemMekanismArmor(Mekanism.configuration.getItem("GlowstoneBoots", 11449).getInt(), armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setUnlocalizedName("GlowstoneBoots");
 		
+		MinecraftForge.setToolClass(GlowstonePaxel, "paxel", toolGLOWSTONE2.getHarvestLevel());
+		MinecraftForge.setToolClass(GlowstonePickaxe, "pickaxe", toolGLOWSTONE.getHarvestLevel());
+		MinecraftForge.setToolClass(GlowstoneAxe, "axe", toolGLOWSTONE.getHarvestLevel());
+		MinecraftForge.setToolClass(GlowstoneShovel, "shovel", toolGLOWSTONE.getHarvestLevel());
+		
 		//Base Paxels
 		WoodPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("WoodPaxel", 11450).getInt(), EnumToolMaterial.WOOD).setUnlocalizedName("WoodPaxel");
 		StonePaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("StonePaxel", 11451).getInt(), EnumToolMaterial.STONE).setUnlocalizedName("StonePaxel");
 		IronPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("IronPaxel", 11452).getInt(), EnumToolMaterial.IRON).setUnlocalizedName("IronPaxel");
 		DiamondPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("DiamondPaxel", 11453).getInt(), EnumToolMaterial.EMERALD).setUnlocalizedName("DiamondPaxel");
 		GoldPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("GoldPaxel", 11454).getInt(), EnumToolMaterial.GOLD).setUnlocalizedName("GoldPaxel");
+		
+		MinecraftForge.setToolClass(WoodPaxel, "paxel", EnumToolMaterial.WOOD.getHarvestLevel());
+		MinecraftForge.setToolClass(StonePaxel, "paxel", EnumToolMaterial.STONE.getHarvestLevel());
+		MinecraftForge.setToolClass(IronPaxel, "paxel", EnumToolMaterial.IRON.getHarvestLevel());
+		MinecraftForge.setToolClass(DiamondPaxel, "paxel", EnumToolMaterial.EMERALD.getHarvestLevel());
+		MinecraftForge.setToolClass(GoldPaxel, "paxel", EnumToolMaterial.GOLD.getHarvestLevel());
 		
 		//Steel
 		SteelPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("SteelPaxel", 11455).getInt(), toolSTEEL2).setUnlocalizedName("SteelPaxel");
@@ -538,6 +486,12 @@ public class MekanismTools implements IModule
 		SteelChestplate = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelChestplate", 11462).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setUnlocalizedName("SteelChestplate");
 		SteelLeggings = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelLeggings", 11463).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setUnlocalizedName("SteelLeggings");
 		SteelBoots = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelBoots", 11464).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setUnlocalizedName("SteelBoots");
+		
+		MinecraftForge.setToolClass(SteelPaxel, "paxel", toolSTEEL2.getHarvestLevel());
+		MinecraftForge.setToolClass(SteelPickaxe, "pickaxe", toolSTEEL.getHarvestLevel());
+		MinecraftForge.setToolClass(SteelAxe, "axe", toolSTEEL.getHarvestLevel());
+		MinecraftForge.setToolClass(SteelShovel, "shovel", toolSTEEL.getHarvestLevel());
+		
 		Mekanism.configuration.save();
 		
 		//Registrations

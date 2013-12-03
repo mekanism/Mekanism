@@ -1,8 +1,5 @@
 package mekanism.common.block;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.tile.IEnergyTile;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,11 +8,17 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.PipeUtils;
+import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketTransmitterUpdate.PacketType;
+import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.tileentity.TileEntityPressurizedTube;
 import mekanism.common.tileentity.TileEntityUniversalCable;
+import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
@@ -32,7 +35,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,18 +45,51 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1: Universal Cable
  * 2: Mechanical Pipe
  * 3: Logistical Transporter
+ * 4: Restrictive Transporter
+ * 5: Diversion Transporter
  * @author AidanBrady
  *
  */
 public class BlockTransmitter extends Block
 {
+	public static final float SMALL_MIN_BOUND = 0.3125F;
+	public static final float SMALL_MAX_BOUND = 0.6875F;
+	
+	public static final float LARGE_MIN_BOUND = 0.25F;
+	public static final float LARGE_MAX_BOUND = 0.75F;
+	
 	public BlockTransmitter(int id)
 	{
 		super(id, Material.wood);
 		setHardness(2.0F);
 		setResistance(5.0F);
-		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
 		setCreativeTab(Mekanism.tabMekanism);
+	}
+	
+	public float getMinBound(IBlockAccess world, int x, int y, int z)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+		
+		if(metadata < 2)
+		{
+			return SMALL_MIN_BOUND;
+		}
+		else {
+			return LARGE_MIN_BOUND;
+		}
+	}
+	
+	public float getMaxBound(IBlockAccess world, int x, int y, int z)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+		
+		if(metadata < 2)
+		{
+			return SMALL_MAX_BOUND;
+		}
+		else {
+			return LARGE_MAX_BOUND;
+		}
 	}
 	
 	@Override
@@ -69,6 +104,8 @@ public class BlockTransmitter extends Block
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
 		list.add(new ItemStack(i, 1, 3));
+		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
 	}
 	
 	@Override
@@ -82,42 +119,42 @@ public class BlockTransmitter extends Block
 	{
 		boolean[] connectable = getConnectable(world, x, y, z);
 		
-		setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+		setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 		super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 
 		if(connectable[4]) 
 		{
-			setBlockBounds(0.0F, 0.3F, 0.3F, 0.7F, 0.7F, 0.7F);
+			setBlockBounds(0.0F, getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[5]) 
 		{
-			setBlockBounds(0.3F, 0.3F, 0.3F, 1.0F, 0.7F, 0.7F);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), 1.0F, getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[0]) 
 		{
-			setBlockBounds(0.3F, 0.0F, 0.3F, 0.7F, 0.7F, 0.7F);
+			setBlockBounds(getMinBound(world, x, y, z), 0.0F, getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[1])
 		{
-			setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 1.0F, 0.7F);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), 1.0F, getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[2])
 		{
-			setBlockBounds(0.3F, 0.3F, 0.0F, 0.7F, 0.7F, 0.7F);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), 0.0F, getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z));
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
 		if(connectable[3])
 		{
-			setBlockBounds(0.3F, 0.3F, 0.3F, 0.7F, 0.7F, 1.0F);
+			setBlockBounds(getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMinBound(world, x, y, z), getMaxBound(world, x, y, z), getMaxBound(world, x, y, z), 1.0F);
 			super.addCollisionBoxesToList(world, x, y, z, axisalignedbb, list, entity);
 		}
 
@@ -131,12 +168,12 @@ public class BlockTransmitter extends Block
 		
 		if(connectable != null)
 		{
-			float minX = 0.3F;
-			float minY = 0.3F;
-			float minZ = 0.3F;
-			float maxX = 0.7F;
-			float maxY = 0.7F;
-			float maxZ = 0.7F;
+			float minX = getMinBound(world, x, y, z);
+			float minY = getMinBound(world, x, y, z);
+			float minZ = getMinBound(world, x, y, z);
+			float maxX = getMaxBound(world, x, y, z);
+			float maxY = getMaxBound(world, x, y, z);
+			float maxZ = getMaxBound(world, x, y, z);
 	
 			if(connectable[0])
 			{
@@ -209,9 +246,9 @@ public class BlockTransmitter extends Block
 			{
 				connectable = PipeUtils.getConnections(tileEntity);
 			}
-			else if(world.getBlockMetadata(x, y, z) == 3)
+			else if(world.getBlockMetadata(x, y, z) == 3 || world.getBlockMetadata(x, y, z) == 4 || world.getBlockMetadata(x, y, z) == 5)
 			{
-				connectable = TransporterUtils.getConnections(tileEntity);
+				connectable = TransporterUtils.getConnections((TileEntityLogisticalTransporter)tileEntity);
 			}
 		}
 		
@@ -223,12 +260,12 @@ public class BlockTransmitter extends Block
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		float minX = 0.3F;
-		float minY = 0.3F;
-		float minZ = 0.3F;
-		float maxX = 0.7F;
-		float maxY = 0.7F;
-		float maxZ = 0.7F;
+		float minX = getMinBound(world, x, y, z);
+		float minY = getMinBound(world, x, y, z);
+		float minZ = getMinBound(world, x, y, z);
+		float maxX = getMaxBound(world, x, y, z);
+		float maxY = getMaxBound(world, x, y, z);
+		float maxZ = getMaxBound(world, x, y, z);
 		
 		boolean[] connectable = getConnectable(world, x, y, z);
 			
@@ -275,7 +312,11 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			((ITransmitter)tileEntity).refreshTransmitterNetwork();
+			if(tileEntity instanceof ITransmitter)
+			{
+				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tileEntity), world.provider.dimensionId);
+			}
 		}
 	}
 	
@@ -286,11 +327,15 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			((ITransmitter)tileEntity).refreshTransmitterNetwork();
-			
-			if(tileEntity instanceof TileEntityUniversalCable)
+			if(tileEntity instanceof ITransmitter)
 			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tileEntity));
+				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tileEntity), world.provider.dimensionId);
+				
+				if(tileEntity instanceof TileEntityUniversalCable)
+				{
+					((TileEntityUniversalCable)tileEntity).register();
+				}
 			}
 		}
 	}
@@ -333,10 +378,33 @@ public class BlockTransmitter extends Block
 				return new TileEntityMechanicalPipe();
 			case 3:
 				return new TileEntityLogisticalTransporter();
+			case 4:
+				return new TileEntityLogisticalTransporter();
+
+			case 5:
+				return new TileEntityDiversionTransporter();
 			default:
 				return null;
 		}
 	}
+	
+    @Override
+    public void breakBlock(World world, int x, int y, int z, int i1, int i2)
+    {
+    	TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    	
+    	if(!world.isRemote && tileEntity instanceof TileEntityLogisticalTransporter)
+    	{
+    		TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)world.getBlockTileEntity(x, y, z);
+    		
+    		for(TransporterStack stack : transporter.transit)
+    		{
+    			TransporterUtils.drop(transporter, stack);
+    		}
+    	}
+    	
+    	super.breakBlock(world, x, y, z, i1, i2);
+    }
 	
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
@@ -373,7 +441,7 @@ public class BlockTransmitter extends Block
         
         if(!returnBlock)
         {
-            float motion = 0.7F;
+            float motion = 0.3F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
             double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;

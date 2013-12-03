@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
-import ic2.api.item.ICustomElectricItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityEnergyCube;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -26,14 +29,12 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 
-import thermalexpansion.api.item.IChargeableItem;
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import universalelectricity.core.item.IItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IItemElectric, IEnergyCube, ICustomElectricItem, ISustainedInventory, IChargeableItem
+public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IItemElectric, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -56,7 +57,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
 		}
 		else {
-			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + ElectricityDisplay.getDisplayShort(getElectricityStored(itemstack), ElectricUnit.JOULES));
+			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
@@ -95,8 +96,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
-			tileEntity.powerHandler.configure(0, 100, 0, (int)(tileEntity.tier.MAX_ELECTRICITY*Mekanism.TO_BC));
-    		
     		if(!world.isRemote)
     		{
     			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
@@ -134,56 +133,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	}
 	
 	@Override
-	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double energyToStore = Math.min(Math.min(amount*Mekanism.FROM_IC2, getMaxEnergy(itemStack)*0.01), energyNeeded);
-			
-			if(!simulate)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + energyToStore);
-			}
-			
-			return (int)(energyToStore*Mekanism.TO_IC2);
-		}
-		
-		return 0;
-	}
-	
-	@Override
-	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
-	{
-		if(canSend(itemStack))
-		{
-			double energyWanted = amount*Mekanism.FROM_IC2;
-			double energyToGive = Math.min(Math.min(energyWanted, getMaxEnergy(itemStack)*0.01), getEnergy(itemStack));
-			
-			if(!simulate)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - energyToGive);
-			}
-			
-			return (int)(energyToGive*Mekanism.TO_IC2);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public boolean canUse(ItemStack itemStack, int amount)
-	{
-		return getEnergy(itemStack) >= amount*Mekanism.FROM_IC2;
-	}
-	
-	@Override
-	public boolean canShowChargeToolTip(ItemStack itemStack)
-	{
-		return false;
-	}
-	
-	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return true;
@@ -210,7 +159,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	@Override
 	public int getTier(ItemStack itemStack)
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -305,27 +254,53 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	}
 	
 	@Override
-	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
-		return (float)(recharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doReceive)*Mekanism.TO_BC);
+		if(canReceive(theItem))
+		{
+			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
+			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
+			
+			if(!simulate)
+			{
+				setEnergy(theItem, getEnergy(theItem) + toReceive);
+			}
+			
+			return (int)Math.round(toReceive*Mekanism.TO_TE);
+		}
+		
+		return 0;
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer) 
+	public int extractEnergy(ItemStack theItem, int energy, boolean simulate) 
 	{
-		return (float)(discharge(theItem, (float)((energy*Mekanism.FROM_BC)*Mekanism.TO_UE), doTransfer)*Mekanism.TO_BC);
+		if(canSend(theItem))
+		{
+			double energyRemaining = getEnergy(theItem);
+			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
+			
+			if(!simulate)
+			{
+				setEnergy(theItem, getEnergy(theItem) - toSend);
+			}
+			
+			return (int)Math.round(toSend*Mekanism.TO_TE);
+		}
+		
+		return 0;
 	}
 
 	@Override
-	public float getEnergyStored(ItemStack theItem)
+	public int getEnergyStored(ItemStack theItem)
 	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_BC);
+		return (int)(getEnergy(theItem)*Mekanism.TO_TE);
 	}
 
 	@Override
-	public float getMaxEnergyStored(ItemStack theItem)
+	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_BC);
+		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
 	}
 	
 	@Override
@@ -394,5 +369,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	public float getTransfer(ItemStack itemStack)
 	{
 		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
+	}
+	
+	@Override
+	public IElectricItemManager getManager(ItemStack itemStack) 
+	{
+		return IC2ItemManager.getManager(this);
 	}
 }

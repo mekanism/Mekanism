@@ -8,9 +8,10 @@ import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.client.model.ModelElectrolyticSeparator;
 import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.client.model.ModelHydrogenGenerator;
+import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.client.model.ModelWindTurbine;
-import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -26,6 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 {
 	public ModelAdvancedSolarGenerator advancedSolarGenerator = new ModelAdvancedSolarGenerator();
+	public ModelSolarGenerator solarGenerator = new ModelSolarGenerator();
 	public ModelBioGenerator bioGenerator = new ModelBioGenerator();
 	public ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
 	public ModelHydrogenGenerator hydrogenGenerator = new ModelHydrogenGenerator();
@@ -46,7 +48,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
     	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
     	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
-    	    	bioGenerator.render(0.0625F, 0.0F);
+    	    	bioGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
     		{
@@ -55,6 +57,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     	    	GL11.glTranslatef(0.0F, 0.3F, 0.0F);
     	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
     	        advancedSolarGenerator.render(0.0F, 0.022F);
+    		}
+    		else if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
+    		{
+    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
+    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
+    	    	solarGenerator.render(0.0625F);
     		}
     		else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
     		{

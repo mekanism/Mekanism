@@ -11,6 +11,7 @@ import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderElectrolyticSeparator;
 import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderHydrogenGenerator;
+import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderWindTurbine;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.tileentity.TileEntityAdvancedSolarGenerator;
@@ -38,6 +39,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	public void registerSpecialTileEntities() 
 	{
 		ClientRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator", new RenderAdvancedSolarGenerator());
+		ClientRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator", new RenderSolarGenerator());
 		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
 		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
 		ClientRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator", new RenderHydrogenGenerator());

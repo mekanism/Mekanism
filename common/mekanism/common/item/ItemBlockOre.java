@@ -16,6 +16,8 @@ import net.minecraft.util.Icon;
 /**
  * Item class for handling multiple ore block IDs.
  * 0: Osmium Ore
+ * 1: Copper Ore
+ * 2: Tin Ore
  * @author AidanBrady
  *
  */
@@ -46,6 +48,20 @@ public class ItemBlockOre extends ItemBlock
 				list.add("It is known to have many uses in");
 				list.add("the construction of machinery.");
 			}
+			else if(itemstack.getItemDamage() == 1)
+			{
+				list.add("A common, conductive material that");
+				list.add("can be used in the production of.");
+				list.add("wires. It's ability to withstand");
+				list.add("high heats also makes it essential");
+				list.add("to advanced machinery.");
+			}
+			else if(itemstack.getItemDamage() == 2)
+			{
+				list.add("A lightweight, yet sturdy, conductive");
+				list.add("material that is found slighly less");
+				list.add("commonly than Copper.");
+			}
 		}
 	}
 	
@@ -65,15 +81,23 @@ public class ItemBlockOre extends ItemBlock
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
+		
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
 				name = "OsmiumOre";
 				break;
+			case 1:
+				name = "CopperOre";
+				break;
+			case 2:
+				name = "TinOre";
+				break;
 			default:
 				name = "Unknown";
 				break;
 		}
+		
 		return getUnlocalizedName() + "." + name;
 	}
 }

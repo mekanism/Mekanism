@@ -36,11 +36,11 @@ public class GuiPortableTeleporter extends GuiScreen
     public void initGui()
     {
     	buttonList.clear();
-    	buttonList.add(new GuiButton(0, 173, 105, 80, 20, "Teleport"));
+    	buttonList.add(new GuiButton(0, 173, 105, 80, 20, MekanismUtils.localize("gui.teleport")));
     }
 
     @Override
-    public void drawScreen(int i, int j, float f)
+    public void drawScreen(int mouseX, int mouseY, float partialTick)
     {
     	if(mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
     	{
@@ -72,9 +72,10 @@ public class GuiPortableTeleporter extends GuiScreen
         ((GuiButton)buttonList.get(0)).xPosition = guiWidth+48;
         ((GuiButton)buttonList.get(0)).yPosition = guiHeight+68;
         
-        fontRenderer.drawString("Portable Teleporter", guiWidth+39, guiHeight+6, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("gui.portableTeleporter"), guiWidth+39, guiHeight+6, 0x404040);
         fontRenderer.drawString(item.getStatusAsString(item.getStatus(itemStack)), guiWidth+53, guiHeight+19, 0x00CD00);
-        super.drawScreen(i, j, f);
+        
+        super.drawScreen(mouseX, mouseY, partialTick);
     }
     
 	@Override
@@ -88,12 +89,12 @@ public class GuiPortableTeleporter extends GuiScreen
 	}
     
 	@Override
-    protected void mouseClicked(int x, int y, int button)
+    protected void mouseClicked(int mouseX, int mouseY, int button)
     {
-		super.mouseClicked(x, y, button);
+		super.mouseClicked(mouseX, mouseY, button);
 		
-		int xAxis = (x - (width - xSize) / 2);
-		int yAxis = (y - (height - ySize) / 2);
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
 		
 		if(xAxis > 23 && xAxis < 37 && yAxis > 44 && yAxis < 58)
 		{

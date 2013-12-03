@@ -4,11 +4,11 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import thermalexpansion.api.item.IChargeableItem;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.item.ItemElectric;
+import cofh.api.energy.IEnergyContainerItem;
 
-public abstract class ItemUniversalElectric extends ItemElectric implements ISpecialElectricItem, IChargeableItem
+public abstract class ItemUniversalElectric extends ItemElectric implements ISpecialElectricItem, IEnergyContainerItem
 {
 	public static final float CHARGE_RATE = 0.005f;
 
@@ -66,27 +66,27 @@ public abstract class ItemUniversalElectric extends ItemElectric implements ISpe
 	 * Thermal Expansion
 	 */
 	@Override
-	public float receiveEnergy(ItemStack theItem, float energy, boolean doReceive)
+	public int receiveEnergy(ItemStack theItem, int energy, boolean doReceive)
 	{
-		return this.recharge(theItem, energy * Compatibility.BC3_RATIO, doReceive) * Compatibility.TO_BC_RATIO;
+		return (int) (this.recharge(theItem, energy * Compatibility.BC3_RATIO, doReceive) * Compatibility.TO_BC_RATIO);
 	}
 
 	@Override
-	public float transferEnergy(ItemStack theItem, float energy, boolean doTransfer)
+	public int extractEnergy(ItemStack theItem, int energy, boolean doTransfer)
 	{
-		return this.discharge(theItem, energy * Compatibility.BC3_RATIO, doTransfer) * Compatibility.TO_BC_RATIO;
+		return (int) (this.discharge(theItem, energy * Compatibility.BC3_RATIO, doTransfer) * Compatibility.TO_BC_RATIO);
 	}
 
 	@Override
-	public float getEnergyStored(ItemStack theItem)
+	public int getEnergyStored(ItemStack theItem)
 	{
-		return this.getElectricityStored(theItem) * Compatibility.TO_BC_RATIO;
+		return (int) (this.getElectricityStored(theItem) * Compatibility.TO_BC_RATIO);
 	}
 
 	@Override
-	public float getMaxEnergyStored(ItemStack theItem)
+	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return this.getMaxElectricityStored(theItem) * Compatibility.TO_BC_RATIO;
+		return (int) (this.getMaxElectricityStored(theItem) * Compatibility.TO_BC_RATIO);
 	}
 
 	public static class IC2ElectricItemManager implements IElectricItemManager

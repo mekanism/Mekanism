@@ -89,7 +89,7 @@ public class GuiCredits extends GuiScreen
 	}
 	
 	@Override
-	public void drawScreen(int i, int j, float f)
+	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
 		if(updatedRecently && ThreadClientUpdate.modulesBeingDownloaded == 0 && !updateProgress.contains("Error"))
 		{
@@ -106,21 +106,36 @@ public class GuiCredits extends GuiScreen
 		
 		drawDefaultBackground();
         drawCenteredString(fontRenderer, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
-        writeText(EnumColor.INDIGO + "Mekanism " + (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1 ? EnumColor.DARK_RED : EnumColor.GREY) + Mekanism.versionNumber, 36);
+        
+    	if(Mekanism.latestVersionNumber != null && !Mekanism.latestVersionNumber.equals("null"))
+		{
+    		writeText(EnumColor.INDIGO + "Mekanism " + (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1 ? EnumColor.DARK_RED : EnumColor.GREY) + Mekanism.versionNumber, 36);
+		}
+    	else {
+    		writeText(EnumColor.INDIGO + "Mekanism " + EnumColor.GREY + Mekanism.versionNumber, 36);
+    	}
         
         int size = 36;
         
         for(IModule module : Mekanism.modulesLoaded)
         {
     		size += 9;
-    		writeText(EnumColor.INDIGO + "Mekanism" + module.getName() + (module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1 ? EnumColor.DARK_RED : EnumColor.GREY) + " " + module.getVersion(), size);
-        }
+    		
+    		if(Mekanism.latestVersionNumber != null && !Mekanism.latestVersionNumber.equals("null"))
+    		{
+    			writeText(EnumColor.INDIGO + "Mekanism" + module.getName() + (module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1 ? EnumColor.DARK_RED : EnumColor.GREY) + " " + module.getVersion(), size);
+    		}
+    		else {
+    			writeText(EnumColor.INDIGO + "Mekanism" + module.getName() + EnumColor.GREY + " " + module.getVersion(), size);
+    		}
+		}
         
   		writeText(EnumColor.GREY + "Newest version: " + Mekanism.latestVersionNumber, size+9);
   		writeText(EnumColor.GREY + "*Developed on Mac OS X 10.8 Mountain Lion", size+18);
   		writeText(EnumColor.GREY + "*Code, textures, and ideas by aidancbrady", size+27);
   		writeText(EnumColor.GREY + "Recent news: " + EnumColor.DARK_BLUE + (!Mekanism.recentNews.contains("null") ? Mekanism.recentNews : "couldn't access."), size+36);
   		writeText(EnumColor.GREY + updateProgress, size+45);
-  		super.drawScreen(i, j, f);
+  		
+  		super.drawScreen(mouseX, mouseY, partialTick);
 	}
 }

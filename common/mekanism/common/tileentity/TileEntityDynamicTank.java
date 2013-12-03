@@ -58,7 +58,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	
 	public TileEntityDynamicTank()
 	{
-		this("Dynamic Tank");
+		this("DynamicTank");
 	}
 	
 	public TileEntityDynamicTank(String name)
@@ -144,12 +144,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				MekanismUtils.updateCache(inventoryID, cachedFluid, inventory, this);
 			}
 			
-			if(structure == null && packetTick == 5)
+			if(structure == null && ticker == 5)
 			{
 				update();
 			}
 			
-			if(structure != null && isRendering && packetTick % 20 == 0)
+			if(structure != null && isRendering && ticker % 20 == 0)
 			{
 				sendStructure = true;
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
@@ -195,7 +195,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	
 	public void manageInventory()
 	{
-		int max = structure.volume*16000;
+		int max = structure.volume*TankUpdateProtocol.FLUID_PER_TANK;
 		
 		if(structure.inventory[0] != null)
 		{
@@ -247,19 +247,19 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						return;
 					}
 					
-					ItemStack bucket = FluidContainerRegistry.isBucket(structure.inventory[0]) ? new ItemStack(Item.bucketEmpty) : null;
+					ItemStack containerItem = structure.inventory[0].getItem().getContainerItemStack(structure.inventory[0]);
 					
 					boolean filled = false;
 					
-					if(bucket != null)
+					if(containerItem != null)
 					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(bucket) && structure.inventory[1].stackSize+1 <= bucket.getMaxStackSize()))
+						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(containerItem) && structure.inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
 							structure.inventory[0] = null;
 							
 							if(structure.inventory[1] == null)
 							{
-								structure.inventory[1] = bucket;
+								structure.inventory[1] = containerItem;
 							}
 							else {
 								structure.inventory[1].stackSize++;
@@ -303,7 +303,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 		
 		data.add(isRendering);
 		data.add(structure != null);
-		data.add(structure != null ? structure.volume*16000 : 0);
+		data.add(structure != null ? structure.volume*TankUpdateProtocol.FLUID_PER_TANK : 0);
 		
 		if(structure != null && structure.fluidStored != null)
 		{

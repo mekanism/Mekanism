@@ -23,6 +23,7 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
+import cofh.api.energy.IEnergyHandler;
 
 /**
  * A universal conductor class.
@@ -33,7 +34,7 @@ import buildcraft.api.power.PowerHandler.Type;
  * @author Calclavia, micdoodle8
  * 
  */
-public abstract class TileEntityUniversalConductor extends TileEntityConductor implements IEnergySink, IPowerReceptor
+public abstract class TileEntityUniversalConductor extends TileEntityConductor implements IEnergySink, IPowerReceptor, IEnergyHandler
 {
 	protected boolean isAddedToEnergyNet;
 	public PowerHandler powerHandler;
@@ -65,7 +66,7 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 						this.adjacentConnections[i] = tileEntity;
 					}
 				}
-				else if (Compatibility.isIndustrialCraft2Loaded() && tileEntity instanceof IEnergyTile)
+				else if (tileEntity instanceof IEnergyTile)
 				{
 					if (tileEntity instanceof IEnergyAcceptor)
 					{
@@ -87,9 +88,16 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 
 					this.adjacentConnections[i] = tileEntity;
 				}
-				else if (Compatibility.isBuildcraftLoaded() && tileEntity instanceof IPowerReceptor)
+				else if (tileEntity instanceof IPowerReceptor)
 				{
 					if (((IPowerReceptor) tileEntity).getPowerReceiver(side.getOpposite()) != null)
+					{
+						this.adjacentConnections[i] = tileEntity;
+					}
+				}
+				else if (tileEntity instanceof IEnergyHandler)
+				{
+					if (((IEnergyHandler) tileEntity).canInterface(side.getOpposite()))
 					{
 						this.adjacentConnections[i] = tileEntity;
 					}
@@ -100,13 +108,11 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 		return this.adjacentConnections;
 	}
 
-	/*
-	 * @Override public boolean canUpdate() { return !this.isAddedToEnergyNet; }
-	 */
-
 	@Override
-	public void updateEntity()
+	public void validate()
 	{
+		super.validate();
+
 		if (!this.worldObj.isRemote)
 		{
 			if (!this.isAddedToEnergyNet)
@@ -132,15 +138,11 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 
 	protected void initIC()
 	{
-		if (Compatibility.isIndustrialCraft2Loaded())
-		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-		}
-
+		MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 		this.isAddedToEnergyNet = true;
 	}
 
-	private void unloadTileIC2()
+	protected void unloadTileIC2()
 	{
 		if (this.isAddedToEnergyNet && this.worldObj != null)
 		{
@@ -168,7 +170,7 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
 		TileEntity tile = VectorHelper.getTileEntityFromSide(this.worldObj, new Vector3(this), directionFrom);
-		ElectricityPack pack = ElectricityPack.getFromWatts((float) (amount * Compatibility.IC2_RATIO), 120);
+		ElectricityPack pack = ElectricityPack.getFromWatts((float) (amount * Compatibility.IC2_RATIO), 1);
 		return this.getNetwork().produce(pack, this, tile) * Compatibility.TO_IC2_RATIO;
 	}
 
@@ -185,7 +187,7 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 	}
 
 	/**
-	 * BuildCraft functions
+	 * BuildCraft Functions
 	 */
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
@@ -205,7 +207,7 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 			ignoreTiles.add(tile);
 		}
 
-		ElectricityPack pack = ElectricityPack.getFromWatts(workProvider.useEnergy(0, this.getNetwork().getRequest(this).getWatts() * Compatibility.TO_BC_RATIO, true) * Compatibility.BC3_RATIO, 120);
+		ElectricityPack pack = ElectricityPack.getFromWatts(workProvider.useEnergy(0, this.getNetwork().getRequest(this).getWatts() * Compatibility.TO_BC_RATIO, true) * Compatibility.BC3_RATIO, 1);
 		this.getNetwork().produce(pack, ignoreTiles.toArray(new TileEntity[0]));
 	}
 
@@ -213,5 +215,53 @@ public abstract class TileEntityUniversalConductor extends TileEntityConductor i
 	public World getWorld()
 	{
 		return this.getWorldObj();
+	}
+
+	/**
+	 * Thermal Expansion Functions
+	 */
+
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	{
+		ElectricityPack pack = ElectricityPack.getFromWatts(maxReceive * Compatibility.TE_RATIO, 1);
+		float request = this.getMaxEnergyStored(from);
+
+		if (!simulate)
+		{
+			if (request > 0)
+			{
+				float reject = this.getNetwork().produce(pack, new Vector3(this).modifyPositionFromSide(from).getTileEntity(this.worldObj));
+				return (int) (maxReceive - (reject * Compatibility.TO_TE_RATIO));
+			}
+
+			return 0;
+		}
+
+		return (int) Math.min(maxReceive, request * Compatibility.TO_TE_RATIO);
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canInterface(ForgeDirection from)
+	{
+		return true;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from)
+	{
+		return 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from)
+	{
+		return (int) (this.getNetwork().getRequest(new Vector3(this).modifyPositionFromSide(from).getTileEntity(this.worldObj)).getWatts() * Compatibility.TO_TE_RATIO);
 	}
 }
