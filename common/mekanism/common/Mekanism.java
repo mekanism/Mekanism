@@ -682,6 +682,9 @@ public class Mekanism
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));
 		OreDictionary.registerOre("oreTin", new ItemStack(OreBlock, 1, 2));
+		
+		//MC stuff
+		OreDictionary.registerOre("oreCoal", new ItemStack(Block.oreCoal));
 	}
 	
 	/**

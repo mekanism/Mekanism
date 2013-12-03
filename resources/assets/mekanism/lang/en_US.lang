@@ -396,5 +396,5 @@ text.tesla.success=Linked tesla successfully
 //Gui text
 gui.heatGenerator.fuel=Fuel
 gui.solarGenerator.sun=Sun
-gui.bioGenerator.biofuel=BioFuel
+gui.bioGenerator.bioFuel=BioFuel
 gui.electrolyticSeparator.dump=Dump
