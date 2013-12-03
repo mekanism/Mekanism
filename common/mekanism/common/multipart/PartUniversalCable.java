@@ -22,13 +22,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import codechicken.lib.vec.Vector3;
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> implements IEnergySink
+public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> implements IEnergySink, IEnergyHandler, IElectrical
 {
 	public PartUniversalCable()
 	{
@@ -208,4 +210,84 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> i
 		list.add(Object3D.get(tile()).getFromSide(direction).getTileEntity(world()));
     	return getTransmitterNetwork().emit(i*Mekanism.FROM_IC2, list)*Mekanism.TO_IC2;
     }
+	
+	@Override
+	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(tile()).getFromSide(from).getTileEntity(world()));
+		
+		if(doReceive && receive != null && receive.getWatts() > 0)
+		{
+			return receive.getWatts() - (float)(getTransmitterNetwork().emit(receive.getWatts()*Mekanism.FROM_UE, list));
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide)
+	{
+		return null;
+	}
+
+	@Override
+	public float getRequest(ForgeDirection direction)
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(tile()).getFromSide(direction).getTileEntity(world()));
+		return (float)(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_UE);
+	}
+
+	@Override
+	public float getProvide(ForgeDirection direction)
+	{
+		return 0;
+	}
+
+	@Override
+	public float getVoltage()
+	{
+		return 120;
+	}
+	
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) 
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(tile()).getFromSide(from).getTileEntity(world()));
+		
+		if(!simulate)
+		{
+	    	return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE, list)*Mekanism.TO_TE);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) 
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canInterface(ForgeDirection from) 
+	{
+		return true;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from) 
+	{
+		return 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from)
+	{
+		ArrayList list = new ArrayList();
+		list.add(Object3D.get(tile()).getFromSide(from).getTileEntity(world()));
+		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded(list)*Mekanism.TO_TE);
+	}
 }

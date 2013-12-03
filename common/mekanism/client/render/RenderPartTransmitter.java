@@ -308,7 +308,8 @@ public class RenderPartTransmitter implements IIconRegister
 		CCRenderState.reset();
 		CCRenderState.useModelColours(true);
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
-		for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderSide(side, transmitter);			
 		}
@@ -333,13 +334,11 @@ public class RenderPartTransmitter implements IIconRegister
 	}
 
     public void renderPart(Icon icon, CCModel cc, double x, double y, double z) {
-        cc.render(0, cc.verts.length,
-                new Translation(x, y, z), new IconTransformation(icon), null);
+        cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), null);
     }
 
     public void renderTransparency(Icon icon, CCModel cc, Colour colour) {
-        cc.render(0, cc.verts.length,
-                new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
+        cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
     }
 
     public Icon getIconForPart(PartTransmitter<?, ?> part)

@@ -27,9 +27,11 @@ public class MultipartMekanism implements IPartFactory
 	public void init()
 	{
 		MultiPartRegistry.registerParts(this, new String[]{"mekanism:universal_cable", "mekanism:mechanical_pipe", "mekanism:pressurized_tube"});
+		
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ITileNetwork");
 		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
+		MultipartGenerator.registerPassThroughInterface("universalelectricity.core.block.IElectrical");
 		MultipartGenerator.registerPassThroughInterface("ic2.api.energy.tile.IEnergySink");
 	}
 }
