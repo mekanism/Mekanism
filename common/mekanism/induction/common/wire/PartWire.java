@@ -22,6 +22,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.compatibility.Compatibility;
+import buildcraft.api.power.PowerHandler;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.lighting.LazyLightMatrix;
@@ -182,6 +184,15 @@ public class PartWire extends PartUniversalConductor implements TSlottedPart, JN
 	public void setMaterialFromID(int id)
 	{
 		material = EnumWireMaterial.values()[id];
+	}
+	
+	@Override
+	public void doWork(PowerHandler workProvider)
+	{
+		buildcraftBuffer = Compatibility.BC3_RATIO * 25 * Math.min(getMaterial().maxAmps, 100);
+		powerHandler.configure(0, buildcraftBuffer, buildcraftBuffer, buildcraftBuffer * 2);
+		
+		super.doWork(workProvider);
 	}
 	
 	@Override

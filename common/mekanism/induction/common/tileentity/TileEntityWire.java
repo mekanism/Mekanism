@@ -10,10 +10,12 @@ import mekanism.induction.common.wire.IWireMaterial;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import universalelectricity.compatibility.Compatibility;
 import universalelectricity.compatibility.TileEntityUniversalConductor;
 import universalelectricity.core.block.INetworkProvider;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.core.vector.VectorHelper;
+import buildcraft.api.power.PowerHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -167,7 +169,16 @@ public class TileEntityWire extends TileEntityUniversalConductor implements ITil
 		nbt.setInteger("dyeID", dyeID);
 		nbt.setBoolean("isInsulated", isInsulated);
 	}
-	
+
+	@Override
+	public void doWork(PowerHandler workProvider)
+	{
+		buildcraftBuffer = Compatibility.BC3_RATIO * 25 * getMaterial().maxAmps;
+		powerHandler.configure(0, buildcraftBuffer, buildcraftBuffer, buildcraftBuffer * 2);
+		
+		super.doWork(workProvider);
+	}
+
 	@Override
 	public boolean isInsulated()
 	{

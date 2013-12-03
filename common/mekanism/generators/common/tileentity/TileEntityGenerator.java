@@ -1,9 +1,13 @@
 package mekanism.generators.common.tileentity;
 
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.tile.IEnergyStorage;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Object3D;
+import mekanism.api.energy.ICableOutputter;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
@@ -12,11 +16,15 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.power.IPowerEmitter;
+import buildcraft.api.power.IPowerReceptor;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -25,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPeripheral, IActiveState, IHasSound, IRedstoneControl
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPowerReceptor, IPeripheral, IActiveState, IHasSound, IRedstoneControl, IPowerEmitter
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -51,6 +59,8 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public TileEntityGenerator(String name, double maxEnergy, double out)
 	{
 		super(name, maxEnergy);
+		
+		powerHandler.configure(0, 0, 0, 0);
 		
 		output = out;
 		isActive = false;
@@ -264,5 +274,17 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+	
+	@Override
+	public boolean canEmitPowerFrom(ForgeDirection side) 
+	{
+		return getOutputtingSides().contains(side);
+	}
+	
+	@Override
+	protected void reconfigure()
+	{
+		powerHandler.configure(0, 0, 0, 0);
 	}
 }

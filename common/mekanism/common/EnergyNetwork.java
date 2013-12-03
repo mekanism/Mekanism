@@ -11,10 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -23,6 +25,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import buildcraft.api.power.PowerHandler.Type;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -96,6 +101,10 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				else if(acceptor instanceof IEnergySink)
 				{
 					totalNeeded += Math.min((((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
+				}
+				else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
+				{
+					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(side).powerRequest()*Mekanism.FROM_BC);
 				}
 				else if(acceptor instanceof IElectrical)
 				{
@@ -185,6 +194,16 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2);
 						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
+					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
+					{
+						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(side.getOpposite());
+						
+						if(receiver != null)
+						{
+			            	float toSend = receiver.receiveEnergy(Type.PIPE, (float)(Math.min(receiver.powerRequest(), currentSending*Mekanism.TO_BC)), side.getOpposite());
+			            	energyToSend -= toSend*Mekanism.FROM_BC;
+						}
+					}
 					else if(acceptor instanceof IElectrical)
 					{
 						double toSend = Math.min(currentSending, ((IElectrical)acceptor).getRequest(side.getOpposite())*Mekanism.FROM_UE);
@@ -266,6 +285,23 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					if(handler.getRequest(side.getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
+					}
+				}
+			}
+			else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
+			{
+				IPowerReceptor handler = (IPowerReceptor)acceptor;
+				
+				if(handler.getPowerReceiver(side.getOpposite()) != null)
+				{
+					if((handler.getPowerReceiver(side.getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
+					{
+						TileEntityUniversalCable cable = (TileEntityUniversalCable)Object3D.get(acceptor).getFromSide(side.getOpposite()).getTileEntity(acceptor.worldObj);
+						
+						if(cable != null && !cable.getBuildCraftIgnored().contains(acceptor))
+						{
+							toReturn.add(acceptor);
+						}
 					}
 				}
 			}

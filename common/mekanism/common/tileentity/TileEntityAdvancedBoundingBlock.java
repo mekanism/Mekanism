@@ -1,5 +1,13 @@
 package mekanism.common.tileentity;
 
+import universalelectricity.core.block.IConnector;
+import universalelectricity.core.block.IElectrical;
+import universalelectricity.core.block.IElectricalStorage;
+import universalelectricity.core.electricity.ElectricityPack;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import cofh.api.energy.IEnergyHandler;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Object3D;
@@ -10,14 +18,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.block.IElectricalStorage;
-import universalelectricity.core.electricity.ElectricityPack;
-import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
 {
 	@Override
 	public int getSizeInventory() 
@@ -375,6 +379,39 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 		
 		return getInv().getVoltage();
+	}
+
+	@Override
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
+	{
+		if(getInv() == null)
+		{
+			return null;
+		}
+		
+		return getInv().getPowerReceiver(side);
+	}
+
+	@Override
+	public void doWork(PowerHandler workProvider) 
+	{
+		if(getInv() == null)
+		{
+			return;
+		}
+		
+		getInv().doWork(workProvider);
+	}
+
+	@Override
+	public World getWorld() 
+	{
+		if(getInv() == null)
+		{
+			return null;
+		}
+		
+		return getInv().getWorld();
 	}
 
 	@Override
