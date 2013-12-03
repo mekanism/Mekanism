@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,10 +15,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
@@ -35,12 +39,13 @@ import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
 import codechicken.multipart.TileMultipart;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-
 public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N, D>
 {
+	public int delayTicks;
 	public N theNetwork;
 	public D transmitting;
 	public static IndexedCuboid6[] sides = new IndexedCuboid6[7];
@@ -80,9 +85,9 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 	{
 		if (tile() != null && theNetwork != null)
 		{
-			this.getTransmitterNetwork().transmitters.remove(tile());
+			getTransmitterNetwork().transmitters.remove(tile());
 			super.bind(t);
-			this.getTransmitterNetwork().transmitters.add((ITransmitter<N, D>) tile());
+			getTransmitterNetwork().transmitters.add((ITransmitter<N, D>) tile());
 		}
 		else
 		{
@@ -151,7 +156,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 				byte or = (byte)(possibleTransmitters | currentTransmitterConnections);
 				if(or != possibleTransmitters)
 				{
-					((DynamicNetwork<?,N, D>)getTransmitterNetwork()).split((ITransmitter<N, D>)tile());
+					((DynamicNetwork<?, N, D>)getTransmitterNetwork()).split((ITransmitter<N, D>)tile());
 					setTransmitterNetwork(null);
 				}
 				
@@ -196,7 +201,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 			{
 				int ord = side.ordinal();
 				byte connections = getAllCurrentConnections();
-				if(connectionMapContainsSide(connections, side) || side == this.testingSide) subParts.add(sides[ord]);
+				if(connectionMapContainsSide(connections, side) || side == testingSide) subParts.add(sides[ord]);
 			}
 		}
 		subParts.add(sides[6]);
@@ -375,6 +380,20 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 		isActive = packet.readBoolean();
 	}
 	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		getTransmitterNetwork().split(this);
+		
+		if(!world().isRemote)
+		{
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+		}
+	}
+	
+	@Override
 	public void writeDesc(MCDataOutput packet)
 	{
 		packet.writeByte(currentTransmitterConnections);
@@ -413,18 +432,37 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 	@Override
 	public void preRemove()
 	{
-		if (!this.world().isRemote && tile() instanceof ITransmitter)
+		if(!world().isRemote && tile() instanceof ITransmitter)
 		{
-			this.getTransmitterNetwork().split((ITransmitter<N, D>)tile());
+			getTransmitterNetwork().split((ITransmitter<N, D>)tile());
+			
+			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 		}
 
 		super.preRemove();
+	}
+	
+	@Override
+	public void update()
+	{
+		if(world().isRemote)
+		{
+			if(delayTicks == 3)
+			{
+				delayTicks++;
+				refreshTransmitterNetwork();
+			}
+			else if(delayTicks < 3)
+			{
+				delayTicks++;
+			}
+		}
 	}
 
 	@Override
 	public boolean doesTick()
 	{
-		return true;
+		return FMLCommonHandler.instance().getEffectiveSide().isClient();
 	}
 
 	@Override

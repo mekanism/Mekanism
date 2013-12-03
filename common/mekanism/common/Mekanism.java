@@ -1115,8 +1115,6 @@ public class Mekanism
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		
 		Mekanism.proxy.preInit();
-		
-		new MultipartMekanism();
 				
 		MinecraftForge.EVENT_BUS.register(hooks);
 		
@@ -1144,6 +1142,8 @@ public class Mekanism
 		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
+		
+		new MultipartMekanism();
 		
 		//Set up VoiceServerManager
 		if(voiceServerEnabled)

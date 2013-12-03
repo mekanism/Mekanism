@@ -42,6 +42,7 @@ public class RenderPartTransmitter implements IIconRegister
 	public static Icon liquidEnergyTexture;
 	public static Icon sideTexture;
 	public static Map<TransmissionType, Icon[]> typeMap = new HashMap<TransmissionType, Icon[]>();
+	
 	public static Map<String, CCModel> models;
 	public static Map<String, CCModel> cableContentsModels;
 	

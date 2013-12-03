@@ -147,16 +147,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			}
 		}
 	}
-	
-	public void setCachedEnergy(double scale)
-	{
-		energyScale = scale;
-	}
-	
-	public float getEnergyScale()
-	{
-		return (float)energyScale;
-	}
 
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
