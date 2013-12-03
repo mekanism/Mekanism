@@ -105,12 +105,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double>
 	}
 	
 	@Override
-	public void clientUpdate(Double level)
-	{
-		setLevel = level;
-	}
-	
-	@Override
 	public void update()
 	{
 		if(world().isRemote)
@@ -122,5 +116,34 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double>
 					transmitting = setLevel;
 			}
 		}
+	}
+
+	@Override
+	public void chunkLoad()
+	{
+	}
+
+	@Override
+	public int getTransmitterNetworkSize()
+	{
+		return getTransmitterNetwork().getSize();
+	}
+
+	@Override
+	public int getTransmitterNetworkAcceptorSize()
+	{
+		return getTransmitterNetwork().getAcceptorSize();
+	}
+
+	@Override
+	public String getTransmitterNetworkNeeded()
+	{
+		return getTransmitterNetwork().getNeeded();
+	}
+	
+	@Override
+	public String getTransmitterNetworkFlow()
+	{
+		return getTransmitterNetwork().getFlow();
 	}
 }

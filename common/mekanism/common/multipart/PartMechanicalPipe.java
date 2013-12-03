@@ -161,4 +161,31 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack
 			}
 		}
 	}
+
+	@Override
+	public void chunkLoad() {}
+
+	@Override
+	public int getTransmitterNetworkSize()
+	{
+		return getTransmitterNetwork().getSize();
+	}
+
+	@Override
+	public int getTransmitterNetworkAcceptorSize()
+	{
+		return getTransmitterNetwork().getAcceptorSize();
+	}
+
+	@Override
+	public String getTransmitterNetworkNeeded()
+	{
+		return getTransmitterNetwork().getNeeded();
+	}
+	
+	@Override
+	public String getTransmitterNetworkFlow()
+	{
+		return getTransmitterNetwork().getFlow();
+	}
 }

@@ -70,8 +70,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?,N, D>, D> exten
 				return new PartMechanicalPipe();
 			case GAS:
 				return new PartPressurizedTube();
-			case ITEM:
-				return new PartLogisticalTransporter();
 			default:
 				return null;
 		}
@@ -410,12 +408,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?,N, D>, D> exten
 	public Iterable<ItemStack> getDrops()
 	{
 		return Collections.singletonList(new ItemStack(Mekanism.PartTransmitter, 1, getTransmissionType().ordinal()));
-	}
-	
-	@Override
-	public void clientUpdate(D data)
-	{
-		transmitting = data;	
 	}
 	
 	@Override

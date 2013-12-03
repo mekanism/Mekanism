@@ -3,6 +3,21 @@ package mekanism.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.multipart.PartMechanicalPipe;
+import mekanism.common.multipart.PartPressurizedTube;
+import mekanism.common.multipart.PartTransmitter;
+import mekanism.common.multipart.PartUniversalCable;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+
 import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.colour.Colour;
@@ -16,21 +31,6 @@ import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconRegister;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.multipart.PartLogisticalTransporter;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartPressurizedTube;
-import mekanism.common.multipart.PartTransmitter;
-import mekanism.common.multipart.PartUniversalCable;
 
 public class RenderPartTransmitter implements IIconRegister
 {
@@ -39,7 +39,6 @@ public class RenderPartTransmitter implements IIconRegister
 	public static Icon[] uniCableTextures = new Icon[2];
 	public static Icon[] mechPipeTextures = new Icon[2];
 	public static Icon[] pressTubeTextures = new Icon[2];
-	public static Icon[] logiTransporterTextures = new Icon[2];
 	public static Icon liquidEnergyTexture;
 	public static Icon sideTexture;
 	public static Map<TransmissionType, Icon[]> typeMap = new HashMap<TransmissionType, Icon[]>();
@@ -69,7 +68,6 @@ public class RenderPartTransmitter implements IIconRegister
 		typeMap.put(TransmissionType.ENERGY, uniCableTextures);
 		typeMap.put(TransmissionType.FLUID, mechPipeTextures);
 		typeMap.put(TransmissionType.GAS, pressTubeTextures);
-		typeMap.put(TransmissionType.ITEM, logiTransporterTextures);
 	}
 
 	public static RenderPartTransmitter getInstance()
@@ -131,7 +129,7 @@ public class RenderPartTransmitter implements IIconRegister
 				MekanismRenderer.glowOn();
 			}
 			
-			CCRenderState.changeTexture((MekanismRenderer.getLiquidTexture()));
+			CCRenderState.changeTexture((MekanismRenderer.getBlocksTexture()));
 			GL11.glTranslated(pos.x, pos.y, pos.z);
 			
 			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -296,11 +294,6 @@ public class RenderPartTransmitter implements IIconRegister
 		System.out.println("specific");
 	}
 	
-	public void renderContents(PartLogisticalTransporter transmitter, Vector3 pos)
-	{
-		System.out.println("specific");
-	}
-	
 	public void renderStatic(PartTransmitter<?, ?> transmitter)
 	{
 		TextureUtils.bindAtlas(0);
@@ -357,8 +350,6 @@ public class RenderPartTransmitter implements IIconRegister
 		pressTubeTextures[1] = pressTubeTextures[0];
 		mechPipeTextures[0] = register.registerIcon("mekanism:models/MechanicalPipe");
 		mechPipeTextures[1] = register.registerIcon("mekanism:models/MechanicalPipeActive");
-		logiTransporterTextures[0] = register.registerIcon("mekanism:models/LogisticalTransporter");
-		logiTransporterTextures[1] = register.registerIcon("mekanism:models/LogisticalTransporterActive");
 		
 		liquidEnergyTexture = register.registerIcon("mekanism:LiquidEnergy");
 	}

@@ -16,8 +16,6 @@ public class MultipartMekanism implements IPartFactory
 			return new PartMechanicalPipe();
 		if(name == "mekanism:pressurized_tube")
 			return new PartPressurizedTube();
-		if(name == "mekanism:logistical_transporter")
-			return new PartLogisticalTransporter();
 		return null;
 	}
 	

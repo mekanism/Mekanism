@@ -60,6 +60,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketDataRequest;
@@ -206,6 +207,7 @@ public class Mekanism
 	public static Item NetworkReader;
 	public static Item WalkieTalkie;
 	public static Item ItemProxy;
+	public static Item PartTransmitter;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -568,6 +570,7 @@ public class Mekanism
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
 		//OPEN 11223
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
+		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11223).getInt()).setUnlocalizedName("MultipartTransmitter");
 		configuration.save();
 		
 		//Registrations

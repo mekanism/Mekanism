@@ -17,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
+public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork, Gas>
 {
 	public int transferDelay = 0;
 	
@@ -27,13 +27,13 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	public float gasScale;
 	public Gas refGas = null;
 	
-	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
+	public GasNetwork(ITransmitter<GasNetwork, Gas>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public GasNetwork(Collection<ITransmitter<GasNetwork>> collection)
+	public GasNetwork(Collection<ITransmitter<GasNetwork, Gas>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -181,15 +181,15 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	@Override
 	public synchronized void refresh()
 	{
-		Set<ITransmitter<GasNetwork>> iterTubes = (Set<ITransmitter<GasNetwork>>)transmitters.clone();
-		Iterator<ITransmitter<GasNetwork>> it = iterTubes.iterator();
+		Set<ITransmitter<GasNetwork, Gas>> iterTubes = (Set<ITransmitter<GasNetwork, Gas>>)transmitters.clone();
+		Iterator<ITransmitter<GasNetwork, Gas>> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ITransmitter<GasNetwork> conductor = (ITransmitter<GasNetwork>)it.next();
+			ITransmitter<GasNetwork, Gas> conductor = (ITransmitter<GasNetwork, Gas>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -201,7 +201,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			}
 		}
 		
-		for(ITransmitter<GasNetwork> pipe : transmitters)
+		for(ITransmitter<GasNetwork, Gas> pipe : transmitters)
 		{
 			IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
 		
@@ -251,7 +251,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 	
 	@Override
-	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
+	protected GasNetwork create(ITransmitter<GasNetwork, Gas>... varTransmitters) 
 	{
 		GasNetwork network = new GasNetwork(varTransmitters);
 		network.refGas = refGas;
@@ -260,7 +260,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 
 	@Override
-	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
+	protected GasNetwork create(Collection<ITransmitter<GasNetwork, Gas>> collection) 
 	{
 		GasNetwork network = new GasNetwork(collection);
 		network.refGas = refGas;

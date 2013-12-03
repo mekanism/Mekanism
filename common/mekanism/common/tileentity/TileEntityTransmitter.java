@@ -2,6 +2,8 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
+import mekanism.api.Object3D;
+import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.IConfigurable;
@@ -9,6 +11,7 @@ import mekanism.common.ITileNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -16,7 +19,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class TileEntityTransmitter<N> extends TileEntity implements ITransmitter<N>, ITileNetwork, IConfigurable
+public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N, D>, D> extends TileEntity implements ITransmitter<N, D>, ITileNetwork, IConfigurable
 {
 	public N theNetwork;
 	
@@ -74,6 +77,21 @@ public abstract class TileEntityTransmitter<N> extends TileEntity implements ITr
 			theNetwork = network;
 		}
 	}
+	
+    @Override
+    public boolean canConnectMutual(ForgeDirection side)
+    {
+        if(!canConnect(side)) return false;
+        
+        TileEntity tile = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+        return (!(tile instanceof ITransmitter) || ((ITransmitter<?, ?>)tile).canConnect(side.getOpposite()));
+    }
+    
+    @Override
+    public boolean canConnect(ForgeDirection side)
+    {
+        return true;
+    }
 	
 	@Override
 	public boolean areTransmitterNetworksEqual(TileEntity tileEntity)

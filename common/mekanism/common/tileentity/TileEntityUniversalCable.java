@@ -22,7 +22,7 @@ import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.grid.IElectricityNetwork;
 import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IEnergySink, IEnergyHandler, IElectrical
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork, Double> implements IEnergySink, IEnergyHandler, IElectrical
 {
 	/** A fake UE ElectricityNetwork used to accept power from EU machines */
 	public IElectricityNetwork ueNetwork;
@@ -45,9 +45,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork, Double>)cable).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<EnergyNetwork, Double>)cable).getTransmitterNetwork());
 				}
 			}
 			
@@ -123,7 +123,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 			{
-				getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
+				getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork, Double>)tileEntity).getTransmitterNetwork());
 			}
 		}
 		
