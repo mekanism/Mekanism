@@ -2,11 +2,15 @@ package mekanism.common.multipart;
 
 import java.util.Set;
 
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.RenderPartTransmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -64,5 +68,12 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork, Gas>
 	public String getTransmitterNetworkFlow()
 	{
 		return getTransmitterNetwork().getFlow();
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderDynamic(Vector3 pos, float f, int pass)
+	{
+		RenderPartTransmitter.getInstance().renderContents(this, pos);
 	}
 }

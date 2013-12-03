@@ -94,7 +94,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + getProduction());
+				setEnergy(getEnergy() + getProduction());
 			}
 			else {
 				setActive(false);
@@ -127,7 +127,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && seesSun && MekanismUtils.canFunction(this);
+		return getEnergy() < getMaxEnergy() && seesSun && MekanismUtils.canFunction(this);
 	}
 	
 	public double getProduction()
@@ -147,6 +147,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			{
 				ret *= 1.5;
 			}
+			
+			return ret;
 		}
 		
 		return 0;

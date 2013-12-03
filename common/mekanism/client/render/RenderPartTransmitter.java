@@ -16,7 +16,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -314,9 +313,28 @@ public class RenderPartTransmitter implements IIconRegister
 		return displays;
 	}
 
-	public void renderContents(PartPressurizedTube transmitter, Vector3 pos)
+	public void renderContents(PartPressurizedTube tube, Vector3 pos)
 	{
-		System.out.println("specific");
+		if(tube.getTransmitterNetwork().refGas == null || tube.getTransmitterNetwork().gasScale == 0)
+		{
+			return;
+		}
+		
+		GL11.glPushMatrix();
+		CCRenderState.reset();
+		CCRenderState.useNormals(true);
+		CCRenderState.useModelColours(true);
+		CCRenderState.startDrawing(7);
+		GL11.glTranslated(pos.x, pos.y, pos.z);
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			renderGasSide(side, tube);			
+		}
+		
+		CCRenderState.draw();
+		
+		GL11.glPopMatrix();
 	}
 	
 	public void renderStatic(PartTransmitter<?, ?> transmitter)
@@ -330,7 +348,6 @@ public class RenderPartTransmitter implements IIconRegister
 		{
 			renderSide(side, transmitter);			
 		}
-		
 	}
 	
 	public void renderSide(ForgeDirection side, PartTransmitter<?, ?> transmitter)
@@ -349,12 +366,22 @@ public class RenderPartTransmitter implements IIconRegister
 		name += connected ? "Out" : "In";
 		renderTransparency(MekanismRenderer.energyIcon, cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, cable.getTransmitterNetwork().clientEnergyScale));
 	}
+	
+	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
+	{
+		boolean connected = PartTransmitter.connectionMapContainsSide(tube.getAllCurrentConnections(), side);
+		String name = side.name().toLowerCase();
+		name += connected ? "Out" : "In";
+		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, tube.getTransmitterNetwork().gasScale));
+	}
 
-    public void renderPart(Icon icon, CCModel cc, double x, double y, double z) {
+    public void renderPart(Icon icon, CCModel cc, double x, double y, double z)
+	{
         cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), null);
     }
 
-    public void renderTransparency(Icon icon, CCModel cc, Colour colour) {
+    public void renderTransparency(Icon icon, CCModel cc, Colour colour) 
+    {
         cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
     }
 
