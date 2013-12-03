@@ -53,8 +53,7 @@ public class MekanismRenderer
 		MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
 	}
 	
-	@EventHandler
-	@ForgeSubscribe /* Screwy Forge code */
+	@ForgeSubscribe
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
 		if(event.map.textureType == 0)
