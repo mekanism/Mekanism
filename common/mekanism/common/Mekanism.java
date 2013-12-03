@@ -307,6 +307,18 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 4), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 5)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 12), new Object[] {
+			"***", "***", "***", Character.valueOf('*'), "ingotCopper"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 5), new Object[] {
+			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 12)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 13), new Object[] {
+			"***", "***", "***", Character.valueOf('*'), "ingotTin"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 6), new Object[] {
+			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 13)
+		}));
 		
 		//Base Recipes
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ObsidianTNT, 1), new Object[] {
@@ -642,9 +654,11 @@ public class Mekanism
 		OreDictionary.registerOre("blockOsmium", new ItemStack(BasicBlock, 1, 0));
 		OreDictionary.registerOre("blockBronze", new ItemStack(BasicBlock, 1, 1));
 		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(BasicBlock, 1, 2));
-		OreDictionary.registerOre("blockCoal", new ItemStack(BasicBlock, 1, 3));
+		OreDictionary.registerOre("blockCharcoal", new ItemStack(BasicBlock, 1, 3));
 		OreDictionary.registerOre("blockRefinedGlowstone", new ItemStack(BasicBlock, 1, 4));
 		OreDictionary.registerOre("blockSteel", new ItemStack(BasicBlock, 1, 5));
+		OreDictionary.registerOre("blockCopper", new ItemStack(BasicBlock, 1, 12));
+		OreDictionary.registerOre("blockTin", new ItemStack(BasicBlock, 1, 13));
 		
 		OreDictionary.registerOre("dustDirtyIron", new ItemStack(DirtyDust, 1, 0));
 		OreDictionary.registerOre("dustDirtyGold", new ItemStack(DirtyDust, 1, 1));

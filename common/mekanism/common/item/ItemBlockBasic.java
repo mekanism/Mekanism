@@ -32,6 +32,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 9: Dynamic Tank
  * 10: Dynamic Glass
  * 11: Dynamic Valve
+ * 12: Copper Block
+ * 13: Tin Block
  * @author AidanBrady
  *
  */
@@ -190,6 +192,12 @@ public class ItemBlockBasic extends ItemBlock
 				break;
 			case 11:
 				name = "DynamicValve";
+				break;
+			case 12:
+				name = "CopperBlock";
+				break;
+			case 13:
+				name = "TinBlock";
 				break;
 			default:
 				name = "Unknown";

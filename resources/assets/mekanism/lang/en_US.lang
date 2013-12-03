@@ -39,6 +39,8 @@ tile.BasicBlock.SteelCasing.name=Steel Casing
 tile.BasicBlock.DynamicTank.name=Dynamic Tank
 tile.BasicBlock.DynamicGlass.name=Dynamic Glass
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
+tile.BasicBlock.CopperBlock.name=Copper Block
+tile.BasicBlock.TinBlock.name=Tin Block
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber

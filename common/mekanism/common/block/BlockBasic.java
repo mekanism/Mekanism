@@ -58,6 +58,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 9: Dynamic Tank
  * 10: Dynamic Glass
  * 11: Dynamic Valve
+ * 12: Copper Block
+ * 13: Tin Block
  * @author AidanBrady
  *
  */
@@ -109,6 +111,8 @@ public class BlockBasic extends Block
 		icons[9][0] = register.registerIcon("mekanism:DynamicTank");
 		icons[10][0] = register.registerIcon("mekanism:DynamicGlass");
 		icons[11][0] = register.registerIcon("mekanism:DynamicValve");
+		icons[12][0] = register.registerIcon("mekanism:CopperBlock");
+		icons[13][0] = register.registerIcon("mekanism:TinBlock");
 		
 		glassRenderer.registerIcons(register);
 	}
@@ -189,6 +193,8 @@ public class BlockBasic extends Block
 		list.add(new ItemStack(i, 1, 9));
 		list.add(new ItemStack(i, 1, 10));
 		list.add(new ItemStack(i, 1, 11));
+		list.add(new ItemStack(i, 1, 12));
+		list.add(new ItemStack(i, 1, 13));
 	}
 	
 	@Override
