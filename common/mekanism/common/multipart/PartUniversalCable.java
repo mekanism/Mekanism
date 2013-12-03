@@ -18,6 +18,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.util.CableUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -64,41 +65,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork, Double> i
 	@Override
 	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
 	{
-		if(acceptor instanceof ITransmitter)
-			return false;
-		
-		//Mekanism
-		if(acceptor instanceof ICableOutputter && ((ICableOutputter)acceptor).canOutputTo(side.getOpposite()))
-			return true;
-		
-		if(acceptor instanceof IStrictEnergyAcceptor && ((IStrictEnergyAcceptor)acceptor).canReceiveEnergy(side.getOpposite()))
-    		return true;
-    	
-		//UE
-		if(acceptor instanceof IElectrical && ((IElectrical)acceptor).canConnect(side.getOpposite()))
-			return true;
-		
-		//IC2
-		if(Mekanism.hooks.IC2Loaded)
-		{
-			if(acceptor instanceof IEnergySource && ((IEnergySource)acceptor).emitsEnergyTo(tile(), side.getOpposite())) 
-				return true;
-	    	
-			if(acceptor instanceof IEnergyAcceptor && ((IEnergyAcceptor)acceptor).acceptsEnergyFrom(tile(), side.getOpposite()))
-				return true;
-		}
-    			
-		//Buildcraft
-		if(Mekanism.hooks.BuildCraftLoaded)
-		{
-	    	if(acceptor instanceof IPowerReceptor && ((IPowerReceptor)acceptor).getPowerReceiver(side.getOpposite()) != null)
-				return true;
-			
-	    	if(acceptor instanceof IPowerEmitter && ((IPowerEmitter)acceptor).canEmitPowerFrom(side.getOpposite()))
-	    			return true;
-		}
-    	
-    	return false;
+		return CableUtils.canConnectToAcceptor(side, acceptor);
 	}
 	
 	@Override

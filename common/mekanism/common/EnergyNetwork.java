@@ -366,7 +366,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork, Dou
 
 			if(needsUpdate)
 			{
-				System.out.println("sent update");
 				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
 				needsUpdate = false;
 			}

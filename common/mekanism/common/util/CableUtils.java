@@ -150,7 +150,17 @@ public final class CableUtils
      */
     public static boolean canConnectToAcceptor(ForgeDirection side, TileEntity tile)
     {
+    	if(tile == null)
+    	{
+    		return false;
+    	}
+    	
     	TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
+    	
+    	if(tileEntity instanceof ITransmitter)
+    	{
+    		return false;
+    	}
     	
     	if(tileEntity instanceof IStrictEnergyAcceptor && ((IStrictEnergyAcceptor)tileEntity).canReceiveEnergy(side.getOpposite()))
     	{
