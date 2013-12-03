@@ -49,6 +49,7 @@ public class RenderPartTransmitter implements IIconRegister
 	private static final int stages = 40;
 	private static final double height = 0.45;
 	private static final double offset = 0.015;
+	
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	
 	static
@@ -131,17 +132,19 @@ public class RenderPartTransmitter implements IIconRegister
 	
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
-		if(pipe.getTransmitterNetwork().fluidScale > 0)
-		{
-			Fluid fluid = pipe.getTransmitterNetwork().refFluid;
-			float scale = pipe.getTransmitterNetwork().fluidScale;
-			
+		Fluid fluid = pipe.getTransmitterNetwork().refFluid;
+		float scale = pipe.getTransmitterNetwork().fluidScale;
+		
+		if(scale > 0 && fluid != null)
+		{	
 			push();
 			
 			MekanismRenderer.glowOn(fluid.getLuminosity());
 			
 			CCRenderState.changeTexture((MekanismRenderer.getBlocksTexture()));
 			GL11.glTranslated(pos.x, pos.y, pos.z);
+			
+			boolean gas = fluid.isGaseous();
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -151,7 +154,14 @@ public class RenderPartTransmitter implements IIconRegister
 					
 					if(displayLists != null)
 					{
-						displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
+						if(!gas)
+						{
+							displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
+						}
+						else {
+							GL11.glColor4f(1F, 1F, 1F, scale);
+							displayLists[stages-1].render();
+						}
 					}
 				}
 			}
@@ -160,7 +170,14 @@ public class RenderPartTransmitter implements IIconRegister
 			
 			if(displayLists != null)
 			{
-				displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
+				if(!gas)
+				{
+					displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
+				}
+				else {
+					GL11.glColor4f(1F, 1F, 1F, scale);
+					displayLists[stages-1].render();
+				}
 			}
 			
 			MekanismRenderer.glowOff();
