@@ -29,29 +29,7 @@ public class BlockObsidianTNT extends Block
     
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:ObsidianTNTBottom");
-		icons[1] = register.registerIcon("mekanism:ObsidianTNTTop");
-		icons[2] = register.registerIcon("mekanism:ObsidianTNTSide");
-	}
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public Icon getIcon(int side, int meta)
-    {
-        if(side == 1)
-        {
-        	return icons[1];
-        }
-        if(side == 0)
-        {
-        	return icons[0];
-        }
-        else {
-        	return icons[2];
-        }
-    }
+	public void registerIcons(IconRegister register) {}
 
     @Override
     public void onBlockAdded(World world, int x, int y, int z)

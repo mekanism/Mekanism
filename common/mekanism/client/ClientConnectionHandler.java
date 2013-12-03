@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import java.net.InetAddress;
-import java.net.Socket;
 
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
@@ -29,6 +28,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		return null;
 	}
 
+	/* Remote */
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
 	{
@@ -41,6 +41,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		}
 	}
 
+	/* Integrated */
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) 
 	{
