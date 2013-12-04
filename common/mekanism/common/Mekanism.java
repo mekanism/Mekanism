@@ -1102,8 +1102,6 @@ public class Mekanism
 		logger.setParent(FMLLog.getLogger());
 		File config = event.getSuggestedConfigurationFile();
 		
-		RecipeLoader.init(event.getModConfigurationDirectory());
-		
 		//Set the mod's configuration
 		configuration = new Configuration(config);
 		
