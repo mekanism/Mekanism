@@ -396,5 +396,5 @@ text.tesla.success=Teslaspule erfolgreich verbunden
 //Gui text
 gui.heatGenerator.fuel=Brennstoff
 gui.solarGenerator.sun=Sonne
-gui.bioGenerator.biofuel=Biobrennstoff
+gui.bioGenerator.bioFuel=Biobrennstoff
 gui.electrolyticSeparator.dump=Entsorge
