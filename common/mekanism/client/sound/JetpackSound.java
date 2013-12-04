@@ -12,6 +12,8 @@ public class JetpackSound extends Sound
 	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
 	
+	public int ticksSincePlay = 0;
+	
 	public JetpackSound(String id, String sound, EntityPlayer entity)
 	{
 		super(id, sound, entity, new Vector3(entity));
@@ -22,13 +24,21 @@ public class JetpackSound extends Sound
 	@Override
 	public float getMultiplier()
 	{
-		return 1;
+		return Math.min(1, ((float)ticksSincePlay/20F))*0.3F;
 	}
 	
 	@Override
 	public Vector3 getLocation()
 	{
 		return new Vector3(player);
+	}
+	
+	@Override
+	public void play()
+	{
+		super.play();
+		
+		ticksSincePlay = 0;
 	}
     
 	@Override
@@ -57,6 +67,11 @@ public class JetpackSound extends Sound
 					stopLoop();
 				}
 			}
+		}
+		
+		if(isPlaying)
+		{
+			ticksSincePlay++;
 		}
 		
 		return true;

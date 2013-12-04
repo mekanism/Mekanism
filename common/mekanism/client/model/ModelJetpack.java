@@ -177,12 +177,14 @@ public class ModelJetpack extends ModelBase
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
+		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1, 1, 1, 0.2F);
 		
 		WingbladeL.render(size);
 		WingbladeR.render(size);
 		
 		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
