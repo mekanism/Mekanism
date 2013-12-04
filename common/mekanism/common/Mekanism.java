@@ -53,6 +53,7 @@ import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemIngot;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
@@ -206,6 +207,7 @@ public class Mekanism
 	public static Item NetworkReader;
 	public static Item WalkieTalkie;
 	public static Item ItemProxy;
+	public static Item Jetpack;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -566,7 +568,7 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
-		//OPEN 11223
+		Jetpack = new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		configuration.save();
 		
@@ -592,6 +594,7 @@ public class Mekanism
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
 		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
+		GameRegistry.registerItem(Jetpack, "Jetpack");
 	}
 	
 	/**

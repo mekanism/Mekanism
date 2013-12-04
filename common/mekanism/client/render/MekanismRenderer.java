@@ -224,17 +224,16 @@ public class MekanismRenderer
     
     public static void blendOn()
     {
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
     
     public static void blendOff()
     {
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
-        GL11.glDisable(GL11.GL_BLEND);
+    	GL11.glPopAttrib();
     }
     
     /**

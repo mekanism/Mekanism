@@ -6,7 +6,6 @@ import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import mekanism.api.Object3D;
@@ -49,7 +48,10 @@ public final class CableUtils
 					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && MekanismUtils.useBuildcraft()) ||
 					acceptor instanceof IElectrical || acceptor instanceof IEnergyHandler)
 			{
-				acceptors[orientation.ordinal()] = acceptor;
+				if(!(acceptor instanceof IConductor))
+				{
+					acceptors[orientation.ordinal()] = acceptor;
+				}
 			}
     	}
     	

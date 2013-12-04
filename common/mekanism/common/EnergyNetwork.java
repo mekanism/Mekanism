@@ -241,6 +241,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		{
 			ForgeDirection side = acceptorDirections.get(acceptor);
 			
+			if(side == null)
+			{
+				continue;
+			}
+			
 			if(acceptor instanceof IStrictEnergyAcceptor)
 			{
 				IStrictEnergyAcceptor handler = (IStrictEnergyAcceptor)acceptor;
