@@ -14,9 +14,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import mekanism.api.Object3D;
-import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class SoundHandler 
 {
 	/** All the sound references in the Minecraft game. */
-	public Map<TileEntity, Sound> sounds = Collections.synchronizedMap(new HashMap<TileEntity, Sound>());
+	public Map<Object, Sound> sounds = Collections.synchronizedMap(new HashMap<Object, Sound>());
 	
 	/** The current base volume Minecraft is using. */
 	public float masterVolume = 0;
@@ -171,42 +171,15 @@ public class SoundHandler
 				{
 					ArrayList<Sound> soundsToRemove = new ArrayList<Sound>();
 					World world = FMLClientHandler.instance().getClient().theWorld;
+					
 					for(Sound sound : sounds.values())
 					{
 						if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
 						{
-							if(!(sound.tileEntity instanceof IHasSound))
+							if(!sound.update(world))
 							{
 								soundsToRemove.add(sound);
 								continue;
-							}
-							else if(world.getBlockTileEntity(sound.tileEntity.xCoord, sound.tileEntity.yCoord, sound.tileEntity.zCoord) != sound.tileEntity)
-							{
-								soundsToRemove.add(sound);
-								continue;
-							}
-							else if(!((IHasSound)sound.tileEntity).getSoundPath().equals(sound.soundPath))
-							{
-								soundsToRemove.add(sound);
-								continue;
-							}
-							else if(sound.tileEntity instanceof IActiveState)
-							{
-								if(((IActiveState)sound.tileEntity).getActive() != sound.isPlaying)
-								{
-									if(((IActiveState)sound.tileEntity).getActive())
-									{
-										sound.play();
-									}
-									else {
-										sound.stopLoop();
-									}
-								}
-							}
-							
-							if(sound.isPlaying)
-							{
-								sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
 							}
 						}
 					}
@@ -214,6 +187,14 @@ public class SoundHandler
 					for(Sound sound : soundsToRemove)
 					{
 						sound.remove();
+					}
+					
+					for(Sound sound : sounds.values())
+					{
+						if(sound.isPlaying)
+						{
+							sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+						}
 					}
 					
 					masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;
@@ -239,11 +220,11 @@ public class SoundHandler
 	 * @param tileEntity - the holder of the sound
 	 * @return Sound instance
 	 */
-	public Sound getFrom(TileEntity tileEntity)
+	public Sound getFrom(Object obj)
 	{
 		synchronized(sounds)
 		{
-			return sounds.get(tileEntity);
+			return sounds.get(obj);
 		}
 	}
 	
@@ -252,18 +233,25 @@ public class SoundHandler
 	 * @param tileEntity - the holder of this sound.
 	 * @return Sound instance
 	 */
-	public void register(TileEntity tileEntity)
+	public void register(Object obj)
 	{
-		if(!(tileEntity instanceof IHasSound))
+		if(obj instanceof TileEntity && !(obj instanceof IHasSound))
 		{
 			return;
 		}
 		
 		synchronized(sounds)
 		{
-			if(getFrom(tileEntity) == null)
+			if(getFrom(obj) == null)
 			{
-				new Sound(getIdentifier(), ((IHasSound)tileEntity).getSoundPath(), tileEntity);
+				if(obj instanceof TileEntity)
+				{
+					new TileSound(getIdentifier(), ((IHasSound)obj).getSoundPath(), (TileEntity)obj);
+				}
+				else if(obj instanceof EntityPlayer)
+				{
+					new JetpackSound(getIdentifier(), "Jetpack.ogg", (EntityPlayer)obj);
+				}
 			}
 		}
 	}

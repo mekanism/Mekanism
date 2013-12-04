@@ -60,8 +60,8 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.IElectricChest;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
@@ -143,13 +143,13 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@Override
-	public void registerSound(TileEntity tileEntity) 
+	public void registerSound(Object obj) 
 	{
 		if(MekanismClient.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
 		{
 			synchronized(MekanismClient.audioHandler.sounds)
 			{
-				MekanismClient.audioHandler.register(tileEntity);
+				MekanismClient.audioHandler.register(obj);
 			}
 		}
 	}
@@ -400,13 +400,15 @@ public class ClientProxy extends CommonProxy
 			{
 				synchronized(MekanismClient.audioHandler.sounds)
 				{
-					HashMap<TileEntity, Sound> sounds = new HashMap<TileEntity, Sound>();
+					HashMap<Object, Sound> sounds = new HashMap<Object, Sound>();
 					sounds.putAll(MekanismClient.audioHandler.sounds);
 					
 					for(Sound sound : sounds.values())
 					{
 						sound.remove();
 					}
+					
+					MekanismClient.audioHandler.sounds.clear();
 				}
 			}
 		}

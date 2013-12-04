@@ -178,7 +178,7 @@ public class Mekanism
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
 	
-	public static Map<EntityPlayer, Boolean> jetpackOn = new HashMap<EntityPlayer, Boolean>();
+	public static Set<EntityPlayer> jetpackOn = new HashSet<EntityPlayer>();
 	
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     

@@ -2,8 +2,6 @@ package mekanism.client;
 
 import java.util.EnumSet;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -14,11 +12,15 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
+import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketWalkieTalkieState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
+
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
@@ -103,20 +105,32 @@ public class ClientPlayerTickHandler implements ITickHandler
 				}
 			}
 			
-			if(cacheJetpackOn(entityPlayer) != isJetpackOn(entityPlayer))
+			if(Mekanism.jetpackOn.contains(entityPlayer) != isJetpackOn(entityPlayer))
 			{
-				System.out.println("update");
-				Mekanism.jetpackOn.put(entityPlayer, isJetpackOn(entityPlayer));
+				if(isJetpackOn(entityPlayer))
+				{
+					Mekanism.jetpackOn.add(entityPlayer);
+				}
+				else {
+					Mekanism.jetpackOn.remove(entityPlayer);
+				}
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(entityPlayer, isJetpackOn(entityPlayer)));
+			}
+			
+			for(EntityPlayer entry : Mekanism.jetpackOn)
+			{
+				Mekanism.proxy.registerSound(entry);
 			}
 		}
 	}
 	
 	private boolean cacheJetpackOn(EntityPlayer player)
 	{
-		return Mekanism.jetpackOn.get(player) != null ? Mekanism.jetpackOn.get(player) : false;
+		return Mekanism.jetpackOn.contains(player);
 	}
 	
-	private boolean isJetpackOn(EntityPlayer player)
+	public static boolean isJetpackOn(EntityPlayer player)
 	{
 		if(player.inventory.armorInventory[2] != null)
 		{
