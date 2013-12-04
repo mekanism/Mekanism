@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import java.io.DataOutputStream;
-import java.util.Random;
 
 import mekanism.api.Object3D;
 import mekanism.common.IRedstoneControl;
@@ -35,8 +34,6 @@ public class PacketRedstoneControl implements IMekanismPacket
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		Random random = new Random();
-		
 		Object3D obj = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		RedstoneControl control = RedstoneControl.values()[dataStream.readInt()];
 		

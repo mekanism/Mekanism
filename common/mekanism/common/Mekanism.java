@@ -69,6 +69,7 @@ import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPortableTeleport;
@@ -91,6 +92,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -175,6 +177,8 @@ public class Mekanism
 	
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
+	
+	public static Map<EntityPlayer, Boolean> jetpackOn = new HashMap<EntityPlayer, Boolean>();
 	
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     
@@ -688,6 +692,8 @@ public class Mekanism
 		
 		//MC stuff
 		OreDictionary.registerOre("oreCoal", new ItemStack(Block.oreCoal));
+		OreDictionary.registerOre("ingotIron", new ItemStack(Item.ingotIron));
+		OreDictionary.registerOre("ingotGold", new ItemStack(Item.ingotGold));
 	}
 	
 	/**
@@ -1092,6 +1098,7 @@ public class Mekanism
 		teleporters.clear();
 		dynamicInventories.clear();
 		ic2Registered.clear();
+		jetpackOn.clear();
 		TransporterManager.flowingStacks.clear();
 	}
 	
@@ -1132,6 +1139,9 @@ public class Mekanism
 	{
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
+		
+		//Register player tracker
+		GameRegistry.registerPlayerTracker(new CommonPlayerTracker());
 		
 		//Register the mod's GUI handler
 		NetworkRegistry.instance().registerGuiHandler(this, new CoreGuiHandler());
@@ -1186,6 +1196,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketConfigurationUpdate.class);
 		PacketHandler.registerPacket(PacketSimpleGui.class);
 		PacketHandler.registerPacket(PacketDigitalMinerGui.class);
+		PacketHandler.registerPacket(PacketJetpackData.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

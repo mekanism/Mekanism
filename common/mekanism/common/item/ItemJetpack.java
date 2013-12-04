@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
@@ -72,6 +73,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 			return 0;
 		}
 		
+		if(stack.getGas() != GasRegistry.getGas("hydrogen"))
+		{
+			return 0;
+		}
+		
 		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
 		setGas(new GasStack(stack.getGas(), getStored(itemstack)+toUse), itemstack);
 		
@@ -102,7 +108,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return getGas(itemstack) == null || getGas(itemstack).getGas() == type;
+		return type == GasRegistry.getGas("hydrogen");
 	}
 	
 	@Override

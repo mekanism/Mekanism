@@ -1,24 +1,23 @@
 package mekanism.client;
 
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.lwjgl.input.Keyboard;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketWalkieTalkieState;
-import mekanism.common.tileentity.TileEntityUniversalCable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -103,7 +102,34 @@ public class ClientPlayerTickHandler implements ITickHandler
 					lastTickUpdate = false;
 				}
 			}
+			
+			if(cacheJetpackOn(entityPlayer) != isJetpackOn(entityPlayer))
+			{
+				System.out.println("update");
+				Mekanism.jetpackOn.put(entityPlayer, isJetpackOn(entityPlayer));
+			}
 		}
+	}
+	
+	private boolean cacheJetpackOn(EntityPlayer player)
+	{
+		return Mekanism.jetpackOn.get(player) != null ? Mekanism.jetpackOn.get(player) : false;
+	}
+	
+	private boolean isJetpackOn(EntityPlayer player)
+	{
+		if(player.inventory.armorInventory[2] != null)
+		{
+			if(player.inventory.armorInventory[2].getItem() instanceof ItemJetpack)
+			{
+				if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override

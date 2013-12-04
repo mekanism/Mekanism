@@ -465,6 +465,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public ItemStack getStoredItemType()
 	{
+		if(itemType == null)
+		{
+			return null;
+		}
+		
 		return MekanismUtils.size(itemType, itemCount);
 	}
 
