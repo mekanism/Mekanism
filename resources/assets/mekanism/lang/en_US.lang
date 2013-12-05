@@ -22,6 +22,7 @@ item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.WalkieTalkie.name=Walkie-Talkie
+item.Jetpack.name=Jetpack
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank

@@ -89,11 +89,18 @@ public class RenderTickHandler implements ITickHandler
 				vRight.rotate(p.renderYawOffset);
 				vRight.y -= 0.55;
 				
+				Vector3 vCenter = new Vector3();
+				vCenter.z -= 0.30;
+				vCenter.x = (rand.nextFloat()-0.5F)*0.4F;
+				vCenter.rotate(p.renderYawOffset);
+				vCenter.y -= 0.86;
+				
 				Vector3 rLeft = vLeft.clone().scale(random);
 				Vector3 rRight = vRight.clone().scale(random);
 				
 				Vector3 mLeft = Vector3.translate(vLeft.clone().scale(0.2), new Vector3(p.motionX, p.motionY, p.motionZ));
 				Vector3 mRight = Vector3.translate(vRight.clone().scale(0.2), new Vector3(p.motionX, p.motionY, p.motionZ));
+				Vector3 mCenter = Vector3.translate(vCenter.clone().scale(0.2), new Vector3(p.motionX, p.motionY, p.motionZ));
 				
 				mLeft.translate(rLeft);
 				mRight.translate(rRight);
@@ -105,6 +112,10 @@ public class RenderTickHandler implements ITickHandler
 				v = new Vector3(p).translate(vRight);
 				world.spawnParticle("flame", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 				world.spawnParticle("smoke", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				
+				v = new Vector3(p).translate(vCenter);
+				world.spawnParticle("flame", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+				world.spawnParticle("smoke", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 			}
 		}
 	}
