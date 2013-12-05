@@ -261,13 +261,15 @@ public class TransporterManager
     		testInsert(inventory, testInv, side, tStack);
     	}
     	
+    	ItemStack toInsert = itemStack.copy();
+    	
     	if(!(inventory instanceof ISidedInventory))
 		{
     		inventory = InventoryUtils.checkChestInv(inventory);
     		
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
-				if(!inventory.isItemValidForSlot(i, itemStack)) 
+				if(!inventory.isItemValidForSlot(i, toInsert)) 
 				{
 					continue;
 				}
@@ -278,18 +280,18 @@ public class TransporterManager
 				{
 					return null;
 				} 
-				else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize()) 
+				else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize()) 
 				{
-					if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
 					{
 						return null;
 					} 
 					else {
-						int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+						int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
 
-						if(rejects < itemStack.stackSize)
+						if(rejects < toInsert.stackSize)
 						{
-							return MekanismUtils.size(itemStack, rejects);
+							toInsert = MekanismUtils.size(toInsert, rejects);
 						}
 					}
 				}
@@ -310,7 +312,7 @@ public class TransporterManager
 				{
 					int slotID = slots[get];
 	
-					if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
+					if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal())) 
 					{
 						continue;
 					}
@@ -321,18 +323,18 @@ public class TransporterManager
 					{
 						return null;
 					} 
-					else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
 					{
-						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize()) 
+						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize()) 
 						{
 							return null;
 						} 
 						else {
-							int rejects = (inSlot.stackSize + itemStack.stackSize) - inSlot.getMaxStackSize();
+							int rejects = (inSlot.stackSize + toInsert.stackSize) - inSlot.getMaxStackSize();
 							
-							if(rejects < itemStack.stackSize)
+							if(rejects < toInsert.stackSize)
 							{
-								return MekanismUtils.size(itemStack, rejects);
+								toInsert = MekanismUtils.size(toInsert, rejects);
 							}
 						}
 					}
@@ -340,6 +342,6 @@ public class TransporterManager
 			}
 		}
     	
-    	return itemStack;
+    	return toInsert;
 	}
 }
