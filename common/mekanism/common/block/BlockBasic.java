@@ -239,7 +239,7 @@ public class BlockBasic extends Block
 			
 			if(pos != null && pos.sideHit == bin.facing)
 			{
-				if(bin.getStack() != null)
+				if(bin.bottomStack != null)
 				{
 					if(!player.isSneaking())
 					{
@@ -284,7 +284,7 @@ public class BlockBasic extends Block
     	{
     		TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
     		
-    		if(bin.itemCount < bin.MAX_STORAGE)
+    		if(bin.getItemCount() < bin.MAX_STORAGE)
     		{
 	    		if(bin.addTicks == 0)
 	    		{
@@ -300,7 +300,7 @@ public class BlockBasic extends Block
 	    			
 	    			for(int i = 0; i < inv.length; i++)
 	    			{
-	    				if(bin.itemCount == bin.MAX_STORAGE)
+	    				if(bin.getItemCount() == bin.MAX_STORAGE)
 	    				{
 	    					break;
 	    				}
@@ -613,9 +613,9 @@ public class BlockBasic extends Block
 			TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
 			InventoryBin inv = new InventoryBin(ret);
 			
-			inv.setItemCount(tileEntity.itemCount);
+			inv.setItemCount(tileEntity.getItemCount());
 			
-			if(tileEntity.itemCount > 0)
+			if(tileEntity.getItemCount() > 0)
 			{
 				inv.setItemType(tileEntity.itemType);
 			}

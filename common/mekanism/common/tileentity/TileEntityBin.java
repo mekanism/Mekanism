@@ -12,6 +12,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -36,44 +37,51 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public int delayTicks;
 	
-	public int itemCount;
+	public int cacheCount;
 	
 	public final int MAX_STORAGE = 4096;
 	
 	public ItemStack itemType;
 	
-	public ItemStack getStack()
-	{
-		if(itemCount > 0)
-		{
-			ItemStack ret = itemType.copy();
-			ret.stackSize = Math.min(itemType.getMaxStackSize(), itemCount);
-			
-			return ret;
-		}
-		
-		return null;
-	}
+	public ItemStack topStack;
+	public ItemStack bottomStack;
 	
-	public ItemStack getInsertStack()
+	public int prevCount;
+	
+	public int clientAmount;
+	
+	public void sortStacks()
 	{
-		int remain = MAX_STORAGE-itemCount;
-		
-		if(itemType == null)
+		if(getItemCount() == 0 || itemType == null)
 		{
-			return null;
+			itemType = null;
+			topStack = null;
+			bottomStack = null;
+			cacheCount = 0;
+			
+			return;
 		}
+		
+		int count = getItemCount();
+		int remain = MAX_STORAGE-count;
 		
 		if(remain >= itemType.getMaxStackSize())
 		{
-			return null;
+			topStack = null;
 		}
 		else {
-			ItemStack ret = itemType.copy();
-			ret.stackSize = itemType.getMaxStackSize()-remain;
-			
-			return ret;
+			topStack = itemType.copy();
+			topStack.stackSize = itemType.getMaxStackSize()-remain;
 		}
+		
+		count -= StackUtils.getSize(topStack);
+		
+		bottomStack = itemType.copy();
+		bottomStack.stackSize = Math.min(itemType.getMaxStackSize(), count);
+		
+		count -= StackUtils.getSize(bottomStack);
+		
+		cacheCount = count;
 	}
 	
 	public boolean isValid(ItemStack stack)
@@ -108,21 +116,21 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack) && itemCount != MAX_STORAGE)
+		if(isValid(stack) && getItemCount() != MAX_STORAGE)
 		{
 			if(itemType == null)
 			{
 				setItemType(stack);
 			}
 			
-			if(itemCount + stack.stackSize <= MAX_STORAGE)
+			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
 			{
-				setItemCount(itemCount + stack.stackSize);
+				setItemCount(getItemCount() + stack.stackSize);
 				return null;
 			}
 			else {
 				ItemStack rejects = itemType.copy();
-				rejects.stackSize = (itemCount+stack.stackSize) - MAX_STORAGE;
+				rejects.stackSize = (getItemCount()+stack.stackSize) - MAX_STORAGE;
 				
 				setItemCount(MAX_STORAGE);
 				
@@ -135,27 +143,32 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public ItemStack removeStack()
 	{
-		if(itemCount == 0)
+		if(getItemCount() == 0)
 		{
 			return null;
 		}
 		
-		return remove(getStack().stackSize);
+		return remove(bottomStack.stackSize);
 	}
 	
 	public ItemStack remove(int amount)
 	{
-		if(itemCount == 0)
+		if(getItemCount() == 0)
 		{
 			return null;
 		}
 		
 		ItemStack ret = itemType.copy();
-		ret.stackSize = Math.min(Math.min(amount, itemType.getMaxStackSize()), itemCount);
+		ret.stackSize = Math.min(Math.min(amount, itemType.getMaxStackSize()), getItemCount());
 		
-		setItemCount(itemCount - ret.stackSize);
+		setItemCount(getItemCount() - ret.stackSize);
 		
 		return ret;
+	}
+	
+	public int getItemCount()
+	{
+		return StackUtils.getSize(bottomStack) + cacheCount + StackUtils.getSize(topStack);
 	}
 	
 	@Override
@@ -166,7 +179,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			addTicks = Math.max(0, addTicks-1);
 			delayTicks = Math.max(0, delayTicks-1);
 			
-			if(getStack() != null && isActive && delayTicks == 0)
+			sortStacks();
+			
+			if(getItemCount() != prevCount)
+			{
+				onInventoryChanged();
+				MekanismUtils.saveChunk(this);
+			}
+			
+			if(bottomStack != null && isActive && delayTicks == 0)
 			{
 				TileEntity tile = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
 				
@@ -174,16 +195,16 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
 					
-					ItemStack rejects = TransporterUtils.insert(this, transporter, getStack(), null, true, 0);
+					ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
 					
-					if(TransporterManager.didEmit(getStack(), rejects))
+					if(TransporterManager.didEmit(bottomStack, rejects))
 					{
 						setInventorySlotContents(0, rejects);
 					}
 				}
 				else if(tile instanceof IInventory)
 				{
-					setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, getStack(), 0, false));
+					setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
 				}
 			}
 		}
@@ -195,9 +216,19 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		super.writeToNBT(nbtTags);
 		
 		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("itemCount", itemCount);
+		nbtTags.setInteger("itemCount", cacheCount);
 		
-		if(itemCount > 0)
+		if(bottomStack != null)
+		{
+			nbtTags.setCompoundTag("bottomStack", bottomStack.writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(topStack != null)
+		{
+			nbtTags.setCompoundTag("topStack", topStack.writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(cacheCount > 0)
 		{
 			nbtTags.setCompoundTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
 		}
@@ -209,9 +240,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		super.readFromNBT(nbtTags);
 		
 		isActive = nbtTags.getBoolean("isActive");
-		itemCount = nbtTags.getInteger("itemCount");
+		cacheCount = nbtTags.getInteger("itemCount");
 		
-		if(itemCount > 0)
+		bottomStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("bottomStack"));
+		topStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("topStack"));
+		
+		if(getItemCount() > 0)
 		{
 			itemType = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemType"));
 		}
@@ -223,9 +257,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		super.getNetworkedData(data);
 		
 		data.add(isActive);
-		data.add(itemCount);
+		data.add(getItemCount());
 		
-		if(itemCount > 0)
+		if(getItemCount() > 0)
 		{
 			data.add(itemType.itemID);
 			data.add(itemType.getItemDamage());
@@ -240,11 +274,14 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		super.handlePacketData(dataStream);
 		
 		isActive = dataStream.readBoolean();
-		itemCount = dataStream.readInt();
+		clientAmount = dataStream.readInt();
 		
-		if(itemCount > 0)
+		if(clientAmount > 0)
 		{
-			itemType = new ItemStack(dataStream.readInt(), 0, dataStream.readInt());
+			itemType = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+		}
+		else {
+			itemType = null;
 		}
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
@@ -255,10 +292,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		if(slotID == 1)
 		{
-			return getInsertStack();
+			return topStack;
 		}
 		else {
-			return getStack();
+			return bottomStack;
 		}
 	}
 	
@@ -271,14 +308,14 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 		else if(slotID == 0)
 		{
-			int toRemove = Math.min(itemCount, amount);
+			int toRemove = Math.min(getItemCount(), amount);
 			
 			if(toRemove > 0)
 			{
 				ItemStack ret = itemType.copy();
 				ret.stackSize = toRemove;
 				
-				setItemCount(itemCount-toRemove);
+				setItemCount(getItemCount()-toRemove);
 				
 				return ret;
 			}
@@ -304,17 +341,17 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		if(i == 0)
 		{
-			if(itemCount == 0)
+			if(getItemCount() == 0)
 			{
 				return;
 			}
 			
 			if(itemstack == null)
 			{
-				setItemCount(itemCount - getStack().stackSize);
+				setItemCount(getItemCount() - bottomStack.stackSize);
 			}
 			else {
-				setItemCount(itemCount - (getStack().stackSize-itemstack.stackSize));
+				setItemCount(getItemCount() - (bottomStack.stackSize-itemstack.stackSize));
 			}
 		}
 		else if(i == 1)
@@ -334,6 +371,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(!worldObj.isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+			prevCount = getItemCount();
+			sortStacks();
 		}
 	}
 	
@@ -342,6 +381,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(stack == null)
 		{
 			itemType = null;
+			cacheCount = 0;
+			topStack = null;
+			bottomStack = null;
 			return;
 		}
 		
@@ -352,9 +394,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	
 	public void setItemCount(int count)
 	{
-		itemCount = Math.max(0, count);
+		cacheCount = Math.max(0, count);
+		topStack = null;
+		bottomStack = null;
 		
-		if(itemCount == 0)
+		if(count == 0)
 		{
 			setItemType(null);
 		}
@@ -470,7 +514,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return null;
 		}
 		
-		return MekanismUtils.size(itemType, itemCount);
+		return MekanismUtils.size(itemType, getItemCount());
 	}
 
 	@Override
@@ -481,14 +525,19 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			setStoredItemType(null, 0);
 		}
 		
-		itemCount = amount;
+		cacheCount = amount;
 	}
 
 	@Override
 	public void setStoredItemType(ItemStack type, int amount)
 	{
 		itemType = type;
-		itemCount = amount;
+		cacheCount = amount;
+		
+		topStack = null;
+		bottomStack = null;
+		
+		onInventoryChanged();
 	}
 
 	@Override
