@@ -22,7 +22,7 @@ public class PacketJetpackData implements IMekanismPacket
 	@Override
 	public String getName() 
 	{
-		return "RedstoneControl";
+		return "JetpackData";
 	}
 	
 	@Override

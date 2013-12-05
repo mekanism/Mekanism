@@ -47,11 +47,11 @@ public class ClientPlayerTickHandler implements ITickHandler
 			
 			ItemStack stack = entityPlayer.getCurrentEquippedItem();
 			
-			if(StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemConfigurator)
+			if(entityPlayer.isSneaking() && StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemConfigurator)
 			{
 				ItemConfigurator item = (ItemConfigurator)entityPlayer.getCurrentEquippedItem().getItem();
 				
-	    		if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed)
+	    		if(MekanismKeyHandler.modeSwitchKey.pressed)
 	    		{
 	    			if(!lastTickUpdate)
 	    			{
@@ -65,11 +65,11 @@ public class ClientPlayerTickHandler implements ITickHandler
 	    			lastTickUpdate = false;
 	    		}
 			}
-			else if(StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemElectricBow)
+			else if(entityPlayer.isSneaking() && StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemElectricBow)
 			{
 				ItemElectricBow item = (ItemElectricBow)entityPlayer.getCurrentEquippedItem().getItem();
 				
-				if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed)
+				if(MekanismKeyHandler.modeSwitchKey.pressed)
 				{
 					if(!lastTickUpdate)
 					{
@@ -83,11 +83,11 @@ public class ClientPlayerTickHandler implements ITickHandler
 					lastTickUpdate = false;
 				}
 			}
-			else if(StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemWalkieTalkie)
+			else if(entityPlayer.isSneaking() && StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemWalkieTalkie)
 			{
 				ItemWalkieTalkie item = (ItemWalkieTalkie)entityPlayer.getCurrentEquippedItem().getItem();
 				
-				if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed && item.getOn(stack))
+				if(MekanismKeyHandler.modeSwitchKey.pressed && item.getOn(stack))
 				{
 					if(!lastTickUpdate)
 					{
@@ -142,8 +142,14 @@ public class ClientPlayerTickHandler implements ITickHandler
 				Mekanism.proxy.registerSound(entry);
 			}
 			
-			if(isJetpackOn(entityPlayer))
+			if(entityPlayer.getCurrentItemOrArmor(3) != null && entityPlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
 			{
+				MekanismClient.updateKey(entityPlayer, Keyboard.KEY_SPACE);
+				MekanismClient.updateKey(entityPlayer, Keyboard.KEY_LSHIFT);
+			}
+			
+			if(isJetpackOn(entityPlayer))
+			{	
 				ItemJetpack jetpack = (ItemJetpack)entityPlayer.getCurrentItemOrArmor(3).getItem();
 				
 				if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
@@ -153,9 +159,32 @@ public class ClientPlayerTickHandler implements ITickHandler
 				}
 				else if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
-					entityPlayer.motionY = 0;
+					if((!Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)))
+					{
+						if(entityPlayer.motionY > 0)
+						{
+							entityPlayer.motionY = Math.max(entityPlayer.motionY - 0.15D, 0);
+						}
+						else if(entityPlayer.motionY < 0)
+						{
+							entityPlayer.motionY = Math.min(entityPlayer.motionY + 0.15D, 0);
+						}
+					}
+					else {
+						if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+						{
+							entityPlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
+						}
+						else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+						{
+							entityPlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
+						}
+					}
+					
 					entityPlayer.fallDistance = 0.0F;
 				}
+				
+				jetpack.useGas(entityPlayer.getCurrentItemOrArmor(3));
 			}
 		}
 	}

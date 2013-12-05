@@ -96,9 +96,32 @@ public class CommonPlayerTickHandler implements ITickHandler
 				}
 				else if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
-					player.motionY = 0;
+					if((!Mekanism.keyMap.has(player, KeySync.SPACE) && !Mekanism.keyMap.has(player, KeySync.LSHIFT)) || (Mekanism.keyMap.has(player, KeySync.SPACE) && Mekanism.keyMap.has(player, KeySync.LSHIFT)))
+					{
+						if(player.motionY > 0)
+						{
+							player.motionY = Math.max(player.motionY - 0.15D, 0);
+						}
+						else if(player.motionY < 0)
+						{
+							player.motionY = Math.min(player.motionY + 0.15D, 0);
+						}
+					}
+					else {
+						if(Mekanism.keyMap.has(player, KeySync.SPACE))
+						{
+							player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
+						}
+						else if(Mekanism.keyMap.has(player, KeySync.LSHIFT))
+						{
+							player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
+						}
+					}
+					
 					player.fallDistance = 0.0F;
 				}
+				
+				jetpack.useGas(player.getCurrentItemOrArmor(3));
 			}
 		}
 	}
@@ -111,9 +134,15 @@ public class CommonPlayerTickHandler implements ITickHandler
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
-				if(((ItemJetpack)stack.getItem()).getGas(stack) != null)
+				ItemJetpack jetpack = (ItemJetpack)stack.getItem();
+				
+				if(jetpack.getGas(stack) != null)
 				{
-					if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+					if((Mekanism.keyMap.has(player, KeySync.SPACE) && jetpack.getMode(stack) == JetpackMode.NORMAL))
+					{
+						return true;
+					}
+					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
 						return true;
 					}

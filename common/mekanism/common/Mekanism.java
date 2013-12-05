@@ -70,6 +70,7 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketJetpackData;
+import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPortableTeleport;
@@ -177,6 +178,8 @@ public class Mekanism
 	
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
+	
+	public static KeySync keyMap = new KeySync();
 	
 	public static Set<EntityPlayer> jetpackOn = new HashSet<EntityPlayer>();
 	
@@ -701,7 +704,7 @@ public class Mekanism
 	 * and adding machine recipes with other items' corresponding resources.
 	 */
 	public void addIntegratedItems()
-	{		
+	{
 		try {
 			CraftingManagers.pulverizerManager.addRecipe(400, new ItemStack(OreBlock, 1, 0), new ItemStack(Dust, 2, 2), false);
 			
@@ -1197,6 +1200,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketSimpleGui.class);
 		PacketHandler.registerPacket(PacketDigitalMinerGui.class);
 		PacketHandler.registerPacket(PacketJetpackData.class);
+		PacketHandler.registerPacket(PacketKey.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

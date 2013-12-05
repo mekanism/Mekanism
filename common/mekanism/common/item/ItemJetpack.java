@@ -75,6 +75,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		setMode(stack, getMode(stack).increment());
 	}
 	
+	public void useGas(ItemStack stack)
+	{
+		setGas(new GasStack(getGas(stack).getGas(), getGas(stack).amount-1), stack);
+	}
+	
 	@Override
 	public int getMaxGas(Object... data)
 	{
