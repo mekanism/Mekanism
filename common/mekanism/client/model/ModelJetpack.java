@@ -167,7 +167,11 @@ public class ModelJetpack extends ModelBase
 		Fueltuberight.render(size);
 		Fueltubeleft.render(size);
 		Packmid.render(size);
+		
+		MekanismRenderer.glowOn();
 		Packcore.render(size);
+		MekanismRenderer.glowOff();
+		
 		WingsupportL.render(size);
 		WingsupportR.render(size);
 		Packtoprear.render(size);

@@ -30,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ClientPlayerTickHandler implements ITickHandler
 {	
 	public boolean lastTickUpdate = false;
+	public Minecraft mc = Minecraft.getMinecraft();
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -122,6 +123,12 @@ public class ClientPlayerTickHandler implements ITickHandler
 			{
 				Mekanism.proxy.registerSound(entry);
 			}
+			
+			if(isJetpackOn(mc.thePlayer))
+			{
+			    mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
+			  	mc.thePlayer.fallDistance = 0.0F;
+			}
 		}
 	}
 	
@@ -132,13 +139,18 @@ public class ClientPlayerTickHandler implements ITickHandler
 	
 	public static boolean isJetpackOn(EntityPlayer player)
 	{
-		if(player.inventory.armorInventory[2] != null)
+		ItemStack stack = player.inventory.armorInventory[2];
+		
+		if(stack != null)
 		{
-			if(player.inventory.armorInventory[2].getItem() instanceof ItemJetpack)
+			if(stack.getItem() instanceof ItemJetpack)
 			{
-				if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+				if(((ItemJetpack)stack.getItem()).getGas(stack) != null)
 				{
-					return true;
+					if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+					{
+						return true;
+					}
 				}
 			}
 		}
