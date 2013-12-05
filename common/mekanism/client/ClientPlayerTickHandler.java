@@ -9,11 +9,14 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketJetpackData;
+import mekanism.common.network.PacketJetpackData.PacketType;
 import mekanism.common.network.PacketWalkieTalkieState;
+import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -42,68 +45,83 @@ public class ClientPlayerTickHandler implements ITickHandler
 		{
 			EntityPlayer entityPlayer = (EntityPlayer)tickData[0];
 			
-			if(entityPlayer.getCurrentEquippedItem() != null)
+			ItemStack stack = entityPlayer.getCurrentEquippedItem();
+			
+			if(StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemConfigurator)
 			{
-				ItemStack stack = entityPlayer.getCurrentEquippedItem();
+				ItemConfigurator item = (ItemConfigurator)entityPlayer.getCurrentEquippedItem().getItem();
 				
-				if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemConfigurator)
+	    		if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed)
+	    		{
+	    			if(!lastTickUpdate)
+	    			{
+		    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
+		    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
+		    			entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
+		    			lastTickUpdate = true;
+	    			}
+	    		}
+	    		else {
+	    			lastTickUpdate = false;
+	    		}
+			}
+			else if(StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemElectricBow)
+			{
+				ItemElectricBow item = (ItemElectricBow)entityPlayer.getCurrentEquippedItem().getItem();
+				
+				if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed)
 				{
-					ItemConfigurator item = (ItemConfigurator)entityPlayer.getCurrentEquippedItem().getItem();
-					
-		    		if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed)
-		    		{
-		    			if(!lastTickUpdate)
-		    			{
-			    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
-			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
-			    			entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
-			    			lastTickUpdate = true;
-		    			}
-		    		}
-		    		else {
-		    			lastTickUpdate = false;
-		    		}
-				}
-				else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemElectricBow)
-				{
-					ItemElectricBow item = (ItemElectricBow)entityPlayer.getCurrentEquippedItem().getItem();
-					
-					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed)
+					if(!lastTickUpdate)
 					{
-						if(!lastTickUpdate)
-						{
-							item.setFireState(stack, !item.getFireState(stack));
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
-							entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
-							lastTickUpdate = true;
-						}
-					}
-					else {
-						lastTickUpdate = false;
-					}
-				}
-				else if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemWalkieTalkie)
-				{
-					ItemWalkieTalkie item = (ItemWalkieTalkie)entityPlayer.getCurrentEquippedItem().getItem();
-					
-					if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed && item.getOn(stack))
-					{
-						if(!lastTickUpdate)
-						{
-							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
-							item.setChannel(stack, newChan);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
-							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-							lastTickUpdate = true;
-						}
-					}
-					else {
-						lastTickUpdate = false;
+						item.setFireState(stack, !item.getFireState(stack));
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
+						entityPlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
+						lastTickUpdate = true;
 					}
 				}
 				else {
 					lastTickUpdate = false;
 				}
+			}
+			else if(StackUtils.getItem(entityPlayer.getCurrentEquippedItem()) instanceof ItemWalkieTalkie)
+			{
+				ItemWalkieTalkie item = (ItemWalkieTalkie)entityPlayer.getCurrentEquippedItem().getItem();
+				
+				if(entityPlayer.isSneaking() && MekanismKeyHandler.modeSwitchKey.pressed && item.getOn(stack))
+				{
+					if(!lastTickUpdate)
+					{
+						int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
+						item.setChannel(stack, newChan);
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
+						Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+						lastTickUpdate = true;
+					}
+				}
+				else {
+					lastTickUpdate = false;
+				}
+			}
+			else if(entityPlayer.getCurrentItemOrArmor(3) != null && entityPlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+			{
+				ItemStack jetpack = entityPlayer.getCurrentItemOrArmor(3);
+				
+				if(MekanismKeyHandler.modeSwitchKey.pressed)
+				{
+					if(!lastTickUpdate)
+					{
+						((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.MODE));
+						Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
+						lastTickUpdate = true;
+					}
+				}
+				else {
+					lastTickUpdate = false;
+				}
+			}
+			else {
+				lastTickUpdate = false;
 			}
 			
 			if(Mekanism.jetpackOn.contains(entityPlayer) != isJetpackOn(entityPlayer))
@@ -116,7 +134,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 					Mekanism.jetpackOn.remove(entityPlayer);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(entityPlayer, isJetpackOn(entityPlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.UPDATE, entityPlayer, isJetpackOn(entityPlayer)));
 			}
 			
 			for(EntityPlayer entry : Mekanism.jetpackOn)
@@ -124,10 +142,20 @@ public class ClientPlayerTickHandler implements ITickHandler
 				Mekanism.proxy.registerSound(entry);
 			}
 			
-			if(isJetpackOn(mc.thePlayer))
+			if(isJetpackOn(entityPlayer))
 			{
-			    mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
-			  	mc.thePlayer.fallDistance = 0.0F;
+				ItemJetpack jetpack = (ItemJetpack)entityPlayer.getCurrentItemOrArmor(3).getItem();
+				
+				if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
+				{
+					entityPlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
+					entityPlayer.fallDistance = 0.0F;
+				}
+				else if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
+				{
+					entityPlayer.motionY = 0;
+					entityPlayer.fallDistance = 0.0F;
+				}
 			}
 		}
 	}
@@ -145,9 +173,15 @@ public class ClientPlayerTickHandler implements ITickHandler
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
-				if(((ItemJetpack)stack.getItem()).getGas(stack) != null)
+				ItemJetpack jetpack = (ItemJetpack)stack.getItem();
+				
+				if(jetpack.getGas(stack) != null)
 				{
-					if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+					if((Keyboard.isKeyDown(Keyboard.KEY_SPACE) && jetpack.getMode(stack) == JetpackMode.NORMAL))
+					{
+						return true;
+					}
+					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
 					{
 						return true;
 					}

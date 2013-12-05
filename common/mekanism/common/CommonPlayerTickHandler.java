@@ -2,8 +2,12 @@ package mekanism.common;
 
 import java.util.EnumSet;
 
+import org.lwjgl.input.Keyboard;
+
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +26,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 		if(tickData[0] instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer)tickData[0];
+			
 			if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
 			{
 				ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
@@ -79,7 +84,44 @@ public class CommonPlayerTickHandler implements ITickHandler
 	    			return;
 	    		}
 			}
+			
+			if(isJetpackOn(player))
+			{
+				ItemJetpack jetpack = (ItemJetpack)player.getCurrentItemOrArmor(3).getItem();
+				
+				if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
+				{
+					player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
+					player.fallDistance = 0.0F;
+				}
+				else if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
+				{
+					player.motionY = 0;
+					player.fallDistance = 0.0F;
+				}
+			}
 		}
+	}
+	
+	public boolean isJetpackOn(EntityPlayer player)
+	{
+		ItemStack stack = player.inventory.armorInventory[2];
+		
+		if(stack != null)
+		{
+			if(stack.getItem() instanceof ItemJetpack)
+			{
+				if(((ItemJetpack)stack.getItem()).getGas(stack) != null)
+				{
+					if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	@Override

@@ -5,9 +5,12 @@ import java.util.Random;
 
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemJetpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -65,6 +68,22 @@ public class RenderTickHandler implements ITickHandler
 					font.drawStringWithShadow("Metadata: " + obj.getMetadata(world), 1, 10, 0x404040);
 					font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 19, 0x404040);
 					font.drawStringWithShadow("Side: " + pos.sideHit, 1, 28, 0x404040);
+				}
+			}
+			
+			if(player != null)
+			{
+				if(player.getCurrentItemOrArmor(3) != null && player.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+				{
+					ItemStack stack = player.getCurrentItemOrArmor(3);
+					ItemJetpack jetpack = (ItemJetpack)stack.getItem();
+					
+					ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+					int x = scaledresolution.getScaledWidth();
+					int y = scaledresolution.getScaledHeight();
+					
+					font.drawStringWithShadow("Mode: " + jetpack.getMode(stack).getName(), 1, y - 20, 0x404040);
+					font.drawStringWithShadow("Hydrogen: " + jetpack.getStored(stack), 1, y - 11, 0x404040);
 				}
 			}
 			

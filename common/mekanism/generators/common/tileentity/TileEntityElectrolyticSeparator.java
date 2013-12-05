@@ -315,17 +315,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			if(type == 0)
 			{
 				outputType = GasRegistry.getGas(dataStream.readInt());
-				return;
 			}
 			else if(type == 1)
 			{
 				dumpType = GasRegistry.getGas(dataStream.readInt());
-				return;
 			}
 			else if(type == 2)
 			{
 				spawnParticle();
 			}
+			
+			return;
 		}
 		
 		super.handlePacketData(dataStream);

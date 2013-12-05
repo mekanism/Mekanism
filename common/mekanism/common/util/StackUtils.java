@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -30,6 +31,16 @@ public final class StackUtils
 		ret.add(size(stack, split));
 		
 		return ret;
+	}
+	
+	public static Item getItem(ItemStack stack)
+	{
+		if(stack == null)
+		{
+			return null;
+		}
+		
+		return stack.getItem();
 	}
 	
 	public static boolean diffIgnoreNull(ItemStack stack1, ItemStack stack2)

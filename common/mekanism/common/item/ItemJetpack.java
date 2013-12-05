@@ -1,14 +1,20 @@
 package mekanism.common.item;
 
+import java.util.List;
+
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +30,23 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	public ItemJetpack(int id)
 	{
 		super(id, EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
-		//setCreativeTab(Mekanism.tabMekanism);
+		setCreativeTab(Mekanism.tabMekanism);
+	}
+	
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	{
+		GasStack gasStack = getGas(itemstack);
+		
+		if(gasStack == null)
+		{
+			list.add("No gas stored.");
+		}
+		else {
+			list.add("Stored " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+		}
+		
+		list.add(EnumColor.GREY + "Mode: " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 	
 	@Override
@@ -47,6 +69,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		model.modelType = ArmorModel.JETPACK;
         return model;
     }
+	
+	public void incrementMode(ItemStack stack)
+	{
+		setMode(stack, getMode(stack).increment());
+	}
 	
 	@Override
 	public int getMaxGas(Object... data)
@@ -100,7 +127,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		return new GasStack(type, gasToUse);
 	}
 	
-	private int getStored(ItemStack itemstack)
+	public int getStored(ItemStack itemstack)
 	{
 		return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
 	}
@@ -145,6 +172,26 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		return null;
 	}
 	
+	public JetpackMode getMode(ItemStack stack)
+	{
+		if(stack.stackTagCompound == null)
+		{
+			return JetpackMode.NORMAL;
+		}
+		
+		return JetpackMode.values()[stack.stackTagCompound.getInteger("mode")];
+	}
+	
+	public void setMode(ItemStack stack, JetpackMode mode)
+	{
+		if(stack.stackTagCompound == null)
+		{
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		stack.stackTagCompound.setInteger("mode", mode.ordinal());
+	}
+	
 	@Override
 	public void setGas(GasStack stack, Object... data)
 	{
@@ -169,6 +216,32 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 			}
+		}
+	}
+	
+	public static enum JetpackMode
+	{
+		NORMAL("tooltip.jetpack.regular", EnumColor.DARK_GREEN),
+		HOVER("tooltip.jetpack.hover", EnumColor.DARK_AQUA),
+		DISABLED("tooltip.jetpack.disabled", EnumColor.DARK_RED);
+		
+		private String unlocalized;
+		private EnumColor color;
+		
+		private JetpackMode(String s, EnumColor c)
+		{
+			unlocalized = s;
+			color = c;
+		}
+		
+		public JetpackMode increment()
+		{
+			return ordinal() < values().length-1 ? values()[ordinal()+1] : values()[0];
+		}
+		
+		public String getName()
+		{
+			return color + MekanismUtils.localize(unlocalized);
 		}
 	}
 }
