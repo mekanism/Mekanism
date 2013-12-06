@@ -19,7 +19,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N, D>, D> extends TileEntity implements ITransmitter<N, D>, ITileNetwork, IConfigurable
+public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> extends TileEntity implements ITransmitter<N>, ITileNetwork, IConfigurable
 {
 	public N theNetwork;
 	
@@ -84,7 +84,7 @@ public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N, D>, D
         if(!canConnect(side)) return false;
         
         TileEntity tile = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-        return (!(tile instanceof ITransmitter) || ((ITransmitter<?, ?>)tile).canConnect(side.getOpposite()));
+        return (!(tile instanceof ITransmitter) || ((ITransmitter<?>)tile).canConnect(side.getOpposite()));
     }
     
     @Override

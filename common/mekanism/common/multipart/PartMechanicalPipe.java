@@ -3,9 +3,6 @@ package mekanism.common.multipart;
 import java.util.Arrays;
 import java.util.Set;
 
-import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -20,8 +17,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack> implements IFluidHandler
+public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements IFluidHandler
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
@@ -45,7 +45,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork, FluidStack
 	}
 
 	@Override
-	public FluidNetwork createNetworkFromSingleTransmitter(ITransmitter<FluidNetwork, FluidStack> transmitter)
+	public FluidNetwork createNetworkFromSingleTransmitter(ITransmitter<FluidNetwork> transmitter)
 	{
 		return new FluidNetwork(transmitter);
 	}

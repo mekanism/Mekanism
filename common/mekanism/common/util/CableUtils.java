@@ -229,7 +229,7 @@ public final class CableUtils
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.ENERGY))
     	{
-    		ITransmitter<EnergyNetwork, Double> cable = (ITransmitter<EnergyNetwork, Double>)pointer;
+    		ITransmitter<EnergyNetwork> cable = (ITransmitter<EnergyNetwork>)pointer;
     		
     		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
     		ignored.add(sender);

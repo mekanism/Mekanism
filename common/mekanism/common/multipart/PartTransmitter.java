@@ -44,7 +44,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N, D>, ITileNetwork
+public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N>, ITileNetwork
 {
 	public int delayTicks;
 	public N theNetwork;
@@ -87,7 +87,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 		{
 			getTransmitterNetwork().transmitters.remove(tile());
 			super.bind(t);
-			getTransmitterNetwork().transmitters.add((ITransmitter<N, D>) tile());
+			getTransmitterNetwork().transmitters.add((ITransmitter<N>) tile());
 		}
 		else {
 			super.bind(t);
@@ -162,7 +162,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 			
 			if(or != possibleTransmitters)
 			{
-				((DynamicNetwork<?, N, D>)getTransmitterNetwork()).split((ITransmitter<N, D>)tile());
+				((DynamicNetwork<?, N>)getTransmitterNetwork()).split((ITransmitter<N>)tile());
 				setTransmitterNetwork(null);
 			}
 			
@@ -174,13 +174,13 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 					
 					if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 					{
-						((DynamicNetwork<?,N, D>)getTransmitterNetwork()).merge(((ITransmitter<N, D>)tileEntity).getTransmitterNetwork());
+						((DynamicNetwork<?,N>)getTransmitterNetwork()).merge(((ITransmitter<N>)tileEntity).getTransmitterNetwork());
 					}
 				}
 			}
 		}
 
-		((DynamicNetwork<?,N, D>)getTransmitterNetwork()).refresh();
+		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh();
 		
 		if(!world().isRemote)
 		{
@@ -322,25 +322,25 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 				if(connectionMapContainsSide(possibleTransmitters, side))
 				{
 					TileEntity cable = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
-					if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<N, D>)cable).getTransmitterNetwork(false) != null)
+					if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<N>)cable).getTransmitterNetwork(false) != null)
 					{
-						connectedNets.add(((ITransmitter<N, D>)cable).getTransmitterNetwork());
+						connectedNets.add(((ITransmitter<N>)cable).getTransmitterNetwork());
 					}
 				}
 			}
 			
 			if(connectedNets.size() == 0)
 			{
-				theNetwork = createNetworkFromSingleTransmitter((ITransmitter<N, D>)tile());
+				theNetwork = createNetworkFromSingleTransmitter((ITransmitter<N>)tile());
 			}
 			else if(connectedNets.size() == 1)
 			{
 				theNetwork = connectedNets.iterator().next();
-				theNetwork.transmitters.add((ITransmitter<N, D>)tile());
+				theNetwork.transmitters.add((ITransmitter<N>)tile());
 			}
 			else {
 				theNetwork = createNetworkByMergingSet(connectedNets);
-				theNetwork.transmitters.add((ITransmitter<N, D>)tile());
+				theNetwork.transmitters.add((ITransmitter<N>)tile());
 			}
 		}
 		
@@ -352,19 +352,19 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 	{
 		if(theNetwork != null)
 		{
-			theNetwork.removeTransmitter((ITransmitter<N, D>) tile());
+			theNetwork.removeTransmitter((ITransmitter<N>) tile());
 		}
 	}
 
 	@Override
 	public void fixTransmitterNetwork()
 	{
-		getTransmitterNetwork().fixMessedUpNetwork((ITransmitter<N, D>) tile());
+		getTransmitterNetwork().fixMessedUpNetwork((ITransmitter<N>) tile());
 	}
 	
 	public abstract boolean isValidAcceptor(TileEntity tile, ForgeDirection side);
 	
-	public abstract N createNetworkFromSingleTransmitter(ITransmitter<N, D> transmitter);
+	public abstract N createNetworkFromSingleTransmitter(ITransmitter<N> transmitter);
 	
 	public abstract N createNetworkByMergingSet(Set<N> networks);
 	
@@ -374,7 +374,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 		if(!canConnect(side)) return false;
 		
 		TileEntity tile = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
-		return (!(tile instanceof ITransmitter) || ((ITransmitter<?, ?>)tile).canConnect(side.getOpposite()));
+		return (!(tile instanceof ITransmitter) || ((ITransmitter<?>)tile).canConnect(side.getOpposite()));
 	}
 	
 	@Override
@@ -454,7 +454,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N, D>, D> exte
 	{
 		if(tile() instanceof ITransmitter)
 		{
-			getTransmitterNetwork().split((ITransmitter<N, D>)tile());
+			getTransmitterNetwork().split((ITransmitter<N>)tile());
 			
 			if(!world().isRemote)
 			{

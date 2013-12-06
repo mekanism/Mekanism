@@ -32,7 +32,7 @@ public class ItemNetworkReader extends ItemEnergized
     			{
     				setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
     				
-	    			ITransmitter<?, ?> transmitter = (ITransmitter<?, ?>)tileEntity;
+	    			ITransmitter<?> transmitter = (ITransmitter<?>)tileEntity;
 	    			
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));

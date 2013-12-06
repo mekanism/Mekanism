@@ -3,7 +3,7 @@ package mekanism.api.transmitters;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public interface ITransmitter<N extends DynamicNetwork<?, N, D>, D> 
+public interface ITransmitter<N extends DynamicNetwork<?, N>> 
 {
 	/**
 	 * Get the transmitter's transmission type

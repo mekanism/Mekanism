@@ -337,7 +337,7 @@ public class RenderPartTransmitter implements IIconRegister
 		GL11.glPopMatrix();
 	}
 	
-	public void renderStatic(PartTransmitter<?, ?> transmitter)
+	public void renderStatic(PartTransmitter<?> transmitter)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
@@ -350,7 +350,7 @@ public class RenderPartTransmitter implements IIconRegister
 		}
 	}
 	
-	public void renderSide(ForgeDirection side, PartTransmitter<?, ?> transmitter)
+	public void renderSide(ForgeDirection side, PartTransmitter<?> transmitter)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		String name = side.name().toLowerCase();
@@ -385,7 +385,7 @@ public class RenderPartTransmitter implements IIconRegister
         cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
     }
 
-    public Icon getIconForPart(PartTransmitter<?, ?> part)
+    public Icon getIconForPart(PartTransmitter<?> part)
 	{
 		Icon[] icons = typeMap.get(part.getTransmissionType());
 		return icons[part.isActive ? 1 : 0];

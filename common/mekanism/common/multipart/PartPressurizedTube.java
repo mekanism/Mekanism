@@ -14,7 +14,7 @@ import mekanism.client.render.RenderPartTransmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class PartPressurizedTube extends PartTransmitter<GasNetwork, Gas>
+public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 {
 	@Override
 	public String getType()
@@ -35,7 +35,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork, Gas>
 	}
 
 	@Override
-	public GasNetwork createNetworkFromSingleTransmitter(ITransmitter<GasNetwork, Gas> transmitter)
+	public GasNetwork createNetworkFromSingleTransmitter(ITransmitter<GasNetwork> transmitter)
 	{
 		return new GasNetwork(transmitter);
 	}

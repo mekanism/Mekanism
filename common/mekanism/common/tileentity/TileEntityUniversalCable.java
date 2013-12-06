@@ -28,7 +28,7 @@ import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork, Double> implements IPowerReceptor, IEnergySink, IEnergyHandler, IElectrical
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IEnergyHandler, IElectrical
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
@@ -61,9 +61,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork, Double>)cable).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<EnergyNetwork, Double>)cable).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork());
 				}
 			}
 			
@@ -139,7 +139,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 			{
-				getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork, Double>)tileEntity).getTransmitterNetwork());
+				getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
 			}
 		}
 		

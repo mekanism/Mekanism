@@ -111,11 +111,13 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	{
 		String[] strings = new String[networks.size()];
 		int i = 0;
-		for(ITransmitterNetwork<?,?,?> network : networks)
+		
+		for(ITransmitterNetwork<?, ?> network : networks)
 		{
 			strings[i] = network.toString();
 			++i;
 		}
+		
 		return strings;
 	}
 

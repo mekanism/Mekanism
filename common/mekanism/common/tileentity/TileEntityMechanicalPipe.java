@@ -31,7 +31,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork, FluidStack> implements IFluidHandler
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork> implements IFluidHandler
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
@@ -55,9 +55,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork, FluidStack>)pipe).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<FluidNetwork, FluidStack>)pipe).getTransmitterNetwork());
+					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork());
 				}
 			}
 			
@@ -124,7 +124,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 			{
-				getTransmitterNetwork().merge(((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork());
+				getTransmitterNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork());
 			}
 		}
 		

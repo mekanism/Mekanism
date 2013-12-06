@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack>
+public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
 	public int transferDelay = 0;
 	
@@ -33,13 +33,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 	public float fluidScale;
 	public Fluid refFluid = null;
 	
-	public FluidNetwork(ITransmitter<FluidNetwork, FluidStack>... varPipes)
+	public FluidNetwork(ITransmitter<FluidNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public FluidNetwork(Collection<ITransmitter<FluidNetwork, FluidStack>> collection)
+	public FluidNetwork(Collection<ITransmitter<FluidNetwork>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -200,7 +200,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 	@Override
 	public synchronized void refresh()
 	{
-		Set<ITransmitter<FluidNetwork, FluidStack>> iterPipes = (Set<ITransmitter<FluidNetwork, FluidStack>>)transmitters.clone();
+		Set<ITransmitter<FluidNetwork>> iterPipes = (Set<ITransmitter<FluidNetwork>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
 		
 		possibleAcceptors.clear();
@@ -208,7 +208,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
 		while(it.hasNext())
 		{
-			ITransmitter<FluidNetwork, FluidStack> conductor = (ITransmitter<FluidNetwork, FluidStack>)it.next();
+			ITransmitter<FluidNetwork> conductor = (ITransmitter<FluidNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -220,7 +220,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 			}
 		}
 		
-		for(ITransmitter<FluidNetwork, FluidStack> pipe : iterPipes)
+		for(ITransmitter<FluidNetwork> pipe : iterPipes)
 		{
 			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe)pipe).isActive) continue;
 			
@@ -272,7 +272,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 	}
 	
 	@Override
-	protected FluidNetwork create(ITransmitter<FluidNetwork, FluidStack>... varTransmitters) 
+	protected FluidNetwork create(ITransmitter<FluidNetwork>... varTransmitters) 
 	{
 		FluidNetwork network = new FluidNetwork(varTransmitters);
 		network.refFluid = refFluid;
@@ -281,7 +281,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 	}
 
 	@Override
-	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork, FluidStack>> collection) 
+	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork>> collection) 
 	{
 		FluidNetwork network = new FluidNetwork(collection);
 		network.refFluid = refFluid;

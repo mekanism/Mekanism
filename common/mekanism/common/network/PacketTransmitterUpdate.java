@@ -87,7 +87,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 			
 			if(tileEntity != null)
 			{
-				((ITransmitter<EnergyNetwork, Double>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
+				((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
 			}
 		}
 		else if(transmitterType == 2)
@@ -99,8 +99,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			((ITransmitter<GasNetwork, Gas>)tileEntity).getTransmitterNetwork().refGas = gasType;
-    			((ITransmitter<GasNetwork, Gas>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
+    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
+    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -113,8 +113,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
-    			((ITransmitter<FluidNetwork, FluidStack>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
+    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
+    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
     		}
 	    }
 	}
