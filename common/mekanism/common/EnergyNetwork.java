@@ -85,6 +85,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		
 		for(TileEntity acceptor : getAcceptors())
 		{
+			if(acceptorDirections.get(acceptor) == null)
+			{
+				continue;
+			}
+			
 			ForgeDirection side = acceptorDirections.get(acceptor).getOpposite();
 			
 			if(!ignored.contains(acceptor))

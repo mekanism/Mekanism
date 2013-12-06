@@ -1022,14 +1022,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			
 			GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
 			
-			if(stored == null)
-			{
-				itemstack.setItemDamage(100);
-			}
-			else {
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-			}
-			
 			return stored;
 		}
 		
@@ -1055,14 +1047,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			
 			if(stack == null || stack.amount == 0)
 			{
-				itemstack.setItemDamage(100);
 				itemstack.stackTagCompound.removeTag("stored");
 			}
 			else {
 				int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 				GasStack gasStack = new GasStack(stack.getGas(), amount);
 				
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 			}
 		}

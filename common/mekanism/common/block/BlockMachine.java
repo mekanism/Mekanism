@@ -156,6 +156,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         int height = Math.round(entityliving.rotationPitch);
         int change = 3;
         
+        if(tileEntity == null)
+        {
+        	return;
+        }
+        
         if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
         {
 	        if(height >= 65)
@@ -782,7 +787,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
-        
+    	
     	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
     	{
 	        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
