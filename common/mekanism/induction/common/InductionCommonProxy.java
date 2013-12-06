@@ -5,10 +5,8 @@ package mekanism.induction.common;
 
 import mekanism.common.Mekanism;
 import mekanism.induction.common.inventory.container.ContainerBattery;
-import mekanism.induction.common.inventory.container.ContainerMultimeter;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
-import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -26,8 +24,6 @@ public class InductionCommonProxy implements IGuiHandler
 	{
 		Mekanism.configuration.load();
 		MekanismInduction.SOUND_FXS = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Tesla Sound FXs", MekanismInduction.SOUND_FXS).getBoolean(MekanismInduction.SOUND_FXS);
-		MekanismInduction.LO_FI_INSULATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Use lo-fi insulation texture", MekanismInduction.LO_FI_INSULATION).getBoolean(MekanismInduction.LO_FI_INSULATION);
-		MekanismInduction.SHINY_SILVER = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Shiny silver wires", MekanismInduction.SHINY_SILVER).getBoolean(MekanismInduction.SHINY_SILVER);
 		MekanismInduction.MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MekanismInduction.MAX_CONTRACTOR_DISTANCE).getInt(MekanismInduction.MAX_CONTRACTOR_DISTANCE);
 
 		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
@@ -42,11 +38,7 @@ public class InductionCommonProxy implements IGuiHandler
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-		if(tileEntity instanceof TileEntityMultimeter)
-		{
-			return new ContainerMultimeter(player.inventory, ((TileEntityMultimeter)tileEntity));
-		}
-		else if(tileEntity instanceof TileEntityBattery)
+		if(tileEntity instanceof TileEntityBattery)
 		{
 			return new ContainerBattery(player.inventory, ((TileEntityBattery)tileEntity));
 		}

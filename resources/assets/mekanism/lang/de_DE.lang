@@ -39,6 +39,8 @@ tile.BasicBlock.SteelCasing.name=Stahlhülle
 tile.BasicBlock.DynamicTank.name=Dynamischer Tank
 tile.BasicBlock.DynamicGlass.name=Dynamisches Glas
 tile.BasicBlock.DynamicValve.name=Dynamisches Ventil
+tile.BasicBlock.CopperBlock.name=Kupferblock
+tile.BasicBlock.TinBlock.name=Zinnblock
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Anreicherungskammer
@@ -370,9 +372,9 @@ item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
 
-//*****//
-//TOOLS//
-//*****//
+//*********//
+//INDUCTION//
+//*********//
 
 //Blocks
 tile.Tesla.name=Teslaspule
@@ -380,22 +382,12 @@ tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Elektromagnetischer Kontraktor
 tile.Battery.name=Modulare Batterie
 
-tile.mekanism:wire.copper.name=Kupferkabel
-tile.mekanism:wire.tin.name=Zinnkabel
-tile.mekanism:wire.iron.name=Eisenkabel
-tile.mekanism:wire.aluminum.name=Aluminiumkabel
-tile.mekanism:wire.silver.name=Silberkabel
-tile.mekanism:wire.superconductor.name=Supraleitkabel
-
 //General text
 text.contractor.success=Kontraktor erfolgreich verbunden
 text.tesla.success=Teslaspule erfolgreich verbunden
 
 //Gui text
 gui.heatGenerator.fuel=Brennstoff
-
 gui.solarGenerator.sun=Sonne
-
-gui.bioGenerator.biofuel=Biobrennstoff
-
+gui.bioGenerator.bioFuel=Biobrennstoff
 gui.electrolyticSeparator.dump=Entsorge

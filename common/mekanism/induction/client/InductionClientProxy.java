@@ -1,24 +1,17 @@
 package mekanism.induction.client;
 
 import mekanism.induction.client.gui.GuiBattery;
-import mekanism.induction.client.gui.GuiMultimeter;
 import mekanism.induction.client.render.BlockRenderingHandler;
 import mekanism.induction.client.render.RenderBattery;
 import mekanism.induction.client.render.RenderEMContractor;
-import mekanism.induction.client.render.RenderMultimeter;
 import mekanism.induction.client.render.RenderTesla;
-import mekanism.induction.client.render.RenderWire;
 import mekanism.induction.common.InductionCommonProxy;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
-import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import mekanism.induction.common.tileentity.TileEntityTesla;
-import mekanism.induction.common.tileentity.TileEntityWire;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -41,10 +34,8 @@ public class InductionClientProxy extends InductionCommonProxy
 		RenderingRegistry.registerBlockHandler(BlockRenderingHandler.INSTANCE);
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTesla.class, new RenderTesla());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMultimeter.class, new RenderMultimeter());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEMContractor.class, new RenderEMContractor());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBattery.class, new RenderBattery());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWire.class, new RenderWire());
 	}
 
 	@Override
@@ -52,11 +43,7 @@ public class InductionClientProxy extends InductionCommonProxy
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-		if(tileEntity instanceof TileEntityMultimeter)
-		{
-			return new GuiMultimeter(player.inventory, ((TileEntityMultimeter) tileEntity));
-		}
-		else if(tileEntity instanceof TileEntityBattery)
+		if(tileEntity instanceof TileEntityBattery)
 		{
 			return new GuiBattery(player.inventory, ((TileEntityBattery) tileEntity));
 		}

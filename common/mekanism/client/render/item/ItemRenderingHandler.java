@@ -7,6 +7,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.model.ModelGasTank;
+import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelObsidianTNT;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.render.MekanismRenderer;
@@ -19,6 +20,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.tileentity.TileEntityBin;
@@ -55,6 +57,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelEnergyCore energyCore = new ModelEnergyCore();
 	public ModelGasTank gasTank = new ModelGasTank();
 	public ModelObsidianTNT obsidianTNT = new ModelObsidianTNT();
+	public ModelJetpack jetpack = new ModelJetpack();
 	
 	public RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
     private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
@@ -302,6 +305,14 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0.0F, -1.5F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
+		}
+		else if(item.getItem() instanceof ItemJetpack)
+		{
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
+			jetpack.render(0.0625F);
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

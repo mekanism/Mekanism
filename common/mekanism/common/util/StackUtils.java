@@ -3,7 +3,9 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public final class StackUtils
 {
@@ -31,6 +33,16 @@ public final class StackUtils
 		return ret;
 	}
 	
+	public static Item getItem(ItemStack stack)
+	{
+		if(stack == null)
+		{
+			return null;
+		}
+		
+		return stack.getItem();
+	}
+	
 	public static boolean diffIgnoreNull(ItemStack stack1, ItemStack stack2)
 	{
 		if(stack1 == null || stack2 == null)
@@ -39,6 +51,11 @@ public final class StackUtils
 		}
 		
 		return stack1.itemID != stack2.itemID;
+	}
+	
+	public static boolean equalsWildcard(ItemStack wild, ItemStack check)
+	{
+		return wild.itemID == check.itemID && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 	
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)

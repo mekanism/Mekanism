@@ -22,6 +22,7 @@ item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.WalkieTalkie.name=Walkie-Talkie
+item.Jetpack.name=Jetpack
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -242,6 +243,10 @@ tooltip.configurator.noLink=No link
 tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
 
+tooltip.jetpack.regular=Regular
+tooltip.jetpack.hover=Hover
+tooltip.jetpack.disabled=Disabled
+
 //Redstone control
 control.disabled=Disabled
 control.high=High
@@ -288,6 +293,12 @@ tile.Generator.HydrogenGenerator.name=Hydrogen Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
+
+//Gui text
+gui.heatGenerator.fuel=Fuel
+gui.solarGenerator.sun=Sun
+gui.bioGenerator.bioFuel=BioFuel
+gui.electrolyticSeparator.dump=Dump
 
 //*****//
 //TOOLS//
@@ -372,9 +383,9 @@ item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
 
-//*****//
-//TOOLS//
-//*****//
+//*********//
+//INDUCTION//
+//*********//
 
 //Blocks
 tile.Tesla.name=Tesla Coil
@@ -382,23 +393,6 @@ tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Electromagnetic Contractor
 tile.Battery.name=Modular Battery
 
-//Wires
-tile.Wire.CopperWire.name=Copper Wire
-tile.Wire.TinWire.name=Tin Wire
-tile.Wire.IronWire.name=Iron Wire
-tile.Wire.AluminumWire.name=Aluminum Wire
-tile.Wire.SilverWire.name=Silver Wire
-tile.Wire.SuperconductorWire.name=Superconductor Wire
-
-//Items
-item.Linker.name=Electrostatic Linker
-
 //General text
 text.contractor.success=Linked contractor successfully
 text.tesla.success=Linked tesla successfully
-
-//Gui text
-gui.heatGenerator.fuel=Fuel
-gui.solarGenerator.sun=Sun
-gui.bioGenerator.biofuel=BioFuel
-gui.electrolyticSeparator.dump=Dump

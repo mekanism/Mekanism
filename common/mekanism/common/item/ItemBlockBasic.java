@@ -138,12 +138,12 @@ public class ItemBlockBasic extends ItemBlock
     			TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
     			InventoryBin inv = new InventoryBin(stack);
     			
-    			tileEntity.itemCount = inv.getItemCount();
-    			
-    			if(inv.getItemCount() > 0)
+    			if(inv.getItemType() != null)
     			{
     				tileEntity.setItemType(inv.getItemType());
     			}
+    			
+    			tileEntity.setItemCount(inv.getItemCount());
     		}
     	}
     	

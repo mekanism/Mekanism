@@ -79,10 +79,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
-				if(back instanceof IInventory && front instanceof TileEntityLogisticalTransporter)
+				if(back instanceof IInventory && (front instanceof TileEntityLogisticalTransporter || front instanceof IInventory))
 				{
 					IInventory inventory = (IInventory)back;
-					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)front;
 					
 					InvStack inInventory = null;
 					boolean hasFilter = false;
@@ -125,17 +124,31 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					{
 						ItemStack used = null;
 						
-						if(!roundRobin)
+						if(front instanceof TileEntityLogisticalTransporter)
 						{
-							ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
+							TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)front;
 							
-							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+							if(!roundRobin)
 							{
-								used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+								ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
+								
+								if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+								{
+									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+								}
+							}
+							else {
+								ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
+								
+								if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+								{
+									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+								}
 							}
 						}
-						else {
-							ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
+						else if(front instanceof IInventory)
+						{
+							ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
 							
 							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 							{

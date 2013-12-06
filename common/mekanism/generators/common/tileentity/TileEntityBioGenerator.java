@@ -3,7 +3,7 @@ package mekanism.generators.common.tileentity;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.client.sound.Sound;
+import mekanism.client.sound.TileSound;
 import mekanism.common.FluidSlot;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +29,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
-	public Sound audio;
+	public TileSound audio;
 
 	/** The FluidSlot biofuel instance for this generator. */
 	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);

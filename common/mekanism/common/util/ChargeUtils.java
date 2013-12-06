@@ -37,7 +37,7 @@ public final class ChargeUtils
 				
 				if(item.canProvideEnergy(storer.inventory[slotID]))
 				{
-					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 4, false, false)*Mekanism.FROM_IC2;
+					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
 					storer.setEnergy(storer.getEnergy() + gain);
 				}
 			}
@@ -83,7 +83,7 @@ public final class ChargeUtils
 			}
 			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(storer.inventory[slotID], (int)(storer.getEnergy()*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(storer.inventory[slotID], (int)(storer.getEnergy()*Mekanism.TO_IC2), 3, true, false)*Mekanism.FROM_IC2;
 				storer.setEnergy(storer.getEnergy() - sent);
 			}
 			else if(storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)

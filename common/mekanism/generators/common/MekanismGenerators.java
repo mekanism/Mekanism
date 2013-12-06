@@ -1,14 +1,11 @@
 package mekanism.generators.common;
 
-import java.util.ArrayList;
-
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismRecipe;
-import mekanism.common.PacketHandler;
 import mekanism.common.RecipeHandler;
 import mekanism.common.Version;
 import mekanism.common.item.ItemMekanism;
@@ -16,9 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
-import mekanism.generators.common.network.PacketElectrolyticSeparatorParticle;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -95,9 +90,6 @@ public class MekanismGenerators implements IModule
 		addItems();
 		addRecipes();
 		
-		//Packet registrations
-		PacketHandler.registerPacket(PacketElectrolyticSeparatorParticle.class);
-		
 		//Finalization
 		Mekanism.logger.info("[MekanismGenerators] Loaded module.");
 	}
@@ -106,23 +98,20 @@ public class MekanismGenerators implements IModule
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		try {
-			/*for(ItemStack ore : OreDictionary.getOres("treeSapling")) //TODO later!
+			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
 			{
-				ArrayList<ItemStack> list = new ArrayList();
-				ore.getItem().getSubItems(ore.itemID, CreativeTabs.tabDecorations, list);
-				
-				for(ItemStack sapling : list)
+				if(ore.getItemDamage() == 0 || ore.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 				{
-					RecipeHandler.addCrusherRecipe(MekanismUtils.size(sapling, 1), new ItemStack(BioFuel, 2));
+					RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(BioFuel, 2));
 				}
-			}*/
+			}
 		} catch(Exception e) {}
 	}
 	
 	public void addRecipes()
 	{
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 0), new Object[] {
-			"PPP", "EeE", "IRI", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('e'), Mekanism.EnrichedIron, Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone
+			"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingotOsmium", Character.valueOf('F'), Block.furnaceIdle, Character.valueOf('W'), Block.planks
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 1), new Object[] {
 			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Item.ingotIron, Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem()

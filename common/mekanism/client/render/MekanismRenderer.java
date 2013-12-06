@@ -31,7 +31,6 @@ import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -203,8 +202,8 @@ public class MekanismRenderer
         
         RenderHelper.disableStandardItemLighting();
         
-        float glowRatioX = Math.min(((float)glow/15F)*240F + lightmapLastX, 240);
-        float glowRatioY = Math.min(((float)glow/15F)*240F + lightmapLastY, 240);
+        float glowRatioX = Math.min((glow/15F)*240F + lightmapLastX, 240);
+        float glowRatioY = Math.min((glow/15F)*240F + lightmapLastY, 240);
         
         if(!optifineBreak)
         {
@@ -224,17 +223,16 @@ public class MekanismRenderer
     
     public static void blendOn()
     {
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glPushAttrib(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
     
     public static void blendOff()
     {
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
-        GL11.glDisable(GL11.GL_BLEND);
+    	GL11.glPopAttrib();
     }
     
     /**
@@ -303,9 +301,9 @@ public class MekanismRenderer
         if(renderer.useInventoryTint)
         {
             int renderColor = block.getRenderColor(metadata);
-            float red = (float)(renderColor >> 16 & 255) / 255.0F;
-            float green = (float)(renderColor >> 8 & 255) / 255.0F;
-            float blue = (float)(renderColor & 255) / 255.0F;
+            float red = (renderColor >> 16 & 255) / 255.0F;
+            float green = (renderColor >> 8 & 255) / 255.0F;
+            float blue = (renderColor & 255) / 255.0F;
             GL11.glColor4f(red, green, blue, 1.0F);
         }
 
@@ -448,6 +446,20 @@ public class MekanismRenderer
     	} catch(Exception e) {}
     	
     	return 0;
+    }
+    
+    public void drawTexturedModalRect(int par1, int par2, int par3, int par4, int par5, int par6)
+    {
+    	int zLevel = 0;
+        float f = 0.00390625F;
+        float f1 = 0.00390625F;
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV((par1 + 0), (par2 + par6), zLevel, ((par3 + 0) * f), ((par4 + par6) * f1));
+        tessellator.addVertexWithUV((par1 + par5), (par2 + par6), zLevel, ((par3 + par5) * f), ((par4 + par6) * f1));
+        tessellator.addVertexWithUV((par1 + par5), (par2 + 0), zLevel, ((par3 + par5) * f), ((par4 + 0) * f1));
+        tessellator.addVertexWithUV((par1 + 0), (par2 + 0), zLevel, ((par3 + 0) * f), ((par4 + 0) * f1));
+        tessellator.draw();
     }
     
     public static ResourceLocation getBlocksTexture()

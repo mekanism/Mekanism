@@ -118,7 +118,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 				if(tileEntity instanceof IFluidHandler) 
 				{
-					fluidTank.drain(((IFluidHandler)tileEntity).fill(orientation.getOpposite(), fluidTank.getFluid(), true), true);
+					FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(100, fluidTank.getFluidAmount()));
+					fluidTank.drain(((IFluidHandler)tileEntity).fill(orientation.getOpposite(), toDrain, true), true);
 					
 					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount <= 0) 
 					{

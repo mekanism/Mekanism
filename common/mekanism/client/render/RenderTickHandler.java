@@ -1,15 +1,20 @@
 package mekanism.client.render;
 
 import java.util.EnumSet;
+import java.util.Random;
 
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemJetpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -19,11 +24,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderTickHandler implements ITickHandler
 {
+	public Random rand = new Random();
+	
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
-	{
-		
-	}
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) 
@@ -65,6 +69,72 @@ public class RenderTickHandler implements ITickHandler
 					font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 19, 0x404040);
 					font.drawStringWithShadow("Side: " + pos.sideHit, 1, 28, 0x404040);
 				}
+			}
+			
+			if(player != null)
+			{
+				if(player.getCurrentItemOrArmor(3) != null && player.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+				{
+					ItemStack stack = player.getCurrentItemOrArmor(3);
+					ItemJetpack jetpack = (ItemJetpack)stack.getItem();
+					
+					ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+					int x = scaledresolution.getScaledWidth();
+					int y = scaledresolution.getScaledHeight();
+					
+					font.drawStringWithShadow("Mode: " + jetpack.getMode(stack).getName(), 1, y - 20, 0x404040);
+					font.drawStringWithShadow("Hydrogen: " + jetpack.getStored(stack), 1, y - 11, 0x404040);
+				}
+			}
+			
+			for(EntityPlayer p : Mekanism.jetpackOn)
+			{
+				if(p.getDistance(player.posX, player.posY, player.posZ) > 40)
+				{
+					continue;
+				}
+				
+				float random = (rand.nextFloat()-0.5F)*0.1F;
+				
+				Vector3 vLeft = new Vector3();
+				vLeft.z -= 0.54;
+				vLeft.x -= 0.43;
+				vLeft.rotate(p.renderYawOffset);
+				vLeft.y -= 0.55;
+				
+				Vector3 vRight = new Vector3();
+				vRight.z -= 0.54;
+				vRight.x += 0.43;
+				vRight.rotate(p.renderYawOffset);
+				vRight.y -= 0.55;
+				
+				Vector3 vCenter = new Vector3();
+				vCenter.z -= 0.30;
+				vCenter.x = (rand.nextFloat()-0.5F)*0.4F;
+				vCenter.rotate(p.renderYawOffset);
+				vCenter.y -= 0.86;
+				
+				Vector3 rLeft = vLeft.clone().scale(random);
+				Vector3 rRight = vRight.clone().scale(random);
+				
+				Vector3 mLeft = Vector3.translate(vLeft.clone().scale(0.2), new Vector3(p.motionX, p.motionY, p.motionZ));
+				Vector3 mRight = Vector3.translate(vRight.clone().scale(0.2), new Vector3(p.motionX, p.motionY, p.motionZ));
+				Vector3 mCenter = Vector3.translate(vCenter.clone().scale(0.2), new Vector3(p.motionX, p.motionY, p.motionZ));
+				
+				mLeft.translate(rLeft);
+				mRight.translate(rRight);
+				
+				Vector3 v = new Vector3(p).translate(vLeft);
+				world.spawnParticle("flame", v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+				world.spawnParticle("smoke", v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+				
+				v = new Vector3(p).translate(vRight);
+				world.spawnParticle("flame", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				world.spawnParticle("smoke", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				
+				v = new Vector3(p).translate(vCenter);
+				world.spawnParticle("flame", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+				world.spawnParticle("smoke", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 			}
 		}
 	}

@@ -5,20 +5,10 @@ import java.net.URL;
 import mekanism.client.MekanismClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.world.World;
+import universalelectricity.core.vector.Vector3;
 
-/**
- * Sound -- an object that is created in SoundHandler. A 'Sound' object runs off of
- * PaulsCode's SoundSystem. It has several methods; play(), for looping the clip,
- * stop(), for stopping the loop, remove(), for removing the sound from PaulsCode,
- * and updateVolume() for updating the volume based on where the player is.
- * @author AidanBrady
- *
- */
-@SideOnly(Side.CLIENT)
-public class Sound
+public abstract class Sound
 {
 	/** The bundled path where the sound is */
 	public String soundPath;
@@ -26,11 +16,10 @@ public class Sound
 	/** A unique identifier for this sound */
 	public String identifier;
 	
-	/** The TileEntity this sound is associated with. */
-	public TileEntity tileEntity;
-	
 	/** Whether or not this sound is playing */
 	public boolean isPlaying = false;
+	
+	private Object objRef;
 	
 	/**
 	 * A sound that runs off of the PaulsCode sound system.
@@ -38,13 +27,13 @@ public class Sound
 	 * @param sound - bundled path to the sound
 	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public Sound(String id, String sound, TileEntity tileentity)
+	public Sound(String id, String sound, Object obj, Vector3 loc)
 	{
 		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			soundPath = sound;
 			identifier = id;
-			tileEntity = tileentity;
+			objRef = obj;
 			
 			URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
 			
@@ -55,12 +44,12 @@ public class Sound
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
-				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, 0, 16F);
+				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, (float)loc.x, (float)loc.y, (float)loc.z, 0, 16F);
 				updateVolume(Minecraft.getMinecraft().thePlayer);
 				SoundHandler.getSoundSystem().activate(id);
 			}
 			
-			MekanismClient.audioHandler.sounds.put(tileEntity, this);
+			MekanismClient.audioHandler.sounds.put(obj, this);
 		}
 	}
 	
@@ -120,7 +109,7 @@ public class Sound
 				stopLoop();
 			}
 			
-			MekanismClient.audioHandler.sounds.remove(tileEntity);
+			MekanismClient.audioHandler.sounds.remove(objRef);
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
@@ -130,6 +119,12 @@ public class Sound
 		}
 	}
 	
+	public abstract boolean update(World world);
+	
+	public abstract Vector3 getLocation();
+	
+	public abstract float getMultiplier();
+	
 	/**
 	 * Updates the volume based on how far away the player is from the machine.
 	 * @param entityplayer - player who is near the machine, always Minecraft.thePlayer
@@ -138,20 +133,19 @@ public class Sound
     {
 		synchronized(MekanismClient.audioHandler.sounds)
 		{
-			if(entityplayer != null && tileEntity != null && entityplayer.worldObj == tileEntity.worldObj)
-			{
-				float multiplier = ((IHasSound)tileEntity).getVolumeMultiplier();
+			try {
+				float multiplier = getMultiplier();
 		    	float volume = 0;
 		    	float masterVolume = MekanismClient.audioHandler.masterVolume;
 		    	
-		        double distance = entityplayer.getDistance(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+		        double distance = entityplayer.getDistance(getLocation().x, getLocation().y, getLocation().z);
 		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
 		
 		        if(SoundHandler.getSoundSystem() != null)
 		        {
 		        	SoundHandler.getSoundSystem().setVolume(identifier, volume);
 		        }
-			}
+			} catch(Exception e) {}
 		}
     }
 }

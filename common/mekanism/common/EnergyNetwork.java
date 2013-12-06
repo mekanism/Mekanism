@@ -176,6 +176,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork, Dou
 					double currentSending = sending+remaining;
 					ForgeDirection side = acceptorDirections.get(acceptor);
 					
+					if(side == null)
+					{
+						continue;
+					}
+					
 					remaining = 0;
 					
 					if(acceptor instanceof IStrictEnergyAcceptor)
@@ -235,6 +240,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork, Dou
 		for(TileEntity acceptor : copy)
 		{
 			ForgeDirection side = acceptorDirections.get(acceptor);
+			
+			if(side == null)
+			{
+				continue;
+			}
 			
 			if(acceptor instanceof IStrictEnergyAcceptor)
 			{

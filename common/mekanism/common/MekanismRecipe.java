@@ -104,7 +104,7 @@ public class MekanismRecipe implements IRecipe
             }
             else if(in instanceof Block)
             {
-                itemMap.put(chr, new ItemStack((Block)in));
+                itemMap.put(chr, new ItemStack((Block)in, 1, OreDictionary.WILDCARD_VALUE));
             }
             else if(in instanceof String)
             {
@@ -289,7 +289,7 @@ public class MekanismRecipe implements IRecipe
         
         if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem))
         {
-	        if(target.getItemDamage() != input.getItemDamage())
+	        if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
 	        {
 	        	return false;
 	        }
@@ -297,7 +297,7 @@ public class MekanismRecipe implements IRecipe
         else {
         	if(((IEnergizedItem)target.getItem()).isMetadataSpecific() && ((IEnergizedItem)input.getItem()).isMetadataSpecific())
         	{
-        		if(target.getItemDamage() != input.getItemDamage())
+        		if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
         		{
         			return false;
         		}

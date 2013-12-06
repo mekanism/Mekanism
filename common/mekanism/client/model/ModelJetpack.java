@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+
+import org.lwjgl.opengl.GL11;
 
 public class ModelJetpack extends ModelBase
 {
@@ -25,12 +28,6 @@ public class ModelJetpack extends ModelBase
 	ModelRenderer Packdoodad2;
 	ModelRenderer Packdoodad3;
 	ModelRenderer Bottomthruster;
-	ModelRenderer head;
-	ModelRenderer body;
-	ModelRenderer rightarm;
-	ModelRenderer leftarm;
-	ModelRenderer rightleg;
-	ModelRenderer leftleg;
 
 	public ModelJetpack()
 	{
@@ -157,42 +154,6 @@ public class ModelJetpack extends ModelBase
 		Bottomthruster.setTextureSize(128, 64);
 		Bottomthruster.mirror = true;
 		setRotation(Bottomthruster, 0F, 0F, 0F);
-		head = new ModelRenderer(this, 0, 0);
-		head.addBox(-4F, -8F, -4F, 8, 8, 8);
-		head.setRotationPoint(0F, 0F, 0F);
-		head.setTextureSize(128, 64);
-		head.mirror = true;
-		setRotation(head, 0F, 0F, 0F);
-		body = new ModelRenderer(this, 0, 0);
-		body.addBox(-4F, 0F, -2F, 8, 12, 4);
-		body.setRotationPoint(0F, 0F, 0F);
-		body.setTextureSize(128, 64);
-		body.mirror = true;
-		setRotation(body, 0F, 0F, 0F);
-		rightarm = new ModelRenderer(this, 0, 0);
-		rightarm.addBox(-3F, -2F, -2F, 4, 12, 4);
-		rightarm.setRotationPoint(-5F, 2F, 0F);
-		rightarm.setTextureSize(128, 64);
-		rightarm.mirror = true;
-		setRotation(rightarm, 0F, 0F, 0F);
-		leftarm = new ModelRenderer(this, 0, 0);
-		leftarm.addBox(-1F, -2F, -2F, 4, 12, 4);
-		leftarm.setRotationPoint(5F, 2F, 0F);
-		leftarm.setTextureSize(128, 64);
-		leftarm.mirror = true;
-		setRotation(leftarm, 0F, 0F, 0F);
-		rightleg = new ModelRenderer(this, 0, 0);
-		rightleg.addBox(-2F, 0F, -2F, 4, 12, 4);
-		rightleg.setRotationPoint(-2F, 12F, 0F);
-		rightleg.setTextureSize(128, 64);
-		rightleg.mirror = true;
-		setRotation(rightleg, 0F, 0F, 0F);
-		leftleg = new ModelRenderer(this, 0, 0);
-		leftleg.addBox(-2F, 0F, -2F, 4, 12, 4);
-		leftleg.setRotationPoint(2F, 12F, 0F);
-		leftleg.setTextureSize(128, 64);
-		leftleg.mirror = true;
-		setRotation(leftleg, 0F, 0F, 0F);
 	}
 
 	public void render(float size)
@@ -206,23 +167,35 @@ public class ModelJetpack extends ModelBase
 		Fueltuberight.render(size);
 		Fueltubeleft.render(size);
 		Packmid.render(size);
+		
+		MekanismRenderer.glowOn();
 		Packcore.render(size);
+		MekanismRenderer.glowOff();
+		
 		WingsupportL.render(size);
 		WingsupportR.render(size);
 		Packtoprear.render(size);
 		ExtendosupportL.render(size);
 		ExtendosupportR.render(size);
+		
+		GL11.glPushMatrix();
+		MekanismRenderer.blendOn();
+		MekanismRenderer.glowOn();
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glColor4f(1, 1, 1, 0.2F);
+		
 		WingbladeL.render(size);
 		WingbladeR.render(size);
+		
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		MekanismRenderer.glowOff();
+		MekanismRenderer.blendOff();
+		GL11.glPopMatrix();
+		
 		Packdoodad2.render(size);
 		Packdoodad3.render(size);
 		Bottomthruster.render(size);
-		head.render(size);
-		body.render(size);
-		rightarm.render(size);
-		leftarm.render(size);
-		rightleg.render(size);
-		leftleg.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)
