@@ -93,6 +93,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -177,6 +178,10 @@ public class Mekanism
 	
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
+
+	public static KeySync keyMap = new KeySync();
+
+	public static Set<EntityPlayer> jetpackOn = new HashSet<EntityPlayer>();
 	
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     
@@ -231,6 +236,8 @@ public class Mekanism
 	
 	//General Configuration
 	public static boolean osmiumGenerationEnabled = true;
+	public static boolean copperGenerationEnabled = true;
+	public static boolean tinGenerationEnabled = true;
 	public static boolean disableBCBronzeCrafting = true;
 	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
