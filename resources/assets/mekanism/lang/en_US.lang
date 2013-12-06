@@ -294,6 +294,12 @@ tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
 
+//Gui text
+gui.heatGenerator.fuel=Fuel
+gui.solarGenerator.sun=Sun
+gui.bioGenerator.bioFuel=BioFuel
+gui.electrolyticSeparator.dump=Dump
+
 //*****//
 //TOOLS//
 //*****//
@@ -377,9 +383,9 @@ item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
 
-//*****//
-//TOOLS//
-//*****//
+//*********//
+//INDUCTION//
+//*********//
 
 //Blocks
 tile.Tesla.name=Tesla Coil
@@ -387,19 +393,6 @@ tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Electromagnetic Contractor
 tile.Battery.name=Modular Battery
 
-//Wires
-tile.Wire.CopperWire.name=Copper Wire
-tile.Wire.TinWire.name=Tin Wire
-tile.Wire.IronWire.name=Iron Wire
-tile.Wire.AluminumWire.name=Aluminum Wire
-tile.Wire.SilverWire.name=Silver Wire
-
 //General text
 text.contractor.success=Linked contractor successfully
 text.tesla.success=Linked tesla successfully
-
-//Gui text
-gui.heatGenerator.fuel=Fuel
-gui.solarGenerator.sun=Sun
-gui.bioGenerator.bioFuel=BioFuel
-gui.electrolyticSeparator.dump=Dump

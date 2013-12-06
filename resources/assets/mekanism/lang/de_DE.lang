@@ -372,22 +372,15 @@ item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
 
-//*****//
-//TOOLS//
-//*****//
+//*********//
+//INDUCTION//
+//*********//
 
 //Blocks
 tile.Tesla.name=Teslaspule
 tile.Multimeter.name=Multimeter
 tile.ElectromagneticContractor.name=Elektromagnetischer Kontraktor
 tile.Battery.name=Modulare Batterie
-
-//Wires
-tile.Wire.CopperWire.name=Kupferkabel
-tile.Wire.TinWire.name=Zinnkabel
-tile.Wire.IronWire.name=Eisenkabel
-tile.Wire.AluminumWire.name=Aluminiumkabel
-tile.Wire.SilverWire.name=Silberkabel
 
 //General text
 text.contractor.success=Kontraktor erfolgreich verbunden

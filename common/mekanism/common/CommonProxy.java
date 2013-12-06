@@ -158,6 +158,8 @@ public class CommonProxy
 		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", 3008).getInt();
 	  	
 	  	Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
+	  	Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);
+	  	Mekanism.tinGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);
 	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(true);
 	  	Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);

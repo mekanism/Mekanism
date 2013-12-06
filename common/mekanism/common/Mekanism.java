@@ -214,7 +214,7 @@ public class Mekanism
 	public static Item NetworkReader;
 	public static Item WalkieTalkie;
 	public static Item ItemProxy;
-	public static Item Jetpack;
+	public static ItemJetpack Jetpack;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -235,6 +235,8 @@ public class Mekanism
 	
 	//General Configuration
 	public static boolean osmiumGenerationEnabled = true;
+	public static boolean copperGenerationEnabled = true;
+	public static boolean tinGenerationEnabled = true;
 	public static boolean disableBCBronzeCrafting = true;
 	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
@@ -467,6 +469,9 @@ public class Mekanism
 			"GCG", "tET", "GIG", Character.valueOf('G'), Block.glass, Character.valueOf('C'), "circuitBasic", Character.valueOf('t'), MekanismUtils.getEmptyGasTank(), Character.valueOf('E'), EnergyTablet.getUnchargedItem(), 
 			Character.valueOf('T'), new ItemStack(BasicBlock, 1, 9), Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(Jetpack.getEmptyItem(), new Object[] {
+			"SCS", "TGT", " T ", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "circuitBasic", Character.valueOf('T'), "ingotTin", Character.valueOf('G'), MekanismUtils.getEmptyGasTank()
+		}));
 		
 		for(RecipeType type : RecipeType.values())
 		{
@@ -554,15 +559,15 @@ public class Mekanism
 	{	
 		//Declarations
 		configuration.load();
-		ElectricBow = (ItemElectricBow) new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
+		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
 		//OPEN 11201-11203
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
+		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt()).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt()).setUnlocalizedName("EnergyUpgrade");
-		Robit = (ItemRobit) new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
-		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
+		Robit = (ItemRobit)new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
+		AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
 		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", 11213).getInt()).setUnlocalizedName("ItemProxy");
@@ -575,7 +580,7 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
-		Jetpack = new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
+		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		configuration.save();
 		

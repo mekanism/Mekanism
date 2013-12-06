@@ -26,8 +26,6 @@ public class InductionCommonProxy implements IGuiHandler
 	{
 		Mekanism.configuration.load();
 		MekanismInduction.SOUND_FXS = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Tesla Sound FXs", MekanismInduction.SOUND_FXS).getBoolean(MekanismInduction.SOUND_FXS);
-		MekanismInduction.LO_FI_INSULATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Use lo-fi insulation texture", MekanismInduction.LO_FI_INSULATION).getBoolean(MekanismInduction.LO_FI_INSULATION);
-		MekanismInduction.SHINY_SILVER = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Shiny silver wires", MekanismInduction.SHINY_SILVER).getBoolean(MekanismInduction.SHINY_SILVER);
 		MekanismInduction.MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MekanismInduction.MAX_CONTRACTOR_DISTANCE).getInt(MekanismInduction.MAX_CONTRACTOR_DISTANCE);
 
 		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);

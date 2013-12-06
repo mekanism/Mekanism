@@ -12,6 +12,7 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,6 +32,8 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	{
 		super(id, EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
+		setMaxDamage(100);
+		setNoRepair();
 	}
 	
 	@Override
@@ -221,6 +224,30 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 			}
+		}
+	}
+	
+	public ItemStack getEmptyItem()
+	{
+		ItemStack empty = new ItemStack(this);
+		setGas(null, empty);
+		empty.setItemDamage(100);
+		return empty;
+	}
+	
+	@Override
+	public void getSubItems(int i, CreativeTabs tabs, List list)
+	{
+		ItemStack empty = new ItemStack(this);
+		setGas(null, empty);
+		empty.setItemDamage(100);
+		list.add(empty);
+		
+		for(Gas type : GasRegistry.getRegisteredGasses())
+		{
+			ItemStack filled = new ItemStack(this);
+			setGas(new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)), filled);
+			list.add(filled);
 		}
 	}
 	

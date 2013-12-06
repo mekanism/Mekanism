@@ -18,28 +18,37 @@ public class OreHandler implements IWorldGenerator
 	{
 		if(!(chunkGenerator instanceof ChunkProviderHell) && !(chunkGenerator instanceof ChunkProviderEnd))
 		{
-			for(int i = 0; i < Mekanism.osmiumGenerationAmount; i++)
+			if(Mekanism.osmiumGenerationEnabled)
 			{
-				int randPosX = (chunkX*16) + random.nextInt(16);
-				int randPosY = random.nextInt(60);
-				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				new WorldGenMinable(Mekanism.oreBlockID, 0, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+				for(int i = 0; i < Mekanism.osmiumGenerationAmount; i++)
+				{
+					int randPosX = (chunkX*16) + random.nextInt(16);
+					int randPosY = random.nextInt(60);
+					int randPosZ = (chunkZ*16) + random.nextInt(16);
+					new WorldGenMinable(Mekanism.oreBlockID, 0, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+				}
 			}
 			
-			for(int i = 0; i < Mekanism.copperGenerationAmount; i++)
+			if(Mekanism.copperGenerationEnabled)
 			{
-				int randPosX = (chunkX*16) + random.nextInt(16);
-				int randPosY = random.nextInt(60);
-				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				new WorldGenMinable(Mekanism.oreBlockID, 1, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+				for(int i = 0; i < Mekanism.copperGenerationAmount; i++)
+				{
+					int randPosX = (chunkX*16) + random.nextInt(16);
+					int randPosY = random.nextInt(60);
+					int randPosZ = (chunkZ*16) + random.nextInt(16);
+					new WorldGenMinable(Mekanism.oreBlockID, 1, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+				}
 			}
 			
-			for(int i = 0; i < Mekanism.tinGenerationAmount; i++)
+			if(Mekanism.tinGenerationEnabled)
 			{
-				int randPosX = (chunkX*16) + random.nextInt(16);
-				int randPosY = random.nextInt(60);
-				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				new WorldGenMinable(Mekanism.oreBlockID, 2, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+				for(int i = 0; i < Mekanism.tinGenerationAmount; i++)
+				{
+					int randPosX = (chunkX*16) + random.nextInt(16);
+					int randPosY = random.nextInt(60);
+					int randPosZ = (chunkZ*16) + random.nextInt(16);
+					new WorldGenMinable(Mekanism.oreBlockID, 2, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+				}
 			}
 		}
 	}
