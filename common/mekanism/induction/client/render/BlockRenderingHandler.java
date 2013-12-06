@@ -8,7 +8,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.induction.client.InductionClientProxy;
 import mekanism.induction.common.block.BlockBattery;
 import mekanism.induction.common.block.BlockEMContractor;
-import mekanism.induction.common.block.BlockMultimeter;
 import mekanism.induction.common.block.BlockTesla;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -58,15 +57,6 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Battery.png"));
 			RenderBattery.model.render(0.0625f);
-			GL11.glPopMatrix();
-		}
-		else if(block instanceof BlockMultimeter)
-		{
-			GL11.glPushMatrix();
-			GL11.glRotatef(180, 0, 1, 0);
-			GL11.glTranslated(0, -1, -0.7);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Multimeter.png"));
-			RenderMultimeter.model.render(0.0625f);
 			GL11.glPopMatrix();
 		}
 	}

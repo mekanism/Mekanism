@@ -5,7 +5,6 @@ import mekanism.induction.client.gui.GuiMultimeter;
 import mekanism.induction.client.render.BlockRenderingHandler;
 import mekanism.induction.client.render.RenderBattery;
 import mekanism.induction.client.render.RenderEMContractor;
-import mekanism.induction.client.render.RenderMultimeter;
 import mekanism.induction.client.render.RenderTesla;
 import mekanism.induction.common.InductionCommonProxy;
 import mekanism.induction.common.tileentity.TileEntityBattery;
@@ -37,7 +36,6 @@ public class InductionClientProxy extends InductionCommonProxy
 		RenderingRegistry.registerBlockHandler(BlockRenderingHandler.INSTANCE);
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTesla.class, new RenderTesla());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMultimeter.class, new RenderMultimeter());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEMContractor.class, new RenderEMContractor());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBattery.class, new RenderBattery());
 	}

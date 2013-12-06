@@ -8,7 +8,6 @@ import mekanism.common.Version;
 import mekanism.common.util.MekanismUtils;
 import mekanism.induction.common.block.BlockBattery;
 import mekanism.induction.common.block.BlockEMContractor;
-import mekanism.induction.common.block.BlockMultimeter;
 import mekanism.induction.common.block.BlockTesla;
 import mekanism.induction.common.item.ItemBlockContractor;
 import mekanism.induction.common.item.ItemBlockMultimeter;
@@ -71,7 +70,6 @@ public class MekanismInduction implements IModule
 
 	//Blocks
 	public static Block Tesla;
-	public static Block Multimeter;
 	public static Block ElectromagneticContractor;
 	public static Block Battery;
 
@@ -85,12 +83,10 @@ public class MekanismInduction implements IModule
 
 		//Blocks
 		Tesla = new BlockTesla(Mekanism.configuration.getBlock("Tesla", getNextBlockID()).getInt()).setUnlocalizedName("Tesla");
-		Multimeter = new BlockMultimeter(Mekanism.configuration.getBlock("Multimeter", getNextBlockID()).getInt()).setUnlocalizedName("Multimeter");
 		ElectromagneticContractor = new BlockEMContractor(Mekanism.configuration.getBlock("ElectromagneticContractor", getNextBlockID()).getInt()).setUnlocalizedName("ElectromagneticContractor");
 		Battery = new BlockBattery(Mekanism.configuration.getBlock("Battery", getNextBlockID()).getInt()).setUnlocalizedName("Battery");
 
 		GameRegistry.registerBlock(Tesla, "Tesla");
-		GameRegistry.registerBlock(Multimeter, ItemBlockMultimeter.class, "Multimeter");
 		GameRegistry.registerBlock(ElectromagneticContractor, ItemBlockContractor.class, "ElectromagneticContractor");
 		GameRegistry.registerBlock(Battery, "Battery");
 
@@ -113,16 +109,8 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-		/** Tesla - by Jyzarc */
 		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] { "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8) }));
-
-		/** Multimeter */
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Multimeter), new Object[] { "WWW", "ICI", 'W', Mekanism.EnrichedAlloy, 'C', "battery", 'I', "ingotSteel" }));
-
-		/** Battery */
 		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Battery, 4), new Object[] { "RRR", "CIC", "RRR", 'R', Item.redstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), 'C', "circuitBasic" }));
-
-		/** EM Contractor */
 		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(ElectromagneticContractor), new Object[] { " I ", "GCG", "WWW", 'W', "ingotSteel", 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium", 'I', "ingotSteel" }));
 	}
 
