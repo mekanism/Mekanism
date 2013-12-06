@@ -10,10 +10,8 @@ import mekanism.induction.common.block.BlockBattery;
 import mekanism.induction.common.block.BlockEMContractor;
 import mekanism.induction.common.block.BlockTesla;
 import mekanism.induction.common.item.ItemBlockContractor;
-import mekanism.induction.common.item.ItemBlockMultimeter;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
-import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import mekanism.induction.common.tileentity.TileEntityTesla;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -92,7 +90,6 @@ public class MekanismInduction implements IModule
 
 		//Tiles
 		GameRegistry.registerTileEntity(TileEntityTesla.class, "Tesla");
-		GameRegistry.registerTileEntity(TileEntityMultimeter.class, "Multimeter");
 		GameRegistry.registerTileEntity(TileEntityEMContractor.class, "ElectromagneticContractor");
 		GameRegistry.registerTileEntity(TileEntityBattery.class, "Battery");
 
@@ -109,9 +106,9 @@ public class MekanismInduction implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent evt)
 	{
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] { "WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8) }));
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Battery, 4), new Object[] { "RRR", "CIC", "RRR", 'R', Item.redstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), 'C', "circuitBasic" }));
-		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(ElectromagneticContractor), new Object[] { " I ", "GCG", "WWW", 'W', "ingotSteel", 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium", 'I', "ingotSteel" }));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Tesla), new Object[] {"WEW", " C ", " I ", 'W', Mekanism.EnrichedAlloy, 'E', Item.eyeOfEnder, 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(Mekanism.BasicBlock, 1, 8)}));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(Battery, 4), new Object[] {"RRR", "CIC", "RRR", 'R', Item.redstone, 'I', MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), 'C', "circuitBasic"}));
+		GameRegistry.addRecipe(new MekanismRecipe(new ItemStack(ElectromagneticContractor), new Object[] {" I ", "GCG", "WWW", 'W', "ingotSteel", 'C', Mekanism.EnergyTablet.getUnchargedItem(), 'G', "ingotOsmium", 'I', "ingotSteel"}));
 	}
 
 	@Override

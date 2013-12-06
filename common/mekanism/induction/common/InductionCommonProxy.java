@@ -5,10 +5,8 @@ package mekanism.induction.common;
 
 import mekanism.common.Mekanism;
 import mekanism.induction.common.inventory.container.ContainerBattery;
-import mekanism.induction.common.inventory.container.ContainerMultimeter;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
-import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -40,11 +38,7 @@ public class InductionCommonProxy implements IGuiHandler
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-		if(tileEntity instanceof TileEntityMultimeter)
-		{
-			return new ContainerMultimeter(player.inventory, ((TileEntityMultimeter)tileEntity));
-		}
-		else if(tileEntity instanceof TileEntityBattery)
+		if(tileEntity instanceof TileEntityBattery)
 		{
 			return new ContainerBattery(player.inventory, ((TileEntityBattery)tileEntity));
 		}

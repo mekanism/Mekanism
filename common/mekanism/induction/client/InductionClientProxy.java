@@ -1,7 +1,6 @@
 package mekanism.induction.client;
 
 import mekanism.induction.client.gui.GuiBattery;
-import mekanism.induction.client.gui.GuiMultimeter;
 import mekanism.induction.client.render.BlockRenderingHandler;
 import mekanism.induction.client.render.RenderBattery;
 import mekanism.induction.client.render.RenderEMContractor;
@@ -9,7 +8,6 @@ import mekanism.induction.client.render.RenderTesla;
 import mekanism.induction.common.InductionCommonProxy;
 import mekanism.induction.common.tileentity.TileEntityBattery;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
-import mekanism.induction.common.tileentity.TileEntityMultimeter;
 import mekanism.induction.common.tileentity.TileEntityTesla;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -45,11 +43,7 @@ public class InductionClientProxy extends InductionCommonProxy
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-		if(tileEntity instanceof TileEntityMultimeter)
-		{
-			return new GuiMultimeter(player.inventory, ((TileEntityMultimeter) tileEntity));
-		}
-		else if(tileEntity instanceof TileEntityBattery)
+		if(tileEntity instanceof TileEntityBattery)
 		{
 			return new GuiBattery(player.inventory, ((TileEntityBattery) tileEntity));
 		}
