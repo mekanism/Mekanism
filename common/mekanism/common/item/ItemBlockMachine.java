@@ -120,9 +120,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+			list.add("Hold " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " for a description.");
+			list.add("Hold " + EnumColor.AQUA + "shift-M" + EnumColor.GREY + " for more details.");
 		}
-		else {
+		else if(Keyboard.isKeyDown(Keyboard.KEY_M))
+		{
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
 				list.add(EnumColor.INDIGO + "Recipe Type: " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
@@ -165,6 +167,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			{
 				list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
+		}
+		else {
+			
 		}
 	}
 

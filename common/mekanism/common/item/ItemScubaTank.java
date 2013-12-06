@@ -12,6 +12,7 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -224,5 +225,26 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 			}
 		}
+	}
+	
+	public ItemStack getEmptyItem()
+	{
+		ItemStack empty = new ItemStack(this);
+		setGas(null, empty);
+		empty.setItemDamage(100);
+		return empty;
+	}
+	
+	@Override
+	public void getSubItems(int i, CreativeTabs tabs, List list)
+	{
+		ItemStack empty = new ItemStack(this);
+		setGas(null, empty);
+		empty.setItemDamage(100);
+		list.add(empty);
+		
+		ItemStack filled = new ItemStack(this);
+		setGas(new GasStack(GasRegistry.getGas("oxygen"), ((IGasItem)filled.getItem()).getMaxGas(filled)), filled);
+		list.add(filled);
 	}
 }

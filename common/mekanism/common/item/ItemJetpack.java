@@ -243,12 +243,9 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		empty.setItemDamage(100);
 		list.add(empty);
 		
-		for(Gas type : GasRegistry.getRegisteredGasses())
-		{
-			ItemStack filled = new ItemStack(this);
-			setGas(new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)), filled);
-			list.add(filled);
-		}
+		ItemStack filled = new ItemStack(this);
+		setGas(new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)), filled);
+		list.add(filled);
 	}
 	
 	public static enum JetpackMode
