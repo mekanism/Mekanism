@@ -248,10 +248,6 @@ public class SoundHandler
 				{
 					new TileSound(getIdentifier(), ((IHasSound)obj).getSoundPath(), (TileEntity)obj);
 				}
-				else if(obj instanceof EntityPlayer)
-				{
-					new JetpackSound(getIdentifier(), "Jetpack.ogg", (EntityPlayer)obj);
-				}
 			}
 		}
 	}

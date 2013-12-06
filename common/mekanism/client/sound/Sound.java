@@ -3,6 +3,7 @@ package mekanism.client.sound;
 import java.net.URL;
 
 import mekanism.client.MekanismClient;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -29,6 +30,11 @@ public abstract class Sound
 	 */
 	public Sound(String id, String sound, Object obj, Vector3 loc)
 	{
+		if(MekanismClient.audioHandler.getFrom(obj) != null)
+		{
+			return;
+		}
+		
 		synchronized(MekanismClient.audioHandler.sounds)
 		{
 			soundPath = sound;

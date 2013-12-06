@@ -52,6 +52,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMachineUpgrade;
@@ -60,6 +61,7 @@ import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
@@ -78,6 +80,7 @@ import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.network.PacketTileEntity;
@@ -182,6 +185,7 @@ public class Mekanism
 	public static KeySync keyMap = new KeySync();
 	
 	public static Set<EntityPlayer> jetpackOn = new HashSet<EntityPlayer>();
+	public static Set<EntityPlayer> gasmaskOn = new HashSet<EntityPlayer>();
 	
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     
@@ -215,6 +219,8 @@ public class Mekanism
 	public static Item WalkieTalkie;
 	public static Item ItemProxy;
 	public static ItemJetpack Jetpack;
+	public static ItemScubaTank ScubaTank;
+	public static ItemGasMask GasMask;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -1107,6 +1113,8 @@ public class Mekanism
 		dynamicInventories.clear();
 		ic2Registered.clear();
 		jetpackOn.clear();
+		gasmaskOn.clear();
+		
 		TransporterManager.flowingStacks.clear();
 	}
 	
@@ -1206,6 +1214,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketDigitalMinerGui.class);
 		PacketHandler.registerPacket(PacketJetpackData.class);
 		PacketHandler.registerPacket(PacketKey.class);
+		PacketHandler.registerPacket(PacketScubaTankData.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

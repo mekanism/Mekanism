@@ -3,18 +3,23 @@ package mekanism.client;
 import java.util.EnumSet;
 
 import mekanism.api.EnumColor;
+import mekanism.client.sound.GasMaskSound;
+import mekanism.client.sound.JetpackSound;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
+import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.PacketType;
+import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
@@ -139,7 +144,31 @@ public class ClientPlayerTickHandler implements ITickHandler
 			
 			for(EntityPlayer entry : Mekanism.jetpackOn)
 			{
-				Mekanism.proxy.registerSound(entry);
+				if(MekanismClient.audioHandler.getFrom(entry) == null)
+				{
+					new JetpackSound(MekanismClient.audioHandler.getIdentifier(), entry);
+				}
+			}
+			
+			if(Mekanism.gasmaskOn.contains(entityPlayer) != isGasMaskOn(entityPlayer))
+			{
+				if(isGasMaskOn(entityPlayer))
+				{
+					Mekanism.gasmaskOn.add(entityPlayer);
+				}
+				else {
+					Mekanism.gasmaskOn.remove(entityPlayer);
+				}
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(PacketType.UPDATE, entityPlayer, isGasMaskOn(entityPlayer)));
+			}
+			
+			for(EntityPlayer entry : Mekanism.gasmaskOn)
+			{
+				if(MekanismClient.audioHandler.getFrom(entry) == null)
+				{
+					new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), entry);
+				}
 			}
 			
 			if(entityPlayer.getCurrentItemOrArmor(3) != null && entityPlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
@@ -149,7 +178,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 			}
 			
 			if(isJetpackOn(entityPlayer))
-			{	
+			{
 				ItemJetpack jetpack = (ItemJetpack)entityPlayer.getCurrentItemOrArmor(3).getItem();
 				
 				if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
@@ -186,12 +215,15 @@ public class ClientPlayerTickHandler implements ITickHandler
 				
 				jetpack.useGas(entityPlayer.getCurrentItemOrArmor(3));
 			}
+			
+			if(isGasMaskOn(entityPlayer))
+			{
+				ItemScubaTank tank = (ItemScubaTank)entityPlayer.getCurrentItemOrArmor(3).getItem();
+				
+				tank.useGas(entityPlayer.getCurrentItemOrArmor(3));
+				entityPlayer.setAir(300);
+			}
 		}
-	}
-	
-	private boolean cacheJetpackOn(EntityPlayer player)
-	{
-		return Mekanism.jetpackOn.contains(player);
 	}
 	
 	public static boolean isJetpackOn(EntityPlayer player)
@@ -211,6 +243,30 @@ public class ClientPlayerTickHandler implements ITickHandler
 						return true;
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isGasMaskOn(EntityPlayer player)
+	{
+		ItemStack tank = player.inventory.armorInventory[2];
+		ItemStack mask = player.inventory.armorInventory[3];
+		
+		if(tank != null && mask != null)
+		{
+			if(tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask)
+			{
+				ItemScubaTank scubaTank = (ItemScubaTank)tank.getItem();
+				
+				if(scubaTank.getGas(tank) != null)
+				{
+					if(scubaTank.getFlowing(tank))
 					{
 						return true;
 					}

@@ -68,6 +68,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		
 		ClientTickHandler.tickingSet.clear();
 		Mekanism.jetpackOn.clear();
+		Mekanism.gasmaskOn.clear();
 		Mekanism.proxy.unloadSoundHandler();
 	}
 

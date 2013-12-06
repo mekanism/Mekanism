@@ -23,6 +23,8 @@ item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
+item.ScubaTank.name=Scuba Tank
+item.GasMask.name=Gas Mask
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
