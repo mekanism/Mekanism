@@ -1074,6 +1074,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			}
 		}
 		
+		public String getDescription()
+		{
+			return MekanismUtils.localize("tooltip." + name);
+		}
+		
 		public ItemStack getStack()
 		{
 			return new ItemStack(typeId, 1, meta);

@@ -8,17 +8,19 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.IActiveState;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
@@ -1124,6 +1126,16 @@ public final class MekanismUtils
     public static String getCoordDisplay(Object3D obj)
     {
     	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
+    }
+    
+    public static List<String> getSplitText(String s)
+    {
+    	ArrayList ret = new ArrayList();
+    	
+    	String[] split = s.split("!n");
+    	ret.addAll(Arrays.asList(split));
+    	
+    	return ret;
     }
     
     public static enum ResourceType
