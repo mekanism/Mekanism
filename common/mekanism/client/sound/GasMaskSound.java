@@ -19,6 +19,10 @@ public class GasMaskSound extends PlayerSound
 		{
 			return false;
 		}
+		else if(player.worldObj != world)
+		{
+			return false;
+		}
 		else if(!world.loadedEntityList.contains(player))
 		{
 			return false;

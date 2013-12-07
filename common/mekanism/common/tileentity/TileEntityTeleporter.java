@@ -1,7 +1,9 @@
 package mekanism.common.tileentity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
@@ -11,18 +13,22 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.packet.Packet34EntityTeleport;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
@@ -31,6 +37,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 {
 	/** This teleporter's frequency. */
 	public Teleporter.Code code;
+	
+	public AxisAlignedBB teleportBounds = null;
+	
+	public Set<Entity> didTeleport = new HashSet<Entity>();
+	
+	public int teleDelay = 0;
+	
+	public boolean shouldRender;
+	
+	public boolean prevShouldRender;
 	
 	/** This teleporter's current status. */
 	public String status = (EnumColor.DARK_RED + "Not ready.");
@@ -47,8 +63,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(teleportBounds == null)
 		{
+			resetBounds();
+		}
+		
+		if(!worldObj.isRemote)
+		{			
 			if(Mekanism.teleporters.containsKey(code))
 			{
 				if(!Mekanism.teleporters.get(code).contains(Object3D.get(this)) && hasFrame())
@@ -88,9 +109,45 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 					status = EnumColor.DARK_GREEN + "Idle.";
 					break;
 			}
+			
+			if(canTeleport() == 1 && teleDelay == 0)
+			{
+				teleport();
+			}
+			
+			if(teleDelay == 0 && didTeleport.size() > 0)
+			{
+				cleanTeleportCache();
+			}
+			
+			byte b = canTeleport();
+			shouldRender = b == 1 || b > 4;
+			
+			if(shouldRender != prevShouldRender)
+			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 40D);
+			}
+			
+			prevShouldRender = shouldRender;
+			
+			teleDelay = Math.max(0, teleDelay-1);
 		}
 		
 		ChargeUtils.discharge(0, this);
+	}
+	
+	public void cleanTeleportCache()
+	{
+		List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
+		Set<Entity> teleportCopy = (Set<Entity>)((HashSet<Entity>)didTeleport).clone();
+		
+		for(Entity entity : teleportCopy)
+		{
+			if(!list.contains(entity))
+			{
+				didTeleport.remove(entity);
+			}
+		}
 	}
 	
 	@Override
@@ -108,6 +165,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 		
 		return true;
+	}
+	
+	public void resetBounds()
+	{
+		teleportBounds = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+3, zCoord+1);
 	}
 	
 	/**
@@ -138,7 +200,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		
 		if(Mekanism.teleporters.get(code).size() == 2)
 		{
-			List<EntityPlayer> entitiesInPortal = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(xCoord-1, yCoord, zCoord-1, xCoord+1, yCoord+3, zCoord+1));
+			List<Entity> entitiesInPortal = getToTeleport();
 
 			Object3D closestCoords = null;
 			
@@ -153,7 +215,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			
 			int electricityNeeded = 0;
 			
-			for(EntityPlayer entity : entitiesInPortal)
+			for(Entity entity : entitiesInPortal)
 			{
 				electricityNeeded += calculateEnergyCost(entity, closestCoords);
 			}
@@ -178,7 +240,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		if(worldObj.isRemote) return;
 		
-		List<EntityPlayer> entitiesInPortal = worldObj.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(xCoord-1, yCoord, zCoord-1, xCoord+1, yCoord+3, zCoord+1));
+		List<Entity> entitiesInPortal = getToTeleport();
 
 		Object3D closestCoords = null;
 		
@@ -191,24 +253,56 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			}
 		}
 		
-		for(EntityPlayer entity : entitiesInPortal)
-		{
-			setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
+		for(Entity entity : entitiesInPortal)
+		{						
+			World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(closestCoords.dimensionId);
+			TileEntityTeleporter teleporter = (TileEntityTeleporter)closestCoords.getTileEntity(teleWorld);
 			
-			worldObj.playSoundAtEntity((EntityPlayerMP)entity, "mob.endermen.portal", 1.0F, 1.0F);
-			
-			if(entity.worldObj.provider.dimensionId != closestCoords.dimensionId)
+			if(teleporter != null)
 			{
-				entity.travelToDimension(closestCoords.dimensionId);
-			}
-			
-			((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
-			
-			for(Object3D coords : Mekanism.teleporters.get(code))
-			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+				teleporter.didTeleport.add(entity);
+				teleporter.teleDelay = 5;
+				
+				if(entity.worldObj.provider.dimensionId != closestCoords.dimensionId)
+				{
+					entity.travelToDimension(closestCoords.dimensionId);
+				}
+				
+				if(entity instanceof EntityPlayerMP)
+				{
+					((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+				}
+				else {
+					entity.setLocationAndAngles(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+					PacketDispatcher.sendPacketToAllPlayers(new Packet34EntityTeleport(entity));
+				}
+				
+				for(Object3D coords : Mekanism.teleporters.get(code))
+				{
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+				}
+				
+				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
+				
+				worldObj.playSoundAtEntity(entity, "mob.endermen.portal", 1.0F, 1.0F);
 			}
 		}
+	}
+	
+	public List<Entity> getToTeleport()
+	{
+		List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
+		List<Entity> ret = new ArrayList<Entity>();
+		
+		for(Entity entity : entities)
+		{
+			if(!didTeleport.contains(entity))
+			{
+				ret.add(entity);
+			}
+		}
+		
+		return ret;
 	}
 	
 	@Override
@@ -333,6 +427,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		code.digitTwo = dataStream.readInt();
 		code.digitThree = dataStream.readInt();
 		code.digitFour = dataStream.readInt();
+		shouldRender = dataStream.readBoolean();
 	}
 	
 	@Override
@@ -345,6 +440,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		data.add(code.digitTwo);
 		data.add(code.digitThree);
 		data.add(code.digitFour);
+		data.add(shouldRender);
 		
 		return data;
 	}
@@ -420,10 +516,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		return true;
 	}
-
+	
 	@Override
 	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
+	}
 }

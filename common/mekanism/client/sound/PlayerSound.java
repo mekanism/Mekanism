@@ -1,9 +1,6 @@
 package mekanism.client.sound;
 
-import mekanism.client.ClientPlayerTickHandler;
-import mekanism.common.item.ItemJetpack;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 import universalelectricity.core.vector.Vector3;
 
 public abstract class PlayerSound extends Sound
@@ -39,7 +36,4 @@ public abstract class PlayerSound extends Sound
 		
 		ticksSincePlay = 0;
 	}
-    
-	@Override
-	public abstract boolean update(World world);
 }

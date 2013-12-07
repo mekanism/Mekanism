@@ -54,6 +54,7 @@ import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPressurizedTube;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
+import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
@@ -109,6 +110,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -255,6 +257,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
 		ClientRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator", new RenderRotaryCondensentrator());
+		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
 	}
 	
 	@Override
@@ -381,6 +384,8 @@ public class ClientProxy extends CommonProxy
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
 		
 		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());
+		
+		GameRegistry.registerPlayerTracker(new ClientPlayerTracker());
 	}
 	
 	@Override

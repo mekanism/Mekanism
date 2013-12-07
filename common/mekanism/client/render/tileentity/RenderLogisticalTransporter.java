@@ -18,7 +18,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -215,7 +214,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		toReturn.baseBlock = Block.stone;
 		toReturn.setTexture(icon);
 		
-		DisplayInteger display = new DisplayInteger();
+		DisplayInteger display = DisplayInteger.createAndStart();
 		
 		if(cachedOverlays.containsKey(side))
 		{
@@ -226,9 +225,6 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 			map.put(mode, display);
 			cachedOverlays.put(side, map);
 		}
-		
-		display.display = GLAllocation.generateDisplayLists(1);
-		GL11.glNewList(display.display, 4864);
 		
 		switch(side)
 		{
@@ -305,7 +301,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.renderObject(toReturn);
-		GL11.glEndList();
+		display.endList();
 		
 		return display;
 	}

@@ -627,23 +627,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	
         if(tileEntity != null)
         {
-        	if(metadata == MachineType.TELEPORTER.meta)
-        	{
-        		if(entityplayer.isSneaking())
-        		{
-        			entityplayer.openGui(Mekanism.instance, 13, world, x, y, z);
-        			return true;
-        		}
-        		
-    			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
-    			
-    			if(teleporter.canTeleport() == 1)
-    			{
-    				teleporter.teleport();
-    				return true;
-    			}
-        	}
-        	else if(metadata == MachineType.ELECTRIC_CHEST.meta)
+        	if(metadata == MachineType.ELECTRIC_CHEST.meta)
         	{
         		TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
         		

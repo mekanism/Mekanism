@@ -1,8 +1,10 @@
-package mekanism.common;
+package mekanism.client;
+
+import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
 
-public class CommonPlayerTracker implements IPlayerTracker
+public class ClientPlayerTracker implements IPlayerTracker
 {
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {}
