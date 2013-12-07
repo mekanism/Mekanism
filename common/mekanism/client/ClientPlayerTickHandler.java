@@ -234,6 +234,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 				
 				tank.useGas(entityPlayer.getCurrentItemOrArmor(3));
 				entityPlayer.setAir(300);
+				entityPlayer.clearActivePotions();
 			}
 		}
 	}

@@ -132,6 +132,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 				
 				tank.useGas(player.getCurrentItemOrArmor(3));
 				player.setAir(300);
+				player.clearActivePotions();
 			}
 		}
 	}
