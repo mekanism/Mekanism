@@ -16,17 +16,18 @@ import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet34EntityTeleport;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
@@ -263,18 +264,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				teleporter.didTeleport.add(entity);
 				teleporter.teleDelay = 5;
 				
-				if(entity.worldObj.provider.dimensionId != closestCoords.dimensionId)
-				{
-					entity.travelToDimension(closestCoords.dimensionId);
-				}
-				
 				if(entity instanceof EntityPlayerMP)
 				{
+					if(entity.worldObj.provider.dimensionId != closestCoords.dimensionId)
+					{
+						entity.travelToDimension(closestCoords.dimensionId);
+					}
+					
 					((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 				}
 				else {
-					entity.setLocationAndAngles(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
-					PacketDispatcher.sendPacketToAllPlayers(new Packet34EntityTeleport(entity));
+					teleportEntityTo(entity, closestCoords, teleporter);
 				}
 				
 				for(Object3D coords : Mekanism.teleporters.get(code))
@@ -286,6 +286,35 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				
 				worldObj.playSoundAtEntity(entity, "mob.endermen.portal", 1.0F, 1.0F);
 			}
+		}
+	}
+	
+	public void teleportEntityTo(Entity entity, Object3D coord, TileEntityTeleporter teleporter)
+	{
+		MinecraftServer server = MinecraftServer.getServer();
+		WorldServer world = server.worldServerForDimension(coord.dimensionId);
+		
+		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
+		{
+			entity.worldObj.removeEntity(entity);
+			entity.isDead = false;
+			
+			world.spawnEntityInWorld(entity);
+			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			world.updateEntityWithOptionalForce(entity, false);
+			entity.setWorld(world);
+			world.resetUpdateEntityTick();
+			
+			Entity e = EntityList.createEntityByName(EntityList.getEntityString(entity), world);
+			
+			if(e != null)
+			{
+				e.copyDataFrom(entity, true);
+				world.spawnEntityInWorld(e);
+				teleporter.didTeleport.add(e);
+			}
+			
+			entity.isDead = true;
 		}
 	}
 	
