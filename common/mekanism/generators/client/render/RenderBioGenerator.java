@@ -137,7 +137,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 			}
 			
 			MekanismRenderer.renderObject(model3D);
-			DisplayInteger.endList();
+			displays[i].endList();
 		}
 		
 		energyDisplays.put(side, displays);

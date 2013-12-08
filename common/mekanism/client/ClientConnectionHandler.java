@@ -36,7 +36,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		{
 			try {
 				voiceClient = new VoiceClient(server, Mekanism.VOICE_PORT);
-				voiceClient.run();
+				voiceClient.start();
 			} catch(Exception e) {}
 		}
 	}
@@ -49,7 +49,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		{
 			try {
 				voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), Mekanism.VOICE_PORT);
-				voiceClient.run();
+				voiceClient.start();
 			} catch(Exception e) {}
 		}
 	}
