@@ -15,15 +15,7 @@ public class GasMaskSound extends PlayerSound
 	@Override
 	public boolean update(World world)
 	{
-		if(player.isDead)
-		{
-			return false;
-		}
-		else if(player.worldObj != world)
-		{
-			return false;
-		}
-		else if(!world.loadedEntityList.contains(player))
+		if(!super.update(world))
 		{
 			return false;
 		}

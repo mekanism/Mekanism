@@ -9,6 +9,9 @@ import mekanism.common.item.ItemJetpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityFlameFX;
+import net.minecraft.client.particle.EntitySmokeFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -25,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderTickHandler implements ITickHandler
 {
 	public Random rand = new Random();
+	public Minecraft mc = Minecraft.getMinecraft();
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -33,7 +37,6 @@ public class RenderTickHandler implements ITickHandler
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) 
 	{
 		float partialTick = (Float)tickData[0];
-		Minecraft mc = FMLClientHandler.instance().getClient();
 		
 		if(mc.thePlayer != null && mc.theWorld != null)
 		{
@@ -125,18 +128,35 @@ public class RenderTickHandler implements ITickHandler
 				mRight.translate(rRight);
 				
 				Vector3 v = new Vector3(p).translate(vLeft);
-				world.spawnParticle("flame", v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-				world.spawnParticle("smoke", v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 				
 				v = new Vector3(p).translate(vRight);
-				world.spawnParticle("flame", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-				world.spawnParticle("smoke", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 				
 				v = new Vector3(p).translate(vCenter);
-				world.spawnParticle("flame", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-				world.spawnParticle("smoke", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 			}
 		}
+	}
+	
+	public void spawnAndSetParticle(String s, World world, double x, double y, double z, double velX, double velY, double velZ)
+	{
+		EntityFX fx = null;
+		
+		if(s.equals("flame"))
+		{
+			fx = new EntityFlameFX(world, x, y, z, velX, velY, velZ);
+		}
+		else if(s.equals("smoke"))
+		{
+			fx = new EntitySmokeFX(world, x, y, z, velX, velY, velZ);
+		}
+		
+		mc.effectRenderer.addEffect(fx);
+		fx.onUpdate();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package mekanism.client.sound;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import universalelectricity.core.vector.Vector3;
 
 public abstract class PlayerSound extends Sound
@@ -21,6 +22,25 @@ public abstract class PlayerSound extends Sound
 	public float getMultiplier()
 	{
 		return Math.min(1, ((float)ticksSincePlay/20F))*0.3F;
+	}
+	
+	@Override
+	public boolean update(World world)
+	{
+		if(player.isDead)
+		{
+			return false;
+		}
+		else if(player.worldObj != world)
+		{
+			return false;
+		}
+		else if(!world.loadedEntityList.contains(player))
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	@Override
