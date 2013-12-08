@@ -269,11 +269,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				
 				if(handler.canInterface(side.getOpposite()))
 				{
-					if(handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
-					{
-						toReturn.add(acceptor);
-					}
-					else if(handler.getMaxEnergyStored(side.getOpposite()) - handler.getEnergyStored(side.getOpposite()) > 0)
+					if(handler.getMaxEnergyStored(side.getOpposite()) - handler.getEnergyStored(side.getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}

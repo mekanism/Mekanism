@@ -151,10 +151,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(worldObj.rand.nextInt(3) == 2)
 				{
-					ArrayList data = new ArrayList();
-					data.add(2);
-					
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), data), Object3D.get(this), 40D);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getParticlePacket(new ArrayList())), Object3D.get(this), 40D);
 				}
 			}
 		}
@@ -320,30 +317,35 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				dumpType = GasRegistry.getGas(dataStream.readInt());
 			}
-			else if(type == 2)
-			{
-				spawnParticle();
-			}
 			
 			return;
 		}
 		
 		super.handlePacketData(dataStream);
 		
-		int amount = dataStream.readInt();
+		int type = dataStream.readInt();
 		
-		if(amount != 0)
+		if(type == 0)
 		{
-			waterTank.setFluid(new FluidStack(FluidRegistry.WATER, amount));
+			int amount = dataStream.readInt();
+			
+			if(amount != 0)
+			{
+				waterTank.setFluid(new FluidStack(FluidRegistry.WATER, amount));
+			}
+			else {
+				waterTank.setFluid(null);
+			}
+			
+			oxygenStored = dataStream.readInt();
+			hydrogenStored = dataStream.readInt();
+			outputType = GasRegistry.getGas(dataStream.readInt());
+			dumpType = GasRegistry.getGas(dataStream.readInt());
 		}
-		else {
-			waterTank.setFluid(null);
+		else if(type == 1)
+		{
+			spawnParticle();
 		}
-		
-		oxygenStored = dataStream.readInt();
-		hydrogenStored = dataStream.readInt();
-		outputType = GasRegistry.getGas(dataStream.readInt());
-		dumpType = GasRegistry.getGas(dataStream.readInt());
 	}
 	
 	@Override
@@ -351,6 +353,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		super.getNetworkedData(data);
 		
+		data.add(0);
 		if(waterTank.getFluid() != null)
 		{
 			data.add(waterTank.getFluid().amount);
@@ -364,6 +367,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		data.add(GasRegistry.getGasID(outputType));
 		data.add(GasRegistry.getGasID(dumpType));
 		
+		return data;
+	}
+	
+	public ArrayList getParticlePacket(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(1);
 		return data;
 	}
 	
