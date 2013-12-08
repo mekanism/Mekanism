@@ -21,6 +21,7 @@ public class MekanismClient extends Mekanism
 	//General Configuration
 	public static boolean enableSounds = true;
 	public static boolean fancyUniversalCableRender = true;
+	public static double baseSoundVolume = 1;
 	
 	public static long ticksPassed = 0;
 	

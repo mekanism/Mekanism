@@ -146,6 +146,7 @@ public abstract class Sound
 		    	
 		        double distance = entityplayer.getDistance(getLocation().x, getLocation().y, getLocation().z);
 		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
+		        volume *= Math.max(0, Math.min(1, MekanismClient.baseSoundVolume));
 		
 		        if(SoundHandler.getSoundSystem() != null)
 		        {
