@@ -1,10 +1,9 @@
 package mekanism.client.sound;
 
-import mekanism.client.ClientPlayerTickHandler;
+import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemJetpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 
 public class JetpackSound extends PlayerSound
 {
@@ -25,9 +24,9 @@ public class JetpackSound extends PlayerSound
 			return false;
 		}
 		else {
-			if(ClientPlayerTickHandler.isJetpackOn(player) != isPlaying)
+			if(ClientTickHandler.isJetpackOn(player) != isPlaying)
 			{
-				if(ClientPlayerTickHandler.isJetpackOn(player))
+				if(ClientTickHandler.isJetpackOn(player))
 				{
 					play();
 				}

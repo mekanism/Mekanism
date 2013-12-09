@@ -1,6 +1,6 @@
 package mekanism.client.sound;
 
-import mekanism.client.ClientPlayerTickHandler;
+import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemGasMask;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -24,9 +24,9 @@ public class GasMaskSound extends PlayerSound
 			return false;
 		}
 		else {
-			if(ClientPlayerTickHandler.isGasMaskOn(player) != isPlaying)
+			if(ClientTickHandler.isGasMaskOn(player) != isPlaying)
 			{
-				if(ClientPlayerTickHandler.isGasMaskOn(player))
+				if(ClientTickHandler.isGasMaskOn(player))
 				{
 					play();
 				}

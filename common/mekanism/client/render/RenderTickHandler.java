@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityFlameFX;
@@ -18,7 +19,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import universalelectricity.core.vector.Vector3;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
@@ -74,7 +74,7 @@ public class RenderTickHandler implements ITickHandler
 				}
 			}
 			
-			if(player != null)
+			if(player != null && !(mc.currentScreen instanceof GuiChat))
 			{
 				if(player.getCurrentItemOrArmor(3) != null && player.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
 				{
