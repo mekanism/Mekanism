@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
@@ -108,6 +109,13 @@ public class RenderTickHandler implements ITickHandler
 					continue;
 				}
 				
+				Vector3 playerPos = new Vector3(p);
+				
+				if(p != mc.thePlayer)
+				{
+					playerPos.translate(new Vector3(0, 1.7, 0));
+				}
+				
 				float random = (rand.nextFloat()-0.5F)*0.1F;
 				
 				Vector3 vLeft = new Vector3();
@@ -138,15 +146,15 @@ public class RenderTickHandler implements ITickHandler
 				mLeft.translate(rLeft);
 				mRight.translate(rRight);
 				
-				Vector3 v = new Vector3(p).translate(vLeft);
+				Vector3 v = new Vector3(playerPos).translate(vLeft);
 				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 				
-				v = new Vector3(p).translate(vRight);
+				v = new Vector3(playerPos).translate(vRight);
 				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 				
-				v = new Vector3(p).translate(vCenter);
+				v = new Vector3(playerPos).translate(vCenter);
 				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 			}

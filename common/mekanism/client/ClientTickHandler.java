@@ -372,6 +372,11 @@ public class ClientTickHandler implements ITickHandler
 	
 	public static boolean isJetpackOn(EntityPlayer player)
 	{
+		if(player != mc.thePlayer)
+		{
+			return Mekanism.jetpackOn.contains(player);
+		}
+		
 		ItemStack stack = player.inventory.armorInventory[2];
 		
 		if(stack != null)
@@ -399,6 +404,11 @@ public class ClientTickHandler implements ITickHandler
 	
 	public static boolean isGasMaskOn(EntityPlayer player)
 	{
+		if(player != mc.thePlayer)
+		{
+			return Mekanism.gasmaskOn.contains(player);
+		}
+		
 		ItemStack tank = player.inventory.armorInventory[2];
 		ItemStack mask = player.inventory.armorInventory[3];
 		
