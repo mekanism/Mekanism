@@ -166,8 +166,11 @@ public class RenderTickHandler implements ITickHandler
 			fx = new EntitySmokeFX(world, x, y, z, velX, velY, velZ);
 		}
 		
+        fx.prevPosX = fx.posX = x;
+        fx.prevPosY = fx.posY = y;
+        fx.prevPosZ = fx.posZ = z;
+        
 		mc.effectRenderer.addEffect(fx);
-		fx.onUpdate();
 	}
 
 	@Override
