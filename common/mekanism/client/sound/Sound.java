@@ -21,6 +21,8 @@ public abstract class Sound
 	
 	private Object objRef;
 	
+	protected Minecraft mc = Minecraft.getMinecraft();
+	
 	/**
 	 * A sound that runs off of the PaulsCode sound system.
 	 * @param id - unique identifier
@@ -50,7 +52,7 @@ public abstract class Sound
 			if(SoundHandler.getSoundSystem() != null)
 			{
 				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, (float)loc.x, (float)loc.y, (float)loc.z, 0, 16F);
-				updateVolume(Minecraft.getMinecraft().thePlayer);
+				updateVolume();
 				SoundHandler.getSoundSystem().activate(id);
 			}
 			
@@ -72,7 +74,7 @@ public abstract class Sound
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
-				updateVolume(Minecraft.getMinecraft().thePlayer);
+				updateVolume();
 				SoundHandler.getSoundSystem().play(identifier);
 			}
 			
@@ -94,7 +96,7 @@ public abstract class Sound
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
-				updateVolume(Minecraft.getMinecraft().thePlayer);
+				updateVolume();
 				SoundHandler.getSoundSystem().stop(identifier);
 			}
 			
@@ -118,7 +120,7 @@ public abstract class Sound
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
-				updateVolume(Minecraft.getMinecraft().thePlayer);
+				updateVolume();
 				SoundHandler.getSoundSystem().removeSource(identifier);
 			}
 		}
@@ -134,7 +136,7 @@ public abstract class Sound
 	 * Updates the volume based on how far away the player is from the machine.
 	 * @param entityplayer - player who is near the machine, always Minecraft.thePlayer
 	 */
-    public void updateVolume(EntityPlayer entityplayer)
+    public void updateVolume()
     {
 		synchronized(MekanismClient.audioHandler.sounds)
 		{
@@ -143,7 +145,7 @@ public abstract class Sound
 		    	float volume = 0;
 		    	float masterVolume = MekanismClient.audioHandler.masterVolume;
 		    	
-		        double distance = entityplayer.getDistance(getLocation().x, getLocation().y, getLocation().z);
+		        double distance = mc.thePlayer.getDistance(getLocation().x, getLocation().y, getLocation().z);
 		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
 		        volume *= Math.max(0, Math.min(1, MekanismClient.baseSoundVolume));
 		

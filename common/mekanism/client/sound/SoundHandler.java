@@ -193,7 +193,7 @@ public class SoundHandler
 					{
 						if(sound.isPlaying)
 						{
-							sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+							sound.updateVolume();
 						}
 					}
 					
