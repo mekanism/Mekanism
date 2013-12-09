@@ -95,6 +95,7 @@ item.steelDust.name=Steel Dust
 item.copperDust.name=Copper Dust
 item.tinDust.name=Tin Dust
 item.silverDust.name=Silver Dust
+item.leadDust.name=Lead Dust
 
 //Clumps
 item.ironClump.name=Iron Clump
@@ -104,6 +105,7 @@ item.copperClump.name=Copper Clump
 item.tinClump.name=Tin Clump
 item.silverClump.name=Silver Clump
 item.obsidianClump.name=Obsidian Clump
+item.leadClump.name=Lead Clump
 
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
@@ -113,6 +115,7 @@ item.dirtyCopperDust.name=Dirty Copper Dust
 item.dirtyTinDust.name=Dirty Tin Dust
 item.dirtySilverDust.name=Dirty Silver Dust
 item.dirtyObsidianDust.name=Dirty Obsidian Dust
+item.dirtyLeadDust.name=Dirty Lead Dust
 
 //Ingots
 item.obsidianIngot.name=Obsidian Ingot

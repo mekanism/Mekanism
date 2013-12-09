@@ -13,7 +13,8 @@ public class ItemDust extends ItemMekanism
 	public Icon[] icons = new Icon[256];
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
 										"Obsidian", "Diamond", "Steel",
-										"Copper", "Tin", "Silver"};
+										"Copper", "Tin", "Silver",
+										"Lead"};
 	
 	public ItemDust(int id)
 	{
@@ -25,7 +26,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void registerIcons(IconRegister register)
 	{
-		for(int i = 0; i <= 8; i++)
+		for(int i = 0; i <= 9; i++)
 		{
 			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Dust");
 		}
@@ -40,7 +41,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter <= 8; ++counter)
+		for(int counter = 0; counter <= 9; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

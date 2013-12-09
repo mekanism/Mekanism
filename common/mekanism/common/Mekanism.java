@@ -664,6 +664,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustCopper", new ItemStack(Dust, 1, 6));
 		OreDictionary.registerOre("dustTin", new ItemStack(Dust, 1, 7));
 		OreDictionary.registerOre("dustSilver", new ItemStack(Dust, 1, 8));
+		OreDictionary.registerOre("dustLead", new ItemStack(Dust, 1, 9));
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotOsmium", new ItemStack(Ingot, 1, 1));
@@ -689,6 +690,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustDirtyTin", new ItemStack(DirtyDust, 1, 4));
 		OreDictionary.registerOre("dustDirtySilver", new ItemStack(DirtyDust, 1, 5));
 		OreDictionary.registerOre("dustDirtyObsidian", new ItemStack(DirtyDust, 1, 6));
+		OreDictionary.registerOre("dustDirtyLead", new ItemStack(DirtyDust, 1, 7));
 		
 		//for RailCraft/IC2.
 		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
@@ -700,6 +702,7 @@ public class Mekanism
 		OreDictionary.registerOre("clumpTin", new ItemStack(Clump, 1, 4));
 		OreDictionary.registerOre("clumpSilver", new ItemStack(Clump, 1, 5));
 		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
+		OreDictionary.registerOre("clumpLead", new ItemStack(Clump, 1, 7));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));
@@ -784,6 +787,11 @@ public class Mekanism
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 6));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("clumpLead"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 7));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustDirtyIron"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 0));
@@ -812,6 +820,11 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dustDirtySilver"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 8));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustDirtyLead"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 9));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreCopper"))
@@ -844,15 +857,22 @@ public class Mekanism
 	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 3, 1));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("oreGold"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
+	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 3, 1));
+		}
+		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("oreLead"))
 			{
-				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(OreDictionary.getOres("dustLead").get(0), 2));
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 2, 9));
+				RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Clump, 3, 7));
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("ingotLead"))
 			{
-				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(OreDictionary.getOres("dustLead").get(0), 1));
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 9));
 			}
 		} catch(Exception e) {}
 		
@@ -903,15 +923,11 @@ public class Mekanism
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 6, new ItemStack(Ingot, 1, 5), 0.0F);
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 8, MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 7, new ItemStack(Ingot, 1, 6), 0.0F);
-		} catch(Exception e) {}
-		
-		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 8, MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 1.0F);
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 9, MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
