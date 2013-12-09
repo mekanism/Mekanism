@@ -957,6 +957,11 @@ public class Mekanism
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Block.oreGold));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("dustLapisLazuli"))
+		{
+			RecipeHandler.addCrusherRecipe(new ItemStack(Item.dyePowder, 1, 4), MekanismUtils.size(ore, 1));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 2), new ItemStack(Block.obsidian));
