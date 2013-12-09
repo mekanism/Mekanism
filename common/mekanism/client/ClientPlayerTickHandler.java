@@ -38,7 +38,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ClientPlayerTickHandler implements ITickHandler
 {	
 	public boolean lastTickUpdate = false;
-	public Minecraft mc = Minecraft.getMinecraft();
+	public static Minecraft mc = Minecraft.getMinecraft();
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -134,7 +134,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 			
 			if(Mekanism.jetpackOn.contains(entityPlayer) != isJetpackOn(entityPlayer))
 			{
-				if(isJetpackOn(entityPlayer) && mc.currentScreen == null)
+				if(isJetpackOn(entityPlayer))
 				{
 					Mekanism.jetpackOn.add(entityPlayer);
 				}
@@ -142,10 +142,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 					Mekanism.jetpackOn.remove(entityPlayer);
 				}
 				
-				if(!isGasMaskOn(entityPlayer) || mc.currentScreen == null)
-				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.UPDATE, entityPlayer, isJetpackOn(entityPlayer)));
-				}
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.UPDATE, entityPlayer, isJetpackOn(entityPlayer)));
 			}
 			
 			if(Mekanism.gasmaskOn.contains(entityPlayer) != isGasMaskOn(entityPlayer))
@@ -158,10 +155,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 					Mekanism.gasmaskOn.remove(entityPlayer);
 				}
 				
-				if(!isGasMaskOn(entityPlayer) || mc.currentScreen == null)
-				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(PacketType.UPDATE, entityPlayer, isGasMaskOn(entityPlayer)));
-				}
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(PacketType.UPDATE, entityPlayer, isGasMaskOn(entityPlayer)));
 			}
 			
 			for(EntityPlayer entry : Mekanism.jetpackOn)
@@ -180,27 +174,24 @@ public class ClientPlayerTickHandler implements ITickHandler
 				}
 			}
 			
-			if(mc.currentScreen == null)
+			if(entityPlayer.getCurrentItemOrArmor(3) != null && entityPlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
 			{
-				if(entityPlayer.getCurrentItemOrArmor(3) != null && entityPlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
-				{
-					MekanismClient.updateKey(entityPlayer, Keyboard.KEY_SPACE);
-					MekanismClient.updateKey(entityPlayer, Keyboard.KEY_LSHIFT);
-				}
+				MekanismClient.updateKey(Keyboard.KEY_SPACE);
+				MekanismClient.updateKey(Keyboard.KEY_LSHIFT);
 			}
 			
 			if(isJetpackOn(entityPlayer))
 			{
 				ItemJetpack jetpack = (ItemJetpack)entityPlayer.getCurrentItemOrArmor(3).getItem();
 				
-				if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL && mc.currentScreen == null)
+				if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
 				{
 					entityPlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
 					entityPlayer.fallDistance = 0.0F;
 				}
 				else if(jetpack.getMode(entityPlayer.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
-					if(((!Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))) || mc.currentScreen != null)
+					if((!Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || mc.currentScreen != null)
 					{
 						if(entityPlayer.motionY > 0)
 						{
@@ -212,11 +203,11 @@ public class ClientPlayerTickHandler implements ITickHandler
 						}
 					}
 					else {
-						if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
+						if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && mc.currentScreen == null)
 						{
 							entityPlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
 						}
-						else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+						else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && mc.currentScreen == null)
 						{
 							entityPlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
 						}
@@ -251,7 +242,7 @@ public class ClientPlayerTickHandler implements ITickHandler
 				
 				if(jetpack.getGas(stack) != null)
 				{
-					if((Keyboard.isKeyDown(Keyboard.KEY_SPACE) && jetpack.getMode(stack) == JetpackMode.NORMAL))
+					if((Keyboard.isKeyDown(Keyboard.KEY_SPACE) && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
 					{
 						return true;
 					}
