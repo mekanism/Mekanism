@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
@@ -15,18 +16,26 @@ import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.network.PacketConfiguratorState;
+import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketJetpackData;
+import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketJetpackData.PacketType;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.StringUtils;
 
 import org.lwjgl.input.Keyboard;
@@ -48,6 +57,8 @@ public class ClientTickHandler implements ITickHandler
 	public boolean hasNotified = false;
 	
 	public boolean preloadedSounds = false;
+	
+	public boolean lastTickUpdate;
 	
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 	
@@ -173,6 +184,88 @@ public class ClientTickHandler implements ITickHandler
 	                    	}
 	                    }
 					}
+				}
+			}
+			
+			ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
+			
+			if(mc.currentScreen == null)
+			{
+				if(mc.thePlayer.isSneaking() && StackUtils.getItem(mc.thePlayer.getCurrentEquippedItem()) instanceof ItemConfigurator)
+				{
+					ItemConfigurator item = (ItemConfigurator)mc.thePlayer.getCurrentEquippedItem().getItem();
+					
+		    		if(MekanismKeyHandler.modeSwitchKey.pressed)
+		    		{
+		    			if(!lastTickUpdate)
+		    			{
+			    			item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
+			    			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
+			    			mc.thePlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
+			    			lastTickUpdate = true;
+		    			}
+		    		}
+		    		else {
+		    			lastTickUpdate = false;
+		    		}
+				}
+				else if(mc.thePlayer.isSneaking() && StackUtils.getItem(mc.thePlayer.getCurrentEquippedItem()) instanceof ItemElectricBow)
+				{
+					ItemElectricBow item = (ItemElectricBow)mc.thePlayer.getCurrentEquippedItem().getItem();
+					
+					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					{
+						if(!lastTickUpdate)
+						{
+							item.setFireState(stack, !item.getFireState(stack));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
+							mc.thePlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
+							lastTickUpdate = true;
+						}
+					}
+					else {
+						lastTickUpdate = false;
+					}
+				}
+				else if(mc.thePlayer.isSneaking() && StackUtils.getItem(mc.thePlayer.getCurrentEquippedItem()) instanceof ItemWalkieTalkie)
+				{
+					ItemWalkieTalkie item = (ItemWalkieTalkie)mc.thePlayer.getCurrentEquippedItem().getItem();
+					
+					if(MekanismKeyHandler.modeSwitchKey.pressed && item.getOn(stack))
+					{
+						if(!lastTickUpdate)
+						{
+							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
+							item.setChannel(stack, newChan);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
+							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+							lastTickUpdate = true;
+						}
+					}
+					else {
+						lastTickUpdate = false;
+					}
+				}
+				else if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+				{
+					ItemStack jetpack = mc.thePlayer.getCurrentItemOrArmor(3);
+					
+					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					{
+						if(!lastTickUpdate)
+						{
+							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.MODE));
+							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
+							lastTickUpdate = true;
+						}
+					}
+					else {
+						lastTickUpdate = false;
+					}
+				}
+				else {
+					lastTickUpdate = false;
 				}
 			}
 			

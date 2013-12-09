@@ -589,6 +589,7 @@ public class Mekanism
 		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		configuration.save();
+		//TODO 1.7, fix item shifts
 		
 		//Registrations
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");

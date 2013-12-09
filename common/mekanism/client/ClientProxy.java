@@ -383,7 +383,6 @@ public class ClientProxy extends CommonProxy
 		super.loadUtilities();
 		
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
-		TickRegistry.registerTickHandler(new ClientPlayerTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);
 		
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
