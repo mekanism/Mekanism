@@ -102,9 +102,11 @@ public class RenderTickHandler implements ITickHandler
 				}
 			}
 			
-			for(EntityPlayer p : Mekanism.jetpackOn)
+			for(String s : Mekanism.jetpackOn)
 			{
-				if(p.getDistance(player.posX, player.posY, player.posZ) > 40)
+				EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+				
+				if(p == null)
 				{
 					continue;
 				}

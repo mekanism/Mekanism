@@ -16,7 +16,7 @@ public class PacketScubaTankData implements IMekanismPacket
 {
 	public ScubaTankPacket packetType;
 	
-	public EntityPlayer updatePlayer;
+	public String username;
 	public boolean value;
 	
 	@Override
@@ -32,7 +32,7 @@ public class PacketScubaTankData implements IMekanismPacket
 		
 		if(packetType == ScubaTankPacket.UPDATE)
 		{
-			updatePlayer = (EntityPlayer)data[1];
+			username = (String)data[1];
 			value = (Boolean)data[2];
 		}
 	
@@ -52,12 +52,7 @@ public class PacketScubaTankData implements IMekanismPacket
 
 			for(int i = 0; i < amount; i++)
 			{
-				EntityPlayer p = world.getPlayerEntityByName(dataStream.readUTF());
-
-				if(p != null)
-				{
-					Mekanism.gasmaskOn.add(p);
-				}
+				Mekanism.gasmaskOn.add(dataStream.readUTF());
 			}
         }
         else if(packetType == ScubaTankPacket.UPDATE)
@@ -65,22 +60,17 @@ public class PacketScubaTankData implements IMekanismPacket
 			String username = dataStream.readUTF();
 			boolean value = dataStream.readBoolean();
 			
-			EntityPlayer p = world.getPlayerEntityByName(username);
-			
-			if(p != null)
+			if(value)
 			{
-				if(value)
-				{
-					Mekanism.gasmaskOn.add(p);
-				}
-				else {
-					Mekanism.gasmaskOn.remove(p);
-				}
-				
-				if(!world.isRemote)
-				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, p, value), world.provider.dimensionId);
-				}
+				Mekanism.gasmaskOn.add(username);
+			}
+			else {
+				Mekanism.gasmaskOn.remove(username);
+			}
+			
+			if(!world.isRemote)
+			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, username, value), world.provider.dimensionId);
 			}
 		}
 		else if(packetType == ScubaTankPacket.MODE)
@@ -101,16 +91,16 @@ public class PacketScubaTankData implements IMekanismPacket
 		
 		if(packetType == ScubaTankPacket.UPDATE)
 		{
-			dataStream.writeUTF(updatePlayer.username);
+			dataStream.writeUTF(username);
 			dataStream.writeBoolean(value);
 		}
 		else if(packetType == ScubaTankPacket.FULL)
 		{
 			dataStream.writeInt(Mekanism.gasmaskOn.size());
 
-			for(EntityPlayer player : Mekanism.gasmaskOn)
+			for(String username : Mekanism.gasmaskOn)
 			{
-				dataStream.writeUTF(player.username);
+				dataStream.writeUTF(username);
 			}
 		}
 	}

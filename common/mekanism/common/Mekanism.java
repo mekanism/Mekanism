@@ -184,8 +184,8 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static Set<EntityPlayer> jetpackOn = new HashSet<EntityPlayer>();
-	public static Set<EntityPlayer> gasmaskOn = new HashSet<EntityPlayer>();
+	public static Set<String> jetpackOn = new HashSet<String>();
+	public static Set<String> gasmaskOn = new HashSet<String>();
 	
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     

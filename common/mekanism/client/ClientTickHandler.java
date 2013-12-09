@@ -269,47 +269,53 @@ public class ClientTickHandler implements ITickHandler
 				}
 			}
 			
-			if(Mekanism.jetpackOn.contains(mc.thePlayer) != isJetpackOn(mc.thePlayer))
+			if(Mekanism.jetpackOn.contains(mc.thePlayer.username) != isJetpackOn(mc.thePlayer))
 			{
 				if(isJetpackOn(mc.thePlayer))
 				{
-					Mekanism.jetpackOn.add(mc.thePlayer);
+					Mekanism.jetpackOn.add(mc.thePlayer.username);
 				}
 				else {
-					Mekanism.jetpackOn.remove(mc.thePlayer);
+					Mekanism.jetpackOn.remove(mc.thePlayer.username);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(JetpackPacket.UPDATE, mc.thePlayer, isJetpackOn(mc.thePlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(JetpackPacket.UPDATE, mc.thePlayer.username, isJetpackOn(mc.thePlayer)));
 			}
 			
-			if(Mekanism.gasmaskOn.contains(mc.thePlayer) != isGasMaskOn(mc.thePlayer))
+			if(Mekanism.gasmaskOn.contains(mc.thePlayer.username) != isGasMaskOn(mc.thePlayer))
 			{
 				if(isGasMaskOn(mc.thePlayer) && mc.currentScreen == null)
 				{
-					Mekanism.gasmaskOn.add(mc.thePlayer);
+					Mekanism.gasmaskOn.add(mc.thePlayer.username);
 				}
 				else {
-					Mekanism.gasmaskOn.remove(mc.thePlayer);
+					Mekanism.gasmaskOn.remove(mc.thePlayer.username);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(JetpackPacket.UPDATE, mc.thePlayer, isGasMaskOn(mc.thePlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(JetpackPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
 			}
 			
 			if(MekanismClient.audioHandler != null)
 			{
-				for(EntityPlayer entry : Mekanism.jetpackOn)
+				for(String username : Mekanism.jetpackOn)
 				{
-					if(MekanismClient.audioHandler.getFrom(entry) == null)
+					if(mc.theWorld.getPlayerEntityByName(username) != null)
 					{
-						new JetpackSound(MekanismClient.audioHandler.getIdentifier(), entry);
+						if(MekanismClient.audioHandler.getFrom(mc.theWorld.getPlayerEntityByName(username)) == null)
+						{
+							new JetpackSound(MekanismClient.audioHandler.getIdentifier(), mc.theWorld.getPlayerEntityByName(username));
+						}
 					}
 				}
 				
-				for(EntityPlayer entry : Mekanism.gasmaskOn)
+				for(String username : Mekanism.gasmaskOn)
 				{
-					if(MekanismClient.audioHandler.getFrom(entry) == null)
+					if(mc.theWorld.getPlayerEntityByName(username) != null)
 					{
-						new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), entry);
+						if(MekanismClient.audioHandler.getFrom(mc.theWorld.getPlayerEntityByName(username)) == null)
+						{
+							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), mc.theWorld.getPlayerEntityByName(username));
+						}
 					}
 				}
 			}
@@ -374,7 +380,7 @@ public class ClientTickHandler implements ITickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.jetpackOn.contains(player);
+			return Mekanism.jetpackOn.contains(player.username);
 		}
 		
 		ItemStack stack = player.inventory.armorInventory[2];
@@ -406,7 +412,7 @@ public class ClientTickHandler implements ITickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.gasmaskOn.contains(player);
+			return Mekanism.gasmaskOn.contains(player.username);
 		}
 		
 		ItemStack tank = player.inventory.armorInventory[2];
