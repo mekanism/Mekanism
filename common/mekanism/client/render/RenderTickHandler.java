@@ -3,9 +3,11 @@ package mekanism.client.render;
 import java.util.EnumSet;
 import java.util.Random;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemScubaTank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
@@ -74,19 +76,28 @@ public class RenderTickHandler implements ITickHandler
 				}
 			}
 			
-			if(player != null && !(mc.currentScreen instanceof GuiChat))
+			if(player != null && !(mc.currentScreen instanceof GuiChat) && player.getCurrentItemOrArmor(3) != null)
 			{
-				if(player.getCurrentItemOrArmor(3) != null && player.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+				ItemStack stack = player.getCurrentItemOrArmor(3);
+				
+				ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+				int x = scaledresolution.getScaledWidth();
+				int y = scaledresolution.getScaledHeight();
+				
+				if(stack.getItem() instanceof ItemJetpack)
 				{
-					ItemStack stack = player.getCurrentItemOrArmor(3);
 					ItemJetpack jetpack = (ItemJetpack)stack.getItem();
-					
-					ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-					int x = scaledresolution.getScaledWidth();
-					int y = scaledresolution.getScaledHeight();
 					
 					font.drawStringWithShadow("Mode: " + jetpack.getMode(stack).getName(), 1, y - 20, 0x404040);
 					font.drawStringWithShadow("Hydrogen: " + jetpack.getStored(stack), 1, y - 11, 0x404040);
+				}
+				else if(stack.getItem() instanceof ItemScubaTank)
+				{
+					ItemScubaTank scubaTank = (ItemScubaTank)stack.getItem();
+					String state = (scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off");
+					
+					font.drawStringWithShadow("Mode: " + state, 1, y - 20, 0x404040);
+					font.drawStringWithShadow("Oxygen: " + scubaTank.getStored(stack), 1, y - 11, 0x404040);
 				}
 			}
 			
