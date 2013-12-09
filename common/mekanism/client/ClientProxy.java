@@ -135,7 +135,7 @@ public class ClientProxy extends CommonProxy
 		Mekanism.configuration.load();
 		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
-		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "baseSoundVolume", 1).getDouble(1);
+		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1).getDouble(1);
 		Mekanism.configuration.save();
 	}
 	
@@ -324,6 +324,7 @@ public class ClientProxy extends CommonProxy
 				return new GuiTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
 			case 14:
 				ItemStack itemStack = player.getCurrentEquippedItem();
+				
 				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
 					return new GuiPortableTeleporter(player, itemStack);
@@ -342,6 +343,7 @@ public class ClientProxy extends CommonProxy
 				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
 			case 21:
 				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit != null)
 				{
 					return new GuiRobitMain(player.inventory, robit);
@@ -350,12 +352,14 @@ public class ClientProxy extends CommonProxy
 				return new GuiRobitCrafting(player.inventory, world, x);
 			case 23:
 				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit1 != null)
 				{
 					return new GuiRobitInventory(player.inventory, robit1);
 				}
 			case 24:
 				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit2 != null)
 				{
 					return new GuiRobitSmelting(player.inventory, robit2);

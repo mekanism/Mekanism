@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.api.IClientTicker;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
@@ -19,17 +17,20 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
-import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemJetpack.JetpackMode;
+import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketJetpackData.PacketType;
+import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
+
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -201,19 +202,22 @@ public class ClientTickHandler implements ITickHandler
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(PacketType.UPDATE, mc.thePlayer, isGasMaskOn(mc.thePlayer)));
 			}
 			
-			for(EntityPlayer entry : Mekanism.jetpackOn)
+			if(MekanismClient.audioHandler != null)
 			{
-				if(MekanismClient.audioHandler.getFrom(entry) == null)
+				for(EntityPlayer entry : Mekanism.jetpackOn)
 				{
-					new JetpackSound(MekanismClient.audioHandler.getIdentifier(), entry);
+					if(MekanismClient.audioHandler.getFrom(entry) == null)
+					{
+						new JetpackSound(MekanismClient.audioHandler.getIdentifier(), entry);
+					}
 				}
-			}
-			
-			for(EntityPlayer entry : Mekanism.gasmaskOn)
-			{
-				if(MekanismClient.audioHandler.getFrom(entry) == null)
+				
+				for(EntityPlayer entry : Mekanism.gasmaskOn)
 				{
-					new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), entry);
+					if(MekanismClient.audioHandler.getFrom(entry) == null)
+					{
+						new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), entry);
+					}
 				}
 			}
 			
