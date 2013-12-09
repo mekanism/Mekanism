@@ -14,7 +14,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketScubaTankData implements IMekanismPacket
 {
-	public PacketType packetType;
+	public ScubaTankPacket packetType;
 	
 	public EntityPlayer updatePlayer;
 	public boolean value;
@@ -28,9 +28,9 @@ public class PacketScubaTankData implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		packetType = (PacketType)data[0];
+		packetType = (ScubaTankPacket)data[0];
 		
-		if(packetType == PacketType.UPDATE)
+		if(packetType == ScubaTankPacket.UPDATE)
 		{
 			updatePlayer = (EntityPlayer)data[1];
 			value = (Boolean)data[2];
@@ -42,9 +42,25 @@ public class PacketScubaTankData implements IMekanismPacket
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		packetType = PacketType.values()[dataStream.readInt()];
+		packetType = ScubaTankPacket.values()[dataStream.readInt()];
 		
-		if(packetType == PacketType.UPDATE)
+        if(packetType == ScubaTankPacket.FULL)
+        {
+			Mekanism.gasmaskOn.clear();
+
+			int amount = dataStream.readInt();
+
+			for(int i = 0; i < amount; i++)
+			{
+				EntityPlayer p = world.getPlayerEntityByName(dataStream.readUTF());
+
+				if(p != null)
+				{
+					Mekanism.gasmaskOn.add(p);
+				}
+			}
+        }
+        else if(packetType == ScubaTankPacket.UPDATE)
 		{
 			String username = dataStream.readUTF();
 			boolean value = dataStream.readBoolean();
@@ -63,11 +79,11 @@ public class PacketScubaTankData implements IMekanismPacket
 				
 				if(!world.isRemote)
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(PacketType.UPDATE, p, value), world.provider.dimensionId);
+					PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, p, value), world.provider.dimensionId);
 				}
 			}
 		}
-		else if(packetType == PacketType.MODE)
+		else if(packetType == ScubaTankPacket.MODE)
 		{
 			ItemStack stack = player.getCurrentItemOrArmor(3);
 			
@@ -83,16 +99,26 @@ public class PacketScubaTankData implements IMekanismPacket
 	{
 		dataStream.writeInt(packetType.ordinal());
 		
-		if(packetType == PacketType.UPDATE)
+		if(packetType == ScubaTankPacket.UPDATE)
 		{
 			dataStream.writeUTF(updatePlayer.username);
 			dataStream.writeBoolean(value);
 		}
+		else if(packetType == ScubaTankPacket.FULL)
+		{
+			dataStream.writeInt(Mekanism.gasmaskOn.size());
+
+			for(EntityPlayer player : Mekanism.gasmaskOn)
+			{
+				dataStream.writeUTF(player.username);
+			}
+		}
 	}
 	
-	public static enum PacketType
+	public static enum ScubaTankPacket
 	{
 		UPDATE,
+		FULL,
 		MODE;
 	}
 }

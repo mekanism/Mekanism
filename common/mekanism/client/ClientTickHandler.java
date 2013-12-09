@@ -27,7 +27,7 @@ import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketWalkieTalkieState;
-import mekanism.common.network.PacketJetpackData.PacketType;
+import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -255,7 +255,7 @@ public class ClientTickHandler implements ITickHandler
 						if(!lastTickUpdate)
 						{
 							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.MODE));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(JetpackPacket.MODE));
 							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}
@@ -279,7 +279,7 @@ public class ClientTickHandler implements ITickHandler
 					Mekanism.jetpackOn.remove(mc.thePlayer);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(PacketType.UPDATE, mc.thePlayer, isJetpackOn(mc.thePlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(JetpackPacket.UPDATE, mc.thePlayer, isJetpackOn(mc.thePlayer)));
 			}
 			
 			if(Mekanism.gasmaskOn.contains(mc.thePlayer) != isGasMaskOn(mc.thePlayer))
@@ -292,7 +292,7 @@ public class ClientTickHandler implements ITickHandler
 					Mekanism.gasmaskOn.remove(mc.thePlayer);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(PacketType.UPDATE, mc.thePlayer, isGasMaskOn(mc.thePlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(JetpackPacket.UPDATE, mc.thePlayer, isGasMaskOn(mc.thePlayer)));
 			}
 			
 			if(MekanismClient.audioHandler != null)
