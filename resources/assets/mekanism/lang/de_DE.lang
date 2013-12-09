@@ -22,6 +22,9 @@ item.TeleportationCore.name=Teleportationskern
 item.Configurator.name=Konfigurator
 item.NetworkReader.name=Netzwerklesegerät
 item.WalkieTalkie.name=Walkie-Talkie
+item.Jetpack.name=Jetpack
+item.ScubaTank.name=Taucherflasche
+item.GasMask.name=Gasmaske
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -242,6 +245,28 @@ tooltip.configurator.noLink=Kein Link
 tooltip.configurator.linkMsg=Verbunden mit
 tooltip.configurator.dim=Dimension
 
+tooltip.jetpack.regular=Regulär
+tooltip.jetpack.hover=Schweben
+tooltip.jetpack.disabled=Deaktiviert
+
+tooltip.EnrichmentChamber=Eine einfache Maschine, genutzt, um Erze zu !nzwei ihrer entsprechenden Stäube anzureichern !nsowie viele andere Operationen auszuführen.
+tooltip.OsmiumCompressor=Eine ziemlich fortschrittliche Maschine, genutzt, !num Osmium in verschiedene Stäube zu pressen, !num ihre entsprechenden Barren zu kreieren.
+tooltip.Combiner=Eine Maschine, genutzt, um Stäube mit Pflasterstein !nzu kombinieren, um entsprechende Erze zu formen.
+tooltip.Crusher=Eine Maschine, genutzt, um Barren in ihre entsprechenden !nStäube zu zerstoßen sowie viele andere Operationen auszuführen.
+tooltip.DigitalMiner=Ein äußerst fortschrittlicher, Filter-basierter !nAuto-Minierer, der alles abbauen kann, was du willst, !ninnerhalb eines Radius von 32 Blöcken (max).
+tooltip.BasicFactory=Die niedrigste Stufe in der Reihe der Fabriken, !nwelche genutzt werden kann, um mehrere !nMaschinenoperationen auf einmal auszuführen.
+tooltip.AdvancedFactory=Die mittlere Stufe in der Reihe der Fabriken, !nwelche genutzt werden kann, um mehrere !nMaschinenoperationen auf einmal auszuführen.
+tooltip.EliteFactory=Die höchste Stufe in der Reihe der Fabriken, !nwelche genutzt werden kann, um mehrere !nMaschinenoperationen auf einmal auszuführen.
+tooltip.MetallurgicInfuser=Eine Maschine, genutzt, um verschiedene Materialien !n(generell) in Metalle einzuflößen, um Legierungen !nund andere Komponenten zu kreieren.
+tooltip.PurificationChamber=Eine fortgeschrittene Maschine, fähig, Erze zu !ndrei Klumpen zu verarbeiten, was im Anfangsstadium !n300% an Erzverarbeitung bietet.
+tooltip.EnergizedSmelter=Eine einfache Maschine, die einen Mekanism-basierten !nOfen bietet, der mit Energie läuft.
+tooltip.Teleporter=Eine Maschine, fähig, Spieler zu verschiedenen Orten, !ndefiniert durch andere Teleporter, zu teleportieren.
+tooltip.ElectricPump=Eine fortgeschrittene Pumpe, fähig, !nganze Lavaseen auszupumpen.
+tooltip.ElectricChest=Eine Tragbare, 54-Slot-Truhe, die Energie nutzt, !num sich selbst zu sperren, per Passwortschutz.
+tooltip.Chargepad=Ein universelles Ladepad, dass jegliches energetisiertes !nItem jeglicher Mods aufladen kann.
+tooltip.LogisticalSorter=Eine Filter-basierte, fortgeschrittene Sortiermaschine, die !nautomatisch spezifische Items aus einem Inventar oder !nLogistischen Transporter heraus und in eines hinein treiben kann.
+tooltip.RotaryCondensentrator=Eine Maschine, die fähig ist, Gase in ihre !nflüssige Form zu konvertieren und umgekehrt.
+
 //Redstone control
 control.disabled=Deaktiviert
 control.high=High
@@ -288,6 +313,12 @@ tile.Generator.HydrogenGenerator.name=Wasserstoffgenerator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Fortgeschrittener Solargenerator
 tile.Generator.WindTurbine.name=Windturbine
+
+//Gui text
+gui.heatGenerator.fuel=Brennstoff
+gui.solarGenerator.sun=Sonne
+gui.bioGenerator.bioFuel=Biobrennstoff
+gui.electrolyticSeparator.dump=Entsorge
 
 //*****//
 //TOOLS//
@@ -385,9 +416,3 @@ tile.Battery.name=Modulare Batterie
 //General text
 text.contractor.success=Kontraktor erfolgreich verbunden
 text.tesla.success=Teslaspule erfolgreich verbunden
-
-//Gui text
-gui.heatGenerator.fuel=Brennstoff
-gui.solarGenerator.sun=Sonne
-gui.bioGenerator.bioFuel=Biobrennstoff
-gui.electrolyticSeparator.dump=Entsorge
