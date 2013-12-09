@@ -1,6 +1,7 @@
 package mekanism.client;
 
 import mekanism.client.sound.SoundHandler;
+import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -17,6 +18,8 @@ public class MekanismClient extends Mekanism
 	@SideOnly(Side.CLIENT)
 	/** The main SoundHandler instance that is used by all audio sources */
 	public static SoundHandler audioHandler;
+	
+	public static VoiceClient voiceClient;
 	
 	//General Configuration
 	public static boolean enableSounds = true;
