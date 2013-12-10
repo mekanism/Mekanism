@@ -27,9 +27,10 @@ public class ClientPlayerTracker implements IPlayerTracker
 			}
 			
 			ClientTickHandler.tickingSet.clear();
+			Mekanism.proxy.unloadSoundHandler();
+			
 			Mekanism.jetpackOn.clear();
 			Mekanism.gasmaskOn.clear();
-			Mekanism.proxy.unloadSoundHandler();
 		}
 	}
 
