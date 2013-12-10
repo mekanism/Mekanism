@@ -8,6 +8,7 @@ import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
+import mekanism.client.gui.GuiDictionary;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDynamicTank;
 import mekanism.client.gui.GuiElectricChest;
@@ -296,6 +297,8 @@ public class ClientProxy extends CommonProxy
 		
 		switch(ID)
 		{
+			case 0:
+				return new GuiDictionary(player.inventory);
 			case 1:
 				return new GuiCredits();
 			case 2:

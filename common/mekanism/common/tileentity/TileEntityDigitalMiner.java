@@ -868,7 +868,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public boolean renderUpdate()
     {
-    	return true;
+    	return false;
     }
     
     @Override

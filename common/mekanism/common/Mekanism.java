@@ -48,6 +48,7 @@ import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
@@ -90,13 +91,11 @@ import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -221,6 +220,7 @@ public class Mekanism
 	public static ItemJetpack Jetpack;
 	public static ItemScubaTank ScubaTank;
 	public static ItemGasMask GasMask;
+	public static Item Dictionary;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -478,6 +478,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(Jetpack.getEmptyItem(), new Object[] {
 			"SCS", "TGT", " T ", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "circuitBasic", Character.valueOf('T'), "ingotTin", Character.valueOf('G'), MekanismUtils.getEmptyGasTank()
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Dictionary), new Object[] {
+			"C", "B", Character.valueOf('C'), "circuitBasic", Character.valueOf('B'), Item.book
+		}));
 		
 		for(RecipeType type : RecipeType.values())
 		{
@@ -566,7 +569,8 @@ public class Mekanism
 		//Declarations
 		configuration.load();
 		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
-		//OPEN 11201-11203
+		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", 11201).getInt()).setUnlocalizedName("Dictionary");
+		//OPEN 11202-11203
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
 		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
@@ -614,6 +618,7 @@ public class Mekanism
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
 		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 		GameRegistry.registerItem(Jetpack, "Jetpack");
+		GameRegistry.registerItem(Dictionary, "Dictionary");
 	}
 	
 	/**

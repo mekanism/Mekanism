@@ -25,6 +25,7 @@ item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Scuba Tank
 item.GasMask.name=Gas Mask
+item.Dictionary.name=Dictionary
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -165,6 +166,9 @@ gui.eject=Eject
 gui.input=Input
 gui.slots=Slots
 gui.state=State
+
+gui.dictionary.noKey=No key.
+gui.dictionary.key=Key
 
 gui.configuration=Configuration
 gui.configuration.strictInput=Strict Input
