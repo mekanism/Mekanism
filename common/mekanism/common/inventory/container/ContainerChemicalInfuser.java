@@ -24,7 +24,6 @@ public class ContainerChemicalInfuser extends Container
         addSlotToContainer(new Slot(tentity, 0, 26, 36));
         addSlotToContainer(new SlotDischarge(tentity, 1, 155, 5));
         addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 25));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 3, 155, 56));
 		
         int slotX;
 
