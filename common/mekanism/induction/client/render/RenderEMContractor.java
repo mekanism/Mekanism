@@ -7,6 +7,7 @@ import mekanism.induction.client.model.ModelEMContractor;
 import mekanism.induction.common.tileentity.TileEntityEMContractor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,7 +25,7 @@ public class RenderEMContractor extends TileEntitySpecialRenderer
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		switch (((TileEntityEMContractor) t).getFacing())
+		switch(ForgeDirection.getOrientation(((TileEntityEMContractor)t).getFacing()))
 		{
 			case DOWN:
 				GL11.glRotatef(180, 0, 0, 1);
@@ -50,21 +51,19 @@ public class RenderEMContractor extends TileEntitySpecialRenderer
 				break;
 		}
 
-		if (((TileEntityEMContractor) t).suck)
+		if(((TileEntityEMContractor) t).suck)
 		{
 			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectromagneticContractor.png"));
 		}
-		else
-		{
+		else {
 			bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectromagneticContractorOn.png"));
 		}
 
-		if (((TileEntityEMContractor) t).canFunction() && !Mekanism.proxy.isPaused())
+		if(((TileEntityEMContractor)t).canFunction() && !Mekanism.proxy.isPaused())
 		{
 			MODEL_SPIN.render(0.0625f);
 		}
-		else
-		{
+		else {
 			model.render(0.0625f);
 		}
 

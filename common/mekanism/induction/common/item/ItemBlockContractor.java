@@ -21,20 +21,20 @@ public class ItemBlockContractor extends ItemBlock
 	{
 		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
 
-		if (place)
+		if(place)
 		{
-			TileEntityEMContractor tileContractor = (TileEntityEMContractor) world.getBlockTileEntity(x, y, z);
-			tileContractor.setFacing(ForgeDirection.getOrientation(side));
+			TileEntityEMContractor tileContractor = (TileEntityEMContractor)world.getBlockTileEntity(x, y, z);
+			tileContractor.setFacing((short)ForgeDirection.getOrientation(side).ordinal());
 
-			if (!tileContractor.isLatched())
+			if(!tileContractor.isLatched())
 			{
-				for (ForgeDirection side1 : ForgeDirection.VALID_DIRECTIONS)
+				for(ForgeDirection side1 : ForgeDirection.VALID_DIRECTIONS)
 				{
 					TileEntity tileEntity = world.getBlockTileEntity(x + side1.offsetX, y + side1.offsetY, z + side1.offsetZ);
 
-					if (tileEntity instanceof IInventory)
+					if(tileEntity instanceof IInventory)
 					{
-						tileContractor.setFacing(side1.getOpposite());
+						tileContractor.setFacing((short)side1.getOpposite().ordinal());
 						break;
 					}
 				}
