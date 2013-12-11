@@ -226,7 +226,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		{
 	    	if(type != null)
 	    	{
-	    		if(RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, itemstack), false) != null)
+	    		if(RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, itemstack), false) != null)
 	    		{
 	    			return true;
 	    		}
@@ -257,7 +257,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
             return;
         }
 
-        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true);
+        InfusionOutput output = RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true);
         
         infuseStored -= output.getInfuseRequired();
 
@@ -284,7 +284,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
             return false;
         }
 
-        InfusionOutput output = RecipeHandler.getOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false);
+        InfusionOutput output = RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false);
 
         if(output == null)
         {

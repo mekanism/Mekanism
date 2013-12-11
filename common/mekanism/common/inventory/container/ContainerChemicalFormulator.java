@@ -1,9 +1,10 @@
 package mekanism.common.inventory.container;
 
+import mekanism.api.gas.IGasItem;
+import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tileentity.TileEntityChemicalFormulator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,21 +14,20 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerChemicalFormulator extends Container
 {
-    private TileEntityChemicalInfuser tileEntity;
+    private TileEntityChemicalFormulator tileEntity;
 
-    public ContainerChemicalFormulator(InventoryPlayer inventory, TileEntityChemicalInfuser tentity)
+    public ContainerChemicalFormulator(InventoryPlayer inventory, TileEntityChemicalFormulator tentity)
     {
         tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 5, 56));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 80, 65));
-        addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 56));
-        addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
-        
+        addSlotToContainer(new Slot(tentity, 0, 26, 36));
+        addSlotToContainer(new SlotDischarge(tentity, 1, 155, 5));
+        addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 25));
+		
         int slotX;
 
-        for(slotX = 0; slotX < 3; slotX++)
+        for(slotX = 0; slotX < 3; ++slotX)
         {
-            for(int slotY = 0; slotY < 9; slotY++)
+            for(int slotY = 0; slotY < 9; ++slotY)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
@@ -68,9 +68,9 @@ public class ContainerChemicalFormulator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotID == 2)
+            if(RecipeHandler.getChemicalFormulatorOutput(slotStack, false) != null)
             {
-            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+            	if(!mergeItemStack(slotStack, 0, 1, true))
             	{
             		return null;
             	}
@@ -86,45 +86,45 @@ public class ContainerChemicalFormulator extends Container
 	            }
 	            else if(slotID == 1)
 	            {
-	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
-            else if(slotStack.getItem() instanceof ItemMachineUpgrade)
+            else if(slotStack.getItem() instanceof IGasItem)
             {
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+            	if(slotID != 0 && slotID != 1 && slotID != 2)
             	{
-            		if(!mergeItemStack(slotStack, 3, 4, false))
+            		if(!mergeItemStack(slotStack, 2, 3, false))
             		{
             			return null;
             		}
             	}
             	else {
-            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+            		if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
             		{
             			return null;
             		}
             	}
             }
             else {
-            	if(slotID >= 4 && slotID <= 30)
+            	if(slotID >= 3 && slotID <= 29)
             	{
-            		if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
+            		if(!mergeItemStack(slotStack, 30, inventorySlots.size(), false))
             		{
             			return null;
             		}
             	}
             	else if(slotID > 30)
             	{
-            		if(!mergeItemStack(slotStack, 4, 30, false))
+            		if(!mergeItemStack(slotStack, 3, 29, false))
             		{
             			return null;
             		}
             	}
             	else {
-            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+            		if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
             		{
             			return null;
             		}

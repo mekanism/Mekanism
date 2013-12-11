@@ -98,7 +98,7 @@ public final class RecipeHandler
 	 * @param recipes - Map of recipes
 	 * @return InfusionOutput
 	 */
-	public static InfusionOutput getOutput(InfusionInput infusion, boolean stackDecrease)
+	public static InfusionOutput getMetallurgicInfuserOutput(InfusionInput infusion, boolean stackDecrease)
 	{		
 		if(infusion != null && infusion.inputStack != null)
 		{
@@ -126,7 +126,7 @@ public final class RecipeHandler
 		return null;
 	}
 	
-	public static GasStack getOutput(ChemicalInput input)
+	public static GasStack getChemicalInfuserOutput(ChemicalInput input)
 	{
 		if(input != null && input.isValid())
 		{
@@ -137,7 +137,7 @@ public final class RecipeHandler
 		return null;
 	}
 	
-	public GasStack getOutput(ItemStack itemstack, boolean stackDecrease)
+	public static GasStack getChemicalFormulatorOutput(ItemStack itemstack, boolean stackDecrease)
 	{
 		if(itemstack != null)
 		{

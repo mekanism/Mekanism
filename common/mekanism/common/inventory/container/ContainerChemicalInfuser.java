@@ -1,9 +1,7 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.RecipeHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
-import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tileentity.TileEntityChemicalInfuser;
@@ -21,15 +19,16 @@ public class ContainerChemicalInfuser extends Container
     public ContainerChemicalInfuser(InventoryPlayer inventory, TileEntityChemicalInfuser tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 26, 36));
-        addSlotToContainer(new SlotDischarge(tentity, 1, 155, 5));
-        addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 25));
-		
+		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 5, 56));
+        addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 155, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 80, 65));
+        addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
+        
         int slotX;
 
-        for(slotX = 0; slotX < 3; ++slotX)
+        for(slotX = 0; slotX < 3; slotX++)
         {
-            for(int slotY = 0; slotY < 9; ++slotY)
+            for(int slotY = 0; slotY < 9; slotY++)
             {
                 addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
             }
@@ -70,23 +69,16 @@ public class ContainerChemicalInfuser extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotID == 2)
+            if(ChargeUtils.canBeDischarged(slotStack))
             {
-            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
-            	{
-            		return null;
-            	}
-            }
-        	else if(ChargeUtils.canBeDischarged(slotStack))
-            {
-	            if(slotID != 1)
+	            if(slotID != 3)
 	            {
-	                if(!mergeItemStack(slotStack, 1, 2, false))
+	                if(!mergeItemStack(slotStack, 3, 4, false))
 	                {
 	                	return null;
 	                }
 	            }
-	            else if(slotID == 1)
+	            else if(slotID == 3)
 	            {
 	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 	            	{
@@ -94,17 +86,17 @@ public class ContainerChemicalInfuser extends Container
 	            	}
 	            }
             }
-            else if(slotStack.getItem() instanceof ItemMachineUpgrade)
+            else if(slotStack.getItem() instanceof IGasItem)
             {
-            	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
+            	if(slotID != 0 && slotID != 1 && slotID != 2)
             	{
-            		if(!mergeItemStack(slotStack, 3, 4, false))
+            		if(!mergeItemStack(slotStack, 0, 3, false))
             		{
             			return null;
             		}
             	}
             	else {
-            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+              		if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
             		{
             			return null;
             		}

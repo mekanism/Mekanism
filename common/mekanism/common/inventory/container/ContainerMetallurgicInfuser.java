@@ -156,7 +156,7 @@ public class ContainerMetallurgicInfuser extends Container
     {
     	if(tileEntity.type != null)
     	{
-    		if(RecipeHandler.getOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, itemStack), false) != null)
+    		if(RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(tileEntity.type, tileEntity.infuseStored, itemStack), false) != null)
     		{
     			return true;
     		}
