@@ -145,7 +145,16 @@ public final class RecipeHandler
 		if(input != null && input.isValid())
 		{
 			HashMap<ChemicalInput, GasStack> recipes = Recipe.CHEMICAL_INFUSER.get();
-			return recipes.get(input);
+			
+			for(Map.Entry<ChemicalInput, GasStack> entry : recipes.entrySet())
+			{
+				ChemicalInput key = (ChemicalInput)entry.getKey();
+				
+				if(key.equals(input))
+				{
+					return entry.getValue().copy();
+				}
+			}
 		}
 		
 		return null;

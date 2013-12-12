@@ -104,7 +104,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 				else {
 					GasStack stack = RecipeHandler.getChemicalFormulatorOutput(inventory[0], true);
 					
-					gasTank.fill(stack, true);
+					gasTank.receive(stack, true);
 					operatingTicks = 0;
 				}
 			}

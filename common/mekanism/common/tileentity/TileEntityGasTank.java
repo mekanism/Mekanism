@@ -50,7 +50,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		
 		if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
 		{
-			gasTank.fill(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
+			gasTank.receive(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
 		}
 		
 		if(!worldObj.isRemote && gasTank.getGas() != null && MekanismUtils.canFunction(this))
@@ -110,7 +110,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		return gasTank.fill(stack, true);
+		return gasTank.receive(stack, true);
 	}
 
 	@Override

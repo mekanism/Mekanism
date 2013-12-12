@@ -20,7 +20,7 @@ public class GasTank
 		stored = stack;
 	}
 	
-	public GasStack draw(int amount, boolean doDrain)
+	public GasStack draw(int amount, boolean doDraw)
 	{
 		if(stored == null || amount <= 0)
 		{
@@ -31,7 +31,7 @@ public class GasTank
 		
 		if(ret.amount > 0)
 		{
-			if(doDrain)
+			if(doDraw)
 			{
 				stored.amount -= ret.amount;
 				
@@ -39,8 +39,6 @@ public class GasTank
 				{
 					stored = null;
 				}
-				
-				
 			}
 			
 			return ret;
@@ -49,7 +47,7 @@ public class GasTank
 		return null;
 	}
 	
-	public int fill(GasStack amount, boolean doFill)
+	public int receive(GasStack amount, boolean doReceive)
 	{
 		if(amount == null || (stored != null && stored.amount == maxGas))
 		{
@@ -58,7 +56,7 @@ public class GasTank
 		
 		int toFill = Math.min(maxGas-getStored(), amount.amount);
 		
-		if(doFill)
+		if(doReceive)
 		{
 			if(stored == null)
 			{

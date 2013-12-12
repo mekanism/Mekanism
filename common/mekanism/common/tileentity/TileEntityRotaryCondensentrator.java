@@ -102,7 +102,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
-					gasTank.fill(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
+					gasTank.receive(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
 				}
 				
 				if(inventory[2] != null)
@@ -229,7 +229,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank == null || (gasTank.getStored() < MAX_GAS && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
-					gasTank.fill(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), 1), true);
+					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), 1), true);
 					fluidTank.drain(1, true);
 					setEnergy(getEnergy() - ENERGY_USAGE);
 				}
@@ -443,7 +443,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
-		return gasTank.fill(stack, true);
+		return gasTank.receive(stack, true);
 	}
 	
 	@Override

@@ -22,9 +22,23 @@ public class ChemicalInput
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof ChemicalInput &&
-				((ChemicalInput)obj).leftGas == leftGas &&
-				((ChemicalInput)obj).rightGas == rightGas;
+		if(!(obj instanceof ChemicalInput))
+		{
+			return false;
+		}
+		
+		ChemicalInput compare = (ChemicalInput)obj;
+		
+		if(leftGas == compare.leftGas && rightGas == compare.rightGas)
+		{
+			return true;
+		}
+		else if(leftGas == compare.rightGas && rightGas == compare.leftGas)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
