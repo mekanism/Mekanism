@@ -106,6 +106,8 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
+		GameRegistry.registerTileEntity(TileEntityChemicalFormulator.class, "ChemicalFormulator");
+		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 	}
 	
 	/**

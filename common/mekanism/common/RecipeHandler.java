@@ -81,11 +81,21 @@ public final class RecipeHandler
 		Recipe.METALLURGIC_INFUSER.put(input, InfusionOutput.getInfusion(input, output));
 	}
 	
+	/**
+	 * Add a Chemical Infuser recipe.
+	 * @param input - input ChemicalInput
+	 * @param output - output GasStack
+	 */
 	public static void addChemicalInfuserRecipe(ChemicalInput input, GasStack output)
 	{
 		Recipe.CHEMICAL_INFUSER.put(input, output);
 	}
-	
+
+	/**
+	 * Add a Chemical Formulator recipe.
+	 * @param input - input ItemStack
+	 * @param output - output GasStack
+	 */
 	public static void addChemicalFormulatorRecipe(ItemStack input, GasStack output)
 	{
 		Recipe.CHEMICAL_FORMULATOR.put(input, output);
@@ -95,7 +105,6 @@ public final class RecipeHandler
 	 * Gets the InfusionOutput of the InfusionInput in the parameters.
 	 * @param infusion - input Infusion
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size AND the infuse amount
-	 * @param recipes - Map of recipes
 	 * @return InfusionOutput
 	 */
 	public static InfusionOutput getMetallurgicInfuserOutput(InfusionInput infusion, boolean stackDecrease)
@@ -126,6 +135,11 @@ public final class RecipeHandler
 		return null;
 	}
 	
+	/**
+	 * Gets the GasStack of the ChemicalInput in the parameters.
+	 * @param input - input ChemicalInput
+	 * @return GasStack
+	 */
 	public static GasStack getChemicalInfuserOutput(ChemicalInput input)
 	{
 		if(input != null && input.isValid())
@@ -137,6 +151,12 @@ public final class RecipeHandler
 		return null;
 	}
 	
+	/**
+	 * Gets the InfusionOutput of the ItemStack in the parameters.
+	 * @param itemstack - input ItemStack
+	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * @return GasStack
+	 */
 	public static GasStack getChemicalFormulatorOutput(ItemStack itemstack, boolean stackDecrease)
 	{
 		if(itemstack != null)

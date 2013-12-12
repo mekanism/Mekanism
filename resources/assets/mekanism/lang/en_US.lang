@@ -132,10 +132,14 @@ item.tinIngot.name=Tin Ingot
 //Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
+gas.sulfuricGas=Sulfuric Gas
+gas.sulfuricAcid=Sulfuric Acid
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
+fluid.sulfuricGas=Sulfuric Gas
+fluid.sulfuricAcid=Sulfuric Acid
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
