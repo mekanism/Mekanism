@@ -918,8 +918,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         
         if(tileEntity instanceof TileEntityRotaryCondensentrator)
         {
-        	IGasItem gasItem = (IGasItem)itemStack.getItem();
-        	gasItem.setGas(((TileEntityRotaryCondensentrator)tileEntity).getGas(), itemStack);
+        	TileEntityRotaryCondensentrator condensentrator = (TileEntityRotaryCondensentrator)tileEntity;
+        	
+        	if(condensentrator.gasTank.getGas() != null)
+        	{
+        		itemStack.stackTagCompound.setCompoundTag("gasStack", condensentrator.gasTank.getGas().write(new NBTTagCompound()));
+        	}
         }
         
         return itemStack;

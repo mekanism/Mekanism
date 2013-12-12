@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import mekanism.api.Object3D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
@@ -26,9 +26,9 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalFormulator extends TileEntityElectricBlock implements IActiveState, IGasStorage, ITubeConnection, IRedstoneControl
+public class TileEntityChemicalFormulator extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl
 {
-	public GasStack gasTank;
+	public GasTank gasTank = new GasTank(MAX_GAS);
 	
 	public static final int MAX_GAS = 10000;
 	
@@ -87,12 +87,9 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 			
 			ChargeUtils.discharge(1, this);
 			
-			if(getGas() != null)
+			if(inventory[2] != null && gasTank.getGas() != null)
 			{
-				if(inventory[2] != null)
-				{
-					setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.addGas(inventory[2], getGas())));
-				}
+				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
 			}
 			
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
@@ -107,7 +104,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 				else {
 					GasStack stack = RecipeHandler.getChemicalFormulatorOutput(inventory[0], true);
 					
-					setGas(new GasStack(stack.getGas(), getStoredGas()+stack.amount));
+					gasTank.fill(stack, true);
 					operatingTicks = 0;
 				}
 			}
@@ -120,20 +117,18 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 			
 			prevEnergy = getEnergy();
 			
-			if(getGas() != null)
+			if(gasTank.getGas() != null)
 			{
-				GasStack toSend = new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput));
-				setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing))));
+				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
+				gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing)), true);
 				
 				TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 				
-				if(tileEntity instanceof IGasAcceptor)
+				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasAcceptor)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), gasTank.getGas().getGas()))
 					{
-						int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput)));
-						
-						setGas(new GasStack(getGas().getGas(), getGas().amount - added));
+						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
 					}
 				}
 			}
@@ -185,11 +180,6 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 		return new int[0];
 	}
 	
-	public int getStoredGas()
-	{
-		return gasTank != null ? gasTank.amount : 0;
-	}
-	
 	public int getScaledProgress(int i)
 	{	
 		return operatingTicks*i / TICKS_REQUIRED;
@@ -204,7 +194,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 		
 		GasStack stack = RecipeHandler.getChemicalFormulatorOutput(inventory[0], false);
 		
-		if(stack == null || (getGas() != null && (getGas().getGas() != stack.getGas() || getMaxGas()-getGas().amount < stack.amount)))
+		if(stack == null || (gasTank.getGas() != null && (gasTank.getGas().getGas() != stack.getGas() || gasTank.getNeeded() < stack.amount)))
 		{
 			return false;
 		}
@@ -223,7 +213,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 		
 		if(dataStream.readBoolean())
 		{
-			gasTank = new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt());
+			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
 			gasTank = null;
@@ -242,11 +232,11 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 		data.add(controlType.ordinal());
 		data.add(operatingTicks);
 		
-		if(gasTank != null)
+		if(gasTank.getGas() != null)
 		{
 			data.add(true);
-			data.add(gasTank.getGas().getID());
-			data.add(gasTank.amount);
+			data.add(gasTank.getGas().getGas().getID());
+			data.add(gasTank.getStored());
 		}
 		else {
 			data.add(false);
@@ -263,8 +253,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
         isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         operatingTicks = nbtTags.getInteger("operatingTicks");
-        
-        gasTank = GasStack.readFromNBT(nbtTags.getCompoundTag("gasTank"));
+        gasTank = GasTank.readFromNBT(nbtTags.getCompoundTag("gasTank"));
     }
 
 	@Override
@@ -275,11 +264,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setInteger("operatingTicks", operatingTicks);
-        
-        if(gasTank != null)
-        {
-        	nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
-        }
+    	nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
     }
 	
 	@Override
@@ -290,7 +275,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 	
 	public int getScaledGasLevel(int i)
 	{
-		return gasTank != null ? gasTank.amount*i / MAX_GAS : 0;
+		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_GAS : 0;
 	}
 	
 	@Override
@@ -329,32 +314,6 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return side == MekanismUtils.getRight(facing);
-	}
-
-	@Override
-	public GasStack getGas(Object... data)
-	{
-		return gasTank;
-	}
-
-	@Override
-	public void setGas(GasStack stack, Object... data)
-	{
-		if(stack == null || stack.amount == 0)
-		{
-			gasTank = null;
-		}
-		else {
-			gasTank = new GasStack(stack.getGas(), Math.max(Math.min(stack.amount, getMaxGas()), 0));
-		}
-		
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getMaxGas(Object... data)
-	{
-		return MAX_GAS;
 	}
 	
 	@Override

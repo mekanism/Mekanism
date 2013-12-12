@@ -8,7 +8,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
@@ -134,11 +134,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
-				if(tileEntity instanceof IGasAcceptor)
+				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasAcceptor)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputType))
+					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputType))
 					{
-						int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(outputType, Math.min(getStored(outputType), output)));
+						int added = ((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), new GasStack(outputType, Math.min(getStored(outputType), output)));
 						
 						setStored(outputType, getStored(outputType) - added);
 					}

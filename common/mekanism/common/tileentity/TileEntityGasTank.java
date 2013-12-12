@@ -6,10 +6,10 @@ import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.util.MekanismUtils;
@@ -20,12 +20,12 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasStorage, IGasAcceptor, ITubeConnection, IRedstoneControl
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl
 {
 	/** The type of gas stored in this tank. */
-	public GasStack gasStored;
+	public GasTank gasTank = new GasTank(MAX_GAS);
 	
-	public final int MAX_GAS = 96000;
+	public static final int MAX_GAS = 96000;
 	
 	/** How fast this tank can output gas. */
 	public int output = 16;
@@ -42,38 +42,29 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	
 	@Override
 	public void onUpdate()
-	{
-		if(inventory[0] != null && getGas() != null)
+	{		
+		if(inventory[0] != null && gasTank.getGas() != null)
 		{
-			setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.addGas(inventory[0], getGas())));
+			gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
 		}
 		
-		if(inventory[1] != null && (getGas() == null || getGas().amount < getMaxGas()))
+		if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
 		{
-			if(getGas() == null)
-			{
-				setGas(GasTransmission.removeGas(inventory[1], null, getMaxGas()));
-			}
-			else {
-				GasStack removed = GasTransmission.removeGas(inventory[1], getGas().getGas(), getMaxGas()-getGas().amount);
-				setGas(new GasStack(getGas().getGas(), getGas().amount + (removed != null ? removed.amount : 0)));
-			}
+			gasTank.fill(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
 		}
 		
-		if(!worldObj.isRemote && getGas() != null && MekanismUtils.canFunction(this))
+		if(!worldObj.isRemote && gasTank.getGas() != null && MekanismUtils.canFunction(this))
 		{
-			GasStack toSend = new GasStack(getGas().getGas(), Math.min(getGas().amount, output));
-			setGas(new GasStack(getGas().getGas(), getGas().amount - GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing))));
+			GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
+			gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing)), true);
 			
 			TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 			
-			if(tileEntity instanceof IGasAcceptor)
+			if(tileEntity instanceof IGasHandler)
 			{
-				if(((IGasAcceptor)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), getGas().getGas()))
+				if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), gasTank.getGas().getGas()))
 				{
-					int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(getGas().getGas(), Math.min(getGas().amount, output)));
-					
-					setGas(new GasStack(getGas().getGas(), getGas().amount - added));
+					gasTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
 				}
 			}
 		}
@@ -100,11 +91,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	{
 		if(slotID == 0)
 		{
-			return itemstack.getItem() instanceof IGasItem && (getGas() == null || ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, getGas().getGas()));
+			return itemstack.getItem() instanceof IGasItem && (gasTank.getGas() == null || ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, gasTank.getGas().getGas()));
 		}
 		else if(slotID == 1)
 		{
-			return itemstack.getItem() instanceof IGasItem && (getGas() == null || ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, getGas().getGas()));
+			return itemstack.getItem() instanceof IGasItem && (gasTank.getGas() == null || ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, gasTank.getGas().getGas()));
 		}
 		
 		return true;
@@ -117,51 +108,32 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	}
 
 	@Override
-	public GasStack getGas(Object... data) 
+	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		return gasStored;
+		return gasTank.fill(stack, true);
 	}
 
 	@Override
-	public void setGas(GasStack stack, Object... data) 
+	public GasStack drawGas(ForgeDirection side, int amount)
 	{
-		if(stack == null || stack.amount == 0)
-		{
-			gasStored = null;
-		}
-		else {
-			gasStored = new GasStack(stack.getGas(), Math.max(Math.min(stack.amount, getMaxGas()), 0));
-		}
-		
-		MekanismUtils.saveChunk(this);
-	}
-	
-	@Override
-	public int getMaxGas(Object... data)
-	{
-		return MAX_GAS;
+		return null;
 	}
 
 	@Override
-	public int receiveGas(GasStack stack) 
+	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
-		if(gasStored == null || (gasStored != null && gasStored.getGas() == stack.getGas()))
-		{
-			int stored = getGas() != null ? getGas().amount : 0;
-			int toUse = Math.min(getMaxGas()-stored, stack.amount);
-			
-			setGas(new GasStack(stack.getGas(), stored + toUse));
-	    	
-	    	return toUse;
-		}
-		
-		return 0;
+		return gasTank.canDraw(type);
 	}
 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type) 
 	{
-		return (getGas() == null || getGas().getGas() == type) && side != ForgeDirection.getOrientation(facing);
+		if(side != ForgeDirection.getOrientation(facing))
+		{
+			return gasTank.canReceive(type);
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -171,10 +143,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 		
 		if(dataStream.readBoolean())
 		{
-			gasStored = new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt());
+			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
-			gasStored = null;
+			gasTank.setGas(null);
 		}
 		
 		controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -187,10 +159,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
     {
         super.readFromNBT(nbtTags);
 
-        try {
-        	gasStored = GasStack.readFromNBT(nbtTags.getCompoundTag("gasStored"));
-        } catch(Exception e) {}
-        
+    	gasTank = GasTank.readFromNBT(nbtTags.getCompoundTag("gasTank"));
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
@@ -199,11 +168,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
     {
         super.writeToNBT(nbtTags);
         
-        if(gasStored != null)
-        {
-        	nbtTags.setCompoundTag("gasStored", gasStored.write(new NBTTagCompound()));
-        }
-        
+        nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
         nbtTags.setInteger("controlType", controlType.ordinal());
     }
 	
@@ -212,11 +177,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasS
 	{
 		super.getNetworkedData(data);
 		
-		if(gasStored != null)
+		if(gasTank.getGas() != null)
 		{
 			data.add(true);
-			data.add(gasStored.getGas().getID());
-			data.add(gasStored.amount);
+			data.add(gasTank.getGas().getGas().getID());
+			data.add(gasTank.getStored());
 		}
 		else {
 			data.add(false);

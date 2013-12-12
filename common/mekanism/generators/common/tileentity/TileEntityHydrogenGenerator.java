@@ -6,9 +6,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +21,7 @@ import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
-public class TileEntityHydrogenGenerator extends TileEntityGenerator implements IGasAcceptor, IGasStorage, ITubeConnection
+public class TileEntityHydrogenGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection
 {
 	/** The maximum amount of hydrogen this block can store. */
 	public int MAX_HYDROGEN = 18000;
@@ -47,8 +46,8 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			
 			if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 			{
-				GasStack removed = GasTransmission.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), getMaxGas()-hydrogenStored);
-				setGas(new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored + (removed != null ? removed.amount : 0)));
+				GasStack removed = GasTransmission.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), MAX_HYDROGEN-hydrogenStored);
+				hydrogenStored += removed != null ? removed.amount : 0;
 			}
 			
 			if(canOperate())
@@ -99,32 +98,6 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
-	}
-    
-	@Override
-	public GasStack getGas(Object... data) 
-	{
-		if(hydrogenStored == 0)
-		{
-			return null;
-		}
-		
-		return new GasStack(GasRegistry.getGas("hydrogen"), hydrogenStored);
-	}
-
-	@Override
-	public void setGas(GasStack stack, Object... data) 
-	{
-		if(stack == null)
-		{
-			hydrogenStored = 0;
-		}
-		else if(stack.getGas() == GasRegistry.getGas("hydrogen"))
-		{
-			hydrogenStored = Math.max(Math.min(stack.amount, getMaxGas()), 0);
-		}
-		
-		MekanismUtils.saveChunk(this);
 	}
 	
 	@Override
@@ -194,15 +167,12 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public int receiveGas(GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
 		if(stack.getGas() == GasRegistry.getGas("hydrogen"))
 		{
-			int stored = getGas() != null ? getGas().amount : 0;
-			int toUse = Math.min(getMaxGas()-stored, stack.amount);
-			
-			setGas(new GasStack(stack.getGas(), stored + toUse));
-	    	
+			int toUse = Math.min(MAX_HYDROGEN-hydrogenStored, stack.amount);
+			hydrogenStored += toUse;
 	    	return toUse;
 		}
 		
@@ -230,16 +200,22 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		return type == GasRegistry.getGas("hydrogen") && side != ForgeDirection.getOrientation(facing);
 	}
+	
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canDrawGas(ForgeDirection side, Gas type)
+	{
+		return false;
+	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side) 
 	{
 		return side != ForgeDirection.getOrientation(facing);
-	}
-
-	@Override
-	public int getMaxGas(Object... data) 
-	{
-		return MAX_HYDROGEN;
 	}
 }

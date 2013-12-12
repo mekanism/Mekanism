@@ -1,29 +1,9 @@
 package mekanism.common.tileentity;
 
-import java.util.ArrayList;
-
-import mekanism.api.Object3D;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasAcceptor;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketTileEntity;
-import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityChemicalInfuser extends TileEntityElectricBlock //implements IActiveState, IGasStorage, IGasAcceptor, ITubeConnection, IRedstoneControl
 {
@@ -131,11 +111,11 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock //impleme
 					
 					TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
 					
-					if(tileEntity instanceof IGasAcceptor)
+					if(tileEntity instanceof IGasHandler)
 					{
-						if(((IGasAcceptor)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), getGas().getGas()))
+						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), getGas().getGas()))
 						{
-							int added = ((IGasAcceptor)tileEntity).receiveGas(new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput)));
+							int added = ((IGasHandler)tileEntity).receiveGas(new GasStack(getGas().getGas(), Math.min(getGas().amount, gasOutput)));
 							
 							setGas(new GasStack(getGas().getGas(), getGas().amount - added));
 						}
@@ -196,7 +176,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock //impleme
 				{
 					setActive(true);
 					setGas(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), getGas() != null ? getGas().amount+1 : 1));
-					fluidTank.drain(1, true);
+					fluidTank.draw(1, true);
 					setEnergy(getEnergy() - ENERGY_USAGE);
 				}
 				else {

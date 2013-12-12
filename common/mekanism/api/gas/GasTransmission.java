@@ -44,17 +44,17 @@ public final class GasTransmission
      * @param tileEntity - center tile entity
      * @return array of IGasAcceptors
      */
-    public static IGasAcceptor[] getConnectedAcceptors(TileEntity tileEntity)
+    public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity)
     {
-    	IGasAcceptor[] acceptors = new IGasAcceptor[] {null, null, null, null, null, null};
+    	IGasHandler[] acceptors = new IGasHandler[] {null, null, null, null, null, null};
    
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
 			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(acceptor instanceof IGasAcceptor)
+			if(acceptor instanceof IGasHandler)
 			{
-				acceptors[orientation.ordinal()] = (IGasAcceptor)acceptor;
+				acceptors[orientation.ordinal()] = (IGasHandler)acceptor;
 			}
     	}
     	

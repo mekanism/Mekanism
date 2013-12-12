@@ -211,7 +211,7 @@ public class BlockGasTank extends BlockContainer
     	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
         
         IGasItem storageTank = (IGasItem)itemStack.getItem();
-        storageTank.setGas(tileEntity.gasStored, itemStack);
+        storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
         
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

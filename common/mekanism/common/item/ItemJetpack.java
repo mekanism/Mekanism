@@ -80,18 +80,13 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	
 	public void useGas(ItemStack stack)
 	{
-		setGas(new GasStack(getGas(stack).getGas(), getGas(stack).amount-1), stack);
+		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount-1));
 	}
 	
 	@Override
-	public int getMaxGas(Object... data)
+	public int getMaxGas(ItemStack itemstack)
 	{
-		if(data[0] instanceof ItemStack)
-		{
-			return MAX_GAS;
-		}
-		
-		return 0;
+		return MAX_GAS;
 	}
 
 	@Override
@@ -114,7 +109,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		}
 		
 		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-		setGas(new GasStack(stack.getGas(), getStored(itemstack)+toUse), itemstack);
+		setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack)+toUse));
 		
 		return toUse;
 	}
@@ -130,7 +125,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 		Gas type = getGas(itemstack).getGas();
 		
 		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(new GasStack(type, getStored(itemstack)-gasToUse), itemstack);
+		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
 		
 		return new GasStack(type, gasToUse);
 	}
@@ -153,31 +148,24 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	}
 	
 	@Override
-	public GasStack getGas(Object... data)
+	public GasStack getGas(ItemStack itemstack)
 	{
-		if(data[0] instanceof ItemStack)
+		if(itemstack.stackTagCompound == null)
 		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			if(itemstack.stackTagCompound == null)
-			{
-				return null;
-			}
-			
-			GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-			
-			if(stored == null)
-			{
-				itemstack.setItemDamage(100);
-			}
-			else {
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-			}
-			
-			return stored;
+			return null;
 		}
 		
-		return null;
+		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		
+		if(stored == null)
+		{
+			itemstack.setItemDamage(100);
+		}
+		else {
+			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
+		}
+		
+		return stored;
 	}
 	
 	public JetpackMode getMode(ItemStack stack)
@@ -201,36 +189,31 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	}
 	
 	@Override
-	public void setGas(GasStack stack, Object... data)
+	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(data[0] instanceof ItemStack)
+		if(itemstack.stackTagCompound == null)
 		{
-			ItemStack itemstack = (ItemStack)data[0];
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(stack == null || stack.amount == 0)
+		{
+			itemstack.setItemDamage(100);
+			itemstack.stackTagCompound.removeTag("stored");
+		}
+		else {
+			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
+			GasStack gasStack = new GasStack(stack.getGas(), amount);
 			
-			if(itemstack.stackTagCompound == null)
-			{
-				itemstack.setTagCompound(new NBTTagCompound());
-			}
-			
-			if(stack == null || stack.amount == 0)
-			{
-				itemstack.setItemDamage(100);
-				itemstack.stackTagCompound.removeTag("stored");
-			}
-			else {
-				int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
-				GasStack gasStack = new GasStack(stack.getGas(), amount);
-				
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
-			}
+			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
+			itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 	
 	public ItemStack getEmptyItem()
 	{
 		ItemStack empty = new ItemStack(this);
-		setGas(null, empty);
+		setGas(empty, null);
 		empty.setItemDamage(100);
 		return empty;
 	}
@@ -239,12 +222,12 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
 		ItemStack empty = new ItemStack(this);
-		setGas(null, empty);
+		setGas(empty, null);
 		empty.setItemDamage(100);
 		list.add(empty);
 		
 		ItemStack filled = new ItemStack(this);
-		setGas(new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)), filled);
+		setGas(filled, new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 	

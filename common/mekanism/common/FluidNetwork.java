@@ -189,6 +189,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		for(IFluidHandler acceptor : possibleAcceptors)
 		{
+			if(acceptorDirections.get(acceptor) == null)
+			{
+				continue;
+			}
+			
 			if(acceptor.canFill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend.getFluid()))
 			{
 				toReturn.add(acceptor);
