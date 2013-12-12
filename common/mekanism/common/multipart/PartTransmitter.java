@@ -53,6 +53,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
 	public boolean isActive = false;
+	public boolean sendDesc;
 	
 	static
 	{
@@ -91,6 +92,29 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		}
 		else {
 			super.bind(t);
+		}
+	}
+	
+	@Override
+	public void update()
+	{
+        if(world().isRemote)
+        {
+            if(delayTicks == 3)
+            {
+                delayTicks++;
+                refreshTransmitterNetwork();
+            }
+            else if(delayTicks < 3)
+            {
+                delayTicks++;
+            }
+        }
+
+        if(sendDesc)
+		{
+			sendDescUpdate();
+			sendDesc = false;
 		}
 	}
 
@@ -187,7 +211,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
 			
-			sendDescUpdate();
+			sendDesc = true;;
 		}
 	}
 	
@@ -423,6 +447,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	@Override
 	public boolean activate(EntityPlayer player, MovingObjectPosition part, ItemStack item)
 	{
+		if(item == null)
+			return false;
 		if(item.getItem() instanceof ItemConfigurator && player.isSneaking())
 		{
 			isActive ^= true;
@@ -446,7 +472,13 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	@Override
 	public Iterable<ItemStack> getDrops()
 	{
-		return Collections.singletonList(new ItemStack(Mekanism.PartTransmitter, 1, getTransmissionType().ordinal()));
+		return Collections.singletonList(pickItem(null));
+	}
+	
+	@Override
+	public ItemStack pickItem(MovingObjectPosition hit)
+	{
+		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmissionType().ordinal());
 	}
 	
 	@Override
@@ -466,23 +498,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	}
 	
 	@Override
-	public void update()
-	{
-		if(world().isRemote)
-		{
-			if(delayTicks == 3)
-			{
-				delayTicks++;
-				refreshTransmitterNetwork();
-			}
-			else if(delayTicks < 3)
-			{
-				delayTicks++;
-			}
-		}
-	}
-
-	@Override
 	public boolean doesTick()
 	{
 		return FMLCommonHandler.instance().getEffectiveSide().isClient();
@@ -497,7 +512,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		super.onAdded();
 		refreshTransmitterNetwork();
 	}
-	
+
 	@Override
 	public void onChunkLoad()
 	{
@@ -511,7 +526,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		super.onNeighborChanged();
 		refreshTransmitterNetwork();
 	}
-
+	
 	@Override
 	public void onPartChanged(TMultiPart part)
 	{

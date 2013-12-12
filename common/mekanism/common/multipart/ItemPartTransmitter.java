@@ -2,6 +2,9 @@ package mekanism.common.multipart;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
+import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Mekanism;
@@ -40,6 +43,45 @@ public class ItemPartTransmitter extends JItemMultiPart
 		return damage;
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	{
+		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
+		}
+		else {
+			switch(itemstack.getItemDamage())
+			{
+				case 0:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
+					list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
+					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
+				}
+				case 1:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");
+				}
+				case 2:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "O " + EnumColor.GREY + "(Oxygen)");
+					list.add("- " + EnumColor.PURPLE + "H " + EnumColor.GREY + "(Hydrogen)");
+				}
+				case 3:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "Items (universal)");
+					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				}
+			}
+		}
+	}
+	
     @Override
     public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo) {
         for (TransmissionType type : TransmissionType.values()) {

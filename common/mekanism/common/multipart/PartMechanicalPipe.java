@@ -134,6 +134,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 					}
 				}
 			}
+			super.update();
 		}
 	}
 

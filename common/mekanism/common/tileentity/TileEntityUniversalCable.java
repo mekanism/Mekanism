@@ -162,6 +162,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 				Mekanism.ic2Registered.add(Object3D.get(this));
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			}
+			
+			getTransmitterNetwork().refresh();
 		}
 	}
 

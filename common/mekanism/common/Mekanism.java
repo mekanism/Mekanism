@@ -244,6 +244,7 @@ public class Mekanism
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
+	public static boolean allowBackCrafting = false;
 	public static boolean voiceServerEnabled = true;
 	public static boolean forceBuildcraft = false;
 	public static boolean overrideUERatios = true;
@@ -486,6 +487,28 @@ public class Mekanism
 		
 		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
 	
+		//Transmitters
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 0), new Object[] {
+			"SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Item.redstone
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 1), new Object[] {
+			"SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Item.bucketEmpty
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 2), new Object[] {
+			"SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass
+		}));
+		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 0), new ItemStack(Transmitter, 1, 1));
+		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 1), new ItemStack(Transmitter, 1, 2));
+		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 2), new ItemStack(Transmitter, 1, 0));
+		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 3), new ItemStack(Transmitter, 1, 3));
+		if(allowBackCrafting)
+		{
+			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 1), new ItemStack(PartTransmitter, 1, 0));
+			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 2), new ItemStack(PartTransmitter, 1, 1));
+			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 0), new ItemStack(PartTransmitter, 1, 2));
+			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 3), new ItemStack(PartTransmitter, 1, 3));
+		}
+		
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 1, new ItemStack(Ingot, 1, 5), 1.0F);
@@ -1133,6 +1156,8 @@ public class Mekanism
         InfuseRegistry.registerInfuseType(new InfuseType("TIN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 4, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 8, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 16, 0));
+        
+        new MultipartMekanism().init();
 	}
 	
 	@EventHandler

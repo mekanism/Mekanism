@@ -9,6 +9,8 @@ public enum TransmissionType
 	FLUID,
 	GAS;
 
+	public static TransmissionType[] metaArray = {GAS, ENERGY, FLUID};
+
     public static boolean checkTransmissionType(TileEntity sideTile, TransmissionType type)
     {
         return checkTransmissionType(sideTile, type, null);
@@ -39,4 +41,11 @@ public enum TransmissionType
     	
     	return false;
     }
+
+	public static TransmissionType fromOldMeta(int meta)
+	{
+		if(meta <= metaArray.length)
+			return metaArray[meta];
+		return null;
+	}
 }
