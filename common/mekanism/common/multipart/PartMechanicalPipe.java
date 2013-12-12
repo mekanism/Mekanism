@@ -7,9 +7,12 @@ import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.client.render.mekanism.client.render.PartTransmitterIcons;
 import mekanism.common.FluidNetwork;
 import mekanism.common.PipeUtils;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -25,6 +28,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
+    public static PartTransmitterIcons pipeIcons;
 
 	@Override
 	public String getType()
@@ -32,7 +36,25 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 		return "mekanism:mechanical_pipe";
 	}
 
-	@Override
+    public static void registerIcons(IconRegister register){
+        pipeIcons = new PartTransmitterIcons(2);
+        pipeIcons.registerCenterIcons(register, new String[]{"MechanicalPipe", "MechanicalPipeActive"});
+        pipeIcons.registerSideIcon(register, "MechanicalPipeSide");
+    }
+
+    @Override
+    public Icon getCenterIcon()
+    {
+        return pipeIcons.getCenterIcon(isActive ? 1 : 0);
+    }
+
+    @Override
+    public Icon getSideIcon()
+    {
+        return pipeIcons.getSideIcon();
+    }
+
+    @Override
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.FLUID;

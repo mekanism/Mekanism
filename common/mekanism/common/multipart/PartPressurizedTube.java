@@ -11,18 +11,42 @@ import mekanism.api.gas.IGasAcceptor;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.client.render.mekanism.client.render.PartTransmitterIcons;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 {
+    public static PartTransmitterIcons tubeIcons;
+
 	@Override
 	public String getType()
 	{
 		return "mekanism:pressurized_tube";
 	}
 
-	@Override
+    public static void registerIcons(IconRegister register)
+    {
+        tubeIcons = new PartTransmitterIcons(1);
+        tubeIcons.registerCenterIcons(register, new String[]{"PressurizedTube"});
+        tubeIcons.registerSideIcon(register, "TransmitterSideSmall");
+    }
+
+    @Override
+    public Icon getCenterIcon()
+    {
+        return tubeIcons.getCenterIcon(0);
+    }
+
+    @Override
+    public Icon getSideIcon()
+    {
+        return tubeIcons.getSideIcon();
+    }
+
+    @Override
 	public TransmissionType getTransmissionType()
 	{
 		return TransmissionType.GAS;

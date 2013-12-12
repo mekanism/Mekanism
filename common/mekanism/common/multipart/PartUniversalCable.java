@@ -15,6 +15,9 @@ import codechicken.lib.vec.Vector3;
 import codechicken.multipart.TileMultipart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.client.render.mekanism.client.render.PartTransmitterIcons;
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.util.Icon;
 import universalelectricity.core.block.IConductor;
 import universalelectricity.core.block.IElectrical;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -48,6 +51,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IEnergySink, IEnergyHandler, IElectrical
 {
+
+    public static PartTransmitterIcons cableIcons;
+
 	public PartUniversalCable()
 	{
 		super();
@@ -58,6 +64,25 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		return "mekanism:universal_cable";
 	}
+
+    public static void registerIcons(IconRegister register)
+    {
+        cableIcons = new PartTransmitterIcons(1);
+        cableIcons.registerCenterIcons(register, new String[]{"UniversalCable"});
+        cableIcons.registerSideIcon(register, "TransmitterSideSmall");
+    }
+
+    @Override
+    public Icon getCenterIcon()
+    {
+        return cableIcons.getCenterIcon(0);
+    }
+
+    @Override
+    public Icon getSideIcon()
+    {
+        return cableIcons.getSideIcon();
+    }
 
 	@Override
 	public TransmissionType getTransmissionType()

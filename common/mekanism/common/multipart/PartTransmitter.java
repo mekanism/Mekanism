@@ -12,12 +12,15 @@ import mekanism.api.Object3D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.client.render.mekanism.client.render.PartTransmitterIcons;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -80,6 +83,16 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 				return null;
 		}
 	}
+
+    public Size getTransmitterSize()
+    {
+        return getTransmissionType().transmitterSize;
+    }
+
+    public abstract Icon getCenterIcon();
+
+    public abstract Icon getSideIcon();
+
 	
 	@Override
 	public void bind(TileMultipart t)
@@ -271,13 +284,13 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	@Override
 	public Icon getBreakingIcon(Object subPart, int side)
 	{
-		return RenderPartTransmitter.getInstance().getIconForPart(this);
+        return getCenterIcon();
 	}
 	
 	@Override
 	public Icon getBrokenIcon(int side)
 	{
-		return RenderPartTransmitter.getInstance().getIconForPart(this);
+		return getCenterIcon();
 	}
 	
 	@Override

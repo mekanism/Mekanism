@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.multipart.PartMechanicalPipe;
@@ -34,15 +35,9 @@ import codechicken.lib.vec.Vector3;
 public class RenderPartTransmitter implements IIconRegister
 {
 	public static RenderPartTransmitter INSTANCE;
-
-	public static Icon[] uniCableTextures = new Icon[2];
-	public static Icon[] mechPipeTextures = new Icon[2];
-	public static Icon[] pressTubeTextures = new Icon[2];
 	
-	public static Icon sideTexture;
-	public static Map<TransmissionType, Icon[]> typeMap = new HashMap<TransmissionType, Icon[]>();
-	
-	public static Map<String, CCModel> models;
+	public static Map<String, CCModel> small_models;
+    public static Map<String, CCModel> large_models;
 	public static Map<String, CCModel> cableContentsModels;
 	
 	private static final int stages = 40;
@@ -53,16 +48,25 @@ public class RenderPartTransmitter implements IIconRegister
 	
 	static
 	{
-		models = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter.obj"), 7, null);
-        
-		for(CCModel c : models.values()) 
+        small_models = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter_small.obj"), 7, null);
+
+        for(CCModel c : small_models.values())
         {
             c.apply(new Translation(.5, .5, .5));
             c.computeLighting(LightModel.standardLightModel);
             c.shrinkUVs(0.0005);
         }
-        
-		cableContentsModels = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitterEnergy.obj"), 7, null);
+
+        large_models = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter_large.obj"), 7, null);
+
+        for(CCModel c : large_models.values())
+        {
+            c.apply(new Translation(.5, .5, .5));
+            c.computeLighting(LightModel.standardLightModel);
+            c.shrinkUVs(0.0005);
+        }
+
+        cableContentsModels = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter_contents.obj"), 7, null);
         
 		for(CCModel c : cableContentsModels.values()) 
         {
@@ -70,10 +74,6 @@ public class RenderPartTransmitter implements IIconRegister
             c.computeLighting(LightModel.standardLightModel);
             c.shrinkUVs(0.0005);
         }
-        
-		typeMap.put(TransmissionType.ENERGY, uniCableTextures);
-		typeMap.put(TransmissionType.FLUID, mechPipeTextures);
-		typeMap.put(TransmissionType.GAS, pressTubeTextures);
 	}
 
 	public static RenderPartTransmitter getInstance()
@@ -355,8 +355,8 @@ public class RenderPartTransmitter implements IIconRegister
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		String name = side.name().toLowerCase();
 		name += connected ? "Out" : "In";
-		Icon renderIcon = connected ? sideTexture : getIconForPart(transmitter);
-		renderPart(renderIcon, models.get(name), transmitter.x(), transmitter.y(), transmitter.z());
+		Icon renderIcon = connected ? transmitter.getSideIcon() : transmitter.getCenterIcon();
+		renderPart(renderIcon, getModelForPart(transmitter.getTransmitterSize(), name), transmitter.x(), transmitter.y(), transmitter.z());
 	}
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
@@ -385,22 +385,22 @@ public class RenderPartTransmitter implements IIconRegister
         cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
     }
 
-    public Icon getIconForPart(PartTransmitter<?> part)
-	{
-		Icon[] icons = typeMap.get(part.getTransmissionType());
-		return icons[part.isActive ? 1 : 0];
-	}
+    public CCModel getModelForPart(Size size, String name)
+    {
+        switch(size)
+        {
+            case SMALL: return small_models.get(name);
+            case LARGE: return large_models.get(name);
+            default: return small_models.get(name);
+        }
+    }
 	
 	@Override
 	public void registerIcons(IconRegister register)
 	{
-		sideTexture = register.registerIcon("mekanism:models/TransmitterSide");
-		uniCableTextures[0] = register.registerIcon("mekanism:models/UniversalCable");
-		uniCableTextures[1] = uniCableTextures[0];
-		pressTubeTextures[0] = register.registerIcon("mekanism:models/PressurizedTube");
-		pressTubeTextures[1] = pressTubeTextures[0];
-		mechPipeTextures[0] = register.registerIcon("mekanism:models/MechanicalPipe");
-		mechPipeTextures[1] = register.registerIcon("mekanism:models/MechanicalPipeActive");
+        PartUniversalCable.registerIcons(register);
+        PartMechanicalPipe.registerIcons(register);
+        PartPressurizedTube.registerIcons(register);
 	}
 
 	@Override
