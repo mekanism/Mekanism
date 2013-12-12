@@ -106,7 +106,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
-		return true;
+		return false;
 	}
 
 	@Override

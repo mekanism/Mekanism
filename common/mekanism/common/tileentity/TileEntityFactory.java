@@ -449,7 +449,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			return RecipeType.values()[recipeType].getFuelTicks(itemstack) > 0;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	@Override

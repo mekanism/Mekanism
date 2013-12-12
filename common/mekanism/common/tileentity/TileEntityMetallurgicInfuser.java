@@ -247,7 +247,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
 		
-		return true;
+		return false;
 	}
 	
 	public void operate()

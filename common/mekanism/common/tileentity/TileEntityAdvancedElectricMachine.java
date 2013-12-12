@@ -168,7 +168,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			return getFuelTicks(itemstack) > 0;
 		}
 		
-		return true;
+		return false;
 	}
 
     @Override

@@ -281,6 +281,8 @@ public class Mekanism
 	public static double energizedSmelterUsage;
 	public static double digitalMinerUsage;
 	public static double rotaryCondensentratorUsage;
+	public static double chemicalFormulatorUsage;
+	public static double chemicalInfuserUsage;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
