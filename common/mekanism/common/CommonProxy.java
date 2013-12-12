@@ -3,6 +3,9 @@ package mekanism.common;
 import java.io.File;
 
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
+import mekanism.common.inventory.container.ContainerChemicalFormulator;
+import mekanism.common.inventory.container.ContainerChemicalInfuser;
+import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.inventory.container.ContainerElectricMachine;
@@ -24,6 +27,8 @@ import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
+import mekanism.common.tileentity.TileEntityChemicalFormulator;
+import mekanism.common.tileentity.TileEntityChemicalInfuser;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityCrusher;
@@ -100,6 +105,9 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
 		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
+		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
+		GameRegistry.registerTileEntity(TileEntityChemicalFormulator.class, "ChemicalFormulator");
+		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 	}
 	
 	/**
@@ -262,6 +270,8 @@ public class CommonProxy
 		
 		switch(ID)
 		{
+			case 0:
+				return new ContainerDictionary(player.inventory);
 			case 2:
 				return new ContainerDigitalMiner(player.inventory, (TileEntityDigitalMiner)tileEntity);
 			case 3:
@@ -296,6 +306,7 @@ public class CommonProxy
 				return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
 			case 21:
 				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit != null)
 				{
 					return new ContainerRobitMain(player.inventory, robit);
@@ -304,12 +315,14 @@ public class CommonProxy
 				return new ContainerRobitCrafting(player.inventory, world);
 			case 23:
 				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit1 != null)
 				{
 					return new ContainerRobitInventory(player.inventory, robit1);
 				}
 			case 24:
 				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit2 != null)
 				{
 					return new ContainerRobitSmelting(player.inventory, robit2);
@@ -322,6 +335,10 @@ public class CommonProxy
 				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
 			case 28:
 				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
+			case 29:
+				return new ContainerChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
+			case 30:
+				return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
 		}
 		
 		return null;

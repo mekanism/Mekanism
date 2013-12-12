@@ -4,10 +4,12 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
+import mekanism.client.gui.GuiChemicalFormulator;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
+import mekanism.client.gui.GuiDictionary;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDynamicTank;
 import mekanism.client.gui.GuiElectricChest;
@@ -55,6 +57,7 @@ import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderPressurizedTube;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
+import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
@@ -71,6 +74,7 @@ import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
+import mekanism.common.tileentity.TileEntityChemicalFormulator;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -110,6 +114,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -134,6 +139,7 @@ public class ClientProxy extends CommonProxy
 		Mekanism.configuration.load();
 		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
+		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1).getDouble(1);
 		Mekanism.configuration.save();
 	}
 	
@@ -256,6 +262,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
 		ClientRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator", new RenderRotaryCondensentrator());
+		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
 	}
 	
 	@Override
@@ -295,6 +302,8 @@ public class ClientProxy extends CommonProxy
 		
 		switch(ID)
 		{
+			case 0:
+				return new GuiDictionary(player.inventory);
 			case 1:
 				return new GuiCredits();
 			case 2:
@@ -323,6 +332,7 @@ public class ClientProxy extends CommonProxy
 				return new GuiTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
 			case 14:
 				ItemStack itemStack = player.getCurrentEquippedItem();
+				
 				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
 					return new GuiPortableTeleporter(player, itemStack);
@@ -341,6 +351,7 @@ public class ClientProxy extends CommonProxy
 				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
 			case 21:
 				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit != null)
 				{
 					return new GuiRobitMain(player.inventory, robit);
@@ -349,18 +360,22 @@ public class ClientProxy extends CommonProxy
 				return new GuiRobitCrafting(player.inventory, world, x);
 			case 23:
 				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit1 != null)
 				{
 					return new GuiRobitInventory(player.inventory, robit1);
 				}
 			case 24:
 				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				
 				if(robit2 != null)
 				{
 					return new GuiRobitSmelting(player.inventory, robit2);
 				}
 			case 25:
 				return new GuiRobitRepair(player.inventory, world, x);
+			case 29:
+				return new GuiChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
 		}
 		
 		return null;
@@ -378,12 +393,13 @@ public class ClientProxy extends CommonProxy
 		super.loadUtilities();
 		
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
-		TickRegistry.registerTickHandler(new ClientPlayerTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);
 		
 		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
 		
 		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());
+		
+		GameRegistry.registerPlayerTracker(new ClientPlayerTracker());
 	}
 	
 	@Override

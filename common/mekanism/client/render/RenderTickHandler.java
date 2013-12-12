@@ -3,19 +3,25 @@ package mekanism.client.render;
 import java.util.EnumSet;
 import java.util.Random;
 
+import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemScubaTank;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityFlameFX;
+import net.minecraft.client.particle.EntitySmokeFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import universalelectricity.core.vector.Vector3;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.relauncher.Side;
@@ -25,6 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderTickHandler implements ITickHandler
 {
 	public Random rand = new Random();
+	public Minecraft mc = Minecraft.getMinecraft();
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -33,7 +40,6 @@ public class RenderTickHandler implements ITickHandler
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) 
 	{
 		float partialTick = (Float)tickData[0];
-		Minecraft mc = FMLClientHandler.instance().getClient();
 		
 		if(mc.thePlayer != null && mc.theWorld != null)
 		{
@@ -71,27 +77,45 @@ public class RenderTickHandler implements ITickHandler
 				}
 			}
 			
-			if(player != null)
+			if(player != null && !(mc.currentScreen instanceof GuiChat) && player.getCurrentItemOrArmor(3) != null)
 			{
-				if(player.getCurrentItemOrArmor(3) != null && player.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+				ItemStack stack = player.getCurrentItemOrArmor(3);
+				
+				ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+				int x = scaledresolution.getScaledWidth();
+				int y = scaledresolution.getScaledHeight();
+				
+				if(stack.getItem() instanceof ItemJetpack)
 				{
-					ItemStack stack = player.getCurrentItemOrArmor(3);
 					ItemJetpack jetpack = (ItemJetpack)stack.getItem();
-					
-					ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-					int x = scaledresolution.getScaledWidth();
-					int y = scaledresolution.getScaledHeight();
 					
 					font.drawStringWithShadow("Mode: " + jetpack.getMode(stack).getName(), 1, y - 20, 0x404040);
 					font.drawStringWithShadow("Hydrogen: " + jetpack.getStored(stack), 1, y - 11, 0x404040);
 				}
+				else if(stack.getItem() instanceof ItemScubaTank)
+				{
+					ItemScubaTank scubaTank = (ItemScubaTank)stack.getItem();
+					String state = (scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off");
+					
+					font.drawStringWithShadow("Mode: " + state, 1, y - 20, 0x404040);
+					font.drawStringWithShadow("Oxygen: " + scubaTank.getStored(stack), 1, y - 11, 0x404040);
+				}
 			}
 			
-			for(EntityPlayer p : Mekanism.jetpackOn)
+			for(String s : Mekanism.jetpackOn)
 			{
-				if(p.getDistance(player.posX, player.posY, player.posZ) > 40)
+				EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+				
+				if(p == null)
 				{
 					continue;
+				}
+				
+				Vector3 playerPos = new Vector3(p);
+				
+				if(p != mc.thePlayer)
+				{
+					playerPos.translate(new Vector3(0, 1.7, 0));
 				}
 				
 				float random = (rand.nextFloat()-0.5F)*0.1F;
@@ -124,19 +148,39 @@ public class RenderTickHandler implements ITickHandler
 				mLeft.translate(rLeft);
 				mRight.translate(rRight);
 				
-				Vector3 v = new Vector3(p).translate(vLeft);
-				world.spawnParticle("flame", v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-				world.spawnParticle("smoke", v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+				Vector3 v = new Vector3(playerPos).translate(vLeft);
+				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 				
-				v = new Vector3(p).translate(vRight);
-				world.spawnParticle("flame", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-				world.spawnParticle("smoke", v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				v = new Vector3(playerPos).translate(vRight);
+				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 				
-				v = new Vector3(p).translate(vCenter);
-				world.spawnParticle("flame", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-				world.spawnParticle("smoke", v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+				v = new Vector3(playerPos).translate(vCenter);
+				spawnAndSetParticle("flame", world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+				spawnAndSetParticle("smoke", world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 			}
 		}
+	}
+	
+	public void spawnAndSetParticle(String s, World world, double x, double y, double z, double velX, double velY, double velZ)
+	{
+		EntityFX fx = null;
+		
+		if(s.equals("flame"))
+		{
+			fx = new EntityFlameFX(world, x, y, z, velX, velY, velZ);
+		}
+		else if(s.equals("smoke"))
+		{
+			fx = new EntitySmokeFX(world, x, y, z, velX, velY, velZ);
+		}
+		
+        fx.prevPosX = fx.posX = x;
+        fx.prevPosY = fx.posY = y;
+        fx.prevPosZ = fx.posZ = z;
+        
+		mc.effectRenderer.addEffect(fx);
 	}
 
 	@Override

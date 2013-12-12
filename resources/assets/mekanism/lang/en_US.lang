@@ -23,6 +23,9 @@ item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
+item.ScubaTank.name=Scuba Tank
+item.GasMask.name=Gas Mask
+item.Dictionary.name=Dictionary
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -63,6 +66,8 @@ tile.MachineBlock.DigitalMiner.name=Digital Miner
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+tile.MachineBlock2.ChemicalFormulator.name=Chemical Formulator
+tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -93,6 +98,7 @@ item.steelDust.name=Steel Dust
 item.copperDust.name=Copper Dust
 item.tinDust.name=Tin Dust
 item.silverDust.name=Silver Dust
+item.leadDust.name=Lead Dust
 
 //Clumps
 item.ironClump.name=Iron Clump
@@ -102,6 +108,7 @@ item.copperClump.name=Copper Clump
 item.tinClump.name=Tin Clump
 item.silverClump.name=Silver Clump
 item.obsidianClump.name=Obsidian Clump
+item.leadClump.name=Lead Clump
 
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
@@ -111,6 +118,7 @@ item.dirtyCopperDust.name=Dirty Copper Dust
 item.dirtyTinDust.name=Dirty Tin Dust
 item.dirtySilverDust.name=Dirty Silver Dust
 item.dirtyObsidianDust.name=Dirty Obsidian Dust
+item.dirtyLeadDust.name=Dirty Lead Dust
 
 //Ingots
 item.obsidianIngot.name=Obsidian Ingot
@@ -124,10 +132,14 @@ item.tinIngot.name=Tin Ingot
 //Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
+gas.sulfuricGas=Sulfuric Gas
+gas.sulfuricAcid=Sulfuric Acid
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
+fluid.sulfuricGas=Sulfuric Gas
+fluid.sulfuricAcid=Sulfuric Acid
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
@@ -160,6 +172,9 @@ gui.eject=Eject
 gui.input=Input
 gui.slots=Slots
 gui.state=State
+
+gui.dictionary.noKey=No key.
+gui.dictionary.key=Key
 
 gui.configuration=Configuration
 gui.configuration.strictInput=Strict Input
@@ -246,6 +261,24 @@ tooltip.configurator.dim=dimension
 tooltip.jetpack.regular=Regular
 tooltip.jetpack.hover=Hover
 tooltip.jetpack.disabled=Disabled
+
+tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
+tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.
+tooltip.Combiner=A machine used to combine dusts and cobblestone to !nform their ore counterparts.
+tooltip.Crusher=A machine used to crush ingots into their dust counterparts, !nas well as perform many other operations.
+tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner that can !nmine whatever block you tell it to within !na 32 block (max) radius.
+tooltip.BasicFactory=The lowest tier of the line of Factories, which can !nbe used to process multiple machine operations !nat once.
+tooltip.AdvancedFactory=The middle tier of the line of Factories, which can !nbe used to process multiple machine !noperations at once.
+tooltip.EliteFactory=The highest tier of the line of Factories, which can !nbe used to process multiple machine !noperations at once.
+tooltip.MetallurgicInfuser=A machine used to infuse various materials !ninto (generally) metals to create metal alloys !nand other compounds.
+tooltip.PurificationChamber=An advanced machine capable of processing !nores into three clumps, serving as the initial !nstage of 300% ore processing.
+tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
+tooltip.Teleporter=A machine capable of teleporting players to various !nlocations defined by another teleporter.
+tooltip.ElectricPump=An advanced pump capable of pumping out an entire !nlava lake.
+tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitself from others by means of password protection.
+tooltip.Chargepad=A universal chargepad that can charge any energized item !nfrom any mod.
+tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
+tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
 
 //Redstone control
 control.disabled=Disabled

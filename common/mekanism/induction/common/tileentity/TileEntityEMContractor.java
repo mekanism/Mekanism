@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Object3D;
-import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.induction.common.MekanismInduction;
 import mekanism.induction.common.PathfinderEMContractor;
@@ -30,16 +29,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.IFluidBlock;
 import universalelectricity.core.vector.Vector3;
-import universalelectricity.prefab.tile.TileEntityAdvanced;
 
 import com.google.common.io.ByteArrayDataInput;
 
-/**
- * 
- * @author AidanBrady
- * 
- */
-public class TileEntityEMContractor extends TileEntityAdvanced implements ITileNetwork
+public class TileEntityEMContractor extends TileEntityBasicBlock
 {
 	public static int MAX_REACH = 40;
 	public static int PUSH_DELAY = 5;
@@ -50,17 +43,12 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	private AxisAlignedBB operationBounds;
 	private AxisAlignedBB suckBounds;
-	
-	public ForgeDirection facing = ForgeDirection.UP;
 
 	/**
 	 * true = suck, false = push
 	 */
 	public boolean suck = true;
 
-	/**
-	 * Pathfinding
-	 */
 	private ThreadEMPathfinding thread;
 	private PathfinderEMContractor pathfinder;
 	private Set<EntityItem> pathfindingTrackers = new HashSet<EntityItem>();
@@ -69,19 +57,15 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	/** Color of beam */
 	private int dyeID = TileEntityTesla.DEFAULT_COLOR;
-	private Vector3 tempLinkVector;
+	private Object3D tempLinkVector;
 
 	@Override
-	public void initiate()
+	public void onUpdate()
 	{
-		super.initiate();
-		updateBounds();
-	}
-
-	@Override
-	public void updateEntity()
-	{
-		super.updateEntity();
+		if(ticker == 1)
+		{
+			updateBounds();
+		}
 
 		pushDelay = Math.max(0, pushDelay - 1);
 
@@ -102,7 +86,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 			if(!suck && pushDelay == 0)
 			{
-				ItemStack retrieved = InventoryUtils.takeTopItemFromInventory(inventory, getFacing().getOpposite().ordinal());
+				ItemStack retrieved = InventoryUtils.takeTopItemFromInventory(inventory, ForgeDirection.OPPOSITES[getFacing()]);
 
 				if(retrieved != null)
 				{
@@ -124,7 +108,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 					{
 						for(EntityItem item : (List<EntityItem>)worldObj.getEntitiesWithinAABB(EntityItem.class, suckBounds))
 						{
-							ItemStack remains = InventoryUtils.putStackInInventory(inventory, item.getEntityItem(), getFacing().getOpposite().ordinal(), false);
+							ItemStack remains = InventoryUtils.putStackInInventory(inventory, item.getEntityItem(), ForgeDirection.OPPOSITES[getFacing()], false);
 	
 							if(remains == null)
 							{
@@ -150,7 +134,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 			}
 
 			final int renderFrequency = MekanismInduction.proxy.isFancy() ? 1 + worldObj.rand.nextInt(2) : 10 + worldObj.rand.nextInt(2);
-			final boolean renderBeam = ticks % renderFrequency == 0 && hasLink() && linked.suck != suck;
+			final boolean renderBeam = ticker % renderFrequency == 0 && hasLink() && linked.suck != suck;
 
 			if(hasLink())
 			{
@@ -166,23 +150,23 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 					{
 						for(int i = 0; i < pathfinder.results.size(); i++)
 						{
-							Vector3 result = pathfinder.results.get(i).clone();
+							Object3D result = pathfinder.results.get(i);
 
 							if(TileEntityEMContractor.canBePath(worldObj, result))
 							{
 								if(i - 1 >= 0)
 								{
-									Vector3 prevResult = pathfinder.results.get(i - 1).clone();
+									Object3D prevResult = pathfinder.results.get(i - 1);
 
-									Vector3 difference = prevResult.clone().difference(result);
-									final ForgeDirection direction = difference.toForgeDirection();
+									Object3D difference = prevResult.difference(result);
+									final ForgeDirection direction = toForge(difference);
 
 									if(renderBeam)
 									{
-										MekanismInduction.proxy.renderElectricShock(worldObj, prevResult.clone().translate(0.5), result.clone().translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
+										MekanismInduction.proxy.renderElectricShock(worldObj, toVec(prevResult).translate(0.5), toVec(result).translate(0.5), MekanismInduction.DYE_COLORS[dyeID], false);
 									}
 
-									AxisAlignedBB bounds = AxisAlignedBB.getAABBPool().getAABB(result.x, result.y, result.z, result.x + 1, result.y + 1, result.z + 1);
+									AxisAlignedBB bounds = AxisAlignedBB.getAABBPool().getAABB(result.xCoord, result.yCoord, result.zCoord, result.xCoord + 1, result.yCoord + 1, result.zCoord + 1);
 									List<EntityItem> entities = worldObj.getEntitiesWithinAABB(EntityItem.class, bounds);
 
 									for(EntityItem entityItem : entities)
@@ -210,8 +194,8 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	
 					pathfinder = null;
 	
-					Vector3 searchVec = new Vector3(this).modifyPositionFromSide(getFacing());
-					AxisAlignedBB searchBounds = AxisAlignedBB.getAABBPool().getAABB(searchVec.x, searchVec.y, searchVec.z, searchVec.x + 1, searchVec.y + 1, searchVec.z + 1);
+					Object3D searchVec = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(getFacing()));
+					AxisAlignedBB searchBounds = AxisAlignedBB.getAABBPool().getAABB(searchVec.xCoord, searchVec.yCoord, searchVec.zCoord, searchVec.xCoord + 1, searchVec.yCoord + 1, searchVec.zCoord + 1);
 	
 					if(searchBounds != null)
 					{
@@ -222,7 +206,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 								MekanismInduction.proxy.renderElectricShock(worldObj, new Vector3(this).translate(0.5), new Vector3(entityItem), MekanismInduction.DYE_COLORS[dyeID], false);
 							}
 	
-							moveEntity(entityItem, getFacing(), new Vector3(this));
+							moveEntity(entityItem, ForgeDirection.getOrientation(getFacing()), Object3D.get(this));
 						}
 					}
 				}
@@ -231,7 +215,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 			{
 				for(EntityItem entityItem : (List<EntityItem>)worldObj.getEntitiesWithinAABB(EntityItem.class, operationBounds))
 				{
-					moveEntity(entityItem, getFacing(), new Vector3(this));
+					moveEntity(entityItem, ForgeDirection.getOrientation(getFacing()), Object3D.get(this));
 				}
 			}
 			
@@ -243,10 +227,28 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 			lastCalcTime--;
 		}
 	}
-
-	public static boolean canBePath(World world, Vector3 position)
+	
+	private static Vector3 toVec(Object3D obj)
 	{
-		Block block = Block.blocksList[position.getBlockID(world)];
+		return new Vector3(obj.xCoord, obj.yCoord, obj.zCoord);
+	}
+	
+	private static ForgeDirection toForge(Object3D obj)
+	{
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(side.offsetX == obj.xCoord && side.offsetY == obj.yCoord && side.offsetZ == obj.zCoord)
+			{
+				return side;
+			}
+		}
+		
+		return ForgeDirection.UNKNOWN;
+	}
+
+	public static boolean canBePath(World world, Object3D position)
+	{
+		Block block = Block.blocksList[position.getBlockId(world)];
 		return block == null || (block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockLadder || ((block instanceof BlockFluid || block instanceof IFluidBlock) && block.blockID != Block.lavaMoving.blockID && block.blockID != Block.lavaStill.blockID));
 	}
 	
@@ -255,12 +257,12 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		return linked != null && !linked.isInvalid() && linked.linked == this;
 	}
 
-	private void moveEntity(EntityItem entityItem, ForgeDirection direction, Vector3 lockVector)
+	private void moveEntity(EntityItem entityItem, ForgeDirection direction, Object3D lockVector)
 	{
 		switch(direction)
 		{
 			case DOWN:
-				entityItem.setPosition(lockVector.x + 0.5, entityItem.posY, lockVector.z + 0.5);
+				entityItem.setPosition(lockVector.xCoord + 0.5, entityItem.posY, lockVector.zCoord + 0.5);
 
 				entityItem.motionX = 0;
 				entityItem.motionZ = 0;
@@ -275,8 +277,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 				break;
 			case UP:
-
-				entityItem.setPosition(lockVector.x + 0.5, entityItem.posY, lockVector.z + 0.5);
+				entityItem.setPosition(lockVector.xCoord + 0.5, entityItem.posY, lockVector.zCoord + 0.5);
 
 				entityItem.motionX = 0;
 				entityItem.motionZ = 0;
@@ -291,8 +292,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 				break;
 			case NORTH:
-
-				entityItem.setPosition(lockVector.x + 0.5, lockVector.y + 0.5, entityItem.posZ);
+				entityItem.setPosition(lockVector.xCoord + 0.5, lockVector.yCoord + 0.5, entityItem.posZ);
 
 				entityItem.motionX = 0;
 				entityItem.motionY = 0;
@@ -307,8 +307,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 				break;
 			case SOUTH:
-
-				entityItem.setPosition(lockVector.x + 0.5, lockVector.y + 0.5, entityItem.posZ);
+				entityItem.setPosition(lockVector.xCoord + 0.5, lockVector.yCoord + 0.5, entityItem.posZ);
 
 				entityItem.motionX = 0;
 				entityItem.motionY = 0;
@@ -323,8 +322,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 				break;
 			case WEST:
-
-				entityItem.setPosition(entityItem.posX, lockVector.y + 0.5, lockVector.z + 0.5);
+				entityItem.setPosition(entityItem.posX, lockVector.yCoord + 0.5, lockVector.zCoord + 0.5);
 
 				entityItem.motionY = 0;
 				entityItem.motionZ = 0;
@@ -339,7 +337,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 				break;
 			case EAST:
-				entityItem.setPosition(entityItem.posX, lockVector.y + 0.5, lockVector.z + 0.5);
+				entityItem.setPosition(entityItem.posX, lockVector.yCoord + 0.5, lockVector.zCoord + 0.5);
 
 				entityItem.motionY = 0;
 				entityItem.motionZ = 0;
@@ -367,7 +365,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	{
 		EntityItem item = null;
 
-		switch (getFacing())
+		switch(ForgeDirection.getOrientation(getFacing()))
 		{
 			case DOWN:
 				item = new EntityItem(worldObj, xCoord + 0.5, yCoord - 0.2, zCoord + 0.5, toSend);
@@ -398,20 +396,9 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		return item;
 	}
 
-	@Override
-	public void validate()
-	{
-		super.validate();
-		
-		if(worldObj.isRemote)
-		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
-		}
-	}
-
 	public void updateBounds()
 	{
-		switch (getFacing())
+		switch(ForgeDirection.getOrientation(getFacing()))
 		{
 			case DOWN:
 				operationBounds = AxisAlignedBB.getBoundingBox(xCoord, Math.max(yCoord - MAX_REACH, 1), zCoord, xCoord + 1, yCoord, zCoord + 1);
@@ -449,7 +436,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	public TileEntity getLatched()
 	{
-		ForgeDirection side = getFacing().getOpposite();
+		ForgeDirection side = ForgeDirection.getOrientation(getFacing()).getOpposite();
 
 		TileEntity tile = worldObj.getBlockTileEntity(xCoord + side.offsetX, yCoord + side.offsetY, zCoord + side.offsetZ);
 
@@ -463,25 +450,7 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 
 	public void incrementFacing()
 	{
-		int newOrdinal = getFacing().ordinal() < 5 ? getFacing().ordinal() + 1 : 0;
-		setFacing(ForgeDirection.getOrientation(newOrdinal));
-	}
-
-	public ForgeDirection getFacing()
-	{
-		return facing;
-	}
-
-	public void setFacing(ForgeDirection side)
-	{
-		facing = side;
-
-		if(!worldObj.isRemote)
-		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
-		}
-
-		updateBounds();
+		setFacing((short)(facing == 5 ? 0 : facing+1));
 	}
 
 	public boolean canFunction()
@@ -490,45 +459,44 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-		super.readFromNBT(nbt);
+		super.readFromNBT(nbtTags);
 		
-		facing = ForgeDirection.getOrientation(nbt.getInteger("facing"));
-		suck = nbt.getBoolean("suck");
-		dyeID = nbt.getInteger("dyeID");
+		suck = nbtTags.getBoolean("suck");
+		dyeID = nbtTags.getInteger("dyeID");
 		
-		if(nbt.hasKey("link"))
+		if(nbtTags.hasKey("link"))
 		{
-			tempLinkVector = new Vector3(nbt.getCompoundTag("link"));
+			tempLinkVector = Object3D.read(nbtTags.getCompoundTag("link"));
 		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public void writeToNBT(NBTTagCompound nbtTags)
 	{
-		super.writeToNBT(nbt);
+		super.writeToNBT(nbtTags);
 		
-		nbt.setInteger("facing", facing.ordinal());
-		nbt.setBoolean("suck", suck);
-		nbt.setInteger("dyeID", dyeID);
+		nbtTags.setBoolean("suck", suck);
+		nbtTags.setInteger("dyeID", dyeID);
 
 		if(linked != null)
 		{
-			nbt.setCompoundTag("link", new Vector3(linked).writeToNBT(new NBTTagCompound()));
+			nbtTags.setCompoundTag("link", Object3D.get(linked).write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput input)
+	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
-		facing = ForgeDirection.getOrientation(input.readInt());
-		suck = input.readBoolean();
-		dyeID = input.readInt();
+		super.handlePacketData(dataStream);
+		
+		suck = dataStream.readBoolean();
+		dyeID = dataStream.readInt();
 
-		if(input.readBoolean())
+		if(dataStream.readBoolean())
 		{
-			tempLinkVector = new Vector3(input.readInt(), input.readInt(), input.readInt());
+			tempLinkVector = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		}
 
 		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
@@ -538,7 +506,8 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(facing.ordinal());
+		super.getNetworkedData(data);
+		
 		data.add(suck);
 		data.add(dyeID);
 		
@@ -583,10 +552,10 @@ public class TileEntityEMContractor extends TileEntityAdvanced implements ITileN
 		{
 			pathfinder = null;
 			
-			Vector3 start = new Vector3(this).modifyPositionFromSide(getFacing());
-			Vector3 target = new Vector3(linked).modifyPositionFromSide(linked.getFacing());
+			Object3D start = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(getFacing()));
+			Object3D target = Object3D.get(linked).getFromSide(ForgeDirection.getOrientation(linked.getFacing()));
 
-			if(start.distance(target) < MekanismInduction.MAX_CONTRACTOR_DISTANCE)
+			if(start.distanceTo(target) < MekanismInduction.MAX_CONTRACTOR_DISTANCE)
 			{
 				if(TileEntityEMContractor.canBePath(worldObj, start) && TileEntityEMContractor.canBePath(worldObj, target))
 				{

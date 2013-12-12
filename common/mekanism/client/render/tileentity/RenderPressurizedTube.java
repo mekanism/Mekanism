@@ -300,7 +300,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.renderObject(toReturn);
-		DisplayInteger.endList();
+		display.endList();
 		
 		return display;
 	}

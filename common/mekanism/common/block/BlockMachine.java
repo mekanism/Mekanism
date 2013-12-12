@@ -156,6 +156,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         int height = Math.round(entityliving.rotationPitch);
         int change = 3;
         
+        if(tileEntity == null)
+        {
+        	return;
+        }
+        
         if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
         {
 	        if(height >= 65)
@@ -242,23 +247,23 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 
             if(side == 4)
             {
-                world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (xRandom - iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (xRandom - iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
             else if(side == 5)
             {
-                world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (xRandom + iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (xRandom + iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
             }
             else if(side == 2)
             {
-                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (xRandom + jRandom), yRandom, (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (xRandom + jRandom), yRandom, (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
             }
             else if(side == 3)
             {
-                world.spawnParticle("smoke", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("reddust", (double)(xRandom + jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("reddust", (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
             }
         }
     }
@@ -622,23 +627,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	
         if(tileEntity != null)
         {
-        	if(metadata == MachineType.TELEPORTER.meta)
-        	{
-        		if(entityplayer.isSneaking())
-        		{
-        			entityplayer.openGui(Mekanism.instance, 13, world, x, y, z);
-        			return true;
-        		}
-        		
-    			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
-    			
-    			if(teleporter.canTeleport() == 1)
-    			{
-    				teleporter.teleport();
-    				return true;
-    			}
-        	}
-        	else if(metadata == MachineType.ELECTRIC_CHEST.meta)
+        	if(metadata == MachineType.ELECTRIC_CHEST.meta)
         	{
         		TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
         		
@@ -782,7 +771,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
-        
+    	
     	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
     	{
 	        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
@@ -1067,6 +1056,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 				e.printStackTrace();
 				return null;
 			}
+		}
+		
+		public String getDescription()
+		{
+			return MekanismUtils.localize("tooltip." + name);
 		}
 		
 		public ItemStack getStack()

@@ -110,7 +110,7 @@ public class BlockEMContractor extends Block implements ITileEntityProvider
 
 				if(tileEntity instanceof IInventory)
 				{
-					tileContractor.setFacing(side.getOpposite());
+					tileContractor.setFacing((short)side.getOpposite().ordinal());
 					return;
 				}
 			}

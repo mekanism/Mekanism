@@ -5,8 +5,10 @@ import java.util.EnumSet;
 import org.lwjgl.input.Keyboard;
 
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.util.MekanismUtils;
@@ -123,6 +125,15 @@ public class CommonPlayerTickHandler implements ITickHandler
 				
 				jetpack.useGas(player.getCurrentItemOrArmor(3));
 			}
+			
+			if(isGasMaskOn(player))
+			{
+				ItemScubaTank tank = (ItemScubaTank)player.getCurrentItemOrArmor(3).getItem();
+				
+				tank.useGas(player.getCurrentItemOrArmor(3));
+				player.setAir(300);
+				player.clearActivePotions();
+			}
 		}
 	}
 	
@@ -143,6 +154,30 @@ public class CommonPlayerTickHandler implements ITickHandler
 						return true;
 					}
 					else if(jetpack.getMode(stack) == JetpackMode.HOVER)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isGasMaskOn(EntityPlayer player)
+	{
+		ItemStack tank = player.inventory.armorInventory[2];
+		ItemStack mask = player.inventory.armorInventory[3];
+		
+		if(tank != null && mask != null)
+		{
+			if(tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask)
+			{
+				ItemScubaTank scubaTank = (ItemScubaTank)tank.getItem();
+				
+				if(scubaTank.getGas(tank) != null)
+				{
+					if(scubaTank.getFlowing(tank))
 					{
 						return true;
 					}

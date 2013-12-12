@@ -50,6 +50,8 @@ public final class InventoryUtils
 
 	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, int side, boolean force) 
 	{
+		inventory = checkChestInv(inventory);
+		
 		if(force && inventory instanceof TileEntityLogisticalSorter)
 		{
 			return ((TileEntityLogisticalSorter)inventory).sendHome(itemStack.copy());
@@ -59,8 +61,6 @@ public final class InventoryUtils
 		
 		if(!(inventory instanceof ISidedInventory))
 		{
-			inventory = checkChestInv(inventory);
-			
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
 				if(!force)
@@ -167,6 +167,8 @@ public final class InventoryUtils
 	
 	public static ItemStack takeTopItemFromInventory(IInventory inventory, int side)
 	{
+		inventory = checkChestInv(inventory);
+		
 		if(!(inventory instanceof ISidedInventory))
 		{
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
@@ -213,12 +215,12 @@ public final class InventoryUtils
 
 	public static InvStack takeDefinedItem(IInventory inventory, int side, ItemStack type, int min, int max)
 	{
+		inventory = checkChestInv(inventory);
+		
 		InvStack ret = new InvStack(inventory);
 		
 		if(!(inventory instanceof ISidedInventory)) 
-		{
-			inventory = checkChestInv(inventory);
-			
+		{			
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) 
 			{
 				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).isItemEqual(type)) 
@@ -296,10 +298,10 @@ public final class InventoryUtils
 
 	public static InvStack takeTopStack(IInventory inventory, int side) 
 	{
+		inventory = checkChestInv(inventory);
+		
 		if(!(inventory instanceof ISidedInventory)) 
-		{
-			inventory = checkChestInv(inventory);
-			
+		{	
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) 
 			{
 				if(inventory.getStackInSlot(i) != null) 
@@ -359,12 +361,10 @@ public final class InventoryUtils
     		}
     	}
     	
-    	IInventory inventory = (IInventory)tileEntity;
+    	IInventory inventory = checkChestInv((IInventory)tileEntity);
     	
     	if(!(inventory instanceof ISidedInventory))
-		{
-    		inventory = InventoryUtils.checkChestInv(inventory);
-    		
+		{	
 			for(int i = 0; i <= inventory.getSizeInventory() - 1; i++)
 			{
 				if(!force)

@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.common.util.StackUtils;
@@ -81,17 +82,38 @@ public final class RecipeHandler
 	}
 	
 	/**
+	 * Add a Chemical Infuser recipe.
+	 * @param input - input ChemicalInput
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalInfuserRecipe(ChemicalInput input, GasStack output)
+	{
+		Recipe.CHEMICAL_INFUSER.put(input, output);
+	}
+
+	/**
+	 * Add a Chemical Formulator recipe.
+	 * @param input - input ItemStack
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalFormulatorRecipe(ItemStack input, GasStack output)
+	{
+		Recipe.CHEMICAL_FORMULATOR.put(input, output);
+	}
+	
+	/**
 	 * Gets the InfusionOutput of the InfusionInput in the parameters.
 	 * @param infusion - input Infusion
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size AND the infuse amount
-	 * @param recipes - Map of recipes
 	 * @return InfusionOutput
 	 */
-	public static InfusionOutput getOutput(InfusionInput infusion, boolean stackDecrease, Map<InfusionInput, InfusionOutput> recipes)
-	{
+	public static InfusionOutput getMetallurgicInfuserOutput(InfusionInput infusion, boolean stackDecrease)
+	{		
 		if(infusion != null && infusion.inputStack != null)
 		{
-			for(Map.Entry entry : recipes.entrySet())
+			HashMap<InfusionInput, InfusionOutput> recipes = Recipe.METALLURGIC_INFUSER.get();
+			
+			for(Map.Entry<InfusionInput, InfusionOutput> entry : recipes.entrySet())
 			{
 				InfusionInput input = (InfusionInput)entry.getKey();
 				
@@ -106,6 +128,53 @@ public final class RecipeHandler
 						
 						return ((InfusionOutput)entry.getValue()).copy();
 					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets the GasStack of the ChemicalInput in the parameters.
+	 * @param input - input ChemicalInput
+	 * @return GasStack
+	 */
+	public static GasStack getChemicalInfuserOutput(ChemicalInput input)
+	{
+		if(input != null && input.isValid())
+		{
+			HashMap<ChemicalInput, GasStack> recipes = Recipe.CHEMICAL_INFUSER.get();
+			return recipes.get(input);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets the InfusionOutput of the ItemStack in the parameters.
+	 * @param itemstack - input ItemStack
+	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * @return GasStack
+	 */
+	public static GasStack getChemicalFormulatorOutput(ItemStack itemstack, boolean stackDecrease)
+	{
+		if(itemstack != null)
+		{
+			HashMap<ItemStack, GasStack> recipes = Recipe.CHEMICAL_FORMULATOR.get();
+			
+			for(Map.Entry<ItemStack, GasStack> entry : recipes.entrySet())
+			{
+				ItemStack stack = (ItemStack)entry.getKey();
+				
+				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
+				{
+					if(stackDecrease)
+					{
+						itemstack.stackSize -= stack.stackSize;
+					}
+					
+					return entry.getValue().copy();
 				}
 			}
 		}
@@ -150,7 +219,9 @@ public final class RecipeHandler
 		COMBINER(new HashMap<ItemStack, ItemStack>()),
 		CRUSHER(new HashMap<ItemStack, ItemStack>()),
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
-		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>());
+		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
+		CHEMICAL_INFUSER(new HashMap<ChemicalInput, GasStack>()),
+		CHEMICAL_FORMULATOR(new HashMap<ItemStack, GasStack>());
 		
 		private HashMap recipes;
 		

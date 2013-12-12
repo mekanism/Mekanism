@@ -86,7 +86,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-	    	GL11.glTranslatef(0.0F, -1F, 0.05F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
 			rotaryCondensentrator.render(0.0625F);
 		}

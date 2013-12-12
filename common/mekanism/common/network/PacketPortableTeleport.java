@@ -7,6 +7,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,6 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketPortableTeleport implements IMekanismPacket
 {
@@ -49,6 +52,11 @@ public class PacketPortableTeleport implements IMekanismPacket
 					((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
 				}
 				
+				World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
+				TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
+				
+				teleporter.didTeleport.add(player);
+				teleporter.teleDelay = 5;
 				((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 				
 				world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);

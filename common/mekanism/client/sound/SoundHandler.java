@@ -193,7 +193,7 @@ public class SoundHandler
 					{
 						if(sound.isPlaying)
 						{
-							sound.updateVolume(FMLClientHandler.instance().getClient().thePlayer);
+							sound.updateVolume();
 						}
 					}
 					
@@ -247,10 +247,6 @@ public class SoundHandler
 				if(obj instanceof TileEntity)
 				{
 					new TileSound(getIdentifier(), ((IHasSound)obj).getSoundPath(), (TileEntity)obj);
-				}
-				else if(obj instanceof EntityPlayer)
-				{
-					new JetpackSound(getIdentifier(), "Jetpack.ogg", (EntityPlayer)obj);
 				}
 			}
 		}

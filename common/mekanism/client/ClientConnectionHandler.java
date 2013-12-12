@@ -17,8 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientConnectionHandler implements IConnectionHandler
 {
-	public VoiceClient voiceClient;
-	
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {}
 
@@ -35,8 +33,8 @@ public class ClientConnectionHandler implements IConnectionHandler
 		if(Mekanism.voiceServerEnabled)
 		{
 			try {
-				voiceClient = new VoiceClient(server, Mekanism.VOICE_PORT);
-				voiceClient.run();
+				MekanismClient.voiceClient = new VoiceClient(server, Mekanism.VOICE_PORT);
+				MekanismClient.voiceClient.start();
 			} catch(Exception e) {}
 		}
 	}
@@ -48,28 +46,14 @@ public class ClientConnectionHandler implements IConnectionHandler
 		if(Mekanism.voiceServerEnabled)
 		{
 			try {
-				voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), Mekanism.VOICE_PORT);
-				voiceClient.run();
+				MekanismClient.voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), Mekanism.VOICE_PORT);
+				MekanismClient.voiceClient.start();
 			} catch(Exception e) {}
 		}
 	}
 
 	@Override
-	public void connectionClosed(INetworkManager manager) 
-	{
-		if(Mekanism.voiceServerEnabled)
-		{
-			if(voiceClient != null)
-			{
-				voiceClient.disconnect();
-				voiceClient = null;
-			}
-		}
-		
-		ClientTickHandler.tickingSet.clear();
-		Mekanism.jetpackOn.clear();
-		Mekanism.proxy.unloadSoundHandler();
-	}
+	public void connectionClosed(INetworkManager manager) {}
 
 	@Override
 	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) {}

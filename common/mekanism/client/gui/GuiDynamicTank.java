@@ -19,9 +19,6 @@ public class GuiDynamicTank extends GuiMekanism
 {
 	public TileEntityDynamicTank tileEntity;
 	
-	private int guiWidth;
-	private int guiHeight;
-	
 	public GuiDynamicTank(InventoryPlayer inventory, TileEntityDynamicTank tentity)
     {
         super(new ContainerDynamicTank(inventory, tentity));
@@ -59,8 +56,8 @@ public class GuiDynamicTank extends GuiMekanism
     	
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        guiWidth = (width - xSize) / 2;
-        guiHeight = (height - ySize) / 2;
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
         if(tileEntity.getScaledFluidLevel(58) > 0) 
@@ -70,15 +67,15 @@ public class GuiDynamicTank extends GuiMekanism
 		}
     }
 	
-	/*
-	 * Credit to BuildCraft for both the gauge texture and parts of the code.
-	 */
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/)
 	{
 	    if(fluid == null)
 	    {
 	        return;
 	    }
+	    
+	    int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
 	    
 		int start = 0;
 

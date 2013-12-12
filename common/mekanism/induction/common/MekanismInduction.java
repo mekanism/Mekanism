@@ -94,6 +94,7 @@ public class MekanismInduction implements IModule
 		GameRegistry.registerTileEntity(TileEntityBattery.class, "Battery");
 
 		MekanismInduction.proxy.registerRenderers();
+		MekanismInduction.proxy.loadConfiguration();
 	}
 
 	@EventHandler

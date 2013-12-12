@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderDynamicTank extends TileEntitySpecialRenderer
 {
-	private static Map<RenderData, HashMap<Fluid, int[]>> cachedCenterFluids = new HashMap<RenderData, HashMap<Fluid, int[]>>();
+	private static Map<RenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<RenderData, HashMap<Fluid, DisplayInteger[]>>();
 	private static Map<ValveRenderData, HashMap<Fluid, DisplayInteger>> cachedValveFluids = new HashMap<ValveRenderData, HashMap<Fluid, DisplayInteger>>();
 	
 	@Override
@@ -57,15 +57,15 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				
-				int[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
 				
 				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
 					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+0.3F));
-					GL11.glCallList(displayList[getStages(data.height)-1]);
+					displayList[getStages(data.height)-1].render();
 				}
 				else {
-					GL11.glCallList(displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))]);
+					displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))].render();
 				}
 				
 				MekanismRenderer.glowOff();
@@ -82,8 +82,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 						
-						int display = getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).display;
-						GL11.glCallList(display);
+						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).render();
 						
 						MekanismRenderer.glowOff();
 						
@@ -110,7 +109,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private int[] getListAndRender(RenderData data, Fluid fluid, World world)
+	private DisplayInteger[] getListAndRender(RenderData data, Fluid fluid, World world)
 	{
 		if(cachedCenterFluids.containsKey(data) && cachedCenterFluids.get(data).containsKey(fluid))
 		{
@@ -122,14 +121,14 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		toReturn.setTexture(fluid.getIcon());
 		
 		final int stages = getStages(data.height);
-		int[] displays = new int[stages];
+		DisplayInteger[] displays = new DisplayInteger[stages];
 		
 		if(cachedCenterFluids.containsKey(data))
 		{
 			cachedCenterFluids.get(data).put(fluid, displays);
 		}
 		else {
-			HashMap<Fluid, int[]> map = new HashMap<Fluid, int[]>();
+			HashMap<Fluid, DisplayInteger[]> map = new HashMap<Fluid, DisplayInteger[]>();
 			map.put(fluid, displays);
 			cachedCenterFluids.put(data, map);
 		}
@@ -138,8 +137,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		
 		for(int i = 0; i < stages; i++)
 		{
-			displays[i] = GLAllocation.generateDisplayLists(1);
-			GL11.glNewList(displays[i], 4864);
+			displays[i] = DisplayInteger.createAndStart();
 			
 			toReturn.minX = 0 + .01;
 			toReturn.minY = 0 + .01;
@@ -169,7 +167,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.setTexture(fluid.getFlowingIcon());
 		
-		DisplayInteger display = new DisplayInteger();
+		DisplayInteger display = DisplayInteger.createAndStart();
 		
 		if(cachedValveFluids.containsKey(data))
 		{
@@ -182,9 +180,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.colorFluid(fluid);
-		
-		display.display = GLAllocation.generateDisplayLists(1);
-		GL11.glNewList(display.display, 4864);
 		
 		switch(data.side)
 		{
@@ -261,7 +256,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.renderObject(toReturn);
-		GL11.glEndList();
+		display.endList();
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		

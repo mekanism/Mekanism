@@ -14,9 +14,9 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketJetpackData implements IMekanismPacket
 {
-	public PacketType packetType;
+	public JetpackPacket packetType;
 	
-	public EntityPlayer updatePlayer;
+	public String username;
 	public boolean value;
 	
 	@Override
@@ -28,11 +28,11 @@ public class PacketJetpackData implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		packetType = (PacketType)data[0];
+		packetType = (JetpackPacket)data[0];
 		
-		if(packetType == PacketType.UPDATE)
+		if(packetType == JetpackPacket.UPDATE)
 		{
-			updatePlayer = (EntityPlayer)data[1];
+			username = (String)data[1];
 			value = (Boolean)data[2];
 		}
 	
@@ -42,32 +42,38 @@ public class PacketJetpackData implements IMekanismPacket
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		packetType = PacketType.values()[dataStream.readInt()];
+		packetType = JetpackPacket.values()[dataStream.readInt()];
 		
-		if(packetType == PacketType.UPDATE)
+        if(packetType == JetpackPacket.FULL)
+        {
+			Mekanism.jetpackOn.clear();
+
+			int amount = dataStream.readInt();
+
+			for(int i = 0; i < amount; i++)
+			{
+				Mekanism.jetpackOn.add(dataStream.readUTF());
+			}
+        }
+        else if(packetType == JetpackPacket.UPDATE)
 		{
 			String username = dataStream.readUTF();
 			boolean value = dataStream.readBoolean();
 			
-			EntityPlayer p = world.getPlayerEntityByName(username);
-			
-			if(p != null)
+			if(value)
 			{
-				if(value)
-				{
-					Mekanism.jetpackOn.add(p);
-				}
-				else {
-					Mekanism.jetpackOn.remove(p);
-				}
-				
-				if(!world.isRemote)
-				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketJetpackData().setParams(PacketType.UPDATE, p, value), world.provider.dimensionId);
-				}
+				Mekanism.jetpackOn.add(username);
+			}
+			else {
+				Mekanism.jetpackOn.remove(username);
+			}
+			
+			if(!world.isRemote)
+			{
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketJetpackData().setParams(JetpackPacket.UPDATE, username, value), world.provider.dimensionId);
 			}
 		}
-		else if(packetType == PacketType.MODE)
+		else if(packetType == JetpackPacket.MODE)
 		{
 			ItemStack stack = player.getCurrentItemOrArmor(3);
 			
@@ -83,16 +89,26 @@ public class PacketJetpackData implements IMekanismPacket
 	{
 		dataStream.writeInt(packetType.ordinal());
 		
-		if(packetType == PacketType.UPDATE)
+		if(packetType == JetpackPacket.UPDATE)
 		{
-			dataStream.writeUTF(updatePlayer.username);
+			dataStream.writeUTF(username);
 			dataStream.writeBoolean(value);
+		}
+		else if(packetType == JetpackPacket.FULL)
+		{
+			dataStream.writeInt(Mekanism.jetpackOn.size());
+
+			for(String username : Mekanism.jetpackOn)
+			{
+				dataStream.writeUTF(username);
+			}
 		}
 	}
 	
-	public static enum PacketType
+	public static enum JetpackPacket
 	{
 		UPDATE,
+		FULL,
 		MODE;
 	}
 }

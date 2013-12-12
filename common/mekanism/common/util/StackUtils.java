@@ -50,7 +50,7 @@ public final class StackUtils
 			return false;
 		}
 		
-		return stack1.itemID != stack2.itemID;
+		return stack1.itemID != stack2.itemID || stack1.getItemDamage() != stack2.getItemDamage();
 	}
 	
 	public static boolean equalsWildcard(ItemStack wild, ItemStack check)

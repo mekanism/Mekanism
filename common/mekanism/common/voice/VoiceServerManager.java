@@ -25,11 +25,10 @@ public class VoiceServerManager
 		System.out.println("[Mekanism] VoiceServer: Starting up server...");
 		
 		try {
+			running = true;
 			serverSocket = new ServerSocket(Mekanism.VOICE_PORT);
 			(listenThread = new ListenThread()).start();
 		} catch(Exception e) {}
-		
-		running = true;
 	}
 	
 	public void stop()

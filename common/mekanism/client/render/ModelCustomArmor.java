@@ -46,11 +46,6 @@ public class ModelCustomArmor extends ModelBiped
 			bipedBody.isHidden = false;
 			bipedBody.showModel = true;
 		}
-		else if(modelType.armorSlot == 2)
-		{
-			bipedRightLeg.showModel = true;
-			bipedLeftLeg.showModel = true;
-		}
 
 		setRotationAngles(f, f1, f2, f3, f4, size, entity);
 	}
@@ -109,9 +104,20 @@ public class ModelCustomArmor extends ModelBiped
 				
 				mc.renderEngine.bindTexture(modelType.resource);
 				
-				if(ModelCustomArmor.this.modelType == ArmorModel.JETPACK && biped.bipedBody == partRender)
+				if(useModel(biped.modelType, partRender, biped))
 				{
-					ArmorModel.jetpackModel.render(0.0625F);
+					if(biped.modelType == ArmorModel.JETPACK)
+					{
+						ArmorModel.jetpackModel.render(0.0625F);
+					}
+					else if(biped.modelType == ArmorModel.SCUBATANK)
+					{
+						
+					}
+					else if(biped.modelType == ArmorModel.GASMASK)
+					{
+						
+					}
 				}
 				
 				GL11.glPopMatrix();
@@ -125,10 +131,26 @@ public class ModelCustomArmor extends ModelBiped
 		init(entity, par2, par3, par4, par5, par6, par7);
 		super.render(entity, par2, par3, par4, par5, par6, par7);
 	}
+	
+	public static boolean useModel(ArmorModel type, ModelRenderer partRender, ModelCustomArmor biped)
+	{
+		if(type.armorSlot == 0)
+		{
+			return partRender == biped.bipedHead;
+		}
+		else if(type.armorSlot == 1)
+		{
+			return partRender == biped.bipedBody;
+		}
+		
+		return false;
+	}
 
 	public static enum ArmorModel 
 	{
-		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
+		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
+		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaTank.png")),
+		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "GasMask.png"));
 
 		public int armorSlot;
 		public ResourceLocation resource;

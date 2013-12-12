@@ -20,16 +20,18 @@ import cpw.mods.fml.common.network.IGuiHandler;
  */
 public class InductionCommonProxy implements IGuiHandler
 {
-	public void registerRenderers()
+	public void registerRenderers() {}
+	
+	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-		MekanismInduction.SOUND_FXS = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Tesla Sound FXs", MekanismInduction.SOUND_FXS).getBoolean(MekanismInduction.SOUND_FXS);
-		MekanismInduction.MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Max EM Contractor Path", MekanismInduction.MAX_CONTRACTOR_DISTANCE).getInt(MekanismInduction.MAX_CONTRACTOR_DISTANCE);
+		MekanismInduction.SOUND_FXS = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TeslaSoundFXs", MekanismInduction.SOUND_FXS).getBoolean(MekanismInduction.SOUND_FXS);
+		MekanismInduction.MAX_CONTRACTOR_DISTANCE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxEMContractor Path", MekanismInduction.MAX_CONTRACTOR_DISTANCE).getInt(MekanismInduction.MAX_CONTRACTOR_DISTANCE);
 
-		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Acceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
-		TileEntityEMContractor.MAX_REACH = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Max Item Reach", TileEntityEMContractor.MAX_REACH).getInt(TileEntityEMContractor.MAX_REACH);
-		TileEntityEMContractor.MAX_SPEED = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Max Item Speed", TileEntityEMContractor.MAX_SPEED).getDouble(TileEntityEMContractor.MAX_SPEED);
-		TileEntityEMContractor.PUSH_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Contractor Item Push Delay", TileEntityEMContractor.PUSH_DELAY).getInt(TileEntityEMContractor.PUSH_DELAY);
+		TileEntityEMContractor.ACCELERATION = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ContractorItemAcceleration", TileEntityEMContractor.ACCELERATION).getDouble(TileEntityEMContractor.ACCELERATION);
+		TileEntityEMContractor.MAX_REACH = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ContractorMaxItemReach", TileEntityEMContractor.MAX_REACH).getInt(TileEntityEMContractor.MAX_REACH);
+		TileEntityEMContractor.MAX_SPEED = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ContractorMaxItemSpeed", TileEntityEMContractor.MAX_SPEED).getDouble(TileEntityEMContractor.MAX_SPEED);
+		TileEntityEMContractor.PUSH_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ContractorItemPushDelay", TileEntityEMContractor.PUSH_DELAY).getInt(TileEntityEMContractor.PUSH_DELAY);
 		Mekanism.configuration.save();
 	}
 

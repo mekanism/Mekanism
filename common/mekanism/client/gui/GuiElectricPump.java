@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.tileentity.TileEntityElectricPump;
 import mekanism.common.util.MekanismUtils;
@@ -18,9 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiElectricPump extends GuiMekanism
 {
 	public TileEntityElectricPump tileEntity;
-	
-	private int guiWidth;
-	private int guiHeight;
 	
 	public GuiElectricPump(InventoryPlayer inventory, TileEntityElectricPump tentity)
     {
@@ -59,8 +55,8 @@ public class GuiElectricPump extends GuiMekanism
     	
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricPump.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        guiWidth = (width - xSize) / 2;
-        guiHeight = (height - ySize) / 2;
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt;
         
@@ -73,15 +69,15 @@ public class GuiElectricPump extends GuiMekanism
 		}
     }
 	
-	/*
-	 * Credit to BuildCraft for both the gauge texture and parts of the code.
-	 */
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid)
 	{
 	    if(fluid == null)
 	    {
 	        return;
 	    }
+	    
+	    int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
 	    
 		int start = 0;
 

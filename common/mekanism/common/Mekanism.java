@@ -48,10 +48,12 @@ import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMachineUpgrade;
@@ -60,9 +62,9 @@ import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
-import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketDataRequest;
@@ -71,6 +73,8 @@ import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketJetpackData;
+import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketPortableTeleport;
@@ -78,6 +82,7 @@ import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.network.PacketTileEntity;
@@ -87,13 +92,11 @@ import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityTeleporter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -178,10 +181,11 @@ public class Mekanism
 	
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
-
+	
 	public static KeySync keyMap = new KeySync();
-
-	public static Set<EntityPlayer> jetpackOn = new HashSet<EntityPlayer>();
+	
+	public static Set<String> jetpackOn = new HashSet<String>();
+	public static Set<String> gasmaskOn = new HashSet<String>();
 	
 	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
     
@@ -215,7 +219,10 @@ public class Mekanism
 	public static Item WalkieTalkie;
 	public static Item ItemProxy;
 	public static Item PartTransmitter;
-	public static Item Jetpack;
+	public static ItemJetpack Jetpack;
+	public static ItemScubaTank ScubaTank;
+	public static ItemGasMask GasMask;
+	public static Item Dictionary;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -277,6 +284,8 @@ public class Mekanism
 	public static double energizedSmelterUsage;
 	public static double digitalMinerUsage;
 	public static double rotaryCondensentratorUsage;
+	public static double chemicalFormulatorUsage;
+	public static double chemicalInfuserUsage;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -471,6 +480,12 @@ public class Mekanism
 			"GCG", "tET", "GIG", Character.valueOf('G'), Block.glass, Character.valueOf('C'), "circuitBasic", Character.valueOf('t'), MekanismUtils.getEmptyGasTank(), Character.valueOf('E'), EnergyTablet.getUnchargedItem(), 
 			Character.valueOf('T'), new ItemStack(BasicBlock, 1, 9), Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(Jetpack.getEmptyItem(), new Object[] {
+			"SCS", "TGT", " T ", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "circuitBasic", Character.valueOf('T'), "ingotTin", Character.valueOf('G'), MekanismUtils.getEmptyGasTank()
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Dictionary), new Object[] {
+			"C", "B", Character.valueOf('C'), "circuitBasic", Character.valueOf('B'), Item.book
+		}));
 		
 		for(RecipeType type : RecipeType.values())
 		{
@@ -486,29 +501,31 @@ public class Mekanism
 		}
 		
 		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
-	
-		//Transmitters
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 0), new Object[] {
-			"SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Item.redstone
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 1), new Object[] {
-			"SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Item.bucketEmpty
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 2), new Object[] {
-			"SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass
-		}));
-		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 0), new ItemStack(Transmitter, 1, 1));
-		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 1), new ItemStack(Transmitter, 1, 2));
-		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 2), new ItemStack(Transmitter, 1, 0));
-		CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 3), new ItemStack(Transmitter, 1, 3));
-		if(allowBackCrafting)
-		{
-			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 1), new ItemStack(PartTransmitter, 1, 0));
-			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 2), new ItemStack(PartTransmitter, 1, 1));
-			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 0), new ItemStack(PartTransmitter, 1, 2));
-			CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 3), new ItemStack(PartTransmitter, 1, 3));
-		}
 		
+        //Transmitters
+        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 0), new Object[] {
+            "SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Item.redstone
+        }));
+        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 1), new Object[] {
+            "SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Item.bucketEmpty
+        }));
+        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 2), new Object[] {
+            "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass
+        }));
+        
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 0), new ItemStack(Transmitter, 1, 1));
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 1), new ItemStack(Transmitter, 1, 2));
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 2), new ItemStack(Transmitter, 1, 0));
+        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 3), new ItemStack(Transmitter, 1, 3));
+        
+        if(allowBackCrafting)
+        {
+            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 1), new ItemStack(PartTransmitter, 1, 0));
+            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 2), new ItemStack(PartTransmitter, 1, 1));
+            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 0), new ItemStack(PartTransmitter, 1, 2));
+            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 3), new ItemStack(PartTransmitter, 1, 3));
+        }
+	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 1, new ItemStack(Ingot, 1, 5), 1.0F);
@@ -537,6 +554,7 @@ public class Mekanism
 		//Combiner recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 16), new ItemStack(Block.oreRedstone));
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.dyePowder, 16, 4), new ItemStack(Block.oreLapis));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Item.flint), new ItemStack(Block.gravel));
 		
 		//Osmium Compressor Recipes
 		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Item.glowstone), new ItemStack(Ingot, 1, 3));
@@ -551,9 +569,11 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 2), new ItemStack(Block.stone));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Item.flint, 4), new ItemStack(Item.gunpowder));
         
         //Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.cobblestone), new ItemStack(Block.gravel));
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Item.ingotIron)), new ItemStack(EnrichedIron));
@@ -580,15 +600,16 @@ public class Mekanism
 	{	
 		//Declarations
 		configuration.load();
-		ElectricBow = (ItemElectricBow) new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
-		//OPEN 11201-11203
+		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
+		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", 11201).getInt()).setUnlocalizedName("Dictionary");
+		//OPEN 11202-11203
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
-		EnergyTablet = (ItemEnergized) new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
+		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt()).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt()).setUnlocalizedName("EnergyUpgrade");
-		Robit = (ItemRobit) new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
-		AtomicDisassembler = (ItemAtomicDisassembler) new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
+		Robit = (ItemRobit)new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
+		AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
 		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
 		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
 		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", 11213).getInt()).setUnlocalizedName("ItemProxy");
@@ -601,10 +622,11 @@ public class Mekanism
 		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
-		Jetpack = new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
+		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11223).getInt()).setUnlocalizedName("MultipartTransmitter");
 		configuration.save();
+		//TODO 1.7, fix item shifts
 		
 		//Registrations
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
@@ -629,6 +651,7 @@ public class Mekanism
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
 		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 		GameRegistry.registerItem(Jetpack, "Jetpack");
+		GameRegistry.registerItem(Dictionary, "Dictionary");
 	}
 	
 	/**
@@ -679,6 +702,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustCopper", new ItemStack(Dust, 1, 6));
 		OreDictionary.registerOre("dustTin", new ItemStack(Dust, 1, 7));
 		OreDictionary.registerOre("dustSilver", new ItemStack(Dust, 1, 8));
+		OreDictionary.registerOre("dustLead", new ItemStack(Dust, 1, 9));
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotOsmium", new ItemStack(Ingot, 1, 1));
@@ -704,6 +728,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustDirtyTin", new ItemStack(DirtyDust, 1, 4));
 		OreDictionary.registerOre("dustDirtySilver", new ItemStack(DirtyDust, 1, 5));
 		OreDictionary.registerOre("dustDirtyObsidian", new ItemStack(DirtyDust, 1, 6));
+		OreDictionary.registerOre("dustDirtyLead", new ItemStack(DirtyDust, 1, 7));
 		
 		//for RailCraft/IC2.
 		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
@@ -715,10 +740,16 @@ public class Mekanism
 		OreDictionary.registerOre("clumpTin", new ItemStack(Clump, 1, 4));
 		OreDictionary.registerOre("clumpSilver", new ItemStack(Clump, 1, 5));
 		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
+		OreDictionary.registerOre("clumpLead", new ItemStack(Clump, 1, 7));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));
 		OreDictionary.registerOre("oreTin", new ItemStack(OreBlock, 1, 2));
+		
+		//MC stuff
+		OreDictionary.registerOre("oreCoal", new ItemStack(Block.oreCoal));
+		OreDictionary.registerOre("ingotIron", new ItemStack(Item.ingotIron));
+		OreDictionary.registerOre("ingotGold", new ItemStack(Item.ingotGold));
 	}
 	
 	/**
@@ -726,7 +757,7 @@ public class Mekanism
 	 * and adding machine recipes with other items' corresponding resources.
 	 */
 	public void addIntegratedItems()
-	{		
+	{
 		try {
 			CraftingManagers.pulverizerManager.addRecipe(400, new ItemStack(OreBlock, 1, 0), new ItemStack(Dust, 2, 2), false);
 			
@@ -794,6 +825,11 @@ public class Mekanism
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 6));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("clumpLead"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(DirtyDust, 1, 7));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustDirtyIron"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 0));
@@ -822,6 +858,11 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dustDirtySilver"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 8));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustDirtyLead"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 9));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreCopper"))
@@ -854,15 +895,22 @@ public class Mekanism
 	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 3, 1));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("oreGold"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Dust, 2, 1));
+	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Clump, 3, 1));
+		}
+		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("oreLead"))
 			{
-				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(OreDictionary.getOres("dustLead").get(0), 2));
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 2, 9));
+				RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Clump, 3, 7));
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("ingotLead"))
 			{
-				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), MekanismUtils.size(OreDictionary.getOres("dustLead").get(0), 1));
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Dust, 1, 9));
 			}
 		} catch(Exception e) {}
 		
@@ -913,15 +961,11 @@ public class Mekanism
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 6, new ItemStack(Ingot, 1, 5), 0.0F);
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 8, MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 7, new ItemStack(Ingot, 1, 6), 0.0F);
-		} catch(Exception e) {}
-		
-		try {
-			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 8, MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 1.0F);
+			FurnaceRecipes.smelting().addSmelting(Dust.itemID, 9, MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
@@ -966,6 +1010,11 @@ public class Mekanism
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Block.oreGold));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustLapisLazuli"))
+		{
+			RecipeHandler.addCrusherRecipe(new ItemStack(Item.dyePowder, 1, 4), MekanismUtils.size(ore, 1));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
@@ -1095,7 +1144,6 @@ public class Mekanism
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
-		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -1123,6 +1171,9 @@ public class Mekanism
 		teleporters.clear();
 		dynamicInventories.clear();
 		ic2Registered.clear();
+		jetpackOn.clear();
+		gasmaskOn.clear();
+		
 		TransporterManager.flowingStacks.clear();
 	}
 	
@@ -1156,8 +1207,6 @@ public class Mekanism
         InfuseRegistry.registerInfuseType(new InfuseType("TIN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 4, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 8, 0));
         InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 16, 0));
-        
-        new MultipartMekanism().init();
 	}
 	
 	@EventHandler
@@ -1165,6 +1214,9 @@ public class Mekanism
 	{
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler());
+		
+		//Register player tracker
+		GameRegistry.registerPlayerTracker(new CommonPlayerTracker());
 		
 		//Register the mod's GUI handler
 		NetworkRegistry.instance().registerGuiHandler(this, new CoreGuiHandler());
@@ -1177,8 +1229,6 @@ public class Mekanism
 		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
-		
-		new MultipartMekanism();
 		
 		//Set up VoiceServerManager
 		if(voiceServerEnabled)
@@ -1221,6 +1271,9 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketConfigurationUpdate.class);
 		PacketHandler.registerPacket(PacketSimpleGui.class);
 		PacketHandler.registerPacket(PacketDigitalMinerGui.class);
+		PacketHandler.registerPacket(PacketJetpackData.class);
+		PacketHandler.registerPacket(PacketKey.class);
+		PacketHandler.registerPacket(PacketScubaTankData.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

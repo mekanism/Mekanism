@@ -106,7 +106,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		toReturn.baseBlock = Block.stone;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(color));
 		
-		DisplayInteger display = new DisplayInteger();
+		DisplayInteger display = DisplayInteger.createAndStart();
 		
 		if(cachedOverlays.containsKey(side))
 		{
@@ -117,9 +117,6 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			map.put(color, display);
 			cachedOverlays.put(side, map);
 		}
-		
-		display.display = GLAllocation.generateDisplayLists(1);
-		GL11.glNewList(display.display, 4864);
 		
 		switch(side)
 		{
@@ -196,7 +193,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		}
 		
 		MekanismRenderer.renderObject(toReturn);
-		GL11.glEndList();
+		display.endList();
 		
 		return display;
 	}

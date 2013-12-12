@@ -249,7 +249,7 @@ public class RenderMechanicalPipe extends TileEntitySpecialRenderer
 			}
 			
 			MekanismRenderer.renderObject(toReturn);
-			DisplayInteger.endList();
+			displays[i].endList();
 		}
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

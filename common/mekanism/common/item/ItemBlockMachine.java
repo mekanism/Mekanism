@@ -120,9 +120,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+			list.add("Hold " + EnumColor.AQUA + EnumColor.INDIGO + "shift" + EnumColor.GREY + " for more details.");
+			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " and " + EnumColor.AQUA + "M" + EnumColor.GREY + " for a description.");
 		}
-		else {
+		else if(!Keyboard.isKeyDown(Keyboard.KEY_M))
+		{
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
 				list.add(EnumColor.INDIGO + "Recipe Type: " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
@@ -165,6 +167,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			{
 				list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
+		}
+		else {
+			list.addAll(MekanismUtils.getSplitText(type.getDescription()));
 		}
 	}
 
@@ -1022,14 +1027,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			
 			GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
 			
-			if(stored == null)
-			{
-				itemstack.setItemDamage(100);
-			}
-			else {
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-			}
-			
 			return stored;
 		}
 		
@@ -1055,14 +1052,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			
 			if(stack == null || stack.amount == 0)
 			{
-				itemstack.setItemDamage(100);
 				itemstack.stackTagCompound.removeTag("stored");
 			}
 			else {
 				int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 				GasStack gasStack = new GasStack(stack.getGas(), amount);
 				
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 			}
 		}
