@@ -66,6 +66,8 @@ tile.MachineBlock.DigitalMiner.name=Digital Miner
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+tile.MachineBlock2.ChemicalFormulator.name=Chemical Formulator
+tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore

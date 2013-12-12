@@ -4,6 +4,7 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
+import mekanism.client.gui.GuiChemicalFormulator;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -72,6 +73,7 @@ import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
+import mekanism.common.tileentity.TileEntityChemicalFormulator;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -369,6 +371,8 @@ public class ClientProxy extends CommonProxy
 				}
 			case 25:
 				return new GuiRobitRepair(player.inventory, world, x);
+			case 29:
+				return new GuiChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
 		}
 		
 		return null;
