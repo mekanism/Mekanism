@@ -307,7 +307,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	@Override
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
-		return true;
+		return !(player.worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityBasicBlock);
 	}
 
 	@Override
