@@ -56,6 +56,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	/** Whether or not this tank segment is rendering the structure. */
 	public boolean isRendering;
 	
+	public float prevScale;
+	
 	public TileEntityDynamicTank()
 	{
 		this("DynamicTank");
@@ -104,6 +106,13 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				{
 					Mekanism.proxy.doTankAnimation(this);
 				}
+				
+		        float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
+	            
+	            if(Math.abs(prevScale - targetScale) > 0.01)
+	            {
+	                prevScale = (9*prevScale + targetScale)/10;
+	            }
 			}
 			
 			prevStructure = clientHasStructure;

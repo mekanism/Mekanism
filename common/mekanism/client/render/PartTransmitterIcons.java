@@ -1,4 +1,4 @@
-package mekanism.client.render.mekanism.client.render;
+package mekanism.client.render;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;

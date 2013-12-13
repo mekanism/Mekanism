@@ -105,7 +105,7 @@ public class RenderPartTransmitter implements IIconRegister
 	
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
 	{
-		if(cable.getTransmitterNetwork().clientEnergyScale == 0)
+		if(cable.currentPower == 0)
 		{
 			return;
 		}

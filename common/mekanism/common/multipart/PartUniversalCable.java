@@ -15,7 +15,6 @@ import codechicken.lib.vec.Vector3;
 import codechicken.multipart.TileMultipart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.client.render.mekanism.client.render.PartTransmitterIcons;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import universalelectricity.core.block.IConductor;
@@ -35,6 +34,7 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
@@ -51,8 +51,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IEnergySink, IEnergyHandler, IElectrical
 {
-
     public static PartTransmitterIcons cableIcons;
+    
     public double currentPower = 0;
 
     @Override
@@ -61,11 +61,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         if(world().isRemote)
         {
             double targetPower = getTransmitterNetwork().clientEnergyScale;
+            
             if(Math.abs(currentPower - targetPower) > 0.01)
             {
                 currentPower = (9*currentPower + targetPower)/10;
             }
         }
+        
         super.update();
     }
 

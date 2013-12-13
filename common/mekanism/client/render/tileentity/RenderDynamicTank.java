@@ -65,7 +65,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 					displayList[getStages(data.height)-1].render();
 				}
 				else {
-					displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))].render();
+					displayList[(int)(tileEntity.prevScale*((float)getStages(data.height)-1))].render();
 				}
 				
 				MekanismRenderer.glowOff();
