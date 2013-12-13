@@ -364,7 +364,7 @@ public class RenderPartTransmitter implements IIconRegister
 		boolean connected = PartTransmitter.connectionMapContainsSide(cable.getAllCurrentConnections(), side);
 		String name = side.name().toLowerCase();
 		name += connected ? "Out" : "In";
-		renderTransparency(MekanismRenderer.energyIcon, cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, cable.getTransmitterNetwork().clientEnergyScale));
+		renderTransparency(MekanismRenderer.energyIcon, cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 	
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)

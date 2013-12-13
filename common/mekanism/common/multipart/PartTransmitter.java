@@ -513,7 +513,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	@Override
 	public boolean doesTick()
 	{
-		return FMLCommonHandler.instance().getEffectiveSide().isClient();
+		return true;
 	}
 	
 	@Override

@@ -53,11 +53,21 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 {
 
     public static PartTransmitterIcons cableIcons;
+    public double currentPower = 0;
 
-	public PartUniversalCable()
-	{
-		super();
-	}
+    @Override
+    public void update()
+    {
+        if(world().isRemote)
+        {
+            double targetPower = getTransmitterNetwork().clientEnergyScale;
+            if(Math.abs(currentPower - targetPower) > 0.01)
+            {
+                currentPower = (9*currentPower + targetPower)/10;
+            }
+        }
+        super.update();
+    }
 
 	@Override
 	public String getType()

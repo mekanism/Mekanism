@@ -127,12 +127,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	}
 	
 	@Override
-	public boolean doesTick()
-	{
-		return true;
-	}
-
-	@Override
 	public void update()
 	{
 		if(!world().isRemote)
