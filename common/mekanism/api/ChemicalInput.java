@@ -1,6 +1,5 @@
-package mekanism.common;
+package mekanism.api;
 
-import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 
 public class ChemicalInput

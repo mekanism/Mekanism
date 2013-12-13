@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.ChemicalInput;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;

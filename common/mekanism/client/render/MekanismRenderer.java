@@ -66,6 +66,8 @@ public class MekanismRenderer
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
+			GasRegistry.getGas("sulfuricGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricGas"));
+			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
 		}
 	}
     

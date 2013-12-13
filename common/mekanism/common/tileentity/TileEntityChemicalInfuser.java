@@ -2,6 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
+import mekanism.api.ChemicalInput;
 import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -11,7 +12,6 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.ChemicalInput;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;

@@ -226,7 +226,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 				
-				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank == null || (gasTank.getStored() < MAX_GAS && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_GAS && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
 					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), 1), true);
@@ -507,7 +507,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return mode == 1 && from == MekanismUtils.getRight(facing);
+		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null && isValidFluid(new FluidStack(fluid, 1)) || fluidTank.getFluid().getFluid() == fluid);
 	}
 
 	@Override
