@@ -2,12 +2,8 @@ package mekanism.common.multipart;
 
 import java.util.Set;
 
-import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
-import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -16,6 +12,9 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 {
@@ -55,7 +54,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
-		return tile instanceof IGasAcceptor;
+		return tile instanceof IGasHandler;
 	}
 
 	@Override
