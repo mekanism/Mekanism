@@ -2,6 +2,7 @@ package mekanism.api;
 
 import java.lang.reflect.Method;
 
+import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionInput;
 import net.minecraft.item.ItemStack;
 
@@ -86,6 +87,38 @@ public final class RecipeHelper
 		try {
 			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
 			Method m = recipeClass.getMethod("addPurificationChamberRecipe", ItemStack.class, ItemStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Chemical Formulator recipe.
+	 * @param input - input ItemStack
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalFormulatorRecipe(ItemStack input, GasStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
+			Method m = recipeClass.getMethod("addChemicalFormulatorRecipe", ItemStack.class, GasStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Chemical Infuser recipe.
+	 * @param input - input ChemicalInput
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalInfuserRecipe(ChemicalInput input, GasStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
+			Method m = recipeClass.getMethod("addChemicalInfuserRecipe", ChemicalInput.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());

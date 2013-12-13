@@ -141,4 +141,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	
     	return 0;
     }
+    
+    @Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return false;
+	}
 }

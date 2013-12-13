@@ -1,7 +1,6 @@
 package mekanism.common.tileentity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -10,9 +9,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasAcceptor;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.IGasStorage;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
@@ -43,7 +41,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl, IGasAcceptor, IGasStorage, ITubeConnection
+public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl, IGasHandler, ITubeConnection
 {	
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -870,49 +868,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	{
 		return ejectorComponent;
 	}
-	
-	@Override
-	public GasStack getGas(Object... data) 
-	{
-		if(secondaryEnergyStored == 0)
-		{
-			return null;
-		}
-		
-		return new GasStack(GasRegistry.getGas("oxygen"), secondaryEnergyStored);
-	}
 
 	@Override
-	public void setGas(GasStack stack, Object... data) 
-	{
-		if(stack == null)
-		{
-			setSecondaryEnergy(0);
-		}
-		else if(stack.getGas() == GasRegistry.getGas("oxygen"))
-		{
-			setSecondaryEnergy(stack.amount);
-		}
-		
-		MekanismUtils.saveChunk(this);
-	}
-	
-	@Override
-	public int getMaxGas(Object... data)
-	{
-		return getMaxSecondaryEnergy();
-	}
-
-	@Override
-	public int receiveGas(GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
 		if(stack.getGas() == GasRegistry.getGas("oxygen"))
 		{
-			int stored = getGas() != null ? getGas().amount : 0;
-			int toUse = Math.min(getMaxGas()-stored, stack.amount);
-			
-			setGas(new GasStack(stack.getGas(), stored + toUse));
-	    	
+			int toUse = Math.min(getMaxSecondaryEnergy()-secondaryEnergyStored, stack.amount);
+			secondaryEnergyStored += toUse;
 	    	return toUse;
 		}
 		
@@ -929,5 +892,17 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return recipeType == RecipeType.PURIFYING.ordinal();
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canDrawGas(ForgeDirection side, Gas type)
+	{
+		return false;
 	}
 }

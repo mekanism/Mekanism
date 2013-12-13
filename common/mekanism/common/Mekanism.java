@@ -13,10 +13,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import mekanism.api.ChemicalInput;
 import mekanism.api.Object3D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -586,6 +588,12 @@ public class Mekanism
 	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.cobblestone)), new ItemStack(Block.cobblestoneMossy));
 	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Block.stoneBrick, 1, 0)), new ItemStack(Block.stoneBrick, 1, 1));
         }
+        
+        //Chemical Formulator Recipes
+        RecipeHandler.addChemicalFormulatorRecipe(new ItemStack(Item.gunpowder), new GasStack(GasRegistry.getGas("sulfuricGas"), 100));
+        
+        //Chemical Infuser Recipes
+        RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(GasRegistry.getGas("hydrogen"), GasRegistry.getGas("sulfuricGas")), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
         
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
@@ -1198,6 +1206,8 @@ public class Mekanism
 		
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
+		GasRegistry.register(new Gas("sulfuricGas")).registerFluid();
+		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
 		
 		Mekanism.proxy.preInit();
 				

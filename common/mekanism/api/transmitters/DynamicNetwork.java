@@ -120,19 +120,21 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			Iterator<DelayQueue> i = updateQueue.iterator();
 			
-			while(i.hasNext())
-			{
-				DelayQueue q = i.next();
-				
-				if(q.delay > 0)
+			try {
+				while(i.hasNext())
 				{
-					q.delay--;
+					DelayQueue q = i.next();
+					
+					if(q.delay > 0)
+					{
+						q.delay--;
+					}
+					else {
+						needsUpdate = true;
+						i.remove();
+					}
 				}
-				else {
-					needsUpdate = true;
-					i.remove();
-				}
-			}
+			} catch(Exception e) {}
 		}
 	}
 	

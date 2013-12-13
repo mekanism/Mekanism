@@ -58,7 +58,7 @@ public class GasRegistry
 	{
 		for(Gas gas : registeredGasses)
 		{
-			if(gas.getName().equals(name.toLowerCase()))
+			if(gas.getName().toLowerCase().equals(name.toLowerCase()))
 			{
 				return gas;
 			}

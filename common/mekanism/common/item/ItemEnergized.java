@@ -152,13 +152,13 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	@Override
 	public boolean canReceive(ItemStack itemStack) 
 	{
-		return true;
+		return getMaxEnergy(itemStack)-getEnergy(itemStack) > 0;
 	}
 
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return true;
+		return getEnergy(itemStack) > 0;
 	}
 
 	@Override

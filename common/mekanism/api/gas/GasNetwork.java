@@ -17,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
+public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 {
 	public int transferDelay = 0;
 	
@@ -82,9 +82,9 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			
 			for(Object obj : availableAcceptors)
 			{
-				if(obj instanceof IGasAcceptor && obj != emitter)
+				if(obj instanceof IGasHandler && obj != emitter)
 				{
-					IGasAcceptor acceptor = (IGasAcceptor)obj;
+					IGasHandler acceptor = (IGasHandler)obj;
 					
 					int currentSending = sending;
 					
@@ -94,7 +94,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 						remaining--;
 					}
 					
-					toSend -= acceptor.receiveGas(new GasStack(stack.getGas(), currentSending));
+					toSend -= acceptor.receiveGas(acceptorDirections.get(acceptor).getOpposite(), new GasStack(stack.getGas(), currentSending));
 				}
 			}
 		}
@@ -157,21 +157,21 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 	
 	@Override
-	public synchronized Set<IGasAcceptor> getAcceptors(Object... data)
+	public synchronized Set<IGasHandler> getAcceptors(Object... data)
 	{
 		Gas type = (Gas)data[0];
-		Set<IGasAcceptor> toReturn = new HashSet<IGasAcceptor>();
+		Set<IGasHandler> toReturn = new HashSet<IGasHandler>();
 		
-		for(IGasAcceptor acceptor : possibleAcceptors)
+		for(IGasHandler acceptor : possibleAcceptors)
 		{
+			if(acceptorDirections.get(acceptor) == null)
+			{
+				continue;
+			}
+			
 			if(acceptor.canReceiveGas(acceptorDirections.get(acceptor).getOpposite(), type))
 			{
-				int stored = ((IGasStorage)acceptor).getGas() != null ? ((IGasStorage)acceptor).getGas().amount : 0;
-				
-				if(!(acceptor instanceof IGasStorage) || (acceptor instanceof IGasStorage && (((IGasStorage)acceptor).getMaxGas() - stored) > 0))
-				{
-					toReturn.add(acceptor);
-				}
+				toReturn.add(acceptor);
 			}
 		}
 		
@@ -203,9 +203,9 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		
 		for(ITransmitter<GasNetwork> pipe : transmitters)
 		{
-			IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
+			IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
 		
-			for(IGasAcceptor acceptor : acceptors)
+			for(IGasHandler acceptor : acceptors)
 			{
 				if(acceptor != null && !(acceptor instanceof ITransmitter))
 				{

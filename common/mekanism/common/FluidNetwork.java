@@ -118,7 +118,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 						remaining--;
 					}
 					
-					fluidSent += acceptor.fill(acceptorDirections.get(acceptor), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
+					fluidSent += acceptor.fill(acceptorDirections.get(acceptor).getOpposite(), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
 				}
 			}
 		}
@@ -188,6 +188,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		for(IFluidHandler acceptor : possibleAcceptors)
 		{
+			if(acceptorDirections.get(acceptor) == null)
+			{
+				continue;
+			}
+			
 			if(acceptor.canFill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend.getFluid()))
 			{
 				toReturn.add(acceptor);

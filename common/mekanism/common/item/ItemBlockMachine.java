@@ -10,14 +10,12 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
@@ -82,7 +80,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IGasItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -148,13 +146,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				{
 					list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
 				}
-			}
-			
-			GasStack gasStack = getGas(itemstack);
-			
-			if(gasStack != null)
-			{
-				list.add(EnumColor.YELLOW + "Stored " + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + gasStack.amount);
 			}
 			
 			if(supportsUpgrades(itemstack))
@@ -315,7 +306,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     		
     		if(tileEntity instanceof TileEntityRotaryCondensentrator)
     		{
-    			((TileEntityRotaryCondensentrator)tileEntity).setGas(getGas(stack));
+    			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("gasStack"))
+    			{
+    				GasStack gasStack = GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasStack"));
+    				((TileEntityRotaryCondensentrator)tileEntity).gasTank.setGas(gasStack);
+    			}
     		}
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -944,122 +939,5 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	public IElectricItemManager getManager(ItemStack itemStack) 
 	{
 		return IC2ItemManager.getManager(this);
-	}
-	
-	@Override
-	public int getMaxGas(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			if(MachineType.get((ItemStack)data[0]) == MachineType.ROTARY_CONDENSENTRATOR)
-			{
-				return TileEntityRotaryCondensentrator.MAX_GAS;
-			}
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public int getRate(ItemStack itemstack) 
-	{
-		return ItemBlockGasTank.TRANSFER_RATE;
-	}
-
-	@Override
-	public int addGas(ItemStack itemstack, GasStack stack) 
-	{
-		if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR || (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()))
-		{
-			return 0;
-		}
-		
-		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-		setGas(new GasStack(stack.getGas(), getStored(itemstack)+toUse), itemstack);
-		
-		return toUse;
-	}
-
-	@Override
-	public GasStack removeGas(ItemStack itemstack, int amount)
-	{
-		if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR || getGas(itemstack) == null)
-		{
-			return null;
-		}
-		
-		Gas type = getGas(itemstack).getGas();
-		
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(new GasStack(type, getStored(itemstack)-gasToUse), itemstack);
-		
-		return new GasStack(type, gasToUse);
-	}
-	
-	private int getStored(ItemStack itemstack)
-	{
-		return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
-	}
-	
-	@Override
-	public boolean canReceiveGas(ItemStack itemstack, Gas type)
-	{
-		return MachineType.get(itemstack) == MachineType.ROTARY_CONDENSENTRATOR && (getGas(itemstack) == null || getGas(itemstack).getGas() == type);
-	}
-	
-	@Override
-	public boolean canProvideGas(ItemStack itemstack, Gas type)
-	{
-		return false;
-	}
-	
-	@Override
-	public GasStack getGas(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR || itemstack.stackTagCompound == null)
-			{
-				return null;
-			}
-			
-			GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-			
-			return stored;
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public void setGas(GasStack stack, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR)
-			{
-				return;
-			}
-			
-			if(itemstack.stackTagCompound == null)
-			{
-				itemstack.setTagCompound(new NBTTagCompound());
-			}
-			
-			if(stack == null || stack.amount == 0)
-			{
-				itemstack.stackTagCompound.removeTag("stored");
-			}
-			else {
-				int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
-				GasStack gasStack = new GasStack(stack.getGas(), amount);
-				
-				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
-			}
-		}
 	}
 }

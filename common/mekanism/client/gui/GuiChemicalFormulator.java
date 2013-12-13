@@ -43,7 +43,7 @@ public class GuiChemicalFormulator extends GuiMekanism
 		
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.gasTank != null ? tileEntity.gasTank.getGas().getLocalizedName() + ": " + tileEntity.gasTank.amount : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -73,7 +73,7 @@ public class GuiChemicalFormulator extends GuiMekanism
         
         if(tileEntity.getScaledGasLevel(58) > 0)
         {
-        	displayGauge(134, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank);
+        	displayGauge(134, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank.getGas());
         }
     }
     

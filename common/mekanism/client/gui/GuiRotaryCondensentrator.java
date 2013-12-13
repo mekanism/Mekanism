@@ -45,7 +45,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
         
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.gasTank != null ? tileEntity.gasTank.getGas().getLocalizedName() + ": " + tileEntity.gasTank.amount : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
@@ -86,7 +86,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
         
         if(tileEntity.getScaledGasLevel(58) > 0) 
         {
-        	displayGauge(26, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank);
+        	displayGauge(26, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank.getGas());
 		}
         
         if(tileEntity.getScaledFluidLevel(58) > 0)

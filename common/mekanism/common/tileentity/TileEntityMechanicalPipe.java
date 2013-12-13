@@ -280,7 +280,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
 		isActive = !isActive;
-		getTransmitterNetwork().refresh();
+		refreshTransmitterNetwork();
 		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 		
 		return true;

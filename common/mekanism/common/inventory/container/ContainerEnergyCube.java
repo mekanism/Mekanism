@@ -68,7 +68,7 @@ public class ContainerEnergyCube extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IElectricItem || slotStack.getItem() instanceof IItemElectric || slotStack.itemID == Item.redstone.itemID)
+            if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
             {
             	if(slotStack.itemID == Item.redstone.itemID)
             	{

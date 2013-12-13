@@ -107,14 +107,14 @@ public class ContainerRotaryCondensentrator extends Container
             {
             	if(slotID != 0 && slotID != 1)
             	{
-	            	if(((IGasItem)slotStack.getItem()).canProvideGas(slotStack, tileEntity.gasTank != null ? tileEntity.gasTank.getGas() : null))
+	            	if(((IGasItem)slotStack.getItem()).canProvideGas(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null))
 	            	{
 	            		if(!mergeItemStack(slotStack, 0, 1, false))
 	            		{
 	            			return null;
 	            		}
 	            	}
-	            	else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.gasTank != null ? tileEntity.gasTank.getGas() : null))
+	            	else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null))
 	    			{
 	            		if(!mergeItemStack(slotStack, 1, 2, false))
 	            		{
