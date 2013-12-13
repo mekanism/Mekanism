@@ -41,9 +41,10 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 		return "mekanism:mechanical_pipe";
 	}
 
-    public static void registerIcons(IconRegister register){
+    public static void registerIcons(IconRegister register)
+    {
         pipeIcons = new PartTransmitterIcons(2);
-        pipeIcons.registerCenterIcons(register, new String[]{"MechanicalPipe", "MechanicalPipeActive"});
+        pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipe", "MechanicalPipeActive"});
         pipeIcons.registerSideIcon(register, "MechanicalPipeSide");
     }
 

@@ -105,7 +105,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
     public abstract Icon getCenterIcon();
 
     public abstract Icon getSideIcon();
-
 	
 	@Override
 	public void bind(TileMultipart t)
@@ -114,7 +113,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		{
 			getTransmitterNetwork().transmitters.remove(tile());
 			super.bind(t);
-			getTransmitterNetwork().transmitters.add((ITransmitter<N>) tile());
+			getTransmitterNetwork().transmitters.add((ITransmitter<N>)tile());
 		}
 		else {
 			super.bind(t);
@@ -126,12 +125,12 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	{
         if(world().isRemote)
         {
-            if(delayTicks == 3)
+            if(delayTicks == 5)
             {
-                delayTicks++;
+                delayTicks = 6; /* don't refresh again */
                 refreshTransmitterNetwork();
             }
-            else if(delayTicks < 3)
+            else if(delayTicks < 5)
             {
                 delayTicks++;
             }
@@ -146,7 +145,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 
 	public static boolean connectionMapContainsSide(byte connections, ForgeDirection side)
 	{
-		byte tester = (byte) (1 << side.ordinal());
+		byte tester = (byte)(1 << side.ordinal());
 		return (connections & tester) > 0;
 	}
 	
@@ -181,7 +180,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		
 		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
-				return connections;
+			return connections;
 		}
 			
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -194,7 +193,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 				{
 					connections |= 1 << side.ordinal();
 				}
-				
 			}
 		}
 		
@@ -375,7 +373,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 				if(connectionMapContainsSide(possibleTransmitters, side))
 				{
 					TileEntity cable = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
-					if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<N>)cable).getTransmitterNetwork(false) != null)
+					
+					if(TransmissionType.checkTransmissionType(cable, getTransmissionType()) && ((ITransmitter<N>)cable).getTransmitterNetwork(false) != null)
 					{
 						connectedNets.add(((ITransmitter<N>)cable).getTransmitterNetwork());
 					}
@@ -477,7 +476,9 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	public boolean activate(EntityPlayer player, MovingObjectPosition part, ItemStack item)
 	{
 		if(item == null)
+		{
 			return false;
+		}
 		if(item.getItem() instanceof ItemConfigurator && player.isSneaking())
 		{
 			isActive ^= true;
