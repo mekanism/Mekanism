@@ -107,6 +107,7 @@ public final class ChargeUtils
 	public static boolean canBeDischarged(ItemStack itemstack)
 	{
 		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
+				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canSend(itemstack)) ||
 				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) != 0) || 
 				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
 				itemstack.itemID == Item.redstone.itemID;
@@ -120,6 +121,7 @@ public final class ChargeUtils
 	public static boolean canBeCharged(ItemStack itemstack)
 	{
 		return itemstack.getItem() instanceof IElectricItem || 
+				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canReceive(itemstack)) ||
 				(itemstack.getItem() instanceof IItemElectric && ((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) != 0) ||
 				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0);
 	}
