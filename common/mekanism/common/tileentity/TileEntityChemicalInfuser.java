@@ -9,6 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ChemicalInput;
 import mekanism.common.IActiveState;
@@ -87,7 +88,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				}
 			}
 			
-			ChargeUtils.discharge(4, this);
+			ChargeUtils.discharge(3, this);
 			
 			if(inventory[0] != null && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
 			{
@@ -410,5 +411,58 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return getTank(side) != null && getTank(side) == centerTank ? getTank(side).canDraw(type) : false;
+	}
+	
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0 || slotID == 1)
+		{
+			return RecipeHandler.getChemicalFormulatorOutput(itemstack, false) != null;
+		}
+		else if(slotID == 3)
+		{
+			return ChargeUtils.canBeDischarged(itemstack);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 0 || slotID == 2)
+		{
+			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, null);
+		}
+		if(slotID == 1)
+		{
+			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		if(side == MekanismUtils.getLeft(facing).ordinal())
+		{
+			return new int[] {0};
+		}
+		else if(side == facing)
+		{
+			return new int[] {1};
+		}
+		else if(side == MekanismUtils.getRight(facing).ordinal())
+		{
+			return new int[] {2};
+		}
+		else if(side == 0 || side == 1)
+		{
+			return new int[3];
+		}
+		
+		return new int[0];
 	}
 }

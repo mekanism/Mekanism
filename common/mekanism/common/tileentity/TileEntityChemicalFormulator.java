@@ -120,15 +120,15 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 			if(gasTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
-				gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing)), true);
+				gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getRight(facing)), true);
 				
 				TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 				
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), gasTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), gasTank.getGas().getGas()))
 					{
-						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
+						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
 					}
 				}
 			}
@@ -155,7 +155,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 	{
 		if(slotID == 2)
 		{
-			return inventory[2] != null && inventory[2].getItem() instanceof IGasItem && ((IGasItem)inventory[2].getItem()).canProvideGas(inventory[2], null);
+			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
 		}
 		
 		return false;
