@@ -80,7 +80,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     public static void registerIcons(IconRegister register)
     {
         cableIcons = new PartTransmitterIcons(1);
-        cableIcons.registerCenterIcons(register, new String[]{"UniversalCable"});
+        cableIcons.registerCenterIcons(register, new String[] {"UniversalCable"});
         cableIcons.registerSideIcon(register, "TransmitterSideSmall");
     }
 
