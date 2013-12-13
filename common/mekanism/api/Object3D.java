@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -139,6 +140,16 @@ public class Object3D
 	public Object3D step(ForgeDirection side)
 	{
 		return translate(side.offsetX, side.offsetY, side.offsetZ);
+	}
+	
+	public boolean exists(World world)
+	{
+		return world.getChunkProvider().chunkExists(xCoord >> 4, zCoord >> 4);
+	}
+	
+	public Chunk getChunk(World world)
+	{
+		return world.getChunkFromBlockCoords(xCoord >> 4, zCoord >> 4);
 	}
 	
 	@Override

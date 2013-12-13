@@ -2,6 +2,8 @@ package mekanism.client.render.item;
 
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -24,8 +26,8 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.multipart.ItemPartTransmitter;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -325,7 +327,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
 	    	GL11.glDisable(GL11.GL_CULL_FACE);
 	    	
-	    	switch(item.getItem().getDamage(item))
+	    	switch(item.getItemDamage())
 	    	{
 	    		case 0:
 	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
@@ -341,9 +343,17 @@ public class ItemRenderingHandler implements IItemRenderer
 	    			break;
 	    	}
 	    	
-	    	transmitterSmall.renderSide(ForgeDirection.UP, true);
-	    	transmitterSmall.renderSide(ForgeDirection.DOWN, true);
-	    	transmitterSmall.renderCenter(new boolean[]{true, true, false, false, false, false});
+	    	if(TransmissionType.values()[item.getItemDamage()].transmitterSize == Size.SMALL)
+	    	{
+		    	transmitterSmall.renderSide(ForgeDirection.UP, true);
+		    	transmitterSmall.renderSide(ForgeDirection.DOWN, true);
+		    	transmitterSmall.renderCenter(new boolean[]{true, true, false, false, false, false});
+	    	}
+	    	else {
+		    	transmitterLarge.renderSide(ForgeDirection.UP, true);
+		    	transmitterLarge.renderSide(ForgeDirection.DOWN, true);
+		    	transmitterLarge.renderCenter(new boolean[]{true, true, false, false, false, false});
+	    	}
 	    	
 	    	GL11.glEnable(GL11.GL_CULL_FACE);
 

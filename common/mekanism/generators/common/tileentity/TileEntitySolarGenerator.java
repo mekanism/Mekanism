@@ -143,7 +143,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
 			}
 			
-			if(worldObj.provider.getBiomeGenForCoords(xCoord << 4, zCoord << 4) instanceof BiomeGenDesert)
+			if(worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert)
 			{
 				ret *= 1.5;
 			}

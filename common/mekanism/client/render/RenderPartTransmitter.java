@@ -3,7 +3,6 @@ package mekanism.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -11,6 +10,8 @@ import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
@@ -45,36 +46,6 @@ public class RenderPartTransmitter implements IIconRegister
 	private static final double offset = 0.015;
 	
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
-	
-	static
-	{
-        small_models = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter_small.obj"), 7, null);
-
-        for(CCModel c : small_models.values())
-        {
-            c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(LightModel.standardLightModel);
-            c.shrinkUVs(0.0005);
-        }
-
-        large_models = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter_large.obj"), 7, null);
-
-        for(CCModel c : large_models.values())
-        {
-            c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(LightModel.standardLightModel);
-            c.shrinkUVs(0.0005);
-        }
-
-        cableContentsModels = CCModel.parseObjModels(new ResourceLocation("mekanism", "models/transmitter_contents.obj"), 7, null);
-        
-		for(CCModel c : cableContentsModels.values()) 
-        {
-            c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(LightModel.standardLightModel);
-            c.shrinkUVs(0.0005);
-        }
-	}
 
 	public static RenderPartTransmitter getInstance()
 	{
@@ -85,6 +56,33 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		INSTANCE = new RenderPartTransmitter();
 		TextureUtils.addIconRegistrar(INSTANCE);
+		
+        small_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_small.obj"), 7, null);
+
+        for(CCModel c : small_models.values())
+        {
+            c.apply(new Translation(.5, .5, .5));
+            c.computeLighting(LightModel.standardLightModel);
+            c.shrinkUVs(0.0005);
+        }
+
+        large_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_large.obj"), 7, null);
+
+        for(CCModel c : large_models.values())
+        {
+            c.apply(new Translation(.5, .5, .5));
+            c.computeLighting(LightModel.standardLightModel);
+            c.shrinkUVs(0.0005);
+        }
+
+        cableContentsModels = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
+        
+		for(CCModel c : cableContentsModels.values()) 
+        {
+            c.apply(new Translation(.5, .5, .5));
+            c.computeLighting(LightModel.standardLightModel);
+            c.shrinkUVs(0.0005);
+        }
 	}
 	
 	private void push()

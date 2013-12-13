@@ -633,7 +633,7 @@ public class Mekanism
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
 		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
-		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11223).getInt()).setUnlocalizedName("MultipartTransmitter");
+		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11225).getInt()).setUnlocalizedName("MultipartTransmitter");
 		configuration.save();
 		//TODO 1.7, fix item shifts
 		

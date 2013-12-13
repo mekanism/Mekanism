@@ -139,7 +139,7 @@ public class ClientProxy extends CommonProxy
 		Mekanism.configuration.load();
 		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
-		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1).getDouble(1);
+		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1.0D).getDouble(1.0D);
 		Mekanism.configuration.save();
 	}
 	
@@ -267,7 +267,7 @@ public class ClientProxy extends CommonProxy
 	
 	@Override
 	public void registerRenderInformation()
-	{
+	{		
 		RenderPartTransmitter.init();
 		
 		//Register entity rendering handlers
