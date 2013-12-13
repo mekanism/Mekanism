@@ -13,6 +13,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
@@ -45,7 +46,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N>, ITileNetwork
+public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N>, ITileNetwork, IConfigurable
 {
 	public int delayTicks;
 	
@@ -170,6 +171,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 				}
 			}
 		}
+		
 		return connections;
 	}
 	
@@ -236,7 +238,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
 			
-			sendDesc = true;;
+			sendDesc = true;
 		}
 	}
 	
@@ -568,5 +570,18 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		return data;
+	}
+	
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		fixTransmitterNetwork();
+		return true;
 	}
 }
