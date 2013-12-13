@@ -6,21 +6,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -43,30 +39,46 @@ import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
 import codechicken.multipart.TileMultipart;
-import cpw.mods.fml.common.FMLCommonHandler;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITransmitter<N>, ITileNetwork
 {
 	public int delayTicks;
+	
 	public N theNetwork;
-	public static IndexedCuboid6[] sides = new IndexedCuboid6[7];
+	
+	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
+	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
+	
 	public ForgeDirection testingSide = null;
+	
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
+	
 	public boolean isActive = false;
 	public boolean sendDesc;
 	
 	static
 	{
-		sides[0] = new IndexedCuboid6(0, new Cuboid6(0.3, 0.0, 0.3, 0.7, 0.3, 0.7));
-		sides[1] = new IndexedCuboid6(1, new Cuboid6(0.3, 0.7, 0.3, 0.7, 1.0, 0.7));
-		sides[2] = new IndexedCuboid6(2, new Cuboid6(0.3, 0.3, 0.0, 0.7, 0.7, 0.3));
-		sides[3] = new IndexedCuboid6(3, new Cuboid6(0.3, 0.3, 0.7, 0.7, 0.7, 1.0));
-		sides[4] = new IndexedCuboid6(4, new Cuboid6(0.0, 0.3, 0.3, 0.3, 0.7, 0.7));
-		sides[5] = new IndexedCuboid6(5, new Cuboid6(0.7, 0.3, 0.3, 1.0, 0.7, 0.7));
-		sides[6] = new IndexedCuboid6(6, new Cuboid6(0.3, 0.3, 0.3, 0.7, 0.7, 0.7));
+		smallSides[0] = new IndexedCuboid6(0, new Cuboid6(0.3, 0.0, 0.3, 0.7, 0.3, 0.7));
+		smallSides[1] = new IndexedCuboid6(1, new Cuboid6(0.3, 0.7, 0.3, 0.7, 1.0, 0.7));
+		smallSides[2] = new IndexedCuboid6(2, new Cuboid6(0.3, 0.3, 0.0, 0.7, 0.7, 0.3));
+		smallSides[3] = new IndexedCuboid6(3, new Cuboid6(0.3, 0.3, 0.7, 0.7, 0.7, 1.0));
+		smallSides[4] = new IndexedCuboid6(4, new Cuboid6(0.0, 0.3, 0.3, 0.3, 0.7, 0.7));
+		smallSides[5] = new IndexedCuboid6(5, new Cuboid6(0.7, 0.3, 0.3, 1.0, 0.7, 0.7));
+		smallSides[6] = new IndexedCuboid6(6, new Cuboid6(0.3, 0.3, 0.3, 0.7, 0.7, 0.7));
+		
+		largeSides[0] = new IndexedCuboid6(0, new Cuboid6(0.25, 0.0, 0.25, 0.75, 0.25, 0.75));
+		largeSides[1] = new IndexedCuboid6(1, new Cuboid6(0.25, 0.75, 0.25, 0.75, 1.0, 0.75));
+		largeSides[2] = new IndexedCuboid6(2, new Cuboid6(0.25, 0.25, 0.0, 0.75, 0.75, 0.25));
+		largeSides[3] = new IndexedCuboid6(3, new Cuboid6(0.25, 0.25, 0.75, 0.75, 0.75, 1.0));
+		largeSides[4] = new IndexedCuboid6(4, new Cuboid6(0.0, 0.25, 0.25, 0.25, 0.75, 0.75));
+		largeSides[5] = new IndexedCuboid6(5, new Cuboid6(0.75, 0.25, 0.25, 1.0, 0.75, 0.75));
+		largeSides[6] = new IndexedCuboid6(6, new Cuboid6(0.25, 0.25, 0.25, 0.75, 0.75, 0.75));
 	}
 
 	public static TMultiPart getPartType(TransmissionType type)
@@ -253,11 +265,13 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 				
 				if(connectionMapContainsSide(connections, side) || side == testingSide) 
 				{
-					subParts.add(sides[ord]);
+					subParts.add(getTransmissionType().transmitterSize == Size.SMALL ? smallSides[ord] : largeSides[ord]);
 				}
 			}
 		}
-		subParts.add(sides[6]);
+		
+		subParts.add(getTransmissionType().transmitterSize == Size.SMALL ? smallSides[6] : largeSides[6]);
+		
 		return subParts;
 	}
 	
@@ -265,7 +279,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	public Iterable<Cuboid6> getCollisionBoxes()
 	{
 		Set<Cuboid6> collisionBoxes = new HashSet<Cuboid6>();
-		collisionBoxes.addAll((Collection<? extends Cuboid6>) getSubParts());
+		collisionBoxes.addAll((Collection<? extends Cuboid6>)getSubParts());
 		return collisionBoxes;
 	}
 
@@ -296,13 +310,13 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 	@Override
 	public Cuboid6 getBounds()
 	{
-		return sides[6];
+		return smallSides[6];
 	}
 	
 	@Override
 	public int getHollowSize()
 	{
-		return 7;
+		return getTransmissionType().transmitterSize == Size.SMALL ? 7 : 8;
 	}
 	
 	@Override
