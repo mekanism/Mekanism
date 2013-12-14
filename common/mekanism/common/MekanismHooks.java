@@ -15,10 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -57,19 +54,25 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
-
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Item.glowstone));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
-			
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
+			try {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
+			} catch(Exception e) {}
+	
+			try {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Item.glowstone));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
+			} catch(Exception e) {}
+				
+			try {
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
+			} catch(Exception e) {}
 			
 			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
 			{
@@ -180,42 +183,6 @@ public final class MekanismHooks
 		} catch(Exception e) {
 			System.out.println("[Mekanism] Unable to retrieve Basic Components item " + name + ".");
 			return null;
-		}
-	}
-	
-	@EventHandler
-	public void handleIMC(IMCEvent event)
-	{
-		for(IMCMessage message : event.getMessages())
-		{
-			try {
-				if(message.isNBTMessage())
-				{
-					if(message.key.equalsIgnoreCase("PulverizerRecipe") && !message.getNBTValue().hasKey("secondaryChance") && !message.getNBTValue().hasKey("secondaryOutput"))
-					{
-						ItemStack input = ItemStack.loadItemStackFromNBT(message.getNBTValue().getCompoundTag("input"));
-						ItemStack output = ItemStack.loadItemStackFromNBT(message.getNBTValue().getCompoundTag("output"));
-						
-						if(input != null && output != null)
-						{
-							if(MekanismUtils.getName(input).startsWith("ore"))
-							{
-								if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(input))
-								{
-									RecipeHandler.addEnrichmentChamberRecipe(input, output);
-								}
-							}
-							else if(MekanismUtils.getName(input).startsWith("ingot"))
-							{
-								if(!Recipe.CRUSHER.containsRecipe(input))
-								{
-									RecipeHandler.addCrusherRecipe(input, output);
-								}
-							}
-						}
-					}
-				}
-			} catch(Exception e) {}
 		}
 	}
 }

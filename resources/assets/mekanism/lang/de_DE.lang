@@ -25,6 +25,7 @@ item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Taucherflasche
 item.GasMask.name=Gasmaske
+item.Dictionary.name=Lexikon
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -65,6 +66,8 @@ tile.MachineBlock.DigitalMiner.name=Digitalbergbaugerät
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotationskondensentrator
+tile.MachineBlock2.ChemicalFormulator.name=Chemischer Formulator
+tile.MachineBlock2.ChemicalInfuser.name=Chemischer Infundierer
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -95,6 +98,7 @@ item.steelDust.name=Stahlstaub
 item.copperDust.name=Kupferstaub
 item.tinDust.name=Zinnstaub
 item.silverDust.name=Silberstaub
+item.leadDust.name=Bleistaub
 
 //Clumps
 item.ironClump.name=Eisenklumpen
@@ -104,6 +108,7 @@ item.copperClump.name=Kupferklumpen
 item.tinClump.name=Zinnklumpen
 item.silverClump.name=Silberklumpen
 item.obsidianClump.name=Obsidianklumpen
+item.leadClump.name=Bleiklumpen
 
 //Dirty Dust
 item.dirtyIronDust.name=Dreckiger Eisenstaub
@@ -113,6 +118,7 @@ item.dirtyCopperDust.name=Dreckiger Kupferstaub
 item.dirtyTinDust.name=Dreckiger Zinnstaub
 item.dirtySilverDust.name=Dreckiger Silberstaub
 item.dirtyObsidianDust.name=Dreckiger Obsidianstaub
+item.dirtyLeadDust.name=Dreckiger Bleistaub
 
 //Ingots
 item.obsidianIngot.name=Obsidianbarren
@@ -126,10 +132,14 @@ item.tinIngot.name=Zinnbarren
 //Gasses
 gas.hydrogen=Wasserstoff
 gas.oxygen=Sauerstoff
+gas.sulfuricGas=Schwefelgas
+gas.sulfuricAcid=Schwefelsäure
 
 //Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
 fluid.oxygen=Flüssiger Sauerstoff
+fluid.sulfuricGas=Schwefelgas
+fluid.sulfuricAcid=Schwefelsäure
 
 //Gui text
 gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
@@ -162,6 +172,9 @@ gui.eject=Auswerfen
 gui.input=Input
 gui.slots=Slots
 gui.state=Status
+
+gui.dictionary.noKey=Kein Key.
+gui.dictionary.key=Key
 
 gui.configuration=Konfiguration
 gui.configuration.strictInput=Strikter Input
