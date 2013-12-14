@@ -1171,8 +1171,6 @@ public class Mekanism
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		
 		Mekanism.proxy.preInit();
-				
-		MinecraftForge.EVENT_BUS.register(hooks);
 		
 		//Register infuses
         InfuseRegistry.registerInfuseType(new InfuseType("CARBON", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 0, 0));
