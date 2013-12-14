@@ -2,16 +2,18 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.EnumColor;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+
+import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple ore block IDs.
@@ -41,27 +43,7 @@ public class ItemBlockOre extends ItemBlock
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
 		}
 		else {
-			if(itemstack.getItemDamage() == 0)
-			{
-				list.add("A strong mineral that can be found");
-				list.add("at nearly any height in the world.");
-				list.add("It is known to have many uses in");
-				list.add("the construction of machinery.");
-			}
-			else if(itemstack.getItemDamage() == 1)
-			{
-				list.add("A common, conductive material that");
-				list.add("can be used in the production of.");
-				list.add("wires. It's ability to withstand");
-				list.add("high heats also makes it essential");
-				list.add("to advanced machinery.");
-			}
-			else if(itemstack.getItemDamage() == 2)
-			{
-				list.add("A lightweight, yet sturdy, conductive");
-				list.add("material that is found slighly less");
-				list.add("commonly than Copper.");
-			}
+			list.addAll(MekanismUtils.splitLines(MekanismUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", ""))));
 		}
 	}
 	

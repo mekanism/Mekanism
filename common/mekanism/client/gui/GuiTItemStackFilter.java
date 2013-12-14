@@ -34,7 +34,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 	
 	public TItemStackFilter filter = new TItemStackFilter();
 	
-	public String status = EnumColor.DARK_GREEN + "All OK";
+	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		
 	public int ticker;
 	
@@ -167,7 +167,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		
 		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
-		fontRenderer.drawString(filter.sizeMode ? "On" : "Off", 141, 46, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
 		
 		if(filter.itemType != null)
 		{

@@ -47,14 +47,22 @@ public class ItemNetworkReader extends ItemEnergized
     		{
     			String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
     			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY + " ----------"));
+    			
     			for(String s : strings)
     			{
     				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_GREY + s));
     			}
+    			
     			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     		}
     	}
     	
+    	return false;
+    }
+    
+    @Override
+    public boolean canSend(ItemStack itemstack)
+    {
     	return false;
     }
 }

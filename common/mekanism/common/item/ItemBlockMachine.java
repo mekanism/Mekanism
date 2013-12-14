@@ -160,7 +160,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			}
 		}
 		else {
-			list.addAll(MekanismUtils.getSplitText(type.getDescription()));
+			list.addAll(MekanismUtils.splitLines(type.getDescription()));
 		}
 	}
 

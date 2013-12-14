@@ -1128,7 +1128,7 @@ public final class MekanismUtils
     	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
     }
     
-    public static List<String> getSplitText(String s)
+    public static List<String> splitLines(String s)
     {
     	ArrayList ret = new ArrayList();
     	

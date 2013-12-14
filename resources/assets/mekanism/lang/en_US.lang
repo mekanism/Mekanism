@@ -172,6 +172,9 @@ gui.eject=Eject
 gui.input=Input
 gui.slots=Slots
 gui.state=State
+gui.on=On
+gui.off=Off
+gui.filters=Filters
 
 gui.dictionary.noKey=No key.
 gui.dictionary.key=Key
@@ -195,6 +198,7 @@ gui.oredictFilter.noKey=No key entered
 gui.oredictFilter.sameKey=Same key
 
 gui.itemFilter=Item Filter
+gui.itemFilter.noItem=No item
 gui.itemFilter.details=ItemStack Details
 gui.itemFilter.min=Min
 gui.itemFilter.max=Max
@@ -225,7 +229,6 @@ gui.password.identical=Identical
 gui.password.invalid=Invalid
 gui.password=Password
 
-gui.logisticalSorter.filters=Filters
 gui.logisticalSorter.default=Default
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Round robin
@@ -279,6 +282,10 @@ tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitsel
 tooltip.Chargepad=A universal chargepad that can charge any energized item !nfrom any mod.
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
+
+tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
+tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
+tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
 
 //Redstone control
 control.disabled=Disabled

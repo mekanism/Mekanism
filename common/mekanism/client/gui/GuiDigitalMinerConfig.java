@@ -241,8 +241,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
-		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, MekanismUtils.localize("gui.itemstack")));
+		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, MekanismUtils.localize("gui.oredict")));
 		
 		String prevRad = radiusField != null ? radiusField.getText() : "";
 		String prevMin = minField != null ? minField.getText() : "";
@@ -284,7 +284,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		
 		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 		
-		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
@@ -315,7 +315,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 					
-					fontRenderer.drawString("Item Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MOreDictFilter)
 				{
@@ -335,7 +335,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 					
-					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
 			}
 		}
