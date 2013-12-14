@@ -75,11 +75,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		register();
 	}
 	
-	public int getCapacity()
-	{
-		return PIPE_FLUID*transmitters.size();
-	}
-	
 	public synchronized int getFluidNeeded()
 	{
 		return getCapacity()-(fluidStored != null ? fluidStored.amount : 0);

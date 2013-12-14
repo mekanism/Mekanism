@@ -101,6 +101,20 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		return possibleAcceptors.size();
 	}
+
+    public int getCapacity()
+    {
+        return (int)getMeanCapacity() * transmitters.size();
+    }
+
+    /**
+     * Override this if things can have variable capacity along the network.
+     * @return An 'average' value of capacity. Calculate it how you will.
+     */
+    public double getMeanCapacity()
+    {
+        return transmitters.iterator().next().getCapacity();
+    }
 	
 	@Override
 	public void tick()

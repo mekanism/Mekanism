@@ -190,4 +190,10 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 		
 		return true;
 	}
+
+    @Override
+    public int getCapacity()
+    {
+        return 1000;
+    }
 }

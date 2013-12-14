@@ -74,10 +74,18 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		refresh();
 		register();
 	}
-	
-	public double getCapacity()
+
+    @Override
+	public double getMeanCapacity()
 	{
-		return CABLE_ENERGY*transmitters.size();
+        //Use the harmonic mean. Because we're mean.
+        int numCables = transmitters.size();
+        double reciprocalSum = 0;
+        for(ITransmitter<EnergyNetwork> cable : transmitters)
+        {
+            reciprocalSum += 1.0/(double)cable.getCapacity();
+        }
+		return (double)numCables / reciprocalSum;
 	}
 	
 	public synchronized double getEnergyNeeded()
@@ -464,6 +472,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getFlow()
 	{
-		return MekanismUtils.getEnergyDisplay(electricityStored);
+		return MekanismUtils.getPowerDisplay(20*electricityStored);
 	}
 }

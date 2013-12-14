@@ -74,4 +74,6 @@ public interface ITransmitter<N extends DynamicNetwork<?, N>>
     public String getTransmitterNetworkNeeded();
 
     public String getTransmitterNetworkFlow();
+
+    public int getCapacity();
 }

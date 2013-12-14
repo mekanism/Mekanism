@@ -142,4 +142,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
     {
         return tile instanceof IGasTransmitter;
     }
+
+    @Override
+    public int getCapacity()
+    {
+        return 256;
+    }
 }

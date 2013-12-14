@@ -1118,6 +1118,11 @@ public final class MekanismUtils
     	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.JOULES);
     }
     
+    public static String getPowerDisplay(double energy)
+    {
+    	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.WATT);
+    }
+    
     public static boolean useBuildcraft()
     {
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;

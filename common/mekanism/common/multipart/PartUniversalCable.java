@@ -275,4 +275,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_TE);
 	}
+
+    @Override
+    public int getCapacity()
+    {
+        return 10000;
+    }
 }
