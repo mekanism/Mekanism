@@ -1340,7 +1340,7 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.GAS, event.gasNetwork.transmitters.iterator().next(), event.transferType, event.didTransfer));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.GAS, event.gasNetwork.transmitters.iterator().next(), event.transferType, event.didTransfer, event.gasScale));
 		} catch(Exception e) {}
 	}
 	
@@ -1348,7 +1348,7 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.didTransfer));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTransmitterUpdate().setParams(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.didTransfer, event.fluidScale));
 		} catch(Exception e) {}
 	}
 	

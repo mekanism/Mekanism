@@ -27,6 +27,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	public boolean prevTransfer;
 	
 	public float gasScale;
+	public float prevScale;
+	
+	/** Sent from server to client, actual stored buffer scale */
+	public float definedScale;
+	
 	public Gas refGas = null;
 	
 	public GasStack gasStored;
@@ -156,9 +161,16 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				transferDelay--;
 			}
 			
+			if(Math.abs(getScale()-prevScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
+			{
+				needsUpdate = true;
+			}
+			
+			prevScale = getScale();
+			
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas != null ? refGas.getID() : -1, didTransfer));
+				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas != null ? refGas.getID() : -1, didTransfer, getScale()));
 				needsUpdate = false;
 			}
 			
@@ -183,11 +195,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		
 		if(didTransfer && gasScale < 1)
 		{
-			gasScale = Math.min(1, gasScale+0.02F);
+			gasScale = Math.max(definedScale, Math.min(1, gasScale+0.02F));
 		}
 		else if(!didTransfer && gasScale > 0)
 		{
-			gasScale = Math.max(0, gasScale-0.02F);
+			gasScale = Math.max(definedScale, Math.max(0, gasScale-0.02F));
 			
 			if(gasScale == 0)
 			{
@@ -275,13 +287,20 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		
 		public final int transferType;
 		public final boolean didTransfer;
+		public final float gasScale;
 		
-		public GasTransferEvent(GasNetwork network, int type, boolean did)
+		public GasTransferEvent(GasNetwork network, int type, boolean did, float scale)
 		{
 			gasNetwork = network;
 			transferType = type;
 			didTransfer = did;
+			gasScale = scale;
 		}
+	}
+	
+	public float getScale()
+	{
+		return (gasStored != null ? gasStored.amount : 0)/getCapacity();
 	}
 	
 	@Override

@@ -33,6 +33,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public boolean prevTransfer;
 	
 	public float fluidScale;
+	public float prevScale;
+	
+	/** Sent from server to client, actual stored buffer scale */
+	public float definedScale;
+	
 	public Fluid refFluid = null;
 	
 	public FluidStack fluidStored;
@@ -161,9 +166,16 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				transferDelay--;
 			}
 			
+			if(Math.abs(getScale()-prevScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
+			{
+				needsUpdate = true;
+			}
+			
+			prevScale = getScale();
+			
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, refFluid != null ? refFluid.getID() : -1, didTransfer));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, refFluid != null ? refFluid.getID() : -1, didTransfer, getScale()));
 				needsUpdate = false;
 			}
 			
@@ -188,11 +200,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		if(didTransfer && fluidScale < 1)
 		{
-			fluidScale = Math.min(1, fluidScale+0.02F);
+			fluidScale = Math.max(definedScale, Math.min(1, fluidScale+0.02F));
 		}
 		else if(!didTransfer && fluidScale > 0)
 		{
-			fluidScale = Math.max(0, fluidScale-0.02F);
+			fluidScale = Math.max(definedScale, Math.max(0, fluidScale-0.02F));
 			
 			if(fluidScale == 0)
 			{
@@ -282,13 +294,20 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		public final int fluidType;
 		public final boolean didTransfer;
+		public final float fluidScale;
 		
-		public FluidTransferEvent(FluidNetwork network, int type, boolean did)
+		public FluidTransferEvent(FluidNetwork network, int type, boolean did, float scale)
 		{
 			fluidNetwork = network;
 			fluidType = type;
 			didTransfer = did;
+			fluidScale = scale;
 		}
+	}
+	
+	public float getScale()
+	{
+		return (fluidStored != null ? fluidStored.amount : 0)/getCapacity();
 	}
 		
 	@Override

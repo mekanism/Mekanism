@@ -31,6 +31,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	public int fluidType;
 	public boolean didFluidTransfer;
 	
+	public float scale;
+	
 	@Override
 	public String getName() 
 	{
@@ -51,10 +53,12 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 			case GAS:
 				gasType = (Integer)data[2];
 				didGasTransfer = (Boolean)data[3];
+				scale = (Float)data[4];
 				break;
 			case FLUID:
 				fluidType = (Integer)data[2];
 				didFluidTransfer = (Boolean)data[3];
+				scale = (Float)data[4];
 				break;
 		}
 		
@@ -96,11 +100,13 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		Gas gasType = GasRegistry.getGas(dataStream.readInt());
     		didGasTransfer = dataStream.readBoolean();
+    		scale = dataStream.readFloat();
     		
     		if(tileEntity != null)
     		{
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
+    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -110,11 +116,13 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		int type = dataStream.readInt();
     		Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
     		didFluidTransfer = dataStream.readBoolean();
+    		scale = dataStream.readFloat();
     		
     		if(tileEntity != null)
     		{
     			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
     			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
+    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;
     		}
 	    }
 	}
@@ -136,10 +144,12 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 			case GAS:
 				dataStream.writeInt(gasType);
 				dataStream.writeBoolean(didGasTransfer);
+				dataStream.writeFloat(scale);
 				break;
 			case FLUID:
 				dataStream.writeInt(fluidType);
 				dataStream.writeBoolean(didFluidTransfer);
+				dataStream.writeFloat(scale);
 				break;
 		}
 	}
