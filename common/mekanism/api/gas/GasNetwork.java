@@ -64,11 +64,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		register();
 	}
 	
-	public int getCapacity()
-	{
-		return TUBE_GAS*transmitters.size();
-	}
-	
 	public synchronized int getGasNeeded()
 	{
 		return getCapacity()-(gasStored != null ? gasStored.amount : 0);

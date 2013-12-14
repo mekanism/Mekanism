@@ -99,4 +99,10 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	{
 		RenderPartTransmitter.getInstance().renderContents(this, pos);
 	}
+
+    @Override
+    public int getCapacity()
+    {
+        return 256;
+    }
 }

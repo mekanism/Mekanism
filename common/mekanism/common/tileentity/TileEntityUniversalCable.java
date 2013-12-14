@@ -339,4 +339,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		return 120;
 	}
+
+    @Override
+    public int getCapacity()
+    {
+        return 10000;
+    }
 }

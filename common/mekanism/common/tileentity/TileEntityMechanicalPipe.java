@@ -285,4 +285,10 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 		
 		return true;
 	}
+
+    @Override
+    public int getCapacity()
+    {
+        return 1000;
+    }
 }
