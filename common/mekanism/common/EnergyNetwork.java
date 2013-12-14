@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.energy.tile.IEnergySink;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,12 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.tileentity.TileEntityUniversalCable;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -33,11 +30,15 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {
+	public static final int CABLE_ENERGY = 10000;
+	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double joulesLastTick = 0;
 	
 	public double clientEnergyScale = 0;
+	
+	public double electricityStored;
 	
 	public EnergyNetwork(ITransmitter<EnergyNetwork>... varCables)
 	{
@@ -74,54 +75,22 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		register();
 	}
 	
-	public synchronized double getEnergyNeeded(List<TileEntity> ignored)
+	public double getCapacity()
+	{
+		return CABLE_ENERGY*transmitters.size();
+	}
+	
+	public synchronized double getEnergyNeeded()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			return 0;
 		}
 		
-		double totalNeeded = 0;
-		
-		for(TileEntity acceptor : getAcceptors())
-		{
-			if(acceptorDirections.get(acceptor) == null)
-			{
-				continue;
-			}
-			
-			ForgeDirection side = acceptorDirections.get(acceptor).getOpposite();
-			
-			if(!ignored.contains(acceptor))
-			{
-				if(acceptor instanceof IStrictEnergyAcceptor)
-				{
-					totalNeeded += (((IStrictEnergyAcceptor)acceptor).getMaxEnergy() - ((IStrictEnergyAcceptor)acceptor).getEnergy());
-				}
-				else if(acceptor instanceof IEnergyHandler)
-				{
-					IEnergyHandler handler = (IEnergyHandler)acceptor;
-					totalNeeded += handler.receiveEnergy(side, Integer.MAX_VALUE, true)*Mekanism.FROM_TE;
-				}
-				else if(acceptor instanceof IEnergySink)
-				{
-					totalNeeded += Math.min((((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2), (((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2));
-				}
-				else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
-				{
-					totalNeeded += (((IPowerReceptor)acceptor).getPowerReceiver(side).powerRequest()*Mekanism.FROM_BC);
-				}
-				else if(acceptor instanceof IElectrical)
-				{
-					totalNeeded += ((IElectrical)acceptor).getRequest(side)*Mekanism.FROM_UE;
-				}
-			}
-		}
-		
-		return totalNeeded;
+		return getCapacity()-electricityStored;
 	}
 	
-	public synchronized double emit(double energyToSend, ArrayList<TileEntity> ignored)
+	public synchronized double tickEmit(double energyToSend)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -131,7 +100,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		double prevEnergy = energyToSend;
 		double sent;
 
-		energyToSend = doEmit(energyToSend, ignored);
+		energyToSend = doEmit(energyToSend);
 		sent = prevEnergy-energyToSend;
 		
 		boolean tryAgain = energyToSend > 0 && sent > 0;
@@ -143,7 +112,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			prevEnergy = energyToSend;
 			sent = 0;
 			
-			energyToSend -= (energyToSend - doEmit(energyToSend, ignored));
+			energyToSend -= (energyToSend - doEmit(energyToSend));
 			sent = prevEnergy-energyToSend;
 			
 			if(energyToSend > 0 && sent > 0)
@@ -155,10 +124,17 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return energyToSend;
 	}
 	
+	public synchronized double emit(double energyToSend)
+	{
+		double toUse = Math.min(getEnergyNeeded(), energyToSend);
+		electricityStored += toUse;
+		return energyToSend-toUse;
+	}
+	
 	/**
 	 * @return rejects
 	 */
-	public synchronized double doEmit(double energyToSend, ArrayList<TileEntity> ignored)
+	public synchronized double doEmit(double energyToSend)
 	{
 		double energyAvailable = energyToSend;		
 		double sent;
@@ -175,7 +151,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 			for(Object obj : availableAcceptors)
 			{
-				if(obj instanceof TileEntity && !ignored.contains(obj))
+				if(obj instanceof TileEntity)
 				{
 					TileEntity acceptor = (TileEntity)obj;
 					double currentSending = sending+remaining;
@@ -307,12 +283,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					if((handler.getPowerReceiver(side.getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
-						TileEntityUniversalCable cable = (TileEntityUniversalCable)Object3D.get(acceptor).getFromSide(side.getOpposite()).getTileEntity(acceptor.worldObj);
-						
-						if(cable != null && !cable.getBuildCraftIgnored().contains(acceptor))
-						{
-							toReturn.add(acceptor);
-						}
+						toReturn.add(acceptor);
 					}
 				}
 			}
@@ -404,7 +375,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			if(currentPowerScale != lastPowerScale)
+			if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
 			{
 				needsUpdate = true;
 			}
@@ -416,12 +387,17 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
 				needsUpdate = false;
 			}
+			
+			if(electricityStored > 0)
+			{
+				electricityStored -= (electricityStored - tickEmit(electricityStored));
+			}
 		}
 	}
 	
 	public double getPowerScale()
 	{
-		return joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1);
+		return Math.max(joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), electricityStored/getCapacity());
 	}
 	
 	public void clearJoulesTransmitted()
@@ -482,12 +458,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getNeeded()
 	{
-		return MekanismUtils.getEnergyDisplay(getEnergyNeeded(new ArrayList<TileEntity>()));
+		return MekanismUtils.getEnergyDisplay(getEnergyNeeded());
 	}
 
 	@Override
 	public String getFlow()
 	{
-		return MekanismUtils.getEnergyDisplay(getPower());
+		return MekanismUtils.getEnergyDisplay(electricityStored);
 	}
 }

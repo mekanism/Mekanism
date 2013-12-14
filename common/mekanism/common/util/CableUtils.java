@@ -6,7 +6,6 @@ import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 import mekanism.api.Object3D;
@@ -231,10 +230,7 @@ public final class CableUtils
     	{
     		ITransmitter<EnergyNetwork> cable = (ITransmitter<EnergyNetwork>)pointer;
     		
-    		ArrayList<TileEntity> ignored = new ArrayList<TileEntity>();
-    		ignored.add(sender);
-    		
-    		return cable.getTransmitterNetwork().emit(amount, ignored);
+    		return cable.getTransmitterNetwork().emit(amount);
     	}
     	
     	return amount;
