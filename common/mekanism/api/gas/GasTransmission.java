@@ -1,8 +1,5 @@
 package mekanism.api.gas;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -97,7 +94,7 @@ public final class GasTransmission
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{
-	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack, sender);
+	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack);
     	}
     	
     	return 0;

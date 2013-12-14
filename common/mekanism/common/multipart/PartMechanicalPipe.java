@@ -1,6 +1,5 @@
 package mekanism.common.multipart;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -10,10 +9,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
-import mekanism.common.PacketHandler;
 import mekanism.common.PipeUtils;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketTileEntity;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -96,7 +92,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	{
 		if(!isActive)
 		{
-			return getTransmitterNetwork().emit(resource, doFill, Object3D.get(tile()).getFromSide(from).getTileEntity(world()));
+			return getTransmitterNetwork().emit(resource, doFill);
 		}
 		
 		return 0;
@@ -151,7 +147,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true, Object3D.get(tile()).getFromSide(side).getTileEntity(world())), true);
+							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
 						}
 					}
 				}

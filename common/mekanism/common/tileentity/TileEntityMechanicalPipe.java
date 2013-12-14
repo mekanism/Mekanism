@@ -150,7 +150,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 						
 						if(received != null && received.amount != 0)
 						{
-							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true, (TileEntity)container), true);
+							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
 						}
 					}
 				}
@@ -216,7 +216,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		if(!isActive)
 		{
-			return getTransmitterNetwork().emit(resource, doFill, Object3D.get(this).getFromSide(from).getTileEntity(worldObj));
+			return getTransmitterNetwork().emit(resource, doFill);
 		}
 		
 		return 0;
