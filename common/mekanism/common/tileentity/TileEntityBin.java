@@ -228,7 +228,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			nbtTags.setCompoundTag("topStack", topStack.writeToNBT(new NBTTagCompound()));
 		}
 		
-		if(cacheCount > 0)
+		if(getItemCount() > 0)
 		{
 			nbtTags.setCompoundTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
 		}
@@ -370,6 +370,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		
 		if(!worldObj.isRemote)
 		{
+			MekanismUtils.saveChunk(this);
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 			prevCount = getItemCount();
 			sortStacks();
