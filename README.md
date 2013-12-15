@@ -29,7 +29,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 **Lead Developer:** aidancbrady
 
-**Co-developers:** unpairedbracket, Calclavia
+**Co-developer:** unpairedbracket
+
+**Artwork:** Cheapshot, Archadia
 
 **Contributors:** micdoodle
 
