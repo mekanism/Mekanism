@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.util;
 
 import java.util.Arrays;
 
