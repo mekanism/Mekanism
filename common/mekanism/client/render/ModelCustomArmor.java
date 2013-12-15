@@ -1,6 +1,8 @@
 package mekanism.client.render;
 
+import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
+import mekanism.client.model.ModelScubaTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -112,11 +114,11 @@ public class ModelCustomArmor extends ModelBiped
 					}
 					else if(biped.modelType == ArmorModel.SCUBATANK)
 					{
-						
+						ArmorModel.scubaTankModel.render(0.0625F);
 					}
 					else if(biped.modelType == ArmorModel.GASMASK)
 					{
-						
+						ArmorModel.gasMaskModel.render(0.0625F);
 					}
 				}
 				
@@ -149,13 +151,15 @@ public class ModelCustomArmor extends ModelBiped
 	public static enum ArmorModel 
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
-		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaTank.png")),
-		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "GasMask.png"));
+		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
+		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 
 		public int armorSlot;
 		public ResourceLocation resource;
 		
 		public static ModelJetpack jetpackModel = new ModelJetpack();
+		public static ModelGasMask gasMaskModel = new ModelGasMask();
+		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
 
 		private ArmorModel(int i, ResourceLocation r)
 		{

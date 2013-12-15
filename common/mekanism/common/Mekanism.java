@@ -610,7 +610,8 @@ public class Mekanism
 		configuration.load();
 		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
 		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", 11201).getInt()).setUnlocalizedName("Dictionary");
-		//OPEN 11202-11203
+		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", 11202).getInt()).setUnlocalizedName("GasMask");
+		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", 11203).getInt()).setUnlocalizedName("ScubaTank");
 		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
 		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
 		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
@@ -660,6 +661,8 @@ public class Mekanism
 		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 		GameRegistry.registerItem(Jetpack, "Jetpack");
 		GameRegistry.registerItem(Dictionary, "Dictionary");
+		GameRegistry.registerItem(GasMask, "GasMask");
+		GameRegistry.registerItem(ScubaTank, "ScubaTank");
 	}
 	
 	/**

@@ -20,15 +20,16 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData;
+import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
+import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
@@ -264,6 +265,24 @@ public class ClientTickHandler implements ITickHandler
 						lastTickUpdate = false;
 					}
 				}
+				else if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemScubaTank)
+				{
+					ItemStack scubaTank = mc.thePlayer.getCurrentItemOrArmor(3);
+					
+					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					{
+						if(!lastTickUpdate)
+						{
+							((ItemScubaTank)scubaTank.getItem()).toggleFlowing(scubaTank);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(ScubaTankPacket.MODE));
+							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
+							lastTickUpdate = true;
+						}
+					}
+					else {
+						lastTickUpdate = false;
+					}
+				}
 				else {
 					lastTickUpdate = false;
 				}
@@ -286,13 +305,14 @@ public class ClientTickHandler implements ITickHandler
 			{
 				if(isGasMaskOn(mc.thePlayer) && mc.currentScreen == null)
 				{
+					System.out.println("on");
 					Mekanism.gasmaskOn.add(mc.thePlayer.username);
 				}
 				else {
 					Mekanism.gasmaskOn.remove(mc.thePlayer.username);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(JetpackPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
 			}
 			
 			if(MekanismClient.audioHandler != null)
