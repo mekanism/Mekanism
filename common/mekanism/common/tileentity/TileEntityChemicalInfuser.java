@@ -18,6 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -55,7 +55,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	
 	public TileEntityChemicalInfuser()
 	{
-		super("ChemicalInfuser", 0 /*TODO*/);
+		super("ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 	

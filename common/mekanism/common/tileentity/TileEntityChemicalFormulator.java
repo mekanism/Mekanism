@@ -16,6 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -52,7 +53,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 	
 	public TileEntityChemicalFormulator()
 	{
-		super("ChemicalFormulator", 0 /*TODO*/);
+		super("ChemicalFormulator", MachineType.CHEMICAL_FORMULATOR.baseEnergy);
 		inventory = new ItemStack[3];
 	}
 	

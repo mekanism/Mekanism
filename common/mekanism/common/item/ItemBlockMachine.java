@@ -28,6 +28,8 @@ import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.tileentity.TileEntityChemicalFormulator;
+import mekanism.common.tileentity.TileEntityChemicalInfuser;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityElectricChest;
@@ -313,6 +315,24 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     			}
     		}
     		
+    		if(tileEntity instanceof TileEntityChemicalFormulator)
+    		{
+    			if(stack.stackTagCompound != null)
+    			{
+    				((TileEntityChemicalFormulator)tileEntity).gasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasTank")));
+    			}
+    		}
+    		
+    		if(tileEntity instanceof TileEntityChemicalInfuser)
+    		{
+    			if(stack.stackTagCompound != null)
+    			{
+    				((TileEntityChemicalInfuser)tileEntity).leftTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("leftTank")));
+    				((TileEntityChemicalInfuser)tileEntity).rightTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("rightTank")));
+    				((TileEntityChemicalInfuser)tileEntity).centerTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("centerTank")));
+    			}
+    		}
+    		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     		
     		tileEntity.electricityStored = getEnergy(stack);
@@ -499,7 +519,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			MachineType type = MachineType.get((ItemStack)data[0]);
 			
 			if(type != MachineType.TELEPORTER && type != MachineType.ELECTRIC_PUMP && type != MachineType.ELECTRIC_CHEST && type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER &&
-					type != MachineType.ROTARY_CONDENSENTRATOR)
+					type != MachineType.ROTARY_CONDENSENTRATOR && type != MachineType.CHEMICAL_FORMULATOR && type != MachineType.CHEMICAL_INFUSER)
 			{
 				return true;
 			}

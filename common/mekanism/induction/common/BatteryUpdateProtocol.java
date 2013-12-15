@@ -267,7 +267,7 @@ public class BatteryUpdateProtocol
 
 			for(Object3D obj : structureFound.locations)
 			{
-				TileEntityBattery tileEntity = (TileEntityBattery) obj.getTileEntity(pointer.worldObj);
+				TileEntityBattery tileEntity = (TileEntityBattery)obj.getTileEntity(pointer.worldObj);
 
 				structureFound.inventory = ListUtils.merge(structureFound.inventory, tileEntity.structure.inventory);
 

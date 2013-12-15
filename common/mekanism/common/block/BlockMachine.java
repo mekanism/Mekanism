@@ -5,7 +5,6 @@ import java.util.Random;
 
 import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.gas.IGasItem;
 import mekanism.client.ClientProxy;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
@@ -30,6 +29,8 @@ import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityChargepad;
+import mekanism.common.tileentity.TileEntityChemicalFormulator;
+import mekanism.common.tileentity.TileEntityChemicalInfuser;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityCrusher;
@@ -533,6 +534,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
+			if(type == MachineType.CHEMICAL_FORMULATOR || type == MachineType.CHEMICAL_INFUSER /*TODO*/)
+			{
+				continue;
+			}
+			
 			if(type.typeId == blockID)
 			{
 				if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
@@ -802,11 +808,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		TileEntityDigitalMiner miner = (TileEntityDigitalMiner)tileEntity;
     		
-    		if(itemStack.stackTagCompound == null)
-    		{
-    			itemStack.setTagCompound(new NBTTagCompound());
-    		}
-    		
     		itemStack.stackTagCompound.setBoolean("hasMinerConfig", true);
     		
             itemStack.stackTagCompound.setInteger("radius", miner.radius);
@@ -838,11 +839,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	{
     		TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
     		
-    		if(itemStack.stackTagCompound == null)
-    		{
-    			itemStack.setTagCompound(new NBTTagCompound());
-    		}
-    		
     		itemStack.stackTagCompound.setBoolean("hasSorterConfig", true);
             
             if(sorter.color != null)
@@ -870,11 +866,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	
     	if(tileEntity instanceof IRedstoneControl)
     	{
-    		if(itemStack.stackTagCompound == null)
-    		{
-    			itemStack.setTagCompound(new NBTTagCompound());
-    		}
-    		
     		IRedstoneControl control = (IRedstoneControl)tileEntity;
     		itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
     	}
@@ -923,6 +914,36 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	if(condensentrator.gasTank.getGas() != null)
         	{
         		itemStack.stackTagCompound.setCompoundTag("gasStack", condensentrator.gasTank.getGas().write(new NBTTagCompound()));
+        	}
+        }
+        
+        if(tileEntity instanceof TileEntityChemicalFormulator)
+        {
+        	TileEntityChemicalFormulator formulator = (TileEntityChemicalFormulator)tileEntity;
+        	
+        	if(formulator.gasTank.getGas() != null)
+        	{
+        		itemStack.stackTagCompound.setCompoundTag("gasTank", formulator.gasTank.getGas().write(new NBTTagCompound()));
+        	}
+        }
+        
+        if(tileEntity instanceof TileEntityChemicalInfuser)
+        {
+        	TileEntityChemicalInfuser infuser = (TileEntityChemicalInfuser)tileEntity;
+        	
+        	if(infuser.leftTank != null)
+        	{
+        		itemStack.stackTagCompound.setCompoundTag("leftTank", infuser.leftTank.getGas().write(new NBTTagCompound()));
+        	}
+        	
+        	if(infuser.rightTank != null)
+        	{
+        		itemStack.stackTagCompound.setCompoundTag("rightTank", infuser.rightTank.getGas().write(new NBTTagCompound()));
+        	}
+        	
+        	if(infuser.centerTank != null)
+        	{
+        		itemStack.stackTagCompound.setCompoundTag("leftTank", infuser.centerTank.getGas().write(new NBTTagCompound()));
         	}
         }
         
@@ -1017,7 +1038,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		ELECTRIC_CHEST(Mekanism.machineBlockID, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
 		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true),
 		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true),
-		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true);
+		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true),
+		CHEMICAL_FORMULATOR(Mekanism.machineBlock2ID, 1, "ChemicalFormulator", 29, 20000, TileEntityChemicalFormulator.class, true),
+		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true);
 		
 		public int typeId;
 		public int meta;
