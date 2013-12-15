@@ -112,7 +112,6 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
-import thermalexpansion.api.crafting.CraftingManagers;
 import universalelectricity.compatibility.Compatibility;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -767,24 +766,6 @@ public class Mekanism
 	 */
 	public void addIntegratedItems()
 	{
-		try {
-			CraftingManagers.pulverizerManager.addRecipe(400, new ItemStack(OreBlock, 1, 0), new ItemStack(Dust, 2, 2), false);
-			
-			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.Dust, 1, 2), false);
-			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 0), new ItemStack(Mekanism.Dust, 1, 3), false);
-			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 3), new ItemStack(Item.glowstone), false);
-			CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Mekanism.Ingot, 1, 4), new ItemStack(Mekanism.Dust, 1, 5), false);
-			
-			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 0), new ItemStack(DirtyDust, 1, 0), false);
-			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 1), new ItemStack(DirtyDust, 1, 1), false);
-			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 2), new ItemStack(DirtyDust, 1, 2), false);
-			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 3), new ItemStack(DirtyDust, 1, 3), false);
-			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 4), new ItemStack(DirtyDust, 1, 4), false);
-			CraftingManagers.pulverizerManager.addRecipe(80, new ItemStack(Clump, 1, 5), new ItemStack(DirtyDust, 1, 5), false);
-			
-			System.out.println("[Mekanism] Hooked into Thermal Expansion successfully.");
-		} catch(Exception e) {}
-		
 		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
 		{
 			OreDictionary.registerOre("circuitBasic", new ItemStack(ControlCircuit));
@@ -962,10 +943,6 @@ public class Mekanism
 			if(hooks.IC2Loaded)
 			{
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
-			}
-			if(hooks.TELoaded)
-			{
-				CraftingManagers.pulverizerManager.addRecipe(40, new ItemStack(Ingot, 1, 2), MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1), false);
 			}
 		} catch(Exception e) {}
 		
