@@ -173,7 +173,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			
 			if(gasStored != null)
 			{
-				gasStored.amount -= (gasStored.amount - tickEmit(gasStored));
+				gasStored.amount -= tickEmit(gasStored);
 				
 				if(gasStored.amount <= 0)
 				{

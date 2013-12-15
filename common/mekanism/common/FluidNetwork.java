@@ -179,7 +179,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			
 			if(fluidStored != null)
 			{
-				fluidStored.amount -= (fluidStored.amount - tickEmit(fluidStored, true));
+				fluidStored.amount -= tickEmit(fluidStored, true);
 				
 				if(fluidStored.amount <= 0)
 				{
