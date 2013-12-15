@@ -32,6 +32,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -144,6 +145,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					
 					for(Object3D obj : oresToMine)
 					{
+						if(!obj.exists(worldObj))
+						{
+							continue;
+						}
+						
 						int id = obj.getBlockId(worldObj);
 						int meta = obj.getMetadata(worldObj);
 						
@@ -255,12 +261,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 	
 	public void setReplace(Object3D obj)
-	{		
+	{
 		ItemStack stack = getReplace();
 		
 		if(stack != null)
 		{
 			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, replaceStack.itemID, replaceStack.getItemDamage(), 3);
+			
+			if(Block.blocksList[obj.getBlockId(worldObj)] != null && !Block.blocksList[obj.getBlockId(worldObj)].canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
+			{
+				Block.blocksList[obj.getBlockId(worldObj)].dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
+				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+			}
 		}
 		else {
 			worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
