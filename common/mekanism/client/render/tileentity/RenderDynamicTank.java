@@ -139,15 +139,19 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		{
 			displays[i] = DisplayInteger.createAndStart();
 			
-			toReturn.minX = 0 + .01;
-			toReturn.minY = 0 + .01;
-			toReturn.minZ = 0 + .01;
+			if(fluid.getIcon() != null)
+			{
+				toReturn.minX = 0 + .01;
+				toReturn.minY = 0 + .01;
+				toReturn.minZ = 0 + .01;
+				
+				toReturn.maxX = data.length - .01;
+				toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
+				toReturn.maxZ = data.width - .01;
+				
+				MekanismRenderer.renderObject(toReturn);
+			}
 			
-			toReturn.maxX = data.length - .01;
-			toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
-			toReturn.maxZ = data.width - .01;
-			
-			MekanismRenderer.renderObject(toReturn);
 			GL11.glEndList();
 		}
 		
