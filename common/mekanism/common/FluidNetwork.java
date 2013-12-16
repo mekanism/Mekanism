@@ -303,7 +303,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	
 	public float getScale()
 	{
-		return (fluidStored != null ? fluidStored.amount : 0)/getCapacity();
+		return (fluidStored == null || getCapacity() == 0 ? 0 : fluidStored.amount/getCapacity());
 	}
 		
 	@Override

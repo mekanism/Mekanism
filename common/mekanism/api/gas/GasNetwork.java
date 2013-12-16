@@ -295,7 +295,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	
 	public float getScale()
 	{
-		return (gasStored != null ? gasStored.amount : 0)/getCapacity();
+		return (gasStored == null || getCapacity() == 0 ? 0 : gasStored.amount/getCapacity());
 	}
 	
 	@Override
