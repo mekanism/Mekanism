@@ -11,6 +11,7 @@ import mekanism.common.FluidNetwork;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -28,7 +29,59 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 {
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
+	
     public static PartTransmitterIcons pipeIcons;
+    
+    public FluidStack cacheFluid;
+    
+    @Override
+    public void load(NBTTagCompound nbtTags)
+    {
+    	super.load(nbtTags);
+    	
+    	if(nbtTags.hasKey("cacheFluid"))
+    	{
+    		cacheFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheEnergy"));
+    	}
+    }
+    
+    @Override
+    public void save(NBTTagCompound nbtTags)
+    {
+    	super.save(nbtTags);
+    	
+    	if(getTransmitterNetwork().fluidStored != null)
+    	{
+	    	int remains = getTransmitterNetwork().fluidStored.amount%(int)getTransmitterNetwork().getMeanCapacity();
+	    	int toSave = (getTransmitterNetwork().fluidStored.amount-remains)/(int)getTransmitterNetwork().getMeanCapacity();
+	    	toSave += remains;
+	    	
+	    	FluidStack stack = new FluidStack(getTransmitterNetwork().fluidStored.getFluid(), toSave);
+	    	
+	    	getTransmitterNetwork().fluidStored.amount -= toSave;
+	    	nbtTags.setCompoundTag("cacheEnergy", stack.writeToNBT(new NBTTagCompound()));
+    	}
+    }
+    
+    @Override
+    public boolean isConnectable(TileEntity tileEntity)
+    {
+    	if(tileEntity instanceof ITransmitter && TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
+    	{
+    		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
+    		
+    		if(getTransmitterNetwork().fluidStored == null || transmitter.getTransmitterNetwork().fluidStored == null)
+    		{
+    			return true;
+    		}
+    		else if(getTransmitterNetwork().fluidStored.getFluid() == transmitter.getTransmitterNetwork().fluidStored.getFluid())
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
 
 	@Override
 	public String getType()
@@ -132,6 +185,22 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	{
 		if(!world().isRemote)
 		{
+			if(!world().isRemote)
+	    	{
+	    		if(cacheFluid != null)
+	    		{
+		    		if(getTransmitterNetwork().fluidStored == null)
+		    		{
+		    			getTransmitterNetwork().fluidStored = cacheFluid;
+		    		}
+		    		else {
+		    			getTransmitterNetwork().fluidStored.amount += cacheFluid.amount;
+		    		}
+		    		
+		    		cacheFluid = null;
+	    		}
+	    	}
+			
 			if(isActive)
 			{
 				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());

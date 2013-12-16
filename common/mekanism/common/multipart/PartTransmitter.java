@@ -165,7 +165,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 			{
 				TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
 				
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()) && isConnectable(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -173,6 +173,11 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		}
 		
 		return connections;
+	}
+	
+	public boolean isConnectable(TileEntity tileEntity)
+	{
+		return true;
 	}
 	
 	public byte getPossibleAcceptorConnections()
@@ -222,7 +227,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 				{
 					TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
 					
-					if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
+					if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()) && isConnectable(tileEntity))
 					{
 						((DynamicNetwork<?,N>)getTransmitterNetwork()).merge(((ITransmitter<N>)tileEntity).getTransmitterNetwork());
 					}

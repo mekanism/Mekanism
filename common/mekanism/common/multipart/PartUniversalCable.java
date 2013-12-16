@@ -16,6 +16,7 @@ import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.CableUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -32,6 +33,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     public static PartTransmitterIcons cableIcons;
     
     public double currentPower = 0;
+    
+    public double cacheEnergy = 0;
 
     @Override
     public void update()
@@ -45,8 +48,35 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
                 currentPower = (9*currentPower + targetPower)/10;
             }
         }
+        else {
+        	if(cacheEnergy > 0)
+        	{
+        		getTransmitterNetwork().electricityStored += cacheEnergy;
+        	}
+        }
         
         super.update();
+    }
+    
+    @Override
+    public void load(NBTTagCompound nbtTags)
+    {
+    	super.load(nbtTags);
+    	
+    	cacheEnergy = nbtTags.getDouble("cacheEnergy");
+    }
+    
+    @Override
+    public void save(NBTTagCompound nbtTags)
+    {
+    	super.save(nbtTags);
+    	
+    	double remains = getTransmitterNetwork().electricityStored%getTransmitterNetwork().getMeanCapacity();
+    	double toSave = (getTransmitterNetwork().electricityStored-remains)/getTransmitterNetwork().getMeanCapacity();
+    	toSave += remains;
+    	
+    	getTransmitterNetwork().electricityStored -= toSave;
+    	nbtTags.setDouble("cacheEnergy", toSave);
     }
 
 	@Override
