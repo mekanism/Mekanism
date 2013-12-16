@@ -1,7 +1,6 @@
 package mekanism.api.transmitters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -188,45 +187,61 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
+			List<NetworkFinder> newNetworks = new ArrayList<NetworkFinder>();
 			
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				TileEntity sideTile = Object3D.get((TileEntity)splitPoint).getFromSide(direction).getTileEntity(((TileEntity)splitPoint).worldObj);
+				TileEntity sideTile = Object3D.get((TileEntity)splitPoint).getFromSide(side).getTileEntity(((TileEntity)splitPoint).worldObj);
 				
 				if(sideTile != null)
 				{
-					connectedBlocks[Arrays.asList(ForgeDirection.values()).indexOf(direction)] = sideTile;
+					connectedBlocks[side.ordinal()] = sideTile;
 				}
 			}
 
-			for(int countOne = 0; countOne < connectedBlocks.length; countOne++)
+			for(int count = 0; count < connectedBlocks.length; count++)
 			{
-				TileEntity connectedBlockA = connectedBlocks[countOne];
+				TileEntity connectedBlockA = connectedBlocks[count];
 
-				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && !dealtWith[countOne])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && !dealtWith[count])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
 					
-					for(int countTwo = countOne + 1; countTwo < connectedBlocks.length; countTwo++)
+					for(int check = count; check < connectedBlocks.length; check++)
 					{
-						TileEntity connectedBlockB = connectedBlocks[countTwo];
+						if(check == count)
+						{
+							continue;
+						}
 						
-						if(TransmissionType.checkTransmissionType(connectedBlockB, getTransmissionType()) && !dealtWith[countTwo])
+						TileEntity connectedBlockB = connectedBlocks[check];
+						
+						if(TransmissionType.checkTransmissionType(connectedBlockB, getTransmissionType()) && !dealtWith[check])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
-								dealtWith[countTwo] = true;
+								dealtWith[check] = true;
 							}
 						}
 					}
 					
+					newNetworks.add(finder);
+				}
+			}
+			
+			if(newNetworks.size() > 0)
+			{
+				Object[] metaArray = getMetaArray(newNetworks);
+				
+				for(NetworkFinder finder : newNetworks)
+				{
 					Set<ITransmitter<N>> newNetCables = new HashSet<ITransmitter<N>>();
 					
 					for(Object3D node : finder.iterated)
 					{
 						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
-
+	
 						if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType()))
 						{
 							if(nodeTile != splitPoint)
@@ -237,6 +252,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					}
 					
 					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);
+					newNetwork.onNewFromSplit(newNetworks.indexOf(finder), metaArray);
 					newNetwork.refresh();
 				}
 			}
@@ -244,6 +260,15 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			deregister();
 		}
 	}
+	
+	@Override
+	public Object[] getMetaArray(List<NetworkFinder> networks)
+	{
+		return null;
+	}
+	
+	@Override
+	public void onNewFromSplit(int netIndex, Object[] metaArray) {}
 	
 	@Override
 	public void setFixed(boolean value)

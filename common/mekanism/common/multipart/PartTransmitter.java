@@ -102,13 +102,16 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		
 		if(possibleTransmitters != currentTransmitterConnections)
 		{
-			byte or = (byte)(possibleTransmitters | currentTransmitterConnections);
+			//TODO @unpairedbracket, I don't think this is necessary; I couldn't tell a difference without it,
+			//and it results in many extra possible recursive calls on the network
+			
+			/*byte or = (byte)(possibleTransmitters | currentTransmitterConnections);
 			
 			if(or != possibleTransmitters)
 			{
 				((DynamicNetwork<?, N>)getTransmitterNetwork()).split((ITransmitter<N>)tile());
 				setTransmitterNetwork(null);
-			}
+			}*/
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -201,7 +204,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	{
 		if(theNetwork != null)
 		{
-			theNetwork.removeTransmitter((ITransmitter<N>) tile());
+			theNetwork.removeTransmitter((ITransmitter<N>)tile());
 		}
 	}
 
@@ -253,9 +256,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		super.preRemove();
 	}
-
-	@Override
-	public void chunkLoad() {}
 	
 	@Override
 	public void onAdded()
