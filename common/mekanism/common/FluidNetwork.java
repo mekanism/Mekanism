@@ -359,6 +359,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getFlow()
 	{
-		return fluidStored + " mB";
+		return fluidStored == null ? "None" : fluidStored.getFluid().getLocalizedName() + ", " + fluidStored.amount + "mB/tick";
 	}
 }
