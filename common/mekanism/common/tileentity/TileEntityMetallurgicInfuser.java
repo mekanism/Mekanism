@@ -11,21 +11,22 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.IEjector;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.SideData;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -84,7 +85,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		super("MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {2}));

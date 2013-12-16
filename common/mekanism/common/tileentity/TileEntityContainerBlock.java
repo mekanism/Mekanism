@@ -1,6 +1,7 @@
 package mekanism.common.tileentity;
 
 import mekanism.common.ISustainedInventory;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -183,7 +184,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) 
 	{
-		return new int[0];
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override

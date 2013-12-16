@@ -12,6 +12,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.client.ClientTickHandler;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
@@ -462,6 +463,11 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 		{
 			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 		}
+		else {
+			try {
+				ClientTickHandler.killDeadNetworks();
+			} catch(Exception e) {}
+		}
 	}
 	
 	@Override
@@ -521,6 +527,11 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends TM
 			if(!world().isRemote)
 			{
 				TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+			}
+			else {
+				try {
+					ClientTickHandler.killDeadNetworks();
+				} catch(Exception e) {}
 			}
 		}
 

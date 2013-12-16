@@ -29,6 +29,7 @@ import mekanism.common.TileComponentUpgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -96,7 +97,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	{
 		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {4}));
