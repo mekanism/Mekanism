@@ -139,6 +139,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 			
 			tileEntity.inventory[slotID] = stack;
+			tileEntity.onInventoryChanged();
 		}
 		
 		tickDelay = 20;

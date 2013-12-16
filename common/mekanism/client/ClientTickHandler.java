@@ -397,6 +397,17 @@ public class ClientTickHandler implements ITickHandler
 		}
 	}
 	
+	public static void killDeadNetworks()
+	{
+		for(Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext();)
+		{
+			if(!iter.next().needsTicks())
+			{
+				iter.remove();
+			}
+		}
+	}
+	
 	public static boolean isJetpackOn(EntityPlayer player)
 	{
 		if(player != mc.thePlayer)

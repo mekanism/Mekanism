@@ -14,6 +14,7 @@ import mekanism.api.Object3D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.IAdvancedBoundingBlock;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -160,7 +161,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return new int[0];
+			return InventoryUtils.EMPTY;
 		}
 		
 		return getInv().getBoundSlots(Object3D.get(this), slotID);

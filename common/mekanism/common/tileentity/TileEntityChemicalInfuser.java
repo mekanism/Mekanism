@@ -21,6 +21,7 @@ import mekanism.common.RecipeHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -463,6 +464,6 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			return new int[3];
 		}
 		
-		return new int[0];
+		return InventoryUtils.EMPTY;
 	}
 }

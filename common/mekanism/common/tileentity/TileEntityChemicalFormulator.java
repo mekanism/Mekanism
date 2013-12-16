@@ -19,6 +19,7 @@ import mekanism.common.RecipeHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -107,6 +108,15 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 					
 					gasTank.receive(stack, true);
 					operatingTicks = 0;
+					
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize <= 0)
+					{
+						inventory[0] = null;
+					}
+					
+					onInventoryChanged();
 				}
 			}
 			else {
@@ -178,7 +188,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 			return new int[] {2};
 		}
 		
-		return new int[0];
+		return InventoryUtils.EMPTY;
 	}
 	
 	public int getScaledProgress(int i)

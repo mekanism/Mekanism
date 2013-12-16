@@ -778,6 +778,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
     	
+    	if(itemStack.stackTagCompound == null)
+    	{
+    		itemStack.setTagCompound(new NBTTagCompound());
+    	}
+    	
     	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
     	{
 	        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
@@ -788,11 +793,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	if(tileEntity instanceof IInvConfiguration)
     	{
     		IInvConfiguration config = (IInvConfiguration)tileEntity;
-    		
-    		if(itemStack.stackTagCompound == null)
-    		{
-    			itemStack.setTagCompound(new NBTTagCompound());
-    		}
     		
     		itemStack.stackTagCompound.setBoolean("hasSideData", true);
     		
