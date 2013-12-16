@@ -102,10 +102,11 @@ public class ClientTickHandler implements ITickHandler
 			{
 				IClientTicker ticker = iter.next();
 				
-				ticker.clientTick();
-				
-				if(!ticker.needsTicks())
+				if(ticker.needsTicks())
 				{
+					ticker.clientTick();
+				}
+				else {
 					iter.remove();
 				}
 			}
