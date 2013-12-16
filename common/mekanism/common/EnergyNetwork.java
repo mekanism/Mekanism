@@ -405,7 +405,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public double getPowerScale()
 	{
-		return Math.max(joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), electricityStored/getCapacity());
+		return Math.max(joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), getCapacity() == 0 ? 0 : electricityStored/getCapacity());
 	}
 	
 	public void clearJoulesTransmitted()

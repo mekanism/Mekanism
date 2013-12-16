@@ -113,7 +113,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
      */
     public double getMeanCapacity()
     {
-        return transmitters.iterator().next().getCapacity();
+		return transmitters.size() > 0 ? transmitters.iterator().next().getCapacity() : 0;
     }
 	
 	@Override
