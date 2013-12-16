@@ -6,10 +6,7 @@ import java.util.Map;
 import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartPressurizedTube;
-import mekanism.common.multipart.PartTransmitter;
-import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.multipart.*;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -335,7 +332,7 @@ public class RenderPartTransmitter implements IIconRegister
 		GL11.glPopMatrix();
 	}
 	
-	public void renderStatic(PartTransmitter<?> transmitter)
+	public void renderStatic(PartSidedPipe transmitter)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
@@ -348,7 +345,7 @@ public class RenderPartTransmitter implements IIconRegister
 		}
 	}
 	
-	public void renderSide(ForgeDirection side, PartTransmitter<?> transmitter)
+	public void renderSide(ForgeDirection side, PartSidedPipe transmitter)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		String name = side.name().toLowerCase();
@@ -396,9 +393,10 @@ public class RenderPartTransmitter implements IIconRegister
 	@Override
 	public void registerIcons(IconRegister register)
 	{
-        PartUniversalCable.registerIcons(register);
-        PartMechanicalPipe.registerIcons(register);
-        PartPressurizedTube.registerIcons(register);
+		PartUniversalCable.registerIcons(register);
+		PartMechanicalPipe.registerIcons(register);
+		PartPressurizedTube.registerIcons(register);
+		PartLogisticalTransporter.registerIcons(register);
 	}
 
 	@Override

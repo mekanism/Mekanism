@@ -37,8 +37,8 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 			return new PartMechanicalPipe();
 		if(name == "mekanism:pressurized_tube")
 			return new PartPressurizedTube();
-//		if(name == "mekanism:logistical_transporter")
-//			return new PartLogisticalTransporter();
+		if(name == "mekanism:logistical_transporter")
+			return new PartLogisticalTransporter();
 		return null;
 	}
 	
