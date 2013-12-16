@@ -370,12 +370,12 @@ public class ItemRenderingHandler implements IItemRenderer
 	    	{
 		    	transmitterSmall.renderSide(ForgeDirection.UP, true);
 		    	transmitterSmall.renderSide(ForgeDirection.DOWN, true);
-		    	transmitterSmall.renderCenter(new boolean[]{true, true, false, false, false, false});
+		    	transmitterSmall.renderCenter(new boolean[] {true, true, false, false, false, false});
 	    	}
 	    	else {
 		    	transmitterLarge.renderSide(ForgeDirection.UP, true);
 		    	transmitterLarge.renderSide(ForgeDirection.DOWN, true);
-		    	transmitterLarge.renderCenter(new boolean[]{true, true, false, false, false, false});
+		    	transmitterLarge.renderCenter(new boolean[] {true, true, false, false, false, false});
 	    	}
 	    	
 	    	GL11.glEnable(GL11.GL_CULL_FACE);
