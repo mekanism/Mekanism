@@ -169,4 +169,21 @@ public class ListUtils
 	{
 		return (List<V>)Arrays.asList(values);
 	}
+	
+	public static double[] splitNum(int size, double num)
+	{
+		double[] split = new double[size];
+		
+		for(int i = 0; i < size; i++)
+		{
+			double remain = num%size;
+			double ret = (num-remain)/size;
+			ret += remain;
+			
+			split[i] = ret;
+			num -= remain;
+		}
+		
+		return split;
+	}
 }
