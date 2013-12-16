@@ -253,6 +253,9 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		super.preRemove();
 	}
+
+	@Override
+	public void chunkLoad() {}
 	
 	@Override
 	public void onAdded()
