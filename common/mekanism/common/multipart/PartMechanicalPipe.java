@@ -70,6 +70,10 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     	{
     		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
     		
+    		if(getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false) == null)
+			{
+				return true;
+			}
     		if(getTransmitterNetwork().fluidStored == null || transmitter.getTransmitterNetwork().fluidStored == null)
     		{
     			return true;
