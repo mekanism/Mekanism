@@ -2,6 +2,7 @@ package mekanism.common;
 
 import ic2.api.energy.tile.IEnergySink;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +54,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		register();
 	}
 	
+	public static double round(double d)
+	{
+		return Math.round(d * 100)/100;
+	}
+	
 	public EnergyNetwork(Set<EnergyNetwork> networks)
 	{
 		for(EnergyNetwork net : networks)
@@ -67,6 +73,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					lastPowerScale = net.lastPowerScale;
 				}
 				
+				System.out.println("ADDING " + net.electricityStored);
 				electricityStored += net.electricityStored;
 				
 				addAllTransmitters(net.transmitters);
@@ -96,22 +103,31 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
     @Override
     public void onNetworksCreated(List<EnergyNetwork> networks)
     {
-    	double[] caps = new double[networks.size()];
-    	double cap = 0;
-    	
-    	for(EnergyNetwork network : networks)
+    	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
     	{
-    		caps[networks.indexOf(network)] = network.getCapacity();
-    		cap += network.getCapacity();
-    	}
-    	
-    	electricityStored = Math.min(cap, electricityStored);
-    	
-    	double[] percent = ListUtils.percent(caps);
-    	
-    	for(EnergyNetwork network : networks)
-    	{
-    		network.electricityStored = percent[networks.indexOf(network)]*electricityStored;
+	    	System.out.println("--start--");
+	    	double[] caps = new double[networks.size()];
+	    	double cap = 0;
+	    	
+	    	for(EnergyNetwork network : networks)
+	    	{
+	    		caps[networks.indexOf(network)] = network.getCapacity();
+	    		cap += network.getCapacity();
+	    	}
+	    	
+	    	System.out.println("capping at: " + cap);
+	    	electricityStored = Math.min(cap, electricityStored);
+	    	
+	    	double[] percent = ListUtils.percent(caps);
+	    	
+	    	for(EnergyNetwork network : networks)
+	    	{
+	    		System.out.println(electricityStored + " " + percent[networks.indexOf(network)]);
+	    		System.out.println("Setting to " + percent[networks.indexOf(network)]*electricityStored);
+	    		network.electricityStored = percent[networks.indexOf(network)]*electricityStored;
+	    	}
+	    	
+	    	System.out.println("--end--");
     	}
     }
 	
@@ -425,7 +441,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			
 			if(electricityStored > 0)
 			{
-				electricityStored -= (electricityStored - tickEmit(electricityStored));
+				double emitted = electricityStored - tickEmit(electricityStored);
+				electricityStored -= emitted;
+				
+				if(emitted > 0)
+				{
+					System.out.println(emitted);
+				}
 			}
 		}
 	}
@@ -455,6 +477,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
+		System.out.println("VAR ADDING " + electricityStored);
 		return network;
 	}
 
@@ -467,6 +490,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
+		System.out.println("COLLECTION Adding " + electricityStored);
 		return network;
 	}
 

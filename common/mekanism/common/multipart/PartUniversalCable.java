@@ -35,6 +35,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     public double currentPower = 0;
     
     public double cacheEnergy = 0;
+    public double lastWrite = 0;
 
     @Override
     public void update()
@@ -51,6 +52,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         else {
         	if(cacheEnergy > 0)
         	{
+        		System.out.println("More cache " + cacheEnergy);
         		getTransmitterNetwork().electricityStored += cacheEnergy;
         		cacheEnergy = 0;
         	}
@@ -74,9 +76,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     	
     	double remains = getTransmitterNetwork().electricityStored%getTransmitterNetwork().getMeanCapacity();
     	double toSave = (getTransmitterNetwork().electricityStored-remains)/getTransmitterNetwork().getMeanCapacity();
-    	toSave += remains;
+    	toSave = EnergyNetwork.round(toSave + remains);
+    	System.out.println("SAVING " + toSave);
     	
-    	getTransmitterNetwork().electricityStored -= toSave;
+    	lastWrite = toSave;
     	nbtTags.setDouble("cacheEnergy", toSave);
     }
 
@@ -96,6 +99,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     @Override
     public void preSingleMerge(EnergyNetwork network)
     {
+    	System.out.println("Cache " + cacheEnergy);
     	network.electricityStored += cacheEnergy;
     	cacheEnergy = 0;
     }
@@ -193,6 +197,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		{			
 			Mekanism.ic2Registered.remove(Object3D.get(tile()));
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)tile()));
+			
+			getTransmitterNetwork().electricityStored -= lastWrite;
 		}
 	}
 
