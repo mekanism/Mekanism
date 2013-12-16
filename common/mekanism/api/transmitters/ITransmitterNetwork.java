@@ -43,14 +43,5 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	 * @param size - the amount of new networks that are being created
 	 * @return meta obj
 	 */
-	public Object[] getMetaArray(List<NetworkFinder> networks);
-	
-	/**
-	 * Called right after a new network is created after being split, before it is refreshed. Passes in it's index
-	 * in the amount of networks being created, as well as the meta value that was retrieved on the original network
-	 * by getMetaObj().
-	 * @param netIndex - the index of the network being created
-	 * @param meta - meta obj
-	 */
-	public void onNewFromSplit(int netIndex, Object[] metaArray);
+	public void onNetworksCreated(List<N> networks);
 }

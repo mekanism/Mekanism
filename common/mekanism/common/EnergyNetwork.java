@@ -15,6 +15,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -66,6 +67,8 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					lastPowerScale = net.lastPowerScale;
 				}
 				
+				electricityStored += net.electricityStored;
+				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
@@ -81,12 +84,36 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
         //Use the harmonic mean. Because we're mean.
         int numCables = transmitters.size();
         double reciprocalSum = 0;
+        
         for(ITransmitter<EnergyNetwork> cable : transmitters)
         {
             reciprocalSum += 1.0/(double)cable.getCapacity();
         }
+        
 		return (double)numCables / reciprocalSum;
 	}
+    
+    @Override
+    public void onNetworksCreated(List<EnergyNetwork> networks)
+    {
+    	double[] caps = new double[networks.size()];
+    	double cap = 0;
+    	
+    	for(EnergyNetwork network : networks)
+    	{
+    		caps[networks.indexOf(network)] = network.getCapacity();
+    		cap += network.getCapacity();
+    	}
+    	
+    	electricityStored = Math.min(cap, electricityStored);
+    	
+    	double[] percent = ListUtils.percent(caps);
+    	
+    	for(EnergyNetwork network : networks)
+    	{
+    		network.electricityStored = percent[networks.indexOf(network)]*electricityStored;
+    	}
+    }
 	
 	public synchronized double getEnergyNeeded()
 	{
@@ -427,6 +454,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesLastTick = joulesLastTick;
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
+		network.electricityStored += electricityStored;
 		return network;
 	}
 
@@ -438,23 +466,14 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesLastTick = joulesLastTick;
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
+		network.electricityStored += electricityStored;
 		return network;
 	}
 
 	@Override
 	protected EnergyNetwork create(Set<EnergyNetwork> networks) 
 	{
-		EnergyNetwork network = new EnergyNetwork(networks);
-		
-		if(joulesLastTick > network.joulesLastTick || clientEnergyScale > network.clientEnergyScale)
-		{
-			network.clientEnergyScale = clientEnergyScale;
-			network.joulesLastTick = joulesLastTick;
-			network.joulesTransmitted = joulesTransmitted;
-			network.lastPowerScale = lastPowerScale;
-		}
-		
-		return network;
+		return new EnergyNetwork(networks);
 	}
 	
 	@Override
@@ -472,6 +491,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getFlow()
 	{
-		return MekanismUtils.getPowerDisplay(20*electricityStored);
+		return "" + electricityStored;
+	//TODO	return MekanismUtils.getPowerDisplay(20*electricityStored);
 	}
 }

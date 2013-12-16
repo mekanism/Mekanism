@@ -120,7 +120,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		if(!fixed)
 		{
-			++ticksSinceCreate;
+			ticksSinceCreate++;
 			
 			if(ticksSinceCreate > 1200)
 			{
@@ -187,7 +187,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			
 			TileEntity[] connectedBlocks = new TileEntity[6];
 			boolean[] dealtWith = {false, false, false, false, false, false};
-			List<NetworkFinder> newNetworks = new ArrayList<NetworkFinder>();
+			List<ITransmitterNetwork<A, N>> newNetworks = new ArrayList<ITransmitterNetwork<A, N>>();
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -226,16 +226,6 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						}
 					}
 					
-					newNetworks.add(finder);
-				}
-			}
-			
-			if(newNetworks.size() > 0)
-			{
-				Object[] metaArray = getMetaArray(newNetworks);
-				
-				for(NetworkFinder finder : newNetworks)
-				{
 					Set<ITransmitter<N>> newNetCables = new HashSet<ITransmitter<N>>();
 					
 					for(Object3D node : finder.iterated)
@@ -251,9 +241,17 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						}
 					}
 					
-					ITransmitterNetwork<A, N> newNetwork = create(newNetCables);
-					newNetwork.onNewFromSplit(newNetworks.indexOf(finder), metaArray);
-					newNetwork.refresh();
+					newNetworks.add(create(newNetCables));
+				}
+			}
+			
+			if(newNetworks.size() > 0)
+			{
+				onNetworksCreated((List<N>)newNetworks);
+				
+				for(ITransmitterNetwork<A, N> network : newNetworks)
+				{
+					network.refresh();
 				}
 			}
 			
@@ -262,13 +260,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	}
 	
 	@Override
-	public Object[] getMetaArray(List<NetworkFinder> networks)
-	{
-		return null;
-	}
-	
-	@Override
-	public void onNewFromSplit(int netIndex, Object[] metaArray) {}
+	public void onNetworksCreated(List<N> networks) {}
 	
 	@Override
 	public void setFixed(boolean value)

@@ -187,6 +187,21 @@ public class ListUtils
 		return split;
 	}
 	
+	public static double[] percent(double[] values)
+	{
+		double[] ret = new double[values.length];
+		double total = 0;
+		
+		for(double d : values) total += d;
+		
+		for(int i = 0; i < values.length; i++)
+		{
+			ret[i] = values[i]/total;
+		}
+		
+		return ret;
+	}
+	
 	public static int[] splitInt(int size, int num)
 	{
 		int[] split = new int[size];

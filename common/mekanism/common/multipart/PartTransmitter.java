@@ -187,8 +187,11 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			}
 			else if(connectedNets.size() == 1)
 			{
-				theNetwork = connectedNets.iterator().next();
+				N network = connectedNets.iterator().next();
+				preSingleMerge(network);
+				theNetwork = network;
 				theNetwork.transmitters.add((ITransmitter<N>)tile());
+				theNetwork.refresh();
 			}
 			else {
 				theNetwork = createNetworkByMergingSet(connectedNets);
@@ -198,6 +201,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		
 		return theNetwork;
 	}
+	
+	public void preSingleMerge(N network) {}
 	
 	@Override
 	public void removeFromTransmitterNetwork()

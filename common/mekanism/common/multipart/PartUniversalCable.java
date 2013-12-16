@@ -52,6 +52,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         	if(cacheEnergy > 0)
         	{
         		getTransmitterNetwork().electricityStored += cacheEnergy;
+        		cacheEnergy = 0;
         	}
         }
         
@@ -90,6 +91,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         cableIcons = new PartTransmitterIcons(1);
         cableIcons.registerCenterIcons(register, new String[] {"UniversalCable"});
         cableIcons.registerSideIcon(register, "TransmitterSideSmall");
+    }
+    
+    @Override
+    public void preSingleMerge(EnergyNetwork network)
+    {
+    	network.electricityStored += cacheEnergy;
+    	cacheEnergy = 0;
     }
 
     @Override
