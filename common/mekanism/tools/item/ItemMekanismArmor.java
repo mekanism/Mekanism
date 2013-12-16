@@ -2,13 +2,19 @@ package mekanism.tools.item;
 
 import java.util.List;
 
+import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
+import mekanism.tools.common.MekanismTools;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMekanismArmor extends ItemArmor
 {
@@ -34,5 +40,18 @@ public class ItemMekanismArmor extends ItemArmor
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer)
     {
 		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + layer + ".png";
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+    {
+		if(itemStack.itemID == MekanismTools.GlowstoneHelmet.itemID || itemStack.itemID == MekanismTools.GlowstoneChestplate.itemID ||
+				itemStack.itemID == MekanismTools.GlowstoneLeggings.itemID || itemStack.itemID == MekanismTools.GlowstoneBoots.itemID)
+		{
+			return ModelCustomArmor.getGlow(armorSlot);
+		}
+		
+		return super.getArmorModel(entityLiving, itemStack, armorSlot);
     }
 }

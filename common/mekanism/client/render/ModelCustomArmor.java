@@ -17,6 +17,10 @@ import org.lwjgl.opengl.GL11;
 public class ModelCustomArmor extends ModelBiped
 {
 	public static ModelCustomArmor INSTANCE = new ModelCustomArmor();
+	
+	public static GlowArmor GLOW_BIG = new GlowArmor(1.0F);
+	public static GlowArmor GLOW_SMALL = new GlowArmor(0.5F);
+	
 	public static Minecraft mc = Minecraft.getMinecraft();
 
 	public ArmorModel modelType;
@@ -42,6 +46,8 @@ public class ModelCustomArmor extends ModelBiped
 		if(entity instanceof EntityLivingBase)
 		{
 			isSneak = ((EntityLivingBase)entity).isSneaking();
+			isRiding = ((EntityLivingBase)entity).isRiding();
+			isChild = ((EntityLivingBase)entity).isChild();
 		}
 
 		if(modelType.armorSlot == 0)
@@ -171,6 +177,46 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			armorSlot = i;
 			resource = r;
+		}
+	}
+	
+	public static ModelBiped getGlow(int index)
+	{
+		ModelBiped biped = index != 2 ? GLOW_BIG : GLOW_SMALL;
+		
+        biped.bipedHead.showModel = index == 0;
+        biped.bipedHeadwear.showModel = index == 0;
+        biped.bipedBody.showModel = index == 1 || index == 2;
+        biped.bipedRightArm.showModel = index == 1;
+        biped.bipedLeftArm.showModel = index == 1;
+        biped.bipedRightLeg.showModel = index == 2 || index == 3;
+        biped.bipedLeftLeg.showModel = index == 2 || index == 3;
+		
+		return biped;
+	}
+	
+	public static class GlowArmor extends ModelBiped
+	{
+		public GlowArmor(float size)
+		{
+			super(size);
+		}
+		
+		@Override
+		public void render(Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
+		{
+			if(entity instanceof EntityLivingBase)
+			{
+				isSneak = ((EntityLivingBase)entity).isSneaking();
+				isRiding = ((EntityLivingBase)entity).isRiding();
+				isChild = ((EntityLivingBase)entity).isChild();
+			}
+			
+			setRotationAngles(par2, par3, par4, par5, par6, par7, entity);
+			
+			MekanismRenderer.glowOn();
+			super.render(entity, par2, par3, par4, par5, par6, par7);
+			MekanismRenderer.glowOff();
 		}
 	}
 }
