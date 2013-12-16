@@ -330,8 +330,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.2F, 1F, 0.0F);
-			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glTranslatef(0.1F, 0.2F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			gasMask.render(0.0625F);
 		}
@@ -339,7 +338,8 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
+			GL11.glScalef(1.6F, 1.6F, 1.6F);
+			GL11.glTranslatef(0.2F, -0.5F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			scubaTank.render(0.0625F);
 		}

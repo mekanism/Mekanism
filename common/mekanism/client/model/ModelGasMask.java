@@ -235,7 +235,9 @@ public class ModelGasMask extends ModelBase
 	    filterpipeupper.render(size);
 	    
 		MekanismRenderer.blendOn();
-		GL11.glColor4f(1, 1, 1, 0.4F);
+		MekanismRenderer.glowOn();
+		GL11.glColor4f(1, 1, 1, 0.3F);
+		GL11.glEnable(GL11.GL_CULL_FACE);
 		
 	    glasstop.render(size);
 	    glassfront.render(size);
@@ -244,7 +246,9 @@ public class ModelGasMask extends ModelBase
 	    glassbackR.render(size);
 	    glassbackL.render(size);
 	    
+	    GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1, 1, 1, 1);
+		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		
 	    pipecornerFL.render(size);

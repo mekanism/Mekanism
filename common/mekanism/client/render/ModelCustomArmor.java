@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -37,9 +38,14 @@ public class ModelCustomArmor extends ModelBiped
 	public void init(Entity entity, float f, float f1, float f2, float f3, float f4, float size)
 	{
 		reset();
+		
+		if(entity instanceof EntityLivingBase)
+		{
+			isSneak = ((EntityLivingBase)entity).isSneaking();
+		}
 
 		if(modelType.armorSlot == 0)
-		{
+		{			
 			bipedHead.isHidden = false;
 			bipedHead.showModel = true;
 		}
