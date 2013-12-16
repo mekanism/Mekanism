@@ -289,7 +289,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 					break;
 				}
 				
-				if(didOp) break;
+				if(didOp)
+				{
+					onInventoryChanged();
+					break;
+				}
 			}
 		}
 	}

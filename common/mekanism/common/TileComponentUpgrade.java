@@ -62,7 +62,7 @@ public class TileComponentUpgrade implements ITileComponent
 							tileEntity.inventory[upgradeSlot] = null;
 						}
 
-						MekanismUtils.saveChunk(tileEntity);
+						tileEntity.onInventoryChanged();
 					}
 				}
 				else if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
@@ -83,7 +83,7 @@ public class TileComponentUpgrade implements ITileComponent
 							tileEntity.inventory[upgradeSlot] = null;
 						}
 						
-						MekanismUtils.saveChunk(tileEntity);
+						tileEntity.onInventoryChanged();
 					}
 				}
 				else {

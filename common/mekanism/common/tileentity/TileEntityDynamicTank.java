@@ -233,6 +233,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.inventory[1].stackSize++;
 							}
 							
+							onInventoryChanged();
+							
 							structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 							
 							if(structure.fluidStored.amount == 0)
@@ -274,6 +276,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.inventory[1].stackSize++;
 							}
 							
+							onInventoryChanged();
 							filled = true;
 						}
 					}

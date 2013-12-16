@@ -108,6 +108,15 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 					
 					gasTank.receive(stack, true);
 					operatingTicks = 0;
+					
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize <= 0)
+					{
+						inventory[0] = null;
+					}
+					
+					onInventoryChanged();
 				}
 			}
 			else {

@@ -77,6 +77,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							{
 								inventory[0] = null;
 							}
+							
+							onInventoryChanged();
 						}
 						else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
 						{
@@ -89,6 +91,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 							{
 								inventory[0] = null;
 							}
+							
+							onInventoryChanged();
 						}
 					}
 				}
