@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import codechicken.multipart.*;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
@@ -33,14 +34,6 @@ import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import codechicken.microblock.IHollowConnect;
-import codechicken.multipart.IconHitEffects;
-import codechicken.multipart.JIconHitEffects;
-import codechicken.multipart.JNormalOcclusion;
-import codechicken.multipart.NormalOcclusionTest;
-import codechicken.multipart.PartMap;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TSlottedPart;
-import codechicken.multipart.TileMultipart;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -102,16 +95,18 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		
 		if(possibleTransmitters != currentTransmitterConnections)
 		{
-			//TODO @unpairedbracket, I don't think this is necessary; I couldn't tell a difference without it,
-			//and it results in many extra possible recursive calls on the network
-			
-			/*byte or = (byte)(possibleTransmitters | currentTransmitterConnections);
-			
-			if(or != possibleTransmitters)
+			boolean nowPowered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+
+			if(nowPowered != redstonePowered)
 			{
-				((DynamicNetwork<?, N>)getTransmitterNetwork()).split((ITransmitter<N>)tile());
-				setTransmitterNetwork(null);
-			}*/
+				if(nowPowered)
+				{
+					getTransmitterNetwork().split((ITransmitter<N>)tile());
+					setTransmitterNetwork(null);
+				}
+				tile().notifyPartChange(this);
+				redstonePowered = nowPowered;
+			}
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{

@@ -356,10 +356,13 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 				if(!iterated.contains(obj) && !toIgnore.contains(obj))
 				{
 					TileEntity tileEntity = obj.getTileEntity(worldObj);
-					
-					if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)))
+
+					if(!(tileEntity instanceof IBlockableConnection) || ((IBlockableConnection)tileEntity).canConnectMutual(direction.getOpposite()))
 					{
-						loopAll(obj);
+						if(TransmissionType.checkTransmissionType(tileEntity, transmissionType, location.getTileEntity(worldObj)))
+						{
+							loopAll(obj);
+						}
 					}
 				}
 			}
