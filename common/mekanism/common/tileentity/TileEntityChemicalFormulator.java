@@ -18,6 +18,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -182,7 +183,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 			return new int[] {2};
 		}
 		
-		return new int[0];
+		return InventoryUtils.EMPTY;
 	}
 	
 	public int getStoredGas()

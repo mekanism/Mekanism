@@ -455,7 +455,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return new int[] {0};		
 		}
 		
-		return new int[0];
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override

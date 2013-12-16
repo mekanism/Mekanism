@@ -7,6 +7,7 @@ import mekanism.common.SideData;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +31,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2}));

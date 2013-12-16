@@ -2,13 +2,11 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -137,7 +135,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	{
 		if(side == 0 || !canAccess())
 		{
-			return new int[0];
+			return InventoryUtils.EMPTY;
 		}
 		else {
 			int[] ret = new int[55];

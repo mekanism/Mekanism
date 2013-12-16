@@ -5,6 +5,7 @@ import mekanism.common.SideData;
 import mekanism.common.TileComponentEjector;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.util.InventoryUtils;
 
 public class TileEntityEliteFactory extends TileEntityFactory
 {
@@ -12,7 +13,7 @@ public class TileEntityEliteFactory extends TileEntityFactory
 	{
 		super(FactoryTier.ELITE, MachineType.ELITE_FACTORY);
 		
-		sideOutputs.add(new SideData(EnumColor.GREY, new int[0]));
+		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {4}));

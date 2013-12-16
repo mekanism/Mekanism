@@ -928,7 +928,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return new int[0];
+		return InventoryUtils.EMPTY;
 	}
 	
 	public TileEntity getEjectTile()
