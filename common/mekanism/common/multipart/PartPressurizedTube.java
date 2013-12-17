@@ -9,6 +9,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.EnergyNetwork;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,6 +24,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     public static PartTransmitterIcons tubeIcons;
     
     public GasStack cacheGas;
+    public GasStack lastWrite;
     
     @Override
     public void update()
@@ -47,6 +49,45 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     }
     
     @Override
+    public void preSingleMerge(GasNetwork network)
+    {
+    	if(cacheGas != null)
+    	{
+    		if(network.gasStored == null)
+    		{
+    			network.gasStored = cacheGas;
+    		}
+    		else {
+    			network.gasStored.amount += cacheGas.amount;
+    		}
+    		
+	    	cacheGas = null;
+    	}
+    }
+    
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		if(!world().isRemote)
+		{		
+			if(lastWrite != null)
+			{
+				if(getTransmitterNetwork().gasStored != null)
+				{
+					getTransmitterNetwork().gasStored.amount -= lastWrite.amount;
+					
+					if(getTransmitterNetwork().gasStored.amount <= 0)
+					{
+						getTransmitterNetwork().gasStored = null;
+					}
+				}
+			}
+		}
+	}
+    
+    @Override
     public void load(NBTTagCompound nbtTags)
     {
     	super.load(nbtTags);
@@ -64,13 +105,10 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     	
     	if(getTransmitterNetwork().gasStored != null)
     	{
-	    	int remains = getTransmitterNetwork().gasStored.amount%(int)getTransmitterNetwork().getMeanCapacity();
-	    	int toSave = (getTransmitterNetwork().gasStored.amount-remains)/(int)getTransmitterNetwork().getMeanCapacity();
-	    	toSave += remains;
-	    	
+    		int toSave = (int)Math.round(getTransmitterNetwork().gasStored.amount*(1F/getTransmitterNetwork().transmitters.size()));
 	    	GasStack stack = new GasStack(getTransmitterNetwork().gasStored.getGas(), toSave);
 	    	
-	    	getTransmitterNetwork().gasStored.amount -= toSave;
+	    	lastWrite = stack;
 	    	nbtTags.setCompoundTag("cacheGas", stack.write(new NBTTagCompound()));
     	}
     }
@@ -82,7 +120,11 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     	{
     		ITransmitter<GasNetwork> transmitter = (ITransmitter<GasNetwork>)tileEntity;
     		
-    		if(getTransmitterNetwork().gasStored == null || transmitter.getTransmitterNetwork().gasStored == null)
+    		if(getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false) == null)
+			{
+				return true;
+			}
+    		else if(getTransmitterNetwork().gasStored == null || transmitter.getTransmitterNetwork().gasStored == null)
     		{
     			return true;
     		}

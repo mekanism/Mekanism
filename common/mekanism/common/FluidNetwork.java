@@ -13,6 +13,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -67,6 +68,17 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					fluidScale = net.fluidScale;
 				}
 				
+				if(net.fluidStored != null)
+				{
+					if(fluidStored == null)
+					{
+						fluidStored = net.fluidStored;
+					}
+					else {
+						fluidStored.amount += net.fluidStored.amount;
+					}
+				}
+				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
@@ -75,6 +87,39 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		refresh();
 		register();
 	}
+	
+    @Override
+    public void onNetworksCreated(List<FluidNetwork> networks)
+    {
+    	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+    	{
+    		if(fluidStored != null)
+    		{
+		    	int[] caps = new int[networks.size()];
+		    	int cap = 0;
+		    	
+		    	for(FluidNetwork network : networks)
+		    	{
+		    		caps[networks.indexOf(network)] = network.getCapacity();
+		    		cap += network.getCapacity();
+		    	}
+		    	
+		    	fluidStored.amount = Math.min(cap, fluidStored.amount);
+		    	
+		    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), fluidStored.amount);
+		    	
+		    	for(FluidNetwork network : networks)
+		    	{
+		    		int index = networks.indexOf(network);
+		    		
+		    		if(values[index] > 0)
+		    		{
+		    			network.fluidStored = new FluidStack(fluidStored.getFluid(), values[index]);
+		    		}
+		    	}
+    		}
+    	}
+    }
 	
 	public synchronized int getFluidNeeded()
 	{
@@ -318,6 +363,18 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		FluidNetwork network = new FluidNetwork(varTransmitters);
 		network.refFluid = refFluid;
 		network.fluidScale = fluidScale;
+		
+		if(fluidStored != null)
+		{
+			if(network.fluidStored == null)
+			{
+				network.fluidStored = fluidStored;
+			}
+			else {
+				network.fluidStored.amount += fluidStored.amount;
+			}
+		}
+		
 		return network;
 	}
 
@@ -327,21 +384,25 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		FluidNetwork network = new FluidNetwork(collection);
 		network.refFluid = refFluid;
 		network.fluidScale = fluidScale;
+		
+		if(fluidStored != null)
+		{
+			if(network.fluidStored == null)
+			{
+				network.fluidStored = fluidStored;
+			}
+			else {
+				network.fluidStored.amount += fluidStored.amount;
+			}
+		}
+		
 		return network;
 	}
 
 	@Override
 	protected FluidNetwork create(Set<FluidNetwork> networks) 
 	{
-		FluidNetwork network = new FluidNetwork(networks);
-		
-		if(refFluid != null && fluidScale > network.fluidScale)
-		{
-			network.refFluid = refFluid;
-			network.fluidScale = fluidScale;
-		}
-		
-		return network;
+		return new FluidNetwork(networks);
 	}
 	
 	@Override

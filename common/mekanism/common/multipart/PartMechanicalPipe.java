@@ -3,6 +3,8 @@ package mekanism.common.multipart;
 import java.util.Arrays;
 import java.util.Set;
 
+import mekanism.api.gas.GasNetwork;
+import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -33,6 +35,46 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     public static PartTransmitterIcons pipeIcons;
     
     public FluidStack cacheFluid;
+    public FluidStack lastWrite;
+    
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		if(!world().isRemote)
+		{		
+			if(lastWrite != null)
+			{
+				if(getTransmitterNetwork().fluidStored != null)
+				{
+					getTransmitterNetwork().fluidStored.amount -= lastWrite.amount;
+					
+					if(getTransmitterNetwork().fluidStored.amount <= 0)
+					{
+						getTransmitterNetwork().fluidStored = null;
+					}
+				}
+			}
+		}
+	}
+	
+    @Override
+    public void preSingleMerge(FluidNetwork network)
+    {
+    	if(cacheFluid != null)
+    	{
+    		if(network.fluidStored == null)
+    		{
+    			network.fluidStored = cacheFluid;
+    		}
+    		else {
+    			network.fluidStored.amount += cacheFluid.amount;
+    		}
+    		
+	    	cacheFluid = null;
+    	}
+    }
     
     @Override
     public void load(NBTTagCompound nbtTags)
@@ -52,14 +94,11 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     	
     	if(getTransmitterNetwork().fluidStored != null)
     	{
-	    	int remains = getTransmitterNetwork().fluidStored.amount%(int)getTransmitterNetwork().getMeanCapacity();
-	    	int toSave = (getTransmitterNetwork().fluidStored.amount-remains)/(int)getTransmitterNetwork().getMeanCapacity();
-	    	toSave += remains;
-	    	
+    		int toSave = (int)Math.round(getTransmitterNetwork().fluidStored.amount*(1F/getTransmitterNetwork().transmitters.size()));
 	    	FluidStack stack = new FluidStack(getTransmitterNetwork().fluidStored.getFluid(), toSave);
 	    	
-	    	getTransmitterNetwork().fluidStored.amount -= toSave;
-	    	nbtTags.setCompoundTag("cacheEnergy", stack.writeToNBT(new NBTTagCompound()));
+	    	lastWrite = stack;
+	    	nbtTags.setCompoundTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
     	}
     }
     
@@ -74,7 +113,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 			{
 				return true;
 			}
-    		if(getTransmitterNetwork().fluidStored == null || transmitter.getTransmitterNetwork().fluidStored == null)
+    		else if(getTransmitterNetwork().fluidStored == null || transmitter.getTransmitterNetwork().fluidStored == null)
     		{
     			return true;
     		}

@@ -202,6 +202,18 @@ public class ListUtils
 		return ret;
 	}
 	
+	public static int[] calcPercentInt(double[] percent, int val)
+	{
+		int[] ret = new int[percent.length];
+		
+		for(int i = 0; i < percent.length; i++)
+		{
+			ret[i] = (int)Math.round(val*percent[i]);
+		}
+		
+		return ret;
+	}
+	
 	public static int[] splitInt(int size, int num)
 	{
 		int[] split = new int[size];
@@ -217,5 +229,20 @@ public class ListUtils
 		}
 		
 		return split;
+	}
+	
+	public static double[] percent(int[] values)
+	{
+		double[] ret = new double[values.length];
+		double total = 0;
+		
+		for(double d : values) total += d;
+		
+		for(int i = 0; i < values.length; i++)
+		{
+			ret[i] = values[i]/total;
+		}
+		
+		return ret;
 	}
 }

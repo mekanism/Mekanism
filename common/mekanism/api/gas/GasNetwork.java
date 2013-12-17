@@ -11,10 +11,13 @@ import java.util.Set;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.FluidNetwork;
+import mekanism.common.util.ListUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
@@ -60,6 +63,17 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 					gasScale = net.gasScale;
 				}
 				
+				if(net.gasStored != null)
+				{
+					if(gasStored == null)
+					{
+						gasStored = net.gasStored;
+					}
+					else {
+						gasStored.amount += net.gasStored.amount;
+					}
+				}
+				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
@@ -68,6 +82,39 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		refresh();
 		register();
 	}
+	
+    @Override
+    public void onNetworksCreated(List<GasNetwork> networks)
+    {
+    	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+    	{
+    		if(gasStored != null)
+    		{
+		    	int[] caps = new int[networks.size()];
+		    	int cap = 0;
+		    	
+		    	for(GasNetwork network : networks)
+		    	{
+		    		caps[networks.indexOf(network)] = network.getCapacity();
+		    		cap += network.getCapacity();
+		    	}
+		    	
+		    	gasStored.amount = Math.min(cap, gasStored.amount);
+		    	
+		    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), gasStored.amount);
+		    	
+		    	for(GasNetwork network : networks)
+		    	{
+		    		int index = networks.indexOf(network);
+		    		
+		    		if(values[index] > 0)
+		    		{
+		    			network.gasStored = new GasStack(gasStored.getGas(), values[index]);
+		    		}
+		    	}
+    		}
+    	}
+    }
 	
 	public synchronized int getGasNeeded()
 	{
@@ -310,6 +357,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		GasNetwork network = new GasNetwork(varTransmitters);
 		network.refGas = refGas;
 		network.gasScale = gasScale;
+		
+		if(gasStored != null)
+		{
+			if(network.gasStored == null)
+			{
+				network.gasStored = gasStored;
+			}
+			else {
+				network.gasStored.amount += gasStored.amount;
+			}
+		}
+		
 		return network;
 	}
 
@@ -319,21 +378,25 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		GasNetwork network = new GasNetwork(collection);
 		network.refGas = refGas;
 		network.gasScale = gasScale;
+		
+		if(gasStored != null)
+		{
+			if(network.gasStored == null)
+			{
+				network.gasStored = gasStored;
+			}
+			else {
+				network.gasStored.amount += gasStored.amount;
+			}
+		}
+		
 		return network;
 	}
 
 	@Override
 	protected GasNetwork create(Set<GasNetwork> networks) 
 	{
-		GasNetwork network = new GasNetwork(networks);
-		
-		if(refGas != null && gasScale > network.gasScale)
-		{
-			network.refGas = refGas;
-			network.gasScale = gasScale;
-		}
-		
-		return network;
+		return new GasNetwork(networks);
 	}
 	
 	@Override
