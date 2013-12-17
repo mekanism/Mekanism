@@ -52,7 +52,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         else {
         	if(cacheEnergy > 0)
         	{
-        		System.out.println("More cache " + cacheEnergy);
         		getTransmitterNetwork().electricityStored += cacheEnergy;
         		cacheEnergy = 0;
         	}
@@ -74,10 +73,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     {
     	super.save(nbtTags);
     	
-    	double remains = getTransmitterNetwork().electricityStored%getTransmitterNetwork().getMeanCapacity();
-    	double toSave = (getTransmitterNetwork().electricityStored-remains)/getTransmitterNetwork().getMeanCapacity();
-    	toSave = EnergyNetwork.round(toSave + remains);
-    	System.out.println("SAVING " + toSave);
+    	double toSave = EnergyNetwork.round(getTransmitterNetwork().electricityStored*(1F/getTransmitterNetwork().transmitters.size()));
     	
     	lastWrite = toSave;
     	nbtTags.setDouble("cacheEnergy", toSave);
@@ -99,7 +95,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     @Override
     public void preSingleMerge(EnergyNetwork network)
     {
-    	System.out.println("Cache " + cacheEnergy);
     	network.electricityStored += cacheEnergy;
     	cacheEnergy = 0;
     }

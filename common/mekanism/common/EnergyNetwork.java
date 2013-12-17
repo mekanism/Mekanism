@@ -56,7 +56,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public static double round(double d)
 	{
-		return Math.round(d * 100)/100;
+		return Math.round(d * 10000)/10000;
 	}
 	
 	public EnergyNetwork(Set<EnergyNetwork> networks)
@@ -73,7 +73,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					lastPowerScale = net.lastPowerScale;
 				}
 				
-				System.out.println("ADDING " + net.electricityStored);
 				electricityStored += net.electricityStored;
 				
 				addAllTransmitters(net.transmitters);
@@ -105,7 +104,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
     {
     	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
     	{
-	    	System.out.println("--start--");
 	    	double[] caps = new double[networks.size()];
 	    	double cap = 0;
 	    	
@@ -115,19 +113,14 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	    		cap += network.getCapacity();
 	    	}
 	    	
-	    	System.out.println("capping at: " + cap);
 	    	electricityStored = Math.min(cap, electricityStored);
 	    	
 	    	double[] percent = ListUtils.percent(caps);
 	    	
 	    	for(EnergyNetwork network : networks)
 	    	{
-	    		System.out.println(electricityStored + " " + percent[networks.indexOf(network)]);
-	    		System.out.println("Setting to " + percent[networks.indexOf(network)]*electricityStored);
-	    		network.electricityStored = percent[networks.indexOf(network)]*electricityStored;
+	    		network.electricityStored = round(percent[networks.indexOf(network)]*electricityStored);
 	    	}
-	    	
-	    	System.out.println("--end--");
     	}
     }
 	
@@ -441,13 +434,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			
 			if(electricityStored > 0)
 			{
-				double emitted = electricityStored - tickEmit(electricityStored);
-				electricityStored -= emitted;
-				
-				if(emitted > 0)
-				{
-					System.out.println(emitted);
-				}
+				electricityStored -= (electricityStored - tickEmit(electricityStored));
 			}
 		}
 	}
@@ -477,7 +464,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
-		System.out.println("VAR ADDING " + electricityStored);
 		return network;
 	}
 
@@ -490,7 +476,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
-		System.out.println("COLLECTION Adding " + electricityStored);
 		return network;
 	}
 
