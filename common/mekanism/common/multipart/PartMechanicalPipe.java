@@ -37,9 +37,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     
 	@Override
 	public void onChunkUnload()
-	{
-		super.onChunkUnload();
-		
+	{		
 		if(!world().isRemote)
 		{		
 			if(lastWrite != null)
@@ -55,6 +53,8 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 				}
 			}
 		}
+		
+		super.onChunkUnload();
 	}
 	
     @Override
@@ -226,21 +226,18 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	{
 		if(!world().isRemote)
 		{
-			if(!world().isRemote)
-	    	{
-	    		if(cacheFluid != null)
+    		if(cacheFluid != null)
+    		{
+	    		if(getTransmitterNetwork().fluidStored == null)
 	    		{
-		    		if(getTransmitterNetwork().fluidStored == null)
-		    		{
-		    			getTransmitterNetwork().fluidStored = cacheFluid;
-		    		}
-		    		else {
-		    			getTransmitterNetwork().fluidStored.amount += cacheFluid.amount;
-		    		}
-		    		
-		    		cacheFluid = null;
+	    			getTransmitterNetwork().fluidStored = cacheFluid;
 	    		}
-	    	}
+	    		else {
+	    			getTransmitterNetwork().fluidStored.amount += cacheFluid.amount;
+	    		}
+	    		
+	    		cacheFluid = null;
+    		}
 			
 			if(isActive)
 			{

@@ -160,7 +160,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		if(doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			refFluid = fluidToSend.getFluid();
 			didTransfer = true;
 			transferDelay = 2;
 		}
@@ -216,7 +215,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, refFluid != null ? refFluid.getID() : -1, didTransfer, getScale()));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, fluidStored != null ? fluidStored.getFluid().getID() : -1, didTransfer, getScale()));
 				needsUpdate = false;
 			}
 			

@@ -185,9 +185,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	
 	@Override
 	public void onChunkUnload()
-	{
-		super.onChunkUnload();
-		
+	{		
 		if(!world().isRemote)
 		{			
 			Mekanism.ic2Registered.remove(Object3D.get(tile()));
@@ -195,6 +193,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 			
 			getTransmitterNetwork().electricityStored -= lastWrite;
 		}
+		
+		super.onChunkUnload();
 	}
 
 	@Override

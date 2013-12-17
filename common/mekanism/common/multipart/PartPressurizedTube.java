@@ -67,9 +67,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     
 	@Override
 	public void onChunkUnload()
-	{
-		super.onChunkUnload();
-		
+	{		
 		if(!world().isRemote)
 		{		
 			if(lastWrite != null)
@@ -85,6 +83,8 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 				}
 			}
 		}
+		
+		super.onChunkUnload();
 	}
     
     @Override

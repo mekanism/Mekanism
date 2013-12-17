@@ -114,7 +114,7 @@ public class GasTank
 	{
 		if(stored != null)
 		{
-			stored.write(nbtTags);
+			nbtTags.setCompoundTag("stored", stored.write(new NBTTagCompound()));
 		}
 		
 		nbtTags.setInteger("maxGas", maxGas);

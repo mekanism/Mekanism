@@ -341,7 +341,7 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderSide(side, transmitter);			
+			renderSide(side, transmitter);
 		}
 	}
 	

@@ -159,7 +159,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		
 		if(sent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			refGas = stack.getGas();
 			didTransfer = true;
 			transferDelay = 2;
 		}
@@ -169,7 +168,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	
 	public synchronized int emit(GasStack stack)
 	{
-		if(refGas != null && refGas != stack.getGas())
+		if(gasStored != null && gasStored.getGas() != stack.getGas())
 		{
 			return 0;
 		}
@@ -212,7 +211,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas != null ? refGas.getID() : -1, didTransfer, getScale()));
+				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, gasStored != null ? gasStored.getGas().getID() : -1, didTransfer, getScale()));
 				needsUpdate = false;
 			}
 			
