@@ -26,6 +26,7 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ITileNetwork");
+		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IBlockableConnection");
 	}
 
 	@Override

@@ -13,10 +13,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Object3D;
-import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.api.transmitters.*;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
@@ -32,7 +29,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import java.util.*;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -42,6 +39,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public byte currentTransmitterConnections = 0x00;
 	public boolean isActive = false;
 	public boolean sendDesc;
+	public boolean redstonePowered = false;
 
 	static
 	{
@@ -256,7 +254,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		if(!canConnect(side)) return false;
 
 		TileEntity tile = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
-		return (!(tile instanceof ITransmitter) || ((ITransmitter<?>)tile).canConnect(side.getOpposite()));
+		return (!(tile instanceof IBlockableConnection) || ((IBlockableConnection)tile).canConnect(side.getOpposite()));
 	}
 
 	public boolean canConnect(ForgeDirection side)
