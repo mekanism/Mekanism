@@ -3,7 +3,6 @@ package mekanism.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.multipart.*;
@@ -12,7 +11,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 

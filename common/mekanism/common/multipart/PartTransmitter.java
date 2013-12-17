@@ -1,8 +1,5 @@
 package mekanism.common.multipart;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,34 +8,12 @@ import mekanism.api.Object3D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
-import mekanism.common.ITileNetwork;
-import mekanism.common.Mekanism;
-import mekanism.common.item.ItemConfigurator;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.tools.IToolWrench;
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.lighting.LazyLightMatrix;
-import codechicken.lib.raytracer.IndexedCuboid6;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
-import codechicken.microblock.IHollowConnect;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends PartSidedPipe implements ITransmitter<N>, IConfigurable
 {
