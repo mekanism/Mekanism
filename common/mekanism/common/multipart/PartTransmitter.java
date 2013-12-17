@@ -284,12 +284,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		super.onPartChanged(part);
 		refreshTransmitterNetwork();
 	}
-	
-	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
-	{
-		return false;
-	}
 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
@@ -297,7 +291,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		fixTransmitterNetwork();
 		return true;
 	}
-	
+
 	@Override
 	public void chunkLoad() {}
 }

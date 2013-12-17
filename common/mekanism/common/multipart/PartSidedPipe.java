@@ -4,7 +4,10 @@ import buildcraft.api.tools.IToolWrench;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.lighting.LazyLightMatrix;
+import codechicken.lib.raytracer.ExtendedMOP;
 import codechicken.lib.raytracer.IndexedCuboid6;
+import codechicken.lib.raytracer.RayTracer;
+import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import codechicken.microblock.IHollowConnect;
@@ -18,7 +21,6 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.item.ItemConfigurator;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,7 +31,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import java.util.*;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -38,8 +40,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
 	public boolean isActive = false;
-	public boolean sendDesc;
+	public boolean sendDesc = false;
 	public boolean redstonePowered = false;
+	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL,
+											   ConnectionType.NORMAL,
+											   ConnectionType.NORMAL,
+											   ConnectionType.NORMAL,
+											   ConnectionType.NORMAL,
+											   ConnectionType.NORMAL
+											  };
 
 	static
 	{
@@ -93,6 +102,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public abstract Icon getCenterIcon();
 
 	public abstract Icon getSideIcon();
+
+	public Icon getIconForSide(ForgeDirection side)
+	{
+		ConnectionType type = getConnectionType(side);
+		if(type == ConnectionType.NONE)
+		{
+			return getCenterIcon();
+		}
+		else
+		{
+			return getSideIcon();
+		}
+	}
 
 	public byte getPossibleTransmitterConnections()
 	{
@@ -276,6 +298,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		currentTransmitterConnections = packet.readByte();
 		currentAcceptorConnections = packet.readByte();
 		isActive = packet.readBoolean();
+		for(int i=0; i<6; i++)
+		{
+			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
+		}
+
 	}
 
 	@Override
@@ -284,6 +311,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		packet.writeByte(currentTransmitterConnections);
 		packet.writeByte(currentAcceptorConnections);
 		packet.writeBoolean(isActive);
+		for(int i=0; i<6; i++)
+		{
+			packet.writeInt(connectionTypes[i].ordinal());
+		}
 	}
 
 	@Override
@@ -292,12 +323,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		if(item == null)
 		{
 			return false;
-		}
-		if(item.getItem() instanceof ItemConfigurator && player.isSneaking())
-		{
-			isActive ^= true;
-			tile().markRender();
-			return true;
 		}
 		if(item.getItem() instanceof IToolWrench && player.isSneaking())
 		{
@@ -338,5 +363,60 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		return data;
+	}
+
+	public ConnectionType getConnectionType(ForgeDirection side)
+	{
+		if(!connectionMapContainsSide(getAllCurrentConnections(), side))
+			return ConnectionType.NONE;
+		if(connectionMapContainsSide(currentTransmitterConnections, side))
+			return ConnectionType.NORMAL;
+		return connectionTypes[side.ordinal()];
+	}
+
+	public CCModel getModelForSide(ForgeDirection side, boolean internal)
+	{
+		String name = side.name().toLowerCase();
+		String type = getConnectionType(side).name().toUpperCase();
+		name += type;
+		if(internal)
+		{
+			return RenderPartTransmitter.contents_models.get(name);
+		}
+		else
+		{
+			return RenderPartTransmitter.small_models.get(name);
+		}
+	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		ExtendedMOP hit = (ExtendedMOP) RayTracer.retraceBlock(world(), player, x(), y(), z());
+		if(hit == null)
+			return false;
+		if(hit.subHit < 6)
+		{
+			connectionTypes[hit.subHit] = ConnectionType.nextType[connectionTypes[hit.subHit].ordinal()];
+			sendDesc = true;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		return false;
+	}
+
+	public static enum ConnectionType
+	{
+		NONE,
+		NORMAL,
+		PUSH,
+		PULL;
+
+		public static ConnectionType[] nextType = {NORMAL, PUSH, PULL, NONE};
 	}
 }

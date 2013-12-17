@@ -36,7 +36,7 @@ public class RenderPartTransmitter implements IIconRegister
 	
 	public static Map<String, CCModel> small_models;
     public static Map<String, CCModel> large_models;
-	public static Map<String, CCModel> cableContentsModels;
+	public static Map<String, CCModel> contents_models;
 	
 	private static final int stages = 40;
 	private static final double height = 0.45;
@@ -72,9 +72,9 @@ public class RenderPartTransmitter implements IIconRegister
             c.shrinkUVs(0.0005);
         }
 
-        cableContentsModels = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
+        contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
         
-		for(CCModel c : cableContentsModels.values()) 
+		for(CCModel c : contents_models.values())
         {
             c.apply(new Translation(.5, .5, .5));
             c.computeLighting(LightModel.standardLightModel);
@@ -348,26 +348,20 @@ public class RenderPartTransmitter implements IIconRegister
 	public void renderSide(ForgeDirection side, PartSidedPipe transmitter)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
-		String name = side.name().toLowerCase();
-		name += connected ? "Normal" : "None";
-		Icon renderIcon = connected ? transmitter.getSideIcon() : transmitter.getCenterIcon();
-		renderPart(renderIcon, getModelForPart(transmitter.getTransmitterSize(), name), transmitter.x(), transmitter.y(), transmitter.z());
+		Icon renderIcon = transmitter.getIconForSide(side);
+		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z());
 	}
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(cable.getAllCurrentConnections(), side);
-		String name = side.name().toLowerCase();
-		name += connected ? "Out" : "In";
-		renderTransparency(MekanismRenderer.energyIcon, cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
+		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 	
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(tube.getAllCurrentConnections(), side);
-		String name = side.name().toLowerCase();
-		name += connected ? "Out" : "In";
-		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), cableContentsModels.get(name), new ColourRGBA(1.0, 1.0, 1.0, tube.getTransmitterNetwork().gasScale));
+		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.getTransmitterNetwork().gasScale));
 	}
 
     public void renderPart(Icon icon, CCModel cc, double x, double y, double z)
@@ -380,16 +374,6 @@ public class RenderPartTransmitter implements IIconRegister
         cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
     }
 
-    public CCModel getModelForPart(Size size, String name)
-    {
-        switch(size)
-        {
-            case SMALL: return small_models.get(name);
-            case LARGE: return large_models.get(name);
-            default: return small_models.get(name);
-        }
-    }
-	
 	@Override
 	public void registerIcons(IconRegister register)
 	{
