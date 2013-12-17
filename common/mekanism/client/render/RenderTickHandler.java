@@ -1,7 +1,9 @@
 package mekanism.client.render;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
@@ -9,7 +11,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
@@ -102,7 +103,9 @@ public class RenderTickHandler implements ITickHandler
 				}
 			}
 			
-			for(String s : Mekanism.jetpackOn)
+			Set<String> copy = (Set)((HashSet)Mekanism.jetpackOn).clone();
+			
+			for(String s : copy)
 			{
 				EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
 				
