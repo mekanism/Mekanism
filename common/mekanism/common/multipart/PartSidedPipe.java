@@ -376,16 +376,25 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public CCModel getModelForSide(ForgeDirection side, boolean internal)
 	{
-		String name = side.name().toLowerCase();
-		String type = getConnectionType(side).name().toUpperCase();
-		name += type;
-		if(internal)
+		String sideName = side.name().toLowerCase();
+		ConnectionType type =  getConnectionType(side);
+		if(getTransmitterSize() == TransmissionType.Size.LARGE)
 		{
-			return RenderPartTransmitter.contents_models.get(name);
+			sideName += (type == ConnectionType.NONE) ? "In" : "Out";
+			return RenderPartTransmitter.large_models.get(sideName);
 		}
 		else
 		{
-			return RenderPartTransmitter.small_models.get(name);
+			String typeName = getConnectionType(side).name().toUpperCase();
+			String name = sideName + typeName;
+			if(internal)
+			{
+				return RenderPartTransmitter.contents_models.get(name);
+			}
+			else
+			{
+				return RenderPartTransmitter.small_models.get(name);
+			}
 		}
 	}
 
