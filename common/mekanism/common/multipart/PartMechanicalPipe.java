@@ -159,14 +159,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     	{
     		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
     		
-    	   	if(world().isRemote && transmitter.getTransmitterNetwork(false) == null)
-        	{
-        		if(!connectionMapContainsSide(currentTransmitterConnections, side))
-        		{
-        			return false;
-        		}
-        	}
-    		
     		if(getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false) == null)
 			{
     			if(transmitter.getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false).fluidStored == null)
