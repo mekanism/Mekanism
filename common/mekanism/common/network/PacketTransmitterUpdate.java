@@ -104,7 +104,11 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
+    			if(gasType != null)
+    			{
+    				((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
+    			}
+    			
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;
     		}
@@ -120,7 +124,11 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
+    			if(fluidType != null)
+    			{
+    				((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
+    			}
+    			
     			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
     			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;
     		}

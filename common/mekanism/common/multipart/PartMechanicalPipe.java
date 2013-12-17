@@ -3,6 +3,7 @@ package mekanism.common.multipart;
 import java.util.Arrays;
 import java.util.Set;
 
+import mekanism.api.gas.Gas;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -32,8 +33,60 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	
     public static PartTransmitterIcons pipeIcons;
     
+    public float currentScale;
+    
     public FluidStack cacheFluid;
     public FluidStack lastWrite;
+    
+	@Override
+	public void update()
+	{
+		if(!world().isRemote)
+		{
+    		if(cacheFluid != null)
+    		{
+	    		if(getTransmitterNetwork().fluidStored == null)
+	    		{
+	    			getTransmitterNetwork().fluidStored = cacheFluid;
+	    		}
+	    		else {
+	    			getTransmitterNetwork().fluidStored.amount += cacheFluid.amount;
+	    		}
+	    		
+	    		cacheFluid = null;
+    		}
+			
+			if(isActive)
+			{
+				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
+				
+				for(IFluidHandler container : connectedAcceptors)
+				{
+					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container));
+					
+					if(container != null)
+					{
+						FluidStack received = container.drain(side, 100, false);
+						
+						if(received != null && received.amount != 0)
+						{
+							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
+						}
+					}
+				}
+			}
+		}
+		else {
+			float targetScale = getTransmitterNetwork().fluidScale;
+			
+			if(Math.abs(currentScale - targetScale) > 0.01)
+			{
+				currentScale = (9 * currentScale + targetScale) / 10;
+			}
+		}
+		
+		super.update();
+	}
     
 	@Override
 	public void onChunkUnload()
@@ -219,48 +272,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
 	{
 		return new FluidTankInfo[] {dummyTank.getInfo()};
-	}
-	
-	@Override
-	public void update()
-	{
-		if(!world().isRemote)
-		{
-    		if(cacheFluid != null)
-    		{
-	    		if(getTransmitterNetwork().fluidStored == null)
-	    		{
-	    			getTransmitterNetwork().fluidStored = cacheFluid;
-	    		}
-	    		else {
-	    			getTransmitterNetwork().fluidStored.amount += cacheFluid.amount;
-	    		}
-	    		
-	    		cacheFluid = null;
-    		}
-			
-			if(isActive)
-			{
-				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
-				
-				for(IFluidHandler container : connectedAcceptors)
-				{
-					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container));
-					
-					if(container != null)
-					{
-						FluidStack received = container.drain(side, 100, false);
-						
-						if(received != null && received.amount != 0)
-						{
-							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
-						}
-					}
-				}
-			}
-			
-			super.update();
-		}
 	}
 
 	@Override

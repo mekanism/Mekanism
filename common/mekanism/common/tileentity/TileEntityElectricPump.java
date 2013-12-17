@@ -459,7 +459,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
 		
-		return null;
+		return new FluidTankInfo[0];
 	}
 
 	@Override

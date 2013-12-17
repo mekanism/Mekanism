@@ -23,14 +23,14 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 {
     public static PartTransmitterIcons tubeIcons;
     
+    public float currentScale;
+    
     public GasStack cacheGas;
     public GasStack lastWrite;
     
     @Override
     public void update()
-    {
-    	super.update();
-    	
+    {	
     	if(!world().isRemote)
     	{
     		if(cacheGas != null)
@@ -46,6 +46,16 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	    		cacheGas = null;
     		}
     	}
+    	else {
+    		float targetScale = getTransmitterNetwork().gasScale;
+			
+			if(Math.abs(currentScale - targetScale) > 0.01)
+			{
+				currentScale = (9 * currentScale + targetScale) / 10;
+			}
+    	}
+    	
+    	super.update();
     }
     
     @Override
