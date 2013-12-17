@@ -68,6 +68,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					fluidScale = net.fluidScale;
 				}
 				
+				if(net.definedScale > definedScale)
+				{
+					definedScale = net.definedScale;
+				}
+				
 				if(net.fluidStored != null)
 				{
 					if(fluidStored == null)
@@ -350,7 +355,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	
 	public float getScale()
 	{
-		return (fluidStored == null || getCapacity() == 0 ? 0 : (float)fluidStored.amount/getCapacity());
+		return Math.min(1, (fluidStored == null || getCapacity() == 0 ? 0 : (float)fluidStored.amount/getCapacity()));
 	}
 		
 	@Override
@@ -365,6 +370,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		FluidNetwork network = new FluidNetwork(varTransmitters);
 		network.refFluid = refFluid;
 		network.fluidScale = fluidScale;
+		network.definedScale = definedScale;
 		
 		if(fluidStored != null)
 		{
@@ -386,6 +392,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		FluidNetwork network = new FluidNetwork(collection);
 		network.refFluid = refFluid;
 		network.fluidScale = fluidScale;
+		network.definedScale = definedScale;
 		
 		if(fluidStored != null)
 		{

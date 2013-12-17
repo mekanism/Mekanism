@@ -76,14 +76,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 				}
 			}
 		}
-		else {
-			float targetScale = getTransmitterNetwork().fluidScale;
-			
-			if(Math.abs(currentScale - targetScale) > 0.01)
-			{
-				currentScale = (9 * currentScale + targetScale) / 10;
-			}
-		}
 		
 		super.update();
 	}

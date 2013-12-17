@@ -63,6 +63,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 					gasScale = net.gasScale;
 				}
 				
+				if(net.definedScale > definedScale)
+				{
+					definedScale = net.definedScale;
+				}
+				
 				if(net.gasStored != null)
 				{
 					if(gasStored == null)
@@ -344,7 +349,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	
 	public float getScale()
 	{
-		return (gasStored == null || getCapacity() == 0 ? 0 : (float)gasStored.amount/getCapacity());
+		return Math.min(1, (gasStored == null || getCapacity() == 0 ? 0 : (float)gasStored.amount/getCapacity()));
 	}
 	
 	@Override
@@ -359,6 +364,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		GasNetwork network = new GasNetwork(varTransmitters);
 		network.refGas = refGas;
 		network.gasScale = gasScale;
+		network.definedScale = definedScale;
 		
 		if(gasStored != null)
 		{
@@ -380,6 +386,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		GasNetwork network = new GasNetwork(collection);
 		network.refGas = refGas;
 		network.gasScale = gasScale;
+		network.definedScale = definedScale;
 		
 		if(gasStored != null)
 		{

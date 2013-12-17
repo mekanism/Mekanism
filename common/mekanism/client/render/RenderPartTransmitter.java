@@ -124,6 +124,13 @@ public class RenderPartTransmitter implements IIconRegister
 	
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
+		float targetScale = pipe.getTransmitterNetwork().fluidScale;
+		
+		if(Math.abs(pipe.currentScale - targetScale) > 0.01)
+		{
+			pipe.currentScale = (9 * pipe.currentScale + targetScale) / 10;
+		}
+		
 		Fluid fluid = pipe.getTransmitterNetwork().refFluid;
 		float scale = pipe.currentScale;
 		
