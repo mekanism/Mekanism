@@ -349,7 +349,7 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		String name = side.name().toLowerCase();
-		name += connected ? "Out" : "In";
+		name += connected ? "Normal" : "None";
 		Icon renderIcon = connected ? transmitter.getSideIcon() : transmitter.getCenterIcon();
 		renderPart(renderIcon, getModelForPart(transmitter.getTransmitterSize(), name), transmitter.x(), transmitter.y(), transmitter.z());
 	}
