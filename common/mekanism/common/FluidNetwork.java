@@ -37,7 +37,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public float fluidScale;
 	public float prevScale;
 	
-	/** Sent from server to client, actual stored buffer scale */
+	/** Sent from server to client, actual stored buffer scale. Used by server as last-update scale. */
 	public float definedScale;
 	
 	public Fluid refFluid = null;
@@ -206,7 +206,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				transferDelay--;
 			}
 			
-			if(Math.abs(getScale()-prevScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
+			if(Math.abs(getScale()-definedScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
 			{
 				needsUpdate = true;
 			}
@@ -217,6 +217,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, fluidStored != null ? fluidStored.getFluid().getID() : -1, didTransfer, getScale()));
 				needsUpdate = false;
+				definedScale = getScale();
 			}
 			
 			prevTransfer = didTransfer;

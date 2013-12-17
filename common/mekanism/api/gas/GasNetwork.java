@@ -32,7 +32,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	public float gasScale;
 	public float prevScale;
 	
-	/** Sent from server to client, actual stored buffer scale */
+	/** Sent from server to client, actual stored buffer scale. Used by server as last-update scale. */
 	public float definedScale;
 	
 	public Gas refGas = null;
@@ -202,7 +202,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				transferDelay--;
 			}
 			
-			if(Math.abs(getScale()-prevScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
+			if(Math.abs(getScale()-definedScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
 			{
 				needsUpdate = true;
 			}
@@ -213,6 +213,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			{
 				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, gasStored != null ? gasStored.getGas().getID() : -1, didTransfer, getScale()));
 				needsUpdate = false;
+				definedScale = getScale();
 			}
 			
 			prevTransfer = didTransfer;
