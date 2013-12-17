@@ -35,14 +35,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public boolean prevTransfer;
 	
 	public float fluidScale;
-	public float prevScale;
 	
-	/** Sent from server to client, actual stored buffer scale. Used by server as last-update scale. */
-	public float definedScale;
-	
-	public Fluid refFluid = null;
+	public Fluid refFluid;
 	
 	public FluidStack fluidStored;
+	public int prevStored;
 	
 	public FluidNetwork(ITransmitter<FluidNetwork>... varPipes)
 	{
@@ -62,15 +59,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			if(net != null)
 			{
-				if(net.refFluid != null && net.fluidScale > fluidScale)
+				if(net.fluidScale > fluidScale)
 				{
-					refFluid = net.refFluid;
 					fluidScale = net.fluidScale;
-				}
-				
-				if(net.definedScale > definedScale)
-				{
-					definedScale = net.definedScale;
 				}
 				
 				if(net.fluidStored != null)
@@ -211,18 +202,19 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				transferDelay--;
 			}
 			
-			if(Math.abs(getScale()-definedScale) > 0.01 || (getScale() != prevScale && (getScale() == 0 || getScale() == 1)))
+			int stored = fluidStored != null ? fluidStored.amount : 0;
+			
+			if(stored != prevStored)
 			{
 				needsUpdate = true;
 			}
 			
-			prevScale = getScale();
+			prevStored = stored;
 			
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, fluidStored != null ? fluidStored.getFluid().getID() : -1, didTransfer, getScale()));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, fluidStored, didTransfer));
 				needsUpdate = false;
-				definedScale = getScale();
 			}
 			
 			prevTransfer = didTransfer;
@@ -240,23 +232,40 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 	
 	@Override
+	public boolean isValidMerger(TileEntity tileEntity)
+	{
+		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
+		
+		if(fluidStored == null || transmitter.getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork().fluidStored == null)
+		{
+			return true;
+		}
+		else if(fluidStored.getFluid() == transmitter.getTransmitterNetwork().fluidStored.getFluid())
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public void clientTick()
 	{
 		super.clientTick();
 		
-		fluidScale = Math.max(fluidScale, definedScale);
+		fluidScale = Math.max(fluidScale, getScale());
 		
 		if(didTransfer && fluidScale < 1)
 		{
-			fluidScale = Math.max(definedScale, Math.min(1, fluidScale+0.02F));
+			fluidScale = Math.max(getScale(), Math.min(1, fluidScale+0.02F));
 		}
 		else if(!didTransfer && fluidScale > 0)
 		{
-			fluidScale = Math.max(definedScale, Math.max(0, fluidScale-0.02F));
+			fluidScale = Math.max(getScale(), Math.max(0, fluidScale-0.02F));
 			
 			if(fluidScale == 0)
 			{
-				refFluid = null;
+				fluidStored = null;
 			}
 		}
 	}
@@ -340,16 +349,14 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		public final FluidNetwork fluidNetwork;
 		
-		public final int fluidType;
+		public final FluidStack fluidType;
 		public final boolean didTransfer;
-		public final float fluidScale;
 		
-		public FluidTransferEvent(FluidNetwork network, int type, boolean did, float scale)
+		public FluidTransferEvent(FluidNetwork network, FluidStack type, boolean did)
 		{
 			fluidNetwork = network;
 			fluidType = type;
 			didTransfer = did;
-			fluidScale = scale;
 		}
 	}
 	
@@ -368,9 +375,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	protected FluidNetwork create(ITransmitter<FluidNetwork>... varTransmitters) 
 	{
 		FluidNetwork network = new FluidNetwork(varTransmitters);
-		network.refFluid = refFluid;
 		network.fluidScale = fluidScale;
-		network.definedScale = definedScale;
 		
 		if(fluidStored != null)
 		{
@@ -390,9 +395,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork>> collection) 
 	{
 		FluidNetwork network = new FluidNetwork(collection);
-		network.refFluid = refFluid;
 		network.fluidScale = fluidScale;
-		network.definedScale = definedScale;
 		
 		if(fluidStored != null)
 		{

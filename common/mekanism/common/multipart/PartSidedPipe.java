@@ -37,9 +37,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
 	public int delayTicks;
 	public ForgeDirection testingSide = null;
+	
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
-	public boolean isActive = false;
+	
 	public boolean sendDesc = false;
 	public boolean redstonePowered = false;
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL,
@@ -271,6 +272,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public abstract boolean isValidAcceptor(TileEntity tile, ForgeDirection side);
 
+	@Override
 	public boolean canConnectMutual(ForgeDirection side)
 	{
 		if(!canConnect(side)) return false;
@@ -279,6 +281,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return (!(tile instanceof IBlockableConnection) || ((IBlockableConnection)tile).canConnect(side.getOpposite()));
 	}
 
+	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
 		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
@@ -297,7 +300,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		currentTransmitterConnections = packet.readByte();
 		currentAcceptorConnections = packet.readByte();
-		isActive = packet.readBoolean();
+		
 		for(int i=0; i<6; i++)
 		{
 			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
@@ -310,7 +313,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		packet.writeByte(currentTransmitterConnections);
 		packet.writeByte(currentAcceptorConnections);
-		packet.writeBoolean(isActive);
+		
 		for(int i=0; i<6; i++)
 		{
 			packet.writeInt(connectionTypes[i].ordinal());
@@ -372,6 +375,21 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		if(connectionMapContainsSide(currentTransmitterConnections, side))
 			return ConnectionType.NORMAL;
 		return connectionTypes[side.ordinal()];
+	}
+	
+	public List<ForgeDirection> getConnections(ConnectionType type)
+	{
+		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(getConnectionType(side) == type)
+			{
+				sides.add(side);
+			}
+		}
+			
+		return sides;
 	}
 
 	public CCModel getModelForSide(ForgeDirection side, boolean internal)

@@ -3,7 +3,7 @@ package mekanism.common.multipart;
 import java.util.Arrays;
 import java.util.Set;
 
-import mekanism.api.gas.Gas;
+import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -56,14 +56,14 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	    		cacheFluid = null;
     		}
 			
-			if(isActive)
-			{
-				IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
-				
-				for(IFluidHandler container : connectedAcceptors)
-				{
-					ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(connectedAcceptors).indexOf(container));
-					
+    		IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
+    		
+    		for(ForgeDirection side : getConnections(ConnectionType.PULL))
+    		{
+    			if(connectedAcceptors[side.ordinal()] != null)
+    			{
+    				IFluidHandler container = connectedAcceptors[side.ordinal()];
+    				
 					if(container != null)
 					{
 						FluidStack received = container.drain(side, 100, false);
@@ -73,7 +73,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 							container.drain(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
 						}
 					}
-				}
+    			}
 			}
 		}
 		
@@ -146,27 +146,51 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     }
     
     @Override
-    public boolean isConnectable(TileEntity tileEntity)
+    public boolean canConnect(ForgeDirection side)
     {
+    	if(!super.canConnect(side))
+    	{
+    		return false;
+    	}
+    	
+    	TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
+    	
     	if(tileEntity instanceof ITransmitter && TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
     	{
     		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
     		
+    	   	if(world().isRemote && transmitter.getTransmitterNetwork(false) == null)
+        	{
+        		if(!connectionMapContainsSide(currentTransmitterConnections, side))
+        		{
+        			return false;
+        		}
+        	}
+    		
     		if(getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false) == null)
 			{
-				return true;
+    			if(transmitter.getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false).fluidStored == null)
+    			{
+    				return true;
+    			}
 			}
     		else if(getTransmitterNetwork().fluidStored == null || transmitter.getTransmitterNetwork().fluidStored == null)
     		{
     			return true;
     		}
-    		else if(getTransmitterNetwork().fluidStored.getFluid() == transmitter.getTransmitterNetwork().fluidStored.getFluid())
+    		
+    		if(getTransmitterNetwork(false) != null && transmitter.getTransmitterNetwork(false) != null)
     		{
-    			return true;
+	    		if(getTransmitterNetwork().fluidStored.getFluid() == transmitter.getTransmitterNetwork().fluidStored.getFluid())
+	    		{
+	    			return true;
+	    		}
     		}
+    		
+    		return false;
     	}
     	
-    	return false;
+    	return true;
     }
 
 	@Override
@@ -185,7 +209,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     @Override
     public Icon getCenterIcon()
     {
-        return pipeIcons.getCenterIcon(isActive ? 1 : 0);
+        return pipeIcons.getCenterIcon(0);
     }
 
     @Override
@@ -228,7 +252,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(!isActive)
+		if(this.getConnectionType(from) == ConnectionType.NORMAL)
 		{
 			return getTransmitterNetwork().emit(resource, doFill);
 		}
@@ -263,7 +287,12 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
 	{
-		return new FluidTankInfo[] {dummyTank.getInfo()};
+		if(getConnectionType(from) != ConnectionType.NONE)
+		{
+			return new FluidTankInfo[] {dummyTank.getInfo()};
+		}
+		
+		return new FluidTankInfo[0];
 	}
 
 	@Override
@@ -288,16 +317,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	public String getTransmitterNetworkFlow()
 	{
 		return getTransmitterNetwork().getFlow();
-	}
-	
-	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
-	{
-		isActive = !isActive;
-		refreshTransmitterNetwork();
-		sendDesc = true;
-		
-		return true;
 	}
 
     @Override

@@ -134,7 +134,7 @@ public class RenderPartTransmitter implements IIconRegister
 		Fluid fluid = pipe.getTransmitterNetwork().refFluid;
 		float scale = pipe.currentScale;
 		
-		if(scale > 0 && fluid != null)
+		if(scale > 0.01 && fluid != null)
 		{	
 			push();
 			
@@ -315,7 +315,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 	public void renderContents(PartPressurizedTube tube, Vector3 pos)
 	{
-		if(tube.getTransmitterNetwork().refGas == null || tube.getTransmitterNetwork().gasScale == 0)
+		if(tube.getTransmitterNetwork().gasStored == null || tube.getTransmitterNetwork().gasScale == 0)
 		{
 			return;
 		}
@@ -366,7 +366,7 @@ public class RenderPartTransmitter implements IIconRegister
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(tube.getAllCurrentConnections(), side);
-		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
+		renderTransparency(tube.getTransmitterNetwork().gasStored.getGas().getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
     public void renderPart(Icon icon, CCModel cc, double x, double y, double z)

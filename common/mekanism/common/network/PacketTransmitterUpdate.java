@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
@@ -25,13 +26,11 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	
 	public double power;
 	
-	public int gasType;
+	public GasStack gasStack;
 	public boolean didGasTransfer;
 	
-	public int fluidType;
+	public FluidStack fluidStack;
 	public boolean didFluidTransfer;
-	
-	public float scale;
 	
 	@Override
 	public String getName() 
@@ -51,14 +50,12 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				power = (Double)data[2];
 				break;
 			case GAS:
-				gasType = (Integer)data[2];
+				gasStack = (GasStack)data[2];
 				didGasTransfer = (Boolean)data[3];
-				scale = (Float)data[4];
 				break;
 			case FLUID:
-				fluidType = (Integer)data[2];
+				fluidStack = (FluidStack)data[2];
 				didFluidTransfer = (Boolean)data[3];
-				scale = (Float)data[4];
 				break;
 		}
 		
@@ -99,18 +96,23 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
     		Gas gasType = GasRegistry.getGas(dataStream.readInt());
+    		int amount = dataStream.readInt();
     		didGasTransfer = dataStream.readBoolean();
-    		scale = dataStream.readFloat();
     		
     		if(tileEntity != null)
     		{
     			if(gasType != null)
     			{
-    				((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
+    				((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored = new GasStack(gasType, amount);
+    			}
+    			else {
+    				if(((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored != null)
+    				{
+    					((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored.amount = amount;
+    				}
     			}
     			
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
-    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -119,8 +121,14 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		int type = dataStream.readInt();
     		Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
+    		int amount = dataStream.readInt();
+    		FluidStack stack = null;
     		didFluidTransfer = dataStream.readBoolean();
-    		scale = dataStream.readFloat();
+    		
+    		if(fluidType != null)
+    		{
+    			stack = new FluidStack(fluidType, amount);
+    		}
     		
     		if(tileEntity != null)
     		{
@@ -129,8 +137,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     				((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
     			}
     			
+    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().fluidStored = stack;
     			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
-    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;
     		}
 	    }
 	}
@@ -150,14 +158,14 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				dataStream.writeDouble(power);
 				break;
 			case GAS:
-				dataStream.writeInt(gasType);
+				dataStream.writeInt(gasStack != null ? gasStack.getGas().getID() : -1);
+				dataStream.writeInt(gasStack != null ? gasStack.amount : 0);
 				dataStream.writeBoolean(didGasTransfer);
-				dataStream.writeFloat(scale);
 				break;
 			case FLUID:
-				dataStream.writeInt(fluidType);
+				dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
+				dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
 				dataStream.writeBoolean(didFluidTransfer);
-				dataStream.writeFloat(scale);
 				break;
 		}
 	}
