@@ -104,7 +104,6 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			System.out.println("UPDATE " + gasType + " " + didGasTransfer + " " + scale);
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().definedScale = scale;

@@ -234,6 +234,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	{
 		super.clientTick();
 		
+		gasScale = Math.max(gasScale, definedScale);
+		
 		if(didTransfer && gasScale < 1)
 		{
 			gasScale = Math.max(definedScale, Math.min(1, gasScale+0.02F));

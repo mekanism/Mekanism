@@ -238,6 +238,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		super.clientTick();
 		
+		fluidScale = Math.max(fluidScale, definedScale);
+		
 		if(didTransfer && fluidScale < 1)
 		{
 			fluidScale = Math.max(definedScale, Math.min(1, fluidScale+0.02F));
