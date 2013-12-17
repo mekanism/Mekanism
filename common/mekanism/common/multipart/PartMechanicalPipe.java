@@ -3,8 +3,6 @@ package mekanism.common.multipart;
 import java.util.Arrays;
 import java.util.Set;
 
-import mekanism.api.gas.GasNetwork;
-import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -83,7 +81,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     	
     	if(nbtTags.hasKey("cacheFluid"))
     	{
-    		cacheFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheEnergy"));
+    		cacheFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheFluid"));
     	}
     }
     
