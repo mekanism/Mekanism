@@ -144,46 +144,6 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	    	nbtTags.setCompoundTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
     	}
     }
-    
-    @Override
-    public boolean canConnect(ForgeDirection side)
-    {
-    	if(!super.canConnect(side))
-    	{
-    		return false;
-    	}
-    	
-    	TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
-    	
-    	if(tileEntity instanceof ITransmitter && TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
-    	{
-    		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
-    		
-    		if(getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false) == null)
-			{
-    			if(transmitter.getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false).fluidStored == null)
-    			{
-    				return true;
-    			}
-			}
-    		else if(getTransmitterNetwork().fluidStored == null || transmitter.getTransmitterNetwork().fluidStored == null)
-    		{
-    			return true;
-    		}
-    		
-    		if(getTransmitterNetwork(false) != null && transmitter.getTransmitterNetwork(false) != null)
-    		{
-	    		if(getTransmitterNetwork().fluidStored.getFluid() == transmitter.getTransmitterNetwork().fluidStored.getFluid())
-	    		{
-	    			return true;
-	    		}
-    		}
-    		
-    		return false;
-    	}
-    	
-    	return true;
-    }
 
 	@Override
 	public String getType()

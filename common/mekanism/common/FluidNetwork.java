@@ -232,23 +232,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 	
 	@Override
-	public boolean isValidMerger(TileEntity tileEntity)
-	{
-		ITransmitter<FluidNetwork> transmitter = (ITransmitter<FluidNetwork>)tileEntity;
-		
-		if(fluidStored == null || transmitter.getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork().fluidStored == null)
-		{
-			return true;
-		}
-		else if(fluidStored.getFluid() == transmitter.getTransmitterNetwork().fluidStored.getFluid())
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	@Override
 	public void clientTick()
 	{
 		super.clientTick();
