@@ -15,7 +15,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 public final class InventoryUtils 
 {
-	public static final int[] EMPTY = new int[0];
+	public static final int[] EMPTY = new int[] {};
 	
 	public static IInventory checkChestInv(IInventory inv)
 	{
