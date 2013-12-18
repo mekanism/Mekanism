@@ -163,11 +163,13 @@ public class GuiTOreDictFilter extends GuiMekanism
 		
 		if(renderStack != null)
 		{
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 12, 19);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			try {
+				GL11.glPushMatrix();
+				GL11.glEnable(GL11.GL_LIGHTING);
+				itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 12, 19);
+				GL11.glDisable(GL11.GL_LIGHTING);
+				GL11.glPopMatrix();
+			} catch(Exception e) {}
 		}
 		
 		if(filter.color != null)

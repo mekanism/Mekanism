@@ -317,11 +317,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 					
 					if(oreDictStacks.get(filter).renderStack != null)
 					{
-						GL11.glPushMatrix();
-						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-						GL11.glDisable(GL11.GL_LIGHTING);
-						GL11.glPopMatrix();
+						try {
+							GL11.glPushMatrix();
+							GL11.glEnable(GL11.GL_LIGHTING);
+							itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							GL11.glDisable(GL11.GL_LIGHTING);
+							GL11.glPopMatrix();
+						} catch(Exception e) {}
 					}
 					
 					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
