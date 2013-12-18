@@ -190,6 +190,7 @@ public class CommonProxy
 	  	Mekanism.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04D).getDouble(.04D);
 	  	Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
 	  	Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123).getInt();
+	  	Mekanism.upgradeModifier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL,"UpgradeModifier", 10).getInt();
 	  	
 	  	Mekanism.TO_TE = Mekanism.TO_BC*10;
 	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;
