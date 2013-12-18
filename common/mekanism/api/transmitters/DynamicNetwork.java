@@ -166,13 +166,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity)transmitter))
 				{
-					ITransmitter<N> trans = (ITransmitter<N>)nodeTile;
-					
-					if(trans.getTransmitterNetwork(false) == null || isValidMerger(nodeTile))
-					{
-						((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
-						newTransporters.add((ITransmitter<N>)nodeTile);
-					}
+					((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
+					newTransporters.add((ITransmitter<N>)nodeTile);
 				}
 			}
 			
@@ -208,7 +203,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			{
 				TileEntity connectedBlockA = connectedBlocks[count];
 
-				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && isValidMerger(connectedBlockA) && !dealtWith[count])
+				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && !dealtWith[count])
 				{
 					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Object3D.get(connectedBlockA), Object3D.get((TileEntity)splitPoint));
 					List<Object3D> partNetwork = finder.exploreNetwork();
@@ -222,7 +217,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						
 						TileEntity connectedBlockB = connectedBlocks[check];
 						
-						if(TransmissionType.checkTransmissionType(connectedBlockB, getTransmissionType()) && isValidMerger(connectedBlockB) && !dealtWith[check])
+						if(TransmissionType.checkTransmissionType(connectedBlockB, getTransmissionType()) && !dealtWith[check])
 						{
 							if(partNetwork.contains(Object3D.get(connectedBlockB)))
 							{
@@ -262,11 +257,6 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			
 			deregister();
 		}
-	}
-	
-	public boolean isValidMerger(TileEntity tileEntity)
-	{
-		return true;
 	}
 	
 	@Override

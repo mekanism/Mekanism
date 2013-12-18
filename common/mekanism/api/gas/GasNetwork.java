@@ -424,10 +424,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			}
 		}
 		
-		gasScale = 0;
-		refGas = null;
-		gasStored = null;
-		
 		return network;
 	}
 

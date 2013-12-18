@@ -401,10 +401,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 		
-		fluidScale = 0;
-		refFluid = null;
-		fluidStored = null;
-		
 		return network;
 	}
 	
