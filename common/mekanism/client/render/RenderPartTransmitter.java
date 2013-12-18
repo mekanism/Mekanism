@@ -134,7 +134,7 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		if(Math.abs(pipe.currentScale - targetScale) > 0.01)
 		{
-			pipe.currentScale = (9 * pipe.currentScale + targetScale) / 10;
+			pipe.currentScale = (12 * pipe.currentScale + targetScale) / 13;
 		}
 		else {
 			pipe.currentScale = targetScale;

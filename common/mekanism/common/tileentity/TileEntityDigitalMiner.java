@@ -804,7 +804,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public double getMaxEnergy() 
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 	
 	@Override

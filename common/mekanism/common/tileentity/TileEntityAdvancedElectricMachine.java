@@ -312,9 +312,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			case 5:
 				return new Object[] {canOperate()};
 			case 6:
-				return new Object[] {MekanismUtils.getEnergy(getEnergyMultiplier(), getMaxEnergy())};
+				return new Object[] {MekanismUtils.getMaxEnergy(getEnergyMultiplier(), getMaxEnergy())};
 			case 7:
-				return new Object[] {(MekanismUtils.getEnergy(getEnergyMultiplier(), getMaxEnergy())-getEnergy())};
+				return new Object[] {(MekanismUtils.getMaxEnergy(getEnergyMultiplier(), getMaxEnergy())-getEnergy())};
 			default:
 				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

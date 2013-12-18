@@ -740,7 +740,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public double getMaxEnergy() 
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 	
 	@Override

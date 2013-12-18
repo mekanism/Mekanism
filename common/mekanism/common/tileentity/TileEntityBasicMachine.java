@@ -215,7 +215,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxEnergy() 
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
 	
 	@Override

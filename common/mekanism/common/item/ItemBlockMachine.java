@@ -816,7 +816,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public double getMaxEnergy(ItemStack itemStack) 
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(itemStack), MachineType.get(itemStack.itemID, itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(itemStack), MachineType.get(itemStack.itemID, itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override
