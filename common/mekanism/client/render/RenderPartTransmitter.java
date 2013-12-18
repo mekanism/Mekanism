@@ -136,6 +136,9 @@ public class RenderPartTransmitter implements IIconRegister
 		{
 			pipe.currentScale = (9 * pipe.currentScale + targetScale) / 10;
 		}
+		else {
+			pipe.currentScale = targetScale;
+		}
 		
 		Fluid fluid = pipe.getTransmitterNetwork().refFluid;
 		float scale = pipe.currentScale;

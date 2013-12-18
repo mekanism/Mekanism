@@ -56,35 +56,38 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			if(net != null)
 			{
-				if(net.refFluid != null && net.fluidScale > fluidScale)
+				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 				{
-					refFluid = net.refFluid;
-					net.fluidScale = 0;
-					net.refFluid = null;
-				}
-				
-				if(net.fluidStored != null)
-				{
-					if(fluidStored == null)
+					if(net.refFluid != null && net.fluidScale > fluidScale)
 					{
+						refFluid = net.refFluid;
+						fluidScale = net.fluidScale;
 						fluidStored = net.fluidStored;
+						
+						net.fluidScale = 0;
+						net.refFluid = null;
+						net.fluidStored = null;
 					}
-					else {
-						fluidStored.amount += net.fluidStored.amount;
+				}
+				else {
+					if(net.fluidStored != null)
+					{
+						if(fluidStored == null)
+						{
+							fluidStored = net.fluidStored;
+						}
+						else {
+							fluidStored.amount += net.fluidStored.amount;
+						}
+						
+						net.fluidStored = null;
 					}
-					
-					net.fluidStored = null;
 				}
 				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
 		}
-		
-    	if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-    	{
-    		System.out.println("hi");
-    	}
 		
 		fluidScale = getScale();
 		
@@ -95,13 +98,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
     @Override
     public void onNetworksCreated(List<FluidNetwork> networks)
     {    	
-		if(fluidStored != null)
+		if(fluidStored != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-	    	if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-	    	{
-	    		System.out.println("hi");
-	    	}
-	    	
 	    	int[] caps = new int[networks.size()];
 	    	int cap = 0;
 	    	
@@ -128,9 +126,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	    	}
 		}
 		
+    	fluidScale = 0;
 	   	fluidStored = null;
     	refFluid = null;
-    	fluidScale = 0;
     }
 	
 	public synchronized int getFluidNeeded()
@@ -220,8 +218,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			
 			int stored = fluidStored != null ? fluidStored.amount : 0;
 			
-			System.out.println("SERVER " + getScale() + " " + stored);
-			
 			if(stored != prevStored)
 			{
 				needsUpdate = true;
@@ -253,8 +249,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public void clientTick()
 	{
 		super.clientTick();
-		
-		System.out.println("CLIENT " + getScale() + " " + getFlow());
 		
 		fluidScale = Math.max(fluidScale, getScale());
 		
@@ -392,6 +386,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 		
 		network.fluidScale = network.getScale();
+		
 		fluidScale = 0;
 		refFluid = null;
 		fluidStored = null;
@@ -405,7 +400,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		FluidNetwork network = new FluidNetwork(collection);
 		network.refFluid = refFluid;
 		
-		if(fluidStored != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(fluidStored != null)
 		{
 			if(network.fluidStored == null)
 			{

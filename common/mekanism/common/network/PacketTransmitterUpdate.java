@@ -107,13 +107,15 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
+    			GasNetwork net = ((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
+    			
     			if(gasType != null)
     			{
-    				((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
+    				net.refGas = gasType;
     			}
     			
-    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored = stack;
-    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
+    			net.gasStored = stack;
+    			net.didTransfer = didGasTransfer;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -133,13 +135,17 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
+    			System.out.println(type + " " + amount + " " + didFluidTransfer);
+    			FluidNetwork net = ((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
+    			
     			if(fluidType != null)
     			{
-    				((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().refFluid = fluidType;
+    				net.refFluid = fluidType;
     			}
     			
-    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().fluidStored = stack;
-    			((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
+    			net.fluidStored = stack;
+    			net.didTransfer = didFluidTransfer;
+    			net.fluidScale = net.getScale();
     		}
 	    }
 	}

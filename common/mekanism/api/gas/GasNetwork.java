@@ -54,31 +54,40 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		{
 			if(net != null)
 			{
-				if(net.refGas != null && net.gasScale > gasScale)
+				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 				{
-					gasScale = net.gasScale;
-					refGas = net.refGas;
-					net.gasScale = 0;
-					net.refGas = null;
-				}
-				
-				if(net.gasStored != null)
-				{
-					if(gasStored == null)
+					if(net.refGas != null && net.gasScale > gasScale)
 					{
+						gasScale = net.gasScale;
+						refGas = net.refGas;
 						gasStored = net.gasStored;
+						
+						net.gasScale = 0;
+						net.refGas = null;
+						net.gasStored = null;
 					}
-					else {
-						gasStored.amount += net.gasStored.amount;
+				}
+				else {
+					if(net.gasStored != null)
+					{
+						if(gasStored == null)
+						{
+							gasStored = net.gasStored;
+						}
+						else {
+							gasStored.amount += net.gasStored.amount;
+						}
+						
+						net.gasStored = null;
 					}
-					
-					net.gasStored = null;
 				}
 				
 				addAllTransmitters(net.transmitters);
 				net.deregister();
 			}
 		}
+		
+		gasScale = getScale();
 		
 		refresh();
 		register();
@@ -87,7 +96,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
     @Override
     public void onNetworksCreated(List<GasNetwork> networks)
     {
-		if(gasStored != null)
+		if(gasStored != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 	    	int[] caps = new int[networks.size()];
 	    	int cap = 0;
@@ -385,7 +394,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
 	{
 		GasNetwork network = new GasNetwork(varTransmitters);
-		network.gasScale = gasScale;
 		network.refGas = refGas;
 		
 		if(gasStored != null)
@@ -399,6 +407,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			}
 		}
 		
+		network.gasScale = network.getScale();
 		gasScale = 0;
 		refGas = null;
 		gasStored = null;
@@ -410,7 +419,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
 	{
 		GasNetwork network = new GasNetwork(collection);
-		network.gasScale = gasScale;
 		network.refGas = refGas;
 		
 		if(gasStored != null)
@@ -423,6 +431,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				network.gasStored.amount += gasStored.amount;
 			}
 		}
+		
+		network.gasScale = network.getScale();
 		
 		return network;
 	}
