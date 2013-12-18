@@ -380,7 +380,6 @@ public class BlockTransmitter extends Block
 				return new TileEntityLogisticalTransporter();
 			case 4:
 				return new TileEntityLogisticalTransporter();
-
 			case 5:
 				return new TileEntityDiversionTransporter();
 			default:

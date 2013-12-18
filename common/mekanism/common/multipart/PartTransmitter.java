@@ -11,6 +11,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.IConfigurable;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -71,7 +75,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		if(possibleTransmitters != currentTransmitterConnections)
 		{
 			boolean nowPowered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
-
+			
 			if(nowPowered != redstonePowered)
 			{
 				if(nowPowered)
@@ -251,6 +255,12 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	public void onNeighborChanged()
 	{
 		super.onNeighborChanged();
+		
+		if(!world().isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);
+		}
+		
 		refreshTransmitterNetwork();
 	}
 	
