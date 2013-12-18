@@ -338,7 +338,7 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderGasSide(side, tube);			
+			renderGasSide(side, tube);
 		}
 		
 		CCRenderState.draw();
@@ -375,7 +375,7 @@ public class RenderPartTransmitter implements IIconRegister
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(tube.getAllCurrentConnections(), side);
-		renderTransparency(tube.getTransmitterNetwork().gasStored.getGas().getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
+		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
     public void renderPart(Icon icon, CCModel cc, double x, double y, double z)

@@ -239,6 +239,17 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	}
 	
 	@Override
+	public void onModeChange(ForgeDirection side)
+	{
+		refreshTransmitterNetwork();
+		
+		if(!world().isRemote)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);
+		}
+	}
+	
+	@Override
 	public void onAdded()
 	{
 		super.onAdded();

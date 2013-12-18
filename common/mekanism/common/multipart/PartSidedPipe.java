@@ -173,7 +173,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if(canConnectMutual(side))
+			if(connectionTypes[side.ordinal()] != ConnectionType.NONE && canConnectMutual(side))
 			{
 				TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
 
@@ -388,9 +388,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public ConnectionType getConnectionType(ForgeDirection side)
 	{
 		if(!connectionMapContainsSide(getAllCurrentConnections(), side))
+		{
 			return ConnectionType.NONE;
-		if(connectionMapContainsSide(currentTransmitterConnections, side))
+		}
+		else if(connectionMapContainsSide(currentTransmitterConnections, side))
+		{
 			return ConnectionType.NORMAL;
+		}
 		
 		return connectionTypes[side.ordinal()];
 	}
@@ -425,12 +429,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				return RenderPartTransmitter.large_models.get(name);
 			}
-			else
-			{
+			else {
 				return RenderPartTransmitter.small_models.get(name);
 			}
 		}
 	}
+	
+	public abstract void onModeChange(ForgeDirection side);
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
@@ -445,6 +450,18 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			connectionTypes[hit.subHit] = ConnectionType.nextType[connectionTypes[hit.subHit].ordinal()];
 			sendDesc = true;
+			
+			onModeChange(ForgeDirection.getOrientation(side));
+			
+			return true;
+		}
+		else if(hit.subHit == 6 && connectionTypes[side] == ConnectionType.NONE)
+		{
+			connectionTypes[side] = ConnectionType.NORMAL;
+			sendDesc = true;
+			
+			onModeChange(ForgeDirection.getOrientation(side));
+			
 			return true;
 		}
 		
