@@ -58,6 +58,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				{
 					gasScale = net.gasScale;
 					refGas = net.refGas;
+					net.gasScale = 0;
+					net.refGas = null;
 				}
 				
 				if(net.gasStored != null)
@@ -69,6 +71,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 					else {
 						gasStored.amount += net.gasStored.amount;
 					}
+					
+					net.gasStored = null;
 				}
 				
 				addAllTransmitters(net.transmitters);
@@ -109,6 +113,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	    		}
 	    	}
 		}
+		
+		gasScale = 0;
+		refGas = null;
+		gasStored = null;
     }
 	
 	public synchronized int getGasNeeded()
@@ -391,6 +399,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			}
 		}
 		
+		gasScale = 0;
+		refGas = null;
+		gasStored = null;
+		
 		return network;
 	}
 
@@ -411,6 +423,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				network.gasStored.amount += gasStored.amount;
 			}
 		}
+		
+		gasScale = 0;
+		refGas = null;
+		gasStored = null;
 		
 		return network;
 	}

@@ -56,9 +56,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			if(net != null)
 			{
-				if(net.fluidScale > fluidScale)
+				if(net.refFluid != null && net.fluidScale > fluidScale)
 				{
 					fluidScale = net.fluidScale;
+					refFluid = net.refFluid;
+					net.fluidScale = 0;
+					net.refFluid = null;
 				}
 				
 				if(net.fluidStored != null)
@@ -70,6 +73,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					else {
 						fluidStored.amount += net.fluidStored.amount;
 					}
+					
+					net.fluidStored = null;
 				}
 				
 				addAllTransmitters(net.transmitters);
@@ -110,6 +115,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	    		}
 	    	}
 		}
+		
+	   	fluidStored = null;
+    	refFluid = null;
+    	fluidScale = 0;
     }
 	
 	public synchronized int getFluidNeeded()
@@ -367,6 +376,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 		
+		fluidScale = 0;
+		refFluid = null;
+		fluidStored = null;
+		
 		return network;
 	}
 
@@ -387,6 +400,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				network.fluidStored.amount += fluidStored.amount;
 			}
 		}
+		
+		fluidScale = 0;
+		refFluid = null;
+		fluidStored = null;
 		
 		return network;
 	}

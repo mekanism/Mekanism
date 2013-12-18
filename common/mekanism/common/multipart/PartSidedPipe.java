@@ -1,5 +1,27 @@
 package mekanism.common.multipart;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import mekanism.api.Object3D;
+import mekanism.api.transmitters.IBlockableConnection;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.IConfigurable;
+import mekanism.common.ITileNetwork;
+import mekanism.common.Mekanism;
+import mekanism.common.item.ItemConfigurator;
+import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -11,25 +33,18 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import codechicken.microblock.IHollowConnect;
-import codechicken.multipart.*;
+import codechicken.multipart.IconHitEffects;
+import codechicken.multipart.JIconHitEffects;
+import codechicken.multipart.JNormalOcclusion;
+import codechicken.multipart.NormalOcclusionTest;
+import codechicken.multipart.PartMap;
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TSlottedPart;
+
 import com.google.common.io.ByteArrayDataInput;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.api.Object3D;
-import mekanism.api.transmitters.*;
-import mekanism.client.render.RenderPartTransmitter;
-import mekanism.common.IConfigurable;
-import mekanism.common.ITileNetwork;
-import mekanism.common.Mekanism;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.ForgeDirection;
-
-import java.util.*;
 
 public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable
 {
@@ -107,12 +122,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public Icon getIconForSide(ForgeDirection side)
 	{
 		ConnectionType type = getConnectionType(side);
+		
 		if(type == ConnectionType.NONE)
 		{
 			return getCenterIcon();
 		}
-		else
-		{
+		else {
 			return getSideIcon();
 		}
 	}
@@ -212,6 +227,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		Set<Cuboid6> collisionBoxes = new HashSet<Cuboid6>();
 		collisionBoxes.addAll((Collection<? extends Cuboid6>)getSubParts());
+		
 		return collisionBoxes;
 	}
 
@@ -301,7 +317,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		currentTransmitterConnections = packet.readByte();
 		currentAcceptorConnections = packet.readByte();
 		
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 		{
 			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
 		}
@@ -314,7 +330,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		packet.writeByte(currentTransmitterConnections);
 		packet.writeByte(currentAcceptorConnections);
 		
-		for(int i=0; i<6; i++)
+		for(int i = 0; i < 6; i++)
 		{
 			packet.writeInt(connectionTypes[i].ordinal());
 		}
@@ -327,7 +343,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			return false;
 		}
-		if(item.getItem() instanceof IToolWrench && player.isSneaking())
+		
+		if(item.getItem() instanceof IToolWrench && !(item.getItem() instanceof ItemConfigurator) && player.isSneaking())
 		{
 			if(!world().isRemote)
 			{
@@ -374,6 +391,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return ConnectionType.NONE;
 		if(connectionMapContainsSide(currentTransmitterConnections, side))
 			return ConnectionType.NORMAL;
+		
 		return connectionTypes[side.ordinal()];
 	}
 	
@@ -396,21 +414,22 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		String sideName = side.name().toLowerCase();
 		ConnectionType type =  getConnectionType(side);
+		
 		if(getTransmitterSize() == TransmissionType.Size.LARGE)
 		{
 			sideName += (type == ConnectionType.NONE) ? "In" : "Out";
+			
 			return RenderPartTransmitter.large_models.get(sideName);
 		}
-		else
-		{
+		else {
 			String typeName = getConnectionType(side).name().toUpperCase();
 			String name = sideName + typeName;
+			
 			if(internal)
 			{
 				return RenderPartTransmitter.contents_models.get(name);
 			}
-			else
-			{
+			else {
 				return RenderPartTransmitter.small_models.get(name);
 			}
 		}
@@ -419,15 +438,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		ExtendedMOP hit = (ExtendedMOP) RayTracer.retraceBlock(world(), player, x(), y(), z());
+		ExtendedMOP hit = (ExtendedMOP)RayTracer.retraceBlock(world(), player, x(), y(), z());
+		
 		if(hit == null)
+		{
 			return false;
-		if(hit.subHit < 6)
+		}
+		else if(hit.subHit < 6)
 		{
 			connectionTypes[hit.subHit] = ConnectionType.nextType[connectionTypes[hit.subHit].ordinal()];
 			sendDesc = true;
 			return true;
 		}
+		
 		return false;
 	}
 

@@ -79,6 +79,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 					getTransmitterNetwork().split((ITransmitter<N>)tile());
 					setTransmitterNetwork(null);
 				}
+				
 				tile().notifyPartChange(this);
 				redstonePowered = nowPowered;
 			}
