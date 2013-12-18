@@ -2,17 +2,16 @@ package mekanism.common;
 
 import java.util.EnumSet;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -94,7 +93,6 @@ public class CommonPlayerTickHandler implements ITickHandler
 				if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
 				{
 					player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
-					player.fallDistance = 0.0F;
 				}
 				else if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
@@ -119,8 +117,13 @@ public class CommonPlayerTickHandler implements ITickHandler
 							player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
 						}
 					}
-					
-					player.fallDistance = 0.0F;
+				}
+				
+				player.fallDistance = 0.0F;
+				
+				if(player instanceof EntityPlayerMP)
+				{
+					((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
 				}
 				
 				jetpack.useGas(player.getCurrentItemOrArmor(3));
