@@ -85,6 +85,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 				}
 				
 				tile().notifyPartChange(this);
+				
 				redstonePowered = nowPowered;
 			}
 			
@@ -258,6 +259,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		
 		if(!world().isRemote)
 		{
+			System.out.println("pack");
 			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);
 		}
 		

@@ -135,7 +135,6 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			System.out.println(type + " " + amount + " " + didFluidTransfer);
     			FluidNetwork net = ((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
     			
     			if(fluidType != null)
