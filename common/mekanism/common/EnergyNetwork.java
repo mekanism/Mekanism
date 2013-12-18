@@ -359,13 +359,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 		
-		for(ITransmitter<EnergyNetwork> cable : iterCables)
+		for(ITransmitter<EnergyNetwork> transmitter : iterCables)
 		{
-			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)cable);
+			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)transmitter);
 		
 			for(TileEntity acceptor : acceptors)
 			{
-				if(acceptor != null && !(acceptor instanceof ITransmitter))
+				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+				
+				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnect(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));

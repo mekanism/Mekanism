@@ -310,13 +310,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			}
 		}
 		
-		for(ITransmitter<GasNetwork> pipe : transmitters)
+		for(ITransmitter<GasNetwork> transmitter : transmitters)
 		{
-			IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
+			IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)transmitter);
 		
 			for(IGasHandler acceptor : acceptors)
 			{
-				if(acceptor != null && !(acceptor instanceof ITransmitter))
+				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+				
+				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnect(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));

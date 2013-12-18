@@ -18,6 +18,7 @@ import mekanism.common.item.ItemConfigurator;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
@@ -300,7 +301,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
-		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()) || connectionTypes[side.ordinal()] == ConnectionType.NONE)
 		{
 			return false;
 		}
@@ -333,6 +334,28 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		for(int i = 0; i < 6; i++)
 		{
 			packet.writeInt(connectionTypes[i].ordinal());
+		}
+	}
+	
+	@Override
+	public void load(NBTTagCompound nbtTags)
+	{
+		super.load(nbtTags);
+		
+		for(int i = 0; i < 6; i++)
+		{
+			connectionTypes[i] = ConnectionType.values()[nbtTags.getInteger("connection" + i)];
+		}
+	}
+	
+	@Override
+	public void save(NBTTagCompound nbtTags)
+	{
+		super.save(nbtTags);
+		
+		for(int i = 0; i < 6; i++)
+		{
+			nbtTags.setInteger("connection" + i, connectionTypes[i].ordinal());
 		}
 	}
 

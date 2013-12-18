@@ -122,30 +122,6 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	    	nbtTags.setCompoundTag("cacheGas", stack.write(new NBTTagCompound()));
     	}
     }
-    
-    @Override
-    public boolean isConnectable(TileEntity tileEntity)
-    {
-    	if(tileEntity instanceof ITransmitter && TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
-    	{
-    		ITransmitter<GasNetwork> transmitter = (ITransmitter<GasNetwork>)tileEntity;
-    		
-    		if(getTransmitterNetwork(false) == null || transmitter.getTransmitterNetwork(false) == null)
-			{
-				return true;
-			}
-    		else if(getTransmitterNetwork().gasStored == null || transmitter.getTransmitterNetwork().gasStored == null)
-    		{
-    			return true;
-    		}
-    		else if(getTransmitterNetwork().gasStored.getGas() == transmitter.getTransmitterNetwork().gasStored.getGas())
-    		{
-    			return true;
-    		}
-    	}
-    	
-    	return false;
-    }
 
 	@Override
 	public String getType()

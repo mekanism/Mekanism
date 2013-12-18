@@ -1,9 +1,8 @@
 package mekanism.api.transmitters;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
 
-public interface ITransmitter<N extends DynamicNetwork<?, N>> 
+public interface ITransmitter<N extends DynamicNetwork<?, N>> extends IBlockableConnection
 {
 	/**
 	 * Get the transmitter's transmission type
@@ -53,17 +52,6 @@ public interface ITransmitter<N extends DynamicNetwork<?, N>>
 	 * it to try and fix itself.
 	 */
 	public void fixTransmitterNetwork();
-	
-	/**
-	 * Return whether the transmitter can connect in the given direction.
-	 */
-	public boolean canConnect(ForgeDirection side);
-	
-	/**
-	 * Return whether the transmitter can connect in the given direction,
-	 * and the tile in the given direction isn't prevented from connecting.
-	 */
-	public boolean canConnectMutual(ForgeDirection side);
 
 	public boolean areTransmitterNetworksEqual(TileEntity tileEntity);
 	

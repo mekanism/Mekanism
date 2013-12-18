@@ -312,15 +312,15 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 		
-		for(ITransmitter<FluidNetwork> pipe : iterPipes)
+		for(ITransmitter<FluidNetwork> transmitter : iterPipes)
 		{
-			if(pipe instanceof TileEntityMechanicalPipe && ((TileEntityMechanicalPipe)pipe).isActive) continue;
-			
-			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)pipe);
+			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)transmitter);
 		
 			for(IFluidHandler acceptor : acceptors)
 			{
-				if(acceptor != null && !(acceptor instanceof ITransmitter))
+				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+				
+				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnect(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));

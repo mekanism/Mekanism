@@ -43,4 +43,7 @@ public class PartLogisticalTransporter extends PartSidedPipe
 	{
 		return tile instanceof IInventory;
 	}
+
+	@Override
+	public void onModeChange(ForgeDirection side) {}
 }
