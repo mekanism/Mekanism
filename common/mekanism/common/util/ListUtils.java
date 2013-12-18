@@ -211,6 +211,40 @@ public class ListUtils
 			ret[i] = (int)Math.round(val*percent[i]);
 		}
 		
+		int newTotal = 0;
+		for(int i : ret) newTotal += i;
+		
+		int diff = val-newTotal;
+		
+		if(diff != val)
+		{
+			for(int i = 0; i < ret.length; i++)
+			{
+				int num = ret[i];
+				
+				if(diff < 0 && num == 0)
+				{
+					continue;
+				}
+				
+				if(diff > 0)
+				{
+					ret[i]++;
+					diff--;
+				}
+				else if(diff < 0)
+				{
+					ret[i]--;
+					diff++;
+				}
+				
+				if(diff == 0)
+				{
+					return ret;
+				}
+			}
+		}
+		
 		return ret;
 	}
 	

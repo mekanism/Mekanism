@@ -97,21 +97,22 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		Gas gasType = GasRegistry.getGas(dataStream.readInt());
     		int amount = dataStream.readInt();
+    		GasStack stack = null;
     		didGasTransfer = dataStream.readBoolean();
+    		
+    		if(gasType != null)
+    		{
+    			stack = new GasStack(gasType, amount);
+    		}
     		
     		if(tileEntity != null)
     		{
     			if(gasType != null)
     			{
-    				((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored = new GasStack(gasType, amount);
-    			}
-    			else {
-    				if(((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored != null)
-    				{
-    					((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored.amount = amount;
-    				}
+    				((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().refGas = gasType;
     			}
     			
+    			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().gasStored = stack;
     			((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
     		}
 	    }
