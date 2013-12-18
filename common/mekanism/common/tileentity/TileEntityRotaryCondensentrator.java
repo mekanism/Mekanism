@@ -362,7 +362,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
         isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
-        gasTank = GasTank.readFromNBT(nbtTags.getCompoundTag("gasTank"));
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
         
     	if(nbtTags.hasKey("fluidTank"))
     	{

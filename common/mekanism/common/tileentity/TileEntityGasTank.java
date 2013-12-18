@@ -159,7 +159,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     {
         super.readFromNBT(nbtTags);
 
-    	gasTank = GasTank.readFromNBT(nbtTags.getCompoundTag("gasTank"));
+    	gasTank.read(nbtTags.getCompoundTag("gasTank"));
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 

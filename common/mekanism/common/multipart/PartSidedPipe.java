@@ -499,10 +499,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public static enum ConnectionType
 	{
-		NONE,
 		NORMAL,
 		PUSH,
-		PULL;
+		PULL,
+		NONE;
 
 		public static ConnectionType[] nextType = {NORMAL, PUSH, PULL, NONE};
 	}

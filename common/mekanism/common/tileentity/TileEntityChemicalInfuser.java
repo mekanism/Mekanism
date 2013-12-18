@@ -272,9 +272,9 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
         isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
-        leftTank = GasTank.readFromNBT(nbtTags.getCompoundTag("leftTank"));
-        rightTank = GasTank.readFromNBT(nbtTags.getCompoundTag("rightTank"));
-        centerTank = GasTank.readFromNBT(nbtTags.getCompoundTag("centerTank"));
+        leftTank.read(nbtTags.getCompoundTag("leftTank"));
+        rightTank.read(nbtTags.getCompoundTag("rightTank"));
+        centerTank.read(nbtTags.getCompoundTag("centerTank"));
     }
 
 	@Override

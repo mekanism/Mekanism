@@ -227,7 +227,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
-			gasTank = null;
+			gasTank.setGas(null);
 		}
 		
 		
@@ -264,7 +264,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
         isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         operatingTicks = nbtTags.getInteger("operatingTicks");
-        gasTank = GasTank.readFromNBT(nbtTags.getCompoundTag("gasTank"));
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
     }
 
 	@Override

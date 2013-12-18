@@ -34,7 +34,9 @@ public class VoiceServerManager
 	public void stop()
 	{
 		try {
-			listenThread.interrupt();
+			try {
+				listenThread.interrupt();
+			} catch(Exception e) {}
 			
 			foundLocal = false;
 			

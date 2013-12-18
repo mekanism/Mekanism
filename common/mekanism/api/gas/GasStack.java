@@ -34,7 +34,7 @@ public class GasStack
 		return nbtTags;
 	}
 	
-	private void read(NBTTagCompound nbtTags)
+	public void read(NBTTagCompound nbtTags)
 	{
 		type = Gas.readFromNBT(nbtTags);
 		amount = nbtTags.getInteger("amount");

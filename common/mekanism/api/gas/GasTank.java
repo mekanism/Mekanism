@@ -122,7 +122,7 @@ public class GasTank
 		return nbtTags;
 	}
 	
-	private void read(NBTTagCompound nbtTags)
+	public void read(NBTTagCompound nbtTags)
 	{
 		if(nbtTags.hasKey("stored"))
 		{
