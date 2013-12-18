@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.Set;
 
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import mekanism.common.util.ListUtils;
@@ -20,15 +20,12 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
-	public static final int PIPE_FLUID = 1000;
-	
 	public int transferDelay = 0;
 	
 	public boolean didTransfer;
@@ -87,34 +84,32 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
     @Override
     public void onNetworksCreated(List<FluidNetwork> networks)
     {
-    	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-    	{
-    		if(fluidStored != null)
-    		{
-		    	int[] caps = new int[networks.size()];
-		    	int cap = 0;
-		    	
-		    	for(FluidNetwork network : networks)
-		    	{
-		    		caps[networks.indexOf(network)] = network.getCapacity();
-		    		cap += network.getCapacity();
-		    	}
-		    	
-		    	fluidStored.amount = Math.min(cap, fluidStored.amount);
-		    	
-		    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), fluidStored.amount);
-		    	
-		    	for(FluidNetwork network : networks)
-		    	{
-		    		int index = networks.indexOf(network);
-		    		
-		    		if(values[index] > 0)
-		    		{
-		    			network.fluidStored = new FluidStack(fluidStored.getFluid(), values[index]);
-		    		}
-		    	}
-    		}
-    	}
+		if(fluidStored != null)
+		{
+	    	int[] caps = new int[networks.size()];
+	    	int cap = 0;
+	    	
+	    	for(FluidNetwork network : networks)
+	    	{
+	    		caps[networks.indexOf(network)] = network.getCapacity();
+	    		cap += network.getCapacity();
+	    	}
+	    	
+	    	fluidStored.amount = Math.min(cap, fluidStored.amount);
+	    	
+	    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), fluidStored.amount);
+	    	
+	    	for(FluidNetwork network : networks)
+	    	{
+	    		int index = networks.indexOf(network);
+	    		
+	    		if(values[index] > 0)
+	    		{
+	    			network.fluidStored = new FluidStack(fluidStored.getFluid(), values[index]);
+	    			network.refFluid = fluidStored.getFluid();
+	    		}
+	    	}
+		}
     }
 	
 	public synchronized int getFluidNeeded()
@@ -244,7 +239,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 		else if(!didTransfer && fluidScale > 0)
 		{
-			fluidScale = Math.max(getScale(), Math.max(0, fluidScale-0.02F));
+			fluidScale = getScale();
 			
 			if(fluidScale == 0)
 			{
@@ -359,6 +354,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		FluidNetwork network = new FluidNetwork(varTransmitters);
 		network.fluidScale = fluidScale;
+		network.refFluid = refFluid;
 		
 		if(fluidStored != null)
 		{
@@ -379,6 +375,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		FluidNetwork network = new FluidNetwork(collection);
 		network.fluidScale = fluidScale;
+		network.refFluid = refFluid;
 		
 		if(fluidStored != null)
 		{
@@ -392,6 +389,32 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 		
 		return network;
+	}
+	
+	@Override
+	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks)
+	{
+		Fluid found = null;
+		
+		for(ITransmitterNetwork<?, ?> network : networks)
+		{
+			if(network instanceof FluidNetwork)
+			{
+				FluidNetwork net = (FluidNetwork)network;
+				
+				if(net.fluidStored != null)
+				{
+					if(found != null && found != net.fluidStored.getFluid())
+					{
+						return false;
+					}
+					
+					found = net.fluidStored.getFluid();
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	@Override

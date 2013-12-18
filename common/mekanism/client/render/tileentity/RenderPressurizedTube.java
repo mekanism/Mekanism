@@ -113,7 +113,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glPopMatrix();
 		
-		Gas gasType = tileEntity.getTransmitterNetwork().gasStored != null ? tileEntity.getTransmitterNetwork().gasStored.getGas() : null;
+		Gas gasType = tileEntity.getTransmitterNetwork().refGas;
 		float scale = tileEntity.getTransmitterNetwork().gasScale;
 	
 		if(scale > 0 && gasType != null && gasType.getIcon() != null)

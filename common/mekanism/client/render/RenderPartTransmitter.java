@@ -5,7 +5,13 @@ import java.util.Map;
 
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.multipart.*;
+import mekanism.common.EnergyNetwork;
+import mekanism.common.multipart.PartLogisticalTransporter;
+import mekanism.common.multipart.PartMechanicalPipe;
+import mekanism.common.multipart.PartPressurizedTube;
+import mekanism.common.multipart.PartSidedPipe;
+import mekanism.common.multipart.PartTransmitter;
+import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -36,7 +42,7 @@ public class RenderPartTransmitter implements IIconRegister
     public static Map<String, CCModel> large_models;
 	public static Map<String, CCModel> contents_models;
 	
-	private static final int stages = 40;
+	private static final int stages = 100;
 	private static final double height = 0.45;
 	private static final double offset = 0.015;
 	
@@ -305,7 +311,7 @@ public class RenderPartTransmitter implements IIconRegister
 			}
 			
 			MekanismRenderer.renderObject(toReturn);
-			DisplayInteger.endList();
+			displays[i].endList();
 		}
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -315,7 +321,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 	public void renderContents(PartPressurizedTube tube, Vector3 pos)
 	{
-		if(tube.getTransmitterNetwork().gasStored == null || tube.getTransmitterNetwork().gasScale == 0)
+		if(tube.getTransmitterNetwork().refGas == null || tube.getTransmitterNetwork().gasScale == 0)
 		{
 			return;
 		}

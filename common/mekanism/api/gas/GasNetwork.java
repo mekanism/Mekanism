@@ -10,6 +10,7 @@ import java.util.Set;
 
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.FluidNetwork;
 import mekanism.common.util.ListUtils;
@@ -17,19 +18,20 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 {
-	public static final int TUBE_GAS = 256;
-	
 	public int transferDelay = 0;
 	
 	public boolean didTransfer;
 	public boolean prevTransfer;
 	
 	public float gasScale;
+	
+	public Gas refGas;
 	
 	public GasStack gasStored;
 	public int prevStored;
@@ -52,9 +54,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		{
 			if(net != null)
 			{
-				if(net.gasScale > gasScale)
+				if(net.refGas != null && net.gasScale > gasScale)
 				{
 					gasScale = net.gasScale;
+					refGas = net.refGas;
 				}
 				
 				if(net.gasStored != null)
@@ -80,34 +83,32 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
     @Override
     public void onNetworksCreated(List<GasNetwork> networks)
     {
-    	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-    	{
-    		if(gasStored != null)
-    		{
-		    	int[] caps = new int[networks.size()];
-		    	int cap = 0;
-		    	
-		    	for(GasNetwork network : networks)
-		    	{
-		    		caps[networks.indexOf(network)] = network.getCapacity();
-		    		cap += network.getCapacity();
-		    	}
-		    	
-		    	gasStored.amount = Math.min(cap, gasStored.amount);
-		    	
-		    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), gasStored.amount);
-		    	
-		    	for(GasNetwork network : networks)
-		    	{
-		    		int index = networks.indexOf(network);
-		    		
-		    		if(values[index] > 0)
-		    		{
-		    			network.gasStored = new GasStack(gasStored.getGas(), values[index]);
-		    		}
-		    	}
-    		}
-    	}
+		if(gasStored != null)
+		{
+	    	int[] caps = new int[networks.size()];
+	    	int cap = 0;
+	    	
+	    	for(GasNetwork network : networks)
+	    	{
+	    		caps[networks.indexOf(network)] = network.getCapacity();
+	    		cap += network.getCapacity();
+	    	}
+	    	
+	    	gasStored.amount = Math.min(cap, gasStored.amount);
+	    	
+	    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), gasStored.amount);
+	    	
+	    	for(GasNetwork network : networks)
+	    	{
+	    		int index = networks.indexOf(network);
+	    		
+	    		if(values[index] > 0)
+	    		{
+	    			network.gasStored = new GasStack(gasStored.getGas(), values[index]);
+	    			network.refGas = gasStored.getGas();
+	    		}
+	    	}
+		}
     }
 	
 	public synchronized int getGasNeeded()
@@ -347,10 +348,37 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 	
 	@Override
+	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks)
+	{
+		Gas found = null;
+		
+		for(ITransmitterNetwork<?, ?> network : networks)
+		{
+			if(network instanceof FluidNetwork)
+			{
+				GasNetwork net = (GasNetwork)network;
+				
+				if(net.gasStored != null)
+				{
+					if(found != null && found != net.gasStored.getGas())
+					{
+						return false;
+					}
+					
+					found = net.gasStored.getGas();
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	@Override
 	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
 	{
 		GasNetwork network = new GasNetwork(varTransmitters);
 		network.gasScale = gasScale;
+		network.refGas = refGas;
 		
 		if(gasStored != null)
 		{
@@ -371,6 +399,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	{
 		GasNetwork network = new GasNetwork(collection);
 		network.gasScale = gasScale;
+		network.refGas = refGas;
 		
 		if(gasStored != null)
 		{

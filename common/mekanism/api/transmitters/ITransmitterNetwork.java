@@ -3,8 +3,6 @@ package mekanism.api.transmitters;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.transmitters.DynamicNetwork.NetworkFinder;
-
 public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 {
 	public void tick();
@@ -36,6 +34,8 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	public void setFixed(boolean value);
 	
 	public TransmissionType getTransmissionType();
+	
+	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks);
 	
 	/**
 	 * Gets a network's meta value right before it is split. This will then be passed onto "onNewFromSplit()" in

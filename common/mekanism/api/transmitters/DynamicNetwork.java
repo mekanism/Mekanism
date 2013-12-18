@@ -296,6 +296,12 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		}
 	}
 	
+	@Override
+	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks)
+	{
+		return true;
+	}
+	
 	public static class ClientTickUpdate extends Event
 	{
 		public DynamicNetwork network;

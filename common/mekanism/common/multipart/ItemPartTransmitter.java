@@ -1,18 +1,23 @@
 package mekanism.common.multipart;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.api.EnumColor;
+import mekanism.api.Object3D;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Mekanism;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
+
+import org.lwjgl.input.Keyboard;
+
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.multipart.JItemMultiPart;
@@ -22,7 +27,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPartTransmitter extends JItemMultiPart
 {
-
 	public ItemPartTransmitter(int id)
 	{
 		super(id);
@@ -31,9 +35,36 @@ public class ItemPartTransmitter extends JItemMultiPart
 	}
 
 	@Override
-	public TMultiPart newPart(ItemStack arg0, EntityPlayer arg1, World arg2, BlockCoord arg3, int arg4, Vector3 arg5)
+	public TMultiPart newPart(ItemStack stack, EntityPlayer player, World world, BlockCoord coord, int face, Vector3 vecHit)
 	{
-		return PartTransmitter.getPartType(TransmissionType.values()[this.getDamage(arg0)]);
+		TransmissionType type = TransmissionType.values()[stack.getItemDamage()];
+		
+		if(TransmissionType.values()[stack.getItemDamage()] != TransmissionType.ITEM)
+		{
+			Object3D obj = new Object3D(coord.x, coord.y, coord.z);
+			
+			List<ITransmitterNetwork<?, ?>> networks = new ArrayList<ITransmitterNetwork<?, ?>>();
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				TileEntity tile = obj.getFromSide(side).getTileEntity(world);
+				
+				if(tile instanceof ITransmitter && TransmissionType.checkTransmissionType(tile, type))
+				{
+					networks.add(((ITransmitter)tile).getTransmitterNetwork());
+				}
+			}
+			
+			if(networks.size() > 0)
+			{
+				if(!networks.iterator().next().canMerge(networks))
+				{
+					return null;
+				}
+			}
+		}
+		
+		return PartTransmitter.getPartType(TransmissionType.values()[getDamage(stack)]);
 	}
 	
 	@Override
@@ -82,8 +113,10 @@ public class ItemPartTransmitter extends JItemMultiPart
 	}
 	
     @Override
-    public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo) {
-        for (TransmissionType type : TransmissionType.values()) {
+    public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
+    {
+        for(TransmissionType type : TransmissionType.values())
+        {
             listToAddTo.add(new ItemStack(itemID, 1, type.ordinal()));
         }
     }
