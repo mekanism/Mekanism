@@ -12,6 +12,8 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityElectricChest extends TileEntityElectricBlock
 {
+	public static int[] INV;
+	
 	public String password = "";
 	
 	public boolean authenticated = false;
@@ -138,14 +140,17 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 			return InventoryUtils.EMPTY;
 		}
 		else {
-			int[] ret = new int[55];
-			
-			for(int i = 0; i < ret.length; i++)
+			if(INV == null)
 			{
-				ret[i] = i;
+				INV = new int[55];
+				
+				for(int i = 0; i < INV.length; i++)
+				{
+					INV[i] = i;
+				}
 			}
 			
-			return ret;
+			return INV;
 		}
 	}
 
