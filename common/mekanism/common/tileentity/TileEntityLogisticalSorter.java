@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -79,7 +80,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
-				if(back instanceof IInventory && (front instanceof TileEntityLogisticalTransporter || front instanceof IInventory))
+				if(back instanceof IInventory && (front instanceof ILogisticalTransporter || front instanceof IInventory))
 				{
 					IInventory inventory = (IInventory)back;
 					
@@ -124,9 +125,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					{
 						ItemStack used = null;
 						
-						if(front instanceof TileEntityLogisticalTransporter)
+						if(front instanceof ILogisticalTransporter)
 						{
-							TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)front;
+							ILogisticalTransporter transporter = (ILogisticalTransporter)front;
 							
 							if(!roundRobin)
 							{

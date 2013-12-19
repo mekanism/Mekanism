@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Object3D;
 import mekanism.common.IActiveState;
 import mekanism.common.IConfigurable;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemBlockBasic;
@@ -191,9 +192,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				TileEntity tile = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
 				
-				if(tile instanceof TileEntityLogisticalTransporter)
+				if(tile instanceof ILogisticalTransporter)
 				{
-					TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
+					ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
 					
 					ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
 					

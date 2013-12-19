@@ -10,6 +10,7 @@ import mekanism.api.Object3D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
@@ -216,9 +217,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					
 					getTopEject(true, remains);
 				}
-				else if(getEjectInv() instanceof TileEntityLogisticalTransporter)
+				else if(getEjectInv() instanceof ILogisticalTransporter)
 				{
-					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (TileEntityLogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true, 0);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (ILogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true, 0);
 					
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{

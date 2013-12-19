@@ -82,6 +82,11 @@ tile.Transmitter.LogisticalTransporter.name=Logistical Transporter
 tile.Transmitter.RestrictiveTransporter.name=Restrictive Transporter
 tile.Transmitter.DiversionTransporter.name=Diversion Transporter
 
+item.MultipartTransmitter.gas.name=Pressurized Tube
+item.MultipartTransmitter.energy.name=Universal Cable
+item.MultipartTransmitter.fluid.name=Mechanical Pipe
+item.MultipartTransmitter.item.name=Logistical Transporter
+
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basic Energy Cube
 tile.EnergyCube.Advanced.name=Advanced Energy Cube

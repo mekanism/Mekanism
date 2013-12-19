@@ -1,15 +1,14 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
 import net.minecraft.entity.item.EntityItem;
@@ -32,21 +31,21 @@ public final class TransporterUtils
      * @param tileEntity - center tile entity
      * @return array of TileEntities
      */
-    public static TileEntity[] getConnectedTransporters(TileEntityLogisticalTransporter tileEntity)
+    public static TileEntity[] getConnectedTransporters(ILogisticalTransporter tileEntity)
     {
     	TileEntity[] transporters = new TileEntity[] {null, null, null, null, null, null};
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity tile = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity tile = Object3D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
 			
-			if(tile instanceof TileEntityLogisticalTransporter)
+			if(tile instanceof ILogisticalTransporter)
 			{
-				TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tile;
+				ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
 				
-				if(transporter.color == null || tileEntity.color == null || transporter.color == tileEntity.color)
+				if(transporter.getColor() == null || tileEntity.getColor() == null || transporter.getColor() == tileEntity.getColor())
 				{
-					transporters[orientation.ordinal()] = transporter;
+					transporters[orientation.ordinal()] = transporter.getTile();
 				}
 			}
     	}
@@ -59,7 +58,7 @@ public final class TransporterUtils
      * @param tileEntity - center TileEntity
      * @return boolean[] of adjacent connections
      */
-    public static boolean[] getConnections(TileEntityLogisticalTransporter tileEntity)
+    public static boolean[] getConnections(ILogisticalTransporter tileEntity)
     {
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		
@@ -75,7 +74,7 @@ public final class TransporterUtils
 				if(tileEntity instanceof TileEntityDiversionTransporter)
 				{
 					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[side];
-					boolean redstone = tileEntity.worldObj.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+					boolean redstone = tileEntity.getTile().worldObj.isBlockIndirectlyGettingPowered(tileEntity.getTile().xCoord, tileEntity.getTile().yCoord, tileEntity.getTile().zCoord);
 					
 					if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
 					{
@@ -125,7 +124,7 @@ public final class TransporterUtils
 				if(tileEntity instanceof TileEntityDiversionTransporter)
 				{
 					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[side];
-					boolean redstone = tileEntity.worldObj.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+					boolean redstone = tileEntity.getTile().worldObj.isBlockIndirectlyGettingPowered(tileEntity.getTile().xCoord, tileEntity.getTile().yCoord, tileEntity.getTile().zCoord);
 					
 					if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
 					{
@@ -156,13 +155,13 @@ public final class TransporterUtils
      * @param tileEntity - center tile entity
      * @return array of IInventories
      */
-    public static IInventory[] getConnectedInventories(TileEntityLogisticalTransporter tileEntity)
+    public static IInventory[] getConnectedInventories(ILogisticalTransporter tileEntity)
     {
     	IInventory[] inventories = new IInventory[] {null, null, null, null, null, null};
 
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity inventory = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity inventory = Object3D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
 			
 			if(inventory instanceof IInventory && !(inventory instanceof ITransmitter))
 			{
@@ -173,12 +172,12 @@ public final class TransporterUtils
     	return inventories;
     }
     
-    public static ItemStack insert(TileEntity outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+    public static ItemStack insert(TileEntity outputter, ILogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
     {
     	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color, doEmit, min);
     }
     
-    public static ItemStack insertRR(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+    public static ItemStack insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
     {
     	return tileEntity.insertRR(outputter, itemStack.copy(), color, doEmit, min);
     }
@@ -238,7 +237,7 @@ public final class TransporterUtils
 		return true;
     }
 	
-	public static void drop(TileEntityLogisticalTransporter tileEntity, TransporterStack stack)
+	public static void drop(ILogisticalTransporter tileEntity, TransporterStack stack)
 	{
 		float[] pos = null;
 		
@@ -252,16 +251,16 @@ public final class TransporterUtils
 		
 		TransporterManager.remove(stack);
 		
-		EntityItem entityItem = new EntityItem(tileEntity.worldObj, tileEntity.xCoord + pos[0], tileEntity.yCoord + pos[1], tileEntity.zCoord + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.getTile().worldObj, tileEntity.getTile().xCoord + pos[0], tileEntity.getTile().yCoord + pos[1], tileEntity.getTile().zCoord + pos[2], stack.itemStack);
 		
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
 		entityItem.motionZ = 0;
 	        
-        tileEntity.worldObj.spawnEntityInWorld(entityItem);
+        tileEntity.getTile().worldObj.spawnEntityInWorld(entityItem);
 	}
 	
-	public static float[] getStackPosition(TileEntityLogisticalTransporter tileEntity, TransporterStack stack, float partial)
+	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
 		Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
@@ -276,20 +275,20 @@ public final class TransporterUtils
 		return new float[] {0.5F + offset.xCoord*progress, 0.5F + offset.yCoord*progress - itemFix, 0.5F + offset.zCoord*progress};
 	}
 	
-    public static void incrementColor(TileEntityLogisticalTransporter tileEntity)
+    public static void incrementColor(ILogisticalTransporter tileEntity)
     {
-    	if(tileEntity.color == null)
+    	if(tileEntity.getColor() == null)
     	{
-    		tileEntity.color = colors.get(0);
+    		tileEntity.setColor(colors.get(0));
     		return;
     	}
-    	else if(colors.indexOf(tileEntity.color) == colors.size()-1)
+    	else if(colors.indexOf(tileEntity.getColor()) == colors.size()-1)
     	{
-    		tileEntity.color = null;
+    		tileEntity.setColor(null);
     		return;
     	}
     	
-    	int index = colors.indexOf(tileEntity.color);
-    	tileEntity.color = colors.get(index+1);
+    	int index = colors.indexOf(tileEntity.getColor());
+    	tileEntity.setColor(colors.get(index+1));
     }
 }

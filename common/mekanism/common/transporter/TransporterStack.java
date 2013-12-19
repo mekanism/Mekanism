@@ -5,8 +5,8 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Destination;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,7 @@ public class TransporterStack
 	
 	public Path pathType;
 	
-	public void write(TileEntityLogisticalTransporter tileEntity, ArrayList data)
+	public void write(ILogisticalTransporter tileEntity, ArrayList data)
 	{
 		if(color != null)
 		{
@@ -48,7 +48,7 @@ public class TransporterStack
 		data.add(progress);
 		data.add(pathType.ordinal());
 		
-		if(pathToTarget.indexOf(Object3D.get(tileEntity)) > 0)
+		if(pathToTarget.indexOf(Object3D.get(tileEntity.getTile())) > 0)
 		{
 			data.add(true);
 			getNext(tileEntity).write(data);
@@ -148,7 +148,7 @@ public class TransporterStack
 		return pathToTarget != null && pathToTarget.size() >= 2;
 	}
 	
-	public ItemStack recalculatePath(TileEntityLogisticalTransporter tileEntity, int min)
+	public ItemStack recalculatePath(ILogisticalTransporter tileEntity, int min)
 	{
 		Destination newPath = TransporterPathfinder.getNewBasePath(tileEntity, this, min);
 		
@@ -165,7 +165,7 @@ public class TransporterStack
 		return newPath.rejected;
 	}
 	
-	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter tileEntity, int min)
+	public ItemStack recalculateRRPath(TileEntityLogisticalSorter outputter, ILogisticalTransporter tileEntity, int min)
 	{
 		Destination newPath = TransporterPathfinder.getNewRRPath(tileEntity, this, outputter, min);
 		
@@ -182,7 +182,7 @@ public class TransporterStack
 		return newPath.rejected;
 	}
 	
-	public boolean calculateIdle(TileEntityLogisticalTransporter tileEntity)
+	public boolean calculateIdle(ILogisticalTransporter tileEntity)
 	{
 		List<Object3D> newPath = TransporterPathfinder.getIdlePath(tileEntity, this);
 		
@@ -193,22 +193,22 @@ public class TransporterStack
 		
 		pathToTarget = newPath;
 		
-		originalLocation = Object3D.get(tileEntity);
+		originalLocation = Object3D.get(tileEntity.getTile());
 		initiatedPath = true;
 		
 		return true;
 	}
 	
-	public boolean isFinal(TileEntityLogisticalTransporter tileEntity)
+	public boolean isFinal(ILogisticalTransporter tileEntity)
 	{
-		return pathToTarget.indexOf(Object3D.get(tileEntity)) == (pathType == Path.NONE ? 0 : 1);
+		return pathToTarget.indexOf(Object3D.get(tileEntity.getTile())) == (pathType == Path.NONE ? 0 : 1);
 	}
 	
-	public Object3D getNext(TileEntityLogisticalTransporter tileEntity)
+	public Object3D getNext(ILogisticalTransporter tileEntity)
 	{
-		if(!tileEntity.worldObj.isRemote)
+		if(!tileEntity.getTile().worldObj.isRemote)
 		{
-			int index = pathToTarget.indexOf(Object3D.get(tileEntity))-1;
+			int index = pathToTarget.indexOf(Object3D.get(tileEntity.getTile()))-1;
 			
 			if(index < 0)
 			{
@@ -222,11 +222,11 @@ public class TransporterStack
 		}
 	}
 	
-	public Object3D getPrev(TileEntityLogisticalTransporter tileEntity)
+	public Object3D getPrev(ILogisticalTransporter tileEntity)
 	{
-		if(!tileEntity.worldObj.isRemote)
+		if(!tileEntity.getTile().worldObj.isRemote)
 		{
-			int index = pathToTarget.indexOf(Object3D.get(tileEntity))+1;
+			int index = pathToTarget.indexOf(Object3D.get(tileEntity.getTile()))+1;
 			
 			if(index < pathToTarget.size())
 			{
@@ -241,27 +241,27 @@ public class TransporterStack
 		}
 	}
 	
-	public int getSide(TileEntityLogisticalTransporter tileEntity)
+	public int getSide(ILogisticalTransporter tileEntity)
 	{
 		if(progress < 50)
 		{
 			if(getPrev(tileEntity) != null)
 			{
-				return Object3D.get(tileEntity).sideDifference(getPrev(tileEntity)).ordinal();
+				return Object3D.get(tileEntity.getTile()).sideDifference(getPrev(tileEntity)).ordinal();
 			}
 		}
 		else if(progress == 50)
 		{
 			if(getNext(tileEntity) != null)
 			{
-				return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
+				return getNext(tileEntity).sideDifference(Object3D.get(tileEntity.getTile())).ordinal();
 			}
 		}
 		else if(progress > 50)
 		{
 			if(getNext(tileEntity) != null)
 			{
-				return getNext(tileEntity).sideDifference(Object3D.get(tileEntity)).ordinal();
+				return getNext(tileEntity).sideDifference(Object3D.get(tileEntity.getTile())).ordinal();
 			}
 		}
 		
@@ -270,13 +270,13 @@ public class TransporterStack
 	
 	public boolean canInsertToTransporter(TileEntity tileEntity)
 	{
-		if(!(tileEntity instanceof TileEntityLogisticalTransporter))
+		if(!(tileEntity instanceof ILogisticalTransporter))
 		{
 			return false;
 		}
 		
-		TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter)tileEntity;
-		return transporter.color == color || transporter.color == null;
+		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
+		return transporter.getColor() == color || transporter.getColor() == null;
 	}
 	
 	public Object3D getDest()

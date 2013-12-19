@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.HashList;
 import mekanism.common.IConfigurable;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -39,7 +40,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, IPipeTile, IConfigurable
+public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, ILogisticalTransporter, IPipeTile, IConfigurable
 {
 	public static final int SPEED = 5;
 	
@@ -91,7 +92,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						{
 							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj)))
 							{
-								TileEntityLogisticalTransporter nextTile = (TileEntityLogisticalTransporter)next.getTileEntity(worldObj);
+								ILogisticalTransporter nextTile = (ILogisticalTransporter)next.getTileEntity(worldObj);
 								nextTile.entityEntering(stack);
 								remove.add(stack);
 								
@@ -242,6 +243,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return true;
 	}
 	
+	@Override
 	public ItemStack insert(Object3D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		TransporterStack stack = new TransporterStack();
@@ -271,6 +273,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return itemStack;
 	}
 	
+	@Override
 	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		TransporterStack stack = new TransporterStack();
@@ -300,6 +303,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		return itemStack;
 	}
 	
+	@Override
 	public void entityEntering(TransporterStack stack)
 	{
 		stack.progress = 0;
@@ -550,5 +554,23 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		return false;
+	}
+	
+	@Override
+	public EnumColor getColor()
+	{
+		return color;
+	}
+	
+	@Override
+	public void setColor(EnumColor c)
+	{
+		color = c;
+	}
+	
+	@Override
+	public TileEntity getTile()
+	{
+		return this;
 	}
 }

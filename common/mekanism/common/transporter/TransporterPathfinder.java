@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Object3D;
+import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
@@ -223,7 +223,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Destination> getPaths(TileEntityLogisticalTransporter start, TransporterStack stack, int min)
+	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
 		DestChecker checker = new DestChecker()
 		{
@@ -234,13 +234,13 @@ public final class TransporterPathfinder
 			}
 		};
 		
-		InventoryFinder d = new InventoryFinder(start.worldObj, Object3D.get(start), stack);
+		InventoryFinder d = new InventoryFinder(start.getTile().worldObj, Object3D.get(start.getTile()), stack);
 		Set<Object3D> destsFound = d.find();
 		List<Destination> paths = new ArrayList<Destination>();
 		
 		for(Object3D obj : destsFound)
 		{
-			Pathfinder p = new Pathfinder(checker, start.worldObj, obj, Object3D.get(start), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().worldObj, obj, Object3D.get(start.getTile()), stack);
 			
 			if(p.getPath().size() >= 2)
 			{
@@ -256,7 +256,7 @@ public final class TransporterPathfinder
 		return paths;
 	}
 	
-	public static Destination getNewBasePath(TileEntityLogisticalTransporter start, TransporterStack stack, int min)
+	public static Destination getNewBasePath(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
 		List<Destination> paths = getPaths(start, stack, min);
 		
@@ -268,7 +268,7 @@ public final class TransporterPathfinder
 		return paths.get(0);
 	}
 	
-	public static Destination getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter, int min)
+	public static Destination getNewRRPath(ILogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter, int min)
 	{
 		List<Destination> paths = getPaths(start, stack, min);
 		
@@ -499,7 +499,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, TransporterStack stack)
+	public static List<Object3D> getIdlePath(ILogisticalTransporter start, TransporterStack stack)
 	{
 		if(stack.homeLocation != null)
 		{
@@ -512,7 +512,7 @@ public final class TransporterPathfinder
 				}
 			};
 			
-			Pathfinder p = new Pathfinder(checker, start.worldObj, stack.homeLocation, Object3D.get(start), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().worldObj, stack.homeLocation, Object3D.get(start.getTile()), stack);
 			List<Object3D> path = p.getPath();
 			
 			if(path.size() >= 2)
@@ -521,14 +521,14 @@ public final class TransporterPathfinder
 				return path;
 			}
 			else {
-				if(stack.homeLocation.getTileEntity(start.worldObj) == null)
+				if(stack.homeLocation.getTileEntity(start.getTile().worldObj) == null)
 				{
 					stack.homeLocation = null;
 				}
 			}
 		}
 		
-		IdlePath d = new IdlePath(start.worldObj, Object3D.get(start), stack);
+		IdlePath d = new IdlePath(start.getTile().worldObj, Object3D.get(start.getTile()), stack);
 		List<Object3D> path = d.find();
 		stack.pathType = Path.NONE;
 		

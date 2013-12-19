@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.Object3D;
 import mekanism.common.tileentity.TileEntityContainerBlock;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -113,13 +112,13 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				TileEntity tile = Object3D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.worldObj);
 				ItemStack prev = stack.copy();
 				
-				if(tile instanceof IInventory && !(tile instanceof TileEntityLogisticalTransporter))
+				if(tile instanceof IInventory && !(tile instanceof ILogisticalTransporter))
 				{
 					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
 				}
-				else if(tile instanceof TileEntityLogisticalTransporter)
+				else if(tile instanceof ILogisticalTransporter)
 				{
-					ItemStack rejects = TransporterUtils.insert(tileEntity, (TileEntityLogisticalTransporter)tile, stack, outputColor, true, 0);
+					ItemStack rejects = TransporterUtils.insert(tileEntity, (ILogisticalTransporter)tile, stack, outputColor, true, 0);
 					
 					if(TransporterManager.didEmit(stack, rejects))
 					{
