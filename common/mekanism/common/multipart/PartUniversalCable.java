@@ -5,6 +5,7 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import mekanism.api.Object3D;
@@ -132,7 +133,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Override
 	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
 	{
-		return CableUtils.isConnectable(tile(), acceptor, side.getOpposite());
+		return CableUtils.getConnections(tile())[side.ordinal()];
 	}
 	
 	@Override

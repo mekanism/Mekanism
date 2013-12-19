@@ -174,7 +174,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if(connectionTypes[side.ordinal()] != ConnectionType.NONE && canConnectMutual(side))
+			if(canConnectMutual(side))
 			{
 				TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
 
@@ -301,7 +301,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
-		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()) || connectionTypes[side.ordinal()] == ConnectionType.NONE)
+		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return false;
 		}
@@ -471,16 +471,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 		else if(hit.subHit < 6)
 		{
-			connectionTypes[hit.subHit] = ConnectionType.nextType[connectionTypes[hit.subHit].ordinal()];
-			sendDesc = true;
-			
-			onModeChange(ForgeDirection.getOrientation(side));
-			
-			return true;
-		}
-		else if(hit.subHit == 6 && connectionTypes[side] == ConnectionType.NONE)
-		{
-			connectionTypes[side] = ConnectionType.NORMAL;
+			connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
 			sendDesc = true;
 			
 			onModeChange(ForgeDirection.getOrientation(side));
@@ -503,7 +494,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		PUSH,
 		PULL,
 		NONE;
-
-		public static ConnectionType[] nextType = {NORMAL, PUSH, PULL, NONE};
+		
+		public ConnectionType next()
+		{
+			if(ordinal() == values().length-1)
+			{
+				return NORMAL;
+			}
+			
+			return values()[ordinal()+1];
+		}
 	}
 }

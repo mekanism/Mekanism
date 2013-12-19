@@ -71,13 +71,26 @@ public final class GasTransmission
     	{
 			TileEntity connection = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(connection instanceof ITubeConnection && (!(connection instanceof IGasTransmitter) || TransmissionType.checkTransmissionType(connection, TransmissionType.GAS, tileEntity)))
+			if(canConnect(connection, orientation))
 			{
 				connections[orientation.ordinal()] = (ITubeConnection)connection;
 			}
     	}
     	
     	return connections;
+    }
+    
+    public static boolean canConnect(TileEntity tileEntity, ForgeDirection side)
+    {
+		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof IGasTransmitter) || TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, tileEntity)))
+		{
+			if(((ITubeConnection)tileEntity).canTubeConnect(side.getOpposite()))
+			{
+				return true;
+			}
+		}
+		
+		return false;
     }
     
     /**

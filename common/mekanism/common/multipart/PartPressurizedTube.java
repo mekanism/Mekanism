@@ -4,6 +4,7 @@ import java.util.Set;
 
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -157,7 +158,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
-		return tile instanceof IGasHandler;
+		return GasTransmission.canConnect(tile, side);
 	}
 
 	@Override

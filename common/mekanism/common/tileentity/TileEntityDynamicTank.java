@@ -173,6 +173,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					sendStructure = true;
 				}
 				
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+				
 				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 			}
 			

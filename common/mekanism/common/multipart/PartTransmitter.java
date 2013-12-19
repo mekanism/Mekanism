@@ -292,4 +292,15 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 	@Override
 	public void chunkLoad() {}
+	
+	@Override
+	public boolean canConnectToAcceptor(ForgeDirection side)
+	{
+		if(!isValidAcceptor(Object3D.get(tile()).getFromSide(side).getTileEntity(world()), side))
+		{
+			return false;
+		}
+		
+		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
+	}
 }

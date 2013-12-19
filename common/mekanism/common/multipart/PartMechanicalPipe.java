@@ -1,9 +1,7 @@
 package mekanism.common.multipart;
 
-import java.util.Arrays;
 import java.util.Set;
 
-import mekanism.api.Object3D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -11,7 +9,6 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -179,9 +176,9 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
-		return tile instanceof IFluidHandler;
+		return PipeUtils.getConnections(tile())[side.ordinal()];
 	}
-
+	
 	@Override
 	public FluidNetwork createNetworkFromSingleTransmitter(ITransmitter<FluidNetwork> transmitter)
 	{

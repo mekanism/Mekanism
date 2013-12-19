@@ -367,7 +367,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
 				
-				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnect(side))
+				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnectToAcceptor(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));

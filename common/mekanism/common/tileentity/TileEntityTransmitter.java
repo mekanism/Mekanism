@@ -78,21 +78,6 @@ public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> exte
 		}
 	}
 	
-    @Override
-    public boolean canConnectMutual(ForgeDirection side)
-    {
-        if(!canConnect(side)) return false;
-        
-        TileEntity tile = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
-        return (!(tile instanceof ITransmitter) || ((ITransmitter<?>)tile).canConnect(side.getOpposite()));
-    }
-    
-    @Override
-    public boolean canConnect(ForgeDirection side)
-    {
-        return true;
-    }
-	
 	@Override
 	public boolean areTransmitterNetworksEqual(TileEntity tileEntity)
 	{
@@ -127,6 +112,12 @@ public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> exte
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		fixTransmitterNetwork();
+		return true;
+	}
+	
+	@Override
+	public boolean canConnectToAcceptor(ForgeDirection side)
+	{
 		return true;
 	}
 }

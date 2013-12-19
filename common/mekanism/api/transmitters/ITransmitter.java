@@ -1,8 +1,9 @@
 package mekanism.api.transmitters;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
-public interface ITransmitter<N extends DynamicNetwork<?, N>> extends IBlockableConnection
+public interface ITransmitter<N extends DynamicNetwork<?, N>>
 {
 	/**
 	 * Get the transmitter's transmission type
@@ -46,6 +47,8 @@ public interface ITransmitter<N extends DynamicNetwork<?, N>> extends IBlockable
 	 * Remove this transmitter from its network.
 	 */
 	public void removeFromTransmitterNetwork();
+	
+	public boolean canConnectToAcceptor(ForgeDirection side);
 
 	/**
 	 * Call this if you're worried a transmitter's network is messed up and you want
