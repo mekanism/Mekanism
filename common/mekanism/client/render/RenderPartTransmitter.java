@@ -5,11 +5,11 @@ import java.util.Map;
 
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.EnergyNetwork;
 import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
 import mekanism.common.multipart.PartSidedPipe;
+import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.util.MekanismUtils;
@@ -118,7 +118,10 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderEnergySide(side, cable);			
+			if(cable.getConnectionType(side) != ConnectionType.NONE)
+			{
+				renderEnergySide(side, cable);
+			}
 		}
 		
 		MekanismRenderer.glowOn();
@@ -156,7 +159,7 @@ public class RenderPartTransmitter implements IIconRegister
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				if(PartTransmitter.connectionMapContainsSide(pipe.getAllCurrentConnections(), side))
+				if(pipe.getConnectionType(side) != ConnectionType.NONE && PartTransmitter.connectionMapContainsSide(pipe.getAllCurrentConnections(), side))
 				{
 					DisplayInteger[] displayLists = getListAndRender(side, fluid);
 					
@@ -338,7 +341,10 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderGasSide(side, tube);
+			if(tube.getConnectionType(side) != ConnectionType.NONE)
+			{
+				renderGasSide(side, tube);
+			}
 		}
 		
 		CCRenderState.draw();

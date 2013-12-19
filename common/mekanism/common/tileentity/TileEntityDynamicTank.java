@@ -7,16 +7,16 @@ import java.util.Map;
 import mekanism.api.Object3D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.SynchronizedTankData;
-import mekanism.common.TankUpdateProtocol;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.SynchronizedTankData;
 import mekanism.common.SynchronizedTankData.ValveData;
+import mekanism.common.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -173,7 +173,15 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					sendStructure = true;
 				}
 				
-				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					Object3D obj = Object3D.get(this).getFromSide(side);
+					
+					if(!(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
+					{
+						worldObj.notifyBlockOfNeighborChange(obj.xCoord, obj.yCoord, obj.zCoord, getBlockType().blockID);
+					}
+				}
 				
 				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
 			}
