@@ -1015,7 +1015,7 @@ public class Mekanism
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
-			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 2), new ItemStack(Block.obsidian));
+			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 4), new ItemStack(Block.obsidian));
 			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("DIAMOND"), 10, MekanismUtils.size(ore, 1)), new ItemStack(Dust, 1, 3));
 		}
 		

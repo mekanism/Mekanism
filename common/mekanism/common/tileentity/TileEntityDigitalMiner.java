@@ -52,6 +52,8 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
 {
+	public static int[] EJECT_INV;
+	
 	public List<Object3D> oresToMine = new ArrayList<Object3D>();
 	
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
@@ -959,17 +961,20 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		if((location.equals(eject) && side == dir.ordinal()) || (location.equals(pull) && side == 1))
 		{
-			int[] ret = new int[27];
-			
-			for(int i = 0; i < ret.length; i++)
+			if(EJECT_INV == null)
 			{
-				ret[i] = i;
+				EJECT_INV = new int[27];
+				
+				for(int i = 0; i < EJECT_INV.length; i++)
+				{
+					EJECT_INV[i] = i;
+				}
 			}
 			
-			return ret;
+			return EJECT_INV;
 		}
 		
-		return null;
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override
