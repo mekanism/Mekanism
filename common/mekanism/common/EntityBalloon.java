@@ -1,17 +1,22 @@
 package mekanism.common;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
 import mekanism.api.EnumColor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import universalelectricity.core.vector.Vector3;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
-	public EnumColor color = EnumColor.DARK_RED;
+	public EnumColor color = EnumColor.DARK_BLUE;
 	
 	public EntityBalloon(World world)
 	{
@@ -94,9 +99,19 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		worldObj.playSoundAtEntity(this, "mekanism:etc.Pop", 1, 1);
 		
-		for(int i = 0; i < 10; i++)
+		if(worldObj.isRemote)
 		{
-			worldObj.spawnParticle("reddust", posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3), 0, 0, 0);
+			for(int i = 0; i < 10; i++)
+			{
+				try {
+					Vector3 vec = new Vector3(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
+					
+					EntityFX fx = new EntityReddustFX(worldObj, vec.x, vec.y, vec.z, 1, 0, 0, 0);
+					fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
+					
+					Minecraft.getMinecraft().effectRenderer.addEffect(fx);
+				} catch(Exception e) {}
+			}
 		}
 		
 		setDead();
@@ -126,14 +141,4 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		
 		color = EnumColor.values()[data.readInt()];
 	}
-	
-    public boolean isInRangeToRenderDist(double par1)
-    {
-    	return true;
-    }
-    
-    public boolean shouldRenderInPass(int pass)
-    {
-    	return true;
-    }
 }
