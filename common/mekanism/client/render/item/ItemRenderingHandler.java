@@ -16,6 +16,7 @@ import mekanism.client.model.ModelRobit;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.common.IElectricChest;
 import mekanism.common.IEnergyCube;
@@ -23,6 +24,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemGasMask;
@@ -31,7 +33,6 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
-import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -43,7 +44,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -71,7 +71,8 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelGasMask gasMask = new ModelGasMask();
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	
-	public RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
+	public RenderBalloon balloonRenderer = new RenderBalloon();
+	public RenderBin binRenderer = new RenderBin();
     private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 	
 	@Override
@@ -342,6 +343,19 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0.2F, -0.5F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			scubaTank.render(0.0625F);
+		}
+		else if(item.getItem() instanceof ItemBalloon)
+		{
+			if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+			{
+				GL11.glScalef(2.5F, 2.5F, 2.5F);
+				GL11.glTranslatef(0.2F, 0, 0.1F);
+				GL11.glRotatef(15, -1, 0, 1);
+				balloonRenderer.render(((ItemBalloon)item.getItem()).getColor(item), 0, 1.9F, 0);
+			}
+			else {
+				balloonRenderer.render(((ItemBalloon)item.getItem()).getColor(item), 0, 1, 0);
+			}
 		}
 		else if(item.getItem() instanceof ItemPartTransmitter)
 		{

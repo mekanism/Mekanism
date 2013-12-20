@@ -42,6 +42,7 @@ import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.item.ItemAtomicDisassembler;
+import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
@@ -225,6 +226,7 @@ public class Mekanism
 	public static ItemScubaTank ScubaTank;
 	public static ItemGasMask GasMask;
 	public static Item Dictionary;
+	public static Item Balloon;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -641,6 +643,7 @@ public class Mekanism
 		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11225).getInt()).setUnlocalizedName("MultipartTransmitter");
+		Balloon = new ItemBalloon(configuration.getItem("Balloon",  11226).getInt()).setUnlocalizedName("Balloon");
 		configuration.save();
 		//TODO 1.7, fix item shifts
 		
@@ -670,6 +673,7 @@ public class Mekanism
 		GameRegistry.registerItem(Dictionary, "Dictionary");
 		GameRegistry.registerItem(GasMask, "GasMask");
 		GameRegistry.registerItem(ScubaTank, "ScubaTank");
+		GameRegistry.registerItem(Balloon, "Balloon");
 	}
 	
 	/**

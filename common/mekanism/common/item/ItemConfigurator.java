@@ -63,7 +63,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
     {
     	if(!world.isRemote)
     	{
-    		world.spawnEntityInWorld(new EntityBalloon(world, x, y, z));
+    		world.spawnEntityInWorld(new EntityBalloon(world, x, y, z, EnumColor.RED));
     		
     		TileEntity tile = world.getBlockTileEntity(x, y, z);
     		

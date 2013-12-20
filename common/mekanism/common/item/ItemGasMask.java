@@ -4,6 +4,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
@@ -23,6 +24,10 @@ public class ItemGasMask extends ItemArmor
 		setCreativeTab(Mekanism.tabMekanism);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
     public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)

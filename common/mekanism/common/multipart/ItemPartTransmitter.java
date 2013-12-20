@@ -9,6 +9,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,10 @@ public class ItemPartTransmitter extends JItemMultiPart
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
 
 	@Override
 	public TMultiPart newPart(ItemStack stack, EntityPlayer player, World world, BlockCoord coord, int face, Vector3 vecHit)
@@ -131,6 +136,6 @@ public class ItemPartTransmitter extends JItemMultiPart
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-    	return getUnlocalizedName()+"."+TransmissionType.values()[stack.getItemDamage()].name().toLowerCase();
+    	return getUnlocalizedName() + "." + TransmissionType.values()[stack.getItemDamage()].name().toLowerCase();
     }
 }

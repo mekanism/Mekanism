@@ -11,6 +11,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -229,4 +230,8 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		setGas(filled, new GasStack(GasRegistry.getGas("oxygen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
 }

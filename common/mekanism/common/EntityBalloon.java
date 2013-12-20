@@ -1,11 +1,13 @@
 package mekanism.common;
 
 import mekanism.api.EnumColor;
+import mekanism.api.Object3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import universalelectricity.core.vector.Vector3;
 
@@ -17,6 +19,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
 	public EnumColor color = EnumColor.DARK_BLUE;
+	public Object3D latched;
 	
 	public EntityBalloon(World world)
 	{
@@ -30,15 +33,31 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         motionY = 0.04;
 	}
 	
-    public EntityBalloon(World world, double x, double y, double z)
+    public EntityBalloon(World world, double x, double y, double z, EnumColor c)
     {
         this(world);
         
         setPosition(x + 0.5F, y + 3F, z + 0.5F);
         
-        prevPosX = x;
-        prevPosY = y;
-        prevPosZ = z;
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
+        
+        color = c;
+    }
+    
+    public EntityBalloon(World world, Object3D obj, EnumColor c)
+    {
+    	this(world);
+    	
+    	latched = obj;
+    	setPosition(latched.xCoord + 0.5F, latched.yCoord + 3F, latched.zCoord + 0.5F);
+    	
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
+        
+    	color = c;
     }
     
     @Override
@@ -48,55 +67,46 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         prevPosY = posY;
         prevPosZ = posZ;
         
-        motionY = Math.min(motionY*1.02F, 0.2F);
-        
-        moveEntity(motionX, motionY, motionZ);
-        
-        motionX *= 0.98;
-        motionZ *= 0.98;
-
-        if(onGround)
+        if(posY > 255)
         {
-            motionX *= 0.7;
-            motionZ *= 0.7;
+        	pop();
+        	return;
         }
         
-        if(motionY == 0)
+        if(latched != null && latched.getBlockId(worldObj) == 0)
         {
-        	motionY = 0.04;
+        	latched = null;
+        }
+        
+        if(latched == null)
+        {
+	        motionY = Math.min(motionY*1.02F, 0.2F);
+	        
+	        moveEntity(motionX, motionY, motionZ);
+	        
+	        motionX *= 0.98;
+	        motionZ *= 0.98;
+	
+	        if(onGround)
+	        {
+	            motionX *= 0.7;
+	            motionZ *= 0.7;
+	        }
+	        
+	        if(motionY == 0)
+	        {
+	        	motionY = 0.04;
+	        }
+        }
+        else {
+        	motionX = 0;
+        	motionY = 0;
+        	motionZ = 0;
         }
     }
-	
-    @Override
-    public boolean canBePushed()
-    {
-    	return true;
-    }
     
-    @Override
-    public boolean canBeCollidedWith()
+    private void pop()
     {
-        return !isDead;
-    }
-    
-    @Override
-    protected boolean canTriggerWalking()
-    {
-        return false;
-    }
-
-	@Override
-	protected void entityInit() {}
-
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTags)
-	{
-		color = EnumColor.values()[nbtTags.getInteger("color")];
-	}
-	
-	@Override
-	public boolean hitByEntity(Entity entity)
-	{
 		worldObj.playSoundAtEntity(this, "mekanism:etc.Pop", 1, 1);
 		
 		if(worldObj.isRemote)
@@ -115,6 +125,44 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		}
 		
 		setDead();
+    }
+	
+    @Override
+    public boolean canBePushed()
+    {
+    	return latched == null;
+    }
+    
+    @Override
+    public boolean canBeCollidedWith()
+    {
+        return !isDead && latched == null;
+    }
+    
+    @Override
+    protected boolean canTriggerWalking()
+    {
+        return false;
+    }
+
+	@Override
+	protected void entityInit() {}
+
+	@Override
+	protected void readEntityFromNBT(NBTTagCompound nbtTags)
+	{
+		color = EnumColor.values()[nbtTags.getInteger("color")];
+		
+		if(nbtTags.hasKey("latched"))
+		{
+			latched = Object3D.read(nbtTags);
+		}
+	}
+	
+	@Override
+	public boolean hitByEntity(Entity entity)
+	{
+		pop();
 		return true;
 	}
 
@@ -122,6 +170,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	protected void writeEntityToNBT(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("color", color.ordinal());
+		
+		if(latched != null)
+		{
+			latched.write(nbtTags);
+		}
 	}
 
 	@Override
@@ -132,6 +185,18 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		data.writeDouble(posZ);
 		
 		data.writeInt(color.ordinal());
+		
+		if(latched != null)
+		{
+			data.writeBoolean(true);
+			
+			data.writeInt(latched.xCoord);
+			data.writeInt(latched.yCoord);
+			data.writeInt(latched.zCoord);
+		}
+		else {
+			data.writeBoolean(false);
+		}
 	}
 
 	@Override
@@ -140,5 +205,25 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		setPosition(data.readDouble(), data.readDouble(), data.readDouble());
 		
 		color = EnumColor.values()[data.readInt()];
+		
+		if(data.readBoolean())
+		{
+			latched = new Object3D(data.readInt(), data.readInt(), data.readInt());
+		}
+		else {
+			latched = null;
+		}
 	}
+	
+	@Override
+	public boolean isInRangeToRenderDist(double dist)
+	{
+		return dist <= 64;
+	}
+	
+	@Override
+    public boolean isInRangeToRenderVec3D(Vec3 par1Vec3)
+    {
+		return true;
+    }
 }
