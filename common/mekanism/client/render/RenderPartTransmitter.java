@@ -3,9 +3,12 @@ package mekanism.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.multipart.PartDiversionTransporter;
 import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
@@ -13,17 +16,24 @@ import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -118,9 +128,81 @@ public class RenderPartTransmitter implements IIconRegister
 		GL11.glPopMatrix();
 	}
 	
-	public void renderContents(PartLogisticalTransporter transporter, Vector3 pos)
+	public void renderContents(PartLogisticalTransporter transporter, float partialTick, Vector3 vec)
 	{
+		GL11.glPushMatrix();
+		entityItem.age = 0;
+		entityItem.hoverStart = 0;
 		
+		entityItem.setPosition(transporter.x() + 0.5, transporter.y() + 0.5, transporter.z() + 0.5);
+		entityItem.worldObj = transporter.world();
+		
+		for(TransporterStack stack : transporter.transit)
+		{
+			if(stack != null)
+			{
+				GL11.glPushMatrix();
+				entityItem.setEntityItemStack(stack.itemStack);
+				
+				float[] pos = TransporterUtils.getStackPosition(transporter, stack, partialTick*TileEntityLogisticalTransporter.SPEED);
+				
+				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
+				GL11.glScalef(0.75F, 0.75F, 0.75F);
+				
+				renderer.doRenderItem(entityItem, 0, 0, 0, 0, 0);
+				GL11.glPopMatrix();
+				
+				if(stack.color != null)
+				{
+					CCRenderState.changeTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
+					GL11.glPushMatrix();
+					MekanismRenderer.glowOn();
+					GL11.glDisable(GL11.GL_CULL_FACE);
+					GL11.glColor4f(stack.color.getColor(0), stack.color.getColor(1), stack.color.getColor(2), 1.0F);
+					GL11.glTranslatef((float)(vec.x + pos[0]), (float)(vec.y + pos[1] - entityItem.yOffset - ((stack.itemStack.getItem() instanceof ItemBlock) ? 0.1 : 0)), (float)(vec.z + pos[2]));
+					modelBox.render(0.0625F);
+					MekanismRenderer.glowOff();
+					GL11.glPopMatrix();
+				}
+			}
+		}
+		
+		if(transporter instanceof PartDiversionTransporter)
+		{
+			EntityPlayer player = mc.thePlayer;
+			World world = mc.thePlayer.worldObj;
+			ItemStack itemStack = player.getCurrentEquippedItem();
+			MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
+			
+			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator)
+			{
+				int xPos = MathHelper.floor_double(pos.blockX);
+				int yPos = MathHelper.floor_double(pos.blockY);
+				int zPos = MathHelper.floor_double(pos.blockZ);
+				
+				Coord4D obj = new Coord4D(xPos, yPos, zPos);
+				
+				if(obj.equals(Coord4D.get(transporter.tile())))
+				{
+					int mode = ((PartDiversionTransporter)transporter).modes[pos.sideHit];
+					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
+					
+					pushTransporter();
+					
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
+					
+					CCRenderState.changeTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
+					GL11.glTranslatef((float)vec.x, (float)vec.y, (float)vec.z);
+					GL11.glScalef(0.5F, 0.5F, 0.5F);
+					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+					
+					int display = getOverlayDisplay(world, side, mode).display;
+					GL11.glCallList(display);
+					
+					popTransporter();
+				}
+			}
+		}
 	}
 	
 	public void renderContents(PartUniversalCable cable, Vector3 pos)

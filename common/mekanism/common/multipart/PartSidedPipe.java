@@ -322,7 +322,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
 		}
-
 	}
 
 	@Override

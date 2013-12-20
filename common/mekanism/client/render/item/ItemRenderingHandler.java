@@ -63,8 +63,8 @@ public class ItemRenderingHandler implements IItemRenderer
 {
 	public ModelRobit robit = new ModelRobit();
 	public ModelChest electricChest = new ModelChest();
-	public ModelTransmitter transmitterSmall = new ModelTransmitter(ModelTransmitter.Size.SMALL);
-    public ModelTransmitter transmitterLarge = new ModelTransmitter(ModelTransmitter.Size.LARGE);
+	public ModelTransmitter transmitterSmall = new ModelTransmitter(Size.SMALL);
+    public ModelTransmitter transmitterLarge = new ModelTransmitter(Size.LARGE);
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
 	public ModelEnergyCore energyCore = new ModelEnergyCore();
 	public ModelGasTank gasTank = new ModelGasTank();

@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransmitter;
-import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterStack;

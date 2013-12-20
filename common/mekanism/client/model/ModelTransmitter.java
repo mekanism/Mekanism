@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
+import mekanism.common.multipart.TransmitterType.Size;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -165,10 +165,5 @@ public class ModelTransmitter extends ModelBase
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;
 		model.rotateAngleZ = z;
-	}
-	
-	public static enum Size
-	{
-		SMALL, LARGE
 	}
 }
