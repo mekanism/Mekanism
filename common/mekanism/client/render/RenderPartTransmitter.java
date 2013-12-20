@@ -131,6 +131,7 @@ public class RenderPartTransmitter implements IIconRegister
 	public void renderContents(PartLogisticalTransporter transporter, float partialTick, Vector3 vec)
 	{
 		GL11.glPushMatrix();
+		
 		entityItem.age = 0;
 		entityItem.hoverStart = 0;
 		
@@ -203,6 +204,8 @@ public class RenderPartTransmitter implements IIconRegister
 				}
 			}
 		}
+		
+		GL11.glPopMatrix();
 	}
 	
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
@@ -472,6 +475,12 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		Icon renderIcon = transmitter.getIconForSide(side);
+		
+		if(transmitter.getRenderColor() != null)
+		{
+			GL11.glColor4f(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1.0F);
+		}
+		
 		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z());
 	}
 

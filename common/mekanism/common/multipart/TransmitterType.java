@@ -5,12 +5,12 @@ import mekanism.api.transmitters.TransmissionType;
 
 public enum TransmitterType
 {
-	UNIVERSAL_CABLE("UniversalCable", TransmissionType.ENERGY),
-	MECHANICAL_PIPE("MechanicalPipe", TransmissionType.FLUID),
-	PRESSURIZED_TUBE("PressurizedTube", TransmissionType.GAS),
-	LOGISTICAL_TRANSPORTER("LogisticalTransporter", TransmissionType.ITEM),
-	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", TransmissionType.ITEM),
-	DIVERSION_TRANSPORTER("DiversionTransporter", TransmissionType.ITEM);
+	UNIVERSAL_CABLE("UniversalCable", Size.SMALL, TransmissionType.ENERGY),
+	MECHANICAL_PIPE("MechanicalPipe", Size.LARGE, TransmissionType.FLUID),
+	PRESSURIZED_TUBE("PressurizedTube", Size.SMALL, TransmissionType.GAS),
+	LOGISTICAL_TRANSPORTER("LogisticalTransporter", Size.LARGE, TransmissionType.ITEM),
+	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM),
+	DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM);
 	
 	private String unlocalizedName;
 	private Size size;
@@ -18,9 +18,10 @@ public enum TransmitterType
 	
 	public static TransmitterType[] oldMetaArray = {PRESSURIZED_TUBE, UNIVERSAL_CABLE, MECHANICAL_PIPE, LOGISTICAL_TRANSPORTER, RESTRICTIVE_TRANSPORTER, DIVERSION_TRANSPORTER};
 	
-	private TransmitterType(String name, TransmissionType type)
+	private TransmitterType(String name, Size s, TransmissionType type)
 	{
 		unlocalizedName = name;
+		size = s;
 		transmissionType = type;
 	}
 	

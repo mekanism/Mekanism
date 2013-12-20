@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
@@ -477,8 +478,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			
 			return true;
 		}
-		
+		else {
+			return onConfigure(player, side, hit.subHit);
+		}
+	}
+	
+	protected boolean onConfigure(EntityPlayer player, int part, int side) 
+	{
 		return false;
+	}
+	
+	public EnumColor getRenderColor()
+	{
+		return null;
 	}
 
 	@Override

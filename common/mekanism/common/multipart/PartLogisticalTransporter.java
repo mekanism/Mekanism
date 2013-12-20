@@ -28,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -97,7 +96,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
-		return tile instanceof IInventory;
+		return TransporterUtils.getConnections(this)[side.ordinal()];
 	}
 
 	@Override
@@ -587,7 +586,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	protected boolean onConfigure(EntityPlayer player, int part, int side)
 	{
 		TransporterUtils.incrementColor(this);
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()), 50D);

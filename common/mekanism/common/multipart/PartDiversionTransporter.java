@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
 {
@@ -36,6 +37,15 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	public Icon getCenterIcon()
 	{
 		return transporterIcons.getCenterIcon(2);
+	}
+	
+	@Override
+	public boolean canConnect(ForgeDirection side)
+	{
+		testingSide = side;
+		boolean unblocked = tile().canReplacePart(this, this);
+		testingSide = null;
+		return unblocked;
 	}
 	
 	@Override
@@ -98,7 +108,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 	
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	protected boolean onConfigure(EntityPlayer player, int part, int side)
 	{
 		int newMode = (modes[side] + 1) % 3;
 		String description = "ERROR";
