@@ -15,6 +15,7 @@ import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.multipart.TransmitterType.Size;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -86,28 +87,22 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		largeSides[6] = new IndexedCuboid6(6, new Cuboid6(0.25, 0.25, 0.25, 0.75, 0.75, 0.75));
 	}
 
-	public static TMultiPart getPartType(TransmissionType type, int sub)
+	public static TMultiPart getPartType(TransmitterType type)
 	{
 		switch(type)
 		{
-			case ENERGY:
+			case UNIVERSAL_CABLE:
 				return new PartUniversalCable();
-			case FLUID:
+			case MECHANICAL_PIPE:
 				return new PartMechanicalPipe();
-			case GAS:
+			case PRESSURIZED_TUBE:
 				return new PartPressurizedTube();
-			case ITEM:
-			{
-				switch(sub)
-				{
-					case 3:
-						return new PartLogisticalTransporter();
-					case 4:
-						return new PartLogisticalTransporter();
-					case 5:
-						return new PartDiversionTransporter();
-				}
-			}
+			case LOGISTICAL_TRANSPORTER:
+				return new PartLogisticalTransporter();
+			case RESTRICTIVE_TRANSPORTER:
+				return new PartRestrictiveTransporter();
+			case DIVERSION_TRANSPORTER:
+				return new PartDiversionTransporter();
 			default:
 				return null;
 		}
@@ -118,13 +113,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		byte tester = (byte)(1 << side.ordinal());
 		return (connections & tester) > 0;
 	}
-
-	public abstract TransmissionType getTransmissionType();
-
-	public TransmissionType.Size getTransmitterSize()
-    {
-        return getTransmissionType().transmitterSize;
-    }
 
 	public abstract Icon getCenterIcon();
 
@@ -158,7 +146,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()) && isConnectable(tileEntity))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()) && isConnectable(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -223,15 +211,17 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 				if(connectionMapContainsSide(connections, side) || side == testingSide)
 				{
-					subParts.add(getTransmissionType().transmitterSize == TransmissionType.Size.SMALL ? smallSides[ord] : largeSides[ord]);
+					subParts.add(getTransmitter().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord]);
 				}
 			}
 		}
 
-		subParts.add(getTransmissionType().transmitterSize == TransmissionType.Size.SMALL ? smallSides[6] : largeSides[6]);
+		subParts.add(getTransmitter().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
 
 		return subParts;
 	}
+	
+	public abstract TransmitterType getTransmitter();
 
 	@Override
 	public Iterable<Cuboid6> getCollisionBoxes()
@@ -275,7 +265,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public int getHollowSize()
 	{
-		return getTransmissionType().transmitterSize == TransmissionType.Size.SMALL ? 7 : 8;
+		return getTransmitter().getSize() == Size.SMALL ? 7 : 9;
 	}
 
 	@Override
@@ -400,7 +390,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public ItemStack pickItem(MovingObjectPosition hit)
 	{
-		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmissionType().ordinal());
+		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmitter().ordinal());
 	}
 
 	@Override
@@ -458,7 +448,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return RenderPartTransmitter.contents_models.get(name);
 		}
 		else {
-			if(getTransmitterSize() == TransmissionType.Size.LARGE)
+			if(getTransmitter().getSize() == Size.LARGE)
 			{
 				return RenderPartTransmitter.large_models.get(name);
 			}

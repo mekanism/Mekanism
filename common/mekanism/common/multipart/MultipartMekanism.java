@@ -75,7 +75,7 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 		if(world.getBlockId(pos.x, pos.y, pos.z) == Mekanism.transmitterID)
 		{
 			int meta = world.getBlockMetadata(pos.x, pos.y, pos.z);
-			return PartTransmitter.getPartType(TransmissionType.fromOldMeta(meta), meta);
+			return PartTransmitter.getPartType(TransmitterType.fromOldMeta(meta));
 		}
 		
 		return null;

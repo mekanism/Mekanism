@@ -62,6 +62,12 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     }
     
     @Override
+    public TransmitterType getTransmitter()
+    {
+    	return TransmitterType.UNIVERSAL_CABLE;
+    }
+    
+    @Override
     public void load(NBTTagCompound nbtTags)
     {
     	super.load(nbtTags);
@@ -88,9 +94,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
     public static void registerIcons(IconRegister register)
     {
-        cableIcons = new PartTransmitterIcons(1);
+        cableIcons = new PartTransmitterIcons(1, 1);
         cableIcons.registerCenterIcons(register, new String[] {"UniversalCable"});
-        cableIcons.registerSideIcon(register, "TransmitterSideSmall");
+        cableIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
     }
     
     @Override
@@ -109,7 +115,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     @Override
     public Icon getSideIcon()
     {
-        return cableIcons.getSideIcon();
+        return cableIcons.getSideIcon(0);
     }
 
 	@Override

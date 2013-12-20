@@ -1,8 +1,5 @@
 package mekanism.common.multipart;
 
-import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
@@ -11,6 +8,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartSidedPipe
 {
@@ -23,16 +23,16 @@ public class PartLogisticalTransporter extends PartSidedPipe
 	}
 
 	@Override
-	public TransmissionType getTransmissionType()
+	public TransmitterType getTransmitter()
 	{
-		return TransmissionType.ITEM;
+		return TransmitterType.LOGISTICAL_TRANSPORTER;
 	}
 
 	public static void registerIcons(IconRegister register)
 	{
-		transporterIcons = new PartTransmitterIcons(1);
-		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictionTransporter", "DiversionTransporter"});
-		transporterIcons.registerSideIcon(register, "LogisticalTransporterSide");
+		transporterIcons = new PartTransmitterIcons(3, 2);
+		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
+		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterSide", "RestrictiveTransporterSide"});
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class PartLogisticalTransporter extends PartSidedPipe
 	@Override
 	public Icon getSideIcon()
 	{
-		return transporterIcons.getSideIcon();
+		return transporterIcons.getSideIcon(0);
 	}
 
 	@Override

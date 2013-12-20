@@ -150,9 +150,9 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
     public static void registerIcons(IconRegister register)
     {
-        pipeIcons = new PartTransmitterIcons(2);
+        pipeIcons = new PartTransmitterIcons(2, 1);
         pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipe", "MechanicalPipeActive"});
-        pipeIcons.registerSideIcon(register, "MechanicalPipeSide");
+        pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeSide"});
     }
 
     @Override
@@ -164,7 +164,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     @Override
     public Icon getSideIcon()
     {
-        return pipeIcons.getSideIcon();
+        return pipeIcons.getSideIcon(0);
     }
 
     @Override
@@ -172,6 +172,12 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	{
 		return TransmissionType.FLUID;
 	}
+    
+    @Override
+    public TransmitterType getTransmitter()
+    {
+    	return TransmitterType.MECHANICAL_PIPE;
+    }
 
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)

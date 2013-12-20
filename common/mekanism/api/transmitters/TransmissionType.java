@@ -5,19 +5,10 @@ import net.minecraft.tileentity.TileEntity;
 
 public enum TransmissionType
 {
-	ENERGY(Size.SMALL),
-	FLUID(Size.LARGE),
-	GAS(Size.SMALL),
-    ITEM(Size.LARGE);
-
-    public Size transmitterSize;
-
-    private TransmissionType(Size size)
-    {
-        transmitterSize = size;
-    }
-
-	public static TransmissionType[] metaArray = {GAS, ENERGY, FLUID, ITEM};
+	ENERGY,
+	FLUID,
+	GAS,
+    ITEM;
 
     public static boolean checkTransmissionType(TileEntity sideTile, TransmissionType type)
     {
@@ -49,32 +40,4 @@ public enum TransmissionType
     	
     	return false;
     }
-
-	public static TransmissionType fromOldMeta(int meta)
-	{
-		if(meta < metaArray.length)
-		{
-			return metaArray[meta];
-		}
-		
-		if(meta == 4 || meta == 5)
-		{
-			return ITEM;
-		}
-		
-		return null;
-	}
-
-    public static enum Size
-    {
-        SMALL(6),
-        LARGE(8);
-
-        public int centreSize;
-
-        private Size(int size) {
-            centreSize = size;
-        }
-    }
-
 }

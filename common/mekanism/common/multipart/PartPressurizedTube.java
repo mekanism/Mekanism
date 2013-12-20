@@ -60,6 +60,12 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     }
     
     @Override
+    public TransmitterType getTransmitter()
+    {
+    	return TransmitterType.PRESSURIZED_TUBE;
+    }
+    
+    @Override
     public void preSingleMerge(GasNetwork network)
     {
     	if(cacheGas != null)
@@ -132,9 +138,9 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 
     public static void registerIcons(IconRegister register)
     {
-        tubeIcons = new PartTransmitterIcons(1);
+        tubeIcons = new PartTransmitterIcons(1, 1);
         tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
-        tubeIcons.registerSideIcon(register, "TransmitterSideSmall");
+        tubeIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
     }
 
     @Override
@@ -146,7 +152,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     @Override
     public Icon getSideIcon()
     {
-        return tubeIcons.getSideIcon();
+        return tubeIcons.getSideIcon(0);
     }
 
     @Override

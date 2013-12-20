@@ -5,11 +5,12 @@ import net.minecraft.util.Icon;
 
 public class PartTransmitterIcons
 {
-    private Icon sideIcon;
+    private Icon[] sideIcons;
     private Icon[] centerIcons;
 
-    public PartTransmitterIcons(int numCentres)
+    public PartTransmitterIcons(int numCentres, int numSides)
     {
+    	sideIcons = new Icon[numSides];
         centerIcons = new Icon[numCentres];
     }
 
@@ -21,14 +22,17 @@ public class PartTransmitterIcons
         }
     }
 
-    public void registerSideIcon(IconRegister register, String filename)
+    public void registerSideIcons(IconRegister register, String[] filenames)
     {
-        sideIcon = register.registerIcon("mekanism:models/" + filename);
+    	for(int i = 0; i < sideIcons.length; i++)
+    	{
+    		sideIcons[i] = register.registerIcon("mekanism:models/" + filenames[i]);
+    	}
     }
 
-    public Icon getSideIcon()
+    public Icon getSideIcon(int n)
     {
-        return sideIcon;
+        return sideIcons[n];
     }
 
     public Icon getCenterIcon(int n)

@@ -3,8 +3,8 @@ package mekanism.common.multipart;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
@@ -69,7 +69,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 			}
 		}
 		
-		return PartTransmitter.getPartType(TransmissionType.values()[getDamage(stack)]);
+		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);
 	}
 	
 	@Override
@@ -107,12 +107,13 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + "O " + EnumColor.GREY + "(Oxygen)");
 					list.add("- " + EnumColor.PURPLE + "H " + EnumColor.GREY + "(Hydrogen)");
 				}
-				case 3:
-				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-					list.add("- " + EnumColor.PURPLE + "Items (universal)");
-					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
-				}
+			}
+			
+			if(itemstack.getItemDamage() >= 3 && itemstack.getItemDamage() <= 5)
+			{
+				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+				list.add("- " + EnumColor.PURPLE + "Items (universal)");
+				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
 			}
 		}
 	}
@@ -120,7 +121,7 @@ public class ItemPartTransmitter extends JItemMultiPart
     @Override
     public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
     {
-        for(TransmissionType type : TransmissionType.values())
+        for(TransmitterType type : TransmitterType.values())
         {
             listToAddTo.add(new ItemStack(itemID, 1, type.ordinal()));
         }
@@ -136,6 +137,6 @@ public class ItemPartTransmitter extends JItemMultiPart
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-    	return getUnlocalizedName() + "." + TransmissionType.values()[stack.getItemDamage()].name().toLowerCase();
+    	return getUnlocalizedName() + "." + TransmitterType.values()[stack.getItemDamage()].getName();
     }
 }

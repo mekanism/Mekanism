@@ -2,8 +2,6 @@ package mekanism.client.render.item;
 
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.transmitters.TransmissionType.Size;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -33,6 +31,9 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
+import mekanism.common.multipart.TransmitterType;
+import mekanism.common.multipart.TransmitterType.Size;
+import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -44,6 +45,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -72,7 +74,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	
 	public RenderBalloon balloonRenderer = new RenderBalloon();
-	public RenderBin binRenderer = new RenderBin();
+	public RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
     private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 	
 	@Override
@@ -378,9 +380,15 @@ public class ItemRenderingHandler implements IItemRenderer
 	    		case 3:
 	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
 	    			break;
+	    		case 4:
+	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RestrictiveTransporter.png"));
+	    			break;
+	    		case 5:
+	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DiversionTransporter.png"));
+	    			break;
 	    	}
 	    	
-	    	if(TransmissionType.values()[item.getItemDamage()].transmitterSize == Size.SMALL)
+	    	if(TransmitterType.values()[item.getItemDamage()].getSize() == Size.SMALL)
 	    	{
 		    	transmitterSmall.renderSide(ForgeDirection.UP, true);
 		    	transmitterSmall.renderSide(ForgeDirection.DOWN, true);
