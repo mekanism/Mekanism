@@ -86,7 +86,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		largeSides[6] = new IndexedCuboid6(6, new Cuboid6(0.25, 0.25, 0.25, 0.75, 0.75, 0.75));
 	}
 
-	public static TMultiPart getPartType(TransmissionType type)
+	public static TMultiPart getPartType(TransmissionType type, int sub)
 	{
 		switch(type)
 		{
@@ -97,7 +97,17 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			case GAS:
 				return new PartPressurizedTube();
 			case ITEM:
-				return new PartLogisticalTransporter();
+			{
+				switch(sub)
+				{
+					case 3:
+						return new PartLogisticalTransporter();
+					case 4:
+						return new PartLogisticalTransporter();
+					case 5:
+						return new PartDiversionTransporter();
+				}
+			}
 			default:
 				return null;
 		}

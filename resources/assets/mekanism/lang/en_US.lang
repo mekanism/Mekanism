@@ -266,6 +266,8 @@ tooltip.configurator.noLink=No link
 tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
 
+tooltip.balloon=Balloon
+
 tooltip.jetpack.regular=Regular
 tooltip.jetpack.hover=Hover
 tooltip.jetpack.disabled=Disabled

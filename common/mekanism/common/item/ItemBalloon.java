@@ -5,9 +5,11 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.EntityBalloon;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -61,7 +63,7 @@ public class ItemBalloon extends ItemMekanism
 	@Override
 	public String getItemDisplayName(ItemStack stack)
 	{
-		return getColor(stack).getName() + " Balloon";
+		return getColor(stack).getName() + " " + MekanismUtils.localize("tooltip.balloon");
 	}
 	
 	@Override
@@ -94,6 +96,12 @@ public class ItemBalloon extends ItemMekanism
 		
 		return false;
 	}
+	
+	/*@Override
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
+    {
+        return false;
+    }*/
 	
 	private boolean canReplace(World world, int x, int y, int z)
 	{

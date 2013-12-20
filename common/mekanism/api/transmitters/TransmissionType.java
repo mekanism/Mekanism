@@ -52,8 +52,16 @@ public enum TransmissionType
 
 	public static TransmissionType fromOldMeta(int meta)
 	{
-		if(meta <= metaArray.length)
+		if(meta < metaArray.length)
+		{
 			return metaArray[meta];
+		}
+		
+		if(meta == 4 || meta == 5)
+		{
+			return ITEM;
+		}
+		
 		return null;
 	}
 

@@ -3,6 +3,7 @@ package mekanism.client.render;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.multipart.PartLogisticalTransporter;
@@ -15,8 +16,15 @@ import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 
@@ -46,7 +54,15 @@ public class RenderPartTransmitter implements IIconRegister
 	private static final double height = 0.45;
 	private static final double offset = 0.015;
 	
+	private ModelTransporterBox modelBox = new ModelTransporterBox();
+	
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
+	private HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>>();
+	
+	private Minecraft mc = Minecraft.getMinecraft();
+	
+	private EntityItem entityItem = new EntityItem(null);
+	private RenderItem renderer = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 
 	public static RenderPartTransmitter getInstance()
 	{
@@ -100,6 +116,11 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
+	}
+	
+	public void renderContents(PartLogisticalTransporter transporter, Vector3 pos)
+	{
+		
 	}
 	
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
@@ -407,5 +428,141 @@ public class RenderPartTransmitter implements IIconRegister
 	public int atlasIndex()
 	{
 		return 0;
+	}
+	
+	private void popTransporter()
+	{
+		GL11.glPopAttrib();
+		MekanismRenderer.glowOff();
+		MekanismRenderer.blendOff();
+		GL11.glPopMatrix();
+	}
+	
+	private void pushTransporter()
+	{
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		MekanismRenderer.glowOn();
+		MekanismRenderer.blendOn();
+	}
+	
+	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, int mode)
+	{
+		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode))
+		{
+			return cachedOverlays.get(side).get(mode);
+		}
+		
+		Icon icon = null;
+		
+		switch(mode)
+		{
+			case 0:
+				icon = Item.gunpowder.getIcon(new ItemStack(Item.gunpowder), 0);
+				break;
+			case 1:
+				icon = Block.torchRedstoneActive.getIcon(0, 0);
+				break;
+			case 2:
+				icon = Block.torchRedstoneIdle.getIcon(0, 0);
+				break;
+		}
+		
+		Model3D toReturn = new Model3D();
+		toReturn.baseBlock = Block.stone;
+		toReturn.setTexture(icon);
+		
+		DisplayInteger display = DisplayInteger.createAndStart();
+		
+		if(cachedOverlays.containsKey(side))
+		{
+			cachedOverlays.get(side).put(mode, display);
+		}
+		else {
+			HashMap<Integer, DisplayInteger> map = new HashMap<Integer, DisplayInteger>();
+			map.put(mode, display);
+			cachedOverlays.put(side, map);
+		}
+		
+		switch(side)
+		{
+			case DOWN:
+			{
+				toReturn.minY = -0.01;
+				toReturn.maxY = 0;
+				
+				toReturn.minX = 0;
+				toReturn.minZ = 0;
+				toReturn.maxX = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			case UP:
+			{
+				toReturn.minY = 1;
+				toReturn.maxY = 1.01;
+				
+				toReturn.minX = 0;
+				toReturn.minZ = 0;
+				toReturn.maxX = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			case NORTH:
+			{
+				toReturn.minZ = -0.01;
+				toReturn.maxZ = 0;
+				
+				toReturn.minX = 0;
+				toReturn.minY = 0;
+				toReturn.maxX = 1;
+				toReturn.maxY = 1;
+				break;
+			}
+			case SOUTH:
+			{
+				toReturn.minZ = 1;
+				toReturn.maxZ = 1.01;
+				
+				toReturn.minX = 0;
+				toReturn.minY = 0;
+				toReturn.maxX = 1;
+				toReturn.maxY = 1;
+				break;
+			}
+			case WEST:
+			{
+				toReturn.minX = -0.01;
+				toReturn.maxX = 0;
+				
+				toReturn.minY = 0;
+				toReturn.minZ = 0;
+				toReturn.maxY = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			case EAST:
+			{
+				toReturn.minX = 1;
+				toReturn.maxX = 1.01;
+				
+				toReturn.minY = 0;
+				toReturn.minZ = 0;
+				toReturn.maxY = 1;
+				toReturn.maxZ = 1;
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+		
+		MekanismRenderer.renderObject(toReturn);
+		display.endList();
+		
+		return display;
 	}
 }

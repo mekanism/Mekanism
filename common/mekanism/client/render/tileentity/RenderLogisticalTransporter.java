@@ -152,7 +152,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[pos.sideHit];
 					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
 					
-					push();
+					pushTransporter();
 					
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 					
@@ -164,13 +164,13 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 					int display = getOverlayDisplay(world, side, mode).display;
 					GL11.glCallList(display);
 					
-					pop();
+					popTransporter();
 				}
 			}
 		}
 	}
 
-	private void pop()
+	private void popTransporter()
 	{
 		GL11.glPopAttrib();
 		MekanismRenderer.glowOff();
@@ -178,7 +178,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 		GL11.glPopMatrix();
 	}
 	
-	private void push()
+	private void pushTransporter()
 	{
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
