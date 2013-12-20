@@ -39,6 +39,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.block.TransmitterRenderingHandler;
+import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
@@ -63,6 +64,7 @@ import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
+import mekanism.common.EntityBalloon;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
 import mekanism.common.IElectricChest;
@@ -275,6 +277,7 @@ public class ClientProxy extends CommonProxy
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
+		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
 		
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();

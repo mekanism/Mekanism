@@ -1132,10 +1132,12 @@ public class Mekanism
 		//Entity IDs
 		EntityRegistry.registerGlobalEntityID(EntityObsidianTNT.class, "ObsidianTNT", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityRobit.class, "Robit", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerGlobalEntityID(EntityBalloon.class, "Balloon", EntityRegistry.findGlobalUniqueEntityId());
 		
 		//Registrations
 		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 40, 5, true);
 		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 2, true);
+		EntityRegistry.registerModEntity(EntityBalloon.class, "Balloon", 2, this, 40, 1, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");

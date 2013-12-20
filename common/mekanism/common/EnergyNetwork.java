@@ -502,7 +502,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getFlow()
 	{
-		return "" + electricityStored;
-	//TODO	return MekanismUtils.getPowerDisplay(20*electricityStored);
+		return MekanismUtils.getPowerDisplay(20*electricityStored);
 	}
 }
