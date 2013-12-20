@@ -2,7 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.HashSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasTransmitter;
@@ -96,7 +96,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<GasNetwork>
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, this))
 			{

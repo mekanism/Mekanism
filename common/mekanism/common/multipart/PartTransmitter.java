@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import codechicken.multipart.*;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -93,7 +93,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			{
 				if(connectionMapContainsSide(possibleTransmitters, side))
 				{
-					TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
+					TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 					
 					if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()) && isConnectable(tileEntity))
 					{
@@ -148,7 +148,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			{
 				if(connectionMapContainsSide(possibleTransmitters, side))
 				{
-					TileEntity cable = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
+					TileEntity cable = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 					
 					if(TransmissionType.checkTransmissionType(cable, getTransmissionType()) && ((ITransmitter<N>)cable).getTransmitterNetwork(false) != null)
 					{
@@ -296,7 +296,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public boolean canConnectToAcceptor(ForgeDirection side)
 	{
-		if(!isValidAcceptor(Object3D.get(tile()).getFromSide(side).getTileEntity(world()), side))
+		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side))
 		{
 			return false;
 		}

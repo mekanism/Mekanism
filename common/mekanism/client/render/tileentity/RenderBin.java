@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.tileentity.TileEntityBin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -46,7 +46,7 @@ public class RenderBin extends TileEntitySpecialRenderer
                 amount = Integer.toString(tileEntity.clientAmount);
             }
 
-        	Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
+        	Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
         	
             if(tileEntity.worldObj.isBlockSolidOnSide(obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
             {
@@ -102,7 +102,7 @@ public class RenderBin extends TileEntitySpecialRenderer
         }
     }
 
-    private void doLight(World world, Object3D obj)
+    private void doLight(World world, Coord4D obj)
     {
         if(world.isBlockOpaqueCube(obj.xCoord, obj.yCoord, obj.zCoord))
         {

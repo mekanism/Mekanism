@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
@@ -75,7 +75,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 		
 		for(int i = 0; i < 6; i++)
 		{
-			TileEntity sideTile = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getTileEntity(tileEntity.worldObj);
+			TileEntity sideTile = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i)).getTileEntity(tileEntity.worldObj);
 			
 			if(sideTile instanceof TileEntityGasTank && i != 0 && i != 1)
 			{
@@ -128,7 +128,7 @@ public class RenderPressurizedTube extends TileEntitySpecialRenderer
 			{
 				if(connectable[i])
 				{
-					Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i));
+					Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(i));
 					Block b = Block.blocksList[obj.getBlockId(tileEntity.worldObj)];
 					b.setBlockBoundsBasedOnState(tileEntity.worldObj, obj.xCoord, obj.yCoord, obj.zCoord);
 					getListAndRender(ForgeDirection.getOrientation(i), gasType, b).render();

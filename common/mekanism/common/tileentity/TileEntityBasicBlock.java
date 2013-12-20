@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.ITileComponent;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
@@ -55,7 +55,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 				}
 			}
 		}
@@ -101,7 +101,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
 		}
 	}
 	
@@ -161,7 +161,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(facing != clientFacing)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}

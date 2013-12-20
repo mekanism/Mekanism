@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
@@ -128,7 +128,7 @@ public class DynamicFluidTank implements IFluidTank
     	{
     		for(ValveData data : dynamicTank.structure.valves)
     		{
-    			if(data.location.equals(Object3D.get(dynamicTank)))
+    			if(data.location.equals(Coord4D.get(dynamicTank)))
     			{
     				data.serverFluid = value;
     			}

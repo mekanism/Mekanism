@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.HashList;
 import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
@@ -81,12 +81,12 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 				
 				if(stack.progress > 100)
 				{
-					Object3D prevSet = null;
+					Coord4D prevSet = null;
 					
 					if(stack.hasPath())
 					{
-						int currentIndex = stack.pathToTarget.indexOf(Object3D.get(this));
-						Object3D next = stack.pathToTarget.get(currentIndex-1);
+						int currentIndex = stack.pathToTarget.indexOf(Coord4D.get(this));
+						Coord4D next = stack.pathToTarget.get(currentIndex-1);
 						
 						if(!stack.isFinal(this))
 						{
@@ -205,7 +205,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			
 			for(TransporterStack stack : remove)
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, true)), Object3D.get(this), 50D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getSyncPacket(stack, true)), Coord4D.get(this), 50D);
 				transit.remove(stack);
 				MekanismUtils.saveChunk(this);
 			}
@@ -214,7 +214,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			{
 				if(transit.contains(stack))
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getSyncPacket(stack, false)), Coord4D.get(this), 50D);
 				}
 			}
 			
@@ -222,7 +222,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		}
 	}
 	
-	private boolean recalculate(TransporterStack stack, Object3D from)
+	private boolean recalculate(TransporterStack stack, Coord4D from)
 	{
 		needsSync.add(stack);
 		
@@ -244,7 +244,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	}
 	
 	@Override
-	public ItemStack insert(Object3D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -265,7 +265,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			
 			transit.add(stack);
 			TransporterManager.add(stack);
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getSyncPacket(stack, false)), Coord4D.get(this), 50D);
 			MekanismUtils.saveChunk(this);
 			return rejected;
 		}
@@ -278,8 +278,8 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
-		stack.originalLocation = Object3D.get(outputter);
-		stack.homeLocation = Object3D.get(outputter);
+		stack.originalLocation = Coord4D.get(outputter);
+		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
 		if(!stack.canInsertToTransporter(this))
@@ -295,7 +295,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 			
 			transit.add(stack);
 			TransporterManager.add(stack);
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getSyncPacket(stack, false)), Coord4D.get(this), 50D);
 			MekanismUtils.saveChunk(this);
 			return rejected;
 		}
@@ -308,7 +308,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		stack.progress = 0;
 		transit.add(stack);
-		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getSyncPacket(stack, false)), Object3D.get(this), 50D);
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getSyncPacket(stack, false)), Coord4D.get(this), 50D);
 		MekanismUtils.saveChunk(this);
 	}
 	
@@ -319,7 +319,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
 		}
 	}
 	
@@ -525,7 +525,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	{
 		if(doAdd)
 		{
-			TileEntity tile = Object3D.get(this).getFromSide(from).getTileEntity(worldObj);
+			TileEntity tile = Coord4D.get(this).getFromSide(from).getTileEntity(worldObj);
 			
 			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
 			return TransporterManager.getToUse(stack, rejects).stackSize;
@@ -544,7 +544,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
 		TransporterUtils.incrementColor(this);
-		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 		
 		return true;

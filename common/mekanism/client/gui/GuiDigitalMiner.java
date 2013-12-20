@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
@@ -90,18 +90,18 @@ public class GuiDigitalMiner extends GuiMekanism
 			ArrayList data = new ArrayList();
 			data.add(3);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 		}
 		else if(guibutton.id == 1)
 		{
 			ArrayList data = new ArrayList();
 			data.add(4);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 		}
 		else if(guibutton.id == 2)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class GuiDigitalMiner extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			}
 			
 			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
@@ -290,7 +290,7 @@ public class GuiDigitalMiner extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(1);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			}
 			
 			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
@@ -300,7 +300,7 @@ public class GuiDigitalMiner extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(5);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			}
 			
 			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
@@ -310,7 +310,7 @@ public class GuiDigitalMiner extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(9);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			}
 			
 			if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
@@ -349,7 +349,7 @@ public class GuiDigitalMiner extends GuiMekanism
 						data.add(true);
 					}
 					
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				}
 				
 	           	mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);

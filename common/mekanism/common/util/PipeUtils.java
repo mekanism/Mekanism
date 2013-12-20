@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import java.util.Arrays;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +23,7 @@ public final class PipeUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity pipe = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity pipe = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(TransmissionType.checkTransmissionType(pipe, TransmissionType.FLUID))
 			{
@@ -97,7 +97,7 @@ public final class PipeUtils
 
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitter))
 			{

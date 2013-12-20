@@ -2,7 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
@@ -77,8 +77,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			
 			if(MekanismUtils.canFunction(this) && delayTicks == 0)
 			{
-				TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
-				TileEntity front = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+				TileEntity front = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
 				if(back instanceof IInventory && (front instanceof ILogisticalTransporter || front instanceof IInventory))
 				{
@@ -173,7 +173,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
 				}
 			}
 		}
@@ -415,7 +415,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 	public boolean canSendHome(ItemStack stack)
 	{
-		TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 		
 		if(back instanceof IInventory)
 		{
@@ -427,12 +427,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	
 	public boolean hasInventory()
 	{
-		return Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		return Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
 	}
 	
 	public ItemStack sendHome(ItemStack stack)
 	{
-		TileEntity back = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 		
 		if(back instanceof IInventory)
 		{
@@ -476,7 +476,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getFilterPacket(new ArrayList())), Object3D.get(this), 50D);
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this), 50D);
 		}
 	}
 	
@@ -499,7 +499,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     	
     	if(clientActive != active)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		if(active)
     		{

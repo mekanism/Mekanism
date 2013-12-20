@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
@@ -94,7 +94,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

@@ -3,7 +3,7 @@ package mekanism.generators.common.tileentity;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -78,7 +78,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			
 			for(int y = yCoord+1; y < 256; y++)
 			{
-				Object3D obj = new Object3D(xCoord, y, zCoord);
+				Coord4D obj = new Coord4D(xCoord, y, zCoord);
 				Block block = Block.blocksList[obj.getBlockId(worldObj)];
 				
 				if(block != null)

@@ -3,7 +3,7 @@ package mekanism.generators.common.tileentity;
 import java.util.ArrayList;
 import java.util.Random;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -132,7 +132,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				GasStack toSend = new GasStack(outputType, Math.min(getStored(outputType), output));
 				setStored(outputType, getStored(outputType) - GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing)));
 				
-				TileEntity tileEntity = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 				
 				if(tileEntity instanceof IGasHandler)
 				{
@@ -151,7 +151,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(worldObj.rand.nextInt(3) == 2)
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getParticlePacket(new ArrayList())), Object3D.get(this), 40D);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(new ArrayList())), Coord4D.get(this), 40D);
 				}
 			}
 		}

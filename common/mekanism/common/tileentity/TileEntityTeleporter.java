@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -73,19 +73,19 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{			
 			if(Mekanism.teleporters.containsKey(code))
 			{
-				if(!Mekanism.teleporters.get(code).contains(Object3D.get(this)) && hasFrame())
+				if(!Mekanism.teleporters.get(code).contains(Coord4D.get(this)) && hasFrame())
 				{
-					Mekanism.teleporters.get(code).add(Object3D.get(this));
+					Mekanism.teleporters.get(code).add(Coord4D.get(this));
 				}
-				else if(Mekanism.teleporters.get(code).contains(Object3D.get(this)) && !hasFrame())
+				else if(Mekanism.teleporters.get(code).contains(Coord4D.get(this)) && !hasFrame())
 				{
-					Mekanism.teleporters.get(code).remove(Object3D.get(this));
+					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
 				}
 			}
 			else if(hasFrame())
 			{
-				ArrayList<Object3D> newCoords = new ArrayList<Object3D>();
-				newCoords.add(Object3D.get(this));
+				ArrayList<Coord4D> newCoords = new ArrayList<Coord4D>();
+				newCoords.add(Coord4D.get(this));
 				Mekanism.teleporters.put(code, newCoords);
 			}
 			
@@ -126,7 +126,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			
 			if(shouldRender != prevShouldRender)
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 40D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 40D);
 			}
 			
 			prevShouldRender = shouldRender;
@@ -203,11 +203,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{
 			List<Entity> entitiesInPortal = getToTeleport();
 
-			Object3D closestCoords = null;
+			Coord4D closestCoords = null;
 			
-			for(Object3D coords : Mekanism.teleporters.get(code))
+			for(Coord4D coords : Mekanism.teleporters.get(code))
 			{
-				if(!coords.equals(Object3D.get(this)))
+				if(!coords.equals(Coord4D.get(this)))
 				{
 					closestCoords = coords;
 					break;
@@ -243,11 +243,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		
 		List<Entity> entitiesInPortal = getToTeleport();
 
-		Object3D closestCoords = null;
+		Coord4D closestCoords = null;
 		
-		for(Object3D coords : Mekanism.teleporters.get(code))
+		for(Coord4D coords : Mekanism.teleporters.get(code))
 		{
-			if(!coords.equals(Object3D.get(this)))
+			if(!coords.equals(Coord4D.get(this)))
 			{
 				closestCoords = coords;
 				break;
@@ -277,7 +277,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 					teleportEntityTo(entity, closestCoords, teleporter);
 				}
 				
-				for(Object3D coords : Mekanism.teleporters.get(code))
+				for(Coord4D coords : Mekanism.teleporters.get(code))
 				{
 					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
 				}
@@ -289,7 +289,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 	
-	public void teleportEntityTo(Entity entity, Object3D coord, TileEntityTeleporter teleporter)
+	public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter)
 	{
 		MinecraftServer server = MinecraftServer.getServer();
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
@@ -343,9 +343,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{
 			if(Mekanism.teleporters.containsKey(code))
 			{
-				if(Mekanism.teleporters.get(code).contains(Object3D.get(this)))
+				if(Mekanism.teleporters.get(code).contains(Coord4D.get(this)))
 				{
-					Mekanism.teleporters.get(code).remove(Object3D.get(this));
+					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
 				}
 				
 				if(Mekanism.teleporters.get(code).isEmpty()) 
@@ -356,7 +356,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 	
-	public int calculateEnergyCost(Entity entity, Object3D coords)
+	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
 		int energyCost = 1000;
 		
@@ -420,9 +420,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{
 			if(Mekanism.teleporters.containsKey(code))
 			{
-				if(Mekanism.teleporters.get(code).contains(Object3D.get(this)))
+				if(Mekanism.teleporters.get(code).contains(Coord4D.get(this)))
 				{
-					Mekanism.teleporters.get(code).remove(Object3D.get(this));
+					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
 				}
 				
 				if(Mekanism.teleporters.get(code).isEmpty()) Mekanism.teleporters.remove(code);

@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiTItemStackFilter;
 import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiTOreDictFilter;
@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketLogisticalSorterGui implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	public SorterGuiPacket packetType;
 	
@@ -48,7 +48,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	{
 		packetType = (SorterGuiPacket)data[0];
 		
-		object3D = (Object3D)data[1];
+		object3D = (Coord4D)data[1];
 		type = (Integer)data[2];
 
 		if(packetType == SorterGuiPacket.CLIENT)
@@ -73,7 +73,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	{
 		packetType = SorterGuiPacket.values()[dataStream.readInt()];
 		
-		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
 		type = dataStream.readInt();
 		
@@ -117,7 +117,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		}
 	}
 	
-	public static void openServerGui(SorterGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Object3D obj, int i)
+	public static void openServerGui(SorterGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i)
 	{
 		Container container = null;
 		

@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import mekanism.api.ChemicalInput;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -162,7 +162,7 @@ public class Mekanism
 	public static Version versionNumber = new Version(5, 6, 0);
 	
 	/** Map of Teleporters */
-	public static Map<Teleporter.Code, ArrayList<Object3D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Object3D>>();
+	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
 	
 	/** A map containing references to all dynamic tank inventory caches. */
 	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
@@ -190,7 +190,7 @@ public class Mekanism
 	public static Set<String> jetpackOn = new HashSet<String>();
 	public static Set<String> gasmaskOn = new HashSet<String>();
 	
-	public static Set<Object3D> ic2Registered = new HashSet<Object3D>();
+	public static Set<Coord4D> ic2Registered = new HashSet<Coord4D>();
     
 	//Block IDs
     public static int basicBlockID;
@@ -1347,7 +1347,7 @@ public class Mekanism
 	public void onNetworkClientRequest(NetworkClientRequest event)
 	{
 		try {
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(event.tileEntity)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(event.tileEntity)));
 		} catch(Exception e) {}
 	}
 	

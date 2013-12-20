@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -162,12 +162,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 						if(filter instanceof TItemStackFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i));
 						}
 						else if(filter instanceof TOreDictFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
 					}
 				}
@@ -178,7 +178,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(1);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			
@@ -187,7 +187,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(2);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}
@@ -203,7 +203,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			data.add(0);
 			data.add(button);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
            	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 		}
 	}
@@ -254,11 +254,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 1));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 1));
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 2));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 2));
 		}
 	}
 	

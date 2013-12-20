@@ -3,7 +3,7 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
@@ -91,15 +91,15 @@ public class ConnectedTextureRenderer
 			int side0 = sideEdges[side][((face + 3) % 4)];
 			int side1 = sideEdges[side][face];
 
-			if(!canConnect(world, new Object3D(x, y, z), sideEdges[side][face], side)) 
+			if(!canConnect(world, new Coord4D(x, y, z), sideEdges[side][face], side)) 
 			{
 				map |= (7 << face * 2) % 256 | 7 >>> 8 - face * 2;
 			} 
-			else if(!canConnect(world, new Object3D(x, y, z).getFromSide(ForgeDirection.getOrientation(side0)), side1, side))
+			else if(!canConnect(world, new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side0)), side1, side))
 			{
 				map |= 1 << face * 2;
 			}
-			else if(!canConnect(world, new Object3D(x, y, z).getFromSide(ForgeDirection.getOrientation(side1)), side0, side))
+			else if(!canConnect(world, new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side1)), side0, side))
 			{
 				map |= 1 << face * 2;
 			}
@@ -108,10 +108,10 @@ public class ConnectedTextureRenderer
 		return glassMap.get(map);
 	}
 
-	private boolean canConnect(IBlockAccess access, Object3D obj, int side, int face)
+	private boolean canConnect(IBlockAccess access, Coord4D obj, int side, int face)
 	{
-	    Object3D block = obj.getFromSide(ForgeDirection.getOrientation(side));
-	    Object3D blockabove = obj.getFromSide(ForgeDirection.getOrientation(face));
+	    Coord4D block = obj.getFromSide(ForgeDirection.getOrientation(side));
+	    Coord4D blockabove = obj.getFromSide(ForgeDirection.getOrientation(face));
 
 	    return (block.getBlockId(access) == blockID && block.getMetadata(access) == metadata) && (blockabove.getBlockId(access) != blockID || blockabove.getMetadata(access) != metadata);
 	}
@@ -119,7 +119,7 @@ public class ConnectedTextureRenderer
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Object3D obj = new Object3D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
 		return obj.getBlockId(world) != blockID || obj.getMetadata(world) != metadata;
 	}
 }

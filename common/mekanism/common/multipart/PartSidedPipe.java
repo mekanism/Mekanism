@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
@@ -146,7 +146,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(canConnectMutual(side))
 			{
-				TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
+				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()) && isConnectable(tileEntity))
 				{
@@ -176,7 +176,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(canConnectMutual(side))
 			{
-				TileEntity tileEntity = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
+				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
 				if(isValidAcceptor(tileEntity, side))
 				{
@@ -294,7 +294,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		if(!canConnect(side)) return false;
 
-		TileEntity tile = Object3D.get(tile()).getFromSide(side).getTileEntity(world());
+		TileEntity tile = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 		return (!(tile instanceof IBlockableConnection) || ((IBlockableConnection)tile).canConnect(side.getOpposite()));
 	}
 

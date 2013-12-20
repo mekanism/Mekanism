@@ -10,7 +10,7 @@ import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.IAdvancedBoundingBlock;
@@ -153,7 +153,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 		
-		return getInv().canBoundInsert(Object3D.get(this), i, itemstack);
+		return getInv().canBoundInsert(Coord4D.get(this), i, itemstack);
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return InventoryUtils.EMPTY;
 		}
 		
-		return getInv().getBoundSlots(Object3D.get(this), slotID);
+		return getInv().getBoundSlots(Coord4D.get(this), slotID);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return false;
 		}
 		
-		return getInv().canBoundExtract(Object3D.get(this), i, itemstack, j);
+		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, j);
 	}
 
 	@Override
@@ -472,6 +472,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	
 	public IAdvancedBoundingBlock getInv()
 	{
-		return (IAdvancedBoundingBlock)new Object3D(mainX, mainY, mainZ).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ).getTileEntity(worldObj);
 	}
 }

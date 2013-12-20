@@ -2,9 +2,10 @@ package mekanism.common.item;
 
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.common.EntityBalloon;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -66,14 +67,37 @@ public class ItemBalloon extends ItemMekanism
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		if(!world.isRemote)
+		if(player.isSneaking())
 		{
-			world.spawnEntityInWorld(new EntityBalloon(world, new Object3D(x, y, z), getColor(stack)));
+			Coord4D obj = new Coord4D(x, y, z);
+			
+			if(Block.blocksList[obj.getBlockId(world)].isBlockReplaceable(world, x, y, z))
+			{
+				obj.yCoord--;
+			}
+			
+			if(canReplace(world, obj.xCoord, obj.yCoord+1, obj.zCoord) && canReplace(world, obj.xCoord, obj.yCoord+2, obj.zCoord))
+			{
+				world.setBlockToAir(obj.xCoord, obj.yCoord+1, obj.zCoord);
+				world.setBlockToAir(obj.xCoord, obj.yCoord+2, obj.zCoord);
+				
+				if(!world.isRemote)
+				{
+					world.spawnEntityInWorld(new EntityBalloon(world, obj, getColor(stack)));
+				}
+				
+				stack.stackSize--;
+			}
+			
+			return true;
 		}
 		
-		stack.stackSize--;
-		
-		return true;
+		return false;
+	}
+	
+	private boolean canReplace(World world, int x, int y, int z)
+	{
+		return world.isAirBlock(x, y, z) || Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z);
 	}
 	
 	@Override

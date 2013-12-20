@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.ITileNetwork;
@@ -21,7 +21,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketDataRequest implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	@Override
 	public String getName()
@@ -32,7 +32,7 @@ public class PacketDataRequest implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Object3D)data[0];
+		object3D = (Coord4D)data[0];
 		
 		return this;
 	}
@@ -72,7 +72,7 @@ public class PacketDataRequest implements IMekanismPacket
 				}
 			}
 			
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
 		}
 	}
 

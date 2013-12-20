@@ -3,7 +3,7 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -125,7 +125,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 					
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 			
@@ -506,7 +506,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
     	
     	if(clientActive != active && updateDelay == 0)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		updateDelay = 10;
     		clientActive = active;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
@@ -37,7 +37,7 @@ public final class TransporterUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity tile = Object3D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
+			TileEntity tile = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
 			
 			if(tile instanceof ILogisticalTransporter)
 			{
@@ -161,7 +161,7 @@ public final class TransporterUtils
 
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity inventory = Object3D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
+			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
 			
 			if(inventory instanceof IInventory && !(inventory instanceof ITransmitter))
 			{
@@ -174,7 +174,7 @@ public final class TransporterUtils
     
     public static ItemStack insert(TileEntity outputter, ILogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
     {
-    	return tileEntity.insert(Object3D.get(outputter), itemStack.copy(), color, doEmit, min);
+    	return tileEntity.insert(Coord4D.get(outputter), itemStack.copy(), color, doEmit, min);
     }
     
     public static ItemStack insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
@@ -262,7 +262,7 @@ public final class TransporterUtils
 	
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Object3D offset = new Object3D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 		
 		float itemFix = 0;

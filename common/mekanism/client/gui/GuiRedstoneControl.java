@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler;
@@ -71,7 +71,7 @@ public class GuiRedstoneControl extends GuiElement
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
 				
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRedstoneControl().setParams(Object3D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRedstoneControl().setParams(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
 			}
 		}
 	}

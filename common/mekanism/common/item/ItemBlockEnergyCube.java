@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
@@ -98,7 +98,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		if(!world.isRemote)
     		{
-    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
     		}
     	}
     	

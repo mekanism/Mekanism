@@ -8,7 +8,7 @@ import ic2.api.energy.tile.IEnergyTile;
 import java.util.Arrays;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -150,9 +150,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		if(!world().isRemote)
 		{
-			if(!Mekanism.ic2Registered.contains(Object3D.get(tile())))
+			if(!Mekanism.ic2Registered.contains(Coord4D.get(tile())))
 			{
-				Mekanism.ic2Registered.add(Object3D.get(tile()));
+				Mekanism.ic2Registered.add(Coord4D.get(tile()));
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tile()));
 			}
 		}
@@ -169,7 +169,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{		
 		if(!world().isRemote)
 		{	
-			Mekanism.ic2Registered.remove(Object3D.get(tile()));
+			Mekanism.ic2Registered.remove(Coord4D.get(tile()));
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)tile()));
 		}
 		
@@ -189,7 +189,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{		
 		if(!world().isRemote)
 		{			
-			Mekanism.ic2Registered.remove(Object3D.get(tile()));
+			Mekanism.ic2Registered.remove(Coord4D.get(tile()));
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)tile()));
 			
 			getTransmitterNetwork().electricityStored -= lastWrite;

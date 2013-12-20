@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -56,7 +56,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			int yPos = MathHelper.floor_double(pos.blockY);
 			int zPos = MathHelper.floor_double(pos.blockZ);
 			
-			Object3D obj = new Object3D(xPos, yPos, zPos);
+			Coord4D obj = new Coord4D(xPos, yPos, zPos);
 			
 			if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
 			{

@@ -3,14 +3,14 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public final class MinerUtils 
 {
-	public static List<ItemStack> getDrops(World world, Object3D obj, boolean silk)
+	public static List<ItemStack> getDrops(World world, Coord4D obj, boolean silk)
 	{
 		Block block = Block.blocksList[obj.getBlockId(world)];
 

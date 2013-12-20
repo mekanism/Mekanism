@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
@@ -109,7 +109,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			
 			for(ForgeDirection side : outputs)
 			{
-				TileEntity tile = Object3D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.worldObj);
+				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.worldObj);
 				ItemStack prev = stack.copy();
 				
 				if(tile instanceof IInventory && !(tile instanceof ILogisticalTransporter))

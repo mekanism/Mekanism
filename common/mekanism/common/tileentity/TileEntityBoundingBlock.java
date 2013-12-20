@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -27,7 +27,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 			mainY = y;
 			mainZ = z;
 			
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
 		}
 	}
 	

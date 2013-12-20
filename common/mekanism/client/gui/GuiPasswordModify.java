@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IElectricChest;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -163,8 +163,8 @@ public class GuiPasswordModify extends GuiScreen
 		else {
 			if(isBlock)
 			{
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Object3D.get(tileEntity)));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, false, true, Object3D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Coord4D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, false, true, Coord4D.get(tileEntity)));
 			}
 			else {
 				((IElectricChest)itemStack.getItem()).setPassword(itemStack, confirmPasswordField.getText());

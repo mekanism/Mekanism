@@ -2,7 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.common.PacketHandler;
@@ -60,7 +60,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			data.add((byte)0);
 			data.add(GasRegistry.getGasID(gasToSet));
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
 		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
@@ -84,7 +84,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			data.add((byte)1);
 			data.add(GasRegistry.getGasID(gasToSet));
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
     }

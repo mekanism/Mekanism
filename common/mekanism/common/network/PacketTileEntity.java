@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +14,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketTileEntity implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	public ArrayList parameters;
 	
@@ -27,7 +27,7 @@ public class PacketTileEntity implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Object3D)data[0];
+		object3D = (Coord4D)data[0];
 		parameters = (ArrayList)data[1];
 		
 		return this;

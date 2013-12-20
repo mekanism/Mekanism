@@ -2,7 +2,7 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransmitter;
 import mekanism.client.model.ModelTransmitter.Size;
 import mekanism.client.model.ModelTransporterBox;
@@ -59,7 +59,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(TileEntityLogisticalTransporter tileEntity, double x, double y, double z, float partialTick)
 	{
-		int meta = Object3D.get(tileEntity).getMetadata(tileEntity.worldObj);
+		int meta = Coord4D.get(tileEntity).getMetadata(tileEntity.worldObj);
 		
 		if(meta == 3)
 		{
@@ -145,9 +145,9 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 				int yPos = MathHelper.floor_double(pos.blockY);
 				int zPos = MathHelper.floor_double(pos.blockZ);
 				
-				Object3D obj = new Object3D(xPos, yPos, zPos);
+				Coord4D obj = new Coord4D(xPos, yPos, zPos);
 				
-				if(obj.equals(Object3D.get(tileEntity)))
+				if(obj.equals(Coord4D.get(tileEntity)))
 				{
 					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[pos.sideHit];
 					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);

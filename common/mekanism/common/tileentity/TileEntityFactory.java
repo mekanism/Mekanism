@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -146,7 +146,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 					
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 			
@@ -750,7 +750,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
     	
     	if(clientActive != active && updateDelay == 0)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		updateDelay = 10;
     		clientActive = active;

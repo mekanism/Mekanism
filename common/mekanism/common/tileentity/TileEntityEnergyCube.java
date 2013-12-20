@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -252,7 +252,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 		    
 		    if(newScale != prevScale)
 		    {
-		    	PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		    	PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 		    }
 		    
 		    prevScale = newScale;

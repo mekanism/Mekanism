@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
@@ -46,7 +46,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 		
 		if(TransmissionType.values()[stack.getItemDamage()] != TransmissionType.ITEM)
 		{
-			Object3D obj = new Object3D(coord.x, coord.y, coord.z);
+			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z);
 			
 			List<ITransmitterNetwork<?, ?>> networks = new ArrayList<ITransmitterNetwork<?, ?>>();
 			

@@ -3,7 +3,7 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
@@ -100,7 +100,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 		}
 		
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 		
 		return true;
 	}

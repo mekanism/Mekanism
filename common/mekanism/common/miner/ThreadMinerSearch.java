@@ -2,7 +2,7 @@ package mekanism.common.miner;
 
 import java.util.Collections;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -41,12 +41,12 @@ public class ThreadMinerSearch extends Thread
 						return;
 					}
 					
-					if(Object3D.get(tileEntity).equals(new Object3D(x, y, z, tileEntity.worldObj.provider.dimensionId)))
+					if(Coord4D.get(tileEntity).equals(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId)))
 					{
 						continue;
 					}
 					
-					if(new Object3D(x, y, z).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
+					if(new Coord4D(x, y, z).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
 					{
 						continue;
 					}
@@ -67,7 +67,7 @@ public class ThreadMinerSearch extends Thread
 						{
 							if(filter.canFilter(stack))
 							{
-								tileEntity.oresToMine.add(new Object3D(x, y, z));
+								tileEntity.oresToMine.add(new Coord4D(x, y, z));
 							}
 						}
 					}

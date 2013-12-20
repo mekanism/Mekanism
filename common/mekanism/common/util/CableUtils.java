@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.ITransmitter;
@@ -41,7 +41,7 @@ public final class CableUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(acceptor instanceof IStrictEnergyAcceptor || 
 					acceptor instanceof IEnergySink || 
@@ -69,7 +69,7 @@ public final class CableUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity cable = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity cable = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY))
 			{
@@ -137,7 +137,7 @@ public final class CableUtils
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity outputter = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity outputter = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if((outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite())) || 
 					(outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, orientation.getOpposite())) ||
@@ -164,7 +164,7 @@ public final class CableUtils
     		return false;
     	}
     	
-    	TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
+    	TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
     	
     	return isConnectable(tile, tileEntity, side);
     }
@@ -224,7 +224,7 @@ public final class CableUtils
      */
     public static double emitEnergyToNetwork(double amount, TileEntity sender, ForgeDirection facing)
     {
-    	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
+    	TileEntity pointer = Coord4D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.ENERGY))
     	{
@@ -287,7 +287,7 @@ public final class CableUtils
 		
     	for(ForgeDirection side : outputtingSides)
 		{
-			TileEntity tileEntity = Object3D.get(emitter).getFromSide(side).getTileEntity(emitter.worldObj);
+			TileEntity tileEntity = Coord4D.get(emitter).getFromSide(side).getTileEntity(emitter.worldObj);
 			double toSend = splitSend+remains;
 			remains = 0;
 			

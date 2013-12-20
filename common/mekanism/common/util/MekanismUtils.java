@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
@@ -208,7 +208,7 @@ public final class MekanismUtils
 	/**
 	 * Returns the closest teleporter between a selection of one or two.
 	 */
-	public static Object3D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
+	public static Coord4D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
 	{
 		if(Mekanism.teleporters.get(teleCode).size() == 1)
 		{
@@ -217,8 +217,8 @@ public final class MekanismUtils
 		else {
 			int dimensionId = player.worldObj.provider.dimensionId;
 			
-			Object3D coords0 = Mekanism.teleporters.get(teleCode).get(0);
-			Object3D coords1 = Mekanism.teleporters.get(teleCode).get(1);
+			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
+			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
 			
 			int distance0 = (int)player.getDistance(coords0.xCoord, coords0.yCoord, coords0.zCoord);
 			int distance1 = (int)player.getDistance(coords1.xCoord, coords1.yCoord, coords1.zCoord);
@@ -640,7 +640,7 @@ public final class MekanismUtils
      * @param z - z coordinate
      * @param orig - original block
      */
-    public static void makeBoundingBlock(World world, int x, int y, int z, Object3D orig)
+    public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
     {
 		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID);
 		
@@ -658,7 +658,7 @@ public final class MekanismUtils
      * @param z - z coordinate
      * @param orig - original block
      */
-    public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Object3D orig)
+    public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
     {
 		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 3);
 		
@@ -833,7 +833,7 @@ public final class MekanismUtils
 		
 		if(isBlock)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Object3D.get(tileEntity)), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Coord4D.get(tileEntity)), player);
 		}
 		else {
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, false), player);
@@ -854,7 +854,7 @@ public final class MekanismUtils
     {
     	DynamicTankCache toReturn = Mekanism.dynamicInventories.get(id);
     	
-    	for(Object3D obj : Mekanism.dynamicInventories.get(id).locations)
+    	for(Coord4D obj : Mekanism.dynamicInventories.get(id).locations)
     	{
     		TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
     		
@@ -885,7 +885,7 @@ public final class MekanismUtils
     		DynamicTankCache cache = new DynamicTankCache();
     		cache.inventory = inventory;
     		cache.fluid = fluid;
-    		cache.locations.add(Object3D.get(tileEntity));
+    		cache.locations.add(Coord4D.get(tileEntity));
     		
     		Mekanism.dynamicInventories.put(inventoryID, cache);
     		
@@ -895,7 +895,7 @@ public final class MekanismUtils
     	Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
     	Mekanism.dynamicInventories.get(inventoryID).fluid = fluid;
     	
-		Mekanism.dynamicInventories.get(inventoryID).locations.add(Object3D.get(tileEntity));
+		Mekanism.dynamicInventories.get(inventoryID).locations.add(Coord4D.get(tileEntity));
     }
     
     /**
@@ -1128,7 +1128,7 @@ public final class MekanismUtils
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
-    public static String getCoordDisplay(Object3D obj)
+    public static String getCoordDisplay(Coord4D obj)
     {
     	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
     }

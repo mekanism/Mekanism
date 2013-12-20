@@ -12,7 +12,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class Object3D 
+public class Coord4D 
 {
 	public int xCoord;
 	public int yCoord;
@@ -20,7 +20,7 @@ public class Object3D
 	
 	public int dimensionId;
 	
-	public Object3D(int x, int y, int z)
+	public Coord4D(int x, int y, int z)
 	{
 		xCoord = x;
 		yCoord = y;
@@ -29,7 +29,7 @@ public class Object3D
 		dimensionId = 0;
 	}
 	
-	public Object3D(int x, int y, int z, int dimension)
+	public Coord4D(int x, int y, int z, int dimension)
 	{
 		xCoord = x;
 		yCoord = y;
@@ -75,7 +75,7 @@ public class Object3D
 		data.add(zCoord);
 	}
 	
-	public Object3D translate(int x, int y, int z)
+	public Coord4D translate(int x, int y, int z)
 	{
 		xCoord += x;
 		yCoord += y;
@@ -84,34 +84,34 @@ public class Object3D
 		return this;
 	}
 	
-	public Object3D getFromSide(ForgeDirection side)
+	public Coord4D getFromSide(ForgeDirection side)
 	{
-		return new Object3D(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
+		return new Coord4D(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
 	}
 	
-	public static Object3D get(TileEntity tileEntity)
+	public static Coord4D get(TileEntity tileEntity)
 	{
-		return new Object3D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
+		return new Coord4D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
 	}
 	
-	public static Object3D read(NBTTagCompound nbtTags)
+	public static Coord4D read(NBTTagCompound nbtTags)
 	{
-		return new Object3D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
+		return new Coord4D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
 	}
 	
-	public static Object3D read(ByteArrayDataInput dataStream)
+	public static Coord4D read(ByteArrayDataInput dataStream)
 	{
-		return new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}
 	
-	public Object3D difference(Object3D other)
+	public Coord4D difference(Coord4D other)
 	{
-		return new Object3D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord);
+		return new Coord4D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord);
 	}
 	
-	public ForgeDirection sideDifference(Object3D other)
+	public ForgeDirection sideDifference(Coord4D other)
 	{
-		Object3D diff = difference(other);
+		Coord4D diff = difference(other);
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -124,7 +124,7 @@ public class Object3D
 		return ForgeDirection.UNKNOWN;
 	}
 	
-	public int distanceTo(Object3D obj)
+	public int distanceTo(Coord4D obj)
 	{
 	    int subX = xCoord - obj.xCoord;
 	    int subY = yCoord - obj.yCoord;
@@ -137,7 +137,7 @@ public class Object3D
 		return world.getBlockId(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ) == 0;
 	}
 	
-	public Object3D step(ForgeDirection side)
+	public Coord4D step(ForgeDirection side)
 	{
 		return translate(side.offsetX, side.offsetY, side.offsetZ);
 	}
@@ -153,6 +153,12 @@ public class Object3D
 	}
 	
 	@Override
+	public Coord4D clone()
+	{
+		return new Coord4D(xCoord, yCoord, zCoord, dimensionId);
+	}
+	
+	@Override
 	public String toString()
 	{
 		return "[Object3D: " + xCoord + ", " + yCoord + ", " + zCoord + "]";
@@ -161,11 +167,11 @@ public class Object3D
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Object3D && 
-				((Object3D)obj).xCoord == xCoord && 
-				((Object3D)obj).yCoord == yCoord && 
-				((Object3D)obj).zCoord == zCoord && 
-				((Object3D)obj).dimensionId == dimensionId;
+		return obj instanceof Coord4D && 
+				((Coord4D)obj).xCoord == xCoord && 
+				((Coord4D)obj).yCoord == yCoord && 
+				((Coord4D)obj).zCoord == zCoord && 
+				((Coord4D)obj).dimensionId == dimensionId;
 	}
 	
 	@Override

@@ -2,7 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -83,7 +83,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 					
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 			
@@ -133,7 +133,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
 				gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getRight(facing)), true);
 				
-				TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 				
 				if(tileEntity instanceof IGasHandler)
 				{
@@ -296,7 +296,7 @@ public class TileEntityChemicalFormulator extends TileEntityElectricBlock implem
     	
     	if(clientActive != active && updateDelay == 0)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		updateDelay = 10;
     		clientActive = active;

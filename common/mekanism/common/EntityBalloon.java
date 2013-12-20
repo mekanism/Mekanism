@@ -1,7 +1,7 @@
 package mekanism.common;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
@@ -19,7 +19,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
 	public EnumColor color = EnumColor.DARK_BLUE;
-	public Object3D latched;
+	public Coord4D latched;
 	
 	public EntityBalloon(World world)
 	{
@@ -46,12 +46,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         color = c;
     }
     
-    public EntityBalloon(World world, Object3D obj, EnumColor c)
+    public EntityBalloon(World world, Coord4D obj, EnumColor c)
     {
     	this(world);
     	
     	latched = obj;
-    	setPosition(latched.xCoord + 0.5F, latched.yCoord + 3F, latched.zCoord + 0.5F);
+    	setPosition(latched.xCoord + 0.5F, latched.yCoord + 2.8F, latched.zCoord + 0.5F);
     	
         prevPosX = posX;
         prevPosY = posY;
@@ -136,7 +136,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     @Override
     public boolean canBeCollidedWith()
     {
-        return !isDead && latched == null;
+        return !isDead;
     }
     
     @Override
@@ -155,7 +155,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		
 		if(nbtTags.hasKey("latched"))
 		{
-			latched = Object3D.read(nbtTags);
+			latched = Coord4D.read(nbtTags);
 		}
 	}
 	
@@ -208,7 +208,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		
 		if(data.readBoolean())
 		{
-			latched = new Object3D(data.readInt(), data.readInt(), data.readInt());
+			latched = new Coord4D(data.readInt(), data.readInt(), data.readInt());
 		}
 		else {
 			latched = null;

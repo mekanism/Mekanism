@@ -1,6 +1,6 @@
 package mekanism.api.gas;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.item.ItemStack;
@@ -25,7 +25,7 @@ public final class GasTransmission
     	
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity tube = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity tube = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, tileEntity))
 			{
@@ -47,7 +47,7 @@ public final class GasTransmission
    
     	for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity acceptor = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(acceptor instanceof IGasHandler)
 			{
@@ -69,7 +69,7 @@ public final class GasTransmission
    
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
     	{
-			TileEntity connection = Object3D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity connection = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
 			if(canConnect(connection, orientation))
 			{
@@ -103,7 +103,7 @@ public final class GasTransmission
      */
     public static int emitGasToNetwork(GasStack stack, TileEntity sender, ForgeDirection facing)
     {
-    	TileEntity pointer = Object3D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
+    	TileEntity pointer = Coord4D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{

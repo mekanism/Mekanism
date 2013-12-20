@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.item.ItemConfigurator;
@@ -41,7 +41,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 {
 	public double MAX_ELECTRICITY = 100000;
 	
-	public Object3D homeLocation;
+	public Coord4D homeLocation;
 	
 	public ItemStack[] inventory = new ItemStack[31];
 	
@@ -461,7 +461,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     	
     	setDropPickup(nbtTags.getBoolean("dropPickup"));
     	
-    	homeLocation = Object3D.read(nbtTags);
+    	homeLocation = Coord4D.read(nbtTags);
     	
         NBTTagList tagList = nbtTags.getTagList("Items");
         inventory = new ItemStack[getSizeInventory()];
@@ -499,7 +499,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	@Override
 	protected void onDeathUpdate() {}
 	
-	public void setHome(Object3D home)
+	public void setHome(Coord4D home)
 	{
 		homeLocation = home;
 	}

@@ -6,7 +6,7 @@ import ic2.api.energy.tile.IEnergySink;
 
 import java.util.HashSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
@@ -98,7 +98,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		{
 			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
 			
-			Mekanism.ic2Registered.remove(Object3D.get(this));
+			Mekanism.ic2Registered.remove(Coord4D.get(this));
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 		
@@ -114,7 +114,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 		
 		if(!worldObj.isRemote)
 		{			
-			Mekanism.ic2Registered.remove(Object3D.get(this));
+			Mekanism.ic2Registered.remove(Coord4D.get(this));
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 	}
@@ -133,7 +133,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 			{
@@ -155,9 +155,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	{
 		if(!worldObj.isRemote)
 		{
-			if(!Mekanism.ic2Registered.contains(Object3D.get(this)))
+			if(!Mekanism.ic2Registered.contains(Coord4D.get(this)))
 			{
-				Mekanism.ic2Registered.add(Object3D.get(this));
+				Mekanism.ic2Registered.add(Coord4D.get(this));
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			}
 			

@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.sound.IHasSound;
@@ -182,7 +182,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
     	
     	if(prevActive != active)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     	}
     	
     	prevActive = active;

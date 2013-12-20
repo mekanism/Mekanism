@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
@@ -55,7 +55,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 {
 	public static int[] EJECT_INV;
 	
-	public List<Object3D> oresToMine = new ArrayList<Object3D>();
+	public List<Coord4D> oresToMine = new ArrayList<Coord4D>();
 	
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
 	
@@ -144,9 +144,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				
 				if(delay == 0)
 				{
-					Set<Object3D> toRemove = new HashSet<Object3D>();
+					Set<Coord4D> toRemove = new HashSet<Coord4D>();
 					
-					for(Object3D obj : oresToMine)
+					for(Coord4D obj : oresToMine)
 					{
 						if(!obj.exists(worldObj))
 						{
@@ -196,7 +196,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						}
 					}
 					
-					for(Object3D obj : toRemove)
+					for(Coord4D obj : toRemove)
 					{
 						oresToMine.remove(obj);
 					}
@@ -232,7 +232,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getSmallPacket(new ArrayList())), player);
+					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getSmallPacket(new ArrayList())), player);
 				}
 			}
 			
@@ -263,7 +263,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return MekanismUtils.getTicks(getSpeedMultiplier(), 80);
 	}
 	
-	public void setReplace(Object3D obj)
+	public void setReplace(Coord4D obj)
 	{
 		ItemStack stack = getReplace();
 		
@@ -398,14 +398,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public TileEntity getPullInv()
 	{
-		return new Object3D(xCoord, yCoord+2, zCoord).getTileEntity(worldObj);
+		return new Coord4D(xCoord, yCoord+2, zCoord).getTileEntity(worldObj);
 	}
 	
 	public TileEntity getEjectInv()
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		return new Object3D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return new Coord4D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 	
 	public void add(List<ItemStack> stacks)
@@ -483,7 +483,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 			}
 		}
 	}
@@ -619,7 +619,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			for(EntityPlayer player : playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
 			}
 			
 			return;
@@ -868,7 +868,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     	
     	if(clientActive != active)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		clientActive = active;
     	}
@@ -913,7 +913,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						continue;
 					}
 					
-					MekanismUtils.makeAdvancedBoundingBlock(worldObj, x, y, z, Object3D.get(this));
+					MekanismUtils.makeAdvancedBoundingBlock(worldObj, x, y, z, Coord4D.get(this));
 				}
 			}
 		}
@@ -949,16 +949,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public TileEntity getEjectTile()
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
-		return new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 
 	@Override
-	public int[] getBoundSlots(Object3D location, int side)
+	public int[] getBoundSlots(Coord4D location, int side)
 	{
 		ForgeDirection dir = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Object3D eject = new Object3D(xCoord+dir.offsetX, yCoord+1, zCoord+dir.offsetZ, worldObj.provider.dimensionId);
-		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
+		Coord4D eject = new Coord4D(xCoord+dir.offsetX, yCoord+1, zCoord+dir.offsetZ, worldObj.provider.dimensionId);
+		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord);
 		
 		if((location.equals(eject) && side == dir.ordinal()) || (location.equals(pull) && side == 1))
 		{
@@ -979,12 +979,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canBoundInsert(Object3D location, int i, ItemStack itemstack) 
+	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack) 
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Object3D eject = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
-		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
+		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord);
 		
 		if(location.equals(eject))
 		{
@@ -1002,12 +1002,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canBoundExtract(Object3D location, int i, ItemStack itemstack, int j)
+	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j)
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Object3D eject = new Object3D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
-		Object3D pull = new Object3D(xCoord, yCoord+1, zCoord);
+		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
+		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord);
 		
 		if(location.equals(eject))
 		{
@@ -1154,7 +1154,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		for(EntityPlayer player : playersUsing)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getGenericPacket(new ArrayList())), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
 		}
 		
 		return null;

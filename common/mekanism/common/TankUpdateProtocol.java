@@ -3,7 +3,7 @@ package mekanism.common;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.SynchronizedTankData.ValveData;
 import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityDynamicValve;
@@ -45,7 +45,7 @@ public class TankUpdateProtocol
 		boolean rightBlocks = true;
 		boolean rightFrame = true;
 		 
-		Set<Object3D> locations = new HashSet<Object3D>();
+		Set<Coord4D> locations = new HashSet<Coord4D>();
 		 
 		int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 		 
@@ -141,13 +141,13 @@ public class TankUpdateProtocol
 		                        rightBlocks = false;
 		                        break;
 		                    }
-		                    else if(isFrame(Object3D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+		                    else if(isFrame(Coord4D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
 		                    {
 		                    	rightFrame = false;
 		                        break;
 		                    }
 		                    else {
-		                        locations.add(Object3D.get(tile).translate(x, y, z));
+		                        locations.add(Coord4D.get(tile).translate(x, y, z));
 		                    }
 		                }
 		                else {
@@ -184,9 +184,9 @@ public class TankUpdateProtocol
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
 				structure.volume = volume;
-				structure.renderLocation = Object3D.get(tile).translate(0, 1, 0);
+				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
 				
-				for(Object3D obj : structure.locations)
+				for(Coord4D obj : structure.locations)
 				{
 					if(obj.getTileEntity(pointer.worldObj) instanceof TileEntityDynamicValve)
 					{
@@ -198,7 +198,7 @@ public class TankUpdateProtocol
 					}
 				}
 	
-				if(structure.locations.contains(Object3D.get(pointer)) && isCorrectCorner(Object3D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
+				if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
 				{
 					structureFound = structure;
 					return;
@@ -210,7 +210,7 @@ public class TankUpdateProtocol
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Object3D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
+			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
 			
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -222,7 +222,7 @@ public class TankUpdateProtocol
 		}
 	}
 	
-	public ForgeDirection getSide(Object3D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	public ForgeDirection getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
 		if(obj.xCoord == xmin)
 		{
@@ -290,7 +290,7 @@ public class TankUpdateProtocol
 	 * @param zmin - minimum z value
 	 * @return
 	 */
-	private boolean isCorrectCorner(Object3D obj, int xmin, int ymin, int zmin)
+	private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin)
 	{
 		if(obj.xCoord == xmin && obj.yCoord == ymin && obj.zCoord == zmin)
 		{
@@ -311,7 +311,7 @@ public class TankUpdateProtocol
 	 * @param zmax - maximum z value
 	 * @return
 	 */
-	private boolean isFrame(Object3D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
 		if(obj.xCoord == xmin && obj.yCoord == ymin)
 			return true;
@@ -366,7 +366,7 @@ public class TankUpdateProtocol
 		{
 			for(TileEntityDynamicTank tileEntity : iteratedNodes)
 			{
-				if(!structureFound.locations.contains(Object3D.get(tileEntity)))
+				if(!structureFound.locations.contains(Coord4D.get(tileEntity)))
 				{
 					for(TileEntity tile : iteratedNodes)
 					{
@@ -379,7 +379,7 @@ public class TankUpdateProtocol
 			
 			int idFound = -1;
 			
-			for(Object3D obj : structureFound.locations)
+			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.worldObj);
 				
@@ -411,7 +411,7 @@ public class TankUpdateProtocol
 				structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
 			}
 			
-			for(Object3D obj : structureFound.locations)
+			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.worldObj);
 				

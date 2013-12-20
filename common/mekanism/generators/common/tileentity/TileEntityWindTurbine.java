@@ -1,6 +1,6 @@
 package mekanism.generators.common.tileentity;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -88,10 +88,10 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Object3D.get(this));
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+2, zCoord, Object3D.get(this));
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+3, zCoord, Object3D.get(this));
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+4, zCoord, Object3D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+2, zCoord, Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+3, zCoord, Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+4, zCoord, Coord4D.get(this));
 	}
 
 	@Override

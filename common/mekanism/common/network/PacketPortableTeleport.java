@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
@@ -43,7 +43,7 @@ public class PacketPortableTeleport implements IMekanismPacket
 			
 			if(item.getStatus(itemstack) == 1)
 			{
-				Object3D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
+				Coord4D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
 				
 				item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
 				

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
@@ -169,12 +169,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(filter instanceof MItemStackFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
 					}
 				}
@@ -183,7 +183,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 3));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 3));
 			}
 			
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
@@ -268,11 +268,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{ 
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 1));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 1));
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 2));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 2));
 		}
 	}
 	
@@ -460,7 +460,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(6);
 			data.add(toUse);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			
 			radiusField.setText("");
 		}
@@ -476,7 +476,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(7);
 			data.add(toUse);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			
 			minField.setText("");
 		}
@@ -492,7 +492,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(8);
 			data.add(toUse);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			
 			maxField.setText("");
 		}

@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
@@ -121,7 +121,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
@@ -129,7 +129,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(1);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

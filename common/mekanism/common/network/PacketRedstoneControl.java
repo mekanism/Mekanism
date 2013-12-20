@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +13,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketRedstoneControl implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	public RedstoneControl value;
 	
 	@Override
@@ -25,7 +25,7 @@ public class PacketRedstoneControl implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Object3D)data[0];
+		object3D = (Coord4D)data[0];
 		value = (RedstoneControl)data[1];
 		
 		return this;
@@ -34,7 +34,7 @@ public class PacketRedstoneControl implements IMekanismPacket
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		Object3D obj = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		Coord4D obj = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		RedstoneControl control = RedstoneControl.values()[dataStream.readInt()];
 		
 		TileEntity tileEntity = obj.getTileEntity(world);

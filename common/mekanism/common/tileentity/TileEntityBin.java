@@ -2,7 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IActiveState;
 import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
@@ -190,7 +190,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			
 			if(bottomStack != null && isActive && delayTicks == 0)
 			{
-				TileEntity tile = Object3D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
+				TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
 				
 				if(tile instanceof ILogisticalTransporter)
 				{
@@ -372,7 +372,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(!worldObj.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 			prevCount = getItemCount();
 			sortStacks();
 		}
@@ -484,7 +484,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     	
     	if(clientActive != active)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		clientActive = active;
     	}

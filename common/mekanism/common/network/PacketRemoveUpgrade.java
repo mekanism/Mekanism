@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityBasicBlock;
@@ -15,7 +15,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketRemoveUpgrade implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	public byte upgradeType;
 	
@@ -28,7 +28,7 @@ public class PacketRemoveUpgrade implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Object3D)data[0];
+		object3D = (Coord4D)data[0];
 		upgradeType = (Byte)data[1];
 		
 		return this;

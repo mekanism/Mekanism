@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.GuiMItemStackFilter;
@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketDigitalMinerGui implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	public MinerGuiPacket packetType;
 	
@@ -50,7 +50,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 	{
 		packetType = (MinerGuiPacket)data[0];
 		
-		object3D = (Object3D)data[1];
+		object3D = (Coord4D)data[1];
 		type = (Integer)data[2];
 
 		if(packetType == MinerGuiPacket.CLIENT)
@@ -75,7 +75,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 	{
 		packetType = MinerGuiPacket.values()[dataStream.readInt()];
 		
-		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
 		type = dataStream.readInt();
 		
@@ -119,7 +119,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		}
 	}
 	
-	public static void openServerGui(MinerGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Object3D obj, int i)
+	public static void openServerGui(MinerGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i)
 	{
 		Container container = null;
 		

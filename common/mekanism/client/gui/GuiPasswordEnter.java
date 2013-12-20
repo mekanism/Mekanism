@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.PacketHandler;
@@ -136,7 +136,7 @@ public class GuiPasswordEnter extends GuiScreen
 			if(isBlock)
 			{
 				tileEntity.setEnergy(tileEntity.getEnergy() - 100);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, true, true, Object3D.get(tileEntity)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, true, true, Coord4D.get(tileEntity)));
 			}
 			else {
 				((IEnergizedItem)itemStack.getItem()).setEnergy(itemStack, ((IEnergizedItem)itemStack.getItem()).getEnergy(itemStack) - 100);

@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -282,7 +282,7 @@ public class SoundHandler
 	 * @param world - world to play in
 	 * @param object - location to play
 	 */
-	public void quickPlay(String soundPath, World world, Object3D object)
+	public void quickPlay(String soundPath, World world, Coord4D object)
 	{
 		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + soundPath);
 		

@@ -2,7 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IInvConfiguration;
@@ -115,7 +115,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 				
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
@@ -231,7 +231,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
     	
     	if(clientActive != active && updateDelay == 0)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		updateDelay = 10;
     		clientActive = active;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -161,7 +161,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			if(structure != null && isRendering && ticker % 20 == 0)
 			{
 				sendStructure = true;
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 			}
 			
 			if(prevStructure != (structure != null))
@@ -175,7 +175,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				
 				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 				{
-					Object3D obj = Object3D.get(this).getFromSide(side);
+					Coord4D obj = Coord4D.get(this).getFromSide(side);
 					
 					if(!(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
 					{
@@ -183,7 +183,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					}
 				}
 				
-				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 			}
 			
 			prevStructure = structure != null;
@@ -252,7 +252,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.fluidStored = null;
 							}
 							
-							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 						}
 					}
 				}
@@ -312,7 +312,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						}
 					}
 					
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
@@ -402,7 +402,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				structure.volHeight = dataStream.readInt();
 				structure.volWidth = dataStream.readInt();
 				structure.volLength = dataStream.readInt();
-				structure.renderLocation = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				structure.renderLocation = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 			}
 			
 			int size = dataStream.readInt();
@@ -410,7 +410,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			for(int i = 0; i < size; i++)
 			{
 				ValveData data = new ValveData();
-				data.location = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				data.location = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 				data.side = ForgeDirection.getOrientation(dataStream.readInt());
 				int viewingTicks = 0;
 				
@@ -443,13 +443,13 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	{
 		if(structure != null)
 		{
-			for(Object3D obj : structure.locations)
+			for(Coord4D obj : structure.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(worldObj);
 				
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 				}
 			}
 		}

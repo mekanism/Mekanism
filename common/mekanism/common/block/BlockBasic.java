@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.ClientProxy;
 import mekanism.common.ConnectedTextureRenderer;
 import mekanism.common.IActiveState;
@@ -326,7 +326,7 @@ public class BlockBasic extends Block
 				
 				if(!manageInventory(entityplayer, tileEntity))
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 					entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 				}
 				else {

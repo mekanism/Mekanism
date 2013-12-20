@@ -2,7 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -92,7 +92,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 			
@@ -165,7 +165,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getGas().amount, gasOutput));
 					gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing)), true);
 					
-					TileEntity tileEntity = Object3D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
 					
 					if(tileEntity instanceof IGasHandler)
 					{
@@ -289,7 +289,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			
 			for(EntityPlayer player : playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), player);
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 			}
 			
 			return;
@@ -409,7 +409,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
     	
     	if(clientActive != active && updateDelay == 0)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		updateDelay = 10;
     		clientActive = active;

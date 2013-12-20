@@ -6,7 +6,7 @@ import ic2.api.tile.IEnergyStorage;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
@@ -97,7 +97,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					clientActive = isActive;
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 			
@@ -156,7 +156,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
     	
     	if(clientActive != active && updateDelay == 0)
     	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
     		
     		updateDelay = Mekanism.UPDATE_DELAY;
     		clientActive = active;

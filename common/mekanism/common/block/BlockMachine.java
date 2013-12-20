@@ -3,7 +3,7 @@ package mekanism.common.block;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.common.IActiveState;
@@ -193,7 +193,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     		{
     			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
     			{
-    				TileEntity tile = Object3D.get(transporter).getFromSide(dir).getTileEntity(world);
+    				TileEntity tile = Coord4D.get(transporter).getFromSide(dir).getTileEntity(world);
 
     				if(tile instanceof IInventory)
     				{
@@ -613,7 +613,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			        	{
 				        	for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 							{
-								TileEntity tile = Object3D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+								TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
 			
 								if(tileEntity instanceof IInventory)
 								{
@@ -645,10 +645,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	 		}
         	 		else if(!electricChest.authenticated)
         	 		{
-        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Object3D.get(electricChest)), entityplayer);
+        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Coord4D.get(electricChest)), entityplayer);
         	 		}
         	 		else {
-        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Object3D.get(electricChest)), entityplayer);
+        	 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Coord4D.get(electricChest)), entityplayer);
         	 		}
         	 		
 	        		return true;
@@ -657,7 +657,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
         	{
         		TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
-        		PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Object3D.get(tileEntity), -1);
+        		PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
         		return true;
         	}
         	else {
@@ -759,7 +759,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         		{
 		        	for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 					{
-						TileEntity tile = Object3D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+						TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
 		
 						if(tile instanceof IInventory)
 						{

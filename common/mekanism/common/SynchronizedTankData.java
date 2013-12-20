@@ -3,14 +3,14 @@ package mekanism.common;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData 
 {
-	public Set<Object3D> locations = new HashSet<Object3D>();
+	public Set<Coord4D> locations = new HashSet<Coord4D>();
 	
 	public int volLength;
 	
@@ -28,7 +28,7 @@ public class SynchronizedTankData
 	
 	public boolean hasRenderer;
 	
-	public Object3D renderLocation;
+	public Coord4D renderLocation;
 	
 	public Set<ValveData> valves = new HashSet<ValveData>();
 	
@@ -75,7 +75,7 @@ public class SynchronizedTankData
 	public static class ValveData
 	{
 		public ForgeDirection side;
-		public Object3D location;
+		public Coord4D location;
 		public boolean serverFluid;
 		
 		@Override

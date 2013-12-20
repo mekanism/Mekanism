@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedTank;
 import mekanism.common.PacketHandler;
@@ -39,10 +39,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public FluidTank fluidTank;
 	
 	/** The nodes that have full sources near them or in them */
-	public Set<Object3D> recurringNodes = new HashSet<Object3D>();
+	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
 	
 	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
-	public Set<Object3D> cleaningNodes = new HashSet<Object3D>();
+	public Set<Coord4D> cleaningNodes = new HashSet<Coord4D>();
 	
 	public TileEntityElectricPump()
 	{
@@ -105,7 +105,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(suck(true))
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())), Object3D.get(this), 50D);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 				}
 				
 				clean(true);
@@ -118,7 +118,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
 			{
-				TileEntity tileEntity = Object3D.get(this).getFromSide(orientation).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).getFromSide(orientation).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IFluidHandler) 
 				{
@@ -136,12 +136,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	
 	public boolean suck(boolean take)
 	{
-		List<Object3D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Object3D[recurringNodes.size()]));
+		List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[recurringNodes.size()]));
 		Collections.shuffle(tempPumpList);
 		
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Object3D wrapper = Object3D.get(this).getFromSide(orientation);
+			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
 			
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
@@ -150,7 +150,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(take)
 					{
 						setEnergy(getEnergy() - 100);
-						recurringNodes.add(new Object3D(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord));
+						recurringNodes.add(new Coord4D(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord));
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -160,7 +160,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
-		for(Object3D wrapper : cleaningNodes)
+		for(Coord4D wrapper : cleaningNodes)
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
@@ -178,7 +178,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 		
-		for(Object3D wrapper : tempPumpList)
+		for(Coord4D wrapper : tempPumpList)
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
@@ -197,9 +197,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
-				Object3D side = wrapper.getFromSide(orientation);
+				Coord4D side = wrapper.getFromSide(orientation);
 				
-				if(Object3D.get(this).distanceTo(side) <= 80)
+				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{
 					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
 					{
@@ -231,7 +231,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		boolean took = false;
 		if(!worldObj.isRemote)
 		{
-			for(Object3D wrapper : cleaningNodes)
+			for(Coord4D wrapper : cleaningNodes)
 			{
 				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
@@ -246,7 +246,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				}
 			}
 			
-			for(Object3D wrapper : recurringNodes)
+			for(Coord4D wrapper : recurringNodes)
 			{
 				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
@@ -263,7 +263,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
-				Object3D wrapper = Object3D.get(this).getFromSide(orientation);
+				Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
 				
 				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
@@ -333,7 +333,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         
         NBTTagList recurringList = new NBTTagList();
         
-        for(Object3D wrapper : recurringNodes)
+        for(Coord4D wrapper : recurringNodes)
         {
         	NBTTagCompound tagCompound = new NBTTagCompound();
         	wrapper.write(tagCompound);
@@ -347,7 +347,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         
         NBTTagList cleaningList = new NBTTagList();
         
-        for(Object3D obj : cleaningNodes)
+        for(Coord4D obj : cleaningNodes)
         {
         	cleaningList.appendTag(obj.write(new NBTTagCompound()));
         }
@@ -374,7 +374,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     		
     		for(int i = 0; i < tagList.tagCount(); i++)
     		{
-    			recurringNodes.add(Object3D.read((NBTTagCompound)tagList.tagAt(i)));
+    			recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
     	
@@ -384,7 +384,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     		
     		for(int i = 0; i < tagList.tagCount(); i++)
     		{
-    			cleaningNodes.add(Object3D.read((NBTTagCompound)tagList.tagAt(i)));
+    			cleaningNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
     		}
     	}
     }

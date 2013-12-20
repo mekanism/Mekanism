@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
@@ -120,7 +120,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Object3D.get(this).getFromSide(side).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 			{
@@ -171,7 +171,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 		
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Object3D.get(this)));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
 		}
 	}
 	
@@ -281,7 +281,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 	{
 		isActive = !isActive;
 		refreshTransmitterNetwork();
-		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(this), getNetworkedData(new ArrayList())));
+		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 		
 		return true;
 	}

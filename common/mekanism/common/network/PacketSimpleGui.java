@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketSimpleGui implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	public int guiId;
 	
@@ -33,7 +33,7 @@ public class PacketSimpleGui implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Object3D)data[0];
+		object3D = (Coord4D)data[0];
 		guiId = (Integer)data[1];
 		
 		return this;
@@ -42,7 +42,7 @@ public class PacketSimpleGui implements IMekanismPacket
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
 	{
-		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
 		guiId = dataStream.readInt();
 		
@@ -65,7 +65,7 @@ public class PacketSimpleGui implements IMekanismPacket
 		}
 	}
 	
-	public static void openServerGui(int id, EntityPlayerMP playerMP, World world, Object3D obj)
+	public static void openServerGui(int id, EntityPlayerMP playerMP, World world, Coord4D obj)
 	{
 		playerMP.closeContainer();
         playerMP.incrementWindowID();
@@ -80,7 +80,7 @@ public class PacketSimpleGui implements IMekanismPacket
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public GuiScreen getGui(int id, EntityPlayer player, World world, Object3D obj)
+	public GuiScreen getGui(int id, EntityPlayer player, World world, Coord4D obj)
 	{
 		return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj.xCoord, obj.yCoord, obj.zCoord);
 	}

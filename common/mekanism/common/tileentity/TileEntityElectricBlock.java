@@ -9,7 +9,7 @@ import ic2.api.tile.IEnergyStorage;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -63,9 +63,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			if(!Mekanism.ic2Registered.contains(Object3D.get(this)))
+			if(!Mekanism.ic2Registered.contains(Coord4D.get(this)))
 			{
-				Mekanism.ic2Registered.add(Object3D.get(this));
+				Mekanism.ic2Registered.add(Coord4D.get(this));
 				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			}
 		}
@@ -145,7 +145,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			Mekanism.ic2Registered.remove(Object3D.get(this));
+			Mekanism.ic2Registered.remove(Coord4D.get(this));
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 		
@@ -416,7 +416,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
     public double injectEnergyUnits(ForgeDirection direction, double i)
     {
-		if(Object3D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
 		{
 			return i;
 		}

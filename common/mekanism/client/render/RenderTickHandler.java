@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Set;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
@@ -57,7 +57,7 @@ public class RenderTickHandler implements ITickHandler
 				int y = MathHelper.floor_double(pos.blockY);
 				int z = MathHelper.floor_double(pos.blockZ);
 				
-				Object3D obj = new Object3D(x, y, z);
+				Coord4D obj = new Coord4D(x, y, z);
 				
 				if(Mekanism.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 				{
