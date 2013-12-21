@@ -200,9 +200,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 	
 	@Override
-	public void tick()
+	public void onUpdate()
 	{
-		super.tick();
+		super.onUpdate();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

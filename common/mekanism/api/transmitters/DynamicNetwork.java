@@ -118,6 +118,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	@Override
 	public void tick()
 	{
+		boolean didFix = false;
+		
 		if(!fixed)
 		{
 			ticksSinceCreate++;
@@ -126,9 +128,18 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			{
 				ticksSinceCreate = 0;
 				fixMessedUpNetwork(transmitters.iterator().next());
+				didFix = true;
 			}
 		}
 		
+		if(!didFix)
+		{
+			onUpdate();
+		}
+	}
+	
+	public void onUpdate()
+	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			Iterator<DelayQueue> i = updateQueue.iterator();

@@ -202,9 +202,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 	
 	@Override
-	public void tick()
+	public void onUpdate()
 	{
-		super.tick();
+		super.onUpdate();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

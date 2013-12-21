@@ -14,6 +14,7 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
@@ -379,9 +380,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public void tick()
+	public void onUpdate()
 	{	
-		super.tick();
+		super.onUpdate();
 		
 		clearJoulesTransmitted();
 		
