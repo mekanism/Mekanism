@@ -476,12 +476,14 @@ public class RenderPartTransmitter implements IIconRegister
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		Icon renderIcon = transmitter.getIconForSide(side);
 		
+		Colour c = null;
+		
 		if(transmitter.getRenderColor() != null)
 		{
-			GL11.glColor4f(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1.0F);
+			c = new ColourRGBA(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1);
 		}
 		
-		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z());
+		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
 	}
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
@@ -496,9 +498,9 @@ public class RenderPartTransmitter implements IIconRegister
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
-    public void renderPart(Icon icon, CCModel cc, double x, double y, double z)
+    public void renderPart(Icon icon, CCModel cc, double x, double y, double z, Colour color)
 	{
-        cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), null);
+        cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), color != null ? new ColourMultiplier(color) : null);
     }
 
     public void renderTransparency(Icon icon, CCModel cc, Colour colour) 

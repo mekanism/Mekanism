@@ -113,12 +113,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				{
 					connections |= 1 << side.ordinal();
 				}
-				else {
-					System.out.println("Invalid type " + getTransmitter().getType());
-				}
-			}
-			else {
-				System.out.println("can't connect");
 			}
 		}
 
@@ -449,12 +443,19 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			int c = dataStream.readInt();
 			
+			EnumColor prev = color;
+			
 			if(c != -1)
 			{
 				color = TransporterUtils.colors.get(c);
 			}
 			else {
 				color = null;
+			}
+			
+			if(prev != color)
+			{
+				tile().markRender();
 			}
 			
 			transit.clear();

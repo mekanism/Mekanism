@@ -36,12 +36,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			super.bind(t);
 		}
 	}
-
-	public static boolean connectionMapContainsSide(byte connections, ForgeDirection side)
-	{
-		byte tester = (byte)(1 << side.ordinal());
-		return (connections & tester) > 0;
-	}
 	
 	@Override
 	public void refreshTransmitterNetwork()
@@ -233,15 +227,4 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 	@Override
 	public void chunkLoad() {}
-	
-	@Override
-	public boolean canConnectToAcceptor(ForgeDirection side)
-	{
-		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side))
-		{
-			return false;
-		}
-		
-		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
-	}
 }

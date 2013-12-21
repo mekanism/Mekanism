@@ -67,13 +67,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	
 	public boolean sendDesc = false;
 	public boolean redstonePowered = false;
-	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL,
-											   ConnectionType.NORMAL,
-											   ConnectionType.NORMAL,
-											   ConnectionType.NORMAL,
-											   ConnectionType.NORMAL,
-											   ConnectionType.NORMAL
-											  };
+	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 
 	static
 	{
@@ -141,7 +135,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
             }
         }
 
-        if(sendDesc)
+        if(sendDesc && !world().isRemote)
 		{
 			sendDescUpdate();
 			sendDesc = false;
@@ -456,6 +450,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		
 		if(!world().isRemote)
 		{
+			System.out.println("send desc");
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
 			
@@ -592,6 +587,16 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		return false;
+	}
+	
+	public boolean canConnectToAcceptor(ForgeDirection side)
+	{
+		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side))
+		{
+			return false;
+		}
+		
+		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
 	}
 
 	public static enum ConnectionType

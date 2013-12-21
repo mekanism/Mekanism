@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
-import mekanism.common.EntityBalloon;
+import mekanism.api.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
@@ -63,8 +62,6 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
     {
     	if(!world.isRemote)
     	{
-    		world.spawnEntityInWorld(new EntityBalloon(world, x, y, z, EnumColor.RED));
-    		
     		TileEntity tile = world.getBlockTileEntity(x, y, z);
     		
     		if(tile instanceof IConfigurable)
