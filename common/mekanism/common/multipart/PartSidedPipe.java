@@ -291,7 +291,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@SideOnly(Side.CLIENT)
 	public void renderStatic(Vector3 pos, LazyLightMatrix olm, int pass)
 	{
-		RenderPartTransmitter.getInstance().renderStatic(this);
+		if(pass == 1)
+		{
+			RenderPartTransmitter.getInstance().renderStatic(this, olm);
+		}
 	}
 
 	@Override

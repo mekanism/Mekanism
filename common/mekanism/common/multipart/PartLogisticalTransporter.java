@@ -86,7 +86,10 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		RenderPartTransmitter.getInstance().renderContents(this, f, pos);
+		if(pass == 1)
+		{
+			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
+		}
 	}
 	
 	@Override

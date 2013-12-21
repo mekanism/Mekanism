@@ -23,6 +23,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -42,13 +43,17 @@ import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.lighting.LazyLightMatrix;
+import codechicken.lib.lighting.LightMatrix;
 import codechicken.lib.lighting.LightModel;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
+import codechicken.lib.render.IVertexModifier;
 import codechicken.lib.render.IconTransformation;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconRegister;
+import codechicken.lib.render.UV;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 
@@ -458,7 +463,7 @@ public class RenderPartTransmitter implements IIconRegister
 		GL11.glPopMatrix();
 	}
 	
-	public void renderStatic(PartSidedPipe transmitter)
+	public void renderStatic(PartSidedPipe transmitter, LazyLightMatrix olm)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
@@ -467,11 +472,11 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderSide(side, transmitter);
+			renderSide(side, transmitter, olm);
 		}
 	}
 	
-	public void renderSide(ForgeDirection side, PartSidedPipe transmitter)
+	public void renderSide(ForgeDirection side, PartSidedPipe transmitter, LazyLightMatrix olm)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		Icon renderIcon = transmitter.getIconForSide(side);
@@ -483,7 +488,7 @@ public class RenderPartTransmitter implements IIconRegister
 			c = new ColourRGBA(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1);
 		}
 		
-		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
+		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c, olm);
 	}
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
@@ -498,9 +503,9 @@ public class RenderPartTransmitter implements IIconRegister
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
-    public void renderPart(Icon icon, CCModel cc, double x, double y, double z, Colour color)
+    public void renderPart(Icon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
 	{
-        cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), color != null ? new ColourMultiplier(color) : null);
+        cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new TransmitterTransformation(color, null));
     }
 
     public void renderTransparency(Icon icon, CCModel cc, Colour colour) 
@@ -657,5 +662,44 @@ public class RenderPartTransmitter implements IIconRegister
 		display.endList();
 		
 		return display;
+	}
+	
+	public static class TransmitterTransformation implements IVertexModifier
+	{
+		public ColourMultiplier colour;
+		public LightMatrix lightMatrix;
+		
+		public TransmitterTransformation(Colour color, LazyLightMatrix olm)
+		{
+			if(color != null)
+			{
+				colour = new ColourMultiplier(color);
+			}
+			
+			if(olm != null)
+			{
+				lightMatrix = olm.lightMatrix();
+			}
+		}
+		
+		@Override
+		public void applyModifiers(CCModel m, Tessellator tess, Vector3 vec, UV uv, Vector3 normal, int i)
+		{
+			if(colour != null)
+			{
+				colour.applyModifiers(m, tess, vec, uv, normal, i);
+			}
+			
+			if(lightMatrix != null)
+			{
+				lightMatrix.applyModifiers(m, tess, vec, uv, normal, i);
+			}
+		}
+
+		@Override
+		public boolean needsNormals()
+		{
+			return true;
+		}
 	}
 }

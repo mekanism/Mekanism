@@ -207,7 +207,10 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		RenderPartTransmitter.getInstance().renderContents(this, pos);
+		if(pass == 1)
+		{
+			RenderPartTransmitter.getInstance().renderContents(this, pos);
+		}
 	}
 
     @Override
