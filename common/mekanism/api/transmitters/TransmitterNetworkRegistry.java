@@ -159,10 +159,10 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	                {
 	                	Object obj = iter.next();
 	                	
-	                    if(obj instanceof ITransmitter)
+	                    if(obj instanceof IGridTransmitter)
 	                    {
-                            ((ITransmitter)obj).refreshTransmitterNetwork();
-                            ((ITransmitter)obj).chunkLoad();
+                            ((IGridTransmitter)obj).refreshTransmitterNetwork();
+                            ((IGridTransmitter)obj).chunkLoad();
 	                    }
 	                }
 	            }

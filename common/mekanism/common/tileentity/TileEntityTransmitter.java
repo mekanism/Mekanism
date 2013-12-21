@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
@@ -19,7 +19,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> extends TileEntity implements ITransmitter<N>, ITileNetwork, IConfigurable
+public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> extends TileEntity implements IGridTransmitter<N>, ITileNetwork, IConfigurable
 {
 	public N theNetwork;
 	
@@ -81,7 +81,7 @@ public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> exte
 	@Override
 	public boolean areTransmitterNetworksEqual(TileEntity tileEntity)
 	{
-		return tileEntity instanceof ITransmitter && getTransmissionType() == ((ITransmitter)tileEntity).getTransmissionType();
+		return tileEntity instanceof IGridTransmitter && getTransmissionType() == ((IGridTransmitter)tileEntity).getTransmissionType();
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
@@ -20,6 +21,7 @@ import mekanism.common.transporter.TransporterStack;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -66,6 +68,12 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		return TransmitterType.LOGISTICAL_TRANSPORTER;
 	}
+	
+	@Override
+	public TransmissionType getTransmissionType()
+	{
+		return TransmissionType.ITEM;
+	}
 
 	public static void registerIcons(IconRegister register)
 	{
@@ -79,6 +87,63 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
 		RenderPartTransmitter.getInstance().renderContents(this, f, pos);
+	}
+	
+	@Override
+	public boolean canConnect(ForgeDirection side)
+	{
+		testingSide = side;
+		boolean unblocked = tile().canReplacePart(this, this);
+		testingSide = null;
+		return unblocked;
+	}
+	
+	@Override
+	public byte getPossibleTransmitterConnections()
+	{
+		byte connections = 0x00;
+
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(canConnectMutual(side))
+			{
+				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()) && isConnectable(tileEntity))
+				{
+					connections |= 1 << side.ordinal();
+				}
+				else {
+					System.out.println("Invalid type " + getTransmitter().getType());
+				}
+			}
+			else {
+				System.out.println("can't connect");
+			}
+		}
+
+		return connections;
+	}
+	
+	@Override
+	public byte getPossibleAcceptorConnections()
+	{
+		byte connections = 0x00;
+
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			if(canConnectMutual(side))
+			{
+				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+
+				if(isValidAcceptor(tileEntity, side))
+				{
+					connections |= 1 << side.ordinal();
+				}
+			}
+		}
+
+		return connections;
 	}
 
 	@Override
@@ -550,7 +615,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
 	{
-		return null;
+		return PipeUtils.EMPTY;
 	}
 
 	@Override
@@ -594,12 +659,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		
 		return true;
 	}
-
-	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
-	{
-		return false;
-	}
 	
 	@Override
 	public EnumColor getColor()
@@ -617,5 +676,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public TileEntity getTile()
 	{
 		return tile();
+	}
+	
+	@Override
+	public EnumColor getRenderColor()
+	{
+		return color;
 	}
 }

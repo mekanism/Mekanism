@@ -21,7 +21,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements ITransmitterNetwork<A, N>, IClientTicker
 {
-	public HashSet<ITransmitter<N>> transmitters = new HashSet<ITransmitter<N>>();
+	public HashSet<IGridTransmitter<N>> transmitters = new HashSet<IGridTransmitter<N>>();
 	
 	public HashSet<A> possibleAcceptors = new HashSet<A>();
 	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
@@ -34,19 +34,19 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	
 	protected boolean needsUpdate = false;
 	
-	protected abstract ITransmitterNetwork<A, N> create(ITransmitter<N>... varTransmitters);
+	protected abstract ITransmitterNetwork<A, N> create(IGridTransmitter<N>... varTransmitters);
 	
-	protected abstract ITransmitterNetwork<A, N> create(Collection<ITransmitter<N>> collection);
+	protected abstract ITransmitterNetwork<A, N> create(Collection<IGridTransmitter<N>> collection);
 	
 	protected abstract ITransmitterNetwork<A, N> create(Set<N> networks);
 	
-	public void addAllTransmitters(Set<ITransmitter<N>> newTransmitters)
+	public void addAllTransmitters(Set<IGridTransmitter<N>> newTransmitters)
 	{
 		transmitters.addAll(newTransmitters);
 	}
 	
 	@Override
-	public void removeTransmitter(ITransmitter<N> transmitter)
+	public void removeTransmitter(IGridTransmitter<N> transmitter)
 	{
 		transmitters.remove(transmitter);
 		
@@ -60,7 +60,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void register()
 	{
 		try {
-			ITransmitter<N> aTransmitter = transmitters.iterator().next();
+			IGridTransmitter<N> aTransmitter = transmitters.iterator().next();
 			
 			if(aTransmitter instanceof TileEntity)
 			{
@@ -152,13 +152,13 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	}
 	
 	@Override
-	public synchronized void fixMessedUpNetwork(ITransmitter<N> transmitter)
+	public synchronized void fixMessedUpNetwork(IGridTransmitter<N> transmitter)
 	{
 		if(transmitter instanceof TileEntity)
 		{
 			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), getTransmissionType(), Coord4D.get((TileEntity)transmitter));
 			List<Coord4D> partNetwork = finder.exploreNetwork();
-			Set<ITransmitter<N>> newTransporters = new HashSet<ITransmitter<N>>();
+			Set<IGridTransmitter<N>> newTransporters = new HashSet<IGridTransmitter<N>>();
 			
 			for(Coord4D node : partNetwork)
 			{
@@ -166,8 +166,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity)transmitter))
 				{
-					((ITransmitter<N>)nodeTile).removeFromTransmitterNetwork();
-					newTransporters.add((ITransmitter<N>)nodeTile);
+					((IGridTransmitter<N>)nodeTile).removeFromTransmitterNetwork();
+					newTransporters.add((IGridTransmitter<N>)nodeTile);
 				}
 			}
 			
@@ -179,7 +179,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	}
 	
 	@Override
-	public synchronized void split(ITransmitter<N> splitPoint)
+	public synchronized void split(IGridTransmitter<N> splitPoint)
 	{
 		if(splitPoint instanceof TileEntity)
 		{
@@ -226,7 +226,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						}
 					}
 					
-					Set<ITransmitter<N>> newNetCables = new HashSet<ITransmitter<N>>();
+					Set<IGridTransmitter<N>> newNetCables = new HashSet<IGridTransmitter<N>>();
 					
 					for(Coord4D node : finder.iterated)
 					{
@@ -236,7 +236,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						{
 							if(nodeTile != splitPoint)
 							{
-								newNetCables.add((ITransmitter<N>)nodeTile);
+								newNetCables.add((IGridTransmitter<N>)nodeTile);
 							}
 						}
 					}

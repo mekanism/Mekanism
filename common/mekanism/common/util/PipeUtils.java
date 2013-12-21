@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.Arrays;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -12,6 +12,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public final class PipeUtils 
 {
+	public static final FluidTankInfo[] EMPTY = new FluidTankInfo[] {};
+	
     /**
      * Gets all the pipes around a tile entity.
      * @param tileEntity - center tile entity
@@ -52,7 +54,9 @@ public final class PipeUtils
 			{
 				int side = Arrays.asList(connectedAcceptors).indexOf(container);
 				
-				if(container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()) != null && container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()).length > 0)
+				FluidTankInfo[] infoArray = container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite());
+				
+				if(infoArray != null && infoArray.length > 0)
 				{
 					boolean notNull = false;
 					
@@ -99,7 +103,7 @@ public final class PipeUtils
     	{
 			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
 			
-			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitter))
+			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IGridTransmitter))
 			{
 				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
 			}

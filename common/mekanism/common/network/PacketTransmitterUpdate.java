@@ -6,7 +6,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,7 +73,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		
 		if(transmitterType == 0)
 		{
-			ITransmitter transmitter = (ITransmitter)world.getBlockTileEntity(x, y, z);
+			IGridTransmitter transmitter = (IGridTransmitter)world.getBlockTileEntity(x, y, z);
 			
 			if(transmitter != null)
 			{
@@ -88,7 +88,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 			
 			if(tileEntity != null)
 			{
-				((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
+				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
 			}
 		}
 		else if(transmitterType == 2)
@@ -107,7 +107,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			GasNetwork net = ((ITransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
+    			GasNetwork net = ((IGridTransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
     			
     			if(gasType != null)
     			{
@@ -135,7 +135,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		if(tileEntity != null)
     		{
-    			FluidNetwork net = ((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
+    			FluidNetwork net = ((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
     			
     			if(fluidType != null)
     			{

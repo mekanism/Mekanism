@@ -17,15 +17,15 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	
 	public Set<A> getAcceptors(Object... data);
 	
-	public void removeTransmitter(ITransmitter<N> transmitter);
+	public void removeTransmitter(IGridTransmitter<N> transmitter);
 	
 	public void refresh();
 	
-	public void split(ITransmitter<N> splitPoint);
+	public void split(IGridTransmitter<N> splitPoint);
 	
 	public void merge(N network);
 	
-	public void fixMessedUpNetwork(ITransmitter<N> transmitter);
+	public void fixMessedUpNetwork(IGridTransmitter<N> transmitter);
 	
 	public void register();
 	

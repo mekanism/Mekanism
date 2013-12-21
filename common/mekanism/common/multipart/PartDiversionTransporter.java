@@ -40,15 +40,6 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection side)
-	{
-		testingSide = side;
-		boolean unblocked = tile().canReplacePart(this, this);
-		testingSide = null;
-		return unblocked;
-	}
-	
-	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
 		super.load(nbtTags);

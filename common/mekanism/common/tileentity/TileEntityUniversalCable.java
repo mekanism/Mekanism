@@ -7,7 +7,7 @@ import ic2.api.energy.tile.IEnergySink;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.EnergyNetwork;
@@ -59,9 +59,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			for(TileEntity cable : adjacentCables)
 			{
-				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(cable, TransmissionType.ENERGY) && ((IGridTransmitter<EnergyNetwork>)cable).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<EnergyNetwork>)cable).getTransmitterNetwork());
+					connectedNets.add(((IGridTransmitter<EnergyNetwork>)cable).getTransmitterNetwork());
 				}
 			}
 			
@@ -137,7 +137,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
 			{
-				getTransmitterNetwork().merge(((ITransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
+				getTransmitterNetwork().merge(((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork());
 			}
 		}
 		

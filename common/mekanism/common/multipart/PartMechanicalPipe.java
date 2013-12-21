@@ -2,7 +2,7 @@ package mekanism.common.multipart;
 
 import java.util.Set;
 
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
@@ -186,7 +186,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	}
 	
 	@Override
-	public FluidNetwork createNetworkFromSingleTransmitter(ITransmitter<FluidNetwork> transmitter)
+	public FluidNetwork createNetworkFromSingleTransmitter(IGridTransmitter<FluidNetwork> transmitter)
 	{
 		return new FluidNetwork(transmitter);
 	}

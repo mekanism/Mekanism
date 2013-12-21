@@ -5,7 +5,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
@@ -163,7 +163,7 @@ public final class TransporterUtils
     	{
 			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
 			
-			if(inventory instanceof IInventory && !(inventory instanceof ITransmitter))
+			if(inventory instanceof IInventory && !(inventory instanceof IGridTransmitter))
 			{
 				inventories[orientation.ordinal()] = (IInventory)inventory;
 			}

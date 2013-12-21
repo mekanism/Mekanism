@@ -5,7 +5,7 @@ import java.util.List;
 
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -312,9 +312,9 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			if(tileEntity instanceof ITransmitter)
+			if(tileEntity instanceof IGridTransmitter)
 			{
-				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				((IGridTransmitter)tileEntity).refreshTransmitterNetwork();
 				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tileEntity), world.provider.dimensionId);
 			}
 		}
@@ -327,9 +327,9 @@ public class BlockTransmitter extends Block
 
 		if(!world.isRemote)
 		{
-			if(tileEntity instanceof ITransmitter)
+			if(tileEntity instanceof IGridTransmitter)
 			{
-				((ITransmitter)tileEntity).refreshTransmitterNetwork();
+				((IGridTransmitter)tileEntity).refreshTransmitterNetwork();
 				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tileEntity), world.provider.dimensionId);
 				
 				if(tileEntity instanceof TileEntityUniversalCable)

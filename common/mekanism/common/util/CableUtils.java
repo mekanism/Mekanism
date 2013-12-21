@@ -11,7 +11,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
@@ -45,7 +45,7 @@ public final class CableUtils
 			
 			if(acceptor instanceof IStrictEnergyAcceptor || 
 					acceptor instanceof IEnergySink || 
-					(acceptor instanceof IPowerReceptor && !(acceptor instanceof ITransmitter) && MekanismUtils.useBuildcraft()) ||
+					(acceptor instanceof IPowerReceptor && !(acceptor instanceof IGridTransmitter) && MekanismUtils.useBuildcraft()) ||
 					acceptor instanceof IElectrical || acceptor instanceof IEnergyHandler)
 			{
 				if(!(acceptor instanceof IConductor))
@@ -171,7 +171,7 @@ public final class CableUtils
     
     public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, ForgeDirection side)
     {
-    	if(tileEntity instanceof ITransmitter)
+    	if(tileEntity instanceof IGridTransmitter)
     	{
     		return false;
     	}
@@ -201,7 +201,7 @@ public final class CableUtils
     		return true;
     	}
     	
-    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof ITransmitter) && MekanismUtils.useBuildcraft())
+    	if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof IGridTransmitter) && MekanismUtils.useBuildcraft())
     	{
     		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, side.getOpposite()))
     		{
@@ -228,7 +228,7 @@ public final class CableUtils
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.ENERGY))
     	{
-    		ITransmitter<EnergyNetwork> cable = (ITransmitter<EnergyNetwork>)pointer;
+    		IGridTransmitter<EnergyNetwork> cable = (IGridTransmitter<EnergyNetwork>)pointer;
     		
     		return cable.getTransmitterNetwork().emit(amount);
     	}

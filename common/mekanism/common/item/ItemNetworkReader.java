@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,13 +26,13 @@ public class ItemNetworkReader extends ItemEnergized
     	{
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
-    		if(tileEntity instanceof ITransmitter)
+    		if(tileEntity instanceof IGridTransmitter)
     		{
     			if(getEnergy(stack) >= ENERGY_PER_USE)
     			{
     				setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
     				
-	    			ITransmitter<?> transmitter = (ITransmitter<?>)tileEntity;
+	    			IGridTransmitter<?> transmitter = (IGridTransmitter<?>)tileEntity;
 	    			
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));

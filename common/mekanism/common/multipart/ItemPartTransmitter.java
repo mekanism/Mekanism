@@ -5,7 +5,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -54,9 +54,9 @@ public class ItemPartTransmitter extends JItemMultiPart
 			{
 				TileEntity tile = obj.getFromSide(side).getTileEntity(world);
 				
-				if(tile instanceof ITransmitter && TransmissionType.checkTransmissionType(tile, type))
+				if(tile instanceof IGridTransmitter && TransmissionType.checkTransmissionType(tile, type))
 				{
-					networks.add(((ITransmitter)tile).getTransmitterNetwork());
+					networks.add(((IGridTransmitter)tile).getTransmitterNetwork());
 				}
 			}
 			

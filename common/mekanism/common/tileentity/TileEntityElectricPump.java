@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedTank;
 import mekanism.common.PacketHandler;
@@ -17,6 +17,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -459,7 +460,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
 		
-		return new FluidTankInfo[0];
+		return PipeUtils.EMPTY;
 	}
 
 	@Override

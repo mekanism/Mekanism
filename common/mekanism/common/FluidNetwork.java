@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
@@ -38,13 +38,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public FluidStack fluidStored;
 	public int prevStored;
 	
-	public FluidNetwork(ITransmitter<FluidNetwork>... varPipes)
+	public FluidNetwork(IGridTransmitter<FluidNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public FluidNetwork(Collection<ITransmitter<FluidNetwork>> collection)
+	public FluidNetwork(Collection<IGridTransmitter<FluidNetwork>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -292,7 +292,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public synchronized void refresh()
 	{
-		Set<ITransmitter<FluidNetwork>> iterPipes = (Set<ITransmitter<FluidNetwork>>)transmitters.clone();
+		Set<IGridTransmitter<FluidNetwork>> iterPipes = (Set<IGridTransmitter<FluidNetwork>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
 		
 		possibleAcceptors.clear();
@@ -300,7 +300,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		while(it.hasNext())
 		{
-			ITransmitter<FluidNetwork> conductor = (ITransmitter<FluidNetwork>)it.next();
+			IGridTransmitter<FluidNetwork> conductor = (IGridTransmitter<FluidNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -312,7 +312,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 		
-		for(ITransmitter<FluidNetwork> transmitter : iterPipes)
+		for(IGridTransmitter<FluidNetwork> transmitter : iterPipes)
 		{
 			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)transmitter);
 		
@@ -320,7 +320,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			{
 				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
 				
-				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnectToAcceptor(side))
+				if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
@@ -369,7 +369,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 	
 	@Override
-	protected FluidNetwork create(ITransmitter<FluidNetwork>... varTransmitters) 
+	protected FluidNetwork create(IGridTransmitter<FluidNetwork>... varTransmitters) 
 	{
 		FluidNetwork network = new FluidNetwork(varTransmitters);
 		network.refFluid = refFluid;
@@ -395,7 +395,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
-	protected FluidNetwork create(Collection<ITransmitter<FluidNetwork>> collection) 
+	protected FluidNetwork create(Collection<IGridTransmitter<FluidNetwork>> collection) 
 	{
 		FluidNetwork network = new FluidNetwork(collection);
 		network.refFluid = refFluid;

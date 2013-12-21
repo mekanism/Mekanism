@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.FluidNetwork;
@@ -55,9 +55,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			for(TileEntity pipe : adjacentPipes)
 			{
-				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork(false) != null)
+				if(TransmissionType.checkTransmissionType(pipe, getTransmissionType()) && ((IGridTransmitter<FluidNetwork>)pipe).getTransmitterNetwork(false) != null)
 				{
-					connectedNets.add(((ITransmitter<FluidNetwork>)pipe).getTransmitterNetwork());
+					connectedNets.add(((IGridTransmitter<FluidNetwork>)pipe).getTransmitterNetwork());
 				}
 			}
 			
@@ -124,7 +124,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<FluidNetwork
 			
 			if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 			{
-				getTransmitterNetwork().merge(((ITransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork());
+				getTransmitterNetwork().merge(((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork());
 			}
 		}
 		

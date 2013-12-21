@@ -13,7 +13,7 @@ import java.util.Set;
 
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ListUtils;
@@ -42,13 +42,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public double electricityStored;
 	
-	public EnergyNetwork(ITransmitter<EnergyNetwork>... varCables)
+	public EnergyNetwork(IGridTransmitter<EnergyNetwork>... varCables)
 	{
 		transmitters.addAll(Arrays.asList(varCables));
 		register();
 	}
 	
-	public EnergyNetwork(Collection<ITransmitter<EnergyNetwork>> collection)
+	public EnergyNetwork(Collection<IGridTransmitter<EnergyNetwork>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -91,7 +91,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
         int numCables = transmitters.size();
         double reciprocalSum = 0;
         
-        for(ITransmitter<EnergyNetwork> cable : transmitters)
+        for(IGridTransmitter<EnergyNetwork> cable : transmitters)
         {
             reciprocalSum += 1.0/(double)cable.getCapacity();
         }
@@ -339,15 +339,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public synchronized void refresh()
 	{
-		Set<ITransmitter<EnergyNetwork>> iterCables = (Set<ITransmitter<EnergyNetwork>>)transmitters.clone();
-		Iterator<ITransmitter<EnergyNetwork>> it = iterCables.iterator();
+		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
+		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ITransmitter<EnergyNetwork> conductor = (ITransmitter<EnergyNetwork>)it.next();
+			IGridTransmitter<EnergyNetwork> conductor = (IGridTransmitter<EnergyNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -359,7 +359,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 		
-		for(ITransmitter<EnergyNetwork> transmitter : iterCables)
+		for(IGridTransmitter<EnergyNetwork> transmitter : iterCables)
 		{
 			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)transmitter);
 		
@@ -367,7 +367,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
 				
-				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnectToAcceptor(side))
+				if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
@@ -458,7 +458,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 	
 	@Override
-	protected EnergyNetwork create(ITransmitter<EnergyNetwork>... varTransmitters) 
+	protected EnergyNetwork create(IGridTransmitter<EnergyNetwork>... varTransmitters) 
 	{
 		EnergyNetwork network = new EnergyNetwork(varTransmitters);
 		network.clientEnergyScale = clientEnergyScale;
@@ -470,7 +470,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	protected EnergyNetwork create(Collection<ITransmitter<EnergyNetwork>> collection) 
+	protected EnergyNetwork create(Collection<IGridTransmitter<EnergyNetwork>> collection) 
 	{
 		EnergyNetwork network = new EnergyNetwork(collection);
 		network.clientEnergyScale = clientEnergyScale;

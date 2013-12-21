@@ -10,13 +10,19 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
+import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.TransmitterType.Size;
+import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -49,7 +55,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -118,6 +124,29 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public abstract Icon getCenterIcon();
 
 	public abstract Icon getSideIcon();
+	
+	@Override
+	public void update()
+	{
+        if(world().isRemote)
+        {
+            if(delayTicks == 5)
+            {
+                delayTicks = 6; /* don't refresh again */
+                refreshConnections();
+            }
+            else if(delayTicks < 5)
+            {
+                delayTicks++;
+            }
+        }
+
+        if(sendDesc)
+		{
+			sendDescUpdate();
+			sendDesc = false;
+		}
+	}
 
 	public Icon getIconForSide(ForgeDirection side)
 	{
@@ -398,6 +427,74 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		return true;
 	}
+	
+	protected void onRedstoneSplit() {}
+	
+	protected void onRefresh() {}
+	
+	public void refreshConnections()
+	{
+		byte possibleTransmitters = getPossibleTransmitterConnections();
+		byte possibleAcceptors = getPossibleAcceptorConnections();
+		
+		if(possibleTransmitters != currentTransmitterConnections)
+		{
+			boolean nowPowered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+			
+			if(nowPowered != redstonePowered)
+			{
+				if(nowPowered)
+				{
+					onRedstoneSplit();
+				}
+				
+				tile().notifyPartChange(this);
+				
+				redstonePowered = nowPowered;
+			}
+		}
+		
+		if(!world().isRemote)
+		{
+			currentTransmitterConnections = possibleTransmitters;
+			currentAcceptorConnections = possibleAcceptors;
+			
+			sendDesc = true;
+		}
+	}
+	
+	protected void onModeChange(ForgeDirection side)
+	{
+		refreshConnections();
+	}
+	
+	@Override
+	public void onAdded()
+	{
+		super.onAdded();
+		refreshConnections();
+	}
+
+	@Override
+	public void onChunkLoad()
+	{
+		super.onChunkLoad();
+		refreshConnections();
+	}
+	
+	@Override
+	public void onNeighborChanged()
+	{
+		super.onNeighborChanged();
+		refreshConnections();
+	}
+	
+	@Override
+	public void onPartChanged(TMultiPart part)
+	{
+		super.onPartChanged(part);
+		refreshConnections();
+	}
 
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
@@ -457,8 +554,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			}
 		}
 	}
-	
-	public abstract void onModeChange(ForgeDirection side);
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)

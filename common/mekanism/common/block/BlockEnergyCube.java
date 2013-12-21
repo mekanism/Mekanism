@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.client.ClientProxy;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;

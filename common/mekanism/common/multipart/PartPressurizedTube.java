@@ -6,7 +6,7 @@ import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
@@ -168,7 +168,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	}
 
 	@Override
-	public GasNetwork createNetworkFromSingleTransmitter(ITransmitter<GasNetwork> transmitter)
+	public GasNetwork createNetworkFromSingleTransmitter(IGridTransmitter<GasNetwork> transmitter)
 	{
 		return new GasNetwork(transmitter);
 	}

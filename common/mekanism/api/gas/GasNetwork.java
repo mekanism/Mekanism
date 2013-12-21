@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.FluidNetwork;
@@ -36,13 +36,13 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	public GasStack gasStored;
 	public int prevStored;
 	
-	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
+	public GasNetwork(IGridTransmitter<GasNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public GasNetwork(Collection<ITransmitter<GasNetwork>> collection)
+	public GasNetwork(Collection<IGridTransmitter<GasNetwork>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -290,15 +290,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	@Override
 	public synchronized void refresh()
 	{
-		Set<ITransmitter<GasNetwork>> iterTubes = (Set<ITransmitter<GasNetwork>>)transmitters.clone();
-		Iterator<ITransmitter<GasNetwork>> it = iterTubes.iterator();
+		Set<IGridTransmitter<GasNetwork>> iterTubes = (Set<IGridTransmitter<GasNetwork>>)transmitters.clone();
+		Iterator<IGridTransmitter<GasNetwork>> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ITransmitter<GasNetwork> conductor = (ITransmitter<GasNetwork>)it.next();
+			IGridTransmitter<GasNetwork> conductor = (IGridTransmitter<GasNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -310,7 +310,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			}
 		}
 		
-		for(ITransmitter<GasNetwork> transmitter : transmitters)
+		for(IGridTransmitter<GasNetwork> transmitter : transmitters)
 		{
 			IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)transmitter);
 		
@@ -318,7 +318,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			{
 				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
 				
-				if(side != null && acceptor != null && !(acceptor instanceof ITransmitter) && transmitter.canConnectToAcceptor(side))
+				if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
@@ -393,7 +393,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 	
 	@Override
-	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
+	protected GasNetwork create(IGridTransmitter<GasNetwork>... varTransmitters) 
 	{
 		GasNetwork network = new GasNetwork(varTransmitters);
 		network.refGas = refGas;
@@ -418,7 +418,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 
 	@Override
-	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
+	protected GasNetwork create(Collection<IGridTransmitter<GasNetwork>> collection) 
 	{
 		GasNetwork network = new GasNetwork(collection);
 		network.refGas = refGas;

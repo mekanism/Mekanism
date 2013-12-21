@@ -1,7 +1,7 @@
 package mekanism.api.gas;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -107,7 +107,7 @@ public final class GasTransmission
     	
     	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
     	{
-	    	return ((ITransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack);
+	    	return ((IGridTransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack);
     	}
     	
     	return 0;

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
@@ -125,7 +125,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 	
 	@Override
-	public EnergyNetwork createNetworkFromSingleTransmitter(ITransmitter<EnergyNetwork> transmitter)
+	public EnergyNetwork createNetworkFromSingleTransmitter(IGridTransmitter<EnergyNetwork> transmitter)
 	{
 		return new EnergyNetwork(transmitter);
 	}

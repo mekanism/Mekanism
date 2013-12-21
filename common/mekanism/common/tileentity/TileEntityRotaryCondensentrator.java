@@ -20,6 +20,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -524,7 +525,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
 		
-		return null;
+		return PipeUtils.EMPTY;
 	}
 
 	@Override
