@@ -11,7 +11,9 @@ import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -103,5 +105,24 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 		
 		return true;
+	}
+	
+	@Override
+	public boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side)
+	{
+		if(!super.canTransporterConnect(tileEntity, side))
+		{
+			return false;
+		}
+		
+        int mode = modes[side.ordinal()];
+        boolean redstone = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+        
+        if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+        {
+            return false;
+        }
+        
+        return true;
 	}
 }

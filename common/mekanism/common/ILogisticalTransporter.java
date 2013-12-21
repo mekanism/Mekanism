@@ -22,7 +22,11 @@ public interface ILogisticalTransporter
 	
 	public TileEntity getTile();
 	
-	boolean canConnect(TileEntity tileEntity, ForgeDirection side);
+	boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side);
 	
-	public boolean canConnectMutual(TileEntity tileEntity, ForgeDirection side);
+	public boolean canTransporterConnectMutual(TileEntity tileEntity, ForgeDirection side);
+	
+	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side);
+	
+	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side);
 }

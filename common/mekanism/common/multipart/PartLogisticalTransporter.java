@@ -113,7 +113,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				{
 					ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 					
-					if(canConnectMutual(tileEntity, side) && (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()))
+					if(canTransporterConnectMutual(tileEntity, side) && (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()))
 					{
 						connections |= 1 << side.ordinal();
 					}
@@ -365,7 +365,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = original;
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
+		if(!canReceiveFrom(original.getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -395,7 +395,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
+		if(!canReceiveFrom(outputter, ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -690,27 +690,49 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 	
 	@Override
-	public boolean canConnect(TileEntity tileEntity, ForgeDirection side)
+	public boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side)
 	{
-		return true;
+		return canConnect(side);
 	}
 	
 	@Override
-	public boolean canConnectMutual(TileEntity tileEntity, ForgeDirection side)
+	public boolean canTransporterConnectMutual(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!canConnect(tileEntity, side))
+		if(!canTransporterConnect(tileEntity, side))
 		{
 			return false;
 		}
 		
 		if(tileEntity instanceof ILogisticalTransporter)
 		{
-			if(!((ILogisticalTransporter)tileEntity).canConnect(tile(), side.getOpposite()))
+			if(!((ILogisticalTransporter)tileEntity).canTransporterConnect(tile(), side.getOpposite()))
 			{
 				return false;
 			}
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
+	{
+		if(!canTransporterConnect(tileEntity, side))
+		{
+			return false;
+		}
+		
+		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
+	}
+	
+	@Override
+	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
+	{
+		if(!canTransporterConnect(tileEntity, side))
+		{
+			return false;
+		}
+		
+		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
 }

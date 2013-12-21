@@ -199,7 +199,7 @@ public final class TransporterPathfinder
 						{
 							ILogisticalTransporter trans = (ILogisticalTransporter)pointer.getTileEntity(worldObj);
 							
-							if(!trans.canConnectMutual(tile, side))
+							if(!trans.canEmitTo(tile, side))
 							{
 								continue;
 							}

@@ -130,9 +130,9 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 	
 	@Override
-	public boolean canConnect(TileEntity tileEntity, ForgeDirection side)
+	public boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!super.canConnect(tileEntity, side))
+		if(!super.canTransporterConnect(tileEntity, side))
 		{
 			return false;
 		}

@@ -247,7 +247,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		stack.homeLocation = original;
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(this, ForgeDirection.getOrientation(stack.getSide(this))))
+		if(!canReceiveFrom(original.getTileEntity(worldObj), ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(this, ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -277,7 +277,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(this, ForgeDirection.getOrientation(stack.getSide(this))))
+		if(!canReceiveFrom(outputter, ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(this, ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -570,14 +570,36 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	}
 	
 	@Override
-	public boolean canConnect(TileEntity tileEntity, ForgeDirection side)
+	public boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side)
 	{
 		return true;
 	}
 	
 	@Override
-	public boolean canConnectMutual(TileEntity tileEntity, ForgeDirection side)
+	public boolean canTransporterConnectMutual(TileEntity tileEntity, ForgeDirection side)
 	{
+		return true;
+	}
+	
+	@Override
+	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
+	{
+		if(!canTransporterConnect(tileEntity, side))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
+	{
+		if(!canTransporterConnect(tileEntity, side))
+		{
+			return false;
+		}
+		
 		return true;
 	}
 }

@@ -121,7 +121,7 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedTransporters).indexOf(tile);
 				
-				if(tileEntity.canConnectMutual(tile, ForgeDirection.getOrientation(side)))
+				if(tileEntity.canTransporterConnectMutual(tile, ForgeDirection.getOrientation(side)))
 				{
 					connectable[side] = true;
 				}

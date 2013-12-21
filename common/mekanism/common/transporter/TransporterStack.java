@@ -279,7 +279,7 @@ public class TransporterStack
 		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.worldObj);
 		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 		
-		if(!transporter.canConnectMutual(from, side.getOpposite()))
+		if(!transporter.canTransporterConnectMutual(from, side.getOpposite()))
 		{
 			return false;
 		}
