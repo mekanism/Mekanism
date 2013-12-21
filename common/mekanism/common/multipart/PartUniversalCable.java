@@ -5,10 +5,10 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
@@ -22,14 +22,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IEnergySink, IEnergyHandler, IElectrical
+public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergySink, IEnergyHandler
 {
     public static PartTransmitterIcons cableIcons;
     
@@ -253,41 +251,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     }
 	
 	@Override
-	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
-	{
-		if(doReceive && receive != null && receive.getWatts() > 0)
-		{
-			return receive.getWatts() - (float)(getTransmitterNetwork().emit(receive.getWatts()*Mekanism.FROM_UE));
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide)
-	{
-		return null;
-	}
-
-	@Override
-	public float getRequest(ForgeDirection direction)
-	{
-		return (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		return 0;
-	}
-
-	@Override
-	public float getVoltage()
-	{
-		return 120;
-	}
-	
-	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) 
 	{
 		if(!simulate)
@@ -327,4 +290,42 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     {
         return 10000;
     }
+
+	@Override
+	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	{
+		if(!canReceiveEnergy(side))
+		{
+			return amount;
+		}
+		
+    	double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
+    	setEnergy(getEnergy() + toUse);
+    	
+    	return amount-toUse;
+	}
+
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return false;
+	}
+	
+	@Override
+	public double getMaxEnergy()
+	{
+		return getTransmitterNetwork().getCapacity();
+	}
+	
+	@Override
+	public double getEnergy()
+	{
+		return getTransmitterNetwork().electricityStored;
+	}
+	
+	@Override
+	public void setEnergy(double energy)
+	{
+		getTransmitterNetwork().electricityStored = energy;
+	}
 }

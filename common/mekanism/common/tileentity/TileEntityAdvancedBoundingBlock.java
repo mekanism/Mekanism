@@ -1,13 +1,5 @@
 package mekanism.common.tileentity;
 
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.block.IElectricalStorage;
-import universalelectricity.core.electricity.ElectricityPack;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import cofh.api.energy.IEnergyHandler;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
@@ -21,8 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
+import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler
 {
 	@Override
 	public int getSizeInventory() 
@@ -281,105 +277,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 		
 		return getInv().getMaxEnergy();
-	}
-
-	@Override
-	public boolean canConnect(ForgeDirection direction) 
-	{
-		if(getInv() == null)
-		{
-			return false;
-		}
-		
-		return getInv().canConnect(direction);
-	}
-
-	@Override
-	public void setEnergyStored(float energy) 
-	{
-		if(getInv() == null)
-		{
-			return;
-		}
-		
-		getInv().setEnergyStored(energy);
-	}
-
-	@Override
-	public float getEnergyStored() 
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-		
-		return getInv().getEnergyStored();
-	}
-
-	@Override
-	public float getMaxEnergyStored() 
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-		
-		return getInv().getMaxEnergyStored();
-	}
-
-	@Override
-	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive) 
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-		
-		return getInv().receiveElectricity(from, receive, doReceive);
-	}
-
-	@Override
-	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
-	{
-		if(getInv() == null)
-		{
-			return null;
-		}
-		
-		return getInv().provideElectricity(from, request, doProvide);
-	}
-
-	@Override
-	public float getRequest(ForgeDirection direction) 
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-		
-		return getInv().getRequest(direction);
-	}
-
-	@Override
-	public float getProvide(ForgeDirection direction) 
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-		
-		return getInv().getProvide(direction);
-	}
-
-	@Override
-	public float getVoltage() 
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-		
-		return getInv().getVoltage();
 	}
 
 	@Override

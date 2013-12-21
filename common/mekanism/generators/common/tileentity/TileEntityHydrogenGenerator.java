@@ -159,12 +159,6 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		data.add(hydrogenStored);
 		return data;
 	}
-	
-	@Override
-	public float getVoltage()
-	{
-		return 240;
-	}
 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 

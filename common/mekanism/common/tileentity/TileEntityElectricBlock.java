@@ -21,10 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.block.IElectricalStorage;
-import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -32,7 +28,7 @@ import cofh.api.energy.IEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerReceptor, IEnergyTile, IElectrical, IElectricalStorage, IConnector, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -95,12 +91,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 	
 	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		return getConsumingSides().contains(direction) || getOutputtingSides().contains(direction);
-	}
-	
-	@Override
 	public double getEnergy()
 	{
 		return electricityStored;
@@ -117,12 +107,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public double getMaxEnergy()
 	{
 		return MAX_ELECTRICITY;
-	}
-	
-	@Override
-	public float getVoltage()
-	{
-		return (float)(120*Mekanism.TO_UE);
 	}
 	
 	@Override
@@ -205,77 +189,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		return worldObj;
 	}
 	
-	@Override
-	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive) 
-	{
-		if(getConsumingSides().contains(from))
-		{
-			double toAdd = Math.min(getMaxEnergy()-getEnergy(), receive.getWatts()*Mekanism.FROM_UE);
-			
-			if(doReceive)
-			{
-				setEnergy(getEnergy() + toAdd);
-			}
-			
-			return (float)(toAdd*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide) 
-	{
-		if(getOutputtingSides().contains(from))
-		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), request.getWatts()*Mekanism.FROM_UE));
-			
-			if(doProvide)
-			{
-				setEnergy(getEnergy() - toSend);
-			}
-			
-			return ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), getVoltage());
-		}
-		
-		return new ElectricityPack();
-	}
-
-	@Override
-	public float getRequest(ForgeDirection direction) 
-	{
-		if(getConsumingSides().contains(direction))
-		{
-			return getMaxEnergyStored()-getEnergyStored();
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		return getOutputtingSides().contains(direction) ? Math.min(getEnergyStored(), (float)(getMaxOutput()*Mekanism.TO_UE)) : 0;
-	}
-	
-	@Override
-	public void setEnergyStored(float energy)
-	{
-		setEnergy(energy*Mekanism.FROM_UE);
-	}
-
-	@Override
-	public float getEnergyStored() 
-	{
-		return (float)(getEnergy()*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxEnergyStored() 
-	{
-		return (float)(getMaxEnergy()*Mekanism.TO_UE);
-	}
-	
 	/**
 	 * Gets the scaled energy level for the GUI.
 	 * @param i - multiplier
@@ -325,7 +238,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean canInterface(ForgeDirection from) 
 	{
-		return canConnect(from);
+		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override

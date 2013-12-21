@@ -2,7 +2,6 @@ package mekanism.common;
 
 import ic2.api.energy.tile.IEnergySink;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,8 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
@@ -234,12 +231,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			            	energyToSend -= toSend*Mekanism.FROM_BC;
 						}
 					}
-					else if(acceptor instanceof IElectrical)
-					{
-						double toSend = Math.min(currentSending, ((IElectrical)acceptor).getRequest(side.getOpposite())*Mekanism.FROM_UE);
-						ElectricityPack pack = ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), ((IElectrical)acceptor).getVoltage());
-						energyToSend -= ((IElectrical)acceptor).receiveElectricity(side.getOpposite(), pack, true)*Mekanism.FROM_UE;
-					}
 				}
 			}
 			
@@ -302,18 +293,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				if(handler.acceptsEnergyFrom(null, side.getOpposite()))
 				{
 					if(Math.min((handler.demandedEnergyUnits()*Mekanism.FROM_IC2), (handler.getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
-					{
-						toReturn.add(acceptor);
-					}
-				}
-			}
-			else if(acceptor instanceof IElectrical)
-			{
-				IElectrical handler = (IElectrical)acceptor;
-				
-				if(handler.canConnect(side.getOpposite()))
-				{
-					if(handler.getRequest(side.getOpposite()) > 0)
 					{
 						toReturn.add(acceptor);
 					}

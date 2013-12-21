@@ -82,7 +82,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -139,7 +139,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			if(type != MachineType.LOGISTICAL_SORTER)
 			{
 				list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
-				list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 			}
 			
 			if(hasTank(itemstack))
@@ -164,12 +163,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		else {
 			list.addAll(MekanismUtils.splitLines(type.getDescription()));
 		}
-	}
-
-	@Override
-	public float getVoltage(ItemStack itemStack) 
-	{
-		return 120;
 	}
 	
 	@Override
@@ -891,68 +884,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	public boolean isMetadataSpecific()
 	{
 		return true;
-	}
-	
-	@Override
-	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
-			
-			if(doRecharge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
-	{
-		if(canSend(itemStack))
-		{
-			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
-			
-			if(doDischarge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - toSend);
-			}
-			
-			return (float)(toSend*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public void setElectricity(ItemStack itemStack, float joules) 
-	{
-		setEnergy(itemStack, joules*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getTransfer(ItemStack itemStack)
-	{
-		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
 	}
 	
 	@Override

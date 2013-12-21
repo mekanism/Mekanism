@@ -143,12 +143,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPo
 	}
 
 	@Override
-	public float getVoltage() 
-	{
-		return (float)(tier.VOLTAGE*Mekanism.TO_UE);
-	}
-
-	@Override
 	public String getType() 
 	{
 		return getInvName();

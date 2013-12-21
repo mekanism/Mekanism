@@ -535,12 +535,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public float getRequest(ForgeDirection direction)
-	{
-		return 0;
-	}
-	
-	@Override
 	public boolean canSetFacing(int facing)
 	{
 		return true;

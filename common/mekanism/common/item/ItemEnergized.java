@@ -15,22 +15,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IEnergyContainerItem
+public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
-	
-	/** How fast this item can transfer energy. */
-	public float VOLTAGE;
 	
 	public ItemEnergized(int id, double maxElectricity, float voltage)
 	{
 		super(id);
 		MAX_ELECTRICITY = maxElectricity;
-		VOLTAGE = voltage;
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
@@ -41,7 +36,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
-		list.add(EnumColor.AQUA + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 	}
 	
 	@Override
@@ -66,12 +60,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 		ItemStack charged = new ItemStack(this);
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy(charged));
 		list.add(charged);
-	}
-
-	@Override
-	public float getVoltage(ItemStack itemStack) 
-	{
-		return VOLTAGE;
 	}
 	
 	@Override
@@ -215,68 +203,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, IItem
 	public boolean isMetadataSpecific()
 	{
 		return false;
-	}
-
-	@Override
-	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
-			
-			if(doRecharge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
-	{
-		if(canSend(itemStack))
-		{
-			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
-			
-			if(doDischarge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - toSend);
-			}
-			
-			return (float)(toSend*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public void setElectricity(ItemStack itemStack, float joules) 
-	{
-		setEnergy(itemStack, joules*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getTransfer(ItemStack itemStack)
-	{
-		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
 	}
 
 	@Override

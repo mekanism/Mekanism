@@ -13,7 +13,6 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -215,27 +214,6 @@ public final class CableUtils
     	return false;
     }
     
-    /**
-     * Emits a defined amount of energy to the network, distributing between IC2-based and BuildCraft-based acceptors.
-     * @param amount - amount to send
-     * @param sender - sending TileEntity
-     * @param facing - direction the TileEntity is facing
-     * @return rejected energy
-     */
-    public static double emitEnergyToNetwork(double amount, TileEntity sender, ForgeDirection facing)
-    {
-    	TileEntity pointer = Coord4D.get(sender).getFromSide(facing).getTileEntity(sender.worldObj);
-    	
-    	if(TransmissionType.checkTransmissionType(pointer, TransmissionType.ENERGY))
-    	{
-    		IGridTransmitter<EnergyNetwork> cable = (IGridTransmitter<EnergyNetwork>)pointer;
-    		
-    		return cable.getTransmitterNetwork().emit(amount);
-    	}
-    	
-    	return amount;
-    }
-    
     public static void emit(TileEntityElectricBlock emitter)
     {
     	if(!emitter.worldObj.isRemote && MekanismUtils.canFunction(emitter))
@@ -310,55 +288,33 @@ public final class CableUtils
     
     private static double emit_do_do(TileEntityElectricBlock from, TileEntity tileEntity, ForgeDirection side, double sendingEnergy)
     {
-		if(TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY))
-		{
-			sendingEnergy -= (sendingEnergy - emitEnergyToNetwork(sendingEnergy, from, side));
-		}
-		else if(tileEntity instanceof IStrictEnergyAcceptor)
+		if(tileEntity instanceof IStrictEnergyAcceptor)
 		{
 			IStrictEnergyAcceptor acceptor = (IStrictEnergyAcceptor)tileEntity;
-			sendingEnergy -= (sendingEnergy - acceptor.transferEnergyToAcceptor(side.getOpposite(), sendingEnergy));
-		}
-		else if(tileEntity instanceof IConductor)
-		{
-			ForgeDirection outputDirection = side;
-			float provide = from.getProvide(outputDirection);
-
-			if(provide > 0)
+			
+			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{
-				IElectricityNetwork outputNetwork = ElectricityHelper.getNetworkFromTileEntity(tileEntity, outputDirection);
-	
-				if(outputNetwork != null)
-				{
-					ElectricityPack request = outputNetwork.getRequest(from);
-					
-					if(request.getWatts() > 0)
-					{
-						float ueSend = (float)(sendingEnergy*Mekanism.TO_UE);
-						ElectricityPack sendPack = ElectricityPack.min(ElectricityPack.getFromWatts(ueSend, from.getVoltage()), ElectricityPack.getFromWatts(provide, from.getVoltage()));
-						float rejectedPower = outputNetwork.produce(sendPack, from);
-						sendingEnergy -= (sendPack.getWatts() - rejectedPower)*Mekanism.FROM_UE;
-					}
-				}
+				sendingEnergy -= (sendingEnergy - acceptor.transferEnergyToAcceptor(side.getOpposite(), sendingEnergy));
 			}
 		}
 		else if(tileEntity instanceof IEnergyHandler)
 		{
 			IEnergyHandler handler = (IEnergyHandler)tileEntity;
-			int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(sendingEnergy*Mekanism.TO_TE), false);
-			sendingEnergy -= used*Mekanism.FROM_TE;
+			
+			if(handler.canInterface(side.getOpposite()))
+			{
+				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(sendingEnergy*Mekanism.TO_TE), false);
+				sendingEnergy -= used*Mekanism.FROM_TE;
+			}
 		}
 		else if(tileEntity instanceof IEnergySink)
 		{
-			double toSend = Math.min(sendingEnergy, Math.min(((IEnergySink)tileEntity).getMaxSafeInput(), ((IEnergySink)tileEntity).demandedEnergyUnits())*Mekanism.FROM_IC2);
-			double rejects = ((IEnergySink)tileEntity).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2;
-			sendingEnergy -= (toSend - rejects);
-		}
-		else if(tileEntity instanceof IElectrical)
-		{
-			double toSend = Math.min(sendingEnergy, ((IElectrical)tileEntity).getRequest(side.getOpposite())*Mekanism.FROM_UE);
-			ElectricityPack pack = ElectricityPack.getFromWatts((float)(toSend*Mekanism.TO_UE), ((IElectrical)tileEntity).getVoltage());
-			sendingEnergy -= (((IElectrical)tileEntity).receiveElectricity(side.getOpposite(), pack, true)*Mekanism.FROM_UE);
+			if(((IEnergySink)tileEntity).acceptsEnergyFrom(from, side.getOpposite()))
+			{
+				double toSend = Math.min(sendingEnergy, Math.min(((IEnergySink)tileEntity).getMaxSafeInput(), ((IEnergySink)tileEntity).demandedEnergyUnits())*Mekanism.FROM_IC2);
+				double rejects = ((IEnergySink)tileEntity).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2;
+				sendingEnergy -= (toSend - rejects);
+			}
 		}
 		else if(tileEntity instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 		{

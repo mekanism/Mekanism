@@ -27,7 +27,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Keyboard;
 
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -44,7 +43,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem
+public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -95,12 +94,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 			
 			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
-	}
-
-	@Override
-	public float getVoltage(ItemStack itemStack) 
-	{
-		return (float)((itemStack.getItemDamage() == 3 ? 240 : 120)*Mekanism.TO_UE);
 	}
 	
 	@Override
@@ -375,68 +368,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	public boolean isMetadataSpecific()
 	{
 		return true;
-	}
-	
-	@Override
-	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
-			
-			if(doRecharge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
-	{
-		if(canSend(itemStack))
-		{
-			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
-			
-			if(doDischarge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - toSend);
-			}
-			
-			return (float)(toSend*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public void setElectricity(ItemStack itemStack, float joules) 
-	{
-		setEnergy(itemStack, joules*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getTransfer(ItemStack itemStack)
-	{
-		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
 	}
 	
 	@Override
