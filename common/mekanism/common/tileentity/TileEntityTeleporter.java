@@ -2,6 +2,7 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,9 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet41EntityEffect;
+import net.minecraft.network.packet.Packet9Respawn;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -28,6 +32,7 @@ import net.minecraft.world.WorldServer;
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
@@ -36,6 +41,8 @@ import dan200.computer.api.IPeripheral;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
 {
+	private MinecraftServer server = MinecraftServer.getServer();
+	
 	/** This teleporter's frequency. */
 	public Teleporter.Code code;
 	
@@ -266,12 +273,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				
 				if(entity instanceof EntityPlayerMP)
 				{
-					if(entity.worldObj.provider.dimensionId != closestCoords.dimensionId)
-					{
-						entity.travelToDimension(closestCoords.dimensionId);
-					}
-					
-					((EntityPlayerMP)entity).playerNetServerHandler.setPlayerLocation(closestCoords.xCoord+0.5, closestCoords.yCoord+1, closestCoords.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+					teleportPlayerTo((EntityPlayerMP)entity, closestCoords, teleporter);
 				}
 				else {
 					teleportEntityTo(entity, closestCoords, teleporter);
@@ -289,9 +291,48 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 	
+	public void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter)
+	{
+		if(player.dimension != coord.dimensionId)
+		{
+	        int id = player.dimension;
+	        WorldServer oldWorld = server.worldServerForDimension(player.dimension);
+	        player.dimension = coord.dimensionId;
+	        WorldServer newWorld = server.worldServerForDimension(player.dimension);
+	        player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+	        oldWorld.removePlayerEntityDangerously(player);
+	        player.isDead = false;
+	        
+	        if(player.isEntityAlive())
+            {
+                newWorld.spawnEntityInWorld(player);
+                player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+                newWorld.updateEntityWithOptionalForce(player, false);
+                player.setWorld(newWorld);
+            }
+	        
+	        server.getConfigurationManager().func_72375_a(player, oldWorld);
+	        player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+	        player.theItemInWorldManager.setWorld(newWorld);
+	        server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
+	        server.getConfigurationManager().syncPlayerInventory(player);
+	        Iterator iterator = player.getActivePotionEffects().iterator();
+	        
+	        while(iterator.hasNext())
+	        {
+	            PotionEffect potioneffect = (PotionEffect)iterator.next();
+	            player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, potioneffect));
+	        }
+	
+	        GameRegistry.onPlayerChangedDimension(player);
+		}
+		else {
+			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+		}
+	}
+	
 	public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter)
 	{
-		MinecraftServer server = MinecraftServer.getServer();
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 		
 		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
