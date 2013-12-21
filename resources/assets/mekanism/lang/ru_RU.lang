@@ -8,12 +8,11 @@ item.EnrichedAlloy.name=Обогащённый сплав
 item.EnergyTablet.name=Энергетический планшет
 item.SpeedUpgrade.name=Улучшение "скорость"
 item.EnergyUpgrade.name=Улучшение "энергия"
-item.Robit.name=Robit
+item.Robit.name=Робит
 item.AtomicDisassembler.name=Атомный дизассемблер
 item.AtomicCore.name=Атомное ядро
 item.ElectricBow.name=Электролук
 item.BoundingBlock.name=Bounding Block
-tile.GasTank.name=Газовый баллон
 item.StorageTank.name=Storage Tank
 item.ControlCircuit.name=Схема управления
 item.EnrichedIron.name=Обогащённое железо
@@ -22,14 +21,20 @@ item.PortableTeleporter.name=Переносной телепортер
 item.TeleportationCore.name=Ядро телепортации
 item.Configurator.name=Конфигуратор
 item.NetworkReader.name=Считыватель сети
-item.ManganeseAlloy.name=Марганцевый сплав
 item.WalkieTalkie.name=Переносная рация
+item.Jetpack.name=Реактивный ранец
+item.ScubaTank.name=Scuba Tank
+item.GasMask.name=Gas Mask
+item.Dictionary.name=Словарь
+
+//Gas Tank
+tile.GasTank.GasTank.name=Газовый баллон
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Осмиевый блок
 tile.BasicBlock.BronzeBlock.name=Бронзовый блок
 tile.BasicBlock.RefinedObsidian.name=Очищенный обсидиан
-tile.BasicBlock.CoalBlock.name=Угольный блок
+tile.BasicBlock.CharcoalBlock.name=Древесноугольный блок
 tile.BasicBlock.RefinedGlowstone.name=Очищенный светящийся камень
 tile.BasicBlock.SteelBlock.name=Стальной блок
 tile.BasicBlock.Bin.name=Bin
@@ -38,6 +43,8 @@ tile.BasicBlock.SteelCasing.name=Стальной корпус
 tile.BasicBlock.DynamicTank.name=Dynamic Tank
 tile.BasicBlock.DynamicGlass.name=Dynamic Glass
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
+tile.BasicBlock.CopperBlock.name=Медный блок
+tile.BasicBlock.TinBlock.name=Оловянный блок
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Камера обогащения
@@ -55,16 +62,32 @@ tile.MachineBlock.ElectricPump.name=Электропомпа
 tile.MachineBlock.ElectricChest.name=Электросундук
 tile.MachineBlock.Chargepad.name=Зарядная панель
 tile.MachineBlock.LogisticalSorter.name=Логистический сортировщик
+tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Ротационный конденсентратор
+tile.MachineBlock2.ChemicalFormulator.name=Химический формулятор
+tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Осмиевая руда
+tile.OreBlock.CopperOre.name=Медная руда
+tile.OreBlock.TinOre.name=Оловянная руда
 
 //Transmitters
-tile.Transmitter.PressurizedTube.name=Pressurized Tube
+tile.Transmitter.PressurizedTube.name=Герметичная труба
 tile.Transmitter.UniversalCable.name=Универсальный провод
 tile.Transmitter.MechanicalPipe.name=Механическая труба
 tile.Transmitter.LogisticalTransporter.name=Логистический транспортер
 tile.Transmitter.RestrictiveTransporter.name=Ограничительный транспортер
+tile.Transmitter.DiversionTransporter.name=Отклоняющий транспортер
+
+item.MultipartTransmitter.PressurizedTube.name=Герметичная труба
+item.MultipartTransmitter.UniversalCable.name=Универсальный провод
+item.MultipartTransmitter.MechanicalPipe.name=Механическая труба
+item.MultipartTransmitter.LogisticalTransporter.name=Логистический транспортер
+item.MultipartTransmitter.RestrictiveTransporter.name=Ограничительный транспортер
+item.MultipartTransmitter.DiversionTransporter.name=Отклоняющий транспортер
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Базовый энергетический куб
@@ -82,6 +105,7 @@ item.steelDust.name=Стальная пыль
 item.copperDust.name=Медная пыль
 item.tinDust.name=Оловянная пыль
 item.silverDust.name=Серебряная пыль
+item.leadDust.name=Свинцовая пыль
 
 //Clumps
 item.ironClump.name=Железная глыба
@@ -91,6 +115,7 @@ item.copperClump.name=Медная глыба
 item.tinClump.name=Оловянная глыба
 item.silverClump.name=Серебряная глыба
 item.obsidianClump.name=Обсидиановая глыба
+item.leadClump.name=Свинцовая глыба
 
 //Dirty Dust
 item.dirtyIronDust.name=Грязная железная пыль
@@ -100,6 +125,7 @@ item.dirtyCopperDust.name=Грязная медная пыль
 item.dirtyTinDust.name=Грязная оловянная пыль
 item.dirtySilverDust.name=Грязная серебряная пыль
 item.dirtyObsidianDust.name=Грязная обсидиановая пыль
+item.dirtyLeadDust.name=Грязная свинцовая пыль
 
 //Ingots
 item.obsidianIngot.name=Обсидиановый слиток
@@ -107,6 +133,20 @@ item.osmiumIngot.name=Осмиевый слиток
 item.bronzeIngot.name=Бронзовый слиток
 item.glowstoneIngot.name=Слиток светящегося камня
 item.steelIngot.name=Стальной слиток
+item.copperIngot.name=Медный слиток
+item.tinIngot.name=Оловянный слиток
+
+//Gasses
+gas.hydrogen=Водород
+gas.oxygen=Кислород
+gas.sulfuricGas=Серный газ
+gas.sulfuricAcid=Серная кислота
+
+//Fluids
+fluid.hydrogen=Жидкий водород
+fluid.oxygen=Жидкий кислород
+fluid.sulfuricGas=Жидкий серный газ
+fluid.sulfuricAcid=Жидкая серная кислота
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
@@ -116,7 +156,7 @@ itemGroup.tabMekanism=Mekanism
 //**********//
 
 //Items
-item.BioFuel.name=Биотопливо
+item.BioFuel.name=Био-топливо
 item.ElectrolyticCore.name=Электролитическое ядро
 item.SolarPanel.name=Солнечная панель
 
@@ -128,6 +168,12 @@ tile.Generator.HydrogenGenerator.name=Водородный генератор
 tile.Generator.BioGenerator.name=Био-генератор
 tile.Generator.AdvancedSolarGenerator.name=Продвинутый солнечный генератор
 tile.Generator.WindTurbine.name=Ветровая турбина
+
+//Gui text
+gui.heatGenerator.fuel=Топливо
+gui.solarGenerator.sun=Солнце
+gui.bioGenerator.bioFuel=Био-топливо
+gui.electrolyticSeparator.dump=Дамп
 
 //*****//
 //TOOLS//
@@ -222,5 +268,6 @@ tile.Multimeter.name=Мультиметр
 tile.ElectromagneticContractor.name=Электромагнитный контрагент
 tile.Battery.name=Модульный аккумулятор
 
-//Items
-item.Linker.name=Electrostatic Linker
+//General text
+text.contractor.success=контрагент успешно соединён
+text.tesla.success=Катушка Теслы успешно соединена
