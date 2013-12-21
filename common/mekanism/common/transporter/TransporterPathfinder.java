@@ -14,7 +14,6 @@ import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -65,11 +64,8 @@ public final class TransporterPathfinder
 				
 				if(transportStack.canInsertToTransporter(tile, side) && !currentPath.contains(Coord4D.get(tile)))
 				{
-					if(TransporterUtils.checkDiversionLogic(pointer.getTileEntity(worldObj), tile, side.ordinal()))
-					{
-						loop(Coord4D.get(tile), (ArrayList<Coord4D>)currentPath.clone(), dist);
-						found = true;
-					}
+					loop(Coord4D.get(tile), (ArrayList<Coord4D>)currentPath.clone(), dist);
+					found = true;
 				}
 			}
 			
@@ -199,6 +195,16 @@ public final class TransporterPathfinder
 					
 					if(tile instanceof IInventory)
 					{
+						if(pointer.getTileEntity(worldObj) instanceof ILogisticalTransporter)
+						{
+							ILogisticalTransporter trans = (ILogisticalTransporter)pointer.getTileEntity(worldObj);
+							
+							if(!trans.canConnectMutual(tile, side))
+							{
+								continue;
+							}
+						}
+						
 						ItemStack stack = TransporterManager.getPredictedInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal());
 						
 						if(TransporterManager.didEmit(transportStack.itemStack, stack))
@@ -435,11 +441,6 @@ public final class TransporterPathfinder
 						}
 						
 						TileEntity currTile = currentNode.getTileEntity(worldObj);
-						
-						if(!TransporterUtils.checkDiversionLogic(currTile, tile, i))
-						{
-							continue;
-						}
 
 						if(!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor)) 
 						{

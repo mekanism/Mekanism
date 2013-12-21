@@ -186,11 +186,6 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 							recalculate = true;
 						}
 						
-						if(!TransporterUtils.checkDiversionLogic(this, next, stack.getSide(this)))
-						{
-							recalculate = true;
-						}
-						
 						if(recalculate)
 						{
 							if(!recalculate(stack, null))
@@ -575,13 +570,13 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	}
 	
 	@Override
-	public boolean canInsert(ForgeDirection side)
+	public boolean canConnect(TileEntity tileEntity, ForgeDirection side)
 	{
 		return true;
 	}
 	
 	@Override
-	public boolean canOutput(ForgeDirection side)
+	public boolean canConnectMutual(TileEntity tileEntity, ForgeDirection side)
 	{
 		return true;
 	}

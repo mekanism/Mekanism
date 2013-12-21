@@ -130,40 +130,21 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 	
 	@Override
-	public boolean canInsert(ForgeDirection side)
+	public boolean canConnect(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!super.canInsert(side))
+		if(!super.canConnect(tileEntity, side))
 		{
 			return false;
 		}
 		
-		int mode = modes[side.ordinal()];
-		boolean redstone = world().isBlockIndirectlyGettingPowered(x(), y(), z());
-		
-		if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	@Override
-	public boolean canOutput(ForgeDirection side)
-	{
-		if(!super.canOutput(side))
-		{
-			return false;
-		}
-		
-		int mode = modes[side.ordinal()];
-		boolean redstone = world().isBlockIndirectlyGettingPowered(x(), y(), z());
-		
-		if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
-		{
-			return false;
-		}
-		
-		return true;
+        int mode = modes[side.ordinal()];
+        boolean redstone = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+        
+        if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+        {
+            return false;
+        }
+        
+        return true;
 	}
 }
