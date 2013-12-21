@@ -33,8 +33,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
@@ -163,10 +161,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				if(inventory[27].getItem() instanceof IEnergizedItem)
 				{
 					setEnergy(getEnergy() + EnergizedItemManager.discharge(inventory[27], MAX_ELECTRICITY - getEnergy()));
-				}
-				else if(inventory[27].getItem() instanceof IItemElectric)
-				{
-					setEnergy(getEnergy() + ElectricItemHelper.dischargeItem(inventory[27], (float)(MAX_ELECTRICITY - getEnergy())));
 				}
 				else if(Mekanism.hooks.IC2Loaded && inventory[27].getItem() instanceof IElectricItem)
 				{

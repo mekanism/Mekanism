@@ -25,11 +25,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -130,10 +127,6 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			if(itemstack.getItem() instanceof IEnergizedItem)
 			{
 				setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
-			}
-			else if(itemstack.getItem() instanceof IItemElectric)
-			{
-				setEnergy(getEnergy() - ElectricItemHelper.chargeItem(itemstack, (float)getEnergy()));
 			}
 			else if(Mekanism.hooks.IC2Loaded && itemstack.getItem() instanceof IElectricItem)
 			{

@@ -308,7 +308,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return false;
+		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
 	}
 	
 	@Override

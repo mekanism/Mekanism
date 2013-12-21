@@ -135,34 +135,25 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			return energyToSend;
+			return 0;
 		}
 		
-		double prevEnergy = energyToSend;
-		double sent;
-
-		energyToSend = doEmit(energyToSend);
-		sent = prevEnergy-energyToSend;
+		double sent = 0;
+		boolean tryAgain = false;
 		
-		boolean tryAgain = energyToSend > 0 && sent > 0;
-		
-		while(tryAgain)
-		{
+		do {
 			tryAgain = false;
 			
-			prevEnergy = energyToSend;
-			sent = 0;
+			double prev = sent;
+			sent += doEmit(energyToSend-sent);
 			
-			energyToSend -= (energyToSend - doEmit(energyToSend));
-			sent = prevEnergy-energyToSend;
-			
-			if(energyToSend > 0 && sent > 0)
+			if(energyToSend-sent > 0 && sent-prev > 0)
 			{
 				tryAgain = true;
 			}
-		}
+		} while(tryAgain);
 		
-		return energyToSend;
+		return sent;
 	}
 	
 	public synchronized double emit(double energyToSend)
@@ -173,12 +164,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 	
 	/**
-	 * @return rejects
+	 * @return sent
 	 */
 	public synchronized double doEmit(double energyToSend)
-	{
-		double energyAvailable = energyToSend;		
-		double sent;
+	{	
+		double sent = 0;
 		
 		List availableAcceptors = Arrays.asList(getAcceptors().toArray());
 
@@ -207,19 +197,19 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					
 					if(acceptor instanceof IStrictEnergyAcceptor)
 					{
-						energyToSend -= (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending));
+						sent += (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending));
 					}
 					else if(acceptor instanceof IEnergyHandler)
 					{
 						IEnergyHandler handler = (IEnergyHandler)acceptor;
 						int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*Mekanism.TO_TE), false);
-						energyToSend -= used*Mekanism.FROM_TE;
+						sent += used*Mekanism.FROM_TE;
 					}
 					else if(acceptor instanceof IEnergySink)
 					{
 						double toSend = Math.min(currentSending, ((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2);
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2);
-						energyToSend -= (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
+						sent += (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
 					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
 					{
@@ -228,17 +218,16 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						if(receiver != null)
 						{
 			            	float toSend = receiver.receiveEnergy(Type.PIPE, (float)(Math.min(receiver.powerRequest(), currentSending*Mekanism.TO_BC)), side.getOpposite());
-			            	energyToSend -= toSend*Mekanism.FROM_BC;
+			            	sent += toSend*Mekanism.FROM_BC;
 						}
 					}
 				}
 			}
 			
-			sent = energyAvailable - energyToSend;
 			joulesTransmitted += sent;
 		}
 		
-		return energyToSend;
+		return sent;
 	}
 	
 	@Override
@@ -415,7 +404,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			
 			if(electricityStored > 0)
 			{
-				electricityStored -= (electricityStored - tickEmit(electricityStored));
+				electricityStored -= tickEmit(electricityStored);
 			}
 		}
 	}

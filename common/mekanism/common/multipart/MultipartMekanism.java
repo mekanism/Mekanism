@@ -24,7 +24,7 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter"});
 		
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitter");
-		MultipartGenerator.registerPassThroughInterface("mekanism.api.IStrictEnergyAcceptor");
+		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IGridTransmitter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ILogisticalTransporter");
 		MultipartGenerator.registerPassThroughInterface("ic2.api.energy.tile.IEnergySink");
