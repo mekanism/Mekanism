@@ -90,7 +90,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						
 						if(!stack.isFinal(this))
 						{
-							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj)))
+							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(worldObj), ForgeDirection.getOrientation(stack.getSide(this))))
 							{
 								ILogisticalTransporter nextTile = (ILogisticalTransporter)next.getTileEntity(worldObj);
 								nextTile.entityEntering(stack);
@@ -181,7 +181,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 						TileEntity next = stack.getNext(this).getTileEntity(worldObj);
 						boolean recalculate = false;
 						
-						if(!stack.canInsertToTransporter(next))
+						if(!stack.canInsertToTransporter(next, ForgeDirection.getOrientation(stack.getSide(this))))
 						{
 							recalculate = true;
 						}
@@ -252,7 +252,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		stack.homeLocation = original;
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(this))
+		if(!stack.canInsertToTransporter(this, ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -282,7 +282,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(this))
+		if(!stack.canInsertToTransporter(this, ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -572,5 +572,17 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	public TileEntity getTile()
 	{
 		return this;
+	}
+	
+	@Override
+	public boolean canInsert(ForgeDirection side)
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canOutput(ForgeDirection side)
+	{
+		return true;
 	}
 }

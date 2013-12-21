@@ -42,9 +42,9 @@ public class ItemPartTransmitter extends JItemMultiPart
 	@Override
 	public TMultiPart newPart(ItemStack stack, EntityPlayer player, World world, BlockCoord coord, int face, Vector3 vecHit)
 	{
-		TransmissionType type = TransmissionType.values()[stack.getItemDamage()];
+		TransmitterType type = TransmitterType.values()[stack.getItemDamage()];
 		
-		if(TransmissionType.values()[stack.getItemDamage()] != TransmissionType.ITEM)
+		if(type.getTransmission() != TransmissionType.ITEM)
 		{
 			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z);
 			
@@ -54,7 +54,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 			{
 				TileEntity tile = obj.getFromSide(side).getTileEntity(world);
 				
-				if(tile instanceof IGridTransmitter && TransmissionType.checkTransmissionType(tile, type))
+				if(tile instanceof IGridTransmitter && TransmissionType.checkTransmissionType(tile, type.getTransmission()))
 				{
 					networks.add(((IGridTransmitter)tile).getTransmitterNetwork());
 				}

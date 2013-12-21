@@ -35,7 +35,7 @@ public enum TransmitterType
 		return size;
 	}
 	
-	public TransmissionType getType()
+	public TransmissionType getTransmission()
 	{
 		return transmissionType;
 	}

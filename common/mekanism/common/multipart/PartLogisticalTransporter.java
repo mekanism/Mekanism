@@ -109,7 +109,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()))
 				{
 					ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 					
@@ -208,7 +208,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 						
 						if(!stack.isFinal(this))
 						{
-							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world())))
+							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))))
 							{
 								ILogisticalTransporter nextTile = (ILogisticalTransporter)next.getTileEntity(world());
 								nextTile.entityEntering(stack);
@@ -299,7 +299,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 						TileEntity next = stack.getNext(this).getTileEntity(world());
 						boolean recalculate = false;
 						
-						if(!stack.canInsertToTransporter(next))
+						if(!stack.canInsertToTransporter(next, ForgeDirection.getOrientation(stack.getSide(this))))
 						{
 							recalculate = true;
 						}
@@ -370,7 +370,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = original;
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(tile()))
+		if(!stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -400,7 +400,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
-		if(!stack.canInsertToTransporter(tile()))
+		if(!stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
@@ -692,5 +692,17 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public EnumColor getRenderColor()
 	{
 		return color;
+	}
+	
+	@Override
+	public boolean canInsert(ForgeDirection side)
+	{
+		return getConnectionType(side) == ConnectionType.PUSH || getConnectionType(side) == ConnectionType.NORMAL;
+	}
+	
+	@Override
+	public boolean canOutput(ForgeDirection side)
+	{
+		return getConnectionType(side) == ConnectionType.PUSH || getConnectionType(side) == ConnectionType.NORMAL;
 	}
 }

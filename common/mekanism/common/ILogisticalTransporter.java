@@ -1,11 +1,12 @@
 package mekanism.common;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 public interface ILogisticalTransporter
 {
@@ -20,4 +21,8 @@ public interface ILogisticalTransporter
 	public void setColor(EnumColor c);
 	
 	public TileEntity getTile();
+	
+	public boolean canInsert(ForgeDirection side);
+	
+	public boolean canOutput(ForgeDirection side);
 }

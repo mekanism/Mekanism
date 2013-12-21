@@ -3,8 +3,8 @@ package mekanism.common.transporter;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterPathfinder.Destination;
@@ -12,6 +12,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -268,14 +269,29 @@ public class TransporterStack
 		return 0;
 	}
 	
-	public boolean canInsertToTransporter(TileEntity tileEntity)
+	public boolean canInsertToTransporter(TileEntity tileEntity, ForgeDirection side)
 	{
 		if(!(tileEntity instanceof ILogisticalTransporter))
 		{
 			return false;
 		}
 		
+		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.worldObj);
 		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
+		
+		if(!transporter.canInsert(side.getOpposite()))
+		{
+			return false;
+		}
+		
+		if(from instanceof ILogisticalTransporter)
+		{
+			if(!((ILogisticalTransporter)from).canOutput(side))
+			{
+				return false;
+			}
+		}
+		
 		return transporter.getColor() == color || transporter.getColor() == null;
 	}
 	

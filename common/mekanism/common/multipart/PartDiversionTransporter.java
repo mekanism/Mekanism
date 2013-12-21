@@ -2,20 +2,22 @@ package mekanism.common.multipart;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
 {
@@ -119,8 +121,48 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 				break;
 		}
 		
+		refreshConnections();
+		tile().notifyPartChange(this);
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()), 50D);
+		
+		return true;
+	}
+	
+	@Override
+	public boolean canInsert(ForgeDirection side)
+	{
+		if(!super.canInsert(side))
+		{
+			return false;
+		}
+		
+		int mode = modes[side.ordinal()];
+		boolean redstone = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		
+		if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean canOutput(ForgeDirection side)
+	{
+		if(!super.canOutput(side))
+		{
+			return false;
+		}
+		
+		int mode = modes[side.ordinal()];
+		boolean redstone = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		
+		if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
+		{
+			return false;
+		}
 		
 		return true;
 	}

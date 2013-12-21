@@ -170,7 +170,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -565,7 +565,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return true;
 		}
 		else {
-			return onConfigure(player, side, hit.subHit);
+			return onConfigure(player, hit.subHit, side);
 		}
 	}
 	
