@@ -49,7 +49,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 				
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()) && isConnectable(tileEntity))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
 					((DynamicNetwork<?,N>)getTransmitterNetwork()).merge(((IGridTransmitter<N>)tileEntity).getTransmitterNetwork());
 				}

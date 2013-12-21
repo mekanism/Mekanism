@@ -170,7 +170,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()) && isConnectable(tileEntity))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -178,11 +178,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 
 		return connections;
-	}
-	
-	public boolean isConnectable(TileEntity tileEntity)
-	{
-		return true;
 	}
 
 	public byte getPossibleAcceptorConnections()
@@ -448,9 +443,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			}
 		}
 		
+		onRefresh();
+		
 		if(!world().isRemote)
 		{
-			System.out.println("send desc");
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
 			

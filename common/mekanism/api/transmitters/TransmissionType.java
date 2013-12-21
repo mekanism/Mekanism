@@ -28,9 +28,6 @@ public enum TransmissionType
     		{
     			return true;
     		}
-    		else {
-    			System.out.println(((ITransmitter)sideTile).getTransmissionType());
-    		}
     	}
     	
     	if(this == GAS && currentTile instanceof IGasTransmitter)

@@ -109,9 +109,14 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()) && isConnectable(tileEntity))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getType()))
 				{
-					connections |= 1 << side.ordinal();
+					ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
+					
+					if(getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor())
+					{
+						connections |= 1 << side.ordinal();
+					}
 				}
 			}
 		}
@@ -164,6 +169,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public void update()
 	{
+		super.update();
+		
 		if(world().isRemote)
 		{
 			for(TransporterStack stack : transit)
@@ -655,6 +662,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	protected boolean onConfigure(EntityPlayer player, int part, int side)
 	{
 		TransporterUtils.incrementColor(this);
+		refreshConnections();
+		tile().notifyPartChange(this);
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()), 50D);
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 		
