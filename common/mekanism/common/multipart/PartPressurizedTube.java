@@ -11,6 +11,8 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
+import mekanism.common.FluidNetwork;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -46,6 +48,16 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	    		
 	    		cacheGas = null;
     		}
+    		
+    		if(getTransmitterNetwork(false) != null)
+    		{
+	    		int last = lastWrite != null ? lastWrite.amount : 0;
+	    		
+	    		if(last != getSaveShare())
+	    		{
+	    			MekanismUtils.saveChunk(tile());
+	    		}
+    		}
     	}
     	else {
     		float targetScale = getTransmitterNetwork().gasScale;
@@ -58,6 +70,24 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     	
     	super.update();
     }
+    
+	private int getSaveShare()
+	{
+    	if(getTransmitterNetwork().gasStored != null)
+    	{
+    		int remain = getTransmitterNetwork().gasStored.amount%getTransmitterNetwork().transmitters.size();
+    		int toSave = getTransmitterNetwork().gasStored.amount/getTransmitterNetwork().transmitters.size();
+    		
+    		if(getTransmitterNetwork().isFirst((IGridTransmitter<GasNetwork>)tile()))
+    		{
+    			toSave += remain;
+    		}
+    		
+    		return toSave;
+    	}
+    	
+    	return 0;
+	}
     
     @Override
     public TransmitterType getTransmitter()
@@ -122,11 +152,21 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
     	
     	if(getTransmitterNetwork().gasStored != null)
     	{
-    		int toSave = (int)Math.round(getTransmitterNetwork().gasStored.amount*(1F/getTransmitterNetwork().transmitters.size()));
-	    	GasStack stack = new GasStack(getTransmitterNetwork().gasStored.getGas(), toSave);
-	    	
-	    	lastWrite = stack;
-	    	nbtTags.setCompoundTag("cacheGas", stack.write(new NBTTagCompound()));
+    		int remain = getTransmitterNetwork().gasStored.amount%getTransmitterNetwork().transmitters.size();
+    		int toSave = getTransmitterNetwork().gasStored.amount/getTransmitterNetwork().transmitters.size();
+    		
+    		if(getTransmitterNetwork().isFirst((IGridTransmitter<GasNetwork>)tile()))
+    		{
+    			toSave += remain;
+    		}
+    		
+    		if(toSave > 0)
+    		{
+		    	GasStack stack = new GasStack(getTransmitterNetwork().gasStored.getGas(), toSave);
+		    	
+		    	lastWrite = stack;
+		    	nbtTags.setCompoundTag("cacheGas", stack.write(new NBTTagCompound()));
+    		}
     	}
     }
 

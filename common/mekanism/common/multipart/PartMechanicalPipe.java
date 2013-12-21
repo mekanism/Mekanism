@@ -7,6 +7,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,7 +53,17 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	    		
 	    		cacheFluid = null;
     		}
-			
+    		
+    		if(getTransmitterNetwork(false) != null)
+    		{
+	    		int last = lastWrite != null ? lastWrite.amount : 0;
+	    		
+	    		if(last != getSaveShare())
+	    		{
+	    			MekanismUtils.saveChunk(tile());
+	    		}
+    		}
+				
     		IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tile());
     		
     		for(ForgeDirection side : getConnections(ConnectionType.PULL))
@@ -75,6 +86,24 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 		}
 		
 		super.update();
+	}
+	
+	private int getSaveShare()
+	{
+    	if(getTransmitterNetwork().fluidStored != null)
+    	{
+    		int remain = getTransmitterNetwork().fluidStored.amount%getTransmitterNetwork().transmitters.size();
+    		int toSave = getTransmitterNetwork().fluidStored.amount/getTransmitterNetwork().transmitters.size();
+    		
+    		if(getTransmitterNetwork().isFirst((IGridTransmitter<FluidNetwork>)tile()))
+    		{
+    			toSave += remain;
+    		}
+    		
+    		return toSave;
+    	}
+    	
+    	return 0;
 	}
     
 	@Override
@@ -134,11 +163,20 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     	
     	if(getTransmitterNetwork().fluidStored != null)
     	{
-    		int toSave = (int)Math.round(getTransmitterNetwork().fluidStored.amount*(1F/getTransmitterNetwork().transmitters.size()));
-	    	FluidStack stack = new FluidStack(getTransmitterNetwork().fluidStored.getFluid(), toSave);
-	    	
-	    	lastWrite = stack;
-	    	nbtTags.setCompoundTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
+    		int remain = getTransmitterNetwork().fluidStored.amount%getTransmitterNetwork().transmitters.size();
+    		int toSave = getTransmitterNetwork().fluidStored.amount/getTransmitterNetwork().transmitters.size();
+    		
+    		if(getTransmitterNetwork().isFirst((IGridTransmitter<FluidNetwork>)tile()))
+    		{
+    			toSave += remain;
+    		}
+    		
+    		if(toSave > 0)
+    		{
+		    	FluidStack stack = new FluidStack(getTransmitterNetwork().fluidStored.getFluid(), toSave);
+		    	lastWrite = stack;
+		    	nbtTags.setCompoundTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
+    		}
     	}
     }
 
