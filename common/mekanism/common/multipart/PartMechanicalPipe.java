@@ -4,7 +4,6 @@ import java.util.Set;
 
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +28,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 	
-    public static PartTransmitterIcons pipeIcons;
+    public static TransmitterIcons pipeIcons;
     
     public float currentScale;
     
@@ -188,7 +187,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
     public static void registerIcons(IconRegister register)
     {
-        pipeIcons = new PartTransmitterIcons(2, 1);
+        pipeIcons = new TransmitterIcons(2, 1);
         pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipe", "MechanicalPipeActive"});
         pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeSide"});
     }

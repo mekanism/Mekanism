@@ -4,7 +4,10 @@ import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ClientPlayerTracker implements IPlayerTracker
 {
 	@Override
@@ -31,6 +34,10 @@ public class ClientPlayerTracker implements IPlayerTracker
 			
 			Mekanism.jetpackOn.clear();
 			Mekanism.gasmaskOn.clear();
+			
+			Mekanism.proxy.loadConfiguration();
+			
+			System.out.println("[Mekanism] Reloaded config.");
 		}
 	}
 

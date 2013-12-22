@@ -7,7 +7,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
 import mekanism.common.ILogisticalTransporter;
@@ -48,7 +47,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
 {
-	public static PartTransmitterIcons transporterIcons;
+	public static TransmitterIcons transporterIcons;
 	
 	public static final int SPEED = 5;
 	
@@ -80,7 +79,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 	public static void registerIcons(IconRegister register)
 	{
-		transporterIcons = new PartTransmitterIcons(3, 2);
+		transporterIcons = new TransmitterIcons(3, 2);
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
 		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterSide", "RestrictiveTransporterSide"});
 	}

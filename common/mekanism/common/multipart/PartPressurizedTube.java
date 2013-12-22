@@ -8,7 +8,6 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
@@ -24,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 {
-    public static PartTransmitterIcons tubeIcons;
+    public static TransmitterIcons tubeIcons;
     
     public float currentScale;
     
@@ -178,7 +177,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 
     public static void registerIcons(IconRegister register)
     {
-        tubeIcons = new PartTransmitterIcons(1, 1);
+        tubeIcons = new TransmitterIcons(1, 1);
         tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
         tubeIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
     }

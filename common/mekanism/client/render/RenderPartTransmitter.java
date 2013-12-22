@@ -56,7 +56,10 @@ import codechicken.lib.render.TextureUtils.IIconRegister;
 import codechicken.lib.render.UV;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RenderPartTransmitter implements IIconRegister
 {
 	public static RenderPartTransmitter INSTANCE;

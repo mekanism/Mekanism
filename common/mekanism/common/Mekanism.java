@@ -70,6 +70,7 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.MultipartMekanism;
+import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketDataRequest;
@@ -1302,6 +1303,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketJetpackData.class);
 		PacketHandler.registerPacket(PacketKey.class);
 		PacketHandler.registerPacket(PacketScubaTankData.class);
+		PacketHandler.registerPacket(PacketConfigSync.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 

@@ -1,14 +1,14 @@
-package mekanism.client.render;
+package mekanism.common.multipart;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
-public class PartTransmitterIcons
+public class TransmitterIcons
 {
     private Icon[] sideIcons;
     private Icon[] centerIcons;
 
-    public PartTransmitterIcons(int numCentres, int numSides)
+    public TransmitterIcons(int numCentres, int numSides)
     {
     	sideIcons = new Icon[numSides];
         centerIcons = new Icon[numCentres];

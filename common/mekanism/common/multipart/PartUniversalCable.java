@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.PartTransmitterIcons;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
@@ -29,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergySink, IEnergyHandler
 {
-    public static PartTransmitterIcons cableIcons;
+    public static TransmitterIcons cableIcons;
     
     public double currentPower = 0;
     
@@ -92,7 +91,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
     public static void registerIcons(IconRegister register)
     {
-        cableIcons = new PartTransmitterIcons(1, 1);
+        cableIcons = new TransmitterIcons(1, 1);
         cableIcons.registerCenterIcons(register, new String[] {"UniversalCable"});
         cableIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
     }
