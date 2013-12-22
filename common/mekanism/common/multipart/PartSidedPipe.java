@@ -59,7 +59,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
+	
 	public int delayTicks;
+	
 	public ForgeDirection testingSide = null;
 	
 	public byte currentAcceptorConnections = 0x00;
@@ -67,6 +69,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	
 	public boolean sendDesc = false;
 	public boolean redstonePowered = false;
+	
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 
 	static

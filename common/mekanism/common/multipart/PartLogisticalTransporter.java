@@ -788,4 +788,10 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
+	
+	@Override
+	public int getPriority()
+	{
+		return 1;
+	}
 }

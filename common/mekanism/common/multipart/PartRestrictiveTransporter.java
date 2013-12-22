@@ -27,4 +27,10 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	{
 		return transporterIcons.getSideIcon(1);
 	}
+	
+	@Override
+	public int getPriority()
+	{
+		return 1000;
+	}
 }

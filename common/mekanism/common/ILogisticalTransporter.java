@@ -29,4 +29,6 @@ public interface ILogisticalTransporter
 	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side);
 	
 	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side);
+	
+	public int getPriority();
 }

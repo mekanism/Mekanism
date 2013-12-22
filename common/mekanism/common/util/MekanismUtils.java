@@ -1091,7 +1091,7 @@ public final class MekanismUtils
     	
         Vec3 headVec = getHeadVec(player);
         Vec3 lookVec = player.getLook(1);
-        Vec3 endVec = headVec.addVector(lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach);
+        Vec3 endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
         
         return world.rayTraceBlocks_do_do(headVec, endVec, true, false);
     }
@@ -1102,7 +1102,7 @@ public final class MekanismUtils
         
         if(!player.worldObj.isRemote)
         {
-            vec.yCoord+=player.getEyeHeight();
+            vec.yCoord += player.getEyeHeight();
             
             if(player instanceof EntityPlayerMP && player.isSneaking())
             {

@@ -48,13 +48,7 @@ public final class TransporterPathfinder
 			
 			currentPath.add(pointer);
 			
-			if(pointer.getMetadata(worldObj) == 4)
-			{
-				dist += 1000;
-			}
-			else {
-				dist++;
-			}
+			dist += ((ILogisticalTransporter)pointer.getTileEntity(worldObj)).getPriority();
 			
 			boolean found = false;
 			
@@ -427,10 +421,7 @@ public final class TransporterPathfinder
 						TileEntity tile = neighbor.getTileEntity(worldObj);
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 						
-						if(neighbor.getMetadata(worldObj) == 4)
-						{
-							tentativeG += 999;
-						}
+						tentativeG += ((ILogisticalTransporter)tile).getPriority();
 
 						if(closedSet.contains(neighbor)) 
 						{

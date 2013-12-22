@@ -602,4 +602,10 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 		
 		return true;
 	}
+	
+	@Override
+	public int getPriority()
+	{
+		return 1;
+	}
 }

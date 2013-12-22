@@ -259,7 +259,6 @@ public class Mekanism
 	public static boolean allowBackCrafting = false;
 	public static boolean voiceServerEnabled = true;
 	public static boolean forceBuildcraft = false;
-	public static boolean overrideUERatios = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int osmiumGenerationAmount = 12;
 	public static int copperGenerationAmount = 16;

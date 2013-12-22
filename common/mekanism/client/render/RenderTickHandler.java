@@ -83,6 +83,7 @@ public class RenderTickHandler implements ITickHandler
 				ItemStack stack = player.getCurrentItemOrArmor(3);
 				
 				ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+				
 				int x = scaledresolution.getScaledWidth();
 				int y = scaledresolution.getScaledHeight();
 				
@@ -124,10 +125,10 @@ public class RenderTickHandler implements ITickHandler
 				float random = (rand.nextFloat()-0.5F)*0.1F;
 				
 				Pos3D vLeft = new Pos3D();
-				vLeft.zPos -= 0.54;
 				vLeft.xPos -= 0.43;
-				vLeft.rotateYaw(p.renderYawOffset);
 				vLeft.yPos -= 0.55;
+				vLeft.zPos -= 0.54;
+				vLeft.rotateYaw(p.renderYawOffset);
 				
 				Pos3D vRight = new Pos3D();
 				vRight.xPos += 0.43;
