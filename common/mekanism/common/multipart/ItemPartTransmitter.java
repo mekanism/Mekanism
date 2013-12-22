@@ -95,25 +95,41 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 					list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
+					break;
 				}
 				case 1:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");
+					break;
 				}
 				case 2:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "O " + EnumColor.GREY + "(Oxygen)");
 					list.add("- " + EnumColor.PURPLE + "H " + EnumColor.GREY + "(Hydrogen)");
+					break;
 				}
-			}
-			
-			if(itemstack.getItemDamage() >= 3 && itemstack.getItemDamage() <= 5)
-			{
-				list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-				list.add("- " + EnumColor.PURPLE + "Items (universal)");
-				list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				case 3:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "Items (universal)");
+					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+				}
+				case 4:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "Items (universal)");
+					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+					list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
+				}
+				case 5:
+				{
+					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "Items (universal)");
+					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+					list.add("- " + EnumColor.DARK_RED + "Controllable by redstone");
+				}
 			}
 		}
 	}

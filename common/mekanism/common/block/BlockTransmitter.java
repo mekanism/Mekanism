@@ -63,7 +63,6 @@ public class BlockTransmitter extends Block
 		super(id, Material.wood);
 		setHardness(2.0F);
 		setResistance(5.0F);
-		setCreativeTab(Mekanism.tabMekanism);
 	}
 	
 	public float getMinBound(IBlockAccess world, int x, int y, int z)

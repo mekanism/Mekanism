@@ -188,25 +188,33 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				MekanismUtils.saveChunk(this);
 			}
 			
-			if(bottomStack != null && isActive && delayTicks == 0)
+			if(delayTicks == 0)
 			{
-				TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
-				
-				if(tile instanceof ILogisticalTransporter)
+				if(bottomStack != null && isActive)
 				{
-					ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
+					TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
 					
-					ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
-					
-					if(TransporterManager.didEmit(bottomStack, rejects))
+					if(tile instanceof ILogisticalTransporter)
 					{
-						setInventorySlotContents(0, rejects);
+						ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
+						
+						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
+						
+						if(TransporterManager.didEmit(bottomStack, rejects))
+						{
+							setInventorySlotContents(0, rejects);
+						}
 					}
+					else if(tile instanceof IInventory)
+					{
+						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
+					}
+					
+					delayTicks = 10;
 				}
-				else if(tile instanceof IInventory)
-				{
-					setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
-				}
+			}
+			else {
+				delayTicks--;
 			}
 		}
 	}
