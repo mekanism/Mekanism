@@ -1232,8 +1232,6 @@ public class Mekanism
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
 
-        new MultipartMekanism();
-		
 		//Set up VoiceServerManager
 		if(voiceServerEnabled)
 		{
@@ -1253,7 +1251,9 @@ public class Mekanism
 		addEntities();
 		
 		registerOreDict();
-		
+
+		new MultipartMekanism();
+
 		//Packet registrations
 		PacketHandler.registerPacket(PacketRobit.class);
 		PacketHandler.registerPacket(PacketTransmitterUpdate.class);
