@@ -1,6 +1,7 @@
 package mekanism.common.transporter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,36 +19,39 @@ public class TOreDictFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		String oreKey = MekanismUtils.getOreDictName(itemStack);
+		List<String> oreKeys = MekanismUtils.getOreDictName(itemStack);
 		
-		if(oreKey == null)
+		if(oreKeys.isEmpty())
 		{
 			return false;
 		}
 		
-		if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
+		for(String oreKey : oreKeys)
 		{
-			return true;
-		}
-		else if(oreDictName.endsWith("*") && !oreDictName.startsWith("*"))
-		{
-			if(oreKey.startsWith(oreDictName.substring(0, oreDictName.length()-1)))
+			if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
 			{
 				return true;
 			}
-		}
-		else if(oreDictName.startsWith("*") && !oreDictName.endsWith("*"))
-		{
-			if(oreKey.endsWith(oreDictName.substring(1)))
+			else if(oreDictName.endsWith("*") && !oreDictName.startsWith("*"))
 			{
-				return true;
+				if(oreKey.startsWith(oreDictName.substring(0, oreDictName.length()-1)))
+				{
+					return true;
+				}
 			}
-		}
-		else if(oreDictName.startsWith("*") && oreDictName.endsWith("*"))
-		{
-			if(oreKey.contains(oreDictName.substring(1, oreDictName.length()-1)))
+			else if(oreDictName.startsWith("*") && !oreDictName.endsWith("*"))
 			{
-				return true;
+				if(oreKey.endsWith(oreDictName.substring(1)))
+				{
+					return true;
+				}
+			}
+			else if(oreDictName.startsWith("*") && oreDictName.endsWith("*"))
+			{
+				if(oreKey.contains(oreDictName.substring(1, oreDictName.length()-1)))
+				{
+					return true;
+				}
 			}
 		}
 		

@@ -1,5 +1,8 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -14,7 +17,7 @@ public class GuiDictionary extends GuiMekanism
 {
     public ItemStack itemType;
     
-    public String oreDictName;
+    public List<String> oreDictNames;
     
 	public GuiDictionary(InventoryPlayer inventory)
 	{
@@ -32,9 +35,15 @@ public class GuiDictionary extends GuiMekanism
         
         if(itemType != null)
         {
-        	if(oreDictName != null && !oreDictName.isEmpty())
+        	if(!oreDictNames.isEmpty())
         	{
-        		fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + oreDictName, 9, 57, 0x00CD00);
+        		int currentY = 57;
+        		
+        		for(String name : oreDictNames)
+        		{
+        			fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + name, 9, currentY, 0x00CD00);
+        			currentY += 9;
+        		}
         	}
         	else {
            		fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.noKey"), 9, 57, 0x00CD00);
@@ -121,7 +130,7 @@ public class GuiDictionary extends GuiMekanism
 		        		itemType = stack.copy();
 						itemType.stackSize = 1;
 						
-						oreDictName = MekanismUtils.getOreDictName(itemType);
+						oreDictNames = MekanismUtils.getOreDictName(itemType);
 						mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 						
 		        		return;
@@ -138,12 +147,12 @@ public class GuiDictionary extends GuiMekanism
 					itemType = stack.copy();
 					itemType.stackSize = 1;
 					
-					oreDictName = MekanismUtils.getOreDictName(itemType);
+					oreDictNames = MekanismUtils.getOreDictName(itemType);
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = null;
-					oreDictName = null;
+					oreDictNames = new ArrayList<String>();
 				}
 
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);

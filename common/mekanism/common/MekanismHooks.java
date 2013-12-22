@@ -6,6 +6,7 @@ import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.RecipeOutput;
 import ic2.api.recipe.Recipes;
 
+import java.util.List;
 import java.util.Map;
 
 import mekanism.common.RecipeHandler.Recipe;
@@ -78,18 +79,32 @@ public final class MekanismHooks
 			{
 				if(!entry.getKey().getInputs().isEmpty())
 				{
-					if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ore"))
+					List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
+					
+					for(String name : names)
 					{
-						if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey().getInputs().get(0)))
+						boolean did = false;
+						
+						if(name.startsWith("ore"))
 						{
-							RecipeHandler.addEnrichmentChamberRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+							if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey().getInputs().get(0)))
+							{
+								RecipeHandler.addEnrichmentChamberRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+								did = true;
+							}
 						}
-					}
-					else if(MekanismUtils.getName(entry.getKey().getInputs().get(0)).startsWith("ingot"))
-					{
-						if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
+						else if(name.startsWith("ingot"))
 						{
-							RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+							if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
+							{
+								RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+								did = true;
+							}
+						}
+						
+						if(did)
+						{
+							break;
 						}
 					}
 				}

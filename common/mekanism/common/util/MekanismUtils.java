@@ -14,13 +14,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.EnergyDisplay;
+import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
-import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
@@ -469,11 +469,10 @@ public final class MekanismUtils
      * @param check - ItemStack to check OreDict name of
      * @return OreDict name
      */
-    public static String getOreDictName(ItemStack check)
+    public static List<String> getOreDictName(ItemStack check)
     {
+    	List<Integer> idsFound = new ArrayList<Integer>();
         HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
-        
-        int idFound = -1;
         
         for(Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
         {
@@ -481,23 +480,20 @@ public final class MekanismUtils
         	{
         		if(stack.isItemEqual(check))
         		{
-        			idFound = entry.getKey();
+        			idsFound.add(entry.getKey());
         			break;
         		}
         	}
-        	
-        	if(idFound != -1)
-        	{
-        		break;
-        	}
         }
         
-        if(idFound == -1)
+        List<String> ret = new ArrayList<String>();
+        
+        for(Integer id : idsFound)
         {
-        	return null;
+        	ret.add(OreDictionary.getOreName(id));
         }
         
-        return OreDictionary.getOreName(idFound);
+        return ret;
     }
     
     /**
@@ -919,16 +915,6 @@ public final class MekanismUtils
     		
     		return id;
     	}
-    }
-    
-    /**
-     * Gets the OreDictionary-registered name of an ItemStack.
-     * @param itemStack - ItemStack to check
-     * @return name of the ItemStack
-     */
-    public static String getName(ItemStack itemStack)
-    {
-    	return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
     
     /**
