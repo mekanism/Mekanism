@@ -1,8 +1,8 @@
 package mekanism.client.sound;
 
+import mekanism.api.Pos3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 
 public abstract class PlayerSound extends Sound
 {
@@ -13,7 +13,7 @@ public abstract class PlayerSound extends Sound
 	
 	public PlayerSound(String id, String sound, EntityPlayer entity)
 	{
-		super(id, sound, entity, new Vector3(entity));
+		super(id, sound, entity, new Pos3D(entity));
 		
 		player = entity;
 	}
@@ -44,9 +44,9 @@ public abstract class PlayerSound extends Sound
 	}
 	
 	@Override
-	public Vector3 getLocation()
+	public Pos3D getLocation()
 	{
-		return new Vector3(player);
+		return new Pos3D(player);
 	}
 	
 	@Override

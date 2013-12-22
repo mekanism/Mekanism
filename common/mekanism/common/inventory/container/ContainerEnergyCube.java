@@ -11,7 +11,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
 
 public class ContainerEnergyCube extends Container
 {
@@ -182,9 +181,6 @@ public class ContainerEnergyCube extends Container
 	
 	private boolean canTransfer(ItemStack slotStack)
 	{
-		return (slotStack.getItem() instanceof IItemElectric && 
-				((IItemElectric)slotStack.getItem()).recharge(slotStack, 1, false) != 0) || 
-				(slotStack.getItem() instanceof IElectricItem && (!(slotStack.getItem() instanceof IItemElectric) || 
-						((IItemElectric)slotStack.getItem()).discharge(slotStack, 1, false) == 0));
+		return slotStack.getItem() instanceof IElectricItem;
 	}
 }

@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 
 public class Pos3D
@@ -24,6 +25,11 @@ public class Pos3D
 	public Pos3D(Entity entity)
 	{
 		this(entity.posX, entity.posY, entity.posZ);
+	}
+	
+	public Pos3D(TileEntity tileEntity)
+	{
+		this(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 	}
 	
 	public Pos3D diff(Pos3D pos)

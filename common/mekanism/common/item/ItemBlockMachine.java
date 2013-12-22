@@ -55,8 +55,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Keyboard;
 
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -386,10 +384,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					if(inv.getStackInSlot(54).getItem() instanceof IEnergizedItem)
 					{
 						setEnergy(itemstack, getEnergy(itemstack) + EnergizedItemManager.discharge(inv.getStackInSlot(54), getMaxEnergy(itemstack) - getEnergy(itemstack)));
-					}
-					else if(inv.getStackInSlot(54).getItem() instanceof IItemElectric)
-					{
-						setEnergy(itemstack, getEnergy(itemstack) + ElectricItemHelper.dischargeItem(inv.getStackInSlot(54), (float)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_UE)));
 					}
 					else if(Mekanism.hooks.IC2Loaded && inv.getStackInSlot(54).getItem() instanceof IElectricItem)
 					{

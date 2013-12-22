@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 
 public final class ChargeUtils
@@ -126,13 +125,10 @@ public final class ChargeUtils
 	{
 		if(chargeSlot)
 		{
-	    	return (itemstack.getItem() instanceof IElectricItem && (!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).recharge(itemstack, 1, false) == 0));
+	    	return itemstack.getItem() instanceof IElectricItem;
 		}
 		else {
-			return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack) && 
-							(!(itemstack.getItem() instanceof IItemElectric) || 
-							((IItemElectric)itemstack.getItem()).discharge(itemstack, 1, false) == 0));
+			return itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack);
 		}
 	}
 }

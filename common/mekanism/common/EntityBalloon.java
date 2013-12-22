@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Pos3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
@@ -9,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -114,9 +114,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			for(int i = 0; i < 10; i++)
 			{
 				try {
-					Vector3 vec = new Vector3(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
+					Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 					
-					EntityFX fx = new EntityReddustFX(worldObj, vec.x, vec.y, vec.z, 1, 0, 0, 0);
+					EntityFX fx = new EntityReddustFX(worldObj, pos.xPos, pos.yPos, pos.zPos, 1, 0, 0, 0);
 					fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 					
 					Minecraft.getMinecraft().effectRenderer.addEffect(fx);

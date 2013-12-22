@@ -1,13 +1,9 @@
 package mekanism.client.sound;
 
-import java.net.URL;
-
-import mekanism.client.MekanismClient;
+import mekanism.api.Pos3D;
 import mekanism.common.IActiveState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -33,7 +29,7 @@ public class TileSound extends Sound
 	 */
 	public TileSound(String id, String sound, TileEntity tileentity)
 	{
-		super(id, sound, tileentity, new Vector3(tileentity));
+		super(id, sound, tileentity, new Pos3D(tileentity));
 		
 		tileEntity = tileentity;
 	}
@@ -45,9 +41,9 @@ public class TileSound extends Sound
 	}
 	
 	@Override
-	public Vector3 getLocation()
+	public Pos3D getLocation()
 	{
-		return new Vector3(tileEntity);
+		return new Pos3D(tileEntity);
 	}
     
 	@Override

@@ -18,21 +18,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import universalelectricity.core.block.IElectrical;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.grid.IElectricityNetwork;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IEnergyHandler, IElectrical
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwork> implements IPowerReceptor, IEnergySink, IEnergyHandler
 {
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
-	
-	/** A fake UE ElectricityNetwork used to accept power from EU machines */
-	public IElectricityNetwork ueNetwork;
 	
 	public double energyScale;
 	
@@ -297,47 +291,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_TE);
-	}
-	
-	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		return true;
-	}
-
-	@Override
-	public float receiveElectricity(ForgeDirection from, ElectricityPack receive, boolean doReceive)
-	{
-		if(doReceive && receive != null && receive.getWatts() > 0)
-		{
-			return receive.getWatts() - (float)(getTransmitterNetwork().emit(receive.getWatts()*Mekanism.FROM_UE));
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public ElectricityPack provideElectricity(ForgeDirection from, ElectricityPack request, boolean doProvide)
-	{
-		return null;
-	}
-
-	@Override
-	public float getRequest(ForgeDirection direction)
-	{
-		return (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getProvide(ForgeDirection direction)
-	{
-		return 0;
-	}
-
-	@Override
-	public float getVoltage()
-	{
-		return 120;
 	}
 
     @Override

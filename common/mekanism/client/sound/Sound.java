@@ -2,11 +2,10 @@ package mekanism.client.sound;
 
 import java.net.URL;
 
+import mekanism.api.Pos3D;
 import mekanism.client.MekanismClient;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 
 public abstract class Sound
 {
@@ -29,7 +28,7 @@ public abstract class Sound
 	 * @param sound - bundled path to the sound
 	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public Sound(String id, String sound, Object obj, Vector3 loc)
+	public Sound(String id, String sound, Object obj, Pos3D loc)
 	{
 		if(MekanismClient.audioHandler.getFrom(obj) != null)
 		{
@@ -51,7 +50,7 @@ public abstract class Sound
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
-				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, (float)loc.x, (float)loc.y, (float)loc.z, 0, 16F);
+				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, (float)loc.xPos, (float)loc.yPos, (float)loc.zPos, 0, 16F);
 				updateVolume();
 				SoundHandler.getSoundSystem().activate(id);
 			}
@@ -128,7 +127,7 @@ public abstract class Sound
 	
 	public abstract boolean update(World world);
 	
-	public abstract Vector3 getLocation();
+	public abstract Pos3D getLocation();
 	
 	public abstract float getMultiplier();
 	
@@ -145,7 +144,7 @@ public abstract class Sound
 		    	float volume = 0;
 		    	float masterVolume = MekanismClient.audioHandler.masterVolume;
 		    	
-		        double distance = mc.thePlayer.getDistance(getLocation().x, getLocation().y, getLocation().z);
+		        double distance = mc.thePlayer.getDistance(getLocation().xPos, getLocation().yPos, getLocation().zPos);
 		        volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
 		        volume *= Math.max(0, Math.min(1, MekanismClient.baseSoundVolume));
 		
