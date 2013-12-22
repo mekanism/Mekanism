@@ -16,6 +16,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.transporter.TransporterStack.Path;
@@ -52,6 +53,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public static final int SPEED = 5;
 	
 	public EnumColor color;
+	
+	public int pullDelay = 0;
 	
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 	
@@ -187,6 +190,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		else {
 			Set<TransporterStack> remove = new HashSet<TransporterStack>();
 			
+			pullItems();
+			
 			for(TransporterStack stack : transit)
 			{
 				if(!stack.initiatedPath)
@@ -273,7 +278,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				{
 					if(stack.isFinal(this))
 					{
-						if(stack.pathType == Path.DEST && !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack, stack.getSide(this), false))
+						if(stack.pathType == Path.DEST && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack, stack.getSide(this), false)))
 						{
 							if(!recalculate(stack, null))
 							{
@@ -281,7 +286,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 								continue;
 							}
 						}
-						else if(stack.pathType == Path.HOME && !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack, stack.getSide(this), true))
+						else if(stack.pathType == Path.HOME && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack, stack.getSide(this), true)))
 						{
 							if(!recalculate(stack, null))
 							{
@@ -335,6 +340,51 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			}
 			
 			needsSync.clear();
+		}
+	}
+	
+	private boolean checkSideForInsert(TransporterStack stack)
+	{
+		ForgeDirection side = ForgeDirection.getOrientation(stack.getSide(this));
+		
+		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
+	}
+	
+	private void pullItems()
+	{
+		if(pullDelay == 0)
+		{
+			boolean did = false;
+			
+			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			{
+				TileEntity tile = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+				
+				if(tile instanceof IInventory)
+				{
+					IInventory inv = (IInventory)tile;
+					InvStack stack = InventoryUtils.takeTopStack(inv, side.ordinal());
+					
+					if(stack != null && stack.getStack() != null)
+					{
+						ItemStack rejects = TransporterUtils.insert(tile, this, stack.getStack(), color, true, 0);
+						
+						if(TransporterManager.didEmit(stack.getStack(), rejects))
+						{
+							did = true;
+							stack.use(TransporterManager.getToUse(stack.getStack(), rejects).stackSize);
+						}
+					}
+				}
+			}
+			
+			if(did)
+			{
+				pullDelay = 10;
+			}
+		}
+		else {
+			pullDelay--;
 		}
 	}
 	
