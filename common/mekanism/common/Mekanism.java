@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -111,6 +112,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import universalelectricity.compatibility.Compatibility;
@@ -523,6 +525,30 @@ public class Mekanism
         CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 2), new Object[] {
             "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), Block.glass
         }));
+        
+        for(int i = 0; i < EnumColor.DYES.length; i++)
+        {
+        	EnumColor color = EnumColor.DYES[i];
+        	
+        	if(color != null)
+        	{
+        		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 2, i), new Object[] {
+        			Item.leather, Item.silk, new ItemStack(Item.dyePowder, 1, i)
+        		}));
+        		
+        		for(int j = 0; j < EnumColor.DYES.length; j++)
+        		{
+        			EnumColor color1 = EnumColor.DYES[j];
+        			
+        			if(color1 != null)
+        			{
+        				CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 1, i), new Object[] {
+        					new ItemStack(Balloon, 1, j), new ItemStack(Item.dyePowder, 1, i)
+        				}));
+        			}
+        		}
+        	}
+        }
         
         CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 0), new ItemStack(Transmitter, 1, 1));
         CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 1), new ItemStack(Transmitter, 1, 2));

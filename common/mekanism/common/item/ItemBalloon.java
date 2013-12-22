@@ -27,17 +27,22 @@ public class ItemBalloon extends ItemMekanism
 	
 	public EnumColor getColor(ItemStack stack)
 	{
-		return EnumColor.values()[stack.getItemDamage()];
+		return EnumColor.DYES[stack.getItemDamage()];
 	}
 	
 	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
+	public void getSubItems(int id, CreativeTabs tabs, List list)
 	{
-		for(EnumColor color : EnumColor.values())
+		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
-			ItemStack stack = new ItemStack(this);
-			stack.setItemDamage(color.ordinal());
-			list.add(stack);
+			EnumColor color = EnumColor.DYES[i];
+			
+			if(color != null)
+			{
+				ItemStack stack = new ItemStack(this);
+				stack.setItemDamage(i);
+				list.add(stack);
+			}
 		}
 	}
 	
@@ -70,7 +75,7 @@ public class ItemBalloon extends ItemMekanism
 			color = EnumColor.DARK_GREY + getColor(stack).getLocalizedName();
 		}
 		
-		return getColor(stack).getName() + " " + MekanismUtils.localize("tooltip.balloon");
+		return color + " " + MekanismUtils.localize("tooltip.balloon");
 	}
 	
 	@Override
@@ -103,12 +108,6 @@ public class ItemBalloon extends ItemMekanism
 		
 		return false;
 	}
-	
-	/*@Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
-    {
-        return false;
-    }*/
 	
 	private boolean canReplace(World world, int x, int y, int z)
 	{

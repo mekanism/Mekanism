@@ -95,6 +95,12 @@ public class Pos3D
 	}
 	
 	@Override
+	public String toString()
+	{
+		return "[Pos3D: " + xPos + ", " + yPos + ", " + zPos + "]";
+	}
+	
+	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Pos3D && 
