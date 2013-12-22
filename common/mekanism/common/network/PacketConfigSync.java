@@ -35,7 +35,6 @@ public class PacketConfigSync implements IMekanismPacket
 	  	Mekanism.controlCircuitOreDict = dataStream.readBoolean();
 	  	Mekanism.logPackets = dataStream.readBoolean();
 	  	Mekanism.dynamicTankEasterEgg = dataStream.readBoolean();
-	  	Mekanism.allowBackCrafting = dataStream.readBoolean();
 	  	Mekanism.voiceServerEnabled = dataStream.readBoolean();
 	  	Mekanism.forceBuildcraft = dataStream.readBoolean();
 	  	Mekanism.obsidianTNTDelay = dataStream.readInt();
@@ -83,7 +82,6 @@ public class PacketConfigSync implements IMekanismPacket
 	  	dataStream.writeBoolean(Mekanism.controlCircuitOreDict);
 	  	dataStream.writeBoolean(Mekanism.logPackets);
 	  	dataStream.writeBoolean(Mekanism.dynamicTankEasterEgg);
-	  	dataStream.writeBoolean(Mekanism.allowBackCrafting);
 	  	dataStream.writeBoolean(Mekanism.voiceServerEnabled);
 	  	dataStream.writeBoolean(Mekanism.forceBuildcraft);
 	  	dataStream.writeInt(Mekanism.obsidianTNTDelay);

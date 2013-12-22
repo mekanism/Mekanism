@@ -174,7 +174,6 @@ public class CommonProxy
 	  	Mekanism.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean(true);
 	  	Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(true);
 	  	Mekanism.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean(true);
-	  	Mekanism.allowBackCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Allow crafting multiparts back to block transmitters", false).getBoolean(false);
 	  	Mekanism.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", true).getBoolean(true);
 	  	Mekanism.forceBuildcraft = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ForceBuildcraftPower", false).getBoolean(false);
 	  	Mekanism.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();

@@ -257,7 +257,6 @@ public class Mekanism
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
-	public static boolean allowBackCrafting = false;
 	public static boolean voiceServerEnabled = true;
 	public static boolean forceBuildcraft = false;
 	public static int obsidianTNTBlastRadius = 12;
@@ -553,14 +552,6 @@ public class Mekanism
         CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 1), new ItemStack(Transmitter, 1, 2));
         CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 2), new ItemStack(Transmitter, 1, 0));
         CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 3), new ItemStack(Transmitter, 1, 3));
-        
-        if(allowBackCrafting)
-        {
-            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 1), new ItemStack(PartTransmitter, 1, 0));
-            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 2), new ItemStack(PartTransmitter, 1, 1));
-            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 0), new ItemStack(PartTransmitter, 1, 2));
-            CraftingManager.getInstance().addShapelessRecipe(new ItemStack(Transmitter, 1, 3), new ItemStack(PartTransmitter, 1, 3));
-        }
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
