@@ -17,8 +17,10 @@ import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
 import mekanism.common.DynamicTankCache;
+import mekanism.common.EnergyDisplay;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
+import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
@@ -63,8 +65,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -1115,12 +1115,12 @@ public final class MekanismUtils
     
     public static String getEnergyDisplay(double energy)
     {
-    	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.JOULES);
+    	return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
     }
     
     public static String getPowerDisplay(double energy)
     {
-    	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.WATT);
+    	return EnergyDisplay.getDisplayShort(energy, ElectricUnit.WATT);
     }
     
     public static boolean useBuildcraft()
@@ -1133,6 +1133,11 @@ public final class MekanismUtils
     	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
     }
     
+    /**
+     * Splits a string of text into a list of new segments, using the splitter "!n."
+     * @param s - string to split
+     * @return split string
+     */
     public static List<String> splitLines(String s)
     {
     	ArrayList ret = new ArrayList();

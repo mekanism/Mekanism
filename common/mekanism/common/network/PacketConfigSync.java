@@ -66,8 +66,8 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.rotaryCondensentratorUsage = dataStream.readDouble();
 		Mekanism.chemicalFormulatorUsage = dataStream.readDouble();
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();
-		
-		System.out.println("[Mekanism] Received config from server.");
+
+		Mekanism.proxy.onConfigSync();
 	}
 
 	@Override

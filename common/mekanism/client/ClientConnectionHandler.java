@@ -33,8 +33,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		if(Mekanism.voiceServerEnabled)
 		{
 			try {
-				MekanismClient.voiceClient = new VoiceClient(server, Mekanism.VOICE_PORT);
-				MekanismClient.voiceClient.start();
+				MekanismClient.voiceClient = new VoiceClient(server);
 			} catch(Exception e) {}
 		}
 	}
@@ -46,8 +45,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 		if(Mekanism.voiceServerEnabled)
 		{
 			try {
-				MekanismClient.voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress(), Mekanism.VOICE_PORT);
-				MekanismClient.voiceClient.start();
+				MekanismClient.voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress());
 			} catch(Exception e) {}
 		}
 	}

@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.common.EnergyDisplay;
+import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
@@ -9,8 +11,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

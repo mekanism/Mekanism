@@ -365,4 +365,9 @@ public class CommonProxy
 	{
 		return null;
 	}
+	
+	public void onConfigSync() 
+	{
+		System.out.println("[Mekanism] Received config from server.");
+	}
 }

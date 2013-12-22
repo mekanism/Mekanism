@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class VoiceConnection 
+public class VoiceConnection extends Thread
 {
 	public Socket socket;
 	
@@ -34,7 +34,8 @@ public class VoiceConnection
 		socket = s;
 	}
 	
-	public void start()
+	@Override
+	public void run()
 	{
 		try {
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
