@@ -45,11 +45,11 @@ public enum TransmitterType
         SMALL(6),
         LARGE(8);
 
-        public int centreSize;
+        public int centerSize;
 
         private Size(int size) 
         {
-            centreSize = size;
+            centerSize = size;
         }
     }
     

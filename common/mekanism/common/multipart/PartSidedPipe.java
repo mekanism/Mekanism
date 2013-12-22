@@ -278,13 +278,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public Cuboid6 getBounds()
 	{
-		return smallSides[6];
+		return getTransmitter().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
 	}
 
 	@Override
 	public int getHollowSize()
 	{
-		return getTransmitter().getSize() == Size.SMALL ? 7 : 9;
+		return getTransmitter().getSize().centerSize+1;
 	}
 
 	@Override

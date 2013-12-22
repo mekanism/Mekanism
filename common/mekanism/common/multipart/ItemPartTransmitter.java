@@ -115,6 +115,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "Items (universal)");
 					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+					break;
 				}
 				case 4:
 				{
@@ -122,6 +123,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + "Items (universal)");
 					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
 					list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
+					break;
 				}
 				case 5:
 				{
@@ -129,6 +131,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + "Items (universal)");
 					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
 					list.add("- " + EnumColor.DARK_RED + "Controllable by redstone");
+					break;
 				}
 			}
 		}
