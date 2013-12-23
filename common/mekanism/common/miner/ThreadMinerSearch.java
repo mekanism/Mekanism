@@ -46,7 +46,7 @@ public class ThreadMinerSearch extends Thread
 						continue;
 					}
 					
-					if(new Coord4D(x, y, z).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
+					if(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
 					{
 						continue;
 					}
@@ -67,7 +67,7 @@ public class ThreadMinerSearch extends Thread
 						{
 							if(filter.canFilter(stack))
 							{
-								tileEntity.oresToMine.add(new Coord4D(x, y, z));
+								tileEntity.oresToMine.add(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId));
 							}
 						}
 					}

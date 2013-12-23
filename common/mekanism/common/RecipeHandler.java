@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.api.ChemicalInput;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.common.util.StackUtils;
@@ -139,11 +140,13 @@ public final class RecipeHandler
 	/**
 	 * Gets the GasStack of the ChemicalInput in the parameters.
 	 * @param input - input ChemicalInput
-	 * @return GasStack
+	 * @return output GasStack
 	 */
-	public static GasStack getChemicalInfuserOutput(ChemicalInput input)
+	public static GasStack getChemicalInfuserOutput(GasTank leftTank, GasTank rightTank, boolean doRemove)
 	{
-		if(input != null && input.isValid())
+		ChemicalInput input = new ChemicalInput(leftTank.getGas(), rightTank.getGas());
+		
+		if(input.isValid())
 		{
 			HashMap<ChemicalInput, GasStack> recipes = Recipe.CHEMICAL_INFUSER.get();
 			
@@ -151,8 +154,13 @@ public final class RecipeHandler
 			{
 				ChemicalInput key = (ChemicalInput)entry.getKey();
 				
-				if(key.equals(input))
+				if(key.meetsInput(input))
 				{
+					if(doRemove)
+					{
+						key.draw(leftTank, rightTank);
+					}
+					
 					return entry.getValue().copy();
 				}
 			}
@@ -165,7 +173,7 @@ public final class RecipeHandler
 	 * Gets the InfusionOutput of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size
-	 * @return GasStack
+	 * @return output GasStack
 	 */
 	public static GasStack getChemicalFormulatorOutput(ItemStack itemstack, boolean stackDecrease)
 	{

@@ -189,7 +189,7 @@ public class RenderPartTransmitter implements IIconRegister
 				int yPos = MathHelper.floor_double(pos.blockY);
 				int zPos = MathHelper.floor_double(pos.blockZ);
 				
-				Coord4D obj = new Coord4D(xPos, yPos, zPos);
+				Coord4D obj = new Coord4D(xPos, yPos, zPos, transporter.world().provider.dimensionId);
 				
 				if(obj.equals(Coord4D.get(transporter.tile())))
 				{

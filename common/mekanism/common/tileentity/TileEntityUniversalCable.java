@@ -178,7 +178,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	
 	private void reconfigure()
 	{
-		if(MekanismUtils.useBuildcraft())
+		if(MekanismUtils.useBuildCraft())
 		{
 			float needed = (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_BC);
 			powerHandler.configure(1, needed, 0, needed);
@@ -188,7 +188,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyNetwor
 	@Override
 	public void doWork(PowerHandler workProvider) 
 	{
-		if(MekanismUtils.useBuildcraft())
+		if(MekanismUtils.useBuildCraft())
 		{
 			if(powerHandler.getEnergyStored() > 0)
 			{

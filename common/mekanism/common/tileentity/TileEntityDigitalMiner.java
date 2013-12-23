@@ -398,7 +398,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public TileEntity getPullInv()
 	{
-		return new Coord4D(xCoord, yCoord+2, zCoord).getTileEntity(worldObj);
+		return Coord4D.get(this).translate(0, 2, 0).getTileEntity(worldObj);
 	}
 	
 	public TileEntity getEjectInv()
@@ -957,8 +957,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		ForgeDirection dir = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Coord4D eject = new Coord4D(xCoord+dir.offsetX, yCoord+1, zCoord+dir.offsetZ, worldObj.provider.dimensionId);
-		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord);
+		Coord4D eject = Coord4D.get(this).translate(dir.offsetX, 1, dir.offsetZ);
+		Coord4D pull = Coord4D.get(this).translate(0, 1, 0);
 		
 		if((location.equals(eject) && side == dir.ordinal()) || (location.equals(pull) && side == 1))
 		{
@@ -983,8 +983,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
-		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
-		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord);
+		Coord4D eject = Coord4D.get(this).translate(side.offsetX, 1, side.offsetZ);
+		Coord4D pull = Coord4D.get(this).translate(0, 1, 0);
 		
 		if(location.equals(eject))
 		{
@@ -1007,7 +1007,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
 		
 		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
-		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord);
+		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord, worldObj.provider.dimensionId);
 		
 		if(location.equals(eject))
 		{

@@ -13,7 +13,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketRedstoneControl implements IMekanismPacket
 {
-	public Coord4D object3D;
+	public Coord4D coord;
 	public RedstoneControl value;
 	
 	@Override
@@ -25,7 +25,7 @@ public class PacketRedstoneControl implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Coord4D)data[0];
+		coord = (Coord4D)data[0];
 		value = (RedstoneControl)data[1];
 		
 		return this;
@@ -34,7 +34,7 @@ public class PacketRedstoneControl implements IMekanismPacket
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		Coord4D obj = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		Coord4D obj = Coord4D.read(dataStream);
 		RedstoneControl control = RedstoneControl.values()[dataStream.readInt()];
 		
 		TileEntity tileEntity = obj.getTileEntity(world);
@@ -48,9 +48,10 @@ public class PacketRedstoneControl implements IMekanismPacket
 	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
-		dataStream.writeInt(object3D.xCoord);
-		dataStream.writeInt(object3D.yCoord);
-		dataStream.writeInt(object3D.zCoord);
+		dataStream.writeInt(coord.xCoord);
+		dataStream.writeInt(coord.yCoord);
+		dataStream.writeInt(coord.zCoord);
+		dataStream.writeInt(coord.dimensionId);
 		
 		dataStream.writeInt(value.ordinal());
 	}

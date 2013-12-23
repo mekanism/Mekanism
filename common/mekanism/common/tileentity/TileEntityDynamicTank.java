@@ -348,9 +348,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				data.add(structure.volHeight);
 				data.add(structure.volWidth);
 				data.add(structure.volLength);
-				data.add(structure.renderLocation.xCoord);
-				data.add(structure.renderLocation.yCoord);
-				data.add(structure.renderLocation.zCoord);
+				
+				structure.renderLocation.write(data);
 			}
 			else {
 				data.add(false);
@@ -360,9 +359,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			
 			for(ValveData valveData : structure.valves)
 			{
-				data.add(valveData.location.xCoord);
-				data.add(valveData.location.yCoord);
-				data.add(valveData.location.zCoord);
+				valveData.location.write(data);
 				
 				data.add(valveData.side.ordinal());
 				data.add(valveData.serverFluid);
@@ -402,7 +399,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				structure.volHeight = dataStream.readInt();
 				structure.volWidth = dataStream.readInt();
 				structure.volLength = dataStream.readInt();
-				structure.renderLocation = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				
+				structure.renderLocation = Coord4D.read(dataStream);
 			}
 			
 			int size = dataStream.readInt();
@@ -410,7 +408,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 			for(int i = 0; i < size; i++)
 			{
 				ValveData data = new ValveData();
-				data.location = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				data.location = Coord4D.read(dataStream);
 				data.side = ForgeDirection.getOrientation(dataStream.readInt());
 				int viewingTicks = 0;
 				

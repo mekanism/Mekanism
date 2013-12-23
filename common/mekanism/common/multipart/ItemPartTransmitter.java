@@ -46,7 +46,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 		
 		if(type.getTransmission() != TransmissionType.ITEM)
 		{
-			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z);
+			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z, world.provider.dimensionId);
 			
 			List<ITransmitterNetwork<?, ?>> networks = new ArrayList<ITransmitterNetwork<?, ?>>();
 			

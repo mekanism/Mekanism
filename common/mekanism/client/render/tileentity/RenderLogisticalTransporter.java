@@ -145,7 +145,7 @@ public class RenderLogisticalTransporter extends TileEntitySpecialRenderer
 				int yPos = MathHelper.floor_double(pos.blockY);
 				int zPos = MathHelper.floor_double(pos.blockZ);
 				
-				Coord4D obj = new Coord4D(xPos, yPos, zPos);
+				Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.worldObj.provider.dimensionId);
 				
 				if(obj.equals(Coord4D.get(tileEntity)))
 				{

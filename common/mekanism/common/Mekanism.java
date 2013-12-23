@@ -617,7 +617,7 @@ public class Mekanism
         RecipeHandler.addChemicalFormulatorRecipe(new ItemStack(Item.gunpowder), new GasStack(GasRegistry.getGas("sulfuricGas"), 100));
         
         //Chemical Infuser Recipes
-        RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(GasRegistry.getGas("hydrogen"), GasRegistry.getGas("sulfuricGas")), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
+        RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("sulfuricGas"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
         
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));

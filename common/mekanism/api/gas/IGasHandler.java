@@ -3,7 +3,7 @@ package mekanism.api.gas;
 import net.minecraftforge.common.ForgeDirection;
 
 /**
- * Implement this if your tile entity accepts gas from a foreign, external source.
+ * Implement this if your tile entity accepts gas from an external source.
  * @author AidanBrady
  *
  */

@@ -193,6 +193,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			data.writeInt(latched.xCoord);
 			data.writeInt(latched.yCoord);
 			data.writeInt(latched.zCoord);
+			data.writeInt(latched.dimensionId);
 		}
 		else {
 			data.writeBoolean(false);
@@ -208,7 +209,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		
 		if(data.readBoolean())
 		{
-			latched = new Coord4D(data.readInt(), data.readInt(), data.readInt());
+			latched = Coord4D.read(data);
 		}
 		else {
 			latched = null;

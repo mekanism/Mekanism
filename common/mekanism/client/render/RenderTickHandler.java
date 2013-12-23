@@ -57,7 +57,7 @@ public class RenderTickHandler implements ITickHandler
 				int y = MathHelper.floor_double(pos.blockY);
 				int z = MathHelper.floor_double(pos.blockZ);
 				
-				Coord4D obj = new Coord4D(x, y, z);
+				Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
 				
 				if(Mekanism.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 				{

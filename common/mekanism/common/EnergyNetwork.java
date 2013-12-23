@@ -212,7 +212,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2);
 						sent += (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
-					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
+					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildCraft())
 					{
 						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(side.getOpposite());
 						
@@ -288,7 +288,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildcraft())
+			else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildCraft())
 			{
 				IPowerReceptor handler = (IPowerReceptor)acceptor;
 				

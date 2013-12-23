@@ -109,10 +109,8 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				GasStack stack = RecipeHandler.getChemicalInfuserOutput(new ChemicalInput(leftTank.getGas().getGas(), rightTank.getGas().getGas()));
+				GasStack stack = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, true);
 				
-				leftTank.draw(1, true);
-				rightTank.draw(1, true);
 				centerTank.receive(stack, true);
 				
 				setEnergy(getEnergy() - ENERGY_USAGE);
@@ -151,7 +149,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			return false;
 		}
 		
-		GasStack out = RecipeHandler.getChemicalInfuserOutput(new ChemicalInput(leftTank.getGas().getGas(), rightTank.getGas().getGas()));
+		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
 		
 		if(out == null)
 		{

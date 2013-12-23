@@ -369,6 +369,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	
 	public IAdvancedBoundingBlock getInv()
 	{
-		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 }

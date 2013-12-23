@@ -30,6 +30,10 @@ public final class ItemRetriever
 	 * 
 	 * ItemStack refinedObsidian = ItemRetriever.getItem("RefinedObsidian");
 	 * 
+	 * Note that for items or blocks that have specific metadata you will need to create 
+	 * a new ItemStack with that specified value, as this will only return an ItemStack
+	 * with the meta value '0.'
+	 * 
 	 * Make sure you run this in or after FMLPostInitializationEvent runs, because most
 	 * items are registered when FMLInitializationEvent runs. However, some items ARE 
 	 * registered later in order to hook into other mods. In a rare circumstance you may

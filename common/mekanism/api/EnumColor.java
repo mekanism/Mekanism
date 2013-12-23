@@ -46,21 +46,38 @@ public enum EnumColor
 		mcMeta = meta;
 	}
 	
+	/**
+	 * Gets the localized name of this color by translating the unlocalized name.
+	 * @return localized name
+	 */
 	public String getLocalizedName()
 	{
 		return StatCollector.translateToLocal("color." + unlocalizedName);
 	}
 	
+	/**
+	 * Gets the name of this color with it's color prefix code.
+	 * @return the color's name and color prefix
+	 */
 	public String getName()
 	{
 		return code + getLocalizedName();
 	}
 	
+	/**
+	 * Gets the 0-1 of this color's RGB value by dividing by 255 (used for OpenGL coloring).
+	 * @param index - R:0, G:1, B:2
+	 * @return the color value
+	 */
 	public float getColor(int index)
 	{
 		return (float)rgbCode[index]/255F;
 	}
 	
+	/**
+	 * Gets the value of this color mapped to MC in-game item colors present in dyes and wool.
+	 * @return mc meta value
+	 */
 	public int getMetaValue()
 	{
 		return mcMeta;

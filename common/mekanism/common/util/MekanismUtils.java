@@ -572,6 +572,11 @@ public final class MekanismUtils
     	{
     		config.getConfiguration()[side] = 0;
     	}
+    	
+    	TileEntity tile = (TileEntity)config;
+    	Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+    	
+    	tile.worldObj.notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
     }
     
     /**
@@ -592,6 +597,11 @@ public final class MekanismUtils
     	{
     		config.getConfiguration()[side] = (byte)max;
     	}
+    	
+    	TileEntity tile = (TileEntity)config;
+    	Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+    	
+    	tile.worldObj.notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
     }
     
     /**
@@ -1071,6 +1081,12 @@ public final class MekanismUtils
     	return false;
     }
     
+    /**
+     * Ray-traces what block a player is looking at.
+     * @param world - world the player is in
+     * @param player - player to raytrace
+     * @return raytraced value
+     */
     public static MovingObjectPosition rayTrace(World world, EntityPlayer player)
     {
     	double reach = Mekanism.proxy.getReach(player);
@@ -1082,6 +1098,11 @@ public final class MekanismUtils
         return world.rayTraceBlocks_do_do(headVec, endVec, true, false);
     }
     
+    /**
+     * Gets the head vector of a player for a ray trace.
+     * @param player - player to check
+     * @return head location
+     */
     private static Vec3 getHeadVec(EntityPlayer player)
     {
         Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
@@ -1099,21 +1120,41 @@ public final class MekanismUtils
         return vec;
     }
     
+    /**
+     * Gets a rounded energy display of a defined amount of energy.
+     * @param energy - energy to display
+     * @return rounded energy display
+     */
     public static String getEnergyDisplay(double energy)
     {
     	return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
     }
     
+    /**
+     * Gets a rounded power display of a defined amount of energy.
+     * @param energy - energy to display
+     * @return rounded power display
+     */
     public static String getPowerDisplay(double energy)
     {
     	return EnergyDisplay.getDisplayShort(energy, ElectricUnit.WATT);
     }
     
-    public static boolean useBuildcraft()
+    /**
+     * Whether or not BuildCraft power should be used, taking into account both whether or not it is installed or if
+     * the player has configured the mod to do so.
+     * @return if BuildCraft power should be used
+     */
+    public static boolean useBuildCraft()
     {
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
+    /**
+     * Gets a clean view of a coordinate value without the dimension ID.
+     * @param obj - coordinate to check
+     * @return coordinate display
+     */
     public static String getCoordDisplay(Coord4D obj)
     {
     	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";

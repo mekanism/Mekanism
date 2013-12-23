@@ -151,7 +151,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(take)
 					{
 						setEnergy(getEnergy() - 100);
-						recurringNodes.add(new Coord4D(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord));
+						recurringNodes.add(wrapper.clone());
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}

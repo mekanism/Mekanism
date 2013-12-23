@@ -80,6 +80,12 @@ public final class GasTransmission
     	return connections;
     }
     
+    /**
+     * Whether or not a TileEntity can connect to a specified tile on a specified side.
+     * @param tileEntity - TileEntity to attempt connection to
+     * @param side - side to attempt connection on
+     * @return if this tile and side are connectable
+     */
     public static boolean canConnect(TileEntity tileEntity, ForgeDirection side)
     {
 		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof IGasTransmitter) || TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, tileEntity)))
@@ -113,6 +119,13 @@ public final class GasTransmission
     	return 0;
     }
 
+    /**
+     * Removes a specified amount of gas from an IGasItem.
+     * @param itemStack - ItemStack of the IGasItem
+     * @param type - type of gas to remove from the IGasItem, null if it doesn't matter
+     * @param amount - amount of gas to remove from the ItemStack
+     * @return the GasStack removed by the IGasItem
+     */
 	public static GasStack removeGas(ItemStack itemStack, Gas type, int amount)
 	{
 		if(itemStack != null && itemStack.getItem() instanceof IGasItem)
@@ -130,6 +143,12 @@ public final class GasTransmission
 		return null;
 	}
 
+	/**
+	 * Adds a specified amount of gas to an IGasItem.
+	 * @param itemStack - ItemStack of the IGasItem
+	 * @param stack - stack to add to the IGasItem
+	 * @return amount of gas accepted by the IGasItem
+	 */
 	public static int addGas(ItemStack itemStack, GasStack stack)
 	{
 		if(itemStack != null && itemStack.getItem() instanceof IGasItem && ((IGasItem)itemStack.getItem()).canReceiveGas(itemStack, stack.getGas()))

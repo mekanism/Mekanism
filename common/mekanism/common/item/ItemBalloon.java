@@ -82,7 +82,7 @@ public class ItemBalloon extends ItemMekanism
 	{
 		if(player.isSneaking())
 		{
-			Coord4D obj = new Coord4D(x, y, z);
+			Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
 			
 			if(Block.blocksList[obj.getBlockId(world)].isBlockReplaceable(world, x, y, z))
 			{

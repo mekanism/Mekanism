@@ -2,6 +2,7 @@ package mekanism.api;
 
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -12,6 +13,12 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
+/**
+ * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes
+ * in account the dimension the coordinate is in.
+ * @author aidancbrady
+ *
+ */
 public class Coord4D 
 {
 	public int xCoord;
@@ -20,6 +27,12 @@ public class Coord4D
 	
 	public int dimensionId;
 	
+	/**
+	 * Creates a Coord4D WITHOUT a dimensionId. Don't use unless absolutely necessary.
+	 * @param x - x coordinate
+	 * @param y - y coordinate
+	 * @param z - z coordinate
+	 */
 	public Coord4D(int x, int y, int z)
 	{
 		xCoord = x;
@@ -29,6 +42,13 @@ public class Coord4D
 		dimensionId = 0;
 	}
 	
+	/**
+	 * Creates a Coord4D from the defined x, y, z, and dimension values.
+	 * @param x - x coordinate
+	 * @param y - y coordinate
+	 * @param z - z coordinate
+	 * @param dimension - dimension ID
+	 */
 	public Coord4D(int x, int y, int z, int dimension)
 	{
 		xCoord = x;
@@ -38,19 +58,34 @@ public class Coord4D
 		dimensionId = dimension;
 	}
 	
+	/**
+	 * Gets the metadata of the block representing this Coord4D.
+	 * @param world - world this Coord4D is in
+	 * @return the metadata of this Coord4D's block
+	 */
 	public int getMetadata(IBlockAccess world)
 	{
 		return world.getBlockMetadata(xCoord, yCoord, zCoord);
 	}
 	
+	/**
+	 * Gets the block ID of the block representing this Coord4D.
+	 * @param world - world this Coord4D is in
+	 * @return the block ID of this Coord4D's block
+	 */
 	public int getBlockId(IBlockAccess world)
 	{
 		return world.getBlockId(xCoord, yCoord, zCoord);
 	}
 	
+	/**
+	 * Gets the TileEntity of the block representing this Coord4D.
+	 * @param world - world this Coord4D is in
+	 * @return the TileEntity of this Coord4D's block
+	 */
 	public TileEntity getTileEntity(IBlockAccess world)
 	{
-		if(!(world instanceof World && ((World)world).blockExists(xCoord, yCoord, zCoord)))
+		if(!(world instanceof World && exists((World)world)))
 		{
 			return null;
 		}
@@ -58,6 +93,26 @@ public class Coord4D
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
 	
+	/**
+	 * Gets the Block value of the block representing this Coord4D.
+	 * @param world - world this Coord4D is in
+	 * @return the Block value of this Coord4D's block
+	 */
+	public Block getBlock(IBlockAccess world)
+	{
+		if(!(world instanceof World && exists((World)world)))
+		{
+			return null;
+		}
+		
+		return Block.blocksList[getBlockId(world)];
+	}
+	
+	/**
+	 * Writes this Coord4D's data to an NBTTagCompound.
+	 * @param nbtTags - tag compound to write to
+	 * @return the tag compound with this Coord4D's data
+	 */
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("x", xCoord);
@@ -68,13 +123,25 @@ public class Coord4D
 		return nbtTags;
 	}
 	
+	/**
+	 * Writes this Coord4D's data to an ArrayList for packet transfer.
+	 * @param data - the ArrayList to add the data to
+	 */
 	public void write(ArrayList data)
 	{
 		data.add(xCoord);
 		data.add(yCoord);
 		data.add(zCoord);
+		data.add(dimensionId);
 	}
-	
+
+	/**
+	 * Translates this Coord4D by the defined x, y, and z values.
+	 * @param x - x value to translate
+	 * @param y - y value to translate
+	 * @param z - z value to translate
+	 * @return translated Coord4D
+	 */
 	public Coord4D translate(int x, int y, int z)
 	{
 		xCoord += x;
@@ -84,31 +151,62 @@ public class Coord4D
 		return this;
 	}
 	
+	/**
+	 * Creates and returns a new Coord4D translated to the defined offsets of the side.
+	 * @param side - side to translate this Coord4D to
+	 * @return translated Coord4D
+	 */
 	public Coord4D getFromSide(ForgeDirection side)
 	{
 		return new Coord4D(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
 	}
 	
+	/**
+	 * Returns a new Coord4D from a defined TileEntity's xCoord, yCoord and zCoord values.
+	 * @param tileEntity - TileEntity at the location that will represent this Coord4D
+	 * @return the Coord4D object from the TileEntity
+	 */
 	public static Coord4D get(TileEntity tileEntity)
 	{
 		return new Coord4D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
 	}
 	
+	/**
+	 * Returns a new Coord4D from a tag compound.
+	 * @param nbtTags - tag compound to read from
+	 * @return the Coord4D from the tag compound
+	 */
 	public static Coord4D read(NBTTagCompound nbtTags)
 	{
 		return new Coord4D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
 	}
 	
+	/**
+	 * Returns a new Coord4D from a ByteArrayDataInput.
+	 * @param dataStream - data input to read from
+	 * @return the Coord4D from the data input
+	 */
 	public static Coord4D read(ByteArrayDataInput dataStream)
 	{
-		return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}
 	
+	/**
+	 * Creates and returns a new Coord4D with values representing the difference between the defined Coord4D
+	 * @param other - the Coord4D to subtract from this
+	 * @return a Coord4D representing the distance between the defined Coord4D
+	 */
 	public Coord4D difference(Coord4D other)
 	{
-		return new Coord4D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord);
+		return new Coord4D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord, dimensionId);
 	}
 	
+	/**
+	 * A method used to find the ForgeDirection represented by the distance of the defined Coord4D. Most likely won't have many
+	 * applicable uses.
+	 * @param other - Coord4D to find the side difference of
+	 * @return ForgeDirection representing the side the defined relative Coord4D is on to this
+	 */
 	public ForgeDirection sideDifference(Coord4D other)
 	{
 		Coord4D diff = difference(other);
@@ -124,6 +222,11 @@ public class Coord4D
 		return ForgeDirection.UNKNOWN;
 	}
 	
+	/**
+	 * Gets the distance to a defined Coord4D.
+	 * @param obj - the Coord4D to find the distance to
+	 * @return the distance to the defined Coord4D
+	 */
 	public int distanceTo(Coord4D obj)
 	{
 	    int subX = xCoord - obj.xCoord;
@@ -132,21 +235,42 @@ public class Coord4D
 	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
 	}
 	
+	/**
+	 * Whether or not the defined side of this Coord4D is visible.
+	 * @param side - side to check
+	 * @param world - world this Coord4D is in
+	 * @return
+	 */
 	public boolean sideVisible(ForgeDirection side, IBlockAccess world)
 	{
-		return world.getBlockId(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ) == 0;
+		return world.isAirBlock(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ);
 	}
 	
+	/**
+	 * Steps this Coord4D in the defined side's offset without creating a new value.
+	 * @param side - side to step towards
+	 * @return this Coord4D
+	 */
 	public Coord4D step(ForgeDirection side)
 	{
 		return translate(side.offsetX, side.offsetY, side.offsetZ);
 	}
 	
+	/**
+	 * Whether or not the chunk this Coord4D is in exists and is loaded.
+	 * @param world - world this Coord4D is in
+	 * @return the chunk of this Coord4D
+	 */
 	public boolean exists(World world)
 	{
 		return world.getChunkProvider().chunkExists(xCoord >> 4, zCoord >> 4);
 	}
 	
+	/**
+	 * Gets the chunk this Coord4D is in.
+	 * @param world - world this Coord4D is in
+	 * @return the chunk of this Coord4D
+	 */
 	public Chunk getChunk(World world)
 	{
 		return world.getChunkFromBlockCoords(xCoord >> 4, zCoord >> 4);

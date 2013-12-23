@@ -85,7 +85,7 @@ public final class TransporterUtils
 				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
 				
 				//Immature BuildCraft inv check
-				if(MekanismUtils.useBuildcraft() && inventory instanceof IPowerReceptor)
+				if(MekanismUtils.useBuildCraft() && inventory instanceof IPowerReceptor)
 				{
 					if(((IPowerReceptor)inventory).getPowerReceiver(forgeSide) != null && ((IPowerReceptor)inventory).getPowerReceiver(forgeSide).getType() == Type.MACHINE)
 					{
@@ -216,7 +216,7 @@ public final class TransporterUtils
 	
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().worldObj.provider.dimensionId).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 		
 		float itemFix = 0;
