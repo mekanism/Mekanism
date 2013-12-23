@@ -48,12 +48,12 @@ public class GuiUpgradeManagement extends GuiElement
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 		{
-			displayTooltip(MekanismUtils.localize("gui.removeEnergyUpgrade"), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.removeSpeedUpgrade"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
 		{
-			displayTooltip(MekanismUtils.localize("gui.removeSpeedUpgrade"), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.removeEnergyUpgrade"), xAxis, yAxis);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);
