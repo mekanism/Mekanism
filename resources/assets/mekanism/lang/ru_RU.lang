@@ -6,8 +6,8 @@
 tile.ObsidianTNT.name=Обсидиановый динамит
 item.EnrichedAlloy.name=Обогащённый сплав
 item.EnergyTablet.name=Энергетический планшет
-item.SpeedUpgrade.name=Улучшение "скорость"
-item.EnergyUpgrade.name=Улучшение "энергия"
+item.SpeedUpgrade.name=Улучшение скорости
+item.EnergyUpgrade.name=Улучшение энергии
 item.Robit.name=Робит
 item.AtomicDisassembler.name=Атомный дизассемблер
 item.AtomicCore.name=Атомное ядро
@@ -37,7 +37,7 @@ tile.BasicBlock.RefinedObsidian.name=Очищенный обсидиан
 tile.BasicBlock.CharcoalBlock.name=Древесноугольный блок
 tile.BasicBlock.RefinedGlowstone.name=Очищенный светящийся камень
 tile.BasicBlock.SteelBlock.name=Стальной блок
-tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.Bin.name=Ящик
 tile.BasicBlock.TeleporterFrame.name=Каркас телепортера
 tile.BasicBlock.SteelCasing.name=Стальной корпус
 tile.BasicBlock.DynamicTank.name=Dynamic Tank
@@ -54,7 +54,7 @@ tile.MachineBlock.Crusher.name=Дробилка
 tile.MachineBlock.BasicFactory.name=Базовая фабрика
 tile.MachineBlock.AdvancedFactory.name=Продвинутая фабрика
 tile.MachineBlock.EliteFactory.name=Элитная фабрика
-tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.MetallurgicInfuser.name=Металлургический зарядник
 tile.MachineBlock.PurificationChamber.name=Камера очистки
 tile.MachineBlock.EnergizedSmelter.name=Энергетический плавильный завод
 tile.MachineBlock.Teleporter.name=Телепортер
@@ -67,7 +67,7 @@ tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Ротационный конденсентратор
 tile.MachineBlock2.ChemicalFormulator.name=Химический формулятор
-tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
+tile.MachineBlock2.ChemicalInfuser.name=Химический зарядник
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Осмиевая руда
@@ -147,6 +147,162 @@ fluid.hydrogen=Жидкий водород
 fluid.oxygen=Жидкий кислород
 fluid.sulfuricGas=Жидкий серный газ
 fluid.sulfuricAcid=Жидкая серная кислота
+
+//Gui text
+gui.removeSpeedUpgrade=Удалить улучшение скорости
+gui.removeEnergyUpgrade=Удалить улучшение энергии
+gui.condensentrating=Condensentrating
+gui.decondensentrating=Decondensentrating
+gui.power=Энергия
+gui.confirm=Подтвердить
+gui.open=Открыть
+gui.allOK=Всё ОК
+gui.none=Нету
+gui.new=Новый
+gui.edit=Редактировать
+gui.save=Сохранить
+gui.output=Выход
+gui.delete=Удалить
+gui.status=Статус
+gui.autoEject=Авто-извлечение
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.out=Выход
+gui.noFluid=Нет жидкости
+gui.empty=Empty
+gui.volume=Звук
+gui.start=Запуск
+gui.stop=Стоп
+gui.config=Конфиг
+gui.teleport=Телепорт
+gui.eject=Извлечение
+gui.input=Вход
+gui.slots=Слоты
+gui.state=Состояние
+gui.on=Вкл.
+gui.off=Выкл.
+gui.filters=Фильтры
+
+gui.dictionary.noKey=No key.
+gui.dictionary.key=Key
+
+gui.configuration=Конфигурация
+gui.configuration.strictInput=Строгий вход
+
+gui.rotaryCondensentrator.toggleOperation=Переключить операцию
+
+gui.factory.secondaryEnergy=Вторичная энергия
+gui.factory.smelting=Выплавка
+gui.factory.enriching=Обогащение
+gui.factory.crushing=Дробление
+gui.factory.compressing=Сжатие
+gui.factory.combining=Объединение
+gui.factory.purifying=Очищение
+gui.factory.autoSort=Авто-сорт.
+
+gui.oredictFilter=OreDict фильтр
+gui.oredictFilter.noKey=No key entered
+gui.oredictFilter.sameKey=Same key
+
+gui.itemFilter=Предметный фильтр
+gui.itemFilter.noItem=Нет предмета
+gui.itemFilter.details=Детали ItemStack
+gui.itemFilter.min=Мин.
+gui.itemFilter.max=Макс.
+
+gui.portableTeleporter=Переносной телепортер
+
+gui.teleporter.notReady=Не готов
+gui.teleporter.ready=Готов
+gui.teleporter.needsEnergy=Нужна энергия
+gui.teleporter.linksCapacity=Соединения > 2
+gui.teleporter.noLink=Соединение не найдено
+
+gui.robit=Робит
+gui.robit.smelting=Robit Smelting
+gui.robit.inventory=Robit Inventory
+gui.robit.crafting=Robit Crafting
+gui.robit.greeting=Привет, Я
+gui.robit.toggleFollow=Переключить на режим 'слежения'
+gui.robit.rename=Переименовать этого Робита
+gui.robit.teleport=Teleport back home
+gui.robit.togglePickup=Переключить на режим 'сбор добычи'
+
+gui.password.setPassword=Установить пароль
+gui.password.enterPassword=Ввести пароль
+gui.password.fieldsEmpty=Поле(я) пусты
+gui.password.notMatching=Не совпадает
+gui.password.identical=Идентичный
+gui.password.invalid=Неправильный
+gui.password=Пароль
+
+gui.logisticalSorter.default=Default
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round robin
+
+gui.electricChest.editPassword=Редактировать пароль
+
+gui.digitalMinerConfig=Настройки цифрового шахтёра
+
+gui.digitalMiner.autoPull=Авто-тяга
+gui.digitalMiner.replaceBlock=Замень блок
+gui.digitalMiner.reset=Сброс
+gui.digitalMiner.silkTouch=Шёлковое касание
+gui.digitalMiner.pull=Тянуть
+gui.digitalMiner.silk=Шёлк
+gui.digitalMiner.toMine=To mine
+gui.digitalMiner.running=Работа
+gui.digitalMiner.idle=Простой
+
+//Item and block tooltip text
+tooltip.configurator.modify=Модифицируемый
+tooltip.configurator.empty=Пусто
+tooltip.configurator.wrench=Wrench
+tooltip.configurator.link=Link
+tooltip.configurator.pumpReset=Сбросить расчёт электропомпы
+tooltip.configurator.toggleDiverter=Diverter mode changed to
+tooltip.configurator.toggleColor=Цвет установлен на
+tooltip.configurator.viewColor=Текущий цвет
+tooltip.configurator.unauth=Этот сундук закрыт
+tooltip.configurator.noLink=Нет соединения
+tooltip.configurator.linkMsg=Связан с
+tooltip.configurator.dim=измерение
+
+tooltip.balloon=Balloon
+
+tooltip.jetpack.regular=Обычный
+tooltip.jetpack.hover=Зависание
+tooltip.jetpack.disabled=Отключен
+
+tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. !nОн, как известно имеет множество применений в !nпроизводстве машин.
+tooltip.CopperOre=Общий, проводящий материал, который !nможет быть использован в производстве !nпроводов. Имеет способность выдерживать!nвысокие теплоты это делает его необходимым !nдля современного оборудования.
+tooltip.TinOre=Легкий, но крепкий, проводящий !nматериал, который находится немного меньше, !nчем медь.
+
+//Redstone control
+control.disabled=Отключён
+control.high=Высокий
+control.low=Низкий
+control.disabled.desc=Всегда активен
+control.high.desc=Активен по сигналу
+control.low.desc=Активен без сигнала
+
+//Colors
+color.black=Чёрный
+color.darkBlue=Тёмно-синий
+color.darkGreen=Тёмно-зелёный
+color.darkAqua=Тёмно-голбуй
+color.darkRed=Тёмно-красный
+color.purple=Фиолетовый
+color.orange=Оранжевый
+color.grey=Серый
+color.darkGrey=Тёмно-серый
+color.indigo=Индиго
+color.brightGreen=Светло-зелёный
+color.aqua=Голубой
+color.red=Красный
+color.pink=Розовый
+color.yellow=Жёлтый
+color.white=Белый
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
@@ -269,5 +425,5 @@ tile.ElectromagneticContractor.name=Электромагнитный контр�
 tile.Battery.name=Модульный аккумулятор
 
 //General text
-text.contractor.success=контрагент успешно соединён
+text.contractor.success=Контрагент успешно соединён
 text.tesla.success=Катушка Теслы успешно соединена
