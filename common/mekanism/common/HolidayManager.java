@@ -44,6 +44,23 @@ public final class HolidayManager
 		} catch(Exception e) {}
 	}
 	
+	public static String filterSound(String sound)
+	{
+		try {
+			YearlyDate date = getDate();
+			
+			for(Holiday holiday : holidays)
+			{
+				if(holiday.getDate().equals(date))
+				{
+					return holiday.filterSound(sound);
+				}
+			}
+		} catch(Exception e) {}
+		
+		return sound;
+	}
+	
 	private static YearlyDate getDate()
 	{
 		return new YearlyDate(calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH));
@@ -54,6 +71,11 @@ public final class HolidayManager
 		public abstract YearlyDate getDate();
 		
 		public abstract void onEvent(EntityPlayer player);
+		
+		public String filterSound(String sound)
+		{
+			return sound;
+		}
 	}
 	
 	private static class Christmas extends Holiday
