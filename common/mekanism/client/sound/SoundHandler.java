@@ -14,7 +14,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import mekanism.api.Coord4D;
-import mekanism.common.HolidayManager;
+import mekanism.client.HolidayManager;
+import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
@@ -62,7 +63,7 @@ public class SoundHandler
 		
 		for(String s : listings)
 		{
-			if(s.contains("etc"))
+			if(s.contains("etc") || s.contains("holiday"))
 			{
 				continue;
 			}
@@ -90,6 +91,26 @@ public class SoundHandler
 		}
 		
 		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");
+		
+		if(MekanismClient.holidays)
+		{
+			listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/holiday");
+			
+			for(String s : listings)
+			{
+				if(s.contains("/mekanism/sound/"))
+				{
+					s = s.split("/mekanism/sound/")[1];
+				}
+				
+				if(!s.contains("holiday"))
+				{
+					s = "holiday/" + s;
+				}
+				
+				preloadSound(s);
+			}
+		}
 	}
 	
 	private List<String> listFiles(String path, String s)

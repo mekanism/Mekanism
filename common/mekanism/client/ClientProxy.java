@@ -5,8 +5,6 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.client.gui.GuiChemicalFormulator;
-import mekanism.client.gui.GuiChemicalInfuser;
-import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -35,12 +33,10 @@ import mekanism.client.gui.GuiRobitSmelting;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.block.TransmitterRenderingHandler;
-import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
@@ -65,10 +61,8 @@ import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
-import mekanism.common.EntityBalloon;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
-import mekanism.common.HolidayManager;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
@@ -80,8 +74,6 @@ import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityChemicalFormulator;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
-import mekanism.common.tileentity.TileEntityChemicalInjectionChamber;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -146,7 +138,8 @@ public class ClientProxy extends CommonProxy
 		Mekanism.configuration.load();
 		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
-		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1.0D).getDouble(1.0D);
+		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
+		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1).getDouble(1);
 		Mekanism.configuration.save();
 	}
 	
@@ -270,18 +263,14 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
 		ClientRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator", new RenderRotaryCondensentrator());
 		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
-		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 	}
 	
 	@Override
 	public void registerRenderInformation()
-	{		
-		RenderPartTransmitter.init();
-		
+	{
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
-		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
 		
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
@@ -295,10 +284,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon.itemID, handler);
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
@@ -389,10 +374,6 @@ public class ClientProxy extends CommonProxy
 				return new GuiRobitRepair(player.inventory, world, x);
 			case 29:
 				return new GuiChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
-			case 30:
-				return new GuiChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
-			case 31:
-				return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 		}
 		
 		return null;
@@ -485,13 +466,5 @@ public class ClientProxy extends CommonProxy
 	public File getMinecraftDir()
 	{
 		return Minecraft.getMinecraft().mcDataDir;
-	}
-	
-	@Override
-	public void onConfigSync()
-	{
-		super.onConfigSync();
-		
-		MekanismClient.voiceClient.start();
 	}
 }

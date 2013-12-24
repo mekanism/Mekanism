@@ -920,6 +920,7 @@ public class Mekanism
 			voiceManager.stop();
 		}
 		
+		//Clear all cache data
 		teleporters.clear();
 		dynamicInventories.clear();
 		ic2Registered.clear();
@@ -978,9 +979,6 @@ public class Mekanism
 		
 		//Get data from server.
 		new ThreadGetData();
-		
-		//Initiate the HolidayManager for seasonal greetings.
-		HolidayManager.init();
 		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);

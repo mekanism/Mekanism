@@ -822,6 +822,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
     	{
 	        IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
+	        
 	        upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
 	        upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
     	}

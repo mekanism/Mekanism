@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.client;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +19,11 @@ public final class HolidayManager
 	
 	public static void init()
 	{
-		holidays.add(new Christmas());
-		holidays.add(new NewYear());
+		if(MekanismClient.holidays)
+		{
+			holidays.add(new Christmas());
+			holidays.add(new NewYear());
+		}
 		
 		System.out.println("[Mekanism] Initialized HolidayManager.");
 	}
@@ -46,6 +49,11 @@ public final class HolidayManager
 	
 	public static String filterSound(String sound)
 	{
+		if(!MekanismClient.holidays)
+		{
+			return sound;
+		}
+		
 		try {
 			YearlyDate date = getDate();
 			
@@ -80,6 +88,8 @@ public final class HolidayManager
 	
 	private static class Christmas extends Holiday
 	{
+		private String[] nutcracker = new String[] {"holiday/Nutcracker1.ogg", "holiday/Nutcracker2.ogg", "holiday/Nutcracker3.ogg", "holiday/Nutcracker4.ogg", "holiday/Nutcracker5.ogg"};
+		
 		@Override
 		public YearlyDate getDate()
 		{
@@ -97,6 +107,33 @@ public final class HolidayManager
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.RED + "family :)"));
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_GREY + "-aidancbrady"));
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+		}
+		
+		@Override
+		public String filterSound(String sound)
+		{
+			if(sound.equals("Chamber.ogg"))
+			{
+				return nutcracker[0];
+			}
+			else if(sound.equals("MetallurgicInfuser.ogg"))
+			{
+				return nutcracker[1];
+			}
+			else if(sound.equals("PurificationChamber.ogg"))
+			{
+				return nutcracker[2];
+			}
+			else if(sound.equals("Smelter.ogg"))
+			{
+				return nutcracker[3];
+			}
+			else if(sound.equals("HeatGenerator.ogg"))
+			{
+				return nutcracker[4];
+			}
+			
+			return sound;
 		}
 	}
 	

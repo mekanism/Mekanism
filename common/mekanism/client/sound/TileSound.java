@@ -1,6 +1,7 @@
 package mekanism.client.sound;
 
 import mekanism.api.Pos3D;
+import mekanism.client.HolidayManager;
 import mekanism.common.IActiveState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -57,7 +58,7 @@ public class TileSound extends Sound
 		{
 			return false;
 		}
-		else if(!((IHasSound)tileEntity).getSoundPath().equals(soundPath))
+		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(soundPath))
 		{
 			return false;
 		}
