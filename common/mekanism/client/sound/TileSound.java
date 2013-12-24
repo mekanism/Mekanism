@@ -1,10 +1,7 @@
 package mekanism.client.sound;
 
-import java.net.URL;
-
-import mekanism.client.MekanismClient;
+import mekanism.client.HolidayManager;
 import mekanism.common.IActiveState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import universalelectricity.core.vector.Vector3;
@@ -61,7 +58,7 @@ public class TileSound extends Sound
 		{
 			return false;
 		}
-		else if(!((IHasSound)tileEntity).getSoundPath().equals(soundPath))
+		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(soundPath))
 		{
 			return false;
 		}

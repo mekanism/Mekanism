@@ -14,9 +14,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import mekanism.api.Object3D;
+import mekanism.client.HolidayManager;
+import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,7 +63,7 @@ public class SoundHandler
 		
 		for(String s : listings)
 		{
-			if(s.contains("etc"))
+			if(s.contains("etc") || s.contains("holiday"))
 			{
 				continue;
 			}
@@ -90,6 +91,26 @@ public class SoundHandler
 		}
 		
 		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");
+		
+		if(MekanismClient.holidays)
+		{
+			listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/holiday");
+			
+			for(String s : listings)
+			{
+				if(s.contains("/mekanism/sound/"))
+				{
+					s = s.split("/mekanism/sound/")[1];
+				}
+				
+				if(!s.contains("holiday"))
+				{
+					s = "holiday/" + s;
+				}
+				
+				preloadSound(s);
+			}
+		}
 	}
 	
 	private List<String> listFiles(String path, String s)
@@ -246,7 +267,7 @@ public class SoundHandler
 			{
 				if(obj instanceof TileEntity)
 				{
-					new TileSound(getIdentifier(), ((IHasSound)obj).getSoundPath(), (TileEntity)obj);
+					new TileSound(getIdentifier(), HolidayManager.filterSound(((IHasSound)obj).getSoundPath()), (TileEntity)obj);
 				}
 			}
 		}
