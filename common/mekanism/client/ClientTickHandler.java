@@ -12,6 +12,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
+import mekanism.common.HolidayManager;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
@@ -55,6 +56,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ClientTickHandler implements ITickHandler
 {
 	public boolean hasNotified = false;
+	public boolean initHoliday = false;
 	
 	public boolean preloadedSounds = false;
 	
@@ -112,6 +114,12 @@ public class ClientTickHandler implements ITickHandler
 		
 		if(mc.theWorld != null)
 		{
+			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.thePlayer != null)
+			{
+				HolidayManager.check();
+				initHoliday = true;
+			}
+			
 			for(EntityPlayer entityPlayer : (List<EntityPlayer>)mc.theWorld.playerEntities)
 			{
 				if(entityPlayer instanceof AbstractClientPlayer)
