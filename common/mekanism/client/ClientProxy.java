@@ -63,6 +63,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
+import mekanism.common.HolidayManager;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
@@ -397,6 +398,8 @@ public class ClientProxy extends CommonProxy
 		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());
 		
 		GameRegistry.registerPlayerTracker(new ClientPlayerTracker());
+		
+		HolidayManager.init();
 	}
 	
 	@Override
