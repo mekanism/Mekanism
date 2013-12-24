@@ -1117,6 +1117,7 @@ public class Mekanism
 			voiceManager.stop();
 		}
 		
+		//Clear all cache data
 		teleporters.clear();
 		dynamicInventories.clear();
 		ic2Registered.clear();
