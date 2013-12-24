@@ -230,6 +230,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public boolean clean(boolean take)
 	{
 		boolean took = false;
+		
 		if(!worldObj.isRemote)
 		{
 			for(Coord4D wrapper : cleaningNodes)
@@ -239,6 +240,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
+						
 						if(take)
 						{
 							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -254,6 +256,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
+						
 						if(take)
 						{
 							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -271,6 +274,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
+						
 						if(take)
 						{
 							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);

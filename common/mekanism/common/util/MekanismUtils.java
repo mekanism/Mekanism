@@ -739,7 +739,7 @@ public final class MekanismUtils
     	
     		if(meta == 0)
     		{
-    			return new FluidStack(fluid.getFluid(), FluidContainerRegistry.BUCKET_VOLUME);
+    			return fluid.drain(world, x, y, z, false);
     		}
     	}
     	
