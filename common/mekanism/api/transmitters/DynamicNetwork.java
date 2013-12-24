@@ -264,7 +264,14 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			
 			if(newNetworks.size() > 0)
 			{
-				onNetworksCreated((List<N>)newNetworks);
+				List<N> casted = new ArrayList<N>();
+				
+				for(ITransmitterNetwork<A, N> net : newNetworks)
+				{
+					casted.add((N)net);
+				}
+				
+				onNetworksCreated(casted);
 				
 				for(ITransmitterNetwork<A, N> network : newNetworks)
 				{

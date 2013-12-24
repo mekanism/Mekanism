@@ -37,11 +37,5 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	
 	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks);
 	
-	/**
-	 * Gets a network's meta value right before it is split. This will then be passed onto "onNewFromSplit()" in
-	 * every single new network that is created from the original split.
-	 * @param size - the amount of new networks that are being created
-	 * @return meta obj
-	 */
 	public void onNetworksCreated(List<N> networks);
 }
