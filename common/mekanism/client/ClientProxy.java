@@ -79,6 +79,7 @@ import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityChemicalFormulator;
 import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tileentity.TileEntityChemicalInjectionChamber;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -268,6 +269,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
 		ClientRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator", new RenderRotaryCondensentrator());
 		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
+		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 	}
 	
 	@Override

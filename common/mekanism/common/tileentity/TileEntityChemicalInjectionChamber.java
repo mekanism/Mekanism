@@ -34,7 +34,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	public int getFuelTicks(ItemStack itemstack)
 	{
 		if(itemstack.isItemEqual(new ItemStack(Item.gunpowder))) return 20;
-		if(itemstack.isItemEqual(new ItemStack(Mekanism.GasTank)) && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("sulfuricAcid")) return 1;
 		
 		return 0;
@@ -62,10 +62,11 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public void handleSecondaryFuel()
 	{
-		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY)
+		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY && inventory[1].getItem() instanceof IGasItem)
 		{
 			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("sulfuricAcid"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
 			setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+			return;
 		}
 		
 		super.handleSecondaryFuel();
