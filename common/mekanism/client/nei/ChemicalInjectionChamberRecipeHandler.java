@@ -12,7 +12,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public String getRecipeName()
 	{
-		return "Chemical Injection Chamber";
+		return "C. Injection Chamber";
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public Set getRecipes()
 	{
-		return Recipe.PURIFICATION_CHAMBER.get().entrySet();
+		return Recipe.CHEMICAL_INJECTION_CHAMBER.get().entrySet();
 	}
 
 	@Override

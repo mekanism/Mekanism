@@ -570,7 +570,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
-			if(type == MachineType.CHEMICAL_FORMULATOR || type == MachineType.CHEMICAL_INFUSER || type == MachineType.CHEMICAL_INJECTION_CHAMBER /*TODO*/)
+			if(type == MachineType.CHEMICAL_FORMULATOR || type == MachineType.CHEMICAL_INFUSER /*TODO*/)
 			{
 				continue;
 			}
