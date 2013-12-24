@@ -67,6 +67,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.MultipartMekanism;
@@ -229,6 +230,7 @@ public class Mekanism
 	public static ItemGasMask GasMask;
 	public static Item Dictionary;
 	public static Item Balloon;
+	public static Item Shard;
 	
 	//Blocks
 	public static Block BasicBlock;
@@ -291,6 +293,7 @@ public class Mekanism
 	public static double rotaryCondensentratorUsage;
 	public static double chemicalFormulatorUsage;
 	public static double chemicalInfuserUsage;
+	public static double chemicalInjectionChamberUsage;
 	
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -602,6 +605,9 @@ public class Mekanism
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.cobblestone), new ItemStack(Block.gravel));
         
+        //Chemical Injection Chamber Recipes
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Shard, 3, 6));
+        
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Item.ingotIron)), new ItemStack(EnrichedIron));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
@@ -637,8 +643,8 @@ public class Mekanism
 		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", 11201).getInt()).setUnlocalizedName("Dictionary");
 		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", 11202).getInt()).setUnlocalizedName("GasMask");
 		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", 11203).getInt()).setUnlocalizedName("ScubaTank");
-		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt()-256);
-		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt()-256);
+		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt());
+		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt());
 		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt()).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt()).setUnlocalizedName("EnergyUpgrade");
@@ -652,16 +658,16 @@ public class Mekanism
 		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", 11216).getInt()).setUnlocalizedName("CompressedCarbon");
 		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", 11217).getInt()).setUnlocalizedName("PortableTeleporter");
 		TeleportationCore = new ItemMekanism(configuration.getItem("TeleportationCore", 11218).getInt()).setUnlocalizedName("TeleportationCore");
-		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt()-256);
-		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt()-256);
+		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt());
+		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt());
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
 		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
 		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11225).getInt()).setUnlocalizedName("MultipartTransmitter");
 		Balloon = new ItemBalloon(configuration.getItem("Balloon", 11226).getInt()).setUnlocalizedName("Balloon");
+		Shard = new ItemShard(configuration.getItem("Shard", 11227).getInt());
 		configuration.save();
-		//TODO 1.7, fix item shifts
 		
 		//Registrations
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
@@ -690,6 +696,7 @@ public class Mekanism
 		GameRegistry.registerItem(GasMask, "GasMask");
 		GameRegistry.registerItem(ScubaTank, "ScubaTank");
 		GameRegistry.registerItem(Balloon, "Balloon");
+		GameRegistry.registerItem(Shard, "Shard");
 	}
 	
 	/**
@@ -779,6 +786,15 @@ public class Mekanism
 		OreDictionary.registerOre("clumpSilver", new ItemStack(Clump, 1, 5));
 		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
 		OreDictionary.registerOre("clumpLead", new ItemStack(Clump, 1, 7));
+		
+		OreDictionary.registerOre("shardIron", new ItemStack(Shard, 1, 0));
+		OreDictionary.registerOre("shardGold", new ItemStack(Shard, 1, 1));
+		OreDictionary.registerOre("shardOsmium", new ItemStack(Shard, 1, 2));
+		OreDictionary.registerOre("shardCopper", new ItemStack(Shard, 1, 3));
+		OreDictionary.registerOre("shardTin", new ItemStack(Shard, 1, 4));
+		OreDictionary.registerOre("shardSilver", new ItemStack(Shard, 1, 5));
+		OreDictionary.registerOre("shardObsidian", new ItemStack(Shard, 1, 6));
+		OreDictionary.registerOre("shardLead", new ItemStack(Shard, 1, 7));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));

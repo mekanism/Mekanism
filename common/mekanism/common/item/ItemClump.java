@@ -11,6 +11,7 @@ import net.minecraft.util.Icon;
 public class ItemClump extends ItemMekanism
 {
 	public Icon[] icons = new Icon[256];
+	
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
 										"Copper", "Tin", "Silver",
 										"Obsidian", "Lead"};

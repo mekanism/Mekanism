@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import mekanism.client.gui.GuiChemicalFormulator;
 import mekanism.client.gui.GuiChemicalInfuser;
+import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -79,6 +80,7 @@ import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityChemicalFormulator;
 import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tileentity.TileEntityChemicalInjectionChamber;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -267,6 +269,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
 		ClientRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator", new RenderRotaryCondensentrator());
 		ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
+		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 	}
 	
 	@Override
@@ -387,6 +390,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
 			case 30:
 				return new GuiChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
+			case 31:
+				return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 		}
 		
 		return null;

@@ -66,6 +66,7 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.rotaryCondensentratorUsage = dataStream.readDouble();
 		Mekanism.chemicalFormulatorUsage = dataStream.readDouble();
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();
+		Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
 
 		Mekanism.proxy.onConfigSync();
 	}
@@ -110,5 +111,6 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.rotaryCondensentratorUsage);
 		dataStream.writeDouble(Mekanism.chemicalFormulatorUsage);
 		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
+		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
 	}
 }

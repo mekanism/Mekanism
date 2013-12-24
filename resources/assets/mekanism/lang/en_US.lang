@@ -68,6 +68,7 @@ tile.MachineBlock.DigitalMiner.name=Digital Miner
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
 tile.MachineBlock2.ChemicalFormulator.name=Chemical Formulator
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -116,6 +117,16 @@ item.tinClump.name=Tin Clump
 item.silverClump.name=Silver Clump
 item.obsidianClump.name=Obsidian Clump
 item.leadClump.name=Lead Clump
+
+//Shards
+item.ironShard.name=Iron Shard
+item.goldShard.name=Gold Shard
+item.osmiumShard.name=Osmium Shard
+item.copperShard.name=Copper Shard
+item.tinShard.name=Tin Shard
+item.silverShard.name=Silver Shard
+item.obsidianShard.name=Obsidian Shard
+item.leadShard.name=Lead Shard
 
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
@@ -198,6 +209,7 @@ gui.factory.crushing=Crushing
 gui.factory.compressing=Compressing
 gui.factory.combining=Combining
 gui.factory.purifying=Purifying
+gui.factory.injecting=Injecting
 gui.factory.autoSort=Auto-sort
 
 gui.oredictFilter=OreDict Filter
@@ -291,6 +303,7 @@ tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitsel
 tooltip.Chargepad=A universal chargepad that can charge any energized item !nfrom any mod.
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
+tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.

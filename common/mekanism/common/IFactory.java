@@ -35,7 +35,8 @@ public interface IFactory
 		CRUSHING("crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false),
 		COMPRESSING("compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true),
 		COMBINING("combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true),
-		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true);
+		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true),
+		INJECTING("injecting", "ChemicalInjectionChamber.ogg", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true);
 		
 		private String name;
 		private String sound;
@@ -82,6 +83,10 @@ public interface IFactory
 			else if(this == PURIFYING)
 			{
 				return RecipeHandler.getOutput(input, stackDecrease, Recipe.PURIFICATION_CHAMBER.get());
+			}
+			else if(this == INJECTING)
+			{
+				return RecipeHandler.getOutput(input, stackDecrease, Recipe.CHEMICAL_INJECTION_CHAMBER.get());
 			}
 			
 			return null;

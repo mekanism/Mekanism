@@ -31,6 +31,7 @@ import mekanism.common.tileentity.TileEntityBasicBlock;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityChemicalFormulator;
 import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tileentity.TileEntityChemicalInjectionChamber;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityContainerBlock;
 import mekanism.common.tileentity.TileEntityCrusher;
@@ -96,6 +97,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:14: Chargepad
  * 0:15: Logistical Sorter
  * 1:0: Rotary Condensentrator
+ * 1:1: Chemical Formulator
+ * 1:2: Chemical Infuser
+ * 1:3: Chemical Injection Chamber
  * @author AidanBrady
  *
  */
@@ -146,6 +150,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 			icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[11][0] = register.registerIcon("mekanism:Teleporter");
+		}
+		else if(blockID == Mekanism.machineBlock2ID)
+		{
+			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
+			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
+			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
 		}
 	}
 	
@@ -398,6 +408,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	    		return icons[11][0];
 	    	}
 		}
+		else if(blockID == Mekanism.machineBlock2ID)
+		{
+		  	if(meta == 3)
+	    	{
+	    		if(side == 3)
+	    		{
+	    			return icons[3][0];
+	    		}
+	    		else {
+	    			return icons[3][2];
+	    		}
+	    	}
+		}
     	
     	return null;
     }
@@ -518,6 +541,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	    		return icons[11][0];
 	    	}
     	}
+    	else if(blockID == Mekanism.machineBlock2ID)
+    	{
+    		if(metadata == 3)
+	    	{
+	    		if(side == tileEntity.facing)
+	    		{
+	    			return MekanismUtils.isActive(world, x, y, z) ? icons[3][1] : icons[3][0];
+	    		}
+	    		else {
+	    			return icons[3][2];
+	    		}
+	    	}
+    	}
     	
     	return null;
     }
@@ -534,7 +570,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
-			if(type == MachineType.CHEMICAL_FORMULATOR || type == MachineType.CHEMICAL_INFUSER /*TODO*/)
+			if(type == MachineType.CHEMICAL_FORMULATOR || type == MachineType.CHEMICAL_INFUSER || type == MachineType.CHEMICAL_INJECTION_CHAMBER /*TODO*/)
 			{
 				continue;
 			}
@@ -1040,7 +1076,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true),
 		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true),
 		CHEMICAL_FORMULATOR(Mekanism.machineBlock2ID, 1, "ChemicalFormulator", 29, 20000, TileEntityChemicalFormulator.class, true),
-		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true);
+		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true),
+		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false);
 		
 		public int typeId;
 		public int meta;

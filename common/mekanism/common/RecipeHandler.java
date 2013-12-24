@@ -104,6 +104,16 @@ public final class RecipeHandler
 	}
 	
 	/**
+	 * Add a Chemical Injection Chamber recipe.
+	 * @param input - input ItemStack
+	 * @param output - output ItemStack
+	 */
+	public static void addChemicalInjectionChamberRecipe(ItemStack input, ItemStack output)
+	{
+		Recipe.CHEMICAL_INJECTION_CHAMBER.put(input, output);
+	}
+	
+	/**
 	 * Gets the InfusionOutput of the InfusionInput in the parameters.
 	 * @param infusion - input Infusion
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size AND the infuse amount
@@ -239,7 +249,8 @@ public final class RecipeHandler
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
 		CHEMICAL_INFUSER(new HashMap<ChemicalInput, GasStack>()),
-		CHEMICAL_FORMULATOR(new HashMap<ItemStack, GasStack>());
+		CHEMICAL_FORMULATOR(new HashMap<ItemStack, GasStack>()),
+		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>());
 		
 		private HashMap recipes;
 		

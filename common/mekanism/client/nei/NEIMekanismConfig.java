@@ -1,5 +1,6 @@
 package mekanism.client.nei;
 
+import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiEnrichmentChamber;
@@ -33,6 +34,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new PurificationChamberRecipeHandler());
 		API.registerUsageHandler(new PurificationChamberRecipeHandler());
 		
+		API.registerRecipeHandler(new ChemicalInjectionChamberRecipeHandler());
+		API.registerUsageHandler(new ChemicalInjectionChamberRecipeHandler());
+		
 		API.registerRecipeHandler(new MekanismRecipeHandler());
 		API.registerUsageHandler(new MekanismRecipeHandler());
 		
@@ -41,6 +45,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiCrusher.class, 16, 6);
 		API.setGuiOffset(GuiCombiner.class, 16, 6);
 		API.setGuiOffset(GuiPurificationChamber.class, 16, 6);
+		API.setGuiOffset(GuiChemicalInjectionChamber.class, 16, 6);
 		API.setGuiOffset(GuiMetallurgicInfuser.class, 5, 15);
 		
 		API.hideItem(Mekanism.boundingBlockID);

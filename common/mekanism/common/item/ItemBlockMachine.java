@@ -61,22 +61,26 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple machine block IDs.
- * 0: Enrichment Chamber
- * 1: Osmium Compressor
- * 2: Combiner
- * 3: Crusher
- * 4: Digital Miner
- * 5: Basic Factory
- * 6: Advanced Factory
- * 7: Elite Factory
- * 8: Metallurgic Infuser
- * 9: Purification Chamber
- * 10: Energized Smelter
- * 11: Teleporter
- * 12: Electric Pump
- * 13: Electric Chest
- * 14: Chargepad
- * 15: Logistical Sorter
+ * 0:0: Enrichment Chamber
+ * 0:1: Osmium Compressor
+ * 0:2: Combiner
+ * 0:3: Crusher
+ * 0:4: Digital Miner
+ * 0:5: Basic Factory
+ * 0:6: Advanced Factory
+ * 0:7: Elite Factory
+ * 0:8: Metallurgic Infuser
+ * 0:9: Purification Chamber
+ * 0:10: Energized Smelter
+ * 0:11: Teleporter
+ * 0:12: Electric Pump
+ * 0:13: Electric Chest
+ * 0:14: Chargepad
+ * 0:15: Logistical Sorter
+ * 1:0: Rotary Condensentrator
+ * 1:1: Chemical Formulator
+ * 1:2: Chemical Infuser
+ * 1:3: Chemical Injection Chamber
  * @author AidanBrady
  *
  */
