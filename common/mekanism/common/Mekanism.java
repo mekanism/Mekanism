@@ -1,8 +1,5 @@
 package mekanism.common;
 
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.Recipes;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;

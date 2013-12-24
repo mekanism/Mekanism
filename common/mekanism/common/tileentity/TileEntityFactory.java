@@ -349,6 +349,16 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 					return;
 				}
 			}
+			else if(recipeType == RecipeType.INJECTING.ordinal())
+			{
+				if(inventory[4].getItem() instanceof IGasItem)
+				{
+					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("sulfuricAcid"), getMaxSecondaryEnergy()-secondaryEnergyStored);
+					setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+					
+					return;
+				}
+			}
 			
 			int fuelTicks = RecipeType.values()[recipeType].getFuelTicks(inventory[4]);
 			int energyNeeded = getMaxSecondaryEnergy() - secondaryEnergyStored;
