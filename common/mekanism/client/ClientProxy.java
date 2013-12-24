@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.client.gui.GuiChemicalFormulator;
+import mekanism.client.gui.GuiChemicalInfuser;
+import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -37,6 +39,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.block.TransmitterRenderingHandler;
+import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
@@ -61,6 +64,7 @@ import mekanism.client.render.tileentity.RenderUniversalCable;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
+import mekanism.common.EntityBalloon;
 import mekanism.common.EntityObsidianTNT;
 import mekanism.common.EntityRobit;
 import mekanism.common.IElectricChest;
@@ -74,6 +78,7 @@ import mekanism.common.tileentity.TileEntityAdvancedFactory;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityChargepad;
 import mekanism.common.tileentity.TileEntityChemicalFormulator;
+import mekanism.common.tileentity.TileEntityChemicalInfuser;
 import mekanism.common.tileentity.TileEntityCombiner;
 import mekanism.common.tileentity.TileEntityCrusher;
 import mekanism.common.tileentity.TileEntityDigitalMiner;
@@ -271,19 +276,24 @@ public class ClientProxy extends CommonProxy
 		//Register entity rendering handlers
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
+		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
 		
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
 		
-		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlock2ID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlock2ID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon.itemID, handler);
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
@@ -305,51 +315,51 @@ public class ClientProxy extends CommonProxy
 			case 1:
 				return new GuiCredits();
 			case 2:
-				return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)tileEntity);
+				return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
 			case 3:
-				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine)tileEntity);
+				return new GuiEnrichmentChamber(player.inventory, (TileEntityElectricMachine) tileEntity);
 			case 4:
-				return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
 			case 5:
-				return new GuiCombiner(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiCombiner(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
 			case 6:
-				return new GuiCrusher(player.inventory, (TileEntityElectricMachine)tileEntity);
+				return new GuiCrusher(player.inventory, (TileEntityElectricMachine) tileEntity);
 			case 7:
-				return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator)tileEntity);
+				return new GuiRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator) tileEntity);
 			case 8:
-				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
+				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube) tileEntity);
 			case 9:
-				return new GuiConfiguration(player, (IInvConfiguration)tileEntity);
+				return new GuiConfiguration(player, (IInvConfiguration) tileEntity);
 			case 10:
-				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
+				return new GuiGasTank(player.inventory, (TileEntityGasTank) tileEntity);
 			case 11:
-				return new GuiFactory(player.inventory, (TileEntityFactory)tileEntity);
+				return new GuiFactory(player.inventory, (TileEntityFactory) tileEntity);
 			case 12:
-				return new GuiMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser)tileEntity);
+				return new GuiMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser) tileEntity);
 			case 13:
-				return new GuiTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
+				return new GuiTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
 			case 14:
 				ItemStack itemStack = player.getCurrentEquippedItem();
-				
-				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
+
+				if (itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
 					return new GuiPortableTeleporter(player, itemStack);
 				}
 			case 15:
-				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
 			case 16:
-				return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine)tileEntity);
+				return new GuiEnergizedSmelter(player.inventory, (TileEntityElectricMachine) tileEntity);
 			case 17:
-				return new GuiElectricPump(player.inventory, (TileEntityElectricPump)tileEntity);
+				return new GuiElectricPump(player.inventory, (TileEntityElectricPump) tileEntity);
 			case 18:
-				return new GuiDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
+				return new GuiDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
 			case 19:
-				return new GuiPasswordEnter((TileEntityElectricChest)tileEntity);
+				return new GuiPasswordEnter((TileEntityElectricChest) tileEntity);
 			case 20:
-				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
+				return new GuiPasswordModify((TileEntityElectricChest) tileEntity);
 			case 21:
-				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
-				
+				EntityRobit robit = (EntityRobit) world.getEntityByID(x);
+
 				if(robit != null)
 				{
 					return new GuiRobitMain(player.inventory, robit);
@@ -357,15 +367,15 @@ public class ClientProxy extends CommonProxy
 			case 22:
 				return new GuiRobitCrafting(player.inventory, world, x);
 			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
-				
+				EntityRobit robit1 = (EntityRobit) world.getEntityByID(x);
+
 				if(robit1 != null)
 				{
 					return new GuiRobitInventory(player.inventory, robit1);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
-				
+				EntityRobit robit2 = (EntityRobit) world.getEntityByID(x);
+
 				if(robit2 != null)
 				{
 					return new GuiRobitSmelting(player.inventory, robit2);
@@ -373,7 +383,11 @@ public class ClientProxy extends CommonProxy
 			case 25:
 				return new GuiRobitRepair(player.inventory, world, x);
 			case 29:
-				return new GuiChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
+				return new GuiChemicalFormulator(player.inventory, (TileEntityChemicalFormulator) tileEntity);
+			case 30:
+				return new GuiChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
+			case 31:
+				return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
 		}
 		
 		return null;

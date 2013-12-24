@@ -43,7 +43,6 @@ public class RenderBalloon extends Render
 		GL11.glRotatef(180, 1, 0, 0);
 		GL11.glTranslatef(0, 0.9F, 0);
 		
-		
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png"));
 		
 		model.render(0.0625F, color);
