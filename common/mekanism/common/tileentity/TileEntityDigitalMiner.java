@@ -86,6 +86,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public double prevEnergy;
 	
+	public int delayTicks;
+	
 	public boolean initCalc = false;
 	
 	/** This machine's current RedstoneControl type. */
@@ -209,7 +211,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 			
-			if(doEject && getTopEject(false, null) != null && getEjectInv() != null)
+			if(doEject && delayTicks == 0 && getTopEject(false, null) != null && getEjectInv() != null)
 			{
 				if(getEjectInv() instanceof IInventory)
 				{
@@ -220,12 +222,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				else if(getEjectInv() instanceof ILogisticalTransporter)
 				{
 					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (ILogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true, 0);
-					
+					System.out.println(rejected + " " + (rejected != null ? rejected.stackSize : 0));
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{
 						getTopEject(true, rejected);
 					}
 				}
+				
+				delayTicks = 10;
+			}
+			else if(delayTicks > 0)
+			{
+				delayTicks--;
 			}
 			
 			if(playersUsing.size() > 0)

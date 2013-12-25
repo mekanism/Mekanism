@@ -417,12 +417,12 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = original;
 		stack.color = color;
 		
+		ItemStack rejected = stack.recalculatePath(this, min);
+		
 		if(!canReceiveFrom(original.getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
-		
-		ItemStack rejected = stack.recalculatePath(this, min);
 		
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
@@ -447,12 +447,12 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
+		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
+		
 		if(!canReceiveFrom(outputter, ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
 		{
 			return itemStack;
 		}
-		
-		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
 		
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
@@ -786,6 +786,18 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		}
 		
 		return getConnectionType(side) == ConnectionType.NORMAL;
+	}
+	
+	@Override
+	public void onRemoved()
+	{
+		if(!world().isRemote)
+		{
+			for(TransporterStack stack : transit)
+    		{
+    			TransporterUtils.drop(this, stack);
+    		}
+		}
 	}
 	
 	@Override
