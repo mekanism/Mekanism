@@ -59,7 +59,22 @@ public class BlockGasTank extends BlockContainer
         }
         
         tileEntity.setFacing((short)change);
+        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
     }
+	
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	{
+		if(!world.isRemote)
+		{
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+			}
+		}
+	}
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)

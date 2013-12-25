@@ -34,4 +34,10 @@ public interface IRedstoneControl
 	 * @param type - RedstoneControl type to set
 	 */
 	public void setControlType(RedstoneControl type);
+	
+	/**
+	 * If the block is getting powered or not by redstone (indirectly).
+	 * @return if the block is getting powered indirectly
+	 */
+	public boolean isPowered();
 }

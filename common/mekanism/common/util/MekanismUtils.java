@@ -1071,11 +1071,11 @@ public final class MekanismUtils
     	}
     	else if(control.getControlType() == RedstoneControl.HIGH)
     	{
-    		return world.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+    		return control.isPowered();
     	}
     	else if(control.getControlType() == RedstoneControl.LOW)
     	{
-    		return !world.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+    		return !control.isPowered();
     	}
     	
     	return false;

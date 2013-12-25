@@ -215,6 +215,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         }
         
         tileEntity.setFacing((short)change);
+        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
         
         if(tileEntity instanceof IBoundingBlock)
         {
@@ -787,11 +788,18 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		if(!world.isRemote)
 		{
-			if(world.getBlockTileEntity(x, y, z) instanceof TileEntityLogisticalSorter)
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				TileEntityLogisticalSorter tileEntity = (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+			}
+			
+			if(tileEntity instanceof TileEntityLogisticalSorter)
+			{
+				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
 				
-        		if(!tileEntity.hasInventory())
+        		if(!sorter.hasInventory())
         		{
 		        	for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 					{
@@ -799,7 +807,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		
 						if(tile instanceof IInventory)
 						{
-							tileEntity.setFacing((short)dir.getOpposite().ordinal());
+							sorter.setFacing((short)dir.getOpposite().ordinal());
 							return;
 						}
 					}

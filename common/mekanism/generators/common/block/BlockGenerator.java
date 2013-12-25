@@ -70,6 +70,20 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	public void registerIcons(IconRegister register) {}
 	
 	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	{
+		if(!world.isRemote)
+		{
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+			}
+		}
+	}
+	
+	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
@@ -130,6 +144,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
         }
         
         tileEntity.setFacing((short)change);
+        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
         
         if(tileEntity instanceof IBoundingBlock)
         {

@@ -35,6 +35,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	/** A timer used to send packets to clients. */
 	public int ticker;
 	
+	public boolean redstone = false;
+	
 	public boolean doAutoSync = true;
 	
 	public List<ITileComponent> components = new ArrayList<ITileComponent>();
@@ -67,6 +69,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		facing = dataStream.readInt();
+		redstone = dataStream.readBoolean();
 		
 		if(clientFacing != facing)
 		{
@@ -85,6 +88,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public ArrayList getNetworkedData(ArrayList data)
 	{	
 		data.add(facing);
+		data.add(redstone);
 		
 		for(ITileComponent component : components)
 		{
@@ -115,10 +119,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
     {
         super.readFromNBT(nbtTags);
         
-        if(nbtTags.hasKey("facing"))
-        {
-        	facing = nbtTags.getInteger("facing");
-        }
+    	facing = nbtTags.getInteger("facing");
+    	redstone = nbtTags.getBoolean("redstone");
         
         for(ITileComponent component : components)
         {
@@ -132,6 +134,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
         super.writeToNBT(nbtTags);
         
         nbtTags.setInteger("facing", facing);
+        nbtTags.setBoolean("redstone", redstone);
         
         for(ITileComponent component : components)
         {
@@ -161,7 +164,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(facing != clientFacing)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}
@@ -193,5 +196,24 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
 		return getBlockType().getPickBlock(null, worldObj, xCoord, yCoord, zCoord);
+	}
+	
+	public boolean isPowered()
+	{
+		return redstone;
+	}
+	
+	public void onNeighborChange(int x, int y, int z, int id)
+	{
+		if(!worldObj.isRemote)
+		{
+			boolean power = worldObj.isBlockIndirectlyGettingPowered(x, y, z);
+			
+			if(redstone != power)
+			{
+				redstone = power;
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+			}
+		}
 	}
 }

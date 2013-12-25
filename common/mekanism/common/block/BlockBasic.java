@@ -82,11 +82,16 @@ public class BlockBasic extends Block
 	{
 		if(!world.isRemote)
 		{
-			if(id == blockID && world.getBlockTileEntity(x, y, z) instanceof TileEntityDynamicTank)
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(id == blockID && tileEntity instanceof TileEntityDynamicTank)
 			{
-				TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
-				
-				dynamicTank.update();
+				((TileEntityDynamicTank)tileEntity).update();
+			}
+			
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
 			}
 		}
 	}
@@ -582,6 +587,7 @@ public class BlockBasic extends Block
 	        }
 	        
 	        tileEntity.setFacing((short)change);
+	        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
 	        
 	        if(tileEntity instanceof IBoundingBlock)
 	        {

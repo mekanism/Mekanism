@@ -16,6 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tileentity.TileEntityBasicBlock;
+import mekanism.common.tileentity.TileEntityDynamicTank;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.tileentity.TileEntityEnergyCube;
 import net.minecraft.block.BlockContainer;
@@ -63,6 +64,20 @@ public class BlockEnergyCube extends BlockContainer
 	public void registerIcons(IconRegister register) {}
 	
 	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	{
+		if(!world.isRemote)
+		{
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+			}
+		}
+	}
+	
+	@Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
@@ -89,6 +104,7 @@ public class BlockEnergyCube extends BlockContainer
         }
         
         tileEntity.setFacing((short)change);
+        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
     }
     
     @Override
