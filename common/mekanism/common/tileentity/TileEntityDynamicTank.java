@@ -158,12 +158,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				update();
 			}
 			
-			if(structure != null && isRendering && ticker % 20 == 0)
-			{
-				sendStructure = true;
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
-			}
-			
 			if(prevStructure != (structure != null))
 			{
 				if(structure != null && !structure.hasRenderer)
@@ -203,13 +197,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 				manageInventory();
 			}
 		}
-	}
-	
-	@Override
-	public void validate()
-	{
-		//no super for no packets!
-		tileEntityInvalid = false;
 	}
 	
 	public void manageInventory()
