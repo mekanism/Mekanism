@@ -71,18 +71,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	
 	public void open(EntityPlayer player)
 	{
-		openedThisTick.add(player);
 		playersUsing.add(player);
 	}
 	
 	public void close(EntityPlayer player)
 	{
-		if(!openedThisTick.contains(player))
-		{
-			playersUsing.remove(player);
-		}
-		
-		openedThisTick.remove(player);
+		playersUsing.remove(player);
 	}
 	
 	@Override

@@ -411,18 +411,20 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
+		ForgeDirection from = Coord4D.get(tile()).sideDifference(original).getOpposite();
+		
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
 		stack.homeLocation = original;
 		stack.color = color;
 		
-		ItemStack rejected = stack.recalculatePath(this, min);
-		
-		if(!canReceiveFrom(original.getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
+		if(!canReceiveFrom(original.getTileEntity(world()), from) || !stack.canInsertToTransporter(tile(), from))
 		{
 			return itemStack;
 		}
+		
+		ItemStack rejected = stack.recalculatePath(this, min);
 		
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
@@ -441,18 +443,20 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
+		ForgeDirection from = Coord4D.get(tile()).sideDifference(Coord4D.get(outputter)).getOpposite();
+		
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = Coord4D.get(outputter);
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
 		
-		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
-		
-		if(!canReceiveFrom(outputter, ForgeDirection.getOrientation(stack.getSide(this))) || !stack.canInsertToTransporter(tile(), ForgeDirection.getOrientation(stack.getSide(this))))
+		if(!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(tile(), from))
 		{
 			return itemStack;
 		}
+		
+		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
 		
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
