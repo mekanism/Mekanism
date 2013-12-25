@@ -12,7 +12,7 @@ public class ContainerNull extends Container
 	{
 		tileEntity = tile;
 		
-		tileEntity.playersUsing.add(player);
+		tileEntity.open(player);
 		tileEntity.openChest();
 	}
 	
@@ -21,7 +21,7 @@ public class ContainerNull extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
     

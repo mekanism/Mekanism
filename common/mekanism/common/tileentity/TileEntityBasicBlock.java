@@ -29,6 +29,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	
 	public int clientFacing;
 	
+	public Set<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
+	
 	/** The players currently using this block. */
 	public Set<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 	
@@ -53,6 +55,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		
 		if(!worldObj.isRemote)
 		{
+			openedThisTick.clear();
+			
 			if(doAutoSync && playersUsing.size() > 0)
 			{
 				for(EntityPlayer player : playersUsing)
@@ -63,6 +67,22 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		}
 		
 		ticker++;
+	}
+	
+	public void open(EntityPlayer player)
+	{
+		openedThisTick.add(player);
+		playersUsing.add(player);
+	}
+	
+	public void close(EntityPlayer player)
+	{
+		if(!openedThisTick.contains(player))
+		{
+			playersUsing.remove(player);
+		}
+		
+		openedThisTick.remove(player);
 	}
 	
 	@Override

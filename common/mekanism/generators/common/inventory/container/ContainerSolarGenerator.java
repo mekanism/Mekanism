@@ -33,15 +33,16 @@ public class ContainerSolarGenerator extends Container
         }
         
         tileEntity.openChest();
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
     }
     
     @Override
     public void onContainerClosed(EntityPlayer entityplayer)
     {
 		super.onContainerClosed(entityplayer);
+		
 		tileEntity.closeChest();
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
     }
 
 	@Override

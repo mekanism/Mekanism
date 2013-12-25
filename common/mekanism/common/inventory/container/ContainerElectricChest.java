@@ -27,7 +27,7 @@ public class ContainerElectricChest extends Container
         
         if(isBlock)
         {
-        	tileEntity.playersUsing.add(inventory.player);
+        	tileEntity.open(inventory.player);
         	tileEntity.openChest();
         }
         else {
@@ -78,7 +78,7 @@ public class ContainerElectricChest extends Container
 		
 		if(isBlock)
 		{
-			tileEntity.playersUsing.remove(entityplayer);
+			tileEntity.close(entityplayer);
 			tileEntity.closeChest();
 		}
 		else {

@@ -36,7 +36,7 @@ public class ContainerHydrogenGenerator extends Container
         }
         
         tileEntity.openChest();
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class ContainerHydrogenGenerator extends Container
     {
 		super.onContainerClosed(entityplayer);
 		tileEntity.closeChest();
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
     }
 
 	@Override
