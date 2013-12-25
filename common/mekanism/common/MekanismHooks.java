@@ -85,15 +85,7 @@ public final class MekanismHooks
 					{
 						boolean did = false;
 						
-						if(name.startsWith("ore"))
-						{
-							if(!Recipe.ENRICHMENT_CHAMBER.containsRecipe(entry.getKey().getInputs().get(0)))
-							{
-								RecipeHandler.addEnrichmentChamberRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
-								did = true;
-							}
-						}
-						else if(name.startsWith("ingot"))
+						if(name.startsWith("ingot"))
 						{
 							if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
 							{
