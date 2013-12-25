@@ -18,7 +18,7 @@ public class TOreDictFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		String oreKey = MekanismUtils.getOreDictName(itemStack);
+		String oreKey = MekanismUtils.getName(itemStack);
 		
 		if(oreKey == null)
 		{
