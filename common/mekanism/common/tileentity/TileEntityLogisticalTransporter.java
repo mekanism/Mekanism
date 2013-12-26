@@ -570,13 +570,13 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	}
 	
 	@Override
-	public boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side)
+	public boolean canConnect(ForgeDirection side)
 	{
 		return true;
 	}
 	
 	@Override
-	public boolean canTransporterConnectMutual(TileEntity tileEntity, ForgeDirection side)
+	public boolean canConnectMutual(ForgeDirection side)
 	{
 		return true;
 	}
@@ -584,7 +584,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	@Override
 	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!canTransporterConnect(tileEntity, side))
+		if(!canConnect(side))
 		{
 			return false;
 		}
@@ -595,7 +595,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	@Override
 	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!canTransporterConnect(tileEntity, side))
+		if(!canConnect(side))
 		{
 			return false;
 		}

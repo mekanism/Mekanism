@@ -108,6 +108,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public byte getPossibleTransmitterConnections()
 	{
 		byte connections = 0x00;
+		
+		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		{
+			return connections;
+		}
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -119,7 +124,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				{
 					ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 					
-					if(canTransporterConnectMutual(tileEntity, side) && (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()))
+					if(getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor())
 					{
 						connections |= 1 << side.ordinal();
 					}
@@ -747,34 +752,9 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 	
 	@Override
-	public boolean canTransporterConnect(TileEntity tileEntity, ForgeDirection side)
-	{
-		return canConnect(side);
-	}
-	
-	@Override
-	public boolean canTransporterConnectMutual(TileEntity tileEntity, ForgeDirection side)
-	{
-		if(!canTransporterConnect(tileEntity, side))
-		{
-			return false;
-		}
-		
-		if(tileEntity instanceof ILogisticalTransporter)
-		{
-			if(!((ILogisticalTransporter)tileEntity).canTransporterConnect(tile(), side.getOpposite()))
-			{
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	@Override
 	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!canTransporterConnect(tileEntity, side))
+		if(!canConnect(side))
 		{
 			return false;
 		}
@@ -785,7 +765,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(!canTransporterConnect(tileEntity, side))
+		if(!canConnect(side))
 		{
 			return false;
 		}
@@ -796,6 +776,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public void onRemoved()
 	{
+		super.onRemoved();
+		
 		if(!world().isRemote)
 		{
 			for(TransporterStack stack : transit)
