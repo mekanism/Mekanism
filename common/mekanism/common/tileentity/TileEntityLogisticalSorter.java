@@ -3,8 +3,8 @@ package mekanism.common.tileentity;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
@@ -13,6 +13,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.transporter.Finder.FreeFinder;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.transporter.TransporterFilter;
@@ -118,7 +119,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(!hasFilter && autoEject)
 					{
-						inInventory = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal());
+						inInventory = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), new FreeFinder());
 					}
 					
 					if(inInventory != null && inInventory.getStack() != null)

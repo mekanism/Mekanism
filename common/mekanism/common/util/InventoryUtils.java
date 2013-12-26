@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.transporter.Finder;
 import mekanism.common.transporter.InvStack;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -225,7 +226,7 @@ public final class InventoryUtils
 		{			
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) 
 			{
-				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).isItemEqual(type)) 
+				if(inventory.getStackInSlot(i) != null && StackUtils.equalsWildcard(inventory.getStackInSlot(i), type)) 
 				{
 					ItemStack stack = inventory.getStackInSlot(i);
 					int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
@@ -257,7 +258,7 @@ public final class InventoryUtils
 				{
 					int slotID = slots[get];
 	
-					if(sidedInventory.getStackInSlot(slotID) != null && inventory.getStackInSlot(slotID).isItemEqual(type)) 
+					if(sidedInventory.getStackInSlot(slotID) != null && StackUtils.equalsWildcard(inventory.getStackInSlot(slotID), type)) 
 					{
 						ItemStack stack = sidedInventory.getStackInSlot(slotID);
 						int current = ret.getStack() != null ? ret.getStack().stackSize : 0;
@@ -298,7 +299,7 @@ public final class InventoryUtils
 		return null;
 	}
 
-	public static InvStack takeTopStack(IInventory inventory, int side) 
+	public static InvStack takeTopStack(IInventory inventory, int side, Finder id) 
 	{
 		inventory = checkChestInv(inventory);
 		
@@ -306,7 +307,7 @@ public final class InventoryUtils
 		{	
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--) 
 			{
-				if(inventory.getStackInSlot(i) != null) 
+				if(inventory.getStackInSlot(i) != null && id.modifies(inventory.getStackInSlot(i))) 
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					return new InvStack(inventory, i, toSend);
@@ -323,7 +324,7 @@ public final class InventoryUtils
 				{
 					int slotID = slots[get];
 	
-					if(sidedInventory.getStackInSlot(slotID) != null) 
+					if(sidedInventory.getStackInSlot(slotID) != null && id.modifies(sidedInventory.getStackInSlot(slotID))) 
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 	

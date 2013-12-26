@@ -478,7 +478,7 @@ public final class MekanismUtils
         {
         	for(ItemStack stack : entry.getValue())
         	{
-        		if(stack.isItemEqual(check))
+        		if(StackUtils.equalsWildcard(stack, check))
         		{
         			idsFound.add(entry.getKey());
         			break;

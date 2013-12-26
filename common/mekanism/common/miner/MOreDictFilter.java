@@ -1,10 +1,8 @@
 package mekanism.common.miner;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import mekanism.common.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,48 +21,7 @@ public class MOreDictFilter extends MinerFilter
 			return false;
 		}
 		
-		if(oreDictName.equals("*") && itemStack.itemID != Block.bedrock.blockID)
-		{
-			return true;
-		}
-		
-		List<String> oreKeys = MekanismUtils.getOreDictName(itemStack);
-		
-		if(oreKeys.isEmpty())
-		{
-			return false;
-		}
-		
-		for(String oreKey : oreKeys)
-		{
-			if(oreDictName.equals(oreKey))
-			{
-				return true;
-			}
-			else if(oreDictName.endsWith("*") && !oreDictName.startsWith("*"))
-			{
-				if(oreKey.startsWith(oreDictName.substring(0, oreDictName.length()-1)))
-				{
-					return true;
-				}
-			}
-			else if(oreDictName.startsWith("*") && !oreDictName.endsWith("*"))
-			{
-				if(oreKey.endsWith(oreDictName.substring(1)))
-				{
-					return true;
-				}
-			}
-			else if(oreDictName.startsWith("*") && oreDictName.endsWith("*"))
-			{
-				if(oreKey.contains(oreDictName.substring(1, oreDictName.length()-1)))
-				{
-					return true;
-				}
-			}
-		}
-		
-		return false;
+		return new OreDictFinder(oreDictName).modifies(itemStack);
 	}
 	
 	@Override
