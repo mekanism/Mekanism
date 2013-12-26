@@ -59,7 +59,11 @@ public enum Direction {
 		coords[dir/2] += getSign();
 
 		if (tileEntity.worldObj != null && tileEntity.worldObj.blockExists(coords[0], coords[1], coords[2])) {
-			return tileEntity.worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]);
+			try {
+				return tileEntity.worldObj.getBlockTileEntity(coords[0], coords[1], coords[2]);
+			} catch (Exception e) {
+				throw new RuntimeException("error getting TileEntity at dim "+tileEntity.worldObj.provider.dimensionId+" "+coords[0]+"/"+coords[1]+"/"+coords[2]);
+			}
 		} else {
 			return null;
 		}
