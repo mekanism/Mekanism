@@ -29,14 +29,14 @@ public class MekanismClient extends Mekanism
 	
 	public static long ticksPassed = 0;
 	
-	public static void updateKey(int key)
+	public static void updateKey(int key, int type)
 	{
 		boolean down = Minecraft.getMinecraft().currentScreen == null ? Keyboard.isKeyDown(key) : false;
 		
-		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, key))
+		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketKey().setParams(key, down));
-			keyMap.update(Minecraft.getMinecraft().thePlayer, key, down);
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketKey().setParams(type, down));
+			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
 		}
 	}
 }

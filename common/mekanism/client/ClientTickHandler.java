@@ -12,6 +12,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
+import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
@@ -350,8 +351,8 @@ public class ClientTickHandler implements ITickHandler
 			
 			if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
 			{
-				MekanismClient.updateKey(Keyboard.KEY_SPACE);
-				MekanismClient.updateKey(Keyboard.KEY_LSHIFT);
+				MekanismClient.updateKey(mc.gameSettings.keyBindJump.keyCode, KeySync.ASCEND);
+				MekanismClient.updateKey(mc.gameSettings.keyBindSneak.keyCode, KeySync.DESCEND);
 			}
 			
 			if(isJetpackOn(mc.thePlayer))
