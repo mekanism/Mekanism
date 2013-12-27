@@ -604,7 +604,7 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	}
 	
 	@Override
-	public int getPriority()
+	public int getCost()
 	{
 		return 1;
 	}

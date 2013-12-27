@@ -48,7 +48,7 @@ public final class TransporterPathfinder
 			
 			currentPath.add(pointer);
 			
-			dist += ((ILogisticalTransporter)pointer.getTileEntity(worldObj)).getPriority();
+			dist += ((ILogisticalTransporter)pointer.getTileEntity(worldObj)).getCost();
 			
 			boolean found = false;
 			
@@ -421,7 +421,7 @@ public final class TransporterPathfinder
 						TileEntity tile = neighbor.getTileEntity(worldObj);
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 						
-						tentativeG += ((ILogisticalTransporter)tile).getPriority();
+						tentativeG += ((ILogisticalTransporter)tile).getCost();
 
 						if(closedSet.contains(neighbor)) 
 						{

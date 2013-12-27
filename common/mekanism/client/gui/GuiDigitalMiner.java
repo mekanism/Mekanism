@@ -326,6 +326,7 @@ public class GuiDigitalMiner extends GuiMekanism
 						if(stack.itemID != Block.bedrock.blockID)
 						{
 							toUse = stack.copy();
+							toUse.stackSize = 1;
 						}
 					}
 				}
@@ -334,7 +335,7 @@ public class GuiDigitalMiner extends GuiMekanism
 					doNull = true;
 				}
 				
-				if(stack != null || doNull)
+				if(toUse != null || doNull)
 				{
 					ArrayList data = new ArrayList();
 					data.add(2);
@@ -342,8 +343,8 @@ public class GuiDigitalMiner extends GuiMekanism
 					if(stack != null)
 					{
 						data.add(false);
-						data.add(stack.itemID);
-						data.add(stack.getItemDamage());
+						data.add(toUse.itemID);
+						data.add(toUse.getItemDamage());
 					}
 					else {
 						data.add(true);

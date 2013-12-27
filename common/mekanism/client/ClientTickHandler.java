@@ -114,7 +114,7 @@ public class ClientTickHandler implements ITickHandler
 			}
 		}
 		
-		if(mc.theWorld != null)
+		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
 		{
 			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.thePlayer != null)
 			{

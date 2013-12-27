@@ -27,5 +27,5 @@ public interface ILogisticalTransporter extends IBlockableConnection
 	
 	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side);
 	
-	public int getPriority();
+	public int getCost();
 }

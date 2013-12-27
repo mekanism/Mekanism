@@ -788,7 +788,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 	
 	@Override
-	public int getPriority()
+	public int getCost()
 	{
 		return 1;
 	}
