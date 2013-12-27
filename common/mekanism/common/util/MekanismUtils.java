@@ -612,7 +612,7 @@ public final class MekanismUtils
      */
     public static int getTicks(int speedUpgrade, int def)
     {
-        return (int)(def * Math.pow(Mekanism.upgradeModifier, (-speedUpgrade/(double)(Mekanism.upgradeModifier-1))));
+        return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -speedUpgrade/8.0));
     }
     
     /**
@@ -624,7 +624,7 @@ public final class MekanismUtils
      */
     public static double getEnergyPerTick(int speedUpgrade, int energyUpgrade, double def)
     {
-        return def * Math.pow(Mekanism.upgradeModifier, ((speedUpgrade-energyUpgrade)/(double)(Mekanism.upgradeModifier-1)));
+        return def * Math.pow(Mekanism.maxUpgradeMultiplier, (speedUpgrade-energyUpgrade)/8.0);
     }
     
     /**
@@ -635,7 +635,7 @@ public final class MekanismUtils
      */
     public static double getMaxEnergy(int energyUpgrade, double def)
     {
-        return def * Math.pow(Mekanism.upgradeModifier, (energyUpgrade/(double)(Mekanism.upgradeModifier-1)));
+        return def * Math.pow(Mekanism.maxUpgradeMultiplier, energyUpgrade/8.0);
     }
     
     /**
