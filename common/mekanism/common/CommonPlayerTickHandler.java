@@ -110,12 +110,10 @@ public class CommonPlayerTickHandler implements ITickHandler
 					else {
 						if(Mekanism.keyMap.has(player, KeySync.ASCEND))
 						{
-							System.out.println("ASCEND");
 							player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
 						}
 						else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
 						{
-							System.out.println("DESCEND");
 							player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
 						}
 					}
