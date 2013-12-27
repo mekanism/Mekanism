@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.Configuration;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -49,7 +48,7 @@ public class PacketConfigSync implements IMekanismPacket
 	  	Mekanism.TO_BC = dataStream.readDouble();
 	  	Mekanism.ENERGY_PER_REDSTONE = dataStream.readDouble();
 	  	Mekanism.VOICE_PORT = dataStream.readInt();
-	  	Mekanism.upgradeModifier = dataStream.readInt();
+	  	Mekanism.maxUpgradeMultiplier = dataStream.readInt();
 	  	
 	  	Mekanism.TO_TE = Mekanism.TO_BC*10;
 	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;
@@ -97,7 +96,7 @@ public class PacketConfigSync implements IMekanismPacket
 	  	dataStream.writeDouble(Mekanism.TO_BC);
 	  	dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
 	  	dataStream.writeInt(Mekanism.VOICE_PORT);
-	  	dataStream.writeInt(Mekanism.upgradeModifier);
+	  	dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
 	  	
 	  	dataStream.writeDouble(Mekanism.enrichmentChamberUsage);
 		dataStream.writeDouble(Mekanism.osmiumCompressorUsage);

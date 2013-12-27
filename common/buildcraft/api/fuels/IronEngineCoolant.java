@@ -29,7 +29,7 @@ public final class IronEngineCoolant {
 	}
 
 	public static Coolant getCoolant(FluidStack fluidStack) {
-		return fluidStack != null ? liquidCoolants.get(fluidStack.getFluid().getName()) : null;
+		return fluidStack != null && fluidStack.getFluid() != null ? liquidCoolants.get(fluidStack.getFluid().getName()) : null;
 	}
 
 	private IronEngineCoolant() {

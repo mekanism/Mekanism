@@ -1,6 +1,5 @@
 package mekanism.common.multipart;
 
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import net.minecraft.world.World;
 import codechicken.lib.vec.BlockCoord;
@@ -28,6 +27,7 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IGridTransmitter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ILogisticalTransporter");
 		MultipartGenerator.registerPassThroughInterface("ic2.api.energy.tile.IEnergySink");
+		MultipartGenerator.registerPassThroughInterface("buildcraft.api.power.IPowerReceptor");
 		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ITileNetwork");

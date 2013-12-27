@@ -1,15 +1,17 @@
 package buildcraft.api.filler;
 
-import net.minecraft.inventory.IInventory;
+import buildcraft.api.gates.IAction;
+import java.util.Set;
 
 public interface IFillerRegistry {
 
-	public void addRecipe(IFillerPattern pattern, Object aobj[]);
+	public void addPattern(IFillerPattern pattern);
 
-	public IFillerPattern findMatchingRecipe(IInventory inventorycrafting);
+	public IFillerPattern getPattern(String patternName);
 
-	public int getPatternNumber(IFillerPattern pattern);
+	public IFillerPattern getNextPattern(IFillerPattern currentPattern);
 
-	public IFillerPattern getPattern(int n);
-
+	public IFillerPattern getPreviousPattern(IFillerPattern currentPattern);
+	
+	public Set<? extends IAction> getActions();
 }

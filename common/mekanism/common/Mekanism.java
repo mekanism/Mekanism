@@ -265,7 +265,7 @@ public class Mekanism
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;	
 	public static int VOICE_PORT = 36123;
-	public static int upgradeModifier = 10;
+	public static int maxUpgradeMultiplier = 10;
 	public static double ENERGY_PER_REDSTONE = 10000;
 	
 	public static double TO_IC2;
@@ -606,7 +606,7 @@ public class Mekanism
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
         
         //Chemical Injection Chamber Recipes
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Shard, 3, 6));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Shard, 3, 6));
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Item.ingotIron)), new ItemStack(EnrichedIron));

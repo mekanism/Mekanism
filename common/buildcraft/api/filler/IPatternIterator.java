@@ -6,19 +6,15 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.power;
+package buildcraft.api.filler;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.item.ItemStack;
 
 /**
- * Essentially only used for Wooden Power Pipe connection rules.
- *
- * This Tile Entity interface allows you to indicate that a block can emit power
- * from a specific side.
  *
  * @author CovertJaguar <http://www.railcraft.info/>
  */
-public interface IPowerEmitter {
+public interface IPatternIterator {
 
-	public boolean canEmitPowerFrom(ForgeDirection side);
+	public boolean iteratePattern(ItemStack stackToPlace);
 }
