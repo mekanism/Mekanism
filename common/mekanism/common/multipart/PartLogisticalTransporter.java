@@ -417,6 +417,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
+		return insert_do(original, itemStack, color, doEmit, min, false);
+	}
+	
+	private ItemStack insert_do(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min, boolean force)
+	{
 		ForgeDirection from = Coord4D.get(tile()).sideDifference(original).getOpposite();
 		
 		TransporterStack stack = new TransporterStack();
@@ -425,7 +430,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		stack.homeLocation = original;
 		stack.color = color;
 		
-		if(!canReceiveFrom(original.getTileEntity(world()), from) || !stack.canInsertToTransporter(tile(), from))
+		if((force && !canReceiveFrom(original.getTileEntity(world()), from)) || !stack.canInsertToTransporter(tile(), from))
 		{
 			return itemStack;
 		}
@@ -436,10 +441,14 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
 			
-			transit.add(stack);
-			TransporterManager.add(stack);
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
-			MekanismUtils.saveChunk(tile());
+			if(doEmit)
+			{
+				transit.add(stack);
+				TransporterManager.add(stack);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
+				MekanismUtils.saveChunk(tile());
+			}
+			
 			return rejected;
 		}
 		
@@ -468,10 +477,14 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
 			
-			transit.add(stack);
-			TransporterManager.add(stack);
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
-			MekanismUtils.saveChunk(tile());
+			if(doEmit)
+			{
+				transit.add(stack);
+				TransporterManager.add(stack);
+				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
+				MekanismUtils.saveChunk(tile());
+			}
+			
 			return rejected;
 		}
 		
