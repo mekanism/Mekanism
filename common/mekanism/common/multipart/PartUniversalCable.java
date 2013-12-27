@@ -15,25 +15,40 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import buildcraft.api.power.IPowerReceptor;
+import buildcraft.api.power.PowerHandler;
+import buildcraft.api.power.PowerHandler.PowerReceiver;
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergySink, IEnergyHandler
+public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergySink, IEnergyHandler, IPowerReceptor
 {
+	/** A fake power handler used to initiate energy transfer calculations. */
+	public PowerHandler powerHandler;
+	
     public static TransmitterIcons cableIcons;
     
     public double currentPower = 0;
     
     public double cacheEnergy = 0;
     public double lastWrite = 0;
+    
+	public PartUniversalCable()
+	{
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configurePowerPerdition(0, 0);
+		powerHandler.configure(0, 0, 0, 0);
+	}
 
     @Override
     public void update()
@@ -57,6 +72,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         
         super.update();
     }
+    
+	@Override
+	public void refreshTransmitterNetwork()
+	{
+		super.refreshTransmitterNetwork();
+		
+		reconfigure();
+	}
     
     @Override
     public TransmitterType getTransmitter()
@@ -326,5 +349,46 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	public void setEnergy(double energy)
 	{
 		getTransmitterNetwork().electricityStored = energy;
+	}
+	
+	@Override
+	public PowerReceiver getPowerReceiver(ForgeDirection side) 
+	{
+		if(getTransmitterNetwork().getEnergyNeeded() == 0)
+		{
+			return null;
+		}
+		
+		return powerHandler.getPowerReceiver();
+	}
+	
+	@Override
+	public World getWorld()
+	{
+		return world();
+	}
+	
+	private void reconfigure()
+	{
+		if(MekanismUtils.useBuildCraft())
+		{
+			float needed = (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_BC);
+			powerHandler.configure(1, needed, 0, needed);
+		}
+	}
+
+	@Override
+	public void doWork(PowerHandler workProvider) 
+	{
+		if(MekanismUtils.useBuildCraft())
+		{
+			if(powerHandler.getEnergyStored() > 0)
+			{
+				getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC);
+			}
+			
+			powerHandler.setEnergy(0);
+			reconfigure();
+		}
 	}
 }

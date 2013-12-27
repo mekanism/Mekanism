@@ -603,7 +603,7 @@ public class Mekanism
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.cobblestone), new ItemStack(Block.gravel));
         
         //Chemical Injection Chamber Recipes
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Shard, 3, 6));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Shard, 3, 6));
         
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Item.ingotIron)), new ItemStack(EnrichedIron));
