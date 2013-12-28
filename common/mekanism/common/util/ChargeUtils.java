@@ -84,7 +84,7 @@ public final class ChargeUtils
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack)));
 				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE)));
 				
-				storer.setEnergy(storer.getEnergy() - (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 		}
 	}
