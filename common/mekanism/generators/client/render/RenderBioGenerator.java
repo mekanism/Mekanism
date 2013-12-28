@@ -28,8 +28,6 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 	
 	private Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
 	
-	private static Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
-	
 	private static final int stages = 40;
 	
 	@Override
@@ -62,7 +60,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 			
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
+			bindTexture(MekanismRenderer.getBlocksTexture());
 			getDisplayList(ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 			
@@ -82,7 +80,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		
 		Model3D model3D = new Model3D();
 		model3D.baseBlock = Block.waterStill;
-		model3D.setTexture(renderIcon);
+		model3D.setTexture(MekanismRenderer.energyIcon);
 		
 		for(int i = 0; i < stages; i++)
 		{
