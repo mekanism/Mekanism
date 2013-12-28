@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -28,7 +29,7 @@ import cofh.api.energy.IEnergyHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerEmitter, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -156,7 +157,12 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public PowerReceiver getPowerReceiver(ForgeDirection side) 
 	{
-		return powerHandler.getPowerReceiver();
+		if(getConsumingSides().contains(side))
+		{
+			return powerHandler.getPowerReceiver();
+		}
+		
+		return null;
 	}
 	
 	protected void reconfigure()
@@ -317,7 +323,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return !getOutputtingSides().contains(side);
+		return getConsumingSides().contains(side);
 	}
 
 	@Override
@@ -349,5 +355,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     	setEnergy(getEnergy() + toUse);
     	
     	return amount-toUse;
+	}
+	
+	@Override
+	public boolean canEmitPowerFrom(ForgeDirection side) 
+	{
+		return getOutputtingSides().contains(side);
 	}
 }

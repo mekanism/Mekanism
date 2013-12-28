@@ -17,6 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.tileentity.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
@@ -132,7 +133,8 @@ public final class CableUtils
 			
 			if((outputter instanceof ICableOutputter && ((ICableOutputter)outputter).canOutputTo(orientation.getOpposite())) || 
 					(outputter instanceof IEnergySource && ((IEnergySource)outputter).emitsEnergyTo(tileEntity, orientation.getOpposite())) ||
-					(outputter instanceof IEnergyHandler && ((IEnergyHandler)outputter).canInterface(orientation.getOpposite())))
+					(outputter instanceof IEnergyHandler && ((IEnergyHandler)outputter).canInterface(orientation.getOpposite())) ||
+					(outputter instanceof IPowerEmitter && ((IPowerEmitter)outputter).canEmitPowerFrom(orientation.getOpposite())))
 			{
 				outputters[orientation.ordinal()] = outputter;
 			}
@@ -194,14 +196,11 @@ public final class CableUtils
     			return true;
     		}
     	}
-    	else if(tileEntity instanceof IPowerReceptor && !(tileEntity instanceof IGridTransmitter) && MekanismUtils.useBuildCraft())
+    	else if(tileEntity instanceof IPowerReceptor && MekanismUtils.useBuildCraft())
     	{
-    		if(!(tileEntity instanceof IEnergyAcceptor) || ((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(null, side.getOpposite()))
+    		if(((IPowerReceptor)tileEntity).getPowerReceiver(side.getOpposite()) != null)
     		{
-    			if(!(tileEntity instanceof IEnergySource) || ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite()))
-    			{
-    				return true;
-    			}
+    			return true;
     		}
     	}
     	
