@@ -394,12 +394,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				needsUpdate = true;
 			}
-			
-			lastPowerScale = currentPowerScale;
 
 			if(needsUpdate)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+				lastPowerScale = currentPowerScale;
 				needsUpdate = false;
 			}
 			

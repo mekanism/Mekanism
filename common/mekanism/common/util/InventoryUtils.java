@@ -168,7 +168,7 @@ public final class InventoryUtils
 		return toInsert;
 	}
 	
-	public static ItemStack takeTopItemFromInventory(IInventory inventory, int side)
+	public static InvStack takeTopItem(IInventory inventory, int side)
 	{
 		inventory = checkChestInv(inventory);
 		
@@ -181,9 +181,7 @@ public final class InventoryUtils
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					toSend.stackSize = 1;
 
-					inventory.decrStackSize(i, 1);
-
-					return toSend;
+					return new InvStack(inventory, i, toSend);
 				}
 			}
 		}
@@ -204,9 +202,7 @@ public final class InventoryUtils
 
 						if(sidedInventory.canExtractItem(slotID, toSend, side))
 						{
-							sidedInventory.decrStackSize(slotID, 1);
-
-							return toSend;
+							return new InvStack(inventory, slotID, toSend);
 						}
 					}
 				}

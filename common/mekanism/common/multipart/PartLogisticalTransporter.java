@@ -15,7 +15,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.transporter.Finder.FreeFinder;
+import mekanism.common.transporter.Finder.FirstFinder;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
@@ -368,7 +368,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				if(tile instanceof IInventory)
 				{
 					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopStack(inv, side.ordinal(), new FreeFinder());
+					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal());
 					
 					if(stack != null && stack.getStack() != null)
 					{

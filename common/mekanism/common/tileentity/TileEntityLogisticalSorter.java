@@ -13,7 +13,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.transporter.Finder.FreeFinder;
+import mekanism.common.transporter.Finder.FirstFinder;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.transporter.TransporterFilter;
@@ -119,7 +119,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					
 					if(!hasFilter && autoEject)
 					{
-						inInventory = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), new FreeFinder());
+						inInventory = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), new FirstFinder());
 					}
 					
 					if(inInventory != null && inInventory.getStack() != null)

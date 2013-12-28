@@ -10,7 +10,7 @@ public abstract class Finder
 {
 	public abstract boolean modifies(ItemStack stack);
 	
-	public static class FreeFinder extends Finder
+	public static class FirstFinder extends Finder
 	{
 		@Override
 		public boolean modifies(ItemStack stack)
