@@ -85,7 +85,7 @@ public class Coord4D
 	 */
 	public TileEntity getTileEntity(IBlockAccess world)
 	{
-		if(!(world instanceof World && exists((World)world)))
+		if(world instanceof World && !exists((World)world))
 		{
 			return null;
 		}
@@ -100,7 +100,7 @@ public class Coord4D
 	 */
 	public Block getBlock(IBlockAccess world)
 	{
-		if(!(world instanceof World && exists((World)world)))
+		if(world instanceof World && !exists((World)world))
 		{
 			return null;
 		}
