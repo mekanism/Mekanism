@@ -1,0 +1,9 @@
+tile.MachineBlock.EnergizedSmelter.name=Energised Smelter
+tile.Transmitter.PressurizedTube.name=Pressurised Tube
+item.MultipartTransmitter.PressurizedTube.name=Pressurised Tube
+gas.sulfuricGas=Sulphuric Gas
+gas.sulfuricAcid=Sulphuric Acid
+fluid.sulfuricGas=Liquid Sulphuric Gas
+fluid.sulfuricAcid=Liquid Sulphuric Acid
+tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
+tooltip.Chargepad=A universal chargepad that can charge any energised item !nfrom any mod.
