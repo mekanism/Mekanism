@@ -66,8 +66,9 @@ tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Ротационный конденсентратор
-tile.MachineBlock2.OxidationChamber.name=Химический формулятор
+tile.MachineBlock2.OxidationChamber.name=Камера окисления
 tile.MachineBlock2.ChemicalInfuser.name=Химический зарядник
+tile.MachineBlock2.ChemicalInjectionChamber.name=Инъекционная химическая камера
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Осмиевая руда
@@ -106,6 +107,7 @@ item.copperDust.name=Медная пыль
 item.tinDust.name=Оловянная пыль
 item.silverDust.name=Серебряная пыль
 item.leadDust.name=Свинцовая пыль
+item.sulfurDust.name=Серная пыль
 
 //Clumps
 item.ironClump.name=Железная глыба
@@ -116,6 +118,16 @@ item.tinClump.name=Оловянная глыба
 item.silverClump.name=Серебряная глыба
 item.obsidianClump.name=Обсидиановая глыба
 item.leadClump.name=Свинцовая глыба
+
+//Shards
+item.ironShard.name=Железный осколок
+item.goldShard.name=Золотой осколок
+item.osmiumShard.name=Осмиевый осколок
+item.copperShard.name=Медный осколок
+item.tinShard.name=Оловянный осколок
+item.silverShard.name=Серебряный осколок
+item.obsidianShard.name=Обсидиановый осколок
+item.leadShard.name=Свинцовый осколок
 
 //Dirty Dust
 item.dirtyIronDust.name=Грязная железная пыль
