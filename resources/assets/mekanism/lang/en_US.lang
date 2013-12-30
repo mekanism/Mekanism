@@ -66,7 +66,7 @@ tile.MachineBlock.DigitalMiner.name=Digital Miner
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
-tile.MachineBlock2.ChemicalFormulator.name=Chemical Formulator
+tile.MachineBlock2.OxidationChamber.name=Oxidation Chamber
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 
@@ -107,6 +107,7 @@ item.copperDust.name=Copper Dust
 item.tinDust.name=Tin Dust
 item.silverDust.name=Silver Dust
 item.leadDust.name=Lead Dust
+item.sulfurDust.name=Sulfur Dust
 
 //Clumps
 item.ironClump.name=Iron Clump
@@ -150,14 +151,14 @@ item.tinIngot.name=Tin Ingot
 //Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
-gas.sulfuricGas=Sulfuric Gas
-gas.sulfuricAcid=Sulfuric Acid
+gas.sulfuricGas=Sulfur Dioxide
+gas.sulfuricAcid=Aerosolized Sulfuric Acid
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
-fluid.sulfuricGas=Liquid Sulfuric Gas
-fluid.sulfuricAcid=Liquid Sulfuric Acid
+fluid.sulfuricGas=Liquid Sulfur Dioxide
+fluid.sulfuricAcid=Sulfuric Acid
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
