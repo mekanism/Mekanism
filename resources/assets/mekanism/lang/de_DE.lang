@@ -66,8 +66,9 @@ tile.MachineBlock.DigitalMiner.name=Digitalbergbaugerät
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotationskondensentrator
-tile.MachineBlock2.OxidationChamber.name=Chemischer Formulator
+tile.MachineBlock2.OxidationChamber.name=Oxidationskammer
 tile.MachineBlock2.ChemicalInfuser.name=Chemischer Infundierer
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chemische Injektionskammer
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -81,6 +82,13 @@ tile.Transmitter.MechanicalPipe.name=Mechanisches Rohr
 tile.Transmitter.LogisticalTransporter.name=Logistischer Transporter
 tile.Transmitter.RestrictiveTransporter.name=Restriktiver Transporter
 tile.Transmitter.DiversionTransporter.name=Diversionstransporter
+
+item.MultipartTransmitter.PressurizedTube.name=Druckröhre
+item.MultipartTransmitter.UniversalCable.name=Universelles Kabel
+item.MultipartTransmitter.MechanicalPipe.name=Mechanisches Rohr
+item.MultipartTransmitter.LogisticalTransporter.name=Logistischer Transporter
+item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiver Transporter
+item.MultipartTransmitter.DiversionTransporter.name=Diversionstransporter
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basisenergiewürfel
@@ -99,6 +107,7 @@ item.copperDust.name=Kupferstaub
 item.tinDust.name=Zinnstaub
 item.silverDust.name=Silberstaub
 item.leadDust.name=Bleistaub
+item.sulfurDust.name=Sschwefelstaub
 
 //Clumps
 item.ironClump.name=Eisenklumpen
@@ -109,6 +118,16 @@ item.tinClump.name=Zinnklumpen
 item.silverClump.name=Silberklumpen
 item.obsidianClump.name=Obsidianklumpen
 item.leadClump.name=Bleiklumpen
+
+//Shards
+item.ironShard.name=Eisensplitter
+item.goldShard.name=Goldsplitter
+item.osmiumShard.name=Osmiumsplitter
+item.copperShard.name=Kupfersplitter
+item.tinShard.name=Zinnsplitter
+item.silverShard.name=Silbersplitter
+item.obsidianShard.name=Obsidiansplitter
+item.leadShard.name=Bleisplitter
 
 //Dirty Dust
 item.dirtyIronDust.name=Dreckiger Eisenstaub
@@ -132,13 +151,13 @@ item.tinIngot.name=Zinnbarren
 //Gasses
 gas.hydrogen=Wasserstoff
 gas.oxygen=Sauerstoff
-gas.sulfuricGas=Schwefelgas
-gas.sulfuricAcid=Schwefelsäure
+gas.sulfuricGas=Schwefeldioxid
+gas.sulfuricAcid=Aerosolisierte Schwefelsäure
 
 //Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
 fluid.oxygen=Flüssiger Sauerstoff
-fluid.sulfuricGas=Schwefelgas
+fluid.sulfuricGas=Flüssiges Schwefeldioxid
 fluid.sulfuricAcid=Schwefelsäure
 
 //Gui text
@@ -172,6 +191,9 @@ gui.eject=Auswerfen
 gui.input=Input
 gui.slots=Slots
 gui.state=Status
+gui.on=An
+gui.off=Aus
+gui.filters=Filter
 
 gui.dictionary.noKey=Kein Key.
 gui.dictionary.key=Key
@@ -188,6 +210,7 @@ gui.factory.crushing=Zerstoßen
 gui.factory.compressing=Komprimieren
 gui.factory.combining=Kombinieren
 gui.factory.purifying=Purifizieren
+gui.factory.injecting=Injezieren
 gui.factory.autoSort=Auto-Sortieren
 
 gui.oredictFilter=OreDict-Filter
@@ -195,6 +218,7 @@ gui.oredictFilter.noKey=Keine Kennung eingegeben
 gui.oredictFilter.sameKey=Selbes Kennwort
 
 gui.itemFilter=Item-Filter
+gui.itemFilter.noItem=Kein Item
 gui.itemFilter.details=ItemStack-Details
 gui.itemFilter.min=Min
 gui.itemFilter.max=Max
@@ -225,7 +249,6 @@ gui.password.identical=Identisch
 gui.password.invalid=Ungültig
 gui.password=Passwort
 
-gui.logisticalSorter.filters=Filter
 gui.logisticalSorter.default=Standard
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Round-Robin
@@ -258,6 +281,8 @@ tooltip.configurator.noLink=Kein Link
 tooltip.configurator.linkMsg=Verbunden mit
 tooltip.configurator.dim=Dimension
 
+tooltip.balloon=Ballon
+
 tooltip.jetpack.regular=Regulär
 tooltip.jetpack.hover=Schweben
 tooltip.jetpack.disabled=Deaktiviert
@@ -279,6 +304,11 @@ tooltip.ElectricChest=Eine Tragbare, 54-Slot-Truhe, die Energie nutzt, !num sich
 tooltip.Chargepad=Ein universelles Ladepad, dass jegliches energetisiertes !nItem jeglicher Mods aufladen kann.
 tooltip.LogisticalSorter=Eine Filter-basierte, fortgeschrittene Sortiermaschine, die !nautomatisch spezifische Items aus einem Inventar oder !nLogistischen Transporter heraus und in eines hinein treiben kann.
 tooltip.RotaryCondensentrator=Eine Maschine, die fähig ist, Gase in ihre !nflüssige Form zu konvertieren und umgekehrt.
+tooltip.ChemicalInjectionChamber=Eine Elite-Maschine, fähig, Erze in !nvier Splitter zu verarbeiten, was als erste Stufe !neiner 400%igen Erzverarbeitung dient.
+
+tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
+tooltip.CopperOre=Ein häufiges, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
+tooltip.TinOre=Ein leiches, jedoch robustes und leitfähiges !nMaterial, dass etwas schwieriger !nzu finden ist als Kupfer.
 
 //Redstone control
 control.disabled=Deaktiviert
