@@ -288,7 +288,7 @@ public class Mekanism
 	public static double energizedSmelterUsage;
 	public static double digitalMinerUsage;
 	public static double rotaryCondensentratorUsage;
-	public static double chemicalFormulatorUsage;
+	public static double oxidationChamberUsage;
 	public static double chemicalInfuserUsage;
 	public static double chemicalInjectionChamberUsage;
 	
@@ -593,7 +593,8 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.flint, 4), new ItemStack(Item.gunpowder));
-        
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.gunpowder, 2), new ItemStack(Dust, 1, 10));
+
         //Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
@@ -613,7 +614,7 @@ public class Mekanism
         }
         
         //Chemical Formulator Recipes
-        RecipeHandler.addChemicalFormulatorRecipe(new ItemStack(Item.gunpowder), new GasStack(GasRegistry.getGas("sulfuricGas"), 100));
+        RecipeHandler.addOxidationChamberRecipe(new ItemStack(Mekanism.Dust, 1, 10), new GasStack(GasRegistry.getGas("sulfuricGas"), 100));
         
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("sulfuricGas"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));

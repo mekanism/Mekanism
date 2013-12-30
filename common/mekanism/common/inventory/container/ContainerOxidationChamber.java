@@ -4,7 +4,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.tileentity.TileEntityChemicalFormulator;
+import mekanism.common.tileentity.TileEntityOxidationChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,11 +12,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerChemicalFormulator extends Container
+public class ContainerOxidationChamber extends Container
 {
-    private TileEntityChemicalFormulator tileEntity;
+    private TileEntityOxidationChamber tileEntity;
 
-    public ContainerChemicalFormulator(InventoryPlayer inventory, TileEntityChemicalFormulator tentity)
+    public ContainerOxidationChamber(InventoryPlayer inventory, TileEntityOxidationChamber tentity)
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 26, 36));
@@ -68,7 +68,7 @@ public class ContainerChemicalFormulator extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(RecipeHandler.getChemicalFormulatorOutput(slotStack, false) != null)
+            if(RecipeHandler.getOxidationChamberOutput(slotStack, false) != null)
             {
             	if(!mergeItemStack(slotStack, 0, 1, true))
             	{

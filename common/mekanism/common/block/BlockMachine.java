@@ -26,30 +26,8 @@ import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
-import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.tileentity.TileEntityAdvancedFactory;
-import mekanism.common.tileentity.TileEntityBasicBlock;
-import mekanism.common.tileentity.TileEntityChargepad;
-import mekanism.common.tileentity.TileEntityChemicalFormulator;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
-import mekanism.common.tileentity.TileEntityChemicalInjectionChamber;
-import mekanism.common.tileentity.TileEntityCombiner;
-import mekanism.common.tileentity.TileEntityContainerBlock;
-import mekanism.common.tileentity.TileEntityCrusher;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
-import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityElectricPump;
-import mekanism.common.tileentity.TileEntityEliteFactory;
-import mekanism.common.tileentity.TileEntityEnergizedSmelter;
-import mekanism.common.tileentity.TileEntityEnrichmentChamber;
-import mekanism.common.tileentity.TileEntityFactory;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
-import mekanism.common.tileentity.TileEntityOsmiumCompressor;
-import mekanism.common.tileentity.TileEntityPurificationChamber;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
-import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.tileentity.*;
+import mekanism.common.tileentity.TileEntityOxidationChamber;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -154,6 +132,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		}
 		else if(blockID == Mekanism.machineBlock2ID)
 		{
+			icons[1][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
+			icons[1][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
+			icons[1][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[2][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
+			icons[2][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
+			icons[2][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
 			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
@@ -412,16 +396,36 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		}
 		else if(blockID == Mekanism.machineBlock2ID)
 		{
-		  	if(meta == 3)
-	    	{
-	    		if(side == 3)
-	    		{
-	    			return icons[3][0];
-	    		}
-	    		else {
-	    			return icons[3][2];
-	    		}
-	    	}
+			if(meta == 1)
+			{
+				if(side == 3)
+				{
+					return icons[1][0];
+				}
+				else {
+					return icons[1][2];
+				}
+			}
+			else if(meta == 2)
+			{
+				if(side == 3)
+				{
+					return icons[2][0];
+				}
+				else {
+					return icons[2][2];
+				}
+			}
+			else if(meta == 3)
+			{
+				if(side == 3)
+				{
+					return icons[3][0];
+				}
+				else {
+					return icons[3][2];
+				}
+			}
 		}
     	
     	return null;
@@ -545,14 +549,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	}
     	else if(blockID == Mekanism.machineBlock2ID)
     	{
-    		if(metadata == 3)
+    		if(metadata == 1 || metadata == 2 || metadata == 3)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
-	    			return MekanismUtils.isActive(world, x, y, z) ? icons[3][1] : icons[3][0];
+	    			return MekanismUtils.isActive(world, x, y, z) ? icons[metadata][1] : icons[metadata][0];
 	    		}
 	    		else {
-	    			return icons[3][2];
+	    			return icons[metadata][2];
 	    		}
 	    	}
     	}
@@ -572,9 +576,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
-			if(type == MachineType.CHEMICAL_FORMULATOR || type == MachineType.CHEMICAL_INFUSER /*TODO*/)
+			if(type == MachineType.OXIDATION_CHAMBER || type == MachineType.CHEMICAL_INFUSER /*TODO*/)
 			{
-				continue;
+				//continue;
 			}
 			
 			if(type.typeId == blockID)
@@ -963,9 +967,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         	}
         }
         
-        if(tileEntity instanceof TileEntityChemicalFormulator)
+        if(tileEntity instanceof TileEntityOxidationChamber)
         {
-        	TileEntityChemicalFormulator formulator = (TileEntityChemicalFormulator)tileEntity;
+        	TileEntityOxidationChamber formulator = (TileEntityOxidationChamber)tileEntity;
         	
         	if(formulator.gasTank.getGas() != null)
         	{
@@ -977,17 +981,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
         {
         	TileEntityChemicalInfuser infuser = (TileEntityChemicalInfuser)tileEntity;
         	
-        	if(infuser.leftTank != null)
+        	if(infuser.leftTank.getGas() != null)
         	{
         		itemStack.stackTagCompound.setCompoundTag("leftTank", infuser.leftTank.getGas().write(new NBTTagCompound()));
         	}
         	
-        	if(infuser.rightTank != null)
+        	if(infuser.rightTank.getGas() != null)
         	{
         		itemStack.stackTagCompound.setCompoundTag("rightTank", infuser.rightTank.getGas().write(new NBTTagCompound()));
         	}
         	
-        	if(infuser.centerTank != null)
+        	if(infuser.centerTank.getGas() != null)
         	{
         		itemStack.stackTagCompound.setCompoundTag("leftTank", infuser.centerTank.getGas().write(new NBTTagCompound()));
         	}
@@ -1085,8 +1089,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true),
 		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true),
 		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true),
-		CHEMICAL_FORMULATOR(Mekanism.machineBlock2ID, 1, "ChemicalFormulator", 29, 20000, TileEntityChemicalFormulator.class, true),
-		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true),
+		OXIDATION_CHAMBER(Mekanism.machineBlock2ID, 1, "OxidationChamber", 29, 20000, TileEntityOxidationChamber.class, false),
+		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false);
 		
 		public int typeId;

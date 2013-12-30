@@ -2,61 +2,10 @@ package mekanism.common;
 
 import java.io.File;
 
-import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
-import mekanism.common.inventory.container.ContainerChemicalFormulator;
-import mekanism.common.inventory.container.ContainerChemicalInfuser;
-import mekanism.common.inventory.container.ContainerDictionary;
-import mekanism.common.inventory.container.ContainerDigitalMiner;
-import mekanism.common.inventory.container.ContainerDynamicTank;
-import mekanism.common.inventory.container.ContainerElectricMachine;
-import mekanism.common.inventory.container.ContainerElectricPump;
-import mekanism.common.inventory.container.ContainerEnergyCube;
-import mekanism.common.inventory.container.ContainerFactory;
-import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.inventory.container.ContainerGasTank;
-import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
-import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.inventory.container.ContainerRobitCrafting;
-import mekanism.common.inventory.container.ContainerRobitInventory;
-import mekanism.common.inventory.container.ContainerRobitMain;
-import mekanism.common.inventory.container.ContainerRobitRepair;
-import mekanism.common.inventory.container.ContainerRobitSmelting;
-import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
-import mekanism.common.inventory.container.ContainerTeleporter;
-import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
-import mekanism.common.tileentity.TileEntityAdvancedFactory;
-import mekanism.common.tileentity.TileEntityBin;
-import mekanism.common.tileentity.TileEntityChargepad;
-import mekanism.common.tileentity.TileEntityChemicalFormulator;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
-import mekanism.common.tileentity.TileEntityChemicalInjectionChamber;
-import mekanism.common.tileentity.TileEntityCombiner;
-import mekanism.common.tileentity.TileEntityContainerBlock;
-import mekanism.common.tileentity.TileEntityCrusher;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
-import mekanism.common.tileentity.TileEntityDiversionTransporter;
-import mekanism.common.tileentity.TileEntityDynamicTank;
-import mekanism.common.tileentity.TileEntityDynamicValve;
-import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityElectricMachine;
-import mekanism.common.tileentity.TileEntityElectricPump;
-import mekanism.common.tileentity.TileEntityEliteFactory;
-import mekanism.common.tileentity.TileEntityEnergizedSmelter;
-import mekanism.common.tileentity.TileEntityEnergyCube;
-import mekanism.common.tileentity.TileEntityEnrichmentChamber;
-import mekanism.common.tileentity.TileEntityFactory;
-import mekanism.common.tileentity.TileEntityGasTank;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
-import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
-import mekanism.common.tileentity.TileEntityObsidianTNT;
-import mekanism.common.tileentity.TileEntityOsmiumCompressor;
-import mekanism.common.tileentity.TileEntityPressurizedTube;
-import mekanism.common.tileentity.TileEntityPurificationChamber;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
-import mekanism.common.tileentity.TileEntityTeleporter;
-import mekanism.common.tileentity.TileEntityUniversalCable;
+import mekanism.common.inventory.container.*;
+import mekanism.common.inventory.container.ContainerOxidationChamber;
+import mekanism.common.tileentity.*;
+import mekanism.common.tileentity.TileEntityOxidationChamber;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -107,7 +56,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
-		GameRegistry.registerTileEntity(TileEntityChemicalFormulator.class, "ChemicalFormulator");
+		GameRegistry.registerTileEntity(TileEntityOxidationChamber.class, "OxidationChamber");
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 	}
@@ -206,7 +155,7 @@ public class CommonProxy
 		Mekanism.energizedSmelterUsage = Mekanism.configuration.get("usage", "EnergizedSmelterUsage", 50D).getDouble(50D);
 		Mekanism.digitalMinerUsage = Mekanism.configuration.get("usage", "DigitalMinerUsage", 100D).getDouble(100D);
 		Mekanism.rotaryCondensentratorUsage = Mekanism.configuration.get("usage", "RotaryCondensentratorUsage", 50D).getDouble(50D);
-		Mekanism.chemicalFormulatorUsage = Mekanism.configuration.get("usage", "ChemicalFormulatorUsage", 100D).getDouble(100D);
+		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 100D).getDouble(100D);
 		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 100D).getDouble(100D);
 		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 200D).getDouble(200D);
 	  	Mekanism.configuration.save();
@@ -341,7 +290,7 @@ public class CommonProxy
 			case 28:
 				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
 			case 29:
-				return new ContainerChemicalFormulator(player.inventory, (TileEntityChemicalFormulator)tileEntity);
+				return new ContainerOxidationChamber(player.inventory, (TileEntityOxidationChamber)tileEntity);
 			case 30:
 				return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
 			case 31:

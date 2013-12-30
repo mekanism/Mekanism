@@ -15,7 +15,7 @@ public class ItemDust extends ItemMekanism
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
 										"Obsidian", "Diamond", "Steel",
 										"Copper", "Tin", "Silver",
-										"Lead"};
+										"Lead", "Sulfur"};
 	
 	public ItemDust(int id)
 	{

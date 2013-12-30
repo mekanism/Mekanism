@@ -98,11 +98,11 @@ public final class RecipeHelper
 	 * @param input - input ItemStack
 	 * @param output - output GasStack
 	 */
-	public static void addChemicalFormulatorRecipe(ItemStack input, GasStack output)
+	public static void addOxidationChamberRecipe(ItemStack input, GasStack output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
-			Method m = recipeClass.getMethod("addChemicalFormulatorRecipe", ItemStack.class, GasStack.class);
+			Method m = recipeClass.getMethod("addOxidationChamberRecipe", ItemStack.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());

@@ -2,7 +2,6 @@ package mekanism.common.tileentity;
 
 import java.util.ArrayList;
 
-import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -12,12 +11,8 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.IActiveState;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
+import mekanism.common.*;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.RecipeHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
@@ -229,7 +224,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		data.add(isActive);
 		data.add(controlType.ordinal());
 		
-		if(leftTank != null)
+		if(leftTank.getGas() != null)
 		{
 			data.add(true);
 			data.add(leftTank.getGas().getGas().getID());
@@ -239,7 +234,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			data.add(false);
 		}
 		
-		if(rightTank != null)
+		if(rightTank.getGas() != null)
 		{
 			data.add(true);
 			data.add(rightTank.getGas().getGas().getID());
@@ -249,7 +244,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			data.add(false);
 		}
 		
-		if(centerTank != null)
+		if(centerTank.getGas() != null)
 		{
 			data.add(true);
 			data.add(centerTank.getGas().getGas().getID());
@@ -415,11 +410,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 0 || slotID == 1)
-		{
-			return RecipeHandler.getChemicalFormulatorOutput(itemstack, false) != null;
-		}
-		else if(slotID == 3)
+		if(slotID == 3)
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}

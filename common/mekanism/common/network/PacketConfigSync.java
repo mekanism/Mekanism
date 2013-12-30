@@ -63,7 +63,7 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.energizedSmelterUsage = dataStream.readDouble();
 		Mekanism.digitalMinerUsage = dataStream.readDouble();
 		Mekanism.rotaryCondensentratorUsage = dataStream.readDouble();
-		Mekanism.chemicalFormulatorUsage = dataStream.readDouble();
+		Mekanism.oxidationChamberUsage = dataStream.readDouble();
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();
 		Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
 
@@ -108,7 +108,7 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.energizedSmelterUsage);
 		dataStream.writeDouble(Mekanism.digitalMinerUsage);
 		dataStream.writeDouble(Mekanism.rotaryCondensentratorUsage);
-		dataStream.writeDouble(Mekanism.chemicalFormulatorUsage);
+		dataStream.writeDouble(Mekanism.oxidationChamberUsage);
 		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
 		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
 	}

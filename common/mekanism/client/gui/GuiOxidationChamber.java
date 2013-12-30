@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.inventory.container.ContainerChemicalFormulator;
-import mekanism.common.tileentity.TileEntityChemicalFormulator;
+import mekanism.common.inventory.container.ContainerOxidationChamber;
+import mekanism.common.tileentity.TileEntityOxidationChamber;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,16 +15,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalFormulator extends GuiMekanism
+public class GuiOxidationChamber extends GuiMekanism
 {
-    public TileEntityChemicalFormulator tileEntity;
+    public TileEntityOxidationChamber tileEntity;
 
-    public GuiChemicalFormulator(InventoryPlayer inventory, TileEntityChemicalFormulator tentity)
+    public GuiOxidationChamber(InventoryPlayer inventory, TileEntityOxidationChamber tentity)
     {
-        super(tentity, new ContainerChemicalFormulator(inventory, tentity));
+        super(tentity, new ContainerOxidationChamber(inventory, tentity));
         tileEntity = tentity;
         
-        guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalFormulator.png")));
+        guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png")));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class GuiChemicalFormulator extends GuiMekanism
     {
     	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     	
-    	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalFormulator.png"));
+    	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -122,7 +122,7 @@ public class GuiChemicalFormulator extends GuiMekanism
 			}
 		}
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalFormulator.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png"));
 		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 59);
 	}
 }

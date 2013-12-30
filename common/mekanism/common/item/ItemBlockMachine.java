@@ -28,14 +28,8 @@ import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.tileentity.TileEntityChemicalFormulator;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
-import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityFactory;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
+import mekanism.common.tileentity.*;
+import mekanism.common.tileentity.TileEntityOxidationChamber;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -310,11 +304,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     			}
     		}
     		
-    		if(tileEntity instanceof TileEntityChemicalFormulator)
+    		if(tileEntity instanceof TileEntityOxidationChamber)
     		{
     			if(stack.stackTagCompound != null)
     			{
-    				((TileEntityChemicalFormulator)tileEntity).gasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasTank")));
+    				((TileEntityOxidationChamber)tileEntity).gasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasTank")));
     			}
     		}
     		
@@ -510,7 +504,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			MachineType type = MachineType.get((ItemStack)data[0]);
 			
 			if(type != MachineType.TELEPORTER && type != MachineType.ELECTRIC_PUMP && type != MachineType.ELECTRIC_CHEST && type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER &&
-					type != MachineType.ROTARY_CONDENSENTRATOR && type != MachineType.CHEMICAL_FORMULATOR && type != MachineType.CHEMICAL_INFUSER)
+					type != MachineType.ROTARY_CONDENSENTRATOR && type != MachineType.OXIDATION_CHAMBER && type != MachineType.CHEMICAL_INFUSER)
 			{
 				return true;
 			}
