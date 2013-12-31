@@ -278,7 +278,6 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
-        System.out.println("reading");
     	nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
       	nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
       	nbtTags.setCompoundTag("centerTank", centerTank.write(new NBTTagCompound()));

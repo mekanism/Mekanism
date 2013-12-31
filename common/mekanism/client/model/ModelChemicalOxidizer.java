@@ -176,10 +176,12 @@ public class ModelChemicalOxidizer extends ModelBase
 		GasConnection.render(size);
 		Machine.render(size);
 		Post.render(size);
-		
+	}
+	
+	public void renderGlass(float size)
+	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
-		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1, 1, 1, 0.2F);
 		
 		GlassN.render(size);

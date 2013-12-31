@@ -122,7 +122,7 @@ public class GuiChemicalOxidizer extends GuiMekanism
 			}
 		}
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"));
 		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 4, 16, 59);
 	}
 }

@@ -27,7 +27,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void registerIcons(IconRegister register)
 	{
-		for(int i = 0; i <= 9; i++)
+		for(int i = 0; i <= 10; i++)
 		{
 			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Dust");
 		}
@@ -42,7 +42,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void getSubItems(int id, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter <= 9; ++counter)
+		for(int counter = 0; counter <= 10; ++counter)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}
