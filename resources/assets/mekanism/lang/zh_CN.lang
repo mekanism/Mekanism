@@ -66,8 +66,9 @@ tile.MachineBlock.DigitalMiner.name=数字型采矿机
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=回旋式气液转换机
-tile.MachineBlock2.ChemicalFormulator.name=化学程式机
+tile.MachineBlock2.OxidationChamber.name=氧化仓
 tile.MachineBlock2.ChemicalInfuser.name=化学灌注器
+tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入仓
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=锇矿石
@@ -99,6 +100,7 @@ item.copperDust.name=铜粉
 item.tinDust.name=锡粉
 item.silverDust.name=银粉
 item.leadDust.name=铅粉
+item.sulfurDust.name=硫磺粉
 
 //Clumps
 item.ironClump.name=铁疙瘩
@@ -132,13 +134,13 @@ item.tinIngot.name=锡锭
 //Gasses
 gas.hydrogen=氢气
 gas.oxygen=氧气
-gas.sulfuricGas=硫气
-gas.sulfuricAcid=硫酸气
+gas.sulfuricGas=二氧化硫
+gas.sulfuricAcid=雾化硫酸
 
 //Fluids
 fluid.hydrogen=液氢
 fluid.oxygen=液氧
-fluid.sulfuricGas=液化硫气
+fluid.sulfuricGas=液化二氧化硫
 fluid.sulfuricAcid=硫酸
  
 //Gui text
@@ -160,7 +162,7 @@ gui.status=状态
 gui.autoEject=自动弹射
 gui.itemstack=物品栈
 gui.oredict=矿物辞典
-gui.out=出口
+gui.out=输出
 gui.noFluid=无流体
 gui.empty=空
 gui.volume=体积
@@ -208,9 +210,9 @@ gui.teleporter.linksCapacity=链接数 > 2
 gui.teleporter.noLink=未发现链接
 
 gui.robit=机器人
-gui.robit.smelting=机器人熔炼中
+gui.robit.smelting=机器人熔炼中...
 gui.robit.inventory=机器人物品栏
-gui.robit.crafting=机器人制造中
+gui.robit.crafting=机器人制造中...
 gui.robit.greeting=你好,我是
 gui.robit.toggleFollow=切换跟随模式
 gui.robit.rename=重命名该机器人
@@ -234,7 +236,7 @@ gui.electricChest.editPassword=编辑密码
 
 gui.digitalMinerConfig=数字型采矿机配置
 
-gui.digitalMiner.autoPull=自动推拉
+gui.digitalMiner.autoPull=自动牵引
 gui.digitalMiner.replaceBlock=替换方块
 gui.digitalMiner.reset=重置
 gui.digitalMiner.silkTouch=精准采集
