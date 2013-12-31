@@ -151,13 +151,13 @@ item.tinIngot.name=Tin Ingot
 //Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
-gas.sulfuricGas=Sulfur Dioxide
+gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfuricAcid=Sulfuric Acid
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
-fluid.sulfuricGas=Liquid Sulfur Dioxide
+fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 
 //Gui text

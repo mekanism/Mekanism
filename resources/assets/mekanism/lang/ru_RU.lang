@@ -151,13 +151,13 @@ item.tinIngot.name=Оловянный слиток
 //Gasses
 gas.hydrogen=Водород
 gas.oxygen=Кислород
-gas.sulfuricGas=Диоксид серы
+gas.sulfurDioxideGas=Диоксид серы
 gas.sulfuricAcid=Аэрозольная серная кислота
 
 //Fluids
 fluid.hydrogen=Жидкий водород
 fluid.oxygen=Жидкий кислород
-fluid.sulfuricGas=Жидкий диоксид серы
+fluid.sulfurDioxideGas=Жидкий диоксид серы
 fluid.sulfuricAcid=Серная кислота
 
 //Gui text

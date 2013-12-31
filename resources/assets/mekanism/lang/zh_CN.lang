@@ -132,13 +132,13 @@ item.tinIngot.name=锡锭
 //Gasses
 gas.hydrogen=氢气
 gas.oxygen=氧气
-gas.sulfuricGas=硫气
+gas.sulfurDioxideGas=硫气
 gas.sulfuricAcid=硫酸气
 
 //Fluids
 fluid.hydrogen=液氢
 fluid.oxygen=液氧
-fluid.sulfuricGas=液化硫气
+fluid.sulfurDioxideGas=液化硫气
 fluid.sulfuricAcid=硫酸
  
 //Gui text
