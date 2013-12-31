@@ -152,13 +152,13 @@ item.tinIngot.name=Tin Ingot
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
 gas.sulfuricGas=Sulfur Dioxide
-gas.sulfuricAcid=Aerosolized Sulfuric Acid
+gas.sulfuricAcid=Sulfuric Acid
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
 fluid.sulfuricGas=Liquid Sulfur Dioxide
-fluid.sulfuricAcid=Sulfuric Acid
+fluid.sulfuricAcid=Liquid Sulfuric Acid
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
@@ -194,6 +194,8 @@ gui.state=State
 gui.on=On
 gui.off=Off
 gui.filters=Filters
+
+gui.chemicalInfuser.short=C. Infuser
 
 gui.dictionary.noKey=No key.
 gui.dictionary.key=Key

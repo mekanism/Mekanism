@@ -39,8 +39,8 @@ public class GuiChemicalInfuser extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.getInvName(), 5, 6, 0x404040);
-        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 		
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
@@ -181,6 +181,6 @@ public class GuiChemicalInfuser extends GuiMekanism
 		}
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 59);
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 4, 16, 59);
 	}
 }

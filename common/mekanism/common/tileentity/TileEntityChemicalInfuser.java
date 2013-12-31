@@ -91,14 +91,14 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				leftTank.receive(GasTransmission.removeGas(inventory[0], null, leftTank.getNeeded()), true);
 			}
 			
-			if(inventory[2] != null && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
+			if(inventory[1] != null && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
 			{
-				rightTank.receive(GasTransmission.removeGas(inventory[2], null, rightTank.getNeeded()), true);
+				rightTank.receive(GasTransmission.removeGas(inventory[1], null, rightTank.getNeeded()), true);
 			}
 			
-			if(inventory[1] != null && centerTank.getGas() != null)
+			if(inventory[2] != null && centerTank.getGas() != null)
 			{
-				centerTank.draw(GasTransmission.addGas(inventory[1], centerTank.getGas()), true);
+				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
 			}
 			
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
@@ -278,6 +278,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
+        System.out.println("reading");
     	nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
       	nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
       	nbtTags.setCompoundTag("centerTank", centerTank.write(new NBTTagCompound()));

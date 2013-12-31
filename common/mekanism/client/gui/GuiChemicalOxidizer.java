@@ -24,7 +24,7 @@ public class GuiChemicalOxidizer extends GuiMekanism
         super(tentity, new ContainerChemicalOxidizer(inventory, tentity));
         tileEntity = tentity;
         
-        guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png")));
+        guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));
     }
 
     @Override
@@ -123,6 +123,6 @@ public class GuiChemicalOxidizer extends GuiMekanism
 		}
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 59);
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 4, 16, 59);
 	}
 }
