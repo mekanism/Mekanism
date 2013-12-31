@@ -101,6 +101,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalOxidizer.png"));
 			chemicalOxidizer.render(0.0625F);
+			chemicalOxidizer.renderGlass(0.0625F);
 		}
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);
