@@ -29,7 +29,7 @@ import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tileentity.*;
-import mekanism.common.tileentity.TileEntityOxidationChamber;
+import mekanism.common.tileentity.TileEntityChemicalOxidizer;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -72,7 +72,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:14: Chargepad
  * 0:15: Logistical Sorter
  * 1:0: Rotary Condensentrator
- * 1:1: Chemical Formulator
+ * 1:1: Chemical Oxidizer
  * 1:2: Chemical Infuser
  * 1:3: Chemical Injection Chamber
  * @author AidanBrady
@@ -304,11 +304,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     			}
     		}
     		
-    		if(tileEntity instanceof TileEntityOxidationChamber)
+    		if(tileEntity instanceof TileEntityChemicalOxidizer)
     		{
     			if(stack.stackTagCompound != null)
     			{
-    				((TileEntityOxidationChamber)tileEntity).gasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasTank")));
+    				((TileEntityChemicalOxidizer)tileEntity).gasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasTank")));
     			}
     		}
     		
@@ -504,7 +504,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			MachineType type = MachineType.get((ItemStack)data[0]);
 			
 			if(type != MachineType.TELEPORTER && type != MachineType.ELECTRIC_PUMP && type != MachineType.ELECTRIC_CHEST && type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER &&
-					type != MachineType.ROTARY_CONDENSENTRATOR && type != MachineType.OXIDATION_CHAMBER && type != MachineType.CHEMICAL_INFUSER)
+					type != MachineType.ROTARY_CONDENSENTRATOR && type != MachineType.CHEMICAL_OXIDIZER && type != MachineType.CHEMICAL_INFUSER)
 			{
 				return true;
 			}

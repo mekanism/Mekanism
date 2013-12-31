@@ -614,7 +614,7 @@ public class Mekanism
         }
         
         //Chemical Formulator Recipes
-        RecipeHandler.addOxidationChamberRecipe(new ItemStack(Mekanism.Dust, 1, 10), new GasStack(GasRegistry.getGas("sulfuricGas"), 100));
+        RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(Mekanism.Dust, 1, 10), new GasStack(GasRegistry.getGas("sulfuricGas"), 100));
         
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("sulfuricGas"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));

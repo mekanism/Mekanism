@@ -66,7 +66,7 @@ tile.MachineBlock.DigitalMiner.name=Digital Miner
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
-tile.MachineBlock2.OxidationChamber.name=Oxidation Chamber
+tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 

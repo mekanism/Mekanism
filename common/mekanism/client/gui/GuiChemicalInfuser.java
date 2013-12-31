@@ -82,7 +82,7 @@ public class GuiChemicalInfuser extends GuiMekanism
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
+        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
 
         if(tileEntity.isActive)
         {

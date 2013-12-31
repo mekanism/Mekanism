@@ -3,9 +3,9 @@ package mekanism.common;
 import java.io.File;
 
 import mekanism.common.inventory.container.*;
-import mekanism.common.inventory.container.ContainerOxidationChamber;
+import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.tileentity.*;
-import mekanism.common.tileentity.TileEntityOxidationChamber;
+import mekanism.common.tileentity.TileEntityChemicalOxidizer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -56,7 +56,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
-		GameRegistry.registerTileEntity(TileEntityOxidationChamber.class, "OxidationChamber");
+		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 	}
@@ -290,7 +290,7 @@ public class CommonProxy
 			case 28:
 				return new ContainerFilter(player.inventory, (TileEntityContainerBlock)tileEntity);
 			case 29:
-				return new ContainerOxidationChamber(player.inventory, (TileEntityOxidationChamber)tileEntity);
+				return new ContainerChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:
 				return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
 			case 31:

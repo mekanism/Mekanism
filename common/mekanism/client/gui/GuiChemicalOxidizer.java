@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.inventory.container.ContainerOxidationChamber;
-import mekanism.common.tileentity.TileEntityOxidationChamber;
+import mekanism.common.inventory.container.ContainerChemicalOxidizer;
+import mekanism.common.tileentity.TileEntityChemicalOxidizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,13 +15,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiOxidationChamber extends GuiMekanism
+public class GuiChemicalOxidizer extends GuiMekanism
 {
-    public TileEntityOxidationChamber tileEntity;
+    public TileEntityChemicalOxidizer tileEntity;
 
-    public GuiOxidationChamber(InventoryPlayer inventory, TileEntityOxidationChamber tentity)
+    public GuiChemicalOxidizer(InventoryPlayer inventory, TileEntityChemicalOxidizer tentity)
     {
-        super(tentity, new ContainerOxidationChamber(inventory, tentity));
+        super(tentity, new ContainerChemicalOxidizer(inventory, tentity));
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png")));
@@ -54,7 +54,7 @@ public class GuiOxidationChamber extends GuiMekanism
     {
     	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     	
-    	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiOxidationChamber.png"));
+    	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -66,7 +66,7 @@ public class GuiOxidationChamber extends GuiMekanism
         int displayInt;
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
+        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
 
         displayInt = tileEntity.getScaledProgress(48);
         drawTexturedModalRect(guiWidth + 64, guiHeight + 40, 176, 63, displayInt + 1, 8);

@@ -94,13 +94,13 @@ public final class RecipeHandler
 	}
 
 	/**
-	 * Add a Chemical Formulator recipe.
+	 * Add a Chemical Oxidizer recipe.
 	 * @param input - input ItemStack
 	 * @param output - output GasStack
 	 */
-	public static void addOxidationChamberRecipe(ItemStack input, GasStack output)
+	public static void addChemicalOxidizerRecipe(ItemStack input, GasStack output)
 	{
-		Recipe.CHEMICAL_FORMULATOR.put(input, output);
+		Recipe.CHEMICAL_OXIDIZER.put(input, output);
 	}
 	
 	/**
@@ -185,11 +185,11 @@ public final class RecipeHandler
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size
 	 * @return output GasStack
 	 */
-	public static GasStack getOxidationChamberOutput(ItemStack itemstack, boolean stackDecrease)
+	public static GasStack getChemicalOxidizerOutput(ItemStack itemstack, boolean stackDecrease)
 	{
 		if(itemstack != null)
 		{
-			HashMap<ItemStack, GasStack> recipes = Recipe.CHEMICAL_FORMULATOR.get();
+			HashMap<ItemStack, GasStack> recipes = Recipe.CHEMICAL_OXIDIZER.get();
 			
 			for(Map.Entry<ItemStack, GasStack> entry : recipes.entrySet())
 			{
@@ -249,7 +249,7 @@ public final class RecipeHandler
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
 		CHEMICAL_INFUSER(new HashMap<ChemicalInput, GasStack>()),
-		CHEMICAL_FORMULATOR(new HashMap<ItemStack, GasStack>()),
+		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
 		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>());
 		
 		private HashMap recipes;

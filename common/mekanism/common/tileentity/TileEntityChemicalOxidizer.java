@@ -10,8 +10,12 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.*;
+import mekanism.common.IActiveState;
+import mekanism.common.IRedstoneControl;
+import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.RecipeHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
@@ -24,7 +28,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityOxidationChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl
+public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 	
@@ -48,9 +52,9 @@ public class TileEntityOxidationChamber extends TileEntityElectricBlock implemen
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
-	public TileEntityOxidationChamber()
+	public TileEntityChemicalOxidizer()
 	{
-		super("OxidationChamber", MachineType.OXIDATION_CHAMBER.baseEnergy);
+		super("ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
 		inventory = new ItemStack[3];
 	}
 	
@@ -100,7 +104,7 @@ public class TileEntityOxidationChamber extends TileEntityElectricBlock implemen
 					operatingTicks++;
 				}
 				else {
-					GasStack stack = RecipeHandler.getOxidationChamberOutput(inventory[0], true);
+					GasStack stack = RecipeHandler.getChemicalOxidizerOutput(inventory[0], true);
 					
 					gasTank.receive(stack, true);
 					operatingTicks = 0;
@@ -147,7 +151,7 @@ public class TileEntityOxidationChamber extends TileEntityElectricBlock implemen
 	{
 		if(slotID == 0)
 		{
-			return RecipeHandler.getOxidationChamberOutput(itemstack, false) != null;
+			return RecipeHandler.getChemicalOxidizerOutput(itemstack, false) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -199,7 +203,7 @@ public class TileEntityOxidationChamber extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		GasStack stack = RecipeHandler.getOxidationChamberOutput(inventory[0], false);
+		GasStack stack = RecipeHandler.getChemicalOxidizerOutput(inventory[0], false);
 		
 		if(stack == null || (gasTank.getGas() != null && (gasTank.getGas().getGas() != stack.getGas() || gasTank.getNeeded() < stack.amount)))
 		{
