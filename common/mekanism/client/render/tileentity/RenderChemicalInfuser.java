@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.client.model.ModelChemicalInfuser;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -32,22 +33,52 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer
 		renderAModelAt((TileEntityChemicalInfuser)tileEntity, x, y, z, partialTick);
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	private void renderAModelAt(TileEntityChemicalInfuser tileEntity, double x, double y, double z, float partialTick)
 	{
 		render(false, x, y, z, tileEntity);
 		
-		/*if(tileEntity.gasTank.getGas() != null)
+		if(tileEntity.leftTank.getGas() != null)
 		{
 			push();
 			
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.gasTank.getStored()/tileEntity.gasTank.getMaxGas());
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.leftTank.getStored()/tileEntity.leftTank.getMaxGas());
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(ForgeDirection.getOrientation(tileEntity.facing), tileEntity.gasTank.getGas().getGas()).render();
+			getListAndRender(ForgeDirection.getOrientation(tileEntity.facing), tileEntity.leftTank.getGas().getGas()).render();
 			GL11.glColor4f(1, 1, 1, 1);
 			
 			pop();
-		}*/
+		}
+		
+		if(tileEntity.rightTank.getGas() != null)
+		{
+			push();
+			
+			switch(ForgeDirection.getOrientation(tileEntity.facing))
+			{
+				case NORTH:
+					GL11.glTranslatef(-0.4375F, 0, 0);
+					break;
+				case SOUTH:
+					GL11.glTranslatef(0.4375F, 0, 0);
+					break;
+				case EAST:
+					GL11.glTranslatef(0, 0, -0.4375F);
+					break;
+				case WEST:
+					GL11.glTranslatef(0, 0, 0.4375F);
+					break;
+			}
+			
+			GL11.glTranslatef((float)x, (float)y, (float)z);
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.rightTank.getStored()/tileEntity.rightTank.getMaxGas());
+			bindTexture(MekanismRenderer.getBlocksTexture());
+			getListAndRender(ForgeDirection.getOrientation(tileEntity.facing), tileEntity.rightTank.getGas().getGas()).render();
+			GL11.glColor4f(1, 1, 1, 1);
+			
+			pop();
+		}
 		
 		render(true, x, y, z, tileEntity);
 	}
@@ -116,46 +147,46 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer
 		{
 			case NORTH:
 			{
-				toReturn.minX = 0.125 + offset;
+				toReturn.minX = 0.625 + offset;
 				toReturn.minY = 0.0625 + offset;
-				toReturn.minZ = 0.3125 + offset;
+				toReturn.minZ = 0.625 + offset;
 				
-				toReturn.maxX = 0.5 - offset;
+				toReturn.maxX = 0.8125 - offset;
 				toReturn.maxY = 0.9375 - offset;
-				toReturn.maxZ = 0.6875 - offset;
+				toReturn.maxZ = 0.8125 - offset;
 				break;
 			}
 			case SOUTH:
 			{
-				toReturn.minX = 0.5 + offset;
+				toReturn.minX = 0.1875 + offset;
 				toReturn.minY = 0.0625 + offset;
-				toReturn.minZ = 0.3125 + offset;
+				toReturn.minZ = 0.1875 + offset;
 				
-				toReturn.maxX = 0.875 - offset;
+				toReturn.maxX = 0.375 - offset;
 				toReturn.maxY = 0.9375 - offset;
-				toReturn.maxZ = 0.6875 - offset;
+				toReturn.maxZ = 0.375 - offset;
 				break;
 			}
 			case WEST:
 			{
-				toReturn.minX = 0.3125 + offset;
+				toReturn.minX = 0.625 + offset;
 				toReturn.minY = 0.0625 + offset;
-				toReturn.minZ = 0.5 + offset;
+				toReturn.minZ = 0.1875 + offset;
 				
-				toReturn.maxX = 0.6875 - offset;
+				toReturn.maxX = 0.8125 - offset;
 				toReturn.maxY = 0.9375 - offset;
-				toReturn.maxZ = 0.875 - offset;
+				toReturn.maxZ = 0.375 - offset;
 				break;
 			}
 			case EAST:
 			{
-				toReturn.minX = 0.3125 + offset;
+				toReturn.minX = 0.1875 + offset;
 				toReturn.minY = 0.0625 + offset;
-				toReturn.minZ = 0.125 + offset;
+				toReturn.minZ = 0.625 + offset;
 				
-				toReturn.maxX = 0.6875 - offset;
+				toReturn.maxX = 0.375 - offset;
 				toReturn.maxY = 0.9375 - offset;
-				toReturn.maxZ = 0.5 - offset;
+				toReturn.maxZ = 0.8125 - offset;
 				break;
 			}
 		}
