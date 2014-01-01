@@ -503,11 +503,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			MachineType type = MachineType.get((ItemStack)data[0]);
 			
-			if(type != MachineType.TELEPORTER && type != MachineType.ELECTRIC_PUMP && type != MachineType.ELECTRIC_CHEST && type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER &&
-					type != MachineType.ROTARY_CONDENSENTRATOR && type != MachineType.CHEMICAL_OXIDIZER && type != MachineType.CHEMICAL_INFUSER)
-			{
-				return true;
-			}
+			return type.supportsUpgrades;
 		}
 		
 		return false;
