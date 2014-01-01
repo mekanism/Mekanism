@@ -66,8 +66,9 @@ tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Ротационный конденсентратор
-tile.MachineBlock2.OxidationChamber.name=Камера окисления
+tile.MachineBlock2.ChemicalOxidizer.name=Химический окислитель
 tile.MachineBlock2.ChemicalInfuser.name=Химический зарядник
+tile.MachineBlock2.ChemicalCombiner.name=Химический объединитель
 tile.MachineBlock2.ChemicalInjectionChamber.name=Инъекционная химическая камера
 
 //Ore Block
@@ -152,13 +153,15 @@ item.tinIngot.name=Оловянный слиток
 gas.hydrogen=Водород
 gas.oxygen=Кислород
 gas.sulfurDioxideGas=Диоксид серы
-gas.sulfuricAcid=Аэрозольная серная кислота
+gas.sulfurTrioxideGas=Триоксид серы
+gas.sulfuricAcid=Серная кислота
 
 //Fluids
 fluid.hydrogen=Жидкий водород
 fluid.oxygen=Жидкий кислород
 fluid.sulfurDioxideGas=Жидкий диоксид серы
-fluid.sulfuricAcid=Серная кислота
+fluid.sulfurTrioxideGas=Жидкий триоксид серы
+fluid.sulfuricAcid=Жидкая серная кислота
 
 //Gui text
 gui.removeSpeedUpgrade=Удалить улучшение скорости
@@ -194,6 +197,9 @@ gui.state=Состояние
 gui.on=Вкл.
 gui.off=Выкл.
 gui.filters=Фильтры
+
+gui.chemicalInfuser.short=Хим. зарядник
+gui.chemicalCombiner.short=Хим. объединитель
 
 gui.dictionary.noKey=No key.
 gui.dictionary.key=Key
@@ -289,7 +295,7 @@ tooltip.jetpack.disabled=Отключен
 
 tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. !nОн, как известно имеет множество применений в !nпроизводстве машин.
 tooltip.CopperOre=Общий, проводящий материал, который !nможет быть использован в производстве !nпроводов. Имеет способность выдерживать!nвысокие теплоты это делает его необходимым !nдля современного оборудования.
-tooltip.TinOre=Легкий, но крепкий, проводящий !nматериал, который находится немного меньше, !nчем медь.
+tooltip.TinOre=Легкий, но крепкий, проводящий !nматериал, который находится немного реже, !nчем медь.
 
 //Redstone control
 control.disabled=Отключён
