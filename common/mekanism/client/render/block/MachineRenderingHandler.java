@@ -2,6 +2,7 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
+import mekanism.client.model.ModelChemicalInfuser;
 import mekanism.client.model.ModelChemicalOxidizer;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.model.ModelElectricPump;
@@ -33,6 +34,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 	public ModelRotaryCondensentrator rotaryCondensentrator = new ModelRotaryCondensentrator();
 	public ModelChemicalOxidizer chemicalOxidizer = new ModelChemicalOxidizer();
+	public ModelChemicalInfuser chemicalInfuser = new ModelChemicalInfuser();
 	
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -102,6 +104,15 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalOxidizer.png"));
 			chemicalOxidizer.render(0.0625F);
 			chemicalOxidizer.renderGlass(0.0625F);
+		}
+		else if(type == MachineType.CHEMICAL_INFUSER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalInfuser.png"));
+			chemicalInfuser.render(0.0625F);
+			chemicalInfuser.renderGlass(0.0625F);
 		}
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);
