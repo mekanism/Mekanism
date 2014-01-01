@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import mekanism.api.ChemicalCombinerInput;
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -97,6 +96,7 @@ import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tileentity.TileEntityEnergizedSmelter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -111,8 +111,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
@@ -293,7 +291,6 @@ public class Mekanism
 	public static double rotaryCondensentratorUsage;
 	public static double oxidationChamberUsage;
 	public static double chemicalInfuserUsage;
-	public static double chemicalCombinerUsage;
 	public static double chemicalInjectionChamberUsage;
 	
 	/**
@@ -918,6 +915,23 @@ public class Mekanism
 		if(voiceServerEnabled)
 		{
 			voiceManager.start();
+		}
+		
+		//Load cached furnace recipes
+		TileEntityEnergizedSmelter.furnaceRecipes.clear();
+		
+		for(Map.Entry<List<Integer>, ItemStack> entry : FurnaceRecipes.smelting().getMetaSmeltingList().entrySet())
+		{
+			TileEntityEnergizedSmelter.furnaceRecipes.put(new ItemStack(entry.getKey().get(0), 1, entry.getKey().get(1)), entry.getValue());
+		}
+		
+		for(Object obj : FurnaceRecipes.smelting().getSmeltingList().entrySet())
+		{
+			if(obj instanceof Map.Entry)
+			{
+				Map.Entry<Integer, ItemStack> entry = (Map.Entry<Integer, ItemStack>)obj;
+				TileEntityEnergizedSmelter.furnaceRecipes.put(new ItemStack(entry.getKey(), 1, 0), entry.getValue());
+			}
 		}
 		
 		event.registerServerCommand(new CommandMekanism());
