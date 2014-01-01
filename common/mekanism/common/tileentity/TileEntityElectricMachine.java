@@ -22,7 +22,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	 * 
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
-	 * @param path - GUI texture path of this machine
+	 * @param location - GUI texture path of this machine
 	 * @param perTick - energy used per tick.
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
@@ -100,7 +100,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 		else if(slotID == 0)
 		{
-			return RecipeHandler.getOutput(itemstack, false, getRecipes()) != null;
+			return RecipeHandler.isInRecipe(itemstack, getRecipes());
 		}
 		else if(slotID == 1)
 		{

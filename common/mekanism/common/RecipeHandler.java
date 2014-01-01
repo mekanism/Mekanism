@@ -287,6 +287,30 @@ public final class RecipeHandler
 		return null;
 	}
 	
+	/**
+	 * Gets the output ItemStack of the ItemStack in the parameters.
+	 * @param itemstack - input ItemStack
+	 * @param recipes - Map of recipes
+	 * @return whether the item can be used in a recipe
+	 */
+	public static boolean isInRecipe(ItemStack itemstack, Map<ItemStack, ItemStack> recipes)
+	{
+		if(itemstack != null)
+		{
+			for(Map.Entry entry : recipes.entrySet())
+			{
+				ItemStack stack = (ItemStack)entry.getKey();
+
+				if(StackUtils.equalsWildcard(stack, itemstack))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public static enum Recipe
 	{
 		ENRICHMENT_CHAMBER(new HashMap<ItemStack, ItemStack>()),

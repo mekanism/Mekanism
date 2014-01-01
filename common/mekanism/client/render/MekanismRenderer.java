@@ -9,6 +9,7 @@ import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFluid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -66,6 +67,7 @@ public class MekanismRenderer
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
+			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:WaterVapor"));
 			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
 			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
 			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));

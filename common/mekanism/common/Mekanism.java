@@ -634,10 +634,8 @@ public class Mekanism
         
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
+		RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
 
-		//Chemical Combiner Recipes
-		RecipeHandler.addChemicalCombinerRecipe(new ChemicalCombinerInput(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new FluidStack(FluidRegistry.getFluid("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
-        
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
@@ -963,6 +961,7 @@ public class Mekanism
 		
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
+		GasRegistry.register(new Gas("water")).registerFluid();
 		GasRegistry.register(new Gas("sulfurDioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
