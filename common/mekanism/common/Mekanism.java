@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import mekanism.api.ChemicalCombinerInput;
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -110,6 +111,8 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
@@ -290,6 +293,7 @@ public class Mekanism
 	public static double rotaryCondensentratorUsage;
 	public static double oxidationChamberUsage;
 	public static double chemicalInfuserUsage;
+	public static double chemicalCombinerUsage;
 	public static double chemicalInjectionChamberUsage;
 	
 	/**
@@ -618,6 +622,9 @@ public class Mekanism
         
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
+
+		//Chemical Combiner Recipes
+		RecipeHandler.addChemicalCombinerRecipe(new ChemicalCombinerInput(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new FluidStack(FluidRegistry.getFluid("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
         
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));

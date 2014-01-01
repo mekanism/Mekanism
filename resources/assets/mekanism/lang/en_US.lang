@@ -68,6 +68,7 @@ tile.MachineBlock.DigitalMiner.name=Digital Miner
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
 tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
+tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 
 //Ore Block
@@ -152,12 +153,14 @@ item.tinIngot.name=Tin Ingot
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
 gas.sulfurDioxideGas=Sulfur Dioxide
+gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
 fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
+fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 
 //Gui text
@@ -196,6 +199,7 @@ gui.off=Off
 gui.filters=Filters
 
 gui.chemicalInfuser.short=C. Infuser
+gui.chemicalCombiner.short=C. Combiner
 
 gui.dictionary.noKey=No key.
 gui.dictionary.key=Key

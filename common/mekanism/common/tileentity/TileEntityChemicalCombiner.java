@@ -25,36 +25,37 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
+import net.minecraftforge.fluids.*;
 
-public class TileEntityChemicalInfuser extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl
+public class TileEntityChemicalCombiner extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IFluidHandler
 {
-	public GasTank leftTank = new GasTank(MAX_GAS);
-	public GasTank rightTank = new GasTank(MAX_GAS);
-	public GasTank centerTank = new GasTank(MAX_GAS);
-	
-	public static final int MAX_GAS = 10000;
-	
+	public GasTank gasTank = new GasTank(MAX);
+	public FluidTank fluidTank = new FluidTank(MAX);
+	public GasTank centerTank = new GasTank(MAX);
+
+	public static final int MAX = 10000;
+
 	public int updateDelay;
-	
+
 	public int gasOutput = 16;
-	
+
 	public boolean isActive;
-	
+
 	public boolean clientActive;
-	
+
 	public double prevEnergy;
-	
-	public final double ENERGY_USAGE = Mekanism.chemicalInfuserUsage;
-	
+
+	public final double ENERGY_USAGE = Mekanism.chemicalCombinerUsage;
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
-	
-	public TileEntityChemicalInfuser()
+
+	public TileEntityChemicalCombiner()
 	{
-		super("ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
+		super("ChemicalCombiner", MachineType.CHEMICAL_COMBINER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
@@ -63,7 +64,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-				
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
@@ -71,43 +72,51 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				}
 			}
 		}
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-					
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
-			
+
 			ChargeUtils.discharge(3, this);
-			
-			if(inventory[0] != null && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
+
+			if(inventory[0] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 			{
-				leftTank.receive(GasTransmission.removeGas(inventory[0], null, leftTank.getNeeded()), true);
+				gasTank.receive(GasTransmission.removeGas(inventory[0], null, gasTank.getNeeded()), true);
 			}
-			
-			if(inventory[1] != null && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
+
+			if(inventory[1] != null && (fluidTank.getFluid() == null || fluidTank.getFluidAmount() < fluidTank.getCapacity()))
 			{
-				rightTank.receive(GasTransmission.removeGas(inventory[1], null, rightTank.getNeeded()), true);
+				if(inventory[1].getItem() instanceof IFluidContainerItem)
+				{
+					fluidTank.fill(((IFluidContainerItem) inventory[1].getItem()).drain(inventory[1], fluidTank.getCapacity()-fluidTank.getFluidAmount(), true), true);
+				}
+				else if(FluidContainerRegistry.isFilledContainer(inventory[1]) && FluidContainerRegistry.getFluidForFilledItem(inventory[1]).equals(fluidTank.getFluid()))
+				{
+					fluidTank.fill(FluidContainerRegistry.getFluidForFilledItem(inventory[1]), true);
+					inventory[1] = inventory[1].getItem().getContainerItemStack(inventory[1]);
+				}
 			}
-			
+
 			if(inventory[2] != null && centerTank.getGas() != null)
 			{
 				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
 			}
-			
+
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				GasStack stack = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, true);
-				
+				GasStack stack = RecipeHandler.getChemicalCombinerOutput(gasTank, fluidTank, true);
+
 				centerTank.receive(stack, true);
-				
+
 				setEnergy(getEnergy() - ENERGY_USAGE);
 			}
 			else {
@@ -116,14 +125,14 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 					setActive(false);
 				}
 			}
-			
+
 			if(centerTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
 				centerTank.draw(GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing)), true);
-				
+
 				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
-				
+
 				if(tileEntity instanceof IGasHandler)
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
@@ -132,78 +141,78 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 					}
 				}
 			}
-			
+
 			prevEnergy = getEnergy();
 		}
 	}
-	
+
 	public boolean canOperate()
 	{
-		if(leftTank.getGas() == null || rightTank.getGas() == null || centerTank.getNeeded() == 0)
+		if(gasTank.getGas() == null || fluidTank.getFluid() == null || centerTank.getNeeded() == 0)
 		{
 			return false;
 		}
-		
-		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
-		
+
+		GasStack out = RecipeHandler.getChemicalCombinerOutput(gasTank, fluidTank, false);
+
 		if(out == null)
 		{
 			return false;
 		}
-		
+
 		if(centerTank.getNeeded() < out.amount)
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
 			int type = dataStream.readInt();
-			
+
 			if(type == 0)
 			{
-				leftTank.setGas(null);
+				gasTank.setGas(null);
 			}
 			else if(type == 1)
 			{
-				rightTank.setGas(null);
+				fluidTank.setFluid(null);
 			}
-			
+
 			for(EntityPlayer player : playersUsing)
 			{
 				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 			}
-			
+
 			return;
 		}
-		
+
 		super.handlePacketData(dataStream);
-		
+
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-		
+
 		if(dataStream.readBoolean())
 		{
-			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
-			leftTank.setGas(null);
+			gasTank.setGas(null);
 		}
-		
+
 		if(dataStream.readBoolean())
 		{
-			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
-			rightTank.setGas(null);
+			fluidTank.setFluid(null);
 		}
-		
+
 		if(dataStream.readBoolean())
 		{
 			centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
@@ -211,39 +220,39 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		else {
 			centerTank.setGas(null);
 		}
-		
-		
+
+
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(isActive);
 		data.add(controlType.ordinal());
-		
-		if(leftTank.getGas() != null)
+
+		if(gasTank.getGas() != null)
 		{
 			data.add(true);
-			data.add(leftTank.getGas().getGas().getID());
-			data.add(leftTank.getStored());
+			data.add(gasTank.getGas().getGas().getID());
+			data.add(gasTank.getStored());
 		}
 		else {
 			data.add(false);
 		}
-		
-		if(rightTank.getGas() != null)
+
+		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(rightTank.getGas().getGas().getID());
-			data.add(rightTank.getStored());
+			data.add(fluidTank.getFluid().getFluid().getID());
+			data.add(fluidTank.getFluidAmount());
 		}
 		else {
 			data.add(false);
 		}
-		
+
 		if(centerTank.getGas() != null)
 		{
 			data.add(true);
@@ -253,106 +262,112 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		else {
 			data.add(false);
 		}
-		
+
 		return data;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        
-        leftTank.read(nbtTags.getCompoundTag("leftTank"));
-        rightTank.read(nbtTags.getCompoundTag("rightTank"));
-        centerTank.read(nbtTags.getCompoundTag("centerTank"));
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("controlType", controlType.ordinal());
-        
-    	nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
-      	nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
-      	nbtTags.setCompoundTag("centerTank", centerTank.write(new NBTTagCompound()));
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		isActive = nbtTags.getBoolean("isActive");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+
+		gasTank.read(nbtTags.getCompoundTag("gasTank"));
+		fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+		centerTank.read(nbtTags.getCompoundTag("centerTank"));
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("isActive", isActive);
+		nbtTags.setInteger("controlType", controlType.ordinal());
+
+		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+		nbtTags.setCompoundTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+		nbtTags.setCompoundTag("centerTank", centerTank.write(new NBTTagCompound()));
+	}
+
 	@Override
 	public boolean canSetFacing(int i)
 	{
 		return i != 0 && i != 1;
 	}
-	
-	public GasTank getTank(ForgeDirection side)
+
+	public GasTank getGasTank(ForgeDirection side)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
-			return leftTank;
-		}
-		else if(side == MekanismUtils.getRight(facing))
-		{
-			return rightTank;
+			return gasTank;
 		}
 		else if(side == ForgeDirection.getOrientation(facing))
 		{
 			return centerTank;
 		}
-		
+
 		return null;
 	}
-	
-	public int getScaledLeftGasLevel(int i)
+
+	public FluidTank getFluidTank(ForgeDirection side)
 	{
-		return leftTank != null ? leftTank.getStored()*i / MAX_GAS : 0;
+		if(side == MekanismUtils.getRight(facing))
+		{
+			return fluidTank;
+		}
+
+		return null;
 	}
-	
-	public int getScaledRightGasLevel(int i)
+
+	public int getScaledGasLevel(int i)
 	{
-		return rightTank != null ? rightTank.getStored()*i / MAX_GAS : 0;
+		return gasTank != null ? gasTank.getStored()*i / MAX : 0;
 	}
-	
-	public int getScaledCenterGasLevel(int i)
+
+	public int getScaledFluidLevel(int i)
 	{
-		return centerTank != null ? centerTank.getStored()*i / MAX_GAS : 0;
+		return fluidTank != null ? fluidTank.getFluidAmount()*i / MAX : 0;
 	}
-	
+
+	public int getScaledOutputLevel(int i)
+	{
+		return centerTank != null ? centerTank.getStored()*i / MAX : 0;
+	}
+
 	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(clientActive != active && updateDelay == 0)
-    	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
-    		
-    		updateDelay = 10;
-    		clientActive = active;
-    	}
-    }
-    
-    @Override
-    public boolean getActive()
-    {
-    	return isActive;
-    }
-    
-    @Override
-    public boolean renderUpdate()
-    {
-    	return false;
-    }
-    
-    @Override
-    public boolean lightUpdate()
-    {
-    	return true;
-    }
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(clientActive != active && updateDelay == 0)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+
+			updateDelay = 10;
+			clientActive = active;
+		}
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return isActive;
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
+	{
+		return true;
+	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
@@ -363,17 +378,17 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return getTank(side) != null && getTank(side) != centerTank ? getTank(side).canReceive(type) : false;
+		return getGasTank(side) != null && getGasTank(side) != centerTank ? getGasTank(side).canReceive(type) : false;
 	}
-	
+
 	@Override
-	public RedstoneControl getControlType() 
+	public RedstoneControl getControlType()
 	{
 		return controlType;
 	}
 
 	@Override
-	public void setControlType(RedstoneControl type) 
+	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
@@ -384,9 +399,9 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
-			return getTank(side).receive(stack, true);
+			return getGasTank(side).receive(stack, true);
 		}
-		
+
 		return 0;
 	}
 
@@ -395,18 +410,18 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	{
 		if(canDrawGas(side, null))
 		{
-			return getTank(side).draw(amount, true);
+			return getGasTank(side).draw(amount, true);
 		}
-		
+
 		return null;
 	}
 
 	@Override
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
-		return getTank(side) != null && getTank(side) == centerTank ? getTank(side).canDraw(type) : false;
+		return getGasTank(side) != null && getGasTank(side) == centerTank ? getGasTank(side).canDraw(type) : false;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -414,14 +429,14 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		if(slotID == 0 || slotID == 2)
+		if(slotID == 0)
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, null);
 		}
@@ -429,10 +444,10 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
@@ -452,7 +467,41 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		{
 			return new int[3];
 		}
-		
+
 		return InventoryUtils.EMPTY;
+	}
+
+	@Override
+	public int fill(ForgeDirection side, FluidStack resource, boolean doFill) {
+		return getFluidTank(side) == null ? 0 : getFluidTank(side).fill(resource, doFill);
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection side, FluidStack resource, boolean doDrain) {
+		return getFluidTank(side) == null && getFluidTank(side).getFluid().isFluidEqual(resource) ? null : getFluidTank(side).drain(resource.amount, doDrain);
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection side, int maxDrain, boolean doDrain) {
+		return getFluidTank(side) == null ? null : getFluidTank(side).drain(maxDrain, doDrain);
+	}
+
+	@Override
+	public boolean canFill(ForgeDirection side, Fluid fluid) {
+		return getFluidTank(side) != null && (getFluidTank(side).getFluid() == null || getFluidTank(side).getFluid().getFluid() == fluid);
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection side, Fluid fluid) {
+		return getFluidTank(side) != null && getFluidTank(side).getFluid().getFluid() == fluid;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection side) {
+		if(getFluidTank(side) == null)
+		{
+			return new FluidTankInfo[0];
+		}
+		return new FluidTankInfo[] {new FluidTankInfo(getFluidTank(side))};
 	}
 }

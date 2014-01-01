@@ -138,6 +138,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
 			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[4][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
+			icons[4][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
+			icons[4][2] = register.registerIcon("mekanism:SteelCasing");
 		}
 	}
 	
@@ -413,6 +416,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 					return icons[3][2];
 				}
 			}
+			else if(meta == 4)
+			{
+				if(side == 3)
+				{
+					return icons[4][0];
+				}
+				else {
+					return icons[4][2];
+				}
+			}
 		}
     	
     	return null;
@@ -536,7 +549,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	}
     	else if(blockID == Mekanism.machineBlock2ID)
     	{
-    		if(metadata == 2 || metadata == 3)
+    		if(metadata == 2 || metadata == 3 || metadata == 4)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
@@ -1078,6 +1091,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true),
 		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true),
 		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, false),
+		CHEMICAL_COMBINER(Mekanism.machineBlock2ID, 4, "ChemicalCombiner", 32, 20000, TileEntityChemicalCombiner.class, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false);
 		
 		public int typeId;

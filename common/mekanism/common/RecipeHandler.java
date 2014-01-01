@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.ChemicalCombinerInput;
 import mekanism.api.ChemicalInput;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -10,6 +11,7 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidTank;
 
 /** 
  * Class used to handle machine recipes. This is used for both adding recipes and checking outputs.
@@ -94,6 +96,15 @@ public final class RecipeHandler
 	}
 
 	/**
+	 * Add a Chemical Combiner recipe
+	 * @param input - input ChemicalCombinerInput
+	 */
+	public static void addChemicalCombinerRecipe(ChemicalCombinerInput input, GasStack output)
+	{
+		Recipe.CHEMICAL_COMBINER.put(input, output);
+	}
+
+	/**
 	 * Add a Chemical Oxidizer recipe.
 	 * @param input - input ItemStack
 	 * @param output - output GasStack
@@ -149,7 +160,9 @@ public final class RecipeHandler
 	
 	/**
 	 * Gets the GasStack of the ChemicalInput in the parameters.
-	 * @param input - input ChemicalInput
+	 * @param leftTank - first GasTank
+	 * @param rightTank - second GasTank
+	 * @param doRemove - actually remove the gases
 	 * @return output GasStack
 	 */
 	public static GasStack getChemicalInfuserOutput(GasTank leftTank, GasTank rightTank, boolean doRemove)
@@ -179,6 +192,40 @@ public final class RecipeHandler
 		return null;
 	}
 	
+	/**
+	 * Gets the GasStack of the ChemicalCombinerInput in the parameters.
+	 * @param gasTank - GasTank containing the gas to use
+	 * @param fluidTank - FluidTank containing the fluid to use
+	 * @param doRemove - actually drain the tanks
+	 * @return output - GasStack returned
+	 */
+	public static GasStack getChemicalCombinerOutput(GasTank gasTank, FluidTank fluidTank, boolean doRemove)
+	{
+		ChemicalCombinerInput input = new ChemicalCombinerInput(gasTank.getGas(), fluidTank.getFluid());
+
+		if(input.isValid())
+		{
+			HashMap<ChemicalCombinerInput, GasStack> recipes = Recipe.CHEMICAL_COMBINER.get();
+
+			for(Map.Entry<ChemicalCombinerInput, GasStack> entry : recipes.entrySet())
+			{
+				ChemicalCombinerInput key = (ChemicalCombinerInput)entry.getKey();
+
+				if(key.meetsInput(input))
+				{
+					if(doRemove)
+					{
+						key.draw(gasTank, fluidTank);
+					}
+
+					return entry.getValue().copy();
+				}
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * Gets the InfusionOutput of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
@@ -249,6 +296,7 @@ public final class RecipeHandler
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
 		CHEMICAL_INFUSER(new HashMap<ChemicalInput, GasStack>()),
+		CHEMICAL_COMBINER(new HashMap<ChemicalCombinerInput, GasStack>()),
 		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
 		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>());
 		
