@@ -152,6 +152,7 @@ item.tinIngot.name=Zinnbarren
 //Gasses
 gas.hydrogen=Wasserstoff
 gas.oxygen=Sauerstoff
+gas.water=Wasserdampf
 gas.sulfurDioxideGas=Schwefeldioxid
 gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
