@@ -887,7 +887,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		if(stack.getGas() == GasRegistry.getGas("oxygen"))
+		if(recipeType == RecipeType.PURIFYING.ordinal() && stack.getGas() == GasRegistry.getGas("oxygen") ||
+				recipeType == RecipeType.INJECTING.ordinal() && stack.getGas() == GasRegistry.getGas("sulfuricAcid"))
 		{
 			int toUse = Math.min(getMaxSecondaryEnergy()-secondaryEnergyStored, stack.amount);
 			secondaryEnergyStored += toUse;
@@ -900,13 +901,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return type == GasRegistry.getGas("oxygen");
+		return recipeType == RecipeType.PURIFYING.ordinal() && type == GasRegistry.getGas("oxygen") ||
+				recipeType == RecipeType.INJECTING.ordinal() && type == GasRegistry.getGas("sulfuricAcid");
 	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return recipeType == RecipeType.PURIFYING.ordinal();
+		return recipeType == RecipeType.PURIFYING.ordinal() || recipeType == RecipeType.INJECTING.ordinal();
 	}
 
 	@Override
