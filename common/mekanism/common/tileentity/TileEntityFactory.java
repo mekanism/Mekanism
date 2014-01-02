@@ -140,6 +140,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		
 		if(!worldObj.isRemote)
 		{
+			if(ticker == 1)
+			{
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+			}
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -598,7 +602,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         super.readFromNBT(nbtTags);
         
         clientActive = isActive = nbtTags.getBoolean("isActive");
-        recipeType = Math.min(5, nbtTags.getInteger("recipeType"));
+        recipeType = nbtTags.getInteger("recipeType");
         recipeTicks = nbtTags.getInteger("recipeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
