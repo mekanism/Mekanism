@@ -58,7 +58,6 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
-		GameRegistry.registerTileEntity(TileEntityChemicalCombiner.class, "ChemicalCombiner");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 	}
 	
@@ -158,7 +157,6 @@ public class CommonProxy
 		Mekanism.rotaryCondensentratorUsage = Mekanism.configuration.get("usage", "RotaryCondensentratorUsage", 50D).getDouble(50D);
 		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 100D).getDouble(100D);
 		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 100D).getDouble(100D);
-		Mekanism.chemicalCombinerUsage = Mekanism.configuration.get("usage", "ChemicalCombinerUsage", 100D).getDouble(100D);
 		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 200D).getDouble(200D);
 	  	Mekanism.configuration.save();
 	}
@@ -297,8 +295,6 @@ public class CommonProxy
 				return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
 			case 31:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
-			case 32:
-				return new ContainerChemicalCombiner(player.inventory, (TileEntityChemicalCombiner)tileEntity);
 		}
 		
 		return null;

@@ -508,7 +508,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null && isValidFluid(new FluidStack(fluid, 1)) || fluidTank.getFluid().getFluid() == fluid);
+		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid);
 	}
 
 	@Override

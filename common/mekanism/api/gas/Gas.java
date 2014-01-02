@@ -150,15 +150,22 @@ public class Gas
 	}
 	
 	/**
-	 * Registers a new fluid out of this Gas.
+	 * Registers a new fluid out of this Gas or gets one from the FluidRegistry.
 	 * @return this Gas object
 	 */
 	public Gas registerFluid()
 	{
 		if(fluid == null)
 		{
-			fluid = new Fluid(getName()).setGaseous(true);
-			FluidRegistry.registerFluid(fluid);
+			if(FluidRegistry.getFluid(getName()) == null)
+			{
+				fluid = new Fluid(getName()).setGaseous(true);
+				FluidRegistry.registerFluid(fluid);
+			}
+			else
+			{
+				fluid = FluidRegistry.getFluid(getName());
+			}
 		}
 		
 		return this;

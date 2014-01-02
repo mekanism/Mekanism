@@ -114,6 +114,10 @@ public class GuiFactory extends GuiMekanism
         {
         	recipeFuelY += 10;
         }
+        else if(tileEntity.recipeType == RecipeType.INJECTING.ordinal())
+        {
+        	recipeFuelY += 15;
+        }
         
         displayInt = tileEntity.getScaledSecondaryEnergy(160);
         drawTexturedModalRect(guiWidth + 8, guiHeight + 78, 0, recipeFuelY, displayInt, 5);

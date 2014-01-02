@@ -3,6 +3,7 @@ tile.Transmitter.PressurizedTube.name=Pressurised Tube
 tile.MachineBlock2.ChemicalOxidizer=Chemical Oxidiser
 item.MultipartTransmitter.PressurizedTube.name=Pressurised Tube
 item.sulfurDust.name=Sulphur Dust
+gas.water=Water Vapour
 gas.sulfurDioxideGas=Sulphur Dioxide
 gas.sulfurTrioxideGas=Sulphur Trioxide
 gas.sulfuricAcid=Sulphuric Acid

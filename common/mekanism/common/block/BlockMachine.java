@@ -1072,27 +1072,26 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(Mekanism.machineBlockID, 0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false),
-		OSMIUM_COMPRESSOR(Mekanism.machineBlockID, 1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false),
-		COMBINER(Mekanism.machineBlockID, 2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false),
-		CRUSHER(Mekanism.machineBlockID, 3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false),
-		DIGITAL_MINER(Mekanism.machineBlockID, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true),
-		BASIC_FACTORY(Mekanism.machineBlockID, 5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false),
-		ADVANCED_FACTORY(Mekanism.machineBlockID, 6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false),
-		ELITE_FACTORY(Mekanism.machineBlockID, 7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false),
-		METALLURGIC_INFUSER(Mekanism.machineBlockID, 8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true),
-		PURIFICATION_CHAMBER(Mekanism.machineBlockID, 9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false),
-		ENERGIZED_SMELTER(Mekanism.machineBlockID, 10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false),
-		TELEPORTER(Mekanism.machineBlockID, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false),
-		ELECTRIC_PUMP(Mekanism.machineBlockID, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true),
-		ELECTRIC_CHEST(Mekanism.machineBlockID, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true),
-		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true),
-		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true),
-		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true),
-		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true),
-		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true),
-		CHEMICAL_COMBINER(Mekanism.machineBlock2ID, 3, "ChemicalCombiner", 32, 20000, TileEntityChemicalCombiner.class, false),
-		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 4, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false);
+		ENRICHMENT_CHAMBER(Mekanism.machineBlockID, 0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, false, true),
+		OSMIUM_COMPRESSOR(Mekanism.machineBlockID, 1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, false, true),
+		COMBINER(Mekanism.machineBlockID, 2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, false, true),
+		CRUSHER(Mekanism.machineBlockID, 3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, false, true),
+		DIGITAL_MINER(Mekanism.machineBlockID, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true, true),
+		BASIC_FACTORY(Mekanism.machineBlockID, 5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, false, true),
+		ADVANCED_FACTORY(Mekanism.machineBlockID, 6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, false, true),
+		ELITE_FACTORY(Mekanism.machineBlockID, 7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, false, true),
+		METALLURGIC_INFUSER(Mekanism.machineBlockID, 8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true, true),
+		PURIFICATION_CHAMBER(Mekanism.machineBlockID, 9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, false, true),
+		ENERGIZED_SMELTER(Mekanism.machineBlockID, 10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, false, true),
+		TELEPORTER(Mekanism.machineBlockID, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, false, false),
+		ELECTRIC_PUMP(Mekanism.machineBlockID, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true, false),
+		ELECTRIC_CHEST(Mekanism.machineBlockID, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true, false),
+		CHARGEPAD(Mekanism.machineBlockID, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true, false),
+		LOGISTICAL_SORTER(Mekanism.machineBlockID, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, true, false),
+		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, false),
+		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, false),
+		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, false),
+		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true);
 		
 		public int typeId;
 		public int meta;
@@ -1101,8 +1100,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		public double baseEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean hasModel;
+		public boolean supportsUpgrades;
 		
-		private MachineType(int id, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
+		private MachineType(int id, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model, boolean upgrades)
 		{
 			typeId = id;
 			meta = i;
@@ -1111,6 +1111,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			baseEnergy = k;
 			tileEntityClass = tileClass;
 			hasModel = model;
+			supportsUpgrades = upgrades;
 		}
 		
 		public static MachineType get(int id, int meta)
