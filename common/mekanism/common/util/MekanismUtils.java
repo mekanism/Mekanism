@@ -16,6 +16,8 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.common.DynamicTankCache;
 import mekanism.common.EnergyDisplay;
 import mekanism.common.EnergyDisplay.ElectricUnit;
@@ -1173,6 +1175,20 @@ public final class MekanismUtils
     	ret.addAll(Arrays.asList(split));
     	
     	return ret;
+    }
+    
+    /**
+     * Creates and returns a full gas tank with the specified gas type.
+     * @param gas - gas to fill the tank with
+     * @return filled gas tank
+     */
+    public static ItemStack getFullGasTank(Gas gas)
+    {
+    	ItemStack tank = getEmptyGasTank();
+    	ItemBlockGasTank item = (ItemBlockGasTank)tank.getItem();
+    	item.setGas(tank, new GasStack(gas, item.MAX_GAS));
+    	
+    	return tank;
     }
     
     public static enum ResourceType

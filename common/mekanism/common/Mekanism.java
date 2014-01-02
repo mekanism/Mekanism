@@ -761,6 +761,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustTin", new ItemStack(Dust, 1, 7));
 		OreDictionary.registerOre("dustSilver", new ItemStack(Dust, 1, 8));
 		OreDictionary.registerOre("dustLead", new ItemStack(Dust, 1, 9));
+		OreDictionary.registerOre("dustSulfur", new ItemStack(Dust, 1, 10));
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(Ingot, 1, 0));
 		OreDictionary.registerOre("ingotOsmium", new ItemStack(Ingot, 1, 1));

@@ -1,6 +1,10 @@
 package mekanism.client.nei;
 
+import static codechicken.core.gui.GuiDraw.changeTexture;
+import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
+
 import java.awt.Rectangle;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -13,17 +17,15 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-import static codechicken.core.gui.GuiDraw.*;
-
 public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 {
 	private int ticksPassed;
 
 	public abstract String getRecipeId();
-	
-	public abstract ItemStack getFuelStack();
 
 	public abstract Set<Entry<ItemStack, ItemStack>> getRecipes();
+	
+	public abstract List<ItemStack> getFuelStacks();
 
 	@Override
 	public void drawBackground(int i)
@@ -67,7 +69,7 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 		{
 			for(Map.Entry irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStack()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
 			}
 		}
 		else {
@@ -82,7 +84,7 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getValue(), result))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStack()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
 			}
 		}
 	}
@@ -94,16 +96,17 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStack()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
 			}
 		}
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
+		public List<ItemStack> fuelStacks;
+		
 		public PositionedStack inputStack;
 		public PositionedStack outputStack;
-		public PositionedStack fuelStack;
 
 		@Override
 		public PositionedStack getIngredient()
@@ -120,20 +123,20 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public PositionedStack getOtherStack()
 		{
-			return fuelStack;
+			return new PositionedStack(fuelStacks.get(cycleticks/40 % fuelStacks.size()), 40, 48);
 		}
 
-		public CachedIORecipe(ItemStack input, ItemStack output, ItemStack fuel)
+		public CachedIORecipe(ItemStack input, ItemStack output, List<ItemStack> fuels)
 		{
 			super();
 			inputStack = new PositionedStack(input, 40, 12);
 			outputStack = new PositionedStack(output, 100, 30);
-			fuelStack = new PositionedStack(fuel, 40, 48);
+			fuelStacks = fuels;
 		}
 
-		public CachedIORecipe(Map.Entry recipe, ItemStack fuel)
+		public CachedIORecipe(Map.Entry recipe, List<ItemStack> fuels)
 		{
-			this((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue(), fuel);
+			this((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue(), fuels);
 		}
 	}
 }

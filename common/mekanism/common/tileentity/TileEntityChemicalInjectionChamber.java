@@ -33,7 +33,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
-		if(itemstack.isItemEqual(new ItemStack(Item.gunpowder))) return 20;
+		if(itemstack.isItemEqual(new ItemStack(Item.gunpowder))) return 5;
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("sulfuricAcid")) return 1;
 		

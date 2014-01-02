@@ -25,18 +25,26 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
-		boolean hasOsmium = false;
+		int amount = 0;
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotOsmium"))
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				hasOsmium = true;
+				amount = 200;
 				break;
 			}
 		}
 		
-		if(hasOsmium) return 200;
-		return 0;
+		for(ItemStack ore : OreDictionary.getOres("blockOsmium"))
+		{
+			if(ore.isItemEqual(itemstack))
+			{
+				amount = 1800;
+				break;
+			}
+		}
+		
+		return amount;
 	}
 }

@@ -1,11 +1,13 @@
 package mekanism.client.nei;
 
+import java.util.List;
 import java.util.Set;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.util.ListUtils;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 {
@@ -40,9 +42,9 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 	
 	@Override
-	public ItemStack getFuelStack()
+	public List<ItemStack> getFuelStacks()
 	{
-		return new ItemStack(Block.cobblestone);
+		return ListUtils.asList(new ItemStack(Block.cobblestone));
 	}
 	
 	@Override
