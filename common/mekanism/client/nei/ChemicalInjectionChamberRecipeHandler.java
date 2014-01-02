@@ -5,10 +5,10 @@ import java.util.Set;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
+import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipeHandler
@@ -46,7 +46,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public List<ItemStack> getFuelStacks()
 	{
-		return ListUtils.asList(new ItemStack(Item.gunpowder), MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
+		return ListUtils.asList(new ItemStack(Mekanism.Dust, 1, 10), MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
 	}
 	
 	@Override

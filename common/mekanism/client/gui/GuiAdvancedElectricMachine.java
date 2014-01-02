@@ -31,7 +31,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getInvName())/2), 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
