@@ -28,8 +28,7 @@ public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, tileEntity.outputType == GasRegistry.getGas("hydrogen") ? "ElectrolyticSeparatorHydrogen.png" : 
-			(tileEntity.outputType == GasRegistry.getGas("oxygen") ? "ElectrolyticSeparatorOxygen.png" : "ElectrolyticSeparatorNone.png")));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparatorNone.png"));
 		
 	    switch(tileEntity.facing)
 	    {

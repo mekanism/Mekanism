@@ -1,13 +1,6 @@
 package mekanism.generators.client.gui;
 
-import java.util.ArrayList;
-
-import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerElectrolyticSeparator;
@@ -42,7 +35,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
 			Gas gasToSet = null;
-			
+			/*
 			if(tileEntity.outputType == GasRegistry.getGas("hydrogen"))
 			{
 				gasToSet = GasRegistry.getGas("oxygen");
@@ -62,11 +55,12 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			*/
 		}
 		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
 		{
 			Gas gasToSet = null;
-			
+			/*
 			if(tileEntity.dumpType == null)
 			{
 				gasToSet = GasRegistry.getGas("oxygen");
@@ -86,6 +80,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
 			
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			*/
 		}
     }
 
@@ -114,21 +109,21 @@ public class GuiElectrolyticSeparator extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int outputDisplay = tileEntity.outputType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.outputType == GasRegistry.getGas("hydrogen") ? 90 : 98);
+        int outputDisplay = 1;//tileEntity.outputType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.outputType == GasRegistry.getGas("hydrogen") ? 90 : 98);
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, outputDisplay, 8, 8);
         
-        int dumpDisplay = tileEntity.dumpType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.dumpType == GasRegistry.getGas("hydrogen") ? 90 : 98);
+        int dumpDisplay = 1;//tileEntity.dumpType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.dumpType == GasRegistry.getGas("hydrogen") ? 90 : 98);
         drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, dumpDisplay, 8, 8);
         
         int displayInt;
         
-        displayInt = tileEntity.getScaledWaterLevel(52);
+        displayInt = tileEntity.getScaledFluidLevel(52);
         drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176 + 4, 52 - displayInt, 4, displayInt);
         
-        displayInt = tileEntity.getScaledHydrogenLevel(30);
+        displayInt = tileEntity.getLeftScaledLevel(30);
         drawTexturedModalRect(guiWidth + 65, guiHeight + 17 + 30 - displayInt, 176, 52 + 30 - displayInt, 4, displayInt);
         
-        displayInt = tileEntity.getScaledOxygenLevel(30);
+        displayInt = tileEntity.getRightScaledLevel(30);
         drawTexturedModalRect(guiWidth + 107, guiHeight + 17 + 30 - displayInt, 176 + 4, 52 + 30 - displayInt, 4, displayInt);
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
