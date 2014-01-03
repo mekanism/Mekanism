@@ -4,7 +4,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 
 /**
- * An input of gasses for the Chemical Infuser.
+ * An input of gasses for recipe use.
  * @author aidancbrady
  *
  */
@@ -17,7 +17,7 @@ public class ChemicalInput
 	public GasStack rightGas;
 	
 	/**
-	 * Creates a chemical input with two defined gasses of the Chemical Infuser.
+	 * Creates a chemical input with two defined gasses.
 	 * @param left - left gas
 	 * @param right - right gas
 	 */

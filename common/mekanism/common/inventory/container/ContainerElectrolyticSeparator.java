@@ -20,7 +20,7 @@ public class ContainerElectrolyticSeparator extends Container
     public ContainerElectrolyticSeparator(InventoryPlayer inventory, TileEntityElectrolyticSeparator tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 17, 35));
+        addSlotToContainer(new Slot(tentity, 0, 26, 35));
         addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 59, 52));
         addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 101, 52));
         addSlotToContainer(new SlotDischarge(tentity, 3, 143, 35));

@@ -3,6 +3,8 @@ package mekanism.client.gui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
+import mekanism.api.gas.GasStack;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
@@ -12,6 +14,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fluids.FluidStack;
+
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -67,15 +71,15 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		name = tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
         fontRenderer.drawString(name, 152-(name.length()*5), 73, 0x404040);
 
-		if(xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11 && yAxis <= 69)
 		{
 			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluidAmount() + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
-		if(xAxis >= 65 && xAxis <= 69 && yAxis >= 17 && yAxis <= 48)
+		if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19 && yAxis <= 47)
 		{
 			drawCreativeTabHoveringText(tileEntity.leftTank.getGas() != null ? tileEntity.leftTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.leftTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
-		if(xAxis >= 107 && xAxis <= 111 && yAxis >= 17 && yAxis <= 48)
+		if(xAxis >= 101 && xAxis <= 117 && yAxis >= 19 && yAxis <= 47)
 		{
 			drawCreativeTabHoveringText(tileEntity.rightTank.getGas() != null ? tileEntity.rightTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.rightTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
@@ -86,7 +90,7 @@ public class GuiElectrolyticSeparator extends GuiContainer
     }
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -94,24 +98,79 @@ public class GuiElectrolyticSeparator extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int leftDisplay = tileEntity.dumpLeft ? 90 : 82;
+        int leftDisplay = tileEntity.dumpLeft ? 60 : 52;
         drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, leftDisplay, 8, 8);
         
-        int rightDisplay = tileEntity.dumpRight ? 90 : 82;
+        int rightDisplay = tileEntity.dumpRight ? 60 : 52;
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, rightDisplay, 8, 8);
         
         int displayInt;
         
-        displayInt = tileEntity.getScaledFluidLevel(52);
-        drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176 + 4, 52 - displayInt, 4, displayInt);
+        if(tileEntity.fluidTank.getFluid() != null)
+        {
+        	displayGauge(58, 6, 11, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid(), null);
+        }
         
-        displayInt = tileEntity.getLeftScaledLevel(30);
-        drawTexturedModalRect(guiWidth + 65, guiHeight + 17 + 30 - displayInt, 176, 52 + 30 - displayInt, 4, displayInt);
+        if(tileEntity.leftTank.getGas() != null)
+        {
+        	displayGauge(28, 59, 19, tileEntity.getLeftScaledLevel(28), null, tileEntity.leftTank.getGas());
+        }
         
-        displayInt = tileEntity.getRightScaledLevel(30);
-        drawTexturedModalRect(guiWidth + 107, guiHeight + 17 + 30 - displayInt, 176 + 4, 52 + 30 - displayInt, 4, displayInt);
+        if(tileEntity.rightTank.getGas() != null)
+        {
+        	displayGauge(28, 101, 19, tileEntity.getRightScaledLevel(28), null, tileEntity.rightTank.getGas());
+        }
         
         displayInt = tileEntity.getScaledEnergyLevel(52);
         drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
     }
+	
+	public void displayGauge(int length, int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
+	{
+	    if(fluid == null && gas == null)
+	    {
+	        return;
+	    }
+	    
+	    int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+	    
+		int start = 0;
+
+		while(true)
+		{
+			int renderRemaining = 0;
+
+			if(scale > 16) 
+			{
+				renderRemaining = 16;
+				scale -= 16;
+			} 
+			else {
+				renderRemaining = scale;
+				scale = 0;
+			}
+
+			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+			
+			if(fluid != null)
+			{
+				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + length - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			}
+			else if(gas != null)
+			{
+				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + length - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
+			}
+			
+			start+=16;
+
+			if(renderRemaining == 0 || scale == 0)
+			{
+				break;
+			}
+		}
+
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"));
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 68, 16, length+1);
+	}
 }

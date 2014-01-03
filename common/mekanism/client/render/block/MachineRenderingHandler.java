@@ -111,7 +111,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glTranslated(0.0F, -1.0F, 0.0F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparatorHydrogen.png"));
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparator.png"));
 			electrolyticSeparator.render(0.0625F);
 		}
 		else {
