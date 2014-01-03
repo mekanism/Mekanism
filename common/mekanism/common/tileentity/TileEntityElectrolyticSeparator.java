@@ -1,17 +1,23 @@
 package mekanism.common.tileentity;
 
-import com.google.common.io.ByteArrayDataInput;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import java.util.ArrayList;
+
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
-import mekanism.api.gas.*;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
+import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
@@ -20,9 +26,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
-import java.util.ArrayList;
+import com.google.common.io.ByteArrayDataInput;
+
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IPeripheral;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedTank, IGasHandler
 {
@@ -67,6 +83,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
 				{
 					FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+					
 					if(fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
 					{
 						fluidTank.fill(fluid, true);
@@ -125,8 +142,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				else
-				{
+				else {
 					leftTank.draw(8, true);
 
 					if(worldObj.rand.nextInt(3) == 2)
@@ -153,8 +169,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				else
-				{
+				else {
 					rightTank.draw(8, true);
 
 					if(worldObj.rand.nextInt(3) == 2)
@@ -175,7 +190,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public boolean canFillWithSwap(ChemicalInput gases)
 	{
 		if(gases == null)
+		{
 			return false;
+		}
+		
 		return canFill(gases) || canFill(gases.swap());
 	}
 	
@@ -245,7 +263,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(slotID == 0)
 		{
-			return RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemstack);
+			return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemstack);
 		}
 		else if(slotID == 1)
 		{
@@ -266,7 +284,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(ForgeDirection.getOrientation(side) == MekanismUtils.getLeft(facing))
+		if(ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing))
 		{
 			return new int[] {3};
 		}
@@ -581,12 +599,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) {
+	public int receiveGas(ForgeDirection side, GasStack stack) 
+	{
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount) {
+	public GasStack drawGas(ForgeDirection side, int amount) 
+	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
 			return leftTank.draw(amount, true);
@@ -595,22 +615,24 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return rightTank.draw(amount, true);
 		}
+		
 		return null;
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type) {
+	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type) {
+	public boolean canDrawGas(ForgeDirection side, Gas type)
+	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
 			return leftTank.getGas() != null && leftTank.getGas().getGas() == type;
 		}
-
-		if(side == MekanismUtils.getRight(facing))
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return rightTank.getGas() != null && rightTank.getGas().getGas() == type;
 		}

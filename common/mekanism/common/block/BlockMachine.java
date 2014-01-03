@@ -536,7 +536,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	}
     	else if(blockID == Mekanism.machineBlock2ID)
     	{
-    		if(metadata == 2 || metadata == 3 || metadata == 4)
+    		if(metadata == 2 || metadata == 3)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{
@@ -563,11 +563,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
-			if(type == MachineType.CHEMICAL_OXIDIZER || type == MachineType.CHEMICAL_INFUSER /*TODO*/)
-			{
-				//continue;
-			}
-			
 			if(type.typeId == blockID)
 			{
 				if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
@@ -1079,7 +1074,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, false),
 		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true),
-		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 5, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false);
+		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, true);
 
 
 		public int typeId;

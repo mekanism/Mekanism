@@ -11,7 +11,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.client.gui.*;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.RenderElectrolyticSeparator;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
