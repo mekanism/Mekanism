@@ -637,6 +637,7 @@ public class Mekanism
 
 		//Electrolytic Separator Recipes
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("lava", 10), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
 
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
@@ -982,6 +983,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		GasRegistry.register(new Gas("water")).registerFluid();
+		GasRegistry.register(new Gas("chlorine")).registerFluid();
 		GasRegistry.register(new Gas("sulfurDioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();

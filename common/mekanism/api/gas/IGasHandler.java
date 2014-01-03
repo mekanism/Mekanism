@@ -11,7 +11,7 @@ public interface IGasHandler
 {
 	/**
 	 * Transfer a certain amount of gas to this block.
-	 * @param amount - amount to transfer
+	 * @param stack - gas to add
 	 * @return gas added
 	 */
 	public int receiveGas(ForgeDirection side, GasStack stack);

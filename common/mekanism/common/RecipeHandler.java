@@ -347,12 +347,40 @@ public final class RecipeHandler
 							return true;
 						}
 					}
+					if(entry.getKey() instanceof FluidStack)
+					{
+						if(((FluidStack)entry.getKey()).isFluidEqual(input))
+						{
+							return true;
+						}
+					}
 				}
 			}
 			
 			return false;
 		}
 		
+		public boolean containsRecipe(Fluid input)
+		{
+			for(Object obj : get().entrySet())
+			{
+				if(obj instanceof Map.Entry)
+				{
+					Map.Entry entry = (Map.Entry)obj;
+
+					if(entry.getKey() instanceof FluidStack)
+					{
+						if(((FluidStack)entry.getKey()).getFluid() == input)
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
 		public HashMap get()
 		{
 			return recipes;
