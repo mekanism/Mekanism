@@ -352,7 +352,14 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
-    	return GeneratorType.getFromMetadata(metadata).create();
+    	GeneratorType type = GeneratorType.getFromMetadata(metadata);
+    	
+    	if(type != null)
+    	{
+    		return type.create();
+    	}
+    	
+    	return null;
     }
     
     @Override
