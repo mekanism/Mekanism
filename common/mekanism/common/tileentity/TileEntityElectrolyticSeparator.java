@@ -1,7 +1,9 @@
-package mekanism.generators.common.tileentity;
+package mekanism.common.tileentity;
 
-import java.util.ArrayList;
-
+import com.google.common.io.ByteArrayDataInput;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IPeripheral;
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.*;
@@ -10,29 +12,17 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.RecipeHandler;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tileentity.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 
-import com.google.common.io.ByteArrayDataInput;
-
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import java.util.ArrayList;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedTank, IGasHandler
 {
@@ -59,7 +49,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("ElectrolyticSeparator", GeneratorType.ELECTROLYTIC_SEPARATOR.maxEnergy);
+		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 	
@@ -115,7 +105,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			if(canOperate())
 			{
 				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
-				setEnergy(getEnergy() - MekanismGenerators.electrolyticSeparatorUsage);
+				setEnergy(getEnergy() - Mekanism.electrolyticSeparatorUsage);
 			}
 
 			if(leftTank.getGas() != null)
@@ -179,7 +169,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public boolean canOperate()
 	{
-		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= MekanismGenerators.electrolyticSeparatorUsage;
+		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.electrolyticSeparatorUsage;
 	}
 
 	public boolean canFillWithSwap(ChemicalInput gases)

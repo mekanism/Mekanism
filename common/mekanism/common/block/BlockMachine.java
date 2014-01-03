@@ -1,25 +1,13 @@
 package mekanism.common.block;
 
-import java.util.List;
-import java.util.Random;
-
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
-import mekanism.common.IActiveState;
-import mekanism.common.IBoundingBlock;
-import mekanism.common.IElectricChest;
-import mekanism.common.IFactory;
+import mekanism.common.*;
 import mekanism.common.IFactory.RecipeType;
-import mekanism.common.IInvConfiguration;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISpecialBounds;
-import mekanism.common.ISustainedInventory;
-import mekanism.common.ISustainedTank;
-import mekanism.common.IUpgradeManagement;
-import mekanism.common.ItemAttacher;
-import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
@@ -27,7 +15,6 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tileentity.*;
-import mekanism.common.tileentity.TileEntityChemicalOxidizer;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -53,9 +40,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -1091,8 +1078,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		ROTARY_CONDENSENTRATOR(Mekanism.machineBlock2ID, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, false),
 		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, false),
 		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, false),
-		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true);
-		
+		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true),
+		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 5, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false);
+
+
 		public int typeId;
 		public int meta;
 		public String name;

@@ -1,21 +1,18 @@
-package mekanism.generators.client.gui;
-
-import mekanism.api.Coord4D;
-import mekanism.api.gas.Gas;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketTileEntity;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.inventory.container.ContainerElectrolyticSeparator;
-import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
+package mekanism.client.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.Coord4D;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
+import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityElectrolyticSeparator;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 

@@ -26,6 +26,7 @@ item.Jetpack.name=Jetpack
 item.ScubaTank.name=Taucherflasche
 item.GasMask.name=Gasmaske
 item.Dictionary.name=Lexikon
+item.ElectrolyticCore.name=Elektrolytischer Kern
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -70,6 +71,7 @@ tile.MachineBlock2.ChemicalOxidizer.name=Chemischer Oxidierer
 tile.MachineBlock2.ChemicalInfuser.name=Chemischer Infundierer
 tile.MachineBlock2.ChemicalCombiner.name=Chemischer Kombinierer
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemische Injektionskammer
+tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytischer Separator
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -352,13 +354,11 @@ itemGroup.tabMekanism=Mekanism
 
 //Items
 item.BioFuel.name=Biobrennstoff
-item.ElectrolyticCore.name=Elektrolytischer Kern
 item.SolarPanel.name=Solarmodul
 
 //Generators
 tile.Generator.HeatGenerator.name=Hitzegenerator
 tile.Generator.SolarGenerator.name=Solargenerator
-tile.Generator.ElectrolyticSeparator.name=Elektrolytischer Separator
 tile.Generator.HydrogenGenerator.name=Wasserstoffgenerator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Fortgeschrittener Solargenerator

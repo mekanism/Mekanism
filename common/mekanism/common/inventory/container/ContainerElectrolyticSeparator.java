@@ -1,20 +1,17 @@
-package mekanism.generators.common.inventory.container;
+package mekanism.common.inventory.container;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
+import mekanism.common.tileentity.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 public class ContainerElectrolyticSeparator extends Container
 {

@@ -1,17 +1,14 @@
-package mekanism.generators.client.render;
-
-import mekanism.api.gas.GasRegistry;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.client.model.ModelElectrolyticSeparator;
-import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
-
-import org.lwjgl.opengl.GL11;
+package mekanism.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.client.model.ModelElectrolyticSeparator;
+import mekanism.common.tileentity.TileEntityElectrolyticSeparator;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderElectrolyticSeparator extends TileEntitySpecialRenderer
