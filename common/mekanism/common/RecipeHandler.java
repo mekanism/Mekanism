@@ -10,6 +10,9 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 /** 
  * Class used to handle machine recipes. This is used for both adding recipes and checking outputs.
@@ -112,7 +115,17 @@ public final class RecipeHandler
 	{
 		Recipe.CHEMICAL_INJECTION_CHAMBER.put(input, output);
 	}
-	
+
+	/**
+	 * Add an Electrolytic Separator recipe.
+	 * @param fluid - FluidStack to electrolyze
+	 * @param products - Pair of gases to produce when the fluid is electrolyzed
+	 */
+	public static void addElectrolyticSeparatorRecipe(FluidStack fluid, ChemicalInput products)
+	{
+		Recipe.ELECTROLYTIC_SEPARATOR.put(fluid, products);
+	}
+
 	/**
 	 * Gets the InfusionOutput of the InfusionInput in the parameters.
 	 * @param infusion - input Infusion
@@ -266,6 +279,34 @@ public final class RecipeHandler
 		return false;
 	}
 
+	/**
+	 * Get the result of electrolysing a given fluid
+	 * @param fluidTank - the FluidTank to electrolyse fluid from
+	 */
+	public static ChemicalInput getElectrolyticSeparatorOutput(FluidTank fluidTank, boolean doRemove)
+	{
+		FluidStack fluid = fluidTank.getFluid();
+
+		if(fluid != null)
+		{
+			HashMap<FluidStack, ChemicalInput> recipes = Recipe.ELECTROLYTIC_SEPARATOR.get();
+
+			for(Map.Entry<FluidStack, ChemicalInput> entry : recipes.entrySet())
+			{
+				FluidStack key = (FluidStack)entry.getKey();
+
+				if(fluid.containsFluid(key))
+				{
+					fluidTank.drain(key.amount, doRemove);
+
+					return entry.getValue().copy();
+				}
+			}
+		}
+
+		return null;
+	}
+
 	public static enum Recipe
 	{
 		ENRICHMENT_CHAMBER(new HashMap<ItemStack, ItemStack>()),
@@ -276,7 +317,8 @@ public final class RecipeHandler
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
 		CHEMICAL_INFUSER(new HashMap<ChemicalInput, GasStack>()),
 		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
-		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>());
+		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
+		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalInput>());
 		
 		private HashMap recipes;
 		
@@ -305,12 +347,40 @@ public final class RecipeHandler
 							return true;
 						}
 					}
+					if(entry.getKey() instanceof FluidStack)
+					{
+						if(((FluidStack)entry.getKey()).isFluidEqual(input))
+						{
+							return true;
+						}
+					}
 				}
 			}
 			
 			return false;
 		}
 		
+		public boolean containsRecipe(Fluid input)
+		{
+			for(Object obj : get().entrySet())
+			{
+				if(obj instanceof Map.Entry)
+				{
+					Map.Entry entry = (Map.Entry)obj;
+
+					if(entry.getKey() instanceof FluidStack)
+					{
+						if(((FluidStack)entry.getKey()).getFluid() == input)
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
 		public HashMap get()
 		{
 			return recipes;

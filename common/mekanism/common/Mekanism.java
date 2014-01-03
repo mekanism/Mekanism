@@ -1,15 +1,15 @@
 package mekanism.common;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -31,68 +31,12 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.block.BlockBasic;
-import mekanism.common.block.BlockBounding;
-import mekanism.common.block.BlockEnergyCube;
-import mekanism.common.block.BlockGasTank;
-import mekanism.common.block.BlockMachine;
-import mekanism.common.block.BlockObsidianTNT;
-import mekanism.common.block.BlockOre;
-import mekanism.common.block.BlockTransmitter;
-import mekanism.common.item.ItemAtomicDisassembler;
-import mekanism.common.item.ItemBalloon;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockEnergyCube;
-import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockOre;
-import mekanism.common.item.ItemBlockTransmitter;
-import mekanism.common.item.ItemClump;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemDictionary;
-import mekanism.common.item.ItemDirtyDust;
-import mekanism.common.item.ItemDust;
-import mekanism.common.item.ItemElectricBow;
-import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemIngot;
-import mekanism.common.item.ItemJetpack;
-import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.item.ItemMekanism;
-import mekanism.common.item.ItemNetworkReader;
-import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemProxy;
-import mekanism.common.item.ItemRobit;
-import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemShard;
-import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.block.*;
+import mekanism.common.item.*;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.MultipartMekanism;
-import mekanism.common.network.PacketConfigSync;
-import mekanism.common.network.PacketConfigurationUpdate;
-import mekanism.common.network.PacketConfiguratorState;
-import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketDigitUpdate;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketElectricBowState;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketKey;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketNewFilter;
-import mekanism.common.network.PacketPortableTeleport;
-import mekanism.common.network.PacketPortalFX;
-import mekanism.common.network.PacketRedstoneControl;
-import mekanism.common.network.PacketRemoveUpgrade;
-import mekanism.common.network.PacketRobit;
-import mekanism.common.network.PacketScubaTankData;
-import mekanism.common.network.PacketSimpleGui;
-import mekanism.common.network.PacketStatusUpdate;
-import mekanism.common.network.PacketTileEntity;
-import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.*;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
-import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
@@ -111,24 +55,15 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+
+import java.io.File;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Mekanism - the mod that doesn't have a category.
@@ -229,7 +164,8 @@ public class Mekanism
 	public static Item Dictionary;
 	public static Item Balloon;
 	public static Item Shard;
-	
+	public static Item ElectrolyticCore;
+
 	//Blocks
 	public static Block BasicBlock;
 	public static Block MachineBlock;
@@ -240,13 +176,13 @@ public class Mekanism
 	public static Block BoundingBlock;
 	public static Block GasTank;
 	public static Block Transmitter;
-	
+
 	//Multi-ID Items
 	public static Item Dust;
 	public static Item Ingot;
 	public static Item Clump;
 	public static Item DirtyDust;
-	
+
 	//General Configuration
 	public static boolean osmiumGenerationEnabled = true;
 	public static boolean copperGenerationEnabled = true;
@@ -264,11 +200,11 @@ public class Mekanism
 	public static int copperGenerationAmount = 16;
 	public static int tinGenerationAmount = 14;
 	public static int obsidianTNTDelay = 100;
-	public static int UPDATE_DELAY = 10;	
+	public static int UPDATE_DELAY = 10;
 	public static int VOICE_PORT = 36123;
 	public static int maxUpgradeMultiplier = 10;
 	public static double ENERGY_PER_REDSTONE = 10000;
-	
+
 	public static double TO_IC2;
 	public static double TO_BC;
 	public static double TO_TE;
@@ -277,7 +213,7 @@ public class Mekanism
 	public static double FROM_BC;
 	public static double FROM_TE;
 	public static double FROM_UE = 1/TO_UE;
-	
+
 	//Usage Configuration
 	public static double enrichmentChamberUsage;
 	public static double osmiumCompressorUsage;
@@ -292,7 +228,8 @@ public class Mekanism
 	public static double oxidationChamberUsage;
 	public static double chemicalInfuserUsage;
 	public static double chemicalInjectionChamberUsage;
-	
+	public static double electrolyticSeparatorUsage;
+
 	/**
 	 * Adds all in-game crafting and smelting recipes.
 	 */
@@ -492,7 +429,14 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 4), new Object[] {
 			"ACA", "ERE", "ACA", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), AtomicCore, Character.valueOf('E'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('R'), new ItemStack(MachineBlock, 1, 9)
 		}));
-		
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 5), new Object[] {
+				"IRI", "ECE", "IRI", Character.valueOf('I'), Item.ingotIron, Character.valueOf('R'), Item.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('C'), ElectrolyticCore
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ElectrolyticCore), new Object[] {
+				"EPE", "IEG", "EPE", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "dustOsmium", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold"
+		}));
+
+
 		for(RecipeType type : RecipeType.values())
 		{
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, type), new Object[] {
@@ -633,6 +577,10 @@ public class Mekanism
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
 		RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
 
+		//Electrolytic Separator Recipes
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("lava", 10), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
+
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
@@ -675,6 +623,8 @@ public class Mekanism
 		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11225).getInt()).setUnlocalizedName("MultipartTransmitter");
 		Balloon = new ItemBalloon(configuration.getItem("Balloon", 11226).getInt()).setUnlocalizedName("Balloon");
 		Shard = new ItemShard(configuration.getItem("Shard", 11227).getInt());
+		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", 11302).getInt()).setUnlocalizedName("ElectrolyticCore");
+
 		configuration.save();
 		
 		//Registrations
@@ -705,6 +655,7 @@ public class Mekanism
 		GameRegistry.registerItem(ScubaTank, "ScubaTank");
 		GameRegistry.registerItem(Balloon, "Balloon");
 		GameRegistry.registerItem(Shard, "Shard");
+		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 	}
 	
 	/**
@@ -977,6 +928,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
 		GasRegistry.register(new Gas("water")).registerFluid();
+		GasRegistry.register(new Gas("chlorine")).registerFluid();
 		GasRegistry.register(new Gas("sulfurDioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();

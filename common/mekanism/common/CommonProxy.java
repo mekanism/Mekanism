@@ -1,20 +1,18 @@
 package mekanism.common;
 
-import java.io.File;
-
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 import mekanism.common.inventory.container.*;
-import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.tileentity.*;
-import mekanism.common.tileentity.TileEntityChemicalOxidizer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
+
+import java.io.File;
 
 /**
  * Common proxy for the Mekanism mod.
@@ -59,6 +57,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
+		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
 	}
 	
 	/**
@@ -158,6 +157,7 @@ public class CommonProxy
 		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 100D).getDouble(100D);
 		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 100D).getDouble(100D);
 		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 200D).getDouble(200D);
+		Mekanism.electrolyticSeparatorUsage = Mekanism.configuration.get("usage", "ElectrolyticSeparatorUsage", 50D).getDouble(50D);
 	  	Mekanism.configuration.save();
 	}
 	
@@ -295,6 +295,8 @@ public class CommonProxy
 				return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser)tileEntity);
 			case 31:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+			case 32:
+				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 		}
 		
 		return null;

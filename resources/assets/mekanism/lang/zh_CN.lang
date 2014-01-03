@@ -26,6 +26,7 @@ item.Jetpack.name=喷射背包
 item.ScubaTank.name=潜水罐
 item.GasMask.name=燃气面具
 item.Dictionary.name=辞典
+item.ElectrolyticCore.name=电解核心
 
 //Gas Tank
 tile.GasTank.GasTank.name=燃气储罐
@@ -68,6 +69,7 @@ tile.MachineBlock.DigitalMiner.name=数字型采矿机
 tile.MachineBlock2.RotaryCondensentrator.name=回旋式气液转换机
 tile.MachineBlock2.OxidationChamber.name=化学程式机
 tile.MachineBlock2.ChemicalInfuser.name=化学灌注器
+tile.MachineBlock2.ElectrolyticSeparator.name=电解分离器
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=锇矿石
@@ -315,13 +317,11 @@ itemGroup.tabMekanism=通用机器
 
 //Items
 item.BioFuel.name=生物燃料
-item.ElectrolyticCore.name=电解核心
 item.SolarPanel.name=太阳能板
 
 //Generators
 tile.Generator.HeatGenerator.name=热力发电机
 tile.Generator.SolarGenerator.name=太阳能发电机
-tile.Generator.ElectrolyticSeparator.name=电解分离器
 tile.Generator.HydrogenGenerator.name=氢气生成器
 tile.Generator.BioGenerator.name=生物能发电机
 tile.Generator.AdvancedSolarGenerator.name=高级太阳能发电机

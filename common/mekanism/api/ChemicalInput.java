@@ -50,7 +50,7 @@ public class ChemicalInput
 	 * Swaps the right gas and left gas of this input.
 	 * @return a swapped ChemicalInput
 	 */
-	private ChemicalInput swap()
+	public ChemicalInput swap()
 	{
 		return new ChemicalInput(rightGas, leftGas);
 	}
@@ -92,5 +92,10 @@ public class ChemicalInput
 		}
 		
 		return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
+	}
+
+	public ChemicalInput copy()
+	{
+		return new ChemicalInput(leftGas.copy(), rightGas.copy());
 	}
 }

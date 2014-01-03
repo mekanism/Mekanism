@@ -1,10 +1,10 @@
 package mekanism.generators.common.item;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
-
-import java.util.List;
-
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ISustainedInventory;
@@ -24,18 +24,14 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
 import org.lwjgl.input.Keyboard;
 
-import cofh.api.energy.IEnergyContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 
 /**
  * Item class for handling multiple generator block IDs.
  * 0: Heat Generator
  * 1: Solar Generator
- * 2: Electrolytic Separator
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
@@ -305,13 +301,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public boolean canReceive(ItemStack itemStack) 
 	{
-		return itemStack.getItemDamage() == GeneratorType.ELECTROLYTIC_SEPARATOR.meta;
+		return false;
 	}
 
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return itemStack.getItemDamage() != GeneratorType.ELECTROLYTIC_SEPARATOR.meta;
+		return true;
 	}
 	
 	@Override

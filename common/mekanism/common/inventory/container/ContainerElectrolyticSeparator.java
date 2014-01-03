@@ -1,19 +1,17 @@
-package mekanism.generators.common.inventory.container;
+package mekanism.common.inventory.container;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
+import mekanism.common.tileentity.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 public class ContainerElectrolyticSeparator extends Container
 {
@@ -23,8 +21,8 @@ public class ContainerElectrolyticSeparator extends Container
     {
         tileEntity = tentity;
         addSlotToContainer(new Slot(tentity, 0, 17, 35));
-        addSlotToContainer(new SlotStorageTank(tentity, GasRegistry.getGas("hydrogen"), false, 1, 59, 52));
-        addSlotToContainer(new SlotStorageTank(tentity, GasRegistry.getGas("oxygen"), false, 2, 101, 52));
+        addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 59, 52));
+        addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 101, 52));
         addSlotToContainer(new SlotDischarge(tentity, 3, 143, 35));
         int slotX;
 
@@ -73,7 +71,7 @@ public class ContainerElectrolyticSeparator extends Container
 
             if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             {
-            	if(isWater(slotStack))
+            	if(isCorrectFluid(slotStack))
             	{
             		if(!mergeItemStack(slotStack, 0, 1, false))
             		{
@@ -166,18 +164,8 @@ public class ContainerElectrolyticSeparator extends Container
         return stack;
     }
     
-    public boolean isWater(ItemStack itemStack)
+    public boolean isCorrectFluid(ItemStack itemStack)
     {
-    	FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-    	
-    	if(fluid != null)
-    	{
-    		if(fluid.getFluid() == FluidRegistry.WATER)
-    		{
-    			return true;
-    		}
-    	}
-    	
-    	return false;
+    	return RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemStack);
     }
 }

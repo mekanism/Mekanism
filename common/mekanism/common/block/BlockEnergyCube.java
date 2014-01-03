@@ -34,6 +34,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
@@ -315,4 +316,10 @@ public class BlockEnergyCube extends BlockContainer
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
         return tileEntity.getRedstoneLevel();
     }
+
+	@Override
+	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+	{
+		return true;
+	}
 }

@@ -1,24 +1,20 @@
-package mekanism.generators.client.gui;
-
-import java.util.ArrayList;
-
-import mekanism.api.Coord4D;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketTileEntity;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.inventory.container.ContainerElectrolyticSeparator;
-import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
+package mekanism.client.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mekanism.api.Coord4D;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
+import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tileentity.TileEntityElectrolyticSeparator;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class GuiElectrolyticSeparator extends GuiContainer
@@ -39,53 +35,23 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		int xAxis = (x - (width - xSize) / 2);
 		int yAxis = (y - (height - ySize) / 2);
 		
-		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
+		if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
 		{
-			Gas gasToSet = null;
-			
-			if(tileEntity.outputType == GasRegistry.getGas("hydrogen"))
-			{
-				gasToSet = GasRegistry.getGas("oxygen");
-			}
-			else if(tileEntity.outputType == GasRegistry.getGas("oxygen"))
-			{
-				gasToSet = null;
-			}
-			else if(tileEntity.outputType == null)
-			{
-				gasToSet = GasRegistry.getGas("hydrogen");
-			}
-			
 			ArrayList data = new ArrayList();
 			data.add((byte)0);
-			data.add(GasRegistry.getGasID(gasToSet));
-			
+
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+
 		}
-		else if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
+		else if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			Gas gasToSet = null;
-			
-			if(tileEntity.dumpType == null)
-			{
-				gasToSet = GasRegistry.getGas("oxygen");
-			}
-			else if(tileEntity.dumpType == GasRegistry.getGas("oxygen"))
-			{
-				gasToSet = GasRegistry.getGas("hydrogen");
-			}
-			else if(tileEntity.dumpType == GasRegistry.getGas("hydrogen"))
-			{
-				gasToSet = null;
-			}
-			
 			ArrayList data = new ArrayList();
 			data.add((byte)1);
-			data.add(GasRegistry.getGasID(gasToSet));
 			
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+
 		}
     }
 
@@ -96,10 +62,24 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
         fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
-        fontRenderer.drawString(MekanismUtils.localize("gui.output"), 124, 73, 0x404040);
-        fontRenderer.drawString(MekanismUtils.localize("gui.electrolyticSeparator.dump"), 21, 73, 0x404040);
-        
-    	if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		String name = tileEntity.leftTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.leftTank.getGas().getGas().getLocalizedName();
+        fontRenderer.drawString(name, 21, 73, 0x404040);
+		name = tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
+        fontRenderer.drawString(name, 152-(name.length()*5), 73, 0x404040);
+
+		if(xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluidAmount() + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+		}
+		if(xAxis >= 65 && xAxis <= 69 && yAxis >= 17 && yAxis <= 48)
+		{
+			drawCreativeTabHoveringText(tileEntity.leftTank.getGas() != null ? tileEntity.leftTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.leftTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+		}
+		if(xAxis >= 107 && xAxis <= 111 && yAxis >= 17 && yAxis <= 48)
+		{
+			drawCreativeTabHoveringText(tileEntity.rightTank.getGas() != null ? tileEntity.rightTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.rightTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+		}
+		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
@@ -114,21 +94,21 @@ public class GuiElectrolyticSeparator extends GuiContainer
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int outputDisplay = tileEntity.outputType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.outputType == GasRegistry.getGas("hydrogen") ? 90 : 98);
-        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, outputDisplay, 8, 8);
+        int leftDisplay = tileEntity.dumpLeft ? 90 : 82;
+        drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, leftDisplay, 8, 8);
         
-        int dumpDisplay = tileEntity.dumpType == GasRegistry.getGas("oxygen") ? 82 : (tileEntity.dumpType == GasRegistry.getGas("hydrogen") ? 90 : 98);
-        drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, dumpDisplay, 8, 8);
+        int rightDisplay = tileEntity.dumpRight ? 90 : 82;
+        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, rightDisplay, 8, 8);
         
         int displayInt;
         
-        displayInt = tileEntity.getScaledWaterLevel(52);
+        displayInt = tileEntity.getScaledFluidLevel(52);
         drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176 + 4, 52 - displayInt, 4, displayInt);
         
-        displayInt = tileEntity.getScaledHydrogenLevel(30);
+        displayInt = tileEntity.getLeftScaledLevel(30);
         drawTexturedModalRect(guiWidth + 65, guiHeight + 17 + 30 - displayInt, 176, 52 + 30 - displayInt, 4, displayInt);
         
-        displayInt = tileEntity.getScaledOxygenLevel(30);
+        displayInt = tileEntity.getRightScaledLevel(30);
         drawTexturedModalRect(guiWidth + 107, guiHeight + 17 + 30 - displayInt, 176 + 4, 52 + 30 - displayInt, 4, displayInt);
         
         displayInt = tileEntity.getScaledEnergyLevel(52);

@@ -26,6 +26,7 @@ item.Jetpack.name=Jetpack
 item.ScubaTank.name=Scuba Tank
 item.GasMask.name=Gas Mask
 item.Dictionary.name=Dictionary
+item.ElectrolyticCore.name=Electrolytic Core
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -70,6 +71,7 @@ tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
+tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -153,6 +155,7 @@ item.tinIngot.name=Tin Ingot
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
 gas.water=Water Vapor
+gas.chlorine=Chlorine
 gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
@@ -160,6 +163,7 @@ gas.sulfuricAcid=Sulfuric Acid
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
+fluid.chlorine=Liquid Chlorine
 fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
@@ -352,13 +356,11 @@ itemGroup.tabMekanism=Mekanism
 
 //Items
 item.BioFuel.name=Bio Fuel
-item.ElectrolyticCore.name=Electrolytic Core
 item.SolarPanel.name=Solar Panel
 
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
 tile.Generator.SolarGenerator.name=Solar Generator
-tile.Generator.ElectrolyticSeparator.name=Electrolytic Separator
 tile.Generator.HydrogenGenerator.name=Hydrogen Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
