@@ -369,6 +369,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	
 	public IAdvancedBoundingBlock getInv()
 	{
+		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		
+		if(!(tile instanceof IAdvancedBoundingBlock))
+		{
+			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			return null;
+		}
+		
 		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 }

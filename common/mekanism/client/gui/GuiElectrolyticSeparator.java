@@ -66,10 +66,12 @@ public class GuiElectrolyticSeparator extends GuiContainer
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
         fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
-		String name = tileEntity.leftTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.leftTank.getGas().getGas().getLocalizedName();
+        
+		String name = tileEntity.dumpLeft ? "Dumping..." : tileEntity.leftTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.leftTank.getGas().getGas().getLocalizedName();
         fontRenderer.drawString(name, 21, 73, 0x404040);
-		name = tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
-        fontRenderer.drawString(name, 152-(name.length()*5), 73, 0x404040);
+        
+		name = tileEntity.dumpRight ? "Dumping..." : tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
+        fontRenderer.drawString(name, 156-fontRenderer.getStringWidth(name), 73, 0x404040);
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11 && yAxis <= 69)
 		{
