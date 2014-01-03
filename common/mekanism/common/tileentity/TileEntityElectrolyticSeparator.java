@@ -229,7 +229,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
 			
 			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
-			System.out.println(x + " " + (yCoord+0.5) + " " + z);
 			
 		}
 		else if(type == 1)
