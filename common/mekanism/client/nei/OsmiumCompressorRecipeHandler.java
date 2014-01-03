@@ -3,10 +3,10 @@ package mekanism.client.nei;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
-import mekanism.common.util.ListUtils;
 import net.minecraft.item.ItemStack;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler

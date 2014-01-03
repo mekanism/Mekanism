@@ -8,18 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.FluidNetwork;
-import mekanism.common.util.ListUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
@@ -379,7 +376,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		
 		for(ITransmitterNetwork<?, ?> network : networks)
 		{
-			if(network instanceof FluidNetwork)
+			if(network instanceof GasNetwork)
 			{
 				GasNetwork net = (GasNetwork)network;
 				

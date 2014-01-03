@@ -8,12 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tileentity.TileEntityMechanicalPipe;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

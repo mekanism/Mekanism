@@ -10,13 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

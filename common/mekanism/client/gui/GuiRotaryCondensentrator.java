@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
@@ -10,7 +11,6 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

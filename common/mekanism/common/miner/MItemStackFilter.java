@@ -3,7 +3,7 @@ package mekanism.common.miner;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.common.util.ListUtils;
+import mekanism.api.ListUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
