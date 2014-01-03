@@ -1,19 +1,16 @@
 package mekanism.generators.common;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.common.*;
+import mekanism.common.IModule;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismRecipe;
+import mekanism.common.RecipeHandler;
+import mekanism.common.Version;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -24,6 +21,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
+
+import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "6.0.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
@@ -173,5 +183,27 @@ public class MekanismGenerators implements IModule
 	public String getName()
 	{
 		return "Generators";
+	}
+	
+	@Override
+	public void writeConfig(DataOutputStream dataStream) throws IOException
+	{
+		dataStream.writeDouble(advancedSolarGeneration);
+		dataStream.writeDouble(bioGeneration);
+		dataStream.writeDouble(heatGeneration);
+		dataStream.writeDouble(hydrogenGeneration);
+		dataStream.writeDouble(solarGeneration);
+		dataStream.writeDouble(windGeneration);
+	}
+
+	@Override
+	public void readConfig(ByteArrayDataInput dataStream) throws IOException
+	{
+		advancedSolarGeneration = dataStream.readDouble();
+		bioGeneration = dataStream.readDouble();
+		heatGeneration = dataStream.readDouble();
+		hydrogenGeneration = dataStream.readDouble();
+		solarGeneration = dataStream.readDouble();
+		windGeneration = dataStream.readDouble();
 	}
 }

@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
+import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -66,6 +67,12 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.oxidationChamberUsage = dataStream.readDouble();
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();
 		Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
+		Mekanism.electrolyticSeparatorUsage = dataStream.readDouble();
+		
+		for(IModule module : Mekanism.modulesLoaded)
+		{
+			module.readConfig(dataStream);
+		}
 
 		Mekanism.proxy.onConfigSync();
 	}
@@ -111,5 +118,11 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.oxidationChamberUsage);
 		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
 		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
+		dataStream.writeDouble(Mekanism.electrolyticSeparatorUsage);
+		
+		for(IModule module : Mekanism.modulesLoaded)
+		{
+			module.writeConfig(dataStream);
+		}
 	}
 }

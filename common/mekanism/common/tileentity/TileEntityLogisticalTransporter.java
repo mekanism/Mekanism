@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
@@ -34,13 +34,14 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import buildcraft.api.transport.IPipe;
 import buildcraft.api.transport.IPipeTile;
+import cofh.api.transport.IItemConduit;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, ILogisticalTransporter, IPipeTile, IConfigurable
+public class TileEntityLogisticalTransporter extends TileEntity implements ITileNetwork, ILogisticalTransporter, IPipeTile, IConfigurable, IItemConduit
 {
 	public static final int SPEED = 5;
 	
@@ -518,15 +519,9 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	@Override
 	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from) 
 	{
-		if(doAdd)
-		{
-			TileEntity tile = Coord4D.get(this).getFromSide(from).getTileEntity(worldObj);
-			
-			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
-			return TransporterManager.getToUse(stack, rejects).stackSize;
-		}
-		
-		return 0;
+		TileEntity tile = Coord4D.get(this).getFromSide(from).getTileEntity(worldObj);
+		ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, doAdd, 0);
+		return TransporterManager.getToUse(stack, rejects).stackSize;
 	}
 
 	@Override
@@ -607,5 +602,23 @@ public class TileEntityLogisticalTransporter extends TileEntity implements ITile
 	public int getCost()
 	{
 		return 1;
+	}
+
+	@Override
+	public ItemStack insertItem(ForgeDirection from, ItemStack item)
+	{
+		return TransporterUtils.insert(Coord4D.get(this).getFromSide(from).getTileEntity(worldObj), this, item, null, true, 0);
+	}
+
+	@Override
+	public ItemStack insertItem(ForgeDirection from, ItemStack item, boolean simulate)
+	{
+		return insertItem(from, item);
+	}
+
+	@Override
+	public ItemStack sendItems(ItemStack item, ForgeDirection from)
+	{
+		return sendItems(item, from);
 	}
 }

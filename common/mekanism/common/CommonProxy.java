@@ -139,7 +139,7 @@ public class CommonProxy
 	  	Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
 	  	Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
-	  	Mekanism.maxUpgradeMultiplier = Math.max(1, Mekanism.configuration.get(Configuration.CATEGORY_GENERAL,"UpgradeModifier", 10).getInt());
+	  	Mekanism.maxUpgradeMultiplier = Math.max(1, Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10).getInt());
 	  	
 	  	Mekanism.TO_TE = Mekanism.TO_BC*10;
 	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;

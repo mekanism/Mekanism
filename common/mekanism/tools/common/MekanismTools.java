@@ -1,6 +1,9 @@
 package mekanism.tools.common;
 
+import java.io.DataOutputStream;
 import java.util.Random;
+
+import com.google.common.io.ByteArrayDataInput;
 
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
@@ -648,4 +651,10 @@ public class MekanismTools implements IModule
 	{
 		return "Tools";
 	}
+
+	@Override
+	public void writeConfig(DataOutputStream dataStream) {}
+
+	@Override
+	public void readConfig(ByteArrayDataInput dataStream) {}
 }
