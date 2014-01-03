@@ -144,6 +144,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			{
 				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
 			}
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -187,6 +188,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						
 						recipeType = toSet.ordinal();
 						setSecondaryEnergy(0);
+						
+						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
 						
 						MekanismUtils.saveChunk(this);
 					}
