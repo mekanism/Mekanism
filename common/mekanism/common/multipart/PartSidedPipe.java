@@ -591,14 +591,20 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return false;
 	}
 	
-	public boolean canConnectToAcceptor(ForgeDirection side)
+	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive)
 	{
 		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side))
 		{
 			return false;
 		}
 		
-		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
+		if(!ignoreActive)
+		{
+			return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
+		}
+		else {
+			return connectionTypes[side.ordinal()] == ConnectionType.NORMAL || connectionTypes[side.ordinal()] == ConnectionType.PUSH;
+		}
 	}
 
 	public static enum ConnectionType

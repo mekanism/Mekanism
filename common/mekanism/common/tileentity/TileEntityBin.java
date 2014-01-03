@@ -535,7 +535,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			setStoredItemType(null, 0);
 		}
 		
-		cacheCount = amount;
+		setItemCount(amount);
 	}
 
 	@Override

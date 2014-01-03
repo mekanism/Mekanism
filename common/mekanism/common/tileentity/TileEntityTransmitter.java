@@ -116,7 +116,7 @@ public abstract class TileEntityTransmitter<N extends DynamicNetwork<?, N>> exte
 	}
 	
 	@Override
-	public boolean canConnectToAcceptor(ForgeDirection side)
+	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive)
 	{
 		return true;
 	}

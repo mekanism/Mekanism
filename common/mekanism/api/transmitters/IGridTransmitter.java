@@ -41,7 +41,7 @@ public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITrans
 	 */
 	public void removeFromTransmitterNetwork();
 	
-	public boolean canConnectToAcceptor(ForgeDirection side);
+	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive);
 
 	/**
 	 * Call this if you're worried a transmitter's network is messed up and you want
