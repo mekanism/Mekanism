@@ -165,6 +165,7 @@ public class Mekanism
 	public static Item Balloon;
 	public static Item Shard;
 	public static Item ElectrolyticCore;
+	public static Item CompressedRedstone;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -519,6 +520,7 @@ public class Mekanism
         RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 1, 0), new ItemStack(CompressedCarbon));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 1, 1), new ItemStack(CompressedCarbon));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.redstone), new ItemStack(CompressedRedstone));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreLapis), new ItemStack(Item.dyePowder, 12, 4));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreCoal), new ItemStack(Item.coal, 2));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreDiamond), new ItemStack(Item.diamond, 2));
@@ -586,6 +588,7 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.redstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 10));
+        InfuseRegistry.registerInfuseObject(new ItemStack(CompressedRedstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 100));
 	}
 	
 	/**
@@ -623,7 +626,8 @@ public class Mekanism
 		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11225).getInt()).setUnlocalizedName("MultipartTransmitter");
 		Balloon = new ItemBalloon(configuration.getItem("Balloon", 11226).getInt()).setUnlocalizedName("Balloon");
 		Shard = new ItemShard(configuration.getItem("Shard", 11227).getInt());
-		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", 11302).getInt()).setUnlocalizedName("ElectrolyticCore");
+		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", 11228).getInt()).setUnlocalizedName("ElectrolyticCore");
+		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", 11229).getInt()).setUnlocalizedName("CompressedRedstone");
 
 		configuration.save();
 		
@@ -656,6 +660,7 @@ public class Mekanism
 		GameRegistry.registerItem(Balloon, "Balloon");
 		GameRegistry.registerItem(Shard, "Shard");
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
+		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
 	}
 	
 	/**
