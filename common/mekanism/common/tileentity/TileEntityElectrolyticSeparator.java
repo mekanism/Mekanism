@@ -147,7 +147,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(new ArrayList())), Coord4D.get(this), 40D);
+						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this), 40D);
 					}
 				}
 			}
@@ -174,7 +174,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(new ArrayList())), Coord4D.get(this), 40D);
+						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this), 40D);
 					}
 				}
 			}
@@ -219,22 +219,36 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 	}
 	
-	public void spawnParticle()
+	public void spawnParticle(int type)
 	{
-		switch(facing)
+		if(type == 0)
 		{
-			case 3:
-				worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
-				break;
-			case 4:
-				worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
-				break;
-			case 2:
-				worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
-				break;
-			case 5:
-				worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
-				break;
+			ForgeDirection side = ForgeDirection.getOrientation(facing);
+			
+			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
+			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
+			
+			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
+			System.out.println(x + " " + (yCoord+0.5) + " " + z);
+			
+		}
+		else if(type == 1)
+		{
+			switch(facing)
+			{
+				case 3:
+					worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
+					break;
+				case 4:
+					worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
+					break;
+				case 2:
+					worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
+					break;
+				case 5:
+					worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
+					break;
+			}
 		}
 	}
 	
@@ -390,7 +404,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(type == 1)
 		{
-			spawnParticle();
+			spawnParticle(dataStream.readInt());
 		}
 	}
 	
@@ -437,10 +451,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return data;
 	}
 	
-	public ArrayList getParticlePacket(ArrayList data)
+	public ArrayList getParticlePacket(int type, ArrayList data)
 	{
 		super.getNetworkedData(data);
 		data.add(1);
+		data.add(type);
 		return data;
 	}
 	
