@@ -155,6 +155,7 @@ item.tinIngot.name=Оловянный слиток
 gas.hydrogen=Водород
 gas.oxygen=Кислород
 gas.water=Водяной пар
+gas.chlorine=Хлор
 gas.sulfurDioxideGas=Диоксид серы
 gas.sulfurTrioxideGas=Триоксид серы
 gas.sulfuricAcid=Серная кислота
@@ -162,6 +163,7 @@ gas.sulfuricAcid=Серная кислота
 //Fluids
 fluid.hydrogen=Жидкий водород
 fluid.oxygen=Жидкий кислород
+fluid.chlorine=Жидкий хлор
 fluid.sulfurDioxideGas=Жидкий диоксид серы
 fluid.sulfurTrioxideGas=Жидкий триоксид серы
 fluid.sulfuricAcid=Жидкая серная кислота
