@@ -1074,7 +1074,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, false),
 		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true),
-		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, true);
+		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false);
 
 
 		public int typeId;
