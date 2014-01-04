@@ -69,7 +69,7 @@
 			<fileset dir="${dir.mcp}/reobf/minecraft">
 				<exclude name="**/mekanism/generators/**"/>
 				<exclude name="**/mekanism/tools/**"/>
-				<exclude name=“**/codechicken/**”/>
+				<exclude name="**/codechicken/**"/>
 			</fileset>
 
 			<fileset dir="${dir.development}resources"/>
