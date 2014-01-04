@@ -65,7 +65,7 @@ task moveRes(type: Sync) {
 
 task coreJar(type: Jar) {
     dependsOn 'reobf'
-    baseName = ‘output/Mekanism'
+    baseName = 'output/Mekanism'
     from 'etc/core'
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         exclude 'mekanism/tools/**', 'mekanism/generators/**'
@@ -74,7 +74,7 @@ task coreJar(type: Jar) {
 
 task toolsJar(type: Jar) {
     dependsOn 'reobf'
-    baseName = ‘output/MekanismTools'
+    baseName = 'output/MekanismTools'
     from 'etc/tools'
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/tools/**'
@@ -83,7 +83,7 @@ task toolsJar(type: Jar) {
 
 task generatorsJar(type: Jar) {
     dependsOn 'reobf'
-    baseName = ‘output/MekanismGenerators'
+    baseName = 'output/MekanismGenerators'
     from 'etc/generators'
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/generators/**'
