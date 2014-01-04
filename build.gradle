@@ -1,3 +1,4 @@
+defaultTasks 'build'
 buildscript {
     repositories {
         mavenCentral()
