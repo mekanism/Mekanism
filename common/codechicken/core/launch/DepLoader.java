@@ -667,7 +667,7 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
     }
     
     @Override
-    public Void call()
+    public Void call() throws Exception
     {
         load();
         
