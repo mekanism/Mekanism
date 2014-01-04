@@ -65,6 +65,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public int radius;
 	
+	public boolean inverse;
+	
 	public int minY = 0;
 	public int maxY = 60;
 	
@@ -512,6 +514,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         silkTouch = nbtTags.getBoolean("silkTouch");
         searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+        inverse = nbtTags.getBoolean("inverse");
         
         if(nbtTags.hasKey("replaceStack"))
         {
@@ -550,6 +553,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("silkTouch", silkTouch);
         nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
+        nbtTags.setBoolean("inverse", inverse);
         
         if(replaceStack != null)
         {
@@ -659,6 +663,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			inverse = dataStream.readBoolean();
 			
 			filters.clear();
 			
@@ -691,6 +696,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			inverse = dataStream.readBoolean();
 		}
 		else if(type == 2)
 		{

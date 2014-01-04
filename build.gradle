@@ -64,7 +64,7 @@ task moveRes(type: Sync) {
 
 task coreJar(type: Jar) {
     dependsOn 'reobf'
-    baseName = 'MekanismCore'
+    baseName = 'Mekanism'
     from 'etc/core'
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         exclude 'mekanism/tools/**', 'mekanism/generators/**'
