@@ -203,6 +203,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				setMaxY();
 			}
+			
+			if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
+			{
+				ArrayList data = new ArrayList();
+				data.add(10);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
 		}
 	}
 	
@@ -288,6 +297,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		fontRenderer.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
 		
 		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 		
@@ -340,6 +350,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
 			}
+		}
+		
+		if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -411,6 +426,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 176 + 11, 11, 11, 11);
+		}
+		
+		if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
+		{
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 176 + 22, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 176 + 22, 14, 14, 14);
 		}
 		
 		radiusField.drawTextBox();

@@ -177,7 +177,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							}
 						}
 						
-						if(!hasFilter)
+						if(inverse ? hasFilter : !hasFilter)
 						{
 							toRemove.add(obj);
 							continue;
@@ -224,7 +224,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				else if(getEjectInv() instanceof ILogisticalTransporter)
 				{
 					ItemStack rejected = TransporterUtils.insert(getEjectTile(), (ILogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true, 0);
-					System.out.println(rejected + " " + (rejected != null ? rejected.stackSize : 0));
+					
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{
 						getTopEject(true, rejected);
@@ -628,6 +628,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				silkTouch = !silkTouch;
 			}
+			else if(type == 10)
+			{
+				inverse = !inverse;
+			}
 			
 			for(EntityPlayer player : playersUsing)
 			{
@@ -746,6 +750,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
+		data.add(inverse);
 		
 		data.add(filters.size());
 		
@@ -798,6 +803,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		data.add(oresToMine.size());
 		data.add(controlType.ordinal());
+		data.add(inverse);
 		
 		return data;
 	}

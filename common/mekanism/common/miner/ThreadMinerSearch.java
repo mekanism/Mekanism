@@ -63,12 +63,19 @@ public class ThreadMinerSearch extends Thread
 							continue;
 						}
 						
+						boolean hasFilter = false;
+						
 						for(MinerFilter filter : tileEntity.filters)
 						{
 							if(filter.canFilter(stack))
 							{
-								tileEntity.oresToMine.add(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId));
+								hasFilter = true;
 							}
+						}
+						
+						if(tileEntity.inverse ? !hasFilter : hasFilter)
+						{
+							tileEntity.oresToMine.add(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId));
 						}
 					}
 				}
