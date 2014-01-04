@@ -1,4 +1,4 @@
-package codechicken.core.laumch;
+package codechicken.core.launch;
 
 import java.awt.Desktop;
 import java.awt.Dialog.ModalityType;
