@@ -29,9 +29,6 @@
 		
 		<get src="https://www.dropbox.com/s/qedjhg8gf1fuk8t/CodeChickenLib-dev-latest.jar?dl=1"
 			dest="${dir.mcp}/lib/CCLib-dev.jar"/>
-			
-		<get src="http://files.minecraftforge.net/ForgeMultipart/ForgeMultipart-dev-1.6.4-1.0.0.212.jar"
-			dest="${dir.mcp}/lib/ForgeMultipart-dev.jar"/>
 
 		<copy todir="${dir.mcp}/src/minecraft">
 
