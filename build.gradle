@@ -1,4 +1,4 @@
-defaultTasks 'build'
+defaultTasks 'build’, ‘releaseJars’
 buildscript {
     repositories {
         mavenCentral()
