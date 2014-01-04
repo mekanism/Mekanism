@@ -109,7 +109,7 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
             return box;
         }
 
-        @Override
+        //TODO @Override
         public JDialog makeDialog()
         {
             if(container != null)
@@ -120,7 +120,7 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
             setOptions(new Object[] { "Stop" });
             addPropertyChangeListener(new PropertyChangeListener()
             {
-                @Override
+                //TODO @Override
                 public void propertyChange(PropertyChangeEvent evt)
                 {
                     if (evt.getSource() == Downloader.this && evt.getPropertyName()==VALUE_PROPERTY)
@@ -140,7 +140,7 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
             container.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             container.addWindowListener(new WindowAdapter()
             {
-                @Override
+                //TODO @Override
                 public void windowClosing(WindowEvent e)
                 {
                     requestClose("Closing this window will stop minecraft from launching\nAre you sure you wish to do this?");
@@ -160,7 +160,7 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
                 pokeThread.interrupt();
         }
 
-        @Override
+        //TODO @Override
         public void updateProgressString(String progressUpdate, Object... data)
         {
             //FMLLog.finest(progressUpdate, data);
@@ -168,33 +168,33 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
                 currentActivity.setText(String.format(progressUpdate, data));
         }
 
-        @Override
+        //TODO @Override
         public void resetProgress(int sizeGuess)
         {
             if (progress!=null)
                 progress.getModel().setRangeProperties(0, 0, 0, sizeGuess, false);
         }
 
-        @Override
+        //TODO @Override
         public void updateProgress(int fullLength)
         {
             if (progress!=null)
                 progress.getModel().setValue(fullLength);
         }
 
-        @Override
+        //TODO @Override
         public void setPokeThread(Thread currentThread)
         {
             this.pokeThread = currentThread;
         }
 
-        @Override
+        //TODO @Override
         public boolean shouldStopIt()
         {
             return stopIt;
         }
         
-        @Override
+        //TODO @Override
         public void showErrorDialog(String name, String url) {
             JEditorPane ep = new JEditorPane("text/html", 
                     "<html>" +
@@ -207,7 +207,7 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
             ep.setOpaque(false);
             ep.addHyperlinkListener(new HyperlinkListener()
             {
-                @Override
+                //TODO @Override
                 public void hyperlinkUpdate(HyperlinkEvent event)
                 {
                     try
@@ -226,39 +226,39 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
     
     public static class DummyDownloader implements IDownloadDisplay
     {
-        @Override
+        //TODO @Override
         public void resetProgress(int sizeGuess)
         {
         }
 
-        @Override
+        //TODO @Override
         public void setPokeThread(Thread currentThread)
         {
         }
 
-        @Override
+        //TODO @Override
         public void updateProgress(int fullLength)
         {
         }
 
-        @Override
+        //TODO @Override
         public boolean shouldStopIt()
         {
             return false;
         }
 
-        @Override
+        //TODO @Override
         public void updateProgressString(String string, Object... data)
         {
         }
 
-        @Override
+        //TODO @Override
         public Object makeDialog()
         {
             return null;
         }
         
-        @Override
+        //TODO @Override
         public void showErrorDialog(String name, String url) {
         }
     }
@@ -643,38 +643,38 @@ public class DepLoader implements IFMLLoadingPlugin, IFMLCallHook
         return new String[]{m.group(1), m.group(2), m.group(3)};
     }
     
-    @Override
+    //TODO @Override
     public String[] getASMTransformerClass()
     {
         return null;
     }
     
-    @Override
+    //TODO @Override
     public String getModContainerClass()
     {
         return null;
     }
     
-    @Override
+    //TODO @Override
     public String getSetupClass()
     {
         return getClass().getName();
     }
 
-    @Override
+    //TODO @Override
     public void injectData(Map<String, Object> data)
     {
     }
     
-    @Override
-    public Void call() throws Exception
+    //TODO @Override
+    public Void call()
     {
         load();
         
         return null;
     }
     
-    @Override
+    //TODO @Override
     public String[] getLibraryRequestClass()
     {
         return null;
