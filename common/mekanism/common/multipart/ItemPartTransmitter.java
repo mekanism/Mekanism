@@ -21,12 +21,11 @@ import org.lwjgl.input.Keyboard;
 
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
-import codechicken.multipart.JItemMultiPart;
 import codechicken.multipart.TMultiPart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemPartTransmitter extends JItemMultiPart
+public class ItemPartTransmitter extends MItemMultiPart
 {
 	public ItemPartTransmitter(int id)
 	{
