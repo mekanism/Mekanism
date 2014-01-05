@@ -73,7 +73,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         	return;
         }
         
-        if(latched != null && latched.getBlockId(worldObj) == 0)
+        if(latched != null && (latched.exists(worldObj) && latched.getBlockId(worldObj) == 0))
         {
         	latched = null;
         }
