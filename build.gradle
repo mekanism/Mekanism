@@ -67,6 +67,7 @@ task moveRes(type: Sync) {
 
 task coreJar(type: Jar) {
     dependsOn 'reobf'
+    manifest = 'etc/core/MANIFEST.MF'
     baseName = 'Mekanism'
     from 'etc/core'
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
