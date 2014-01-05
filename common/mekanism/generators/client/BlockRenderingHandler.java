@@ -81,7 +81,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
     	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
     	        windTurbine.render(0.018F, 0);
     		}
-    		else {
+    		else if(metadata != 2) {
     	        MekanismRenderer.renderItem(renderer, metadata, block);
     		}
 	    }
@@ -96,7 +96,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 			
-			if(!GeneratorType.getFromMetadata(metadata).hasModel)
+			if(GeneratorType.getFromMetadata(metadata) == null || !GeneratorType.getFromMetadata(metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
 				renderer.setRenderBoundsFromBlock(block);
