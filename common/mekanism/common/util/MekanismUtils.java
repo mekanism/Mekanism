@@ -668,7 +668,7 @@ public final class MekanismUtils
      */
     public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
     {
-		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 3);
+		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 0);
 		
 		if(!world.isRemote)
 		{
