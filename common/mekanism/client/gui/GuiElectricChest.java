@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiElectricChest extends GuiContainer
+public class GuiElectricChest extends GuiMekanism
 {
 	public TileEntityElectricChest tileEntity;
 	public IInventory itemInventory;
