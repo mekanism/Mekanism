@@ -434,6 +434,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
     	TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
     	ItemStack itemStack = new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z));
         
+		if(tileEntity == null)
+		{
+			return null;
+		}
+
         IEnergizedItem electricItem = (IEnergizedItem)itemStack.getItem();
         electricItem.setEnergy(itemStack, tileEntity.electricityStored);
         

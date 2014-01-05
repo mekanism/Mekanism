@@ -27,6 +27,7 @@ item.ScubaTank.name=Scuba Tank
 item.GasMask.name=Gas Mask
 item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
+item.CompressedRedstone.name=Compressed Redstone
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -159,6 +160,7 @@ gas.chlorine=Chlorine
 gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
+gas.hydrogenChloride=Hydrogen Chloride
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
@@ -167,6 +169,7 @@ fluid.chlorine=Liquid Chlorine
 fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
+fluid.hydrogenChloride=Liquid Hydrogen Chloride
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
