@@ -9,7 +9,6 @@ public class LoadingHook implements IFMLLoadingPlugin
 {
 	public LoadingHook()
 	{
-		System.out.println("Loading DepLoader");
 		DepLoader.load();
 	}
 	
