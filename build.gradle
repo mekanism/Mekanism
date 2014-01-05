@@ -52,12 +52,6 @@ processResources
     }
 }
 
-jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
-    }
-}
-
 task moveSrc(type: Sync) {
     from 'common'
     into 'src/main/java'
