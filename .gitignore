@@ -1,6 +1,10 @@
 build
+output
 src
 .gradle
+
+Mekanism*.jar
+MDK.zip
 
 *.mtl
 *.blend1
