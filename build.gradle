@@ -71,6 +71,7 @@ task coreJar(type: Jar) {
 
     manifest {
         attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 
     from 'etc/core'
