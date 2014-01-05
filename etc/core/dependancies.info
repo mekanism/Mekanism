@@ -7,13 +7,3 @@
 	"mcversion": "1.6.4",
 	"coreLib": false
 }
-
-{
-	"repo": "http://files.minecraftforge.net/CodeChickenLib/",
-	"file": "CodeChickenLib-universal-@MCVERSION@-@VERSION@.jar",
-	"dev": "CodeChickenLib-dev-@MCVERSION@-@VERSION@.jar",
-	"class": "codechicken.lib.asm.ASMHelper",
-	"version": "1.0.0.45",
-	"mcversion": "1.6.4",
-	"coreLib": true
-}
