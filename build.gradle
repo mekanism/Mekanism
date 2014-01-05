@@ -1,4 +1,4 @@
-defaultTasks 'releaseJars'
+defaultTasks 'fullBuild'
 buildscript {
     repositories {
         mavenCentral()
@@ -106,4 +106,9 @@ task releaseJars(type: Copy) {
     rename '-(.*)jar', '.jar'
     rename '-(.*)zip', '.zip'
     into '.'
+}
+
+task fullBuild(type: Delete) {
+    dependsOn 'releaseJars'
+    delete reobf
 }
