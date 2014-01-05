@@ -742,15 +742,7 @@ public class Mekanism
 		GameRegistry.registerBlock(EnergyCube, ItemBlockEnergyCube.class, "EnergyCube");
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
-		GameRegistry.registerBlock(GasTank, ItemBlockBasic.class, "GasTank");
-		
-		//Add block items into itemsList for blocks with common IDs.
-		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setUnlocalizedName("BasicBlock");
-		Item.itemsList[machineBlockID] = new ItemBlockMachine(machineBlockID - 256, MachineBlock).setUnlocalizedName("MachineBlock");
-		Item.itemsList[machineBlock2ID] = new ItemBlockMachine(machineBlock2ID - 256, MachineBlock2).setUnlocalizedName("MachineBlock2");
-		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setUnlocalizedName("OreBlock");
-		Item.itemsList[energyCubeID] = new ItemBlockEnergyCube(energyCubeID - 256, EnergyCube).setUnlocalizedName("EnergyCube");
-		Item.itemsList[gasTankID] = new ItemBlockGasTank(gasTankID - 256, GasTank).setUnlocalizedName("GasTank");
+		GameRegistry.registerBlock(GasTank, ItemBlockGasTank.class, "GasTank");
 	}
 	
 	/**
