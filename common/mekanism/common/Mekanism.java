@@ -607,7 +607,6 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.flint, 4), new ItemStack(Item.gunpowder));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Item.gunpowder, 2), new ItemStack(Dust, 1, 10));
 
         //Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
@@ -615,7 +614,8 @@ public class Mekanism
         
         //Chemical Injection Chamber Recipes
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Shard, 3, 6));
-        
+		RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Item.gunpowder), new ItemStack(Dust, 1, 10));
+
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Item.ingotIron)), new ItemStack(EnrichedIron));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
@@ -633,6 +633,7 @@ public class Mekanism
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
 		RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
+		RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)), new GasStack(GasRegistry.getGas("hydrogenChloride"), 1));
 
 		//Electrolytic Separator Recipes
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
@@ -996,6 +997,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("sulfurDioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
+		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
 		
 		Mekanism.proxy.preInit();
 		

@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipeHandler
 {
@@ -46,7 +47,9 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public List<ItemStack> getFuelStacks()
 	{
-		return ListUtils.asList(new ItemStack(Mekanism.Dust, 1, 10), MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
+		List<ItemStack> fuels = OreDictionary.getOres("dustSalt");
+		fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+		return fuels;
 	}
 	
 	@Override
