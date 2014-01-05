@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public abstract class GuiElement
 {
@@ -34,11 +35,13 @@ public abstract class GuiElement
 	
 	protected void displayTooltip(String s, int xAxis, int yAxis)
 	{
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
 		try {
 			Method m = MekanismUtils.getPrivateMethod(GuiContainer.class, ObfuscatedNames.GuiContainer_drawCreativeTabHoveringText, String.class, Integer.TYPE, Integer.TYPE);
 			m.setAccessible(true);
 			m.invoke(guiObj, s, xAxis, yAxis);
 		} catch(Exception e) {}
+		GL11.glPopAttrib();
 	}
 	
 	protected void offsetX(int xSize)

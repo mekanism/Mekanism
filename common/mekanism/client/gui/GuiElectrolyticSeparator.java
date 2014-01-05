@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
-public class GuiElectrolyticSeparator extends GuiContainer
+public class GuiElectrolyticSeparator extends GuiMekanism
 {
 	public TileEntityElectrolyticSeparator tileEntity;
 	

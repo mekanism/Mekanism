@@ -11,6 +11,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 public abstract class GuiMekanism extends GuiContainer
 {
@@ -129,5 +130,13 @@ public abstract class GuiMekanism extends GuiContainer
 		{
 			element.mouseClicked(xAxis, yAxis, button);
 		}
+	}
+
+	@Override
+	protected void drawCreativeTabHoveringText(String text, int x, int y)
+	{
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
+		super.drawCreativeTabHoveringText(text, x, y);
+		GL11.glPopAttrib();
 	}
 }
