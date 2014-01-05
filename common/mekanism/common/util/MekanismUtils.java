@@ -626,7 +626,7 @@ public final class MekanismUtils
      */
     public static double getEnergyPerTick(int speedUpgrade, int energyUpgrade, double def)
     {
-        return def * Math.pow(Mekanism.maxUpgradeMultiplier, (speedUpgrade-energyUpgrade)/8.0);
+        return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*speedUpgrade-energyUpgrade)/8.0);
     }
     
     /**
