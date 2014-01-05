@@ -19,13 +19,13 @@ public abstract class GuiElement
 	
 	protected ResourceLocation RESOURCE;
 	
-	public GuiScreen guiObj;
+	public GuiMekanism guiObj;
 	
 	public TileEntity tileEntity;
 	
 	public ResourceLocation defaultLocation;
 	
-	public GuiElement(ResourceLocation resource, GuiScreen gui, TileEntity tile, ResourceLocation def)
+	public GuiElement(ResourceLocation resource, GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
 		RESOURCE = resource;
 		guiObj = gui;
@@ -35,13 +35,7 @@ public abstract class GuiElement
 	
 	protected void displayTooltip(String s, int xAxis, int yAxis)
 	{
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
-		try {
-			Method m = MekanismUtils.getPrivateMethod(GuiContainer.class, ObfuscatedNames.GuiContainer_drawCreativeTabHoveringText, String.class, Integer.TYPE, Integer.TYPE);
-			m.setAccessible(true);
-			m.invoke(guiObj, s, xAxis, yAxis);
-		} catch(Exception e) {}
-		GL11.glPopAttrib();
+		guiObj.drawCreativeTabHoveringText(s, xAxis, yAxis);
 	}
 	
 	protected void offsetX(int xSize)

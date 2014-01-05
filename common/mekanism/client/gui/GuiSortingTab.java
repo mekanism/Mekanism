@@ -15,9 +15,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiSortingTab extends GuiElement
 {
-	public GuiSortingTab(GuiScreen gui, TileEntity tile, ResourceLocation def)
+	public GuiSortingTab(GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI, "GuiSortingTab.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSortingTab.png"), gui, tile, def);
 	}
 	
 	@Override

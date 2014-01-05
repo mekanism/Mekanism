@@ -14,9 +14,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiRedstoneControl extends GuiElement
 {
-	public GuiRedstoneControl(GuiScreen gui, TileEntity tile, ResourceLocation def)
+	public GuiRedstoneControl(GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI, "GuiRedstoneControl.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRedstoneControl.png"), gui, tile, def);
 	}
 	
 	@Override

@@ -13,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiUpgradeManagement extends GuiElement
 {
-	public GuiUpgradeManagement(GuiContainer gui, TileEntity tile, ResourceLocation def)
+	public GuiUpgradeManagement(GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI, "GuiUpgradeManagement.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeManagement.png"), gui, tile, def);
 	}
 	
 	@Override
