@@ -276,6 +276,16 @@ public class Coord4D
 		return world.getChunkFromBlockCoords(xCoord >> 4, zCoord >> 4);
 	}
 	
+	/**
+	 * Whether or not the block this Coord4D represents is an air block.
+	 * @param world - world this Coord4D is in
+	 * @return if this Coord4D is an air block
+	 */
+	public boolean isAirBlock(IBlockAccess world)
+	{
+		return world.isAirBlock(xCoord, yCoord, zCoord);
+	}
+	
 	@Override
 	public Coord4D clone()
 	{

@@ -19,6 +19,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
 	public EnumColor color = EnumColor.DARK_BLUE;
+	
 	public Coord4D latched;
 	
 	public EntityBalloon(World world)
@@ -31,6 +32,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		yOffset = height / 2.0F;
         setSize(0.25F, 0.25F);
         motionY = 0.04;
+        
+    	dataWatcher.addObject(2, new Byte((byte)0));
+		dataWatcher.addObject(3, new Integer(0)); /* Latched X */
+		dataWatcher.addObject(4, new Integer(0)); /* Latched Y */
+		dataWatcher.addObject(5, new Integer(0)); /* Latched Z */
 	}
 	
     public EntityBalloon(World world, double x, double y, double z, EnumColor c)
@@ -58,11 +64,16 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         prevPosZ = posZ;
         
     	color = c;
+    	
+    	dataWatcher.updateObject(2, new Byte(latched != null ? (byte)1 : (byte)0)); /* Is latched */
+		dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
+		dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
+		dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
     }
     
     @Override
     public void onUpdate()
-    {
+    { 
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
@@ -73,9 +84,34 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         	return;
         }
         
-        if(latched != null && (latched.exists(worldObj) && latched.getBlockId(worldObj) == 0))
+        if(worldObj.isRemote)
         {
-        	latched = null;
+        	if(dataWatcher.getWatchableObjectByte(2) == 1)
+        	{
+        		latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.dimensionId);
+        	}
+        	else {
+        		latched = null;
+        	}
+        }
+        else {
+        	if(ticksExisted == 1)
+        	{
+            	dataWatcher.updateObject(2, new Byte(latched != null ? (byte)1 : (byte)0)); /* Is latched */
+        		dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
+        		dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
+        		dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
+        	}
+        }
+        
+        if(!worldObj.isRemote)
+        {
+        	if(latched != null && (latched.exists(worldObj) && latched.isAirBlock(worldObj)))
+        	{
+	        	latched = null;
+	        	
+	        	dataWatcher.updateObject(2, (byte)0); /* Is latched */
+        	}
         }
         
         if(latched == null)
@@ -155,7 +191,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		
 		if(nbtTags.hasKey("latched"))
 		{
-			latched = Coord4D.read(nbtTags);
+			latched = Coord4D.read(nbtTags.getCompoundTag("latched"));
 		}
 	}
 	
@@ -173,7 +209,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		
 		if(latched != null)
 		{
-			latched.write(nbtTags);
+			nbtTags.setCompoundTag("latched", latched.write(new NBTTagCompound()));
 		}
 	}
 
