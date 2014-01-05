@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionInput;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Use this handy class to add recipes to Mekanism machinery.
@@ -135,6 +136,22 @@ public final class RecipeHelper
 		try {
 			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
 			Method m = recipeClass.getMethod("addChemicalInjectionChamberRecipe", ItemStack.class, ItemStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Electrolytic Separator recipe.
+	 * @param input - input ItemStack
+	 * @param output - output ItemStack
+	 */
+	public static void addElectrolyticSeparatorRecipe(FluidStack input, ChemicalInput output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
+			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, ChemicalInput.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
