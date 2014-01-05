@@ -159,6 +159,7 @@ gas.chlorine=Chlorine
 gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
+gas.hydrogenChloride=Hydrogen Chloride
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
@@ -167,6 +168,7 @@ fluid.chlorine=Liquid Chlorine
 fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
+fluid.hydrogenChloride=Liquid Hydrogen Chloride
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
