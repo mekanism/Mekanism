@@ -1,15 +1,11 @@
 package mekanism.common.multipart;
 
-import mekanism.common.Mekanism;
-import net.minecraft.world.World;
-import codechicken.lib.vec.BlockCoord;
 import codechicken.multipart.MultiPartRegistry;
-import codechicken.multipart.MultiPartRegistry.IPartConverter;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
 
-public class MultipartMekanism implements IPartFactory, IPartConverter
+public class MultipartMekanism implements IPartFactory
 {
 	public MultipartMekanism()
 	{
@@ -18,7 +14,6 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 	
 	public void init()
 	{
-		MultiPartRegistry.registerConverter(this);
 		MultiPartRegistry.registerParts(this, new String[] {"mekanism:universal_cable", "mekanism:mechanical_pipe", "mekanism:pressurized_tube", "mekanism:logistical_transporter",
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter"});
 		
@@ -60,24 +55,6 @@ public class MultipartMekanism implements IPartFactory, IPartConverter
 		else if(name.equals("mekanism:diversion_transporter"))
 		{
 			return new PartDiversionTransporter();
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public boolean canConvert(int blockID)
-	{
-		return blockID == Mekanism.transmitterID;
-	}
-
-	@Override
-	public TMultiPart convert(World world, BlockCoord pos)
-	{
-		if(world.getBlockId(pos.x, pos.y, pos.z) == Mekanism.transmitterID)
-		{
-			int meta = world.getBlockMetadata(pos.x, pos.y, pos.z);
-			return PartTransmitter.getPartType(TransmitterType.fromOldMeta(meta));
 		}
 		
 		return null;

@@ -8,7 +8,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.ListUtils;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ILogisticalTransporter;
-import mekanism.common.tileentity.TileEntityDiversionTransporter;
 import mekanism.common.tileentity.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
@@ -72,15 +71,9 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedInventories).indexOf(inventory);
 				
-				if(tileEntity instanceof TileEntityDiversionTransporter)
+				if(!tileEntity.canConnect(ForgeDirection.getOrientation(side)))
 				{
-					int mode = ((TileEntityDiversionTransporter)tileEntity).modes[side];
-					boolean redstone = tileEntity.getTile().worldObj.isBlockIndirectlyGettingPowered(tileEntity.getTile().xCoord, tileEntity.getTile().yCoord, tileEntity.getTile().zCoord);
-					
-					if((mode == 2 && redstone == true) || (mode == 1 && redstone == false))
-					{
-						continue;
-					}
+					continue;
 				}
 				
 				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();

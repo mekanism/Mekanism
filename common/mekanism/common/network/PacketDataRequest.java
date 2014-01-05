@@ -10,7 +10,6 @@ import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tileentity.TileEntityDynamicTank;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -64,11 +63,6 @@ public class PacketDataRequest implements IMekanismPacket
 				if(transmitter.getTransmitterNetwork() instanceof DynamicNetwork)
 				{
 					((DynamicNetwork)transmitter.getTransmitterNetwork()).addUpdate(player);
-				}
-				
-				if(!(tileEntity instanceof TileEntityMechanicalPipe))
-				{
-					return;
 				}
 			}
 			

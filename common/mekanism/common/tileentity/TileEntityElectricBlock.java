@@ -13,6 +13,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
@@ -335,7 +336,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
     public double injectEnergyUnits(ForgeDirection direction, double i)
     {
-		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof TileEntityUniversalCable)
+		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
 		{
 			return i;
 		}

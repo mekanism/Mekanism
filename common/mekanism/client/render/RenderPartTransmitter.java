@@ -16,7 +16,6 @@ import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.multipart.PartUniversalCable;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -153,7 +152,7 @@ public class RenderPartTransmitter implements IIconRegister
 				GL11.glPushMatrix();
 				entityItem.setEntityItemStack(stack.itemStack);
 				
-				float[] pos = TransporterUtils.getStackPosition(transporter, stack, partialTick*TileEntityLogisticalTransporter.SPEED);
+				float[] pos = TransporterUtils.getStackPosition(transporter, stack, partialTick*PartLogisticalTransporter.SPEED);
 				
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);

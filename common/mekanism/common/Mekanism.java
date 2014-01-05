@@ -1,15 +1,15 @@
 package mekanism.common;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import mekanism.api.ChemicalInput;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -31,12 +31,66 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.block.*;
-import mekanism.common.item.*;
+import mekanism.common.block.BlockBasic;
+import mekanism.common.block.BlockBounding;
+import mekanism.common.block.BlockEnergyCube;
+import mekanism.common.block.BlockGasTank;
+import mekanism.common.block.BlockMachine;
+import mekanism.common.block.BlockObsidianTNT;
+import mekanism.common.block.BlockOre;
+import mekanism.common.item.ItemAtomicDisassembler;
+import mekanism.common.item.ItemBalloon;
+import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.ItemBlockGasTank;
+import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemBlockOre;
+import mekanism.common.item.ItemClump;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemDictionary;
+import mekanism.common.item.ItemDirtyDust;
+import mekanism.common.item.ItemDust;
+import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemGasMask;
+import mekanism.common.item.ItemIngot;
+import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemMachineUpgrade;
+import mekanism.common.item.ItemMekanism;
+import mekanism.common.item.ItemNetworkReader;
+import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemProxy;
+import mekanism.common.item.ItemRobit;
+import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemShard;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.MultipartMekanism;
-import mekanism.common.network.*;
+import mekanism.common.network.PacketConfigSync;
+import mekanism.common.network.PacketConfigurationUpdate;
+import mekanism.common.network.PacketConfiguratorState;
+import mekanism.common.network.PacketDataRequest;
+import mekanism.common.network.PacketDigitUpdate;
+import mekanism.common.network.PacketDigitalMinerGui;
+import mekanism.common.network.PacketEditFilter;
+import mekanism.common.network.PacketElectricBowState;
+import mekanism.common.network.PacketElectricChest;
+import mekanism.common.network.PacketJetpackData;
+import mekanism.common.network.PacketKey;
+import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketNewFilter;
+import mekanism.common.network.PacketPortableTeleport;
+import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.PacketRedstoneControl;
+import mekanism.common.network.PacketRemoveUpgrade;
+import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketScubaTankData;
+import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketStatusUpdate;
+import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
+import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tileentity.TileEntityBoundingBlock;
 import mekanism.common.tileentity.TileEntityElectricBlock;
@@ -60,10 +114,20 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
-
-import java.io.File;
-import java.util.*;
-import java.util.logging.Logger;
+import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Mekanism - the mod that doesn't have a category.
@@ -137,7 +201,6 @@ public class Mekanism
 	public static int energyCubeID;
 	public static int boundingBlockID;
 	public static int gasTankID;
-	public static int transmitterID;
 	
 	//Items
 	public static ItemElectricBow ElectricBow;
@@ -176,7 +239,6 @@ public class Mekanism
 	public static Block EnergyCube;
 	public static Block BoundingBlock;
 	public static Block GasTank;
-	public static Block Transmitter;
 
 	//Multi-ID Items
 	public static Item Dust;
@@ -496,13 +558,6 @@ public class Mekanism
         		}
         	}
         }
-        
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 0), new ItemStack(Transmitter, 1, 1));
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 1), new ItemStack(Transmitter, 1, 2));
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 2), new ItemStack(Transmitter, 1, 0));
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 3), new ItemStack(Transmitter, 1, 3));
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 4), new ItemStack(Transmitter, 1, 5));
-        CraftingManager.getInstance().addShapelessRecipe(new ItemStack(PartTransmitter, 1, 4), new ItemStack(Transmitter, 1, 5));
 	
 		//Furnace Recipes
 		FurnaceRecipes.smelting().addSmelting(oreBlockID, 0, new ItemStack(Ingot, 1, 1), 1.0F);
@@ -677,11 +732,16 @@ public class Mekanism
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setUnlocalizedName("ObsidianTNT").setCreativeTab(tabMekanism);
 		BoundingBlock = (BlockBounding) new BlockBounding(boundingBlockID).setUnlocalizedName("BoundingBlock");
 		GasTank = new BlockGasTank(gasTankID).setUnlocalizedName("GasTank");
-		Transmitter = new BlockTransmitter(transmitterID).setUnlocalizedName("Transmitter");
 		
 		//Registrations
+		GameRegistry.registerBlock(BasicBlock, ItemBlockBasic.class, "BasicBlock");
+		GameRegistry.registerBlock(MachineBlock, ItemBlockMachine.class, "MachineBlock");
+		GameRegistry.registerBlock(MachineBlock2, ItemBlockMachine.class, "MachineBlock2");
+		GameRegistry.registerBlock(OreBlock, ItemBlockOre.class, "OreBlock");
+		GameRegistry.registerBlock(EnergyCube, ItemBlockEnergyCube.class, "EnergyCube");
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
+		GameRegistry.registerBlock(GasTank, ItemBlockBasic.class, "GasTank");
 		
 		//Add block items into itemsList for blocks with common IDs.
 		Item.itemsList[basicBlockID] = new ItemBlockBasic(basicBlockID - 256, BasicBlock).setUnlocalizedName("BasicBlock");
@@ -690,7 +750,6 @@ public class Mekanism
 		Item.itemsList[oreBlockID] = new ItemBlockOre(oreBlockID - 256, OreBlock).setUnlocalizedName("OreBlock");
 		Item.itemsList[energyCubeID] = new ItemBlockEnergyCube(energyCubeID - 256, EnergyCube).setUnlocalizedName("EnergyCube");
 		Item.itemsList[gasTankID] = new ItemBlockGasTank(gasTankID - 256, GasTank).setUnlocalizedName("GasTank");
-		Item.itemsList[transmitterID] = new ItemBlockTransmitter(transmitterID - 256, Transmitter).setUnlocalizedName("Transmitter");
 	}
 	
 	/**
@@ -699,7 +758,7 @@ public class Mekanism
 	public void registerOreDict()
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods. @Calclavia
-		OreDictionary.registerOre("universalCable", new ItemStack(Transmitter, 8, 1));
+		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		
 		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
