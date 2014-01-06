@@ -45,6 +45,7 @@ import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.lighting.LightMatrix;
 import codechicken.lib.lighting.LightModel;
+import codechicken.lib.lighting.LightModel.Light;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
@@ -110,11 +111,17 @@ public class RenderPartTransmitter implements IIconRegister
         }
 
         contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
-        
+		LightModel interiorLightModel = new LightModel()
+				.setAmbient(new Vector3(0.6, 0.6, 0.6))
+				.addLight(new Light(new Vector3(0.3, 1, -0.7))
+						.setDiffuse(new Vector3(0.6, 0.6, 0.6)))
+				.addLight(new Light(new Vector3(-0.3, 1, 0.7))
+						.setDiffuse(new Vector3(0.6, 0.6, 0.6)));
+
 		for(CCModel c : contents_models.values())
         {
             c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(LightModel.standardLightModel);
+            c.computeLighting(interiorLightModel);
             c.shrinkUVs(0.0005);
         }
 	}
@@ -231,14 +238,15 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if(cable.getConnectionType(side) != ConnectionType.NONE)
-			{
-				renderEnergySide(side, cable);
-			}
+			renderEnergySide(side, cable);
 		}
 		
 		MekanismRenderer.glowOn();
+		MekanismRenderer.cullFrontFace();
+
 		CCRenderState.draw();
+
+		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
 		
 		GL11.glPopMatrix();
@@ -454,14 +462,16 @@ public class RenderPartTransmitter implements IIconRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			if(tube.getConnectionType(side) != ConnectionType.NONE)
-			{
-				renderGasSide(side, tube);
-			}
+			renderGasSide(side, tube);
 		}
 		
+		MekanismRenderer.glowOn(0);
+		MekanismRenderer.cullFrontFace();
+
 		CCRenderState.draw();
 		
+		MekanismRenderer.disableCullFace();
+		MekanismRenderer.glowOff();
 		GL11.glPopMatrix();
 	}
 	
@@ -495,12 +505,14 @@ public class RenderPartTransmitter implements IIconRegister
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		boolean connected = PartTransmitter.connectionMapContainsSide(cable.getAllCurrentConnections(), side);
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 	
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		boolean connected = PartTransmitter.connectionMapContainsSide(tube.getAllCurrentConnections(), side);
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
