@@ -33,6 +33,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergySink, IEnergyHandler, IPowerReceptor
 {
+	public CableTier tier;
+
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
 	
@@ -43,8 +45,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     public double cacheEnergy = 0;
     public double lastWrite = 0;
     
-	public PartUniversalCable()
+	public PartUniversalCable(CableTier cableTier)
 	{
+		tier = cableTier;
 		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
 		powerHandler.configurePowerPerdition(0, 0);
 		powerHandler.configure(0, 0, 0, 0);
@@ -84,7 +87,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     @Override
     public TransmitterType getTransmitter()
     {
-    	return TransmitterType.UNIVERSAL_CABLE;
+    	return tier.type;
     }
     
     @Override
@@ -93,6 +96,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     	super.load(nbtTags);
     	
     	cacheEnergy = nbtTags.getDouble("cacheEnergy");
+		tier = CableTier.values()[nbtTags.getInteger("tier")];
     }
     
     @Override
@@ -104,12 +108,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     	
     	lastWrite = toSave;
     	nbtTags.setDouble("cacheEnergy", toSave);
+		nbtTags.setInteger("tier", tier.ordinal());
     }
 
 	@Override
 	public String getType()
 	{
-		return "mekanism:universal_cable";
+		return "mekanism:universal_cable_" + tier.name().toLowerCase();
 	}
 
     public static void registerIcons(IconRegister register)
@@ -310,7 +315,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     @Override
     public int getCapacity()
     {
-        return 10000;
+        return tier.cableCapacity;
     }
 
 	@Override
@@ -389,6 +394,23 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 			
 			powerHandler.setEnergy(0);
 			reconfigure();
+		}
+	}
+
+	public static enum CableTier
+	{
+		BASIC(500, TransmitterType.UNIVERSAL_CABLE_BASIC),
+		ADVANCED(2000, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
+		ELITE(8000, TransmitterType.UNIVERSAL_CABLE_ELITE),
+		ULTIMATE(32000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
+
+		int cableCapacity;
+		TransmitterType type;
+
+		private CableTier(int capacity, TransmitterType transmitterType)
+		{
+			cableCapacity = capacity;
+			type = transmitterType;
 		}
 	}
 }

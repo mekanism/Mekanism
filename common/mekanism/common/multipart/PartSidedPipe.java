@@ -20,6 +20,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.multipart.PartUniversalCable.CableTier;
 import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
@@ -95,8 +96,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		switch(type)
 		{
-			case UNIVERSAL_CABLE:
-				return new PartUniversalCable();
+			case UNIVERSAL_CABLE_BASIC:
+				return new PartUniversalCable(CableTier.BASIC);
+			case UNIVERSAL_CABLE_ADVANCED:
+				return new PartUniversalCable(CableTier.ADVANCED);
+			case UNIVERSAL_CABLE_ELITE:
+				return new PartUniversalCable(CableTier.ELITE);
+			case UNIVERSAL_CABLE_ULTIMATE:
+				return new PartUniversalCable(CableTier.ULTIMATE);
 			case MECHANICAL_PIPE:
 				return new PartMechanicalPipe();
 			case PRESSURIZED_TUBE:

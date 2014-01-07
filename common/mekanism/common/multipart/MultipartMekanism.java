@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import mekanism.common.multipart.PartUniversalCable.CableTier;
+
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
@@ -14,7 +16,10 @@ public class MultipartMekanism implements IPartFactory
 	
 	public void init()
 	{
-		MultiPartRegistry.registerParts(this, new String[] {"mekanism:universal_cable", "mekanism:mechanical_pipe", "mekanism:pressurized_tube", "mekanism:logistical_transporter",
+		MultiPartRegistry.registerParts(this, new String[] {"mekanism:universal_cable_basic",
+				"mekanism:universal_cable_advanced", "mekanism:universal_cable_elite",
+				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
+				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter"});
 		
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitter");
@@ -34,7 +39,23 @@ public class MultipartMekanism implements IPartFactory
 	{
 		if(name.equals("mekanism:universal_cable"))
 		{
-			return new PartUniversalCable();
+			return new PartUniversalCable(CableTier.BASIC);
+		}
+		else if(name.equals("mekanism:universal_cable_basic"))
+		{
+			return new PartUniversalCable(CableTier.BASIC);
+		}
+		else if(name.equals("mekanism:universal_cable_advanced"))
+		{
+			return new PartUniversalCable(CableTier.ADVANCED);
+		}
+		else if(name.equals("mekanism:universal_cable_elite"))
+		{
+			return new PartUniversalCable(CableTier.ELITE);
+		}
+		else if(name.equals("mekanism:universal_cable_ultimate"))
+		{
+			return new PartUniversalCable(CableTier.ULTIMATE);
 		}
 		else if(name.equals("mekanism:mechanical_pipe"))
 		{
