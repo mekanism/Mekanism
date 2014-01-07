@@ -39,7 +39,6 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
-import mekanism.client.render.block.TransmitterRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
@@ -295,7 +294,6 @@ public class ClientProxy extends CommonProxy
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new TransmitterRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 		
 		System.out.println("[Mekanism] Render registrations complete.");

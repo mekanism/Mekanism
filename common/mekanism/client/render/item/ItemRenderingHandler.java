@@ -12,8 +12,8 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelObsidianTNT;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.model.ModelTransmitter;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.common.IElectricChest;
@@ -32,7 +32,6 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.TransmitterType;
-import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.tileentity.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -63,8 +62,6 @@ public class ItemRenderingHandler implements IItemRenderer
 {
 	public ModelRobit robit = new ModelRobit();
 	public ModelChest electricChest = new ModelChest();
-	public ModelTransmitter transmitterSmall = new ModelTransmitter(Size.SMALL);
-    public ModelTransmitter transmitterLarge = new ModelTransmitter(Size.LARGE);
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
 	public ModelEnergyCore energyCore = new ModelEnergyCore();
 	public ModelGasTank gasTank = new ModelGasTank();
@@ -361,45 +358,9 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemPartTransmitter)
 		{
-			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
-	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-	    	GL11.glDisable(GL11.GL_CULL_FACE);
-	    	
-	    	switch(item.getItemDamage())
-	    	{
-	    		case 0:
-	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "UniversalCable.png"));
-	    			break;
-	    		case 1:
-	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MechanicalPipe.png"));
-	    			break;
-	    		case 2:
-	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedTube.png"));
-	    			break;
-	    		case 3:
-	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalTransporter.png"));
-	    			break;
-	    		case 4:
-	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RestrictiveTransporter.png"));
-	    			break;
-	    		case 5:
-	    			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DiversionTransporter.png"));
-	    			break;
-	    	}
-	    	
-	    	if(TransmitterType.values()[item.getItemDamage()].getSize() == Size.SMALL)
-	    	{
-		    	transmitterSmall.renderSide(ForgeDirection.UP, true);
-		    	transmitterSmall.renderSide(ForgeDirection.DOWN, true);
-		    	transmitterSmall.renderCenter(new boolean[] {true, true, false, false, false, false});
-	    	}
-	    	else {
-		    	transmitterLarge.renderSide(ForgeDirection.UP, true);
-		    	transmitterLarge.renderSide(ForgeDirection.DOWN, true);
-		    	transmitterLarge.renderCenter(new boolean[] {true, true, false, false, false, false});
-	    	}
-	    	
+			GL11.glTranslated(-0.5, -0.5, -0.5);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
 	    	GL11.glEnable(GL11.GL_CULL_FACE);
 
 		}

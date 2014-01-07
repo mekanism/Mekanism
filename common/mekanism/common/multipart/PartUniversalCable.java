@@ -119,8 +119,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
     public static void registerIcons(IconRegister register)
     {
-        cableIcons = new TransmitterIcons(1, 1);
-        cableIcons.registerCenterIcons(register, new String[] {"UniversalCable"});
+        cableIcons = new TransmitterIcons(4, 1);
+        cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
+				"UniversalCableElite", "UniversalCableUltimate"});
         cableIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
     }
     
@@ -134,7 +135,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     @Override
     public Icon getCenterIcon()
     {
-        return cableIcons.getCenterIcon(0);
+        return cableIcons.getCenterIcon(tier.ordinal());
     }
 
     @Override

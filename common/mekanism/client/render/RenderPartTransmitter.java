@@ -16,6 +16,8 @@ import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.multipart.PartUniversalCable;
+import mekanism.common.multipart.TransmitterType;
+import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -140,6 +142,17 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
+	}
+
+	public void renderItem(TransmitterType type)
+	{
+		CCRenderState.reset();
+		CCRenderState.startDrawing(7);
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			renderSide(side, type);
+		}
+		CCRenderState.draw();
 	}
 	
 	public void renderContents(PartLogisticalTransporter transporter, float partialTick, Vector3 vec)
@@ -503,6 +516,15 @@ public class RenderPartTransmitter implements IIconRegister
 		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c, olm);
 	}
 
+	public void renderSide(ForgeDirection side, TransmitterType type)
+	{
+		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
+
+		Icon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
+
+		renderPart(renderIcon, getItemModel(side, type), 0,0,0, null, null);
+	}
+
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
@@ -526,6 +548,21 @@ public class RenderPartTransmitter implements IIconRegister
     {
         cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
     }
+
+	public CCModel getItemModel(ForgeDirection side, TransmitterType type)
+	{
+		String name = side.name().toLowerCase();
+		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
+		name += out ? "NORMAL" : "NONE";
+		if(type.getSize() == Size.SMALL)
+		{
+			return small_models.get(name);
+		}
+		else
+		{
+			return large_models.get(name);
+		}
+	}
 
 	@Override
 	public void registerIcons(IconRegister register)
