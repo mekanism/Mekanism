@@ -38,6 +38,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	
 	public GasStack gasStored;
 	public int prevStored;
+
+	public int prevTransferAmount = 0;
 	
 	public GasNetwork(IGridTransmitter<GasNetwork>... varPipes)
 	{
@@ -209,6 +211,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
+			prevTransferAmount = 0;
+
 			if(transferDelay == 0)
 			{
 				didTransfer = false;
@@ -236,7 +240,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			
 			if(gasStored != null)
 			{
-				gasStored.amount -= tickEmit(gasStored);
+				prevTransferAmount = tickEmit(gasStored);
+				gasStored.amount -= prevTransferAmount;
 				
 				if(gasStored.amount <= 0)
 				{
@@ -459,10 +464,16 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	{
 		return Integer.toString(getGasNeeded());
 	}
+
+	@Override
+	public String getStored()
+	{
+		return gasStored != null ? gasStored.getGas().getLocalizedName() + " (" + gasStored.amount + ")" : "None";
+	}
 	
 	@Override
 	public String getFlow()
 	{
-		return gasStored != null ? gasStored.getGas().getLocalizedName() + " (" + gasStored.amount + ")" : "None";
+		return Integer.toString(prevTransferAmount) + "/t";
 	}
 }

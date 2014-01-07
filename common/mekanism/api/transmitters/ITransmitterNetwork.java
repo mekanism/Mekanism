@@ -12,6 +12,8 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	public int getAcceptorSize();
 	
 	public String getNeeded();
+
+	public String getStored();
 	
 	public String getFlow();
 	

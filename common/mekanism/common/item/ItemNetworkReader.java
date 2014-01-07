@@ -38,8 +38,9 @@ public class ItemNetworkReader extends ItemEnergized
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getAcceptorSize()));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getNeeded()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlow() ));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getCapacity() + "/tick" ));
+					player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getStored()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlow()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getCapacity() + "/tick"));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     			}
     		}

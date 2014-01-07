@@ -34,7 +34,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
-	private double joulesLastTick = 0;
+	private double jouleBufferLastTick = 0;
 	
 	public double clientEnergyScale = 0;
 	
@@ -63,10 +63,10 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		{
 			if(net != null)
 			{
-				if(net.joulesLastTick > joulesLastTick || net.clientEnergyScale > clientEnergyScale)
+				if(net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale)
 				{
 					clientEnergyScale = net.clientEnergyScale;
-					joulesLastTick = net.joulesLastTick;
+					jouleBufferLastTick = net.jouleBufferLastTick;
 					joulesTransmitted = net.joulesTransmitted;
 					lastPowerScale = net.lastPowerScale;
 				}
@@ -153,7 +153,8 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				tryAgain = true;
 			}
 		} while(tryAgain);
-		
+
+		joulesTransmitted = sent;
 		return sent;
 	}
 	
@@ -224,8 +225,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			
-			joulesTransmitted += sent;
 		}
 		
 		return sent;
@@ -411,18 +410,18 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public double getPowerScale()
 	{
-		return Math.max(joulesLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), getCapacity() == 0 ? 0 : electricityStored/getCapacity());
+		return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), getCapacity() == 0 ? 0 : electricityStored/getCapacity());
 	}
 	
 	public void clearJoulesTransmitted()
 	{
-		joulesLastTick = joulesTransmitted;
+		jouleBufferLastTick = electricityStored;
 		joulesTransmitted = 0;
 	}
 	
 	public double getPower()
 	{
-		return joulesLastTick * 20;
+		return jouleBufferLastTick * 20;
 	}
 	
 	@Override
@@ -430,7 +429,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		EnergyNetwork network = new EnergyNetwork(varTransmitters);
 		network.clientEnergyScale = clientEnergyScale;
-		network.joulesLastTick = joulesLastTick;
+		network.jouleBufferLastTick = jouleBufferLastTick;
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
@@ -442,7 +441,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		EnergyNetwork network = new EnergyNetwork(collection);
 		network.clientEnergyScale = clientEnergyScale;
-		network.joulesLastTick = joulesLastTick;
+		network.jouleBufferLastTick = jouleBufferLastTick;
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
@@ -468,8 +467,14 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
+	public String getStored()
+	{
+		return MekanismUtils.getEnergyDisplay(electricityStored);
+	}
+
+	@Override
 	public String getFlow()
 	{
-		return MekanismUtils.getPowerDisplay(20*electricityStored);
+		return MekanismUtils.getPowerDisplay(20*joulesTransmitted);
 	}
 }

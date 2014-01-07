@@ -36,6 +36,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	
 	public FluidStack fluidStored;
 	public int prevStored;
+
+	public int prevTransferAmount = 0;
 	
 	public FluidNetwork(IGridTransmitter<FluidNetwork>... varPipes)
 	{
@@ -456,12 +458,18 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getNeeded()
 	{
-		return "Fluid needed (any type): " + (float)getFluidNeeded()/1000F + " buckets";
+		return "Fluid needed: " + (float)getFluidNeeded()/1000F + " buckets";
 	}
 	
 	@Override
+	public String getStored()
+	{
+		return fluidStored == null ? "None" : fluidStored.getFluid().getLocalizedName() + ", " + fluidStored.amount + "mB";
+	}
+
+	@Override
 	public String getFlow()
 	{
-		return fluidStored == null ? "None" : fluidStored.getFluid().getLocalizedName() + ", " + fluidStored.amount + "mB/tick";
+		return Integer.toString(prevTransferAmount);
 	}
 }
