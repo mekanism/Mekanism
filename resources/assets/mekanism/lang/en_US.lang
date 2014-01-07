@@ -79,16 +79,11 @@ tile.OreBlock.OsmiumOre.name=Osmium Ore
 tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
 
-//Transmitters
-tile.Transmitter.PressurizedTube.name=Pressurized Tube
-tile.Transmitter.UniversalCable.name=Universal Cable
-tile.Transmitter.MechanicalPipe.name=Mechanical Pipe
-tile.Transmitter.LogisticalTransporter.name=Logistical Transporter
-tile.Transmitter.RestrictiveTransporter.name=Restrictive Transporter
-tile.Transmitter.DiversionTransporter.name=Diversion Transporter
-
 item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
-item.MultipartTransmitter.UniversalCable.name=Universal Cable
+item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Cable
+item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Cable
+item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Cable
+item.MultipartTransmitter.UltimateUniversalCable.name=Ultimate Universal Cable
 item.MultipartTransmitter.MechanicalPipe.name=Mechanical Pipe
 item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
