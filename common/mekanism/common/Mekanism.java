@@ -1074,6 +1074,7 @@ public class Mekanism
 		donators.add("ejmiv89");
 		donators.add("Greylocke");
 		donators.add("darkphan");
+		donators.add("Nephatrine");
 		
 		//Load proxy
 		proxy.registerRenderInformation();
