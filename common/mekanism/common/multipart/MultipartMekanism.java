@@ -71,7 +71,7 @@ public class MultipartMekanism implements IPartFactory
 		}
 		else if(name.equals("mekanism:restrictive_transporter"))
 		{
-			return new PartLogisticalTransporter();
+			return new PartRestrictiveTransporter();
 		}
 		else if(name.equals("mekanism:diversion_transporter"))
 		{
