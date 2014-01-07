@@ -314,7 +314,6 @@ public class ClientTickHandler implements ITickHandler
 			{
 				if(isGasMaskOn(mc.thePlayer) && mc.currentScreen == null)
 				{
-					System.out.println("on");
 					Mekanism.gasmaskOn.add(mc.thePlayer.username);
 				}
 				else {
