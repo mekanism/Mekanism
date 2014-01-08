@@ -5,7 +5,7 @@ import mekanism.client.gui.GuiRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
-import mekanism.generators.common.tileentity.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;

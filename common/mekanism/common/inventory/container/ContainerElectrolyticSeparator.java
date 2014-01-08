@@ -2,10 +2,10 @@ package mekanism.common.inventory.container;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.tileentity.TileEntityElectrolyticSeparator;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

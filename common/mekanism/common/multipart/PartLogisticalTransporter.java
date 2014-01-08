@@ -14,7 +14,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.Finder.FirstFinder;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterManager;

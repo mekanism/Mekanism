@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerElectricPump;
-import mekanism.common.tileentity.TileEntityElectricPump;
+import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

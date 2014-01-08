@@ -6,7 +6,7 @@ import java.util.Set;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiPurificationChamber;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

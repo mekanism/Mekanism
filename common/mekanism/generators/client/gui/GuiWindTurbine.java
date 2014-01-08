@@ -7,7 +7,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.ContainerWindTurbine;
-import mekanism.generators.common.tileentity.TileEntityWindTurbine;
+import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;

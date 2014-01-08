@@ -7,8 +7,8 @@ import com.google.common.io.ByteArrayDataInput;
 
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismRecipe;
 import mekanism.common.Version;
+import mekanism.common.recipe.MekanismRecipe;
 import mekanism.tools.item.ItemMekanismArmor;
 import mekanism.tools.item.ItemMekanismAxe;
 import mekanism.tools.item.ItemMekanismHoe;

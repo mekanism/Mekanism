@@ -11,7 +11,7 @@ import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
@@ -24,6 +24,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;

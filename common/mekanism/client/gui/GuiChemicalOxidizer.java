@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
-import mekanism.common.tileentity.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

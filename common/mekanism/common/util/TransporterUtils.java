@@ -8,7 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.ListUtils;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ILogisticalTransporter;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
 import net.minecraft.entity.item.EntityItem;

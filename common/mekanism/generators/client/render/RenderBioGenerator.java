@@ -9,7 +9,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelBioGenerator;
-import mekanism.generators.common.tileentity.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;

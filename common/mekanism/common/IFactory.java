@@ -1,8 +1,9 @@
 package mekanism.common;
 
-import mekanism.common.RecipeHandler.Recipe;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.tileentity.TileEntityAdvancedElectricMachine;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;

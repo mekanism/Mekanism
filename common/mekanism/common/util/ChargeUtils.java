@@ -5,7 +5,7 @@ import ic2.api.item.IElectricItem;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import cofh.api.energy.IEnergyContainerItem;

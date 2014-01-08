@@ -6,7 +6,7 @@ import java.util.Set;
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.common.Mekanism;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler

@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.tileentity.TileEntityContainerBlock;
+import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 

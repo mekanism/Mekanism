@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerFactory;
-import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 

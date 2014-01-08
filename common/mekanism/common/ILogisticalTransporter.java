@@ -3,7 +3,7 @@ package mekanism.common;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

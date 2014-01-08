@@ -3,7 +3,7 @@ package mekanism.generators.common;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mekanism.common.Mekanism;
 import mekanism.generators.common.inventory.container.*;
-import mekanism.generators.common.tileentity.*;
+import mekanism.generators.common.tile.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;

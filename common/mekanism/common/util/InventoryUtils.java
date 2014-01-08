@@ -2,8 +2,8 @@ package mekanism.common.util;
 
 import mekanism.api.EnumColor;
 import mekanism.common.IInvConfiguration;
-import mekanism.common.tileentity.TileEntityBin;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.Finder;
 import mekanism.common.transporter.InvStack;
 import net.minecraft.inventory.IInventory;

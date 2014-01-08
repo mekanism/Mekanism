@@ -3,7 +3,7 @@ package mekanism.generators.client.render;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHydrogenGenerator;
-import mekanism.generators.common.tileentity.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 

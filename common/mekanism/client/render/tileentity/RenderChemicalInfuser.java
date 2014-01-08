@@ -9,7 +9,7 @@ import mekanism.client.model.ModelChemicalInfuser;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;

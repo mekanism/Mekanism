@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.tank.DynamicTankCache;
+import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;

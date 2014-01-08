@@ -9,7 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

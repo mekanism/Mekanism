@@ -3,7 +3,7 @@ package mekanism.client.nei;
 import java.util.Set;
 
 import mekanism.client.gui.GuiEnrichmentChamber;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 
 public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 {

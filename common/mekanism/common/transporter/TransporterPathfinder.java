@@ -10,7 +10,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.ILogisticalTransporter;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;

@@ -2,8 +2,8 @@ package mekanism.common.block;
 
 import java.util.Random;
 
-import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tileentity.TileEntityBoundingBlock;
+import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;

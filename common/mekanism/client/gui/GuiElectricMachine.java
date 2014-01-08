@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.common.inventory.container.ContainerElectricMachine;
-import mekanism.common.tileentity.TileEntityElectricMachine;
+import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
 

@@ -3,7 +3,7 @@ package mekanism.client.nei;
 import java.util.Set;
 
 import mekanism.client.gui.GuiCrusher;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 
 public class CrusherRecipeHandler extends MachineRecipeHandler
 {

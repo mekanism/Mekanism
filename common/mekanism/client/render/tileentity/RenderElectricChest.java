@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.ModelChest;

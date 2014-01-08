@@ -6,11 +6,12 @@ import java.util.Set;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.SideData;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tileentity.TileEntityContainerBlock;
+import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiMekanism extends GuiContainer

@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
-import mekanism.common.EntityRobit;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;

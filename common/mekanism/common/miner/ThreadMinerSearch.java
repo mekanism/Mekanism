@@ -4,7 +4,7 @@ import java.util.Collections;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 

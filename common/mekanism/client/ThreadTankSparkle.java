@@ -6,7 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;

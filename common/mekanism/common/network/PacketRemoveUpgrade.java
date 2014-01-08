@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import mekanism.api.Coord4D;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

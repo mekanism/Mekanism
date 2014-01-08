@@ -3,7 +3,7 @@ package mekanism.generators.client.render;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
-import mekanism.generators.common.tileentity.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 

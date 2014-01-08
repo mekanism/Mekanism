@@ -2,7 +2,7 @@ package mekanism.client.render.entity;
 
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelBalloon;
-import mekanism.common.EntityBalloon;
+import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -29,9 +29,16 @@ public class RenderBalloon extends Render
 	}
 
 	@Override
-	public void doRender(Entity entity, double x, double y, double z, float f, float f1)
+	public void doRender(Entity entity, double x, double y, double z, float f, float partialTick)
 	{
 		EntityBalloon balloon = (EntityBalloon)entity;
+		
+		if(balloon.isLatchedToEntity())
+		{
+			x = (balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX)*partialTick);
+			y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY)*partialTick) + (balloon.latchedEntity.ySize/2);
+			z = (balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ)*partialTick);
+		}
 		
 		render(((EntityBalloon)entity).color, x, y, z);
 	}

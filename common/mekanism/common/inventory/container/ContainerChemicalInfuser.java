@@ -4,7 +4,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

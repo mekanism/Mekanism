@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.generators.client.gui.*;
 import mekanism.generators.client.render.*;
 import mekanism.generators.common.GeneratorsCommonProxy;
-import mekanism.generators.common.tileentity.*;
+import mekanism.generators.common.tile.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

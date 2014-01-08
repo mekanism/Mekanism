@@ -7,7 +7,7 @@ import mekanism.api.ListUtils;
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.common.Mekanism;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

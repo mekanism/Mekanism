@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;

@@ -16,7 +16,7 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.gui.GuiMetallurgicInfuser;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;

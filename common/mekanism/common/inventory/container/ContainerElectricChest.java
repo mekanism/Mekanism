@@ -4,7 +4,7 @@ import mekanism.common.IElectricChest;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

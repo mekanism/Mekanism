@@ -8,7 +8,7 @@ import java.util.Set;
 import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
 import mekanism.common.IInvConfiguration;
-import mekanism.common.tileentity.TileEntityBin;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;

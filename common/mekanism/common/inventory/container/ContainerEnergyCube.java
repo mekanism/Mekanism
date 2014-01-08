@@ -3,7 +3,7 @@ package mekanism.common.inventory.container;
 import ic2.api.item.IElectricItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.tileentity.TileEntityEnergyCube;
+import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

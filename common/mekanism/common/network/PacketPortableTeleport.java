@@ -7,7 +7,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

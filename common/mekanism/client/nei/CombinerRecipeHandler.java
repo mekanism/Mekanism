@@ -5,7 +5,7 @@ import java.util.Set;
 
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 

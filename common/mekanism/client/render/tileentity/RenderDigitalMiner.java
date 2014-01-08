@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelDigitalMiner;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
