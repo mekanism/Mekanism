@@ -55,10 +55,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super(world);
 		
-		setSize(0.5F, 0.5F);
+		setSize(0.3F, 0.3F);
 		
 		getNavigator().setAvoidsWater(true);
-
+		
 		tasks.addTask(1, new RobitAIPickup(this, 1.0F));
 		tasks.addTask(2, new RobitAIFollow(this, 1.0F, 10.0F, 2.0F));
 		tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));

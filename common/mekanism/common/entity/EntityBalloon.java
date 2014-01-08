@@ -68,7 +68,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     	this(entity.worldObj);
     	
     	latchedEntity = entity;
-    	setPosition(latchedEntity.posX, latchedEntity.posY + 3F, latchedEntity.posZ);
+    	setPosition(latchedEntity.posX, latchedEntity.posY + (latchedEntity.height/2) + 2.2F, latchedEntity.posZ);
     	
         prevPosX = posX;
         prevPosY = posY;
@@ -198,7 +198,20 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         else if(latchedEntity != null && latchedEntity.getHealth() > 0)
         {
         	int floor = getFloor(latchedEntity);
-        	setPosition(posX = latchedEntity.posX, posY = latchedEntity.posY + 3F, posZ = latchedEntity.posZ);
+        	
+        	if(latchedEntity.posY-(floor+1) < -0.1)
+        	{
+        		latchedEntity.motionY = Math.max(0.04, latchedEntity.motionY*1.015);
+        	}
+        	else if(latchedEntity.posY-(floor+1) > 0.1)
+        	{
+          		latchedEntity.motionY = Math.min(-0.04, latchedEntity.motionY*1.015);
+        	}
+        	else {
+        		latchedEntity.motionY = 0;
+        	}
+        	
+        	setPosition(latchedEntity.posX, latchedEntity.posY + (latchedEntity.height/2) + 2.2F, latchedEntity.posZ);
         }
     }
     
@@ -210,9 +223,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     	
     	for(int i = yPos; i > 0; i--)
     	{
-    		if(!worldObj.isAirBlock(xPos, i, zPos))
+    		if(i < 256 && !worldObj.isAirBlock(xPos, i, zPos))
     		{
-    			return i;
+    			return i+1;
     		}
     	}
     	
