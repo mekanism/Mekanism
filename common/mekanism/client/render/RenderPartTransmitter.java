@@ -293,7 +293,7 @@ public class RenderPartTransmitter implements IIconRegister
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				if(pipe.getConnectionType(side) != ConnectionType.NONE && PartTransmitter.connectionMapContainsSide(pipe.getAllCurrentConnections(), side))
+				if(pipe.getConnectionType(side) == ConnectionType.NORMAL)
 				{
 					DisplayInteger[] displayLists = getListAndRender(side, fluid);
 					
@@ -308,6 +308,13 @@ public class RenderPartTransmitter implements IIconRegister
 							displayLists[stages-1].render();
 						}
 					}
+				}
+				else if(pipe.getConnectionType(side) != ConnectionType.NONE) {
+					GL11.glCullFace(GL11.GL_FRONT);
+					CCRenderState.startDrawing(7);
+					renderFluidInOut(side, pipe);
+					CCRenderState.draw();
+					GL11.glCullFace(GL11.GL_BACK);
 				}
 			}
 			
@@ -528,14 +535,18 @@ public class RenderPartTransmitter implements IIconRegister
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		boolean connected = PartTransmitter.connectionMapContainsSide(cable.getAllCurrentConnections(), side);
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 	
+	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
+	{
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
+		renderTransparency(pipe.getTransmitterNetwork().refFluid.getIcon(), pipe.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
+	}
+
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		boolean connected = PartTransmitter.connectionMapContainsSide(tube.getAllCurrentConnections(), side);
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
