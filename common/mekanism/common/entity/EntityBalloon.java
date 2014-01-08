@@ -11,6 +11,7 @@ import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -196,8 +197,26 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         }
         else if(latchedEntity != null && latchedEntity.getHealth() > 0)
         {
+        	int floor = getFloor(latchedEntity);
         	setPosition(posX = latchedEntity.posX, posY = latchedEntity.posY + 3F, posZ = latchedEntity.posZ);
         }
+    }
+    
+    private int getFloor(EntityLivingBase entity)
+    {
+    	int xPos = MathHelper.floor_double(entity.posX);
+    	int yPos = MathHelper.floor_double(entity.posY);
+    	int zPos = MathHelper.floor_double(entity.posZ);
+    	
+    	for(int i = yPos; i > 0; i--)
+    	{
+    		if(!worldObj.isAirBlock(xPos, i, zPos))
+    		{
+    			return i;
+    		}
+    	}
+    	
+    	return -1;
     }
     
     private void findCachedEntity()
