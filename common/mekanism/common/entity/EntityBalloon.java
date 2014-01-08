@@ -104,7 +104,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     
     @Override
     public void onUpdate()
-    { 
+    {
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
@@ -196,9 +196,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         }
         else if(latchedEntity != null && latchedEntity.getHealth() > 0)
         {
-        	posX = latchedEntity.posX;
-        	posY = latchedEntity.posY + 3F;
-        	posZ = latchedEntity.posZ;
+        	setPosition(posX = latchedEntity.posX, posY = latchedEntity.posY + 3F, posZ = latchedEntity.posZ);
         }
     }
     
