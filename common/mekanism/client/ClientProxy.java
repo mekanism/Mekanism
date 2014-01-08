@@ -298,6 +298,9 @@ public class ClientProxy extends CommonProxy
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
+		if (tileEntity == null)
+			return null;
+			
 		switch(ID)
 		{
 			case 0:
