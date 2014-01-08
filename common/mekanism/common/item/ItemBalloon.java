@@ -121,7 +121,7 @@ public class ItemBalloon extends ItemMekanism
 	@Override
     public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
     {
-		/*if(player.isSneaking())
+		if(player.isSneaking())
 		{			
 			if(!player.worldObj.isRemote)
 			{
@@ -136,12 +136,13 @@ public class ItemBalloon extends ItemMekanism
 						return true;
 					}
 				}
+				
 				player.worldObj.spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
 				stack.stackSize--;
 			}
 			
 			return true;
-		}*/
+		}
 		
         return false;
     }

@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -23,7 +24,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	public EnumColor color = EnumColor.DARK_BLUE;
 	
 	public Coord4D latched;
-	public Entity latchedEntity;
+	public EntityLivingBase latchedEntity;
 	
 	/* server-only */
 	public boolean hasCachedEntity;
@@ -61,12 +62,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         color = c;
     }
     
-    public EntityBalloon(Entity entity, EnumColor c)
+    public EntityBalloon(EntityLivingBase entity, EnumColor c)
     {
     	this(entity.worldObj);
     	
     	latchedEntity = entity;
-    	setPosition(latchedEntity.posX, (latchedEntity.ySize/2), latchedEntity.posZ);
+    	setPosition(latchedEntity.posX, latchedEntity.posY + 3F, latchedEntity.posZ);
     	
         prevPosX = posX;
         prevPosY = posY;
@@ -123,6 +124,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         	else {
         		latched = null;
         	}
+        	
+        	if(dataWatcher.getWatchableObjectByte(2) == 2)
+        	{
+        		latchedEntity = (EntityLivingBase)worldObj.getEntityByID(dataWatcher.getWatchableObjectInt(6));
+        	}
+        	else {
+        		latchedEntity = null;
+        	}
         }
         else {
         	if(hasCachedEntity)
@@ -151,7 +160,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	        	dataWatcher.updateObject(2, (byte)0); /* Is latched */
         	}
         	
-        	if(latchedEntity != null && (latchedEntity.isDead || !worldObj.loadedEntityList.contains(latchedEntity)))
+        	if(latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !worldObj.loadedEntityList.contains(latchedEntity)))
         	{
         		latchedEntity = null;
         		
@@ -185,10 +194,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         	motionY = 0;
         	motionZ = 0;
         }
-        else if(latchedEntity != null)
+        else if(latchedEntity != null && latchedEntity.getHealth() > 0)
         {
         	posX = latchedEntity.posX;
-        	posY = latchedEntity.posY + (latchedEntity.ySize/2);
+        	posY = latchedEntity.posY + 3F;
         	posZ = latchedEntity.posZ;
         }
     }
@@ -197,9 +206,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     {
     	for(Object obj : worldObj.loadedEntityList)
     	{
-    		if(obj instanceof Entity)
+    		if(obj instanceof EntityLivingBase)
     		{
-    			Entity entity = (Entity)obj;
+    			EntityLivingBase entity = (EntityLivingBase)obj;
     			
     			if(entity.getUniqueID().equals(cachedEntityUUID))
     			{
@@ -336,7 +345,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		}
 		else if(type == 2)
 		{
-			latchedEntity = worldObj.getEntityByID(data.readInt());
+			latchedEntity = (EntityLivingBase)worldObj.getEntityByID(data.readInt());
 		}
 		else {
 			latched = null;

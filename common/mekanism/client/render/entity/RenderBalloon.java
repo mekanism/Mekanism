@@ -7,6 +7,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
@@ -36,8 +37,14 @@ public class RenderBalloon extends Render
 		if(balloon.isLatchedToEntity())
 		{
 			x = (balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX)*partialTick);
-			y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY)*partialTick) + (balloon.latchedEntity.ySize/2);
+			y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY)*partialTick);
 			z = (balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ)*partialTick);
+			
+			x -= RenderManager.renderPosX;
+			y -= RenderManager.renderPosY;
+			z -= RenderManager.renderPosZ;
+			
+			y += 3;
 		}
 		
 		render(((EntityBalloon)entity).color, x, y, z);
