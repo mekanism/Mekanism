@@ -38,7 +38,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	/** A fake power handler used to initiate energy transfer calculations. */
 	public PowerHandler powerHandler;
 	
-    public static TransmitterIcons cableIcons;
+    public static TransmitterIcons cableIcons = new TransmitterIcons(4, 1);
     
     public double currentPower = 0;
     
@@ -119,7 +119,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
     public static void registerIcons(IconRegister register)
     {
-        cableIcons = new TransmitterIcons(4, 1);
         cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
 				"UniversalCableElite", "UniversalCableUltimate"});
         cableIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});

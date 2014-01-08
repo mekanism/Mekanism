@@ -48,7 +48,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
 {
-	public static TransmitterIcons transporterIcons;
+	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
 	
 	public static final int SPEED = 5;
 	
@@ -80,7 +80,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 	public static void registerIcons(IconRegister register)
 	{
-		transporterIcons = new TransmitterIcons(3, 2);
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
 		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterSide", "RestrictiveTransporterSide"});
 	}
