@@ -68,7 +68,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     	this(entity.worldObj);
     	
     	latchedEntity = entity;
-    	setPosition(latchedEntity.posX, latchedEntity.posY + (latchedEntity.height/2) + 2.2F, latchedEntity.posZ);
+    	setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
     	
         prevPosX = posX;
         prevPosY = posY;
@@ -211,7 +211,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         		latchedEntity.motionY = 0;
         	}
         	
-        	setPosition(latchedEntity.posX, latchedEntity.posY + (latchedEntity.height/2) + 2.2F, latchedEntity.posZ);
+        	setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
         }
     }
     

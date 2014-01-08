@@ -55,7 +55,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super(world);
 		
-		setSize(0.3F, 0.3F);
+		setSize(0.5F, 0.5F);
 		
 		getNavigator().setAvoidsWater(true);
 		
