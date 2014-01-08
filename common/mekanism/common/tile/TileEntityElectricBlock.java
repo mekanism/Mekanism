@@ -341,7 +341,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			return i;
 		}
     	
-    	return transferEnergyToAcceptor(direction, i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
+    	return i-transferEnergyToAcceptor(direction, i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
     }
 	
 	@Override
@@ -349,13 +349,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!getConsumingSides().contains(side))
 		{
-			return amount;
+			return 0;
 		}
 		
     	double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
     	setEnergy(getEnergy() + toUse);
     	
-    	return amount-toUse;
+    	return toUse;
 	}
 	
 	@Override

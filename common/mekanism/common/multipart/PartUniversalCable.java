@@ -323,13 +323,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		if(!canReceiveEnergy(side))
 		{
-			return amount;
+			return 0;
 		}
 		
     	double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
     	setEnergy(getEnergy() + toUse);
     	
-    	return amount-toUse;
+    	return toUse;
 	}
 
 	@Override
