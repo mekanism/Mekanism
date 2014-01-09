@@ -17,7 +17,7 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
+public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
