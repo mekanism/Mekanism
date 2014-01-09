@@ -80,7 +80,8 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	{
 		GasStack gas = ((CachedIORecipe)arecipes.get(i)).outputStack;
 		
-		drawTexturedModalRect(64-xOffset, 40-yOffset, 176, 63, 48, 8);
+		float f = ticksPassed % 20 / 20.0F;
+		drawProgressBar(64-xOffset, 40-yOffset, 176, 63, 48, 8, f, 0);
 		
 		if(gas != null)
 		{
@@ -124,8 +125,6 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
-		System.out.println(xAxis + " " + yAxis);
 		
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
