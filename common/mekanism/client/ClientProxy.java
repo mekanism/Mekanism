@@ -486,14 +486,14 @@ public class ClientProxy extends CommonProxy
 		return Minecraft.getMinecraft().mcDataDir;
 	}
 	
-	 @Override
-     public void onConfigSync()
-     {
-         super.onConfigSync();
-         
-         if(Mekanism.voiceServerEnabled)
-         {
-        	 MekanismClient.voiceClient.start();
-         }
-     }
+	@Override
+	public void onConfigSync()
+	{
+		super.onConfigSync();
+
+		if(Mekanism.voiceServerEnabled)
+		{
+			MekanismClient.voiceClient.start();
+		}
+	}
 }
