@@ -342,7 +342,9 @@ public final class RecipeHandler
 					
 					if(entry.getKey() instanceof ItemStack)
 					{
-						if(((ItemStack)entry.getKey()).isItemEqual(input))
+						ItemStack stack = (ItemStack)entry.getKey();
+						
+						if(StackUtils.equalsWildcard(stack, input))
 						{
 							return true;
 						}

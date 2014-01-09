@@ -950,11 +950,8 @@ public class Mekanism
 		
 		for(Object obj : FurnaceRecipes.smelting().getSmeltingList().entrySet())
 		{
-			if(obj instanceof Map.Entry)
-			{
-				Map.Entry<Integer, ItemStack> entry = (Map.Entry<Integer, ItemStack>)obj;
-				TileEntityEnergizedSmelter.furnaceRecipes.put(new ItemStack(entry.getKey(), 1, 0), entry.getValue());
-			}
+			Map.Entry<Integer, ItemStack> entry = (Map.Entry<Integer, ItemStack>)obj;
+			TileEntityEnergizedSmelter.furnaceRecipes.put(new ItemStack(entry.getKey(), 1, OreDictionary.WILDCARD_VALUE), entry.getValue());
 		}
 		
 		event.registerServerCommand(new CommandMekanism());
