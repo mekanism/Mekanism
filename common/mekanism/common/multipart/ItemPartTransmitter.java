@@ -89,12 +89,10 @@ public class ItemPartTransmitter extends JItemMultiPart
 		else {
 			switch(itemstack.getItemDamage())
 			{
-				case 0:
-				case 1:
-				case 2:
-				case 3:
+				case 0: case 1: case 2: case 3:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 					list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");

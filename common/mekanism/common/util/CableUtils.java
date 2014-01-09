@@ -290,7 +290,8 @@ public final class CableUtils
 			
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{
-				sent += (sendingEnergy - acceptor.transferEnergyToAcceptor(side.getOpposite(), sendingEnergy));
+				double prev = sent;
+				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), sendingEnergy);
 			}
 		}
 		else if(tileEntity instanceof IEnergyHandler)

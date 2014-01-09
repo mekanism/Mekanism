@@ -317,7 +317,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return amount;
+			return 0;
 		}
 		
 		return getInv().transferEnergyToAcceptor(side, amount);

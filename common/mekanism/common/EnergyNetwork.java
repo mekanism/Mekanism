@@ -30,8 +30,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {
-	public static final int CABLE_ENERGY = 10000;
-	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double jouleBufferLastTick = 0;
@@ -199,7 +197,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					
 					if(acceptor instanceof IStrictEnergyAcceptor)
 					{
-						sent += (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending));
+						sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
 					}
 					else if(acceptor instanceof IEnergyHandler)
 					{

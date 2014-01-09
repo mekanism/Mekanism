@@ -94,7 +94,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.remove(getOutputtingSides());
+		set.removeAll(getOutputtingSides());
 		set.remove(ForgeDirection.UNKNOWN);
 		
 		return set;
