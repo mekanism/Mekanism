@@ -491,6 +491,9 @@ public class ClientProxy extends CommonProxy
      {
          super.onConfigSync();
          
-         MekanismClient.voiceClient.start();
+         if(Mekanism.voiceServerEnabled)
+         {
+        	 MekanismClient.voiceClient.start();
+         }
      }
 }
