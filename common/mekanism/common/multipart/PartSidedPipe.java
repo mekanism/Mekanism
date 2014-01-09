@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import ic2.api.tile.IWrenchable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,20 +12,15 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.PartUniversalCable.CableTier;
 import mekanism.common.multipart.TransmitterType.Size;
-import mekanism.common.network.PacketTransmitterUpdate;
-import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -56,7 +53,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, IWrenchable
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -612,6 +609,39 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		else {
 			return connectionTypes[side.ordinal()] == ConnectionType.NORMAL || connectionTypes[side.ordinal()] == ConnectionType.PUSH;
 		}
+	}
+	
+	@Override
+	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
+	{
+		return false;
+	}
+
+	@Override
+	public short getFacing()
+	{
+		return 0;
+	}
+
+	@Override
+	public void setFacing(short facing) {}
+
+	@Override
+	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
+	{
+		return true;
+	}
+
+	@Override
+	public float getWrenchDropRate()
+	{
+		return 1.0F;
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+	{
+		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmitter().ordinal());
 	}
 
 	public static enum ConnectionType

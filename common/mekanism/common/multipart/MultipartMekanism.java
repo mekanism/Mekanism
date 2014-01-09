@@ -31,6 +31,7 @@ public class MultipartMekanism implements IPartFactory
 		MultipartGenerator.registerPassThroughInterface("cofh.api.energy.IEnergyHandler");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ITileNetwork");
+		MultipartGenerator.registerPassThroughInterface("ic2.api.tile.IWrenchable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IBlockableConnection");
 	}
 

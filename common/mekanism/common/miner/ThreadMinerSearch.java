@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 public class ThreadMinerSearch extends Thread
@@ -54,7 +55,7 @@ public class ThreadMinerSearch extends Thread
 					int blockID = tileEntity.worldObj.getBlockId(x, y, z);
 					int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
 					
-					if(blockID != 0)
+					if(blockID != 0 && blockID != Block.bedrock.blockID)
 					{
 						ItemStack stack = new ItemStack(blockID, 1, meta);
 						
