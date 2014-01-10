@@ -118,9 +118,7 @@ public final class CableUtils
 			TileEntity tile = coord.getFromSide(side).getTileEntity(tileEntity.worldObj);
 
 			connectable[side.ordinal()] |= isEnergyAcceptor(tile) && isConnectable(tileEntity, tile, side);
-
 			connectable[side.ordinal()] |= isCable(tile);
-
 			connectable[side.ordinal()] |= isOutputter(tile, side);
 		}
 
