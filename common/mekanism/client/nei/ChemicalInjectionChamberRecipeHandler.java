@@ -47,8 +47,8 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public List<ItemStack> getFuelStacks()
 	{
-		List<ItemStack> fuels = OreDictionary.getOres("dustSalt");
-		fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+		List<ItemStack> fuels = OreDictionary.getOres("dustSulfur");
+		fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
 		return fuels;
 	}
 	

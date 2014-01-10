@@ -360,7 +360,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			{
 				if(inventory[4].getItem() instanceof IGasItem)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("hydrogenChloride"), getMaxSecondaryEnergy()-secondaryEnergyStored);
+					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("sulfuricAcid"), getMaxSecondaryEnergy()-secondaryEnergyStored);
 					setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
 					
 					return;
@@ -895,7 +895,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
 		if(recipeType == RecipeType.PURIFYING.ordinal() && stack.getGas() == GasRegistry.getGas("oxygen") ||
-				recipeType == RecipeType.INJECTING.ordinal() && stack.getGas() == GasRegistry.getGas("hydrogenChloride"))
+				recipeType == RecipeType.INJECTING.ordinal() && stack.getGas() == GasRegistry.getGas("sulfuricAcid"))
 		{
 			int toUse = Math.min(getMaxSecondaryEnergy()-secondaryEnergyStored, stack.amount);
 			secondaryEnergyStored += toUse;
@@ -909,7 +909,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
 		return recipeType == RecipeType.PURIFYING.ordinal() && type == GasRegistry.getGas("oxygen") ||
-				recipeType == RecipeType.INJECTING.ordinal() && type == GasRegistry.getGas("hydrogenChloride");
+				recipeType == RecipeType.INJECTING.ordinal() && type == GasRegistry.getGas("sulfuricAcid");
 	}
 
 	@Override

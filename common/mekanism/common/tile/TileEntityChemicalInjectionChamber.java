@@ -33,9 +33,9 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public int getFuelTicks(ItemStack itemstack)
 	{
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return 5;
+		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return 5;
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogenChloride")) return 1;
+				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("sulfuricAcid")) return 1;
 		
 		return 0;
 	}
@@ -43,7 +43,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		if(stack.getGas() == GasRegistry.getGas("hydrogenChloride"))
+		if(stack.getGas() == GasRegistry.getGas("sulfuricAcid"))
 		{
 			int toUse = Math.min(MAX_SECONDARY_ENERGY-secondaryEnergyStored, stack.amount);
 			secondaryEnergyStored += toUse;
@@ -56,7 +56,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return type == GasRegistry.getGas("hydrogenChloride");
+		return type == GasRegistry.getGas("sulfuricAcid");
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY && inventory[1].getItem() instanceof IGasItem)
 		{
-			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("hydrogenChloride"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
+			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("sulfuricAcid"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
 			setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
 			return;
 		}
