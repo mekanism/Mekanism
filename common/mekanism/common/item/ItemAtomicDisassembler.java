@@ -18,7 +18,8 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
-	public double ENERGY_USAGE = 200;
+	public double ENERGY_USAGE = 10;
+	
 	public ItemAtomicDisassembler(int id)
 	{
 		super(id, 1000000, 120);
@@ -36,6 +37,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	super.addInformation(itemstack, entityplayer, list, flag);
     	
     	list.add("Mode: " + EnumColor.INDIGO + (getMode(itemstack) == 0 ? "normal" : "vein"));
+    	list.add("Efficiency: " + EnumColor.INDIGO + getEfficiency(itemstack));
 	}
     
     @Override
@@ -56,7 +58,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     @Override
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-    	return getEnergy(itemstack) != 0 ? 128 : 1F;
+    	return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
     }
     
     @Override
@@ -64,10 +66,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
     {
         if(Block.blocksList[id].getBlockHardness(world, x, y, z) != 0.0D)
         {
-        	setEnergy(itemstack, getEnergy(itemstack) - ENERGY_USAGE);
+        	setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*getEfficiency(itemstack)));
         }
         else {
-        	setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE/2));
+        	setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*(getEfficiency(itemstack))/2));
         }
 
         return true;
@@ -98,13 +100,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
     			}
     		}
     		
-    		if(getMode(itemstack) == 1 && isOre && !player.capabilities.isCreativeMode)
+    		if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
     		{
 	    		Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(x, y, z, player.worldObj.provider.dimensionId)).calc();
 	    		
 	    		for(Coord4D coord : found)
 	    		{
-	    			if(coord.equals(orig) || getEnergy(itemstack) < ENERGY_USAGE)
+	    			if(coord.equals(orig) || getEnergy(itemstack) < (ENERGY_USAGE*getEfficiency(itemstack)))
 	    			{
 	    				continue;
 	    			}
@@ -117,7 +119,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	    			block.breakBlock(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, id, meta);
 	    			block.dropBlockAsItem(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta, 0);
 	    			
-	    			setEnergy(itemstack, getEnergy(itemstack) - ENERGY_USAGE);
+	    			setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*getEfficiency(itemstack)));
 	    		}
     		}
     	}
@@ -137,10 +139,29 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			toggleMode(itemstack);
-    		entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Mode toggled to " + EnumColor.INDIGO + (getMode(itemstack) == 0 ? "normal" : "vein"));
+    		entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Mode toggled to " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")");
 		}
 		
         return itemstack;
+    }
+    
+    public int getEfficiency(ItemStack itemStack)
+    {
+    	switch(getMode(itemStack))
+    	{
+    		case 0:
+    			return 20;
+    		case 1:
+    			return 8;
+    		case 2:
+    			return 128;
+    		case 3:
+    			return 20;
+    		case 4:
+    			return 0;
+    	}
+    	
+    	return 0;
     }
     
     public int getMode(ItemStack itemStack)
@@ -153,6 +174,27 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return itemStack.stackTagCompound.getInteger("mode");
     }
     
+    public String getModeName(ItemStack itemStack)
+    {
+    	int mode = getMode(itemStack);
+    	
+    	switch(mode)
+    	{
+    		case 0:
+    			return "normal";
+    		case 1:
+    			return "slow";
+    		case 2:
+    			return "fast";
+    		case 3:
+    			return "vein";
+    		case 4:
+    			return "off";
+    	}
+    	
+    	return null;
+    }
+    
     public void toggleMode(ItemStack itemStack)
     {
 		if(itemStack.stackTagCompound == null)
@@ -160,7 +202,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 		
-		itemStack.stackTagCompound.setInteger("mode", getMode(itemStack) == 0 ? 1 : 0);
+		itemStack.stackTagCompound.setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
     }
     
     @Override
