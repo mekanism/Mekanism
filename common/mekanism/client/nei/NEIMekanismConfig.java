@@ -9,6 +9,7 @@ import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPurificationChamber;
+import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.common.Mekanism;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
@@ -57,6 +58,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiMetallurgicInfuser.class, 5, 15);
 		API.setGuiOffset(GuiChemicalOxidizer.class, ChemicalOxidizerRecipeHandler.xOffset, ChemicalOxidizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalInfuser.class, ChemicalInfuserRecipeHandler.xOffset, ChemicalInfuserRecipeHandler.yOffset);
+		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.ItemProxy.itemID);
