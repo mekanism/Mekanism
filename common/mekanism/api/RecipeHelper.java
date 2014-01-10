@@ -115,11 +115,11 @@ public final class RecipeHelper
 	 * @param input - input ChemicalInput
 	 * @param output - output GasStack
 	 */
-	public static void addChemicalInfuserRecipe(ChemicalInput input, GasStack output)
+	public static void addChemicalInfuserRecipe(ChemicalPair input, GasStack output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
-			Method m = recipeClass.getMethod("addChemicalInfuserRecipe", ChemicalInput.class, GasStack.class);
+			Method m = recipeClass.getMethod("addChemicalInfuserRecipe", ChemicalPair.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
@@ -147,11 +147,11 @@ public final class RecipeHelper
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
-	public static void addElectrolyticSeparatorRecipe(FluidStack input, ChemicalInput output)
+	public static void addElectrolyticSeparatorRecipe(FluidStack input, ChemicalPair output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.RecipeHandler");
-			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, ChemicalInput.class);
+			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, ChemicalPair.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());

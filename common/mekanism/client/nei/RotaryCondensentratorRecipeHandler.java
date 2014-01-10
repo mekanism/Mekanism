@@ -35,7 +35,7 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Rotary Condensentrator";
+		return "R. Condensentrator";
 	}
 	
 	@Override
@@ -182,11 +182,11 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 		
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).gasStack.getGas().getLocalizedName());
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidStack.getFluid().getLocalizedName());
 		}
@@ -205,11 +205,11 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 		
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).gasStack;
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidStack;
 		}
@@ -263,11 +263,11 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 		
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+18 && yAxis <= 72+18)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).gasStack;
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+18 && yAxis <= 72+18)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidStack;
 		}

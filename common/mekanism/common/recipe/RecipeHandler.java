@@ -3,7 +3,7 @@ package mekanism.common.recipe;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.ChemicalInput;
+import mekanism.api.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionInput;
@@ -91,7 +91,7 @@ public final class RecipeHandler
 	 * @param input - input ChemicalInput
 	 * @param output - output GasStack
 	 */
-	public static void addChemicalInfuserRecipe(ChemicalInput input, GasStack output)
+	public static void addChemicalInfuserRecipe(ChemicalPair input, GasStack output)
 	{
 		Recipe.CHEMICAL_INFUSER.put(input, output);
 	}
@@ -121,7 +121,7 @@ public final class RecipeHandler
 	 * @param fluid - FluidStack to electrolyze
 	 * @param products - Pair of gases to produce when the fluid is electrolyzed
 	 */
-	public static void addElectrolyticSeparatorRecipe(FluidStack fluid, ChemicalInput products)
+	public static void addElectrolyticSeparatorRecipe(FluidStack fluid, ChemicalPair products)
 	{
 		Recipe.ELECTROLYTIC_SEPARATOR.put(fluid, products);
 	}
@@ -169,15 +169,15 @@ public final class RecipeHandler
 	 */
 	public static GasStack getChemicalInfuserOutput(GasTank leftTank, GasTank rightTank, boolean doRemove)
 	{
-		ChemicalInput input = new ChemicalInput(leftTank.getGas(), rightTank.getGas());
+		ChemicalPair input = new ChemicalPair(leftTank.getGas(), rightTank.getGas());
 		
 		if(input.isValid())
 		{
-			HashMap<ChemicalInput, GasStack> recipes = Recipe.CHEMICAL_INFUSER.get();
+			HashMap<ChemicalPair, GasStack> recipes = Recipe.CHEMICAL_INFUSER.get();
 			
-			for(Map.Entry<ChemicalInput, GasStack> entry : recipes.entrySet())
+			for(Map.Entry<ChemicalPair, GasStack> entry : recipes.entrySet())
 			{
-				ChemicalInput key = (ChemicalInput)entry.getKey();
+				ChemicalPair key = (ChemicalPair)entry.getKey();
 				
 				if(key.meetsInput(input))
 				{
@@ -283,15 +283,15 @@ public final class RecipeHandler
 	 * Get the result of electrolysing a given fluid
 	 * @param fluidTank - the FluidTank to electrolyse fluid from
 	 */
-	public static ChemicalInput getElectrolyticSeparatorOutput(FluidTank fluidTank, boolean doRemove)
+	public static ChemicalPair getElectrolyticSeparatorOutput(FluidTank fluidTank, boolean doRemove)
 	{
 		FluidStack fluid = fluidTank.getFluid();
 
 		if(fluid != null)
 		{
-			HashMap<FluidStack, ChemicalInput> recipes = Recipe.ELECTROLYTIC_SEPARATOR.get();
+			HashMap<FluidStack, ChemicalPair> recipes = Recipe.ELECTROLYTIC_SEPARATOR.get();
 
-			for(Map.Entry<FluidStack, ChemicalInput> entry : recipes.entrySet())
+			for(Map.Entry<FluidStack, ChemicalPair> entry : recipes.entrySet())
 			{
 				FluidStack key = (FluidStack)entry.getKey();
 
@@ -315,10 +315,10 @@ public final class RecipeHandler
 		CRUSHER(new HashMap<ItemStack, ItemStack>()),
 		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
-		CHEMICAL_INFUSER(new HashMap<ChemicalInput, GasStack>()),
+		CHEMICAL_INFUSER(new HashMap<ChemicalPair, GasStack>()),
 		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
 		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
-		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalInput>());
+		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalPair>());
 		
 		private HashMap recipes;
 		

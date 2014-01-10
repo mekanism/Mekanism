@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import mekanism.api.ChemicalInput;
+import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -645,13 +645,13 @@ public class Mekanism
         RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(Mekanism.Dust, 1, 10), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100));
         
         //Chemical Infuser Recipes
-        RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
-		RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
-		RecipeHandler.addChemicalInfuserRecipe(new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)), new GasStack(GasRegistry.getGas("hydrogenChloride"), 1));
+        RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
+		RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
+		RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)), new GasStack(GasRegistry.getGas("hydrogenChloride"), 1));
 
 		//Electrolytic Separator Recipes
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("lava", 10), new ChemicalInput(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("lava", 10), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
 
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));

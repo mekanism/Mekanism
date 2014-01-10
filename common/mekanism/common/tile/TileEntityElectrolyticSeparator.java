@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import java.util.ArrayList;
 
-import mekanism.api.ChemicalInput;
+import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -187,7 +187,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.electrolyticSeparatorUsage;
 	}
 
-	public boolean canFillWithSwap(ChemicalInput gases)
+	public boolean canFillWithSwap(ChemicalPair gases)
 	{
 		if(gases == null)
 		{
@@ -197,13 +197,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return canFill(gases) || canFill(gases.swap());
 	}
 	
-	public boolean canFill(ChemicalInput gases)
+	public boolean canFill(ChemicalPair gases)
 	{
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
 	}
 	
-	public void fillTanks(ChemicalInput gases)
+	public void fillTanks(ChemicalPair gases)
 	{
 		if(gases == null) return;
 

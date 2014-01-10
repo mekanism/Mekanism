@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.ChemicalInput;
+import mekanism.api.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.nei.ChemicalOxidizerRecipeHandler.CachedIORecipe;
@@ -63,7 +63,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicalinfuser";
 	}
 
-	public Set<Entry<ChemicalInput, GasStack>> getRecipes()
+	public Set<Entry<ChemicalPair, GasStack>> getRecipes()
 	{
 		return Recipe.CHEMICAL_INFUSER.get().entrySet();
 	}
@@ -127,7 +127,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<ChemicalInput, GasStack> irecipe : getRecipes())
+			for(Map.Entry<ChemicalPair, GasStack> irecipe : getRecipes())
 			{
 				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
 				{
@@ -145,7 +145,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<ChemicalInput, GasStack> irecipe : getRecipes())
+			for(Map.Entry<ChemicalPair, GasStack> irecipe : getRecipes())
 			{
 				if(irecipe.getKey().containsType((GasStack)ingredients[0]))
 				{
@@ -278,7 +278,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public ChemicalInput chemicalInput;
+		public ChemicalPair chemicalInput;
 		public GasStack outputStack;
 
 		@Override
@@ -287,7 +287,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(ChemicalInput input, GasStack output)
+		public CachedIORecipe(ChemicalPair input, GasStack output)
 		{
 			chemicalInput = input;
 			outputStack = output;
@@ -295,7 +295,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 
 		public CachedIORecipe(Map.Entry recipe)
 		{
-			this((ChemicalInput)recipe.getKey(), (GasStack)recipe.getValue());
+			this((ChemicalPair)recipe.getKey(), (GasStack)recipe.getValue());
 		}
 	}
 }
