@@ -155,16 +155,18 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
+			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
+			
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
 			{
-				if(doGasLookup(recipe, false))
+				if(doGasLookup(stack, false))
 				{
 					return true;
 				}
 			}
 			else if(keyCode == NEIClientConfig.getKeyBinding("gui.usage"))
 			{
-				if(doGasLookup(recipe, true))
+				if(doGasLookup(stack, true))
 				{
 					return true;
 				}
@@ -172,6 +174,37 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		}
 		
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
+	}
+	
+	@Override
+	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
+	{
+		Point point = GuiDraw.getMousePosition();
+		
+		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
+		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		
+		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		{
+			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
+			
+			if(button == 0)
+			{
+				if(doGasLookup(stack, false))
+				{
+					return true;
+				}
+			}
+			else if(button == 1)
+			{
+				if(doGasLookup(stack, true))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return super.mouseClicked(gui, button, recipe);
 	}
 
 	@Override

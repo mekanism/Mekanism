@@ -6,6 +6,8 @@ import static codechicken.core.gui.GuiDraw.gui;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraftforge.fluids.FluidStack;
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.GuiUsageRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public abstract class BaseRecipeHandler extends TemplateRecipeHandler
@@ -59,8 +61,27 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 	/*
 	 * true = usage, false = recipe
 	 */
-	public boolean doGasLookup(int recipe, boolean type)
+	public boolean doGasLookup(GasStack stack, boolean type)
 	{
+		if(stack != null && stack.amount > 0)
+		{
+			if(type)
+			{
+				if(!GuiUsageRecipe.openRecipeGui("gas", new Object[] {stack}))
+				{
+					return false;
+				}
+			}
+			else {
+				if(!GuiCraftingRecipe.openRecipeGui("gas", new Object[] {stack}))
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
 		return false;
 	}
 }
