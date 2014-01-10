@@ -84,4 +84,31 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 		
 		return false;
 	}
+	
+	/*
+	 * true = usage, false = recipe
+	 */
+	public boolean doFluidLookup(FluidStack stack, boolean type)
+	{
+		if(stack != null && stack.amount > 0)
+		{
+			if(type)
+			{
+				if(!GuiUsageRecipe.openRecipeGui("fluid", new Object[] {stack}))
+				{
+					return false;
+				}
+			}
+			else {
+				if(!GuiCraftingRecipe.openRecipeGui("fluid", new Object[] {stack}))
+				{
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
 }

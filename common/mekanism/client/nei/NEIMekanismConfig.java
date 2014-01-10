@@ -1,5 +1,6 @@
 package mekanism.client.nei;
 
+import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
 import mekanism.client.gui.GuiCombiner;
@@ -44,6 +45,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new ChemicalOxidizerRecipeHandler());
 		API.registerUsageHandler(new ChemicalOxidizerRecipeHandler());
 		
+		API.registerRecipeHandler(new ChemicalInfuserRecipeHandler());
+		API.registerUsageHandler(new ChemicalInfuserRecipeHandler());
+		
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
 		API.setGuiOffset(GuiCrusher.class, 16, 6);
@@ -51,7 +55,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiPurificationChamber.class, 16, 6);
 		API.setGuiOffset(GuiChemicalInjectionChamber.class, 16, 6);
 		API.setGuiOffset(GuiMetallurgicInfuser.class, 5, 15);
-		API.setGuiOffset(GuiChemicalOxidizer.class, 5, 12);
+		API.setGuiOffset(GuiChemicalOxidizer.class, ChemicalOxidizerRecipeHandler.xOffset, ChemicalOxidizerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiChemicalInfuser.class, ChemicalInfuserRecipeHandler.xOffset, ChemicalInfuserRecipeHandler.yOffset);
 		
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.ItemProxy.itemID);
@@ -66,6 +71,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 	@Override
 	public String getVersion()
 	{
-		return "1.0.4";
+		return "1.1";
 	}
 }

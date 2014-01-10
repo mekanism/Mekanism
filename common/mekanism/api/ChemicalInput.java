@@ -75,6 +75,21 @@ public class ChemicalInput
 	}
 	
 	/**
+	 * Whether or not one of this ChemicalInput's GasStack entry's gas type is equal to the gas type of the given gas.
+	 * @param stack - stack to check
+	 * @return if the stack's gas type is contained in this ChemicalInput
+	 */
+	public boolean containsType(GasStack stack)
+	{
+		if(stack == null || stack.amount == 0)
+		{
+			return false;
+		}
+		
+		return stack.isGasEqual(leftGas) || stack.isGasEqual(rightGas);
+	}
+	
+	/**
 	 * Actual implementation of meetsInput(), performs the checks.
 	 * @param input - input to check
 	 * @return if the input meets this input's requirements

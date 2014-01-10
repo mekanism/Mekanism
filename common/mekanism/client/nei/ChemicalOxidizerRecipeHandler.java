@@ -31,8 +31,8 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 	
-	public int xOffset = 5;
-	public int yOffset = 12;
+	public static int xOffset = 5;
+	public static int yOffset = 12;
 	
 	@Override
 	public String getRecipeName()
@@ -101,7 +101,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(64-5, 40-12, 48, 8), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(64-xOffset, 40-yOffset, 48, 8), getRecipeId(), new Object[0]));
 	}
 
 	@Override
