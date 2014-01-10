@@ -49,6 +49,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new ChemicalInfuserRecipeHandler());
 		API.registerUsageHandler(new ChemicalInfuserRecipeHandler());
 		
+		API.registerRecipeHandler(new RotaryCondensentratorRecipeHandler());
+		API.registerUsageHandler(new RotaryCondensentratorRecipeHandler());
+		
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
 		API.setGuiOffset(GuiCrusher.class, 16, 6);
