@@ -6,7 +6,6 @@ import static codechicken.core.gui.GuiDraw.gui;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraftforge.fluids.FluidStack;
-import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public abstract class BaseRecipeHandler extends TemplateRecipeHandler
@@ -60,17 +59,8 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 	/*
 	 * true = usage, false = recipe
 	 */
-	public void doGasTransfer(int recipe, boolean type)
+	public boolean doGasLookup(int recipe, boolean type)
 	{
-		
-	}
-	
-	public class ExtraRecipe extends TemplateRecipeHandler.CachedRecipe
-	{
-		@Override
-		public PositionedStack getResult()
-		{
-			return null;
-		}
+		return false;
 	}
 }

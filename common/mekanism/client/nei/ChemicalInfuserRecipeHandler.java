@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import mekanism.api.ChemicalInput;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiChemicalOxidizer;
+import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -21,13 +22,12 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 import codechicken.core.gui.GuiDraw;
-import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
+public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 	
@@ -37,35 +37,35 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Chemical Oxidizer";
+		return "Chemical Infuser";
 	}
 	
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "chemicaloxidizer";
+		return "chemicalinfuser";
 	}
 	
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/GuiChemicalOxidizer.png";
+		return "mekanism:gui/GuiChemicalInfuser.png";
 	}
 	
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiChemicalOxidizer.class;
+		return GuiChemicalInfuser.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.chemicaloxidizer";
+		return "mekanism.chemicalinfuser";
 	}
 
-	public Set<Entry<ItemStack, GasStack>> getRecipes()
+	public Set<Entry<ChemicalInput, GasStack>> getRecipes()
 	{
-		return Recipe.CHEMICAL_OXIDIZER.get().entrySet();
+		return Recipe.CHEMICAL_INFUSER.get().entrySet();
 	}
 
 	@Override
@@ -114,16 +114,6 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
-		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
-		{
-			for(Map.Entry<ItemStack, GasStack> irecipe : getRecipes())
-			{
-				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
-				{
-					arecipes.add(new CachedIORecipe(irecipe));
-				}
-			}
-		}
 		else {
 			super.loadCraftingRecipes(outputId, results);
 		}
@@ -143,35 +133,6 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		}
 		
 		return super.handleTooltip(gui, currenttip, recipe);
-	}
-	
-	@Override
-	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
-	{
-		Point point = GuiDraw.getMousePosition();
-		
-		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
-		{
-			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
-			{
-				if(doGasLookup(recipe, false))
-				{
-					return true;
-				}
-			}
-			else if(keyCode == NEIClientConfig.getKeyBinding("gui.usage"))
-			{
-				if(doGasLookup(recipe, true))
-				{
-					return true;
-				}
-			}
-		}
-		
-		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
 
 	@Override
@@ -194,14 +155,8 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public PositionedStack inputStack;
+		public ChemicalInput chemicalInput;
 		public GasStack outputStack;
-
-		@Override
-		public PositionedStack getIngredient()
-		{
-			return inputStack;
-		}
 
 		@Override
 		public PositionedStack getResult()
@@ -209,15 +164,15 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(ItemStack input, GasStack output)
+		public CachedIORecipe(ChemicalInput input, GasStack output)
 		{
-			inputStack = new PositionedStack(input, 26-xOffset, 36-yOffset);
+			chemicalInput = input;
 			outputStack = output;
 		}
 
 		public CachedIORecipe(Map.Entry recipe)
 		{
-			this((ItemStack)recipe.getKey(), (GasStack)recipe.getValue());
+			this((ChemicalInput)recipe.getKey(), (GasStack)recipe.getValue());
 		}
 	}
 }
