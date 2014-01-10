@@ -1,9 +1,12 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -31,6 +34,14 @@ public class GuiChemicalInfuser extends GuiMekanism
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.ENERGY_USAGE);
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
     }
 
     @Override

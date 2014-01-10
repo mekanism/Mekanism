@@ -1,5 +1,9 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.ListUtils;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerFactory;
@@ -29,6 +33,14 @@ public class GuiFactory extends GuiMekanism
         guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
         guiElements.add(new GuiSortingTab(this, tileEntity, tileEntity.tier.guiLocation));
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_PER_TICK));
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, tileEntity.tier.guiLocation));
     }
 
     @Override

@@ -1,8 +1,11 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
@@ -41,6 +44,14 @@ public class GuiDigitalMiner extends GuiMekanism
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_USAGE));
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
         
         ySize+=64;
     }

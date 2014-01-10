@@ -1,5 +1,9 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.ListUtils;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
@@ -23,6 +27,14 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation));
         guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.guiLocation));
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_PER_TICK));
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, tileEntity.guiLocation));
     }
 
     @Override

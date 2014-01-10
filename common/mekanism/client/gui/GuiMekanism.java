@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.common.IInvConfiguration;
@@ -137,8 +138,14 @@ public abstract class GuiMekanism extends GuiContainer
 	@Override
 	protected void drawCreativeTabHoveringText(String text, int x, int y)
 	{
+		func_102021_a(Arrays.asList(new String[] {text}), x, y);
+	}
+	
+	@Override
+    protected void func_102021_a(List list, int x, int y)
+	{
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
-		super.drawCreativeTabHoveringText(text, x, y);
+		super.func_102021_a(list, x, y);
 		GL11.glPopAttrib();
 	}
 }

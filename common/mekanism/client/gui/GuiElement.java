@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.List;
 
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -11,7 +10,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public abstract class GuiElement
 {
@@ -36,6 +34,11 @@ public abstract class GuiElement
 	protected void displayTooltip(String s, int xAxis, int yAxis)
 	{
 		guiObj.drawCreativeTabHoveringText(s, xAxis, yAxis);
+	}
+	
+	protected void displayTooltips(List<String> list, int xAxis, int yAxis)
+	{
+		guiObj.func_102021_a(list, xAxis, yAxis);
 	}
 	
 	protected void offsetX(int xSize)

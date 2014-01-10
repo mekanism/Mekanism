@@ -1,6 +1,10 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
@@ -25,6 +29,14 @@ public class GuiChemicalOxidizer extends GuiMekanism
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.ENERGY_USAGE);
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));
     }
 
     @Override

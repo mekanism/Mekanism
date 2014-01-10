@@ -190,18 +190,18 @@ public class CommonProxy
 	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;
 	  	
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
-		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 50D).getDouble(50D);
+		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble(100D);
 		Mekanism.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50D).getDouble(50D);
 		Mekanism.crusherUsage = Mekanism.configuration.get("usage", "CrusherUsage", 50D).getDouble(50D);
 		Mekanism.factoryUsage = Mekanism.configuration.get("usage", "FactoryUsage", 50D).getDouble(50D);
 		Mekanism.metallurgicInfuserUsage = Mekanism.configuration.get("usage", "MetallurgicInfuserUsage", 50D).getDouble(50D);
-		Mekanism.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 100D).getDouble(100D);
+		Mekanism.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 200D).getDouble(200D);
 		Mekanism.energizedSmelterUsage = Mekanism.configuration.get("usage", "EnergizedSmelterUsage", 50D).getDouble(50D);
 		Mekanism.digitalMinerUsage = Mekanism.configuration.get("usage", "DigitalMinerUsage", 100D).getDouble(100D);
 		Mekanism.rotaryCondensentratorUsage = Mekanism.configuration.get("usage", "RotaryCondensentratorUsage", 50D).getDouble(50D);
-		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 100D).getDouble(100D);
-		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 100D).getDouble(100D);
-		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 200D).getDouble(200D);
+		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 200D).getDouble(200D);
+		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 200D).getDouble(200D);
+		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 400D).getDouble(400D);
 		Mekanism.electrolyticSeparatorUsage = Mekanism.configuration.get("usage", "ElectrolyticSeparatorUsage", 50D).getDouble(50D);
 	  	Mekanism.configuration.save();
 	}
