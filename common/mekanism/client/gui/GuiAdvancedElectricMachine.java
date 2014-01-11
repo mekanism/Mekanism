@@ -27,6 +27,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
         guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation));
         guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.guiLocation));
+        guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 164, 15));
         guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
         	@Override
         	public List<String> getInfo()
@@ -45,11 +46,6 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		
         fontRenderer.drawString(tileEntity.getInvName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getInvName())/2), 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
-        
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
-		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -57,8 +53,6 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
-    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    	
     	mc.renderEngine.bindTexture(tileEntity.guiLocation);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
@@ -69,14 +63,13 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		int yAxis = mouseY - guiHeight;
 		
         int displayInt;
-        
-        displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 19 + 52 - displayInt, 4, displayInt);
 
         displayInt = tileEntity.getScaledSecondaryEnergyLevel(12);
         drawTexturedModalRect(guiWidth + 61, guiHeight + 37 + 12 - displayInt, 176, 7 + 12 - displayInt, 5, displayInt);
 
         displayInt = tileEntity.getScaledProgress(24);
         drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
-    }
+
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	}
 }
