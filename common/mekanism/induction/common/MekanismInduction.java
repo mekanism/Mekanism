@@ -29,7 +29,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.6.0", dependencies = "required-after:Mekanism;after:MekanismGenerators;after:ForgeMultipart")
+@Mod(modid = "MekanismInduction", name = "MekanismInduction", version = "5.7.0", dependencies = "required-after:Mekanism;after:MekanismGenerators;after:ForgeMultipart")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismInduction implements IModule
 {
@@ -40,7 +40,7 @@ public class MekanismInduction implements IModule
 	public static InductionCommonProxy proxy;
 
 	/** MekanismInduction version number */
-	public static Version versionNumber = new Version(5, 6, 0);
+	public static Version versionNumber = new Version(5, 7, 0);
 
 	/**
 	 * Settings
