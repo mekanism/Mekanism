@@ -9,6 +9,8 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.SideData;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
+
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -147,5 +149,10 @@ public abstract class GuiMekanism extends GuiContainer
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
 		super.func_102021_a(list, x, y);
 		GL11.glPopAttrib();
+	}
+
+	protected FontRenderer getFontRenderer()
+	{
+		return fontRenderer;
 	}
 }
