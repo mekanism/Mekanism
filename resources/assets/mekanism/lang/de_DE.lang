@@ -26,7 +26,8 @@ item.Jetpack.name=Jetpack
 item.ScubaTank.name=Taucherflasche
 item.GasMask.name=Gasmaske
 item.Dictionary.name=Lexikon
-item.ElectrolyticCore.name=Elektrolytischer Kern
+item.ElectrolyticCore.name=Elektrolysekern
+item.CompressedRedstone.name=Komprimiertes Redstone
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -78,16 +79,11 @@ tile.OreBlock.OsmiumOre.name=Osmiumerz
 tile.OreBlock.CopperOre.name=Kupfererz
 tile.OreBlock.TinOre.name=Zinnerz
 
-//Transmitters
-tile.Transmitter.PressurizedTube.name=Druckröhre
-tile.Transmitter.UniversalCable.name=Universelles Kabel
-tile.Transmitter.MechanicalPipe.name=Mechanisches Rohr
-tile.Transmitter.LogisticalTransporter.name=Logistischer Transporter
-tile.Transmitter.RestrictiveTransporter.name=Restriktiver Transporter
-tile.Transmitter.DiversionTransporter.name=Diversionstransporter
-
 item.MultipartTransmitter.PressurizedTube.name=Druckröhre
-item.MultipartTransmitter.UniversalCable.name=Universelles Kabel
+item.MultipartTransmitter.BasicUniversalCable.name=Universelles Basiskabel
+item.MultipartTransmitter.AdvancedUniversalCable.name=Fortgeschrittenes Universelles Kabel
+item.MultipartTransmitter.EliteUniversalCable.name=Universelles Elitekabel
+item.MultipartTransmitter.UltimateUniversalCable.name=Ultimatives Universelles Kabel
 item.MultipartTransmitter.MechanicalPipe.name=Mechanisches Rohr
 item.MultipartTransmitter.LogisticalTransporter.name=Logistischer Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiver Transporter
@@ -155,16 +151,20 @@ item.tinIngot.name=Zinnbarren
 gas.hydrogen=Wasserstoff
 gas.oxygen=Sauerstoff
 gas.water=Wasserdampf
+gas.chlorine=Chlor
 gas.sulfurDioxideGas=Schwefeldioxid
 gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
+gas.hydrogenChloride=Chlorwasserstoff
 
 //Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
 fluid.oxygen=Flüssiger Sauerstoff
+fluid.chlorine=Flüssiges Chlor
 fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
 fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
 fluid.sulfuricAcid=Flüssige Schwefelsäure
+gas.hydrogenChloride=Flüssiger Chlorwasserstoff
 
 //Gui text
 gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
@@ -275,6 +275,7 @@ gui.digitalMiner.silk=Behutsam
 gui.digitalMiner.toMine=Zum Abbauen
 gui.digitalMiner.running=Arbeitend
 gui.digitalMiner.idle=Bereit
+gui.digitalMiner.inverse=Inversionsmodus
 
 //Item and block tooltip text
 tooltip.configurator.modify=Verändern
