@@ -2,8 +2,11 @@ package mekanism.client.gui;
 
 import java.util.List;
 
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -39,12 +42,24 @@ public abstract class GuiElement
 	
 	protected void offsetX(int xSize)
 	{
-		guiObj.xSize += xSize;
+		if(guiObj instanceof GuiContainer)
+		{
+			try {
+				int size = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
+				MekanismUtils.setPrivateValue(guiObj, size + xSize, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
+			} catch(Exception e) {}
+		}
 	}
-	
+
 	protected void offsetY(int ySize)
 	{
-		guiObj.ySize += ySize;
+		if(guiObj instanceof GuiContainer)
+		{
+			try {
+				int size = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
+				MekanismUtils.setPrivateValue(guiObj, size + ySize, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
+			} catch(Exception e) {}
+		}
 	}
 	
 	protected FontRenderer getFontRenderer()
