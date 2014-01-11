@@ -24,6 +24,7 @@ import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
+import mekanism.common.inventory.container.ContainerSalinationController;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -54,6 +55,8 @@ import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -104,6 +107,8 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
+		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
+		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
 	}
 	
 	/**
@@ -347,6 +352,8 @@ public class CommonProxy
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 32:
 				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
+			case 33:
+				return new ContainerSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
 		}
 		
 		return null;

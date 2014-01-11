@@ -199,6 +199,12 @@ public class ItemBlockBasic extends ItemBlock
 			case 13:
 				name = "TinBlock";
 				break;
+			case 14:
+				name = "SalinationController";
+				break;
+			case 15:
+				name = "SalinationValve";
+				break;
 			default:
 				name = "Unknown";
 				break;

@@ -20,6 +20,8 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
+import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -33,6 +35,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -60,6 +63,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 11: Dynamic Valve
  * 12: Copper Block
  * 13: Tin Block
+ * 14: Salination Controller
  * @author AidanBrady
  *
  */
@@ -118,6 +122,9 @@ public class BlockBasic extends Block
 		icons[11][0] = register.registerIcon("mekanism:DynamicValve");
 		icons[12][0] = register.registerIcon("mekanism:CopperBlock");
 		icons[13][0] = register.registerIcon("mekanism:TinBlock");
+		icons[14][0] = register.registerIcon("mekanism:SalinationController");
+		icons[14][1] = register.registerIcon("mekanism:CopperBlock");
+		icons[15][0] = register.registerIcon("mekanism:SalinationValve");
 		
 		glassRenderer.registerIcons(register);
 	}
@@ -127,12 +134,12 @@ public class BlockBasic extends Block
     public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
     	int metadata = world.getBlockMetadata(x, y, z);
-    	
-    	if(metadata == 6)
-    	{
-    		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-    		
-    		if(side == 0 || side == 1)
+
+		if(metadata == 6)
+		{
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+
+			if(side == 0 || side == 1)
 			{
 				return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
 			}
@@ -143,7 +150,19 @@ public class BlockBasic extends Block
 			else {
 				return icons[6][0];
 			}
-    	}
+		}
+		else if(metadata == 14)
+		{
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+
+			if(side == tileEntity.facing)
+			{
+				return icons[14][0];
+			}
+			else {
+				return icons[14][1];
+			}
+		}
     	else if(metadata == 10)
     	{
     		return glassRenderer.getIcon(world, x, y, z, side);
@@ -200,6 +219,8 @@ public class BlockBasic extends Block
 		list.add(new ItemStack(i, 1, 11));
 		list.add(new ItemStack(i, 1, 12));
 		list.add(new ItemStack(i, 1, 13));
+		list.add(new ItemStack(i, 1, 14));
+		list.add(new ItemStack(i, 1, 15));
 	}
 	
 	@Override
@@ -279,7 +300,17 @@ public class BlockBasic extends Block
     			return true;
     		}
     	}
-    	
+
+		if(metadata == 14)
+		{
+			entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+			TileEntitySalinationController controller = (TileEntitySalinationController)new Coord4D(x, y, z).getTileEntity(world);
+			entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Water Level: " + controller.waterTank.getFluidAmount()));
+			entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Brine Level: " + controller.brineTank.getFluidAmount()));
+			entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Can operate: " + controller.canOperate()));
+			return true;
+		}
+
     	if(world.isRemote)
     	{
     		return true;
@@ -532,7 +563,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11;
+		return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 14 || metadata == 15;
 	}
 	
 	@Override
@@ -548,6 +579,10 @@ public class BlockBasic extends Block
 				return new TileEntityDynamicTank();
 			case 11:
 				return new TileEntityDynamicValve();
+			case 14:
+				return new TileEntitySalinationController();
+			case 15:
+				return new TileEntitySalinationValve();
 		}
 		
 		return null;
