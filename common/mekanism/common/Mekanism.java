@@ -25,6 +25,7 @@ import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
+import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
@@ -275,6 +276,7 @@ public class Mekanism
 	public static int VOICE_PORT = 36123;
 	public static int maxUpgradeMultiplier = 10;
 	public static double ENERGY_PER_REDSTONE = 10000;
+	public static EnergyType activeType = EnergyType.J;
 
 	public static double TO_IC2;
 	public static double TO_BC;

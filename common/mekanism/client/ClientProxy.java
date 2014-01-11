@@ -66,6 +66,7 @@ import mekanism.common.CommonProxy;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
+import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityObsidianTNT;
@@ -141,6 +142,29 @@ public class ClientProxy extends CommonProxy
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
 		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
+		
+		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J").getString();
+		
+		if(s != null)
+		{
+			if(s.trim().equalsIgnoreCase("j") || s.trim().equalsIgnoreCase("joules"))
+			{
+				Mekanism.activeType = EnergyType.J;
+			}
+			else if(s.trim().equalsIgnoreCase("rf") || s.trim().equalsIgnoreCase("te") || s.trim().equalsIgnoreCase("thermal expansion"))
+			{
+				Mekanism.activeType = EnergyType.RF;
+			}
+			else if(s.trim().equalsIgnoreCase("eu") || s.trim().equalsIgnoreCase("ic2"))
+			{
+				Mekanism.activeType = EnergyType.EU;
+			}
+			else if(s.trim().equalsIgnoreCase("mj") || s.trim().equalsIgnoreCase("bc") || s.trim().equalsIgnoreCase("buildcraft"))
+			{
+				Mekanism.activeType = EnergyType.MJ;
+			}
+		}
+		
 		Mekanism.configuration.save();
 	}
 	
