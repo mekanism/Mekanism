@@ -835,6 +835,8 @@ public class Mekanism
 		OreDictionary.registerOre("oreCoal", new ItemStack(Block.oreCoal));
 		OreDictionary.registerOre("ingotIron", new ItemStack(Item.ingotIron));
 		OreDictionary.registerOre("ingotGold", new ItemStack(Item.ingotGold));
+		OreDictionary.registerOre("oreRedstone", new ItemStack(Block.oreRedstone));
+		OreDictionary.registerOre("oreRedstone", new ItemStack(Block.oreRedstoneGlowing));
 		
 		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
 		{

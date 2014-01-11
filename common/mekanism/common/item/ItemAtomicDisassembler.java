@@ -1,11 +1,14 @@
 package mekanism.common.item;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -211,7 +214,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return false;
 	}
     
-    public class Finder
+    public static class Finder
     {
     	public World world;
     	
@@ -220,6 +223,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	public Coord4D location;
     	
     	public Set<Coord4D> found = new HashSet<Coord4D>();
+    	
+    	public static Map<Integer, List<Integer>> ignoreID = new HashMap<Integer, List<Integer>>();
     	
     	public Finder(World w, ItemStack s, Coord4D loc)
     	{
@@ -241,7 +246,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
     		{
     			Coord4D coord = pointer.getFromSide(side);
     			
-    			if(coord.exists(world) && coord.getBlockId(world) == stack.itemID && coord.getMetadata(world) == stack.getItemDamage())
+    			if(coord.exists(world) && checkID(coord.getBlockId(world)) && coord.getMetadata(world) == stack.getItemDamage())
     			{
     				loop(coord);
     			}
@@ -253,6 +258,16 @@ public class ItemAtomicDisassembler extends ItemEnergized
     		loop(location);
     		
     		return found;
+    	}
+    	
+    	public boolean checkID(int id)
+    	{
+    		return ignoreID.get(location.getBlockId(world)) != null && ignoreID.get(location.getBlockId(world)).contains(id);
+    	}
+    	
+    	static {
+    		ignoreID.put(Block.oreRedstone.blockID, ListUtils.asList(Block.oreRedstone.blockID, Block.oreRedstoneGlowing.blockID));
+    		ignoreID.put(Block.oreRedstoneGlowing.blockID, ListUtils.asList(Block.oreRedstone.blockID, Block.oreRedstoneGlowing.blockID));
     	}
     }
 }
