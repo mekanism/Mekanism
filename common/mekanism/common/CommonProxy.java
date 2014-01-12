@@ -66,6 +66,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -377,7 +378,7 @@ public class CommonProxy
 	 */
 	public File getMinecraftDir()
 	{
-		return null;
+		return (File)FMLInjectionData.data()[6];
 	}
 	
 	public void onConfigSync() 
