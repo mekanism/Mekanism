@@ -442,14 +442,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			
 			if(nowPowered != redstonePowered)
 			{
+				redstonePowered = nowPowered;
+				
 				if(nowPowered)
 				{
 					onRedstoneSplit();
 				}
 				
 				tile().notifyPartChange(this);
-				
-				redstonePowered = nowPowered;
 			}
 		}
 		

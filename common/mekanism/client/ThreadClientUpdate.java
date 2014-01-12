@@ -1,15 +1,23 @@
 package mekanism.client;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import mekanism.api.EnumColor;
+import mekanism.client.gui.GuiCredits;
+import mekanism.common.IModule;
+import mekanism.common.Mekanism;
+import mekanism.common.Version;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.client.gui.GuiCredits;
-import mekanism.common.Mekanism;
 
 /**
  * Thread that downloads the latest release of Mekanism. The older file is deleted and the newly downloaded file takes it's place.
@@ -22,34 +30,35 @@ public class ThreadClientUpdate extends Thread
 	private int bytesDownloaded;
 	private int lastBytesDownloaded;
 	private byte[] buffer = new byte[10240];
-	private URL url;
-	public String moduleName;
 	
-	public static int modulesBeingDownloaded;
+	private static File modsDir = new File(Mekanism.proxy.getMinecraftDir(), "mods");
+	private static File tempDir = new File(modsDir, "temp");
+	private static URL zipUrl = createURL();
+	
 	public static boolean hasUpdated;
 	
-	public ThreadClientUpdate(String location, String name)
+	public ThreadClientUpdate()
 	{
-		moduleName = name;
-		modulesBeingDownloaded++;
-		try {
-			url = new URL(location);
-			setDaemon(false);
-			start();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		setDaemon(false);
+		start();
 	}
 	
 	@Override
 	public void run()
-	{
-		File download = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods" + File.separator + "Mekanism" + moduleName + "-v" + Mekanism.latestVersionNumber + ".jar").toString());
+	{		
 		try {
+			deleteTemp();
+			createTemp();
+			
+			File download = new File(tempDir, "builds.zip");
+			
 			prepareForDownload();
 			download.createNewFile();
+			
+			GuiCredits.updateInfo("Downloading...");
+			
 			FileOutputStream outputStream = new FileOutputStream(download.getAbsolutePath());
-			InputStream stream = url.openStream();
+			InputStream stream = zipUrl.openStream();
 			
 			while((lastBytesDownloaded = stream.read(buffer)) > 0)
 			{
@@ -61,34 +70,143 @@ public class ThreadClientUpdate extends Thread
 			outputStream.close();
 			stream.close();
 			
-			modulesBeingDownloaded--;
+			if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) != 0)
+			{
+				ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
+				deployEntry(zip, "Mekanism-");
+				zip.close();
+			}
+			
+			for(IModule module : Mekanism.modulesLoaded)
+			{
+				if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) != 0)
+				{			
+					ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
+					deployEntry(zip, "Mekanism" + module.getName());
+					zip.close();
+				}
+			}
+			
+			deleteTemp();
+			
+			hasUpdated = true;
+			GuiCredits.updateInfo("Update installed, reboot Minecraft for changes.");
+			System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
+			
 			finalize();
 		} catch(Throwable t) {
-			GuiCredits.onErrorDownloading();
+			GuiCredits.updateInfo(EnumColor.DARK_RED + "Error updating.");
+			hasUpdated = true;
 			System.err.println("[Mekanism] Error while finishing update thread: " + t.getMessage());
-			
-			try {
-				modulesBeingDownloaded--;
-				finalize();
-			} catch (Throwable t1) {}
+			t.printStackTrace();
 		}
 	}
 	
-	/**
-	 * Prepares to update to the latest version of Mekanism by removing the old files. 
-	 */
-	public void prepareForDownload()
+	private void deployEntry(ZipInputStream zip, String filePrefix) throws IOException
+	{
+		byte[] zipBuffer = new byte[1024];
+		ZipEntry entry = zip.getNextEntry();
+		
+		while(entry != null)
+		{
+			if(entry.isDirectory())
+			{
+				continue;
+			}
+			
+			if(entry.getName().contains(filePrefix))
+			{
+				File modFile = new File(modsDir, entry.getName().replace("output/", ""));
+				
+				if(modFile.exists())
+				{
+					modFile.delete();
+				}
+				
+				modFile.createNewFile();
+				
+				FileOutputStream outStream = new FileOutputStream(modFile);
+				
+			    int len;
+			    
+	            while((len = zip.read(zipBuffer)) > 0) 
+	            {
+	            	outStream.write(zipBuffer, 0, len);
+	            }
+				
+	            zip.closeEntry();
+				outStream.close();
+				break;
+			}
+			
+			entry = zip.getNextEntry();
+		}
+	}
+	
+	private void createTemp() throws IOException
+	{
+		if(!tempDir.exists())
+		{
+			tempDir.mkdir();
+		}
+	}
+	
+	private void deleteTemp() throws IOException
+	{
+		if(tempDir.exists())
+		{
+			clearFiles(tempDir);
+		}
+	}
+	
+	private void clearFiles(File file)
+	{
+		if(file.isDirectory())
+		{
+			for(File sub : file.listFiles())
+			{
+				clearFiles(sub);
+			}
+		}
+		
+		file.delete();
+	}
+	
+	private void prepareForDownload()
 	{
 		File[] modsList = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
 		
-		for(File file : modsList)
+		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 		{
-			if(file.getName().startsWith("Mekanism" + moduleName) && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
+			for(File file : modsList)
 			{
-				file.delete();
+				if(file.getName().startsWith("Mekanism-") && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
+				{
+					file.delete();
+				}
+			}
+		}
+		
+		for(IModule module : Mekanism.modulesLoaded)
+		{
+			for(File file : modsList)
+			{
+				if(file.getName().startsWith("Mekanism" + module.getName()) && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
+				{
+					file.delete();
+				}
 			}
 		}
 		
 		System.out.println("[Mekanism] Preparing to update...");
+	}
+	
+	private static URL createURL()
+	{
+		try {
+			return new URL("http://ci.aidancbrady.com/job/Mekanism/Recommended/artifact/*zip*/archive.zip");
+		} catch(Exception e) {}
+		
+		return null;
 	}
 }
