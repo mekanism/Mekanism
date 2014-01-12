@@ -70,7 +70,7 @@ public class ThreadClientUpdate extends Thread
 			outputStream.close();
 			stream.close();
 			
-			if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) != 0)
+			if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 			{
 				ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
 				deployEntry(zip, "Mekanism-");
@@ -79,7 +79,7 @@ public class ThreadClientUpdate extends Thread
 			
 			for(IModule module : Mekanism.modulesLoaded)
 			{
-				if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) != 0)
+				if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 				{			
 					ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
 					deployEntry(zip, "Mekanism" + module.getName());
