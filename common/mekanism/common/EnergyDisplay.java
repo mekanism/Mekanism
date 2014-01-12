@@ -190,4 +190,12 @@ public class EnergyDisplay
 	{
 		return roundDecimals(d, 2);
 	}
+	
+	public static enum EnergyType
+	{
+		J,
+		RF,
+		EU,
+		MJ
+	}
 }

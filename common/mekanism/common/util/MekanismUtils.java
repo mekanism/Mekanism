@@ -444,6 +444,16 @@ public final class MekanismUtils
     {
     	return getLeft(orientation).getOpposite();
     }
+
+	/**
+	 * Gets the opposite side of a certain orientation.
+	 * @param orientation
+	 * @return opposite side
+	 */
+	public static ForgeDirection getBack(int orientation)
+	{
+		return ForgeDirection.getOrientation(orientation).getOpposite();
+	}
     
     /**
      * Checks to see if a specified ItemStack is stored in the Ore Dictionary with the specified name.
@@ -1129,7 +1139,19 @@ public final class MekanismUtils
      */
     public static String getEnergyDisplay(double energy)
     {
-    	return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
+    	switch(Mekanism.activeType)
+    	{
+    		case J:
+    			return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
+    		case RF:
+    			return Math.round(energy*Mekanism.TO_TE) + " RF";
+    		case EU:
+    			return Math.round(energy*Mekanism.TO_IC2) + " EU";
+    		case MJ:
+    			return (Math.round((energy*Mekanism.TO_BC)*100)/100) + " MJ";
+    	}
+    	
+    	return "error";
     }
     
     /**
