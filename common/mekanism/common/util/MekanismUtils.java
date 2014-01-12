@@ -444,6 +444,16 @@ public final class MekanismUtils
     {
     	return getLeft(orientation).getOpposite();
     }
+
+	/**
+	 * Gets the opposite side of a certain orientation.
+	 * @param orientation
+	 * @return opposite side
+	 */
+	public static ForgeDirection getBack(int orientation)
+	{
+		return ForgeDirection.getOrientation(orientation).getOpposite();
+	}
     
     /**
      * Checks to see if a specified ItemStack is stored in the Ore Dictionary with the specified name.

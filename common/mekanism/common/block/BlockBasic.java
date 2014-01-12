@@ -305,9 +305,9 @@ public class BlockBasic extends Block
 		{
 			entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
 			TileEntitySalinationController controller = (TileEntitySalinationController)new Coord4D(x, y, z).getTileEntity(world);
-			entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Water Level: " + controller.waterTank.getFluidAmount()));
-			entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Brine Level: " + controller.brineTank.getFluidAmount()));
-			entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Can operate: " + controller.canOperate()));
+			//entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Water Level: " + controller.waterTank.getFluidAmount()));
+			//entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Brine Level: " + controller.brineTank.getFluidAmount()));
+			//entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Can operate: " + controller.canOperate()));
 			return true;
 		}
 

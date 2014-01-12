@@ -7,15 +7,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntitySalinationValve extends TileEntityContainerBlock implements IFluidHandler
+public class TileEntitySalinationValve extends TileEntitySalinationTank implements IFluidHandler
 {
-	public TileEntitySalinationController master;
-
-	public TileEntitySalinationValve()
-	{
-		super("SalinationController");
-	}
-
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
@@ -61,7 +54,4 @@ public class TileEntitySalinationValve extends TileEntityContainerBlock implemen
 		}
 		return new FluidTankInfo[] {new FluidTankInfo(master.waterTank), new FluidTankInfo(master.brineTank)};
 	}
-
-	@Override
-	public void onUpdate() {}
 }
