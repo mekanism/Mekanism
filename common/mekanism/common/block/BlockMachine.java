@@ -1,20 +1,56 @@
 package mekanism.common.block;
 
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.Random;
+
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
-import mekanism.common.*;
+import mekanism.common.IActiveState;
+import mekanism.common.IBoundingBlock;
+import mekanism.common.IElectricChest;
+import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.IInvConfiguration;
+import mekanism.common.IRedstoneControl;
+import mekanism.common.ISpecialBounds;
+import mekanism.common.ISustainedInventory;
+import mekanism.common.ISustainedTank;
+import mekanism.common.IUpgradeManagement;
+import mekanism.common.ItemAttacher;
+import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
-import mekanism.common.tile.*;
+import mekanism.common.tile.TileEntityAdvancedFactory;
+import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.TileEntityChemicalInfuser;
+import mekanism.common.tile.TileEntityChemicalInjectionChamber;
+import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityCombiner;
+import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.TileEntityCrusher;
+import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectricPump;
+import mekanism.common.tile.TileEntityElectrolyticSeparator;
+import mekanism.common.tile.TileEntityEliteFactory;
+import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPrecisionSawmill;
+import mekanism.common.tile.TileEntityPurificationChamber;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -40,9 +76,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
-import java.util.List;
-import java.util.Random;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -563,6 +599,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
+			if(type == MachineType.PRECISION_SAWMILL) //TODO
+			{
+				continue;
+			}
+			
 			if(type.typeId == blockID)
 			{
 				if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
@@ -1074,8 +1115,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHEMICAL_OXIDIZER(Mekanism.machineBlock2ID, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, false),
 		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true),
-		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false);
-
+		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false),
+		PRECISION_SAWMILL(Mekanism.machineBlock2ID, 5, "PrecisionSawmill", 33, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, false, true);
 
 		public int typeId;
 		public int meta;

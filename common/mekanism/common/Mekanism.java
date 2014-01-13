@@ -245,6 +245,7 @@ public class Mekanism
 	public static Item Shard;
 	public static Item ElectrolyticCore;
 	public static Item CompressedRedstone;
+	public static Item Sawdust;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -310,6 +311,7 @@ public class Mekanism
 	public static double chemicalInfuserUsage;
 	public static double chemicalInjectionChamberUsage;
 	public static double electrolyticSeparatorUsage;
+	public static double precisionSawmillUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -514,7 +516,6 @@ public class Mekanism
 			"EPE", "IEG", "EPE", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "dustOsmium", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold"
 		}));
 
-
 		for(RecipeType type : RecipeType.values())
 		{
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getFactory(FactoryTier.BASIC, type), new Object[] {
@@ -708,6 +709,7 @@ public class Mekanism
 		Shard = new ItemShard(configuration.getItem("Shard", 11227).getInt());
 		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", 11228).getInt()).setUnlocalizedName("ElectrolyticCore");
 		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", 11229).getInt()).setUnlocalizedName("CompressedRedstone");
+		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", 11230).getInt()).setUnlocalizedName("Sawdust");
 
 		configuration.save();
 		
@@ -741,6 +743,7 @@ public class Mekanism
 		GameRegistry.registerItem(Shard, "Shard");
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
+		GameRegistry.registerItem(Sawdust, "Sawdust");
 	}
 	
 	/**
@@ -779,6 +782,10 @@ public class Mekanism
 		//Add specific items to ore dictionary for recipe usage in other mods. @Calclavia
 		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
+		
+		//GregoriousT, should I use "sawdust" or "dustSaw"? I'll use both.
+		OreDictionary.registerOre("sawdust", Sawdust);
+		OreDictionary.registerOre("dustSaw", Sawdust);
 		
 		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
 		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));

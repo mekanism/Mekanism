@@ -28,6 +28,7 @@ item.GasMask.name=Gas Mask
 item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
 item.CompressedRedstone.name=Compressed Redstone
+item.Sawdust=Sawdust
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -76,6 +77,7 @@ tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
+tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore

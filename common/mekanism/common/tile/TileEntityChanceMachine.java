@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.api.ChanceOutput;
 import mekanism.api.EnumColor;
-import mekanism.api.ListUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
@@ -101,19 +101,33 @@ public class TileEntityChanceMachine extends TileEntityBasicMachine
 	@Override
     public void operate()
     {
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
+        ChanceOutput output = RecipeHandler.getChanceOutput(inventory[0], true, getRecipes());
 
         if(inventory[0].stackSize <= 0)
         {
             inventory[0] = null;
         }
 
-        if(inventory[2] == null)
+        if(output.hasPrimary())
         {
-            inventory[2] = itemstack;
+	        if(inventory[2] == null)
+	        {
+	            inventory[2] = output.primaryOutput;
+	        }
+	        else {
+	            inventory[2].stackSize += output.primaryOutput.stackSize;
+	        }
         }
-        else {
-            inventory[2].stackSize += itemstack.stackSize;
+        
+        if(output.hasSecondary() && output.checkSecondary())
+        {
+	        if(inventory[4] == null)
+	        {
+	        	inventory[4] = output.secondaryOutput;
+	        }
+	        else {
+	        	inventory[4].stackSize += output.secondaryOutput.stackSize;
+	        }
         }
 
         onInventoryChanged();
@@ -123,30 +137,47 @@ public class TileEntityChanceMachine extends TileEntityBasicMachine
 	@Override
     public boolean canOperate()
     {
-        if(inventory[0] == null)
+		if(inventory[0] == null)
         {
             return false;
         }
 
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
+        ChanceOutput output = RecipeHandler.getChanceOutput(inventory[0], false, getRecipes());
 
-        if(itemstack == null)
+        if(output == null)
         {
             return false;
         }
 
-        if(inventory[2] == null)
+        if(output.hasPrimary())
         {
-            return true;
+	        if(inventory[2] != null && !inventory[2].isItemEqual(output.primaryOutput))
+	        {
+	            return false;
+	        }
+	        else {
+	            if(inventory[2].stackSize + output.primaryOutput.stackSize > inventory[2].getMaxStackSize())
+	            {
+	            	return false;
+	            }
+	        }
         }
-
-        if(!inventory[2].isItemEqual(itemstack))
+        
+        if(output.hasSecondary())
         {
-            return false;
+	        if(inventory[4] != null && !inventory[4].isItemEqual(output.secondaryOutput))
+	        {
+	            return false;
+	        }
+	        else {
+	            if(inventory[4].stackSize + output.secondaryOutput.stackSize > inventory[4].getMaxStackSize())
+	            {
+	            	return false;
+	            }
+	        }
         }
-        else {
-            return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
-        }
+        
+        return true;
     }
 	
 	@Override
@@ -156,7 +187,7 @@ public class TileEntityChanceMachine extends TileEntityBasicMachine
 		{
 			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
-		else if(slotID == 2)
+		else if(slotID == 2 || slotID == 4)
 		{
 			return true;
 		}

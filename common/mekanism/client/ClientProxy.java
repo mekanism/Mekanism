@@ -64,10 +64,10 @@ import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
+import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
-import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityObsidianTNT;
@@ -100,6 +100,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySalinationController;
@@ -292,6 +293,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
 		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
+		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package mekanism.common.recipe;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.ChanceOutput;
 import mekanism.api.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -88,7 +89,7 @@ public final class RecipeHandler
 	
 	/**
 	 * Add a Chemical Infuser recipe.
-	 * @param input - input ChemicalInput
+	 * @param input - input ChemicalPair
 	 * @param output - output GasStack
 	 */
 	public static void addChemicalInfuserRecipe(ChemicalPair input, GasStack output)
@@ -124,6 +125,16 @@ public final class RecipeHandler
 	public static void addElectrolyticSeparatorRecipe(FluidStack fluid, ChemicalPair products)
 	{
 		Recipe.ELECTROLYTIC_SEPARATOR.put(fluid, products);
+	}
+	
+	/**
+	 * Add an Precision Sawmill recipe.
+	 * @param input - input ItemStack
+	 * @param output - output ChanceOutput
+	 */
+	public static void addPrecisionSawmillRecipe(ItemStack input, ChanceOutput output)
+	{
+		Recipe.PRECISION_SAWMILL.put(input, output);
 	}
 
 	/**
@@ -226,6 +237,36 @@ public final class RecipeHandler
 	}
 	
 	/**
+	 * Gets the output ChanceOutput of the ItemStack in the parameters.
+	 * @param itemstack - input ItemStack
+	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * @param recipes - Map of recipes
+	 * @return output ChanceOutput
+	 */
+	public static ChanceOutput getChanceOutput(ItemStack itemstack, boolean stackDecrease, Map<ItemStack, ChanceOutput> recipes)
+	{
+		if(itemstack != null)
+		{
+			for(Map.Entry entry : recipes.entrySet())
+			{
+				ItemStack stack = (ItemStack)entry.getKey();
+				
+				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
+				{
+					if(stackDecrease)
+					{
+						itemstack.stackSize -= stack.stackSize;
+					}
+					
+					return ((ChanceOutput)entry.getValue()).copy();
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Gets the output ItemStack of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size
@@ -318,7 +359,8 @@ public final class RecipeHandler
 		CHEMICAL_INFUSER(new HashMap<ChemicalPair, GasStack>()),
 		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
 		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
-		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalPair>());
+		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalPair>()),
+		PRECISION_SAWMILL(new HashMap<ItemStack, ChanceOutput>());
 		
 		private HashMap recipes;
 		
