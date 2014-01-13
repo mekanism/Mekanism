@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPI.BlockInfo;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -34,6 +36,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.block.BlockBounding;
+import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockMachine;
@@ -47,6 +50,7 @@ import mekanism.common.integration.OreDictManager;
 import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
@@ -102,6 +106,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.transporter.TransporterManager;
@@ -211,6 +216,7 @@ public class Mekanism
 	public static int energyCubeID;
 	public static int boundingBlockID;
 	public static int gasTankID;
+	public static int cardboardBoxID;
 	
 	//Items
 	public static ItemElectricBow ElectricBow;
@@ -249,6 +255,7 @@ public class Mekanism
 	public static Block EnergyCube;
 	public static Block BoundingBlock;
 	public static Block GasTank;
+	public static Block CardboardBox;
 
 	//Multi-ID Items
 	public static Item Dust;
@@ -750,6 +757,7 @@ public class Mekanism
 		ObsidianTNT = new BlockObsidianTNT(obsidianTNTID).setUnlocalizedName("ObsidianTNT").setCreativeTab(tabMekanism);
 		BoundingBlock = (BlockBounding) new BlockBounding(boundingBlockID).setUnlocalizedName("BoundingBlock");
 		GasTank = new BlockGasTank(gasTankID).setUnlocalizedName("GasTank");
+		CardboardBox = new BlockCardboardBox(cardboardBoxID).setUnlocalizedName("CardboardBox");
 		
 		//Registrations
 		GameRegistry.registerBlock(BasicBlock, ItemBlockBasic.class, "BasicBlock");
@@ -760,6 +768,7 @@ public class Mekanism
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
 		GameRegistry.registerBlock(GasTank, ItemBlockGasTank.class, "GasTank");
+		GameRegistry.registerBlock(CardboardBox, ItemBlockCardboardBox.class, "CardboardBox");
 	}
 	
 	/**
@@ -932,6 +941,7 @@ public class Mekanism
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
+		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -1056,6 +1066,9 @@ public class Mekanism
 		addBlocks();
 		addRecipes();
 		addEntities();
+		
+		MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(BoundingBlock.blockID, 0));
+		MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(BoundingBlock.blockID, 1));
 		
 		registerOreDict();
 

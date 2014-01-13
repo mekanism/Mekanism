@@ -64,6 +64,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 12: Copper Block
  * 13: Tin Block
  * 14: Salination Controller
+ * 15: Salination Valve
  * @author AidanBrady
  *
  */

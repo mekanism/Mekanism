@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.ForgeDirection;
@@ -67,6 +68,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	
 	public boolean sendDesc = false;
 	public boolean redstonePowered = false;
+
+	public boolean redstoneReactive = true;
 	
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 
@@ -166,7 +169,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return connections;
 		}
@@ -191,7 +194,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return connections;
 		}
@@ -330,7 +333,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
-		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return false;
 		}
@@ -438,7 +441,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		
 		if(possibleTransmitters != currentTransmitterConnections)
 		{
-			boolean nowPowered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+			boolean nowPowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
 			
 			if(nowPowered != redstonePowered)
 			{
@@ -571,6 +574,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			sendDesc = true;
 			
 			onModeChange(ForgeDirection.getOrientation(side));
+			player.sendChatToPlayer(ChatMessageComponent.createFromText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
 			
 			return true;
 		}
@@ -592,7 +596,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
-		return false;
+		redstoneReactive ^= true;
+		refreshConnections();
+		tile().notifyPartChange(this);
+
+		player.sendChatToPlayer(ChatMessageComponent.createFromText("Redstone sensitivity turned " + (redstoneReactive ? "on." : "off.")));
+		return true;
 	}
 	
 	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive)

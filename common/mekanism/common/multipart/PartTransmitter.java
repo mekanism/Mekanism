@@ -219,12 +219,5 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
-	{
-		fixTransmitterNetwork();
-		return true;
-	}
-
-	@Override
 	public void chunkLoad() {}
 }

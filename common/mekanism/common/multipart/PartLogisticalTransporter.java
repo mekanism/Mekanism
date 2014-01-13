@@ -742,6 +742,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
+		super.onRightClick(player, side);
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + (color != null ? color.getName() : "None")));
 		return true;
 	}

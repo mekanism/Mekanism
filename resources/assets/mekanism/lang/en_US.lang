@@ -32,6 +32,9 @@ item.CompressedRedstone.name=Compressed Redstone
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
 
+//Cardboard Box
+tile.CardboardBox.name=Cardboard Box
+
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Block
 tile.BasicBlock.BronzeBlock.name=Bronze Block
