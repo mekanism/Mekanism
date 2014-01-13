@@ -277,6 +277,7 @@ public class Mekanism
 	public static boolean dynamicTankEasterEgg = false;
 	public static boolean voiceServerEnabled = true;
 	public static boolean forceBuildcraft = false;
+	public static boolean cardboardSpawners = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int osmiumGenerationAmount = 12;
 	public static int copperGenerationAmount = 16;
