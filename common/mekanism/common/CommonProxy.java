@@ -4,6 +4,7 @@ import java.io.File;
 
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
+import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.inventory.container.ContainerDictionary;
@@ -29,6 +30,7 @@ import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
@@ -359,6 +361,8 @@ public class CommonProxy
 				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
 				return new ContainerSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
+			case 34:
+				return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine)tileEntity);
 		}
 		
 		return null;

@@ -26,6 +26,7 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
 import mekanism.client.gui.GuiPortableTeleporter;
+import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRobitCrafting;
 import mekanism.client.gui.GuiRobitInventory;
@@ -419,7 +420,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
 				return new GuiSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
-
+			case 34:
+				return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill)tileEntity);
 		}
 		
 		return null;
