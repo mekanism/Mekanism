@@ -134,6 +134,7 @@ public class ModelCustomArmor extends ModelBiped
 					}
 					else if(biped.modelType == ArmorModel.GASMASK)
 					{
+						GL11.glTranslatef(0, 0, -0.05F);
 						ArmorModel.gasMaskModel.render(0.0625F);
 					}
 				}
