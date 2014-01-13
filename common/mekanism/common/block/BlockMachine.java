@@ -421,34 +421,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		}
 		else if(blockID == Mekanism.machineBlock2ID)
 		{
-			if(meta == 2)
+			if(meta == 3 || meta == 5)
 			{
 				if(side == 3)
 				{
-					return icons[2][0];
+					return icons[meta][0];
 				}
 				else {
-					return icons[2][2];
-				}
-			}
-			else if(meta == 3)
-			{
-				if(side == 3)
-				{
-					return icons[3][0];
-				}
-				else {
-					return icons[3][2];
-				}
-			}
-			else if(meta == 4)
-			{
-				if(side == 3)
-				{
-					return icons[4][0];
-				}
-				else {
-					return icons[4][2];
+					return icons[meta][2];
 				}
 			}
 		}

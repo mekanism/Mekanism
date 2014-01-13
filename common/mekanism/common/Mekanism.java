@@ -246,6 +246,7 @@ public class Mekanism
 	public static Item ElectrolyticCore;
 	public static Item CompressedRedstone;
 	public static Item Sawdust;
+	public static Item Salt;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -710,6 +711,7 @@ public class Mekanism
 		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", 11228).getInt()).setUnlocalizedName("ElectrolyticCore");
 		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", 11229).getInt()).setUnlocalizedName("CompressedRedstone");
 		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", 11230).getInt()).setUnlocalizedName("Sawdust");
+		Salt = new ItemMekanism(configuration.getItem("Salt", 11231).getInt()).setUnlocalizedName("Salt");
 
 		configuration.save();
 		
@@ -744,6 +746,7 @@ public class Mekanism
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
 		GameRegistry.registerItem(Sawdust, "Sawdust");
+		GameRegistry.registerItem(Salt, "Salt");
 	}
 	
 	/**
@@ -783,9 +786,13 @@ public class Mekanism
 		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		
-		//GregoriousT, should I use "sawdust" or "dustSaw"? I'll use both.
-		OreDictionary.registerOre("sawdust", Sawdust);
+		//GregoriousT, should I use "itemDust" or "dustSaw"? I'll use both.
+		OreDictionary.registerOre("itemSawdust", Sawdust);
 		OreDictionary.registerOre("dustSaw", Sawdust);
+		
+		//Same question Greg...
+		OreDictionary.registerOre("itemSalt", Salt);
+		OreDictionary.registerOre("dustSalt", Salt);
 		
 		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
 		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));

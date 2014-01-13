@@ -9,6 +9,7 @@ import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
+import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.common.Mekanism;
@@ -56,6 +57,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new ElectrolyticSeparatorRecipeHandler());
 		API.registerUsageHandler(new ElectrolyticSeparatorRecipeHandler());
 		
+		API.registerRecipeHandler(new PrecisionSawmillRecipeHandler());
+		API.registerUsageHandler(new PrecisionSawmillRecipeHandler());
+		
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
 		API.setGuiOffset(GuiCrusher.class, 16, 6);
@@ -67,6 +71,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalInfuser.class, ChemicalInfuserRecipeHandler.xOffset, ChemicalInfuserRecipeHandler.yOffset);
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
+		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
 		
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.ItemProxy.itemID);
