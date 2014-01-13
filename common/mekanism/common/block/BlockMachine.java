@@ -601,11 +601,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		for(MachineType type : MachineType.values())
 		{
-			if(type == MachineType.PRECISION_SAWMILL) //TODO
-			{
-				continue;
-			}
-			
 			if(type.typeId == blockID)
 			{
 				if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
