@@ -46,7 +46,7 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 		
 		if(recipe.output.hasSecondary())
 		{
-			drawString(Math.round(recipe.output.secondaryChance*100) + "%", 116, 52, 0x404040);
+			drawString(Math.round(recipe.output.secondaryChance*100) + "%", 116, 52, 0x404040, false);
 		}
 	}
 
@@ -120,13 +120,23 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public PositionedStack getResult()
 		{
-			return new PositionedStack(output.primaryOutput, 100, 30);
+			if(output.hasPrimary())
+			{
+				return new PositionedStack(output.primaryOutput, 100, 30);
+			}
+			
+			return null;
 		}
 		
 		@Override
 		public PositionedStack getOtherStack()
 		{
-			return new PositionedStack(output.secondaryOutput, 116, 30);
+			if(output.hasSecondary())
+			{
+				return new PositionedStack(output.secondaryOutput, 116, 30);
+			}
+			
+			return null;
 		}
 
 		public CachedIORecipe(ItemStack itemstack, ChanceOutput chance)
