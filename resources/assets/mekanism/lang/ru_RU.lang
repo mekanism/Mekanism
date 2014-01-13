@@ -23,10 +23,11 @@ item.Configurator.name=Конфигуратор
 item.NetworkReader.name=Считыватель сети
 item.WalkieTalkie.name=Переносная рация
 item.Jetpack.name=Реактивный ранец
-item.ScubaTank.name=Scuba Tank
-item.GasMask.name=Gas Mask
+item.ScubaTank.name=Акваланг
+item.GasMask.name=Противогаз
 item.Dictionary.name=Словарь
 item.ElectrolyticCore.name=Электролитическое ядро
+item.CompressedRedstone.name=Сжатый красный камень
 
 //Gas Tank
 tile.GasTank.GasTank.name=Газовый баллон
@@ -78,23 +79,18 @@ tile.OreBlock.OsmiumOre.name=Осмиевая руда
 tile.OreBlock.CopperOre.name=Медная руда
 tile.OreBlock.TinOre.name=Оловянная руда
 
-//Transmitters
-tile.Transmitter.PressurizedTube.name=Герметичная труба
-tile.Transmitter.UniversalCable.name=Универсальный провод
-tile.Transmitter.MechanicalPipe.name=Механическая труба
-tile.Transmitter.LogisticalTransporter.name=Логистический транспортер
-tile.Transmitter.RestrictiveTransporter.name=Ограничительный транспортер
-tile.Transmitter.DiversionTransporter.name=Отклоняющий транспортер
-
 item.MultipartTransmitter.PressurizedTube.name=Герметичная труба
-item.MultipartTransmitter.UniversalCable.name=Универсальный провод
+item.MultipartTransmitter.BasicUniversalCable.name=Основной универсальный провод
+item.MultipartTransmitter.AdvancedUniversalCable.name=Продвинутый универсальный провод
+item.MultipartTransmitter.EliteUniversalCable.name=Элитный универсальный провод
+item.MultipartTransmitter.UltimateUniversalCable.name=Максимальный универсальный провод
 item.MultipartTransmitter.MechanicalPipe.name=Механическая труба
 item.MultipartTransmitter.LogisticalTransporter.name=Логистический транспортер
 item.MultipartTransmitter.RestrictiveTransporter.name=Ограничительный транспортер
 item.MultipartTransmitter.DiversionTransporter.name=Отклоняющий транспортер
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Базовый энергетический куб
+tile.EnergyCube.Basic.name=Основной энергетический куб
 tile.EnergyCube.Advanced.name=Продвинутый энергетический куб
 tile.EnergyCube.Elite.name=Элитный энергетический куб
 tile.EnergyCube.Ultimate.name=Максимальный энергетический куб
@@ -159,6 +155,7 @@ gas.chlorine=Хлор
 gas.sulfurDioxideGas=Диоксид серы
 gas.sulfurTrioxideGas=Триоксид серы
 gas.sulfuricAcid=Серная кислота
+gas.hydrogenChloride=Хлороводород
 
 //Fluids
 fluid.hydrogen=Жидкий водород
@@ -167,6 +164,7 @@ fluid.chlorine=Жидкий хлор
 fluid.sulfurDioxideGas=Жидкий диоксид серы
 fluid.sulfurTrioxideGas=Жидкий триоксид серы
 fluid.sulfuricAcid=Жидкая серная кислота
+fluid.hydrogenChloride=Жидкий хлороводород
 
 //Gui text
 gui.removeSpeedUpgrade=Удалить улучшение скорости
@@ -277,6 +275,7 @@ gui.digitalMiner.silk=Шёлк
 gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Работа
 gui.digitalMiner.idle=Простой
+gui.digitalMiner.inverse="Обратный" режим
 
 //Item and block tooltip text
 tooltip.configurator.modify=Модифицируемый
@@ -284,7 +283,7 @@ tooltip.configurator.empty=Пусто
 tooltip.configurator.wrench=Wrench
 tooltip.configurator.link=Link
 tooltip.configurator.pumpReset=Сбросить расчёт электропомпы
-tooltip.configurator.toggleDiverter=Режим "отклонитель" изменён на
+tooltip.configurator.toggleDiverter=Режим "отклонение" изменён на
 tooltip.configurator.toggleColor=Цвет установлен на
 tooltip.configurator.viewColor=Текущий цвет
 tooltip.configurator.unauth=Этот сундук закрыт
@@ -292,34 +291,34 @@ tooltip.configurator.noLink=Нет соединения
 tooltip.configurator.linkMsg=Связан с
 tooltip.configurator.dim=измерение
 
-tooltip.balloon=Balloon
+tooltip.balloon=воздушный шар
 
 tooltip.jetpack.regular=Обычный
 tooltip.jetpack.hover=Зависание
 tooltip.jetpack.disabled=Отключен
 
-tooltip.EnrichmentChamber=Простая машина, используется для обогащения руд в !nдва их пыльных аналога, а также !nвыполнять множество других операций.
-tooltip.OsmiumCompressor=Довольно продвинутая машина, используется для сжатия !nосмия в различные пыли для создания !nих слитковых аналогов.
+tooltip.EnrichmentChamber=Простая машина, используется для обогащения руд в !nдва их пыльных аналога, а также выполнять !nмножество других операций.
+tooltip.OsmiumCompressor=Довольно продвинутая машина, используется для сжатия !nосмия в различные пыли для создания их слитковых аналогов.
 tooltip.Combiner=Машина, используемая для объединения пыли и булыжника, чтобы !nформировать свои рудные аналоги.
-tooltip.Crusher=Машина, используемая для дробления слитков в их пыльные аналоги, !nа также выполнять множество других операций.
-tooltip.DigitalMiner=Высоко продвинутый, основанный на фильтре, авто-шатёр, который может !nдобывать любой блок, который вы скажите в пределах !n32 блоков (макс).
+tooltip.Crusher=Машина, используемая для дробления слитков !nв их пыльные аналоги, !nа также выполнять множество других операций.
+tooltip.DigitalMiner=Высоко продвинутый, основанный на фильтре, авто-шатёр, !nкоторый может добывать любой блок, !nкоторый вы скажите в пределах 32 блоков (макс).
 tooltip.BasicFactory=Самый низкий уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных операций !nодновременно.
 tooltip.AdvancedFactory=Средний уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных !nопераций одновременно.
 tooltip.EliteFactory=Самый высокий уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных !nопераций одновременно.
 tooltip.MetallurgicInfuser=Машина, используемая для "вливания" различных материалов !nв металлы (как правило), чтобы создать металлические сплавы !nи другие соединения.
 tooltip.PurificationChamber=Продвинутая машина, способная перерабатывать !nруды в три глыбы, выступающие в качестве начальной !nстадии 300% переработки руды.
-tooltip.EnergizedSmelter=Простая машина, которая служит в качестве основной Mekanism !nпечи, которая работает от энергии.
+tooltip.EnergizedSmelter=Простая машина, которая служит в качестве основной !nMekanism-печи, которая работает от энергии.
 tooltip.Teleporter=Машина, способная телепортировать игроков в различные !nместа, определённые другим телепортером.
 tooltip.ElectricPump=Продвинутая помпа, способная выкачать целое !nозеро лавы.
-tooltip.ElectricChest=Переносной 54-слотовый сундук, который использует энергию, чтобы закрывать !nсебя от других с помощью защиты паролем.
-tooltip.Chargepad=Универсальная зарядная панель, которая может заряжать любой заряжаемый предмет !nиз любой модификации.
-tooltip.LogisticalSorter=Основанная на фильтре продвинутая сортировочная машина, которая !nможет автоматически извлекать указанные предметы наружу и в !nсоседние инвентари, а также в логистические транспортеры.
+tooltip.ElectricChest=Переносной 54-слотовый сундук, !nкоторый использует энергию, чтобы закрывать !nсебя от других с помощью защиты паролем.
+tooltip.Chargepad=Универсальная зарядная панель, !nкоторая может заряжать любой заряжаемый предмет !nиз любой модификации.
+tooltip.LogisticalSorter=Основанная на фильтре продвинутая сортировочная машина, !nкоторая может автоматически извлекать !nуказанные предметы наружу и в соседние инвентари, !nа также в логистические транспортеры.
 tooltip.RotaryCondensentrator=Машина, способная конвертировать газы в !nжидкость и наоборот.
-tooltip.ChemicalInjectionChamber=Элитная машина, способная перерабатывать !nруды в четыре осколка, выступающие в качестве начальной !nстадии 400% переработки руды.
+tooltip.ChemicalInjectionChamber=Элитная машина, способная перерабатывать руды в !nчетыре осколка, выступающие в качестве начальной !nстадии 400% переработки руды.
 
-tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. !nОн как известно имеет множество применений в !nпроизводстве машин.
-tooltip.CopperOre=Общий проводящий материал, который !nможет быть использован в производстве !nпроводов. Имеет способность выдерживать!nвысокие теплоты это делает его необходимым !nдля современного оборудования.
-tooltip.TinOre=Лёгкий, но крепкий проводящий !nматериал, который находится немного реже, !nчем медь.
+tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. Он как известно !nимеет множество применений в !nпроизводстве машин.
+tooltip.CopperOre=Общий проводящий материал, который может быть использован !nв производстве проводов. Имеет способность выдерживать!nвысокие теплоты это делает его необходимым для !nсовременного оборудования.
+tooltip.TinOre=Лёгкий, но крепкий проводящий материал, !nкоторый находится немного реже, чем медь.
 
 //Redstone control
 control.disabled=Отключён

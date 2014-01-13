@@ -262,7 +262,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
     	
     	public boolean checkID(int id)
     	{
-    		return ignoreID.get(location.getBlockId(world)) != null && ignoreID.get(location.getBlockId(world)).contains(id);
+    		int origId = location.getBlockId(world);
+    		return (ignoreID.get(origId) == null && id == origId) || (ignoreID.get(origId) != null && ignoreID.get(origId).contains(id));
     	}
     	
     	static {
