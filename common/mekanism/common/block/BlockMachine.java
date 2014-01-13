@@ -102,6 +102,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:1: Chemical Oxidizer
  * 1:2: Chemical Infuser
  * 1:3: Chemical Injection Chamber
+ * 1:4: Electrolytic Separator
+ * 1:5: Precision Sawmill
  * @author AidanBrady
  *
  */
@@ -161,9 +163,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
 			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[4][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
-			icons[4][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-			icons[4][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
+			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
+			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
 		}
 	}
 	
@@ -572,7 +574,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     	}
     	else if(blockID == Mekanism.machineBlock2ID)
     	{
-    		if(metadata == 2 || metadata == 3)
+    		if(metadata == 3 || metadata == 5)
 	    	{
 	    		if(side == tileEntity.facing)
 	    		{

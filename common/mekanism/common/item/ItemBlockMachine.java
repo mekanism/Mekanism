@@ -74,6 +74,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:1: Chemical Oxidizer
  * 1:2: Chemical Infuser
  * 1:3: Chemical Injection Chamber
+ * 1:4: Electrolytic Separator
+ * 1:5: Precision Sawmill
  * @author AidanBrady
  *
  */

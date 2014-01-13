@@ -228,7 +228,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	@Override
 	public float getVolumeMultiplier() 
 	{
-		return 0.7F;
+		return 0.4F;
 	}
 	
 	@Override
