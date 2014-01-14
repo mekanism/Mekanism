@@ -158,11 +158,11 @@ public class BlockBasic extends Block
     	}
 		else if(metadata == 14)
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+			TileEntitySalinationController tileEntity = (TileEntitySalinationController)world.getBlockTileEntity(x, y, z);
 
 			if(side == tileEntity.facing)
 			{
-				return icons[14][0];
+				return tileEntity.structured ? icons[14][1] : icons[14][0];
 			}
 			else {
 				return icons[12][0];

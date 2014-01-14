@@ -6,13 +6,13 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IConfigurable;
-import mekanism.common.IRedstoneControl.RedstoneControl;
+import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,8 +22,11 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
 {
-	public static int MAX_WATER = 100000;
-	public static int MAX_BRINE = 1000;
+	public static final int MAX_WATER = 100000;
+	public static final int MAX_BRINE = 1000;
+	
+	public static final int MAX_SOLARS = 4;
+	public static final int WARMUP = 300;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
@@ -36,7 +39,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public double partialWater = 0;
 	public double partialBrine = 0;
 	
-	public float baseTemperature = 0;
+	public float temperature = 0;
 	
 	public int height = 0;
 	
@@ -51,6 +54,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public TileEntitySalinationController()
 	{
 		super("SalinationController");
+		
+		inventory = new ItemStack[4];
 	}
 
 	@Override
@@ -65,11 +70,14 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				refresh();
 			}
 			
-			setTemperature();
+			updateTemperature();
 	
 			if(canOperate())
 			{
-				partialWater += baseTemperature * (height + 7)/8;
+				int brineNeeded = brineTank.getCapacity()-brineTank.getFluidAmount();
+				int waterStored = waterTank.getFluidAmount();
+				
+				double waterUse = Math.min(brineTank.getFluidAmount(), getTemperature()*100);
 				
 				if(partialWater >= 1)
 				{
@@ -111,11 +119,18 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		{
 			if(!updatedThisTick)
 			{
+				clearStructure();
 				structured = buildStructure();
 				
 				if(!structured)
 				{
-					clearStructure();
+					temperature = Math.min(getMaxTemperature(), getTemperature());
+				}
+				else {
+					if(waterTank.getFluid() != null)
+					{
+						waterTank.getFluid().amount = Math.min(waterTank.getFluid().amount, getMaxWater());
+					}
 				}
 			}
 		}
@@ -123,34 +138,61 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean canOperate()
 	{
-		if(!structured || height < 1 || waterTank.getFluid() == null || !waterTank.getFluid().containsFluid(FluidRegistry.getFluidStack("water", 100)))
+		if(!structured || height < 3 || height > 18 || waterTank.getFluid() == null)
 		{
 			return false;
 		}
-
-		boolean solarsActive = true;
-
-		for(TileEntityAdvancedSolarGenerator solarPanel : solars)
+		
+		if(!waterTank.getFluid().containsFluid(FluidRegistry.getFluidStack("water", 1)) || brineTank.getCapacity()-brineTank.getFluidAmount() == 0)
 		{
-			if(solarPanel == null || solarPanel.isInvalid())
-			{
-				clearStructure();
-				return false;
-			}
-			
-			solarsActive &= solarPanel.seesSun;
+			return false;
 		}
 		
-		return solarsActive;
+		return true;
 	}
-
-	public void setTemperature()
+	
+	public void updateTemperature()
 	{
-		if(!temperatureSet)
+		float max = getMaxTemperature();
+		float incr = (max/WARMUP)*getTempMultiplier();
+		
+		if(getTempMultiplier() == 0)
 		{
-			baseTemperature = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature();
-			temperatureSet = true;
+			temperature = Math.max(0, getTemperature()-(incr*2));
 		}
+		else {
+			temperature = Math.min(max, getTemperature()+incr);
+		}
+	}
+	
+	public float getTemperature()
+	{
+		return temperature;
+	}
+	
+	public float getMaxTemperature()
+	{
+		return 1 + (height-3)*0.5F;
+	}
+	
+	public float getTempMultiplier()
+	{
+		return worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature()*(getActiveSolars()/MAX_SOLARS);
+	}
+	
+	public int getActiveSolars()
+	{
+		int ret = 0;
+		
+		for(TileEntityAdvancedSolarGenerator solar : solars)
+		{
+			if(solar.seesSun)
+			{
+				ret++;
+			}
+		}
+		
+		return ret;
 	}
 
 	public boolean buildStructure()
@@ -180,7 +222,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			middle++;
 		}
 		
-		if(middle != height-2)
+		if(height < 3 || height > 18 || middle != height-2)
 		{
 			height = 0;
 			return false;
@@ -253,6 +295,11 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		}
 
 		return true;
+	}
+	
+	public int getMaxWater()
+	{
+		return height*4*TankUpdateProtocol.FLUID_PER_TANK;
 	}
 	
 	public int getCorner(int x, int z)
@@ -399,6 +446,21 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			return false;
 		}
 	}
+	
+	public int getScaledWaterLevel(int i)
+	{
+		return waterTank.getFluid() != null ? waterTank.getFluid().amount*i / 10000 : 0;
+	}
+	
+	public int getScaledBrineLevel(int i)
+	{
+		return brineTank.getFluid() != null ? brineTank.getFluid().amount*i / 10000 : 0;
+	}
+	
+	public int getScaledTempLevel(int i)
+	{
+		return (int)(getMaxTemperature() == 0 ? 0 : getTemperature()*i/getMaxTemperature());
+	}
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
@@ -436,6 +498,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		structured = dataStream.readBoolean();
 		controllerConflict = dataStream.readBoolean();
 		clientSolarAmount = dataStream.readInt();
+		height = dataStream.readInt();
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
@@ -468,6 +531,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		data.add(structured);
 		data.add(controllerConflict);
 		data.add(getSolarAmount());
+		data.add(height);
 		
 		return data;
 	}
@@ -494,6 +558,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
         waterTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
         brineTank.readFromNBT(nbtTags.getCompoundTag("brineTank"));
+        
+        partialWater = nbtTags.getDouble("partialWater");
+        partialBrine = nbtTags.getDouble("partialBrine");
     }
 
 	@Override
@@ -503,6 +570,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
         
         nbtTags.setCompoundTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
         nbtTags.setCompoundTag("brineTank", brineTank.writeToNBT(new NBTTagCompound()));
+        
+        nbtTags.setDouble("partialWater", partialWater);
+        nbtTags.setDouble("partialBrine", partialBrine);
     }
 
 	public void clearStructure()

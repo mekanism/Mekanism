@@ -1,38 +1,171 @@
 package mekanism.client.gui;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import mekanism.api.ListUtils;
-import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.api.Coord4D;
+import mekanism.api.gas.GasStack;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerSalinationController;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntitySalinationController;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fluids.FluidStack;
+
 import org.lwjgl.opengl.GL11;
 
 public class GuiSalinationController extends GuiMekanism
 {
-	TileEntitySalinationController tileEntity;
+    public TileEntitySalinationController tileEntity;
 
-	public GuiSalinationController(InventoryPlayer inventory, TileEntitySalinationController tentity)
-	{
-		super(tentity, new ContainerSalinationController(inventory, tentity));
-		tileEntity = tentity;
-	}
+    public GuiSalinationController(InventoryPlayer inventory, TileEntitySalinationController tentity)
+    {
+        super(tentity, new ContainerSalinationController(inventory, tentity));
+        tileEntity = tentity;
+    }
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {    	
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
+        fontRenderer.drawString(tileEntity.getInvName(), 5, 5, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		
+		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
+		{
+			drawCreativeTabHoveringText(tileEntity.waterTank.getFluid() != null ? tileEntity.waterTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.waterTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72)
+		{
+			drawCreativeTabHoveringText(tileEntity.brineTank.getFluid() != null ? tileEntity.brineTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.brineTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72)
+		{
+			drawCreativeTabHoveringText(getTemp(), xAxis, yAxis);
+		}
+		
+    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+    
+    public String getTemp()
+    {
+    	float temp = (float)Math.round((tileEntity.getTemperature()*200)*100)/100F;
+    	
+    	return temp + " F";
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+    {
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    	
+    	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSalinationController.png"));
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        
+        int xAxis = mouseX - guiWidth;
+		int yAxis = mouseY - guiHeight;
+		
+        int displayInt;
+        
+        if(tileEntity.getScaledWaterLevel(58) > 0)
+        {
+        	displayGauge(7, 14, tileEntity.getScaledWaterLevel(58), tileEntity.waterTank.getFluid(), null);
+        }
+        
+        if(tileEntity.getScaledBrineLevel(58) > 0)
+        {
+        	displayGauge(153, 14, tileEntity.getScaledBrineLevel(58), tileEntity.brineTank.getFluid(), null);
+        }
+        
+    	displayInt = tileEntity.getScaledTempLevel(78);
+        drawTexturedModalRect(guiWidth + 49, guiHeight + 64, 176, 59, displayInt, 8);
+    }
+    
+    @Override
+    protected void mouseClicked(int x, int y, int button)
+    {
+		super.mouseClicked(x, y, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (x - (width - xSize) / 2);
+			int yAxis = (y - (height - ySize) / 2);
+			
+			if(xAxis > 44 && xAxis < 62 && yAxis > 13 && yAxis < 21)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
+			{
+				ArrayList data = new ArrayList();
+				data.add(1);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+		}
+    }
+    
+	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	    if(fluid == null && gas == null)
+	    {
+	        return;
+	    }
+	    
+	    int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+	    
+		int start = 0;
+
+		while(true)
+		{
+			int renderRemaining = 0;
+
+			if(scale > 16) 
+			{
+				renderRemaining = 16;
+				scale -= 16;
+			} 
+			else {
+				renderRemaining = scale;
+				scale = 0;
+			}
+
+			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+			
+			if(fluid != null)
+			{
+				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			}
+			else if(gas != null)
+			{
+				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
+			}
+			
+			start+=16;
+
+			if(renderRemaining == 0 || scale == 0)
+			{
+				break;
+			}
+		}
 
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSalinationController.png"));
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 0, 16, 59);
 	}
-
-
 }
