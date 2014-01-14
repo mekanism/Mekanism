@@ -109,14 +109,16 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			return false; 
 		}
 		
-		Coord4D startPoint = Coord4D.get(this).getFromSide(right).getFromSide(ForgeDirection.DOWN);
+		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 
 		int middle = 0;
 		
-		while(scanMiddleLayer(startPoint))
+		Coord4D middlePointer = startPoint.getFromSide(ForgeDirection.DOWN);
+		
+		while(scanMiddleLayer(middlePointer))
 		{
-			startPoint = startPoint.getFromSide(ForgeDirection.DOWN);
+			middlePointer = middlePointer.getFromSide(ForgeDirection.DOWN);
 			middle++;
 		}
 		
@@ -126,7 +128,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			return false;
 		}
 
-		structured = scanTopLayer(startPoint.getFromSide(ForgeDirection.UP));
+		structured = scanTopLayer(startPoint);
 		height = structured ? height : 0;
 		
 		return structured;
@@ -140,7 +142,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean scanTopLayer(Coord4D current)
 	{
-		System.out.println(current);
 		ForgeDirection left = MekanismUtils.getLeft(facing);
 		ForgeDirection back = MekanismUtils.getBack(facing);
 
@@ -158,8 +159,10 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 					{
 						continue;
 					}
-					
-					return addTankPart(pointer.getTileEntity(worldObj));
+					else if(!addTankPart(pointer.getTileEntity(worldObj)))
+					{
+						return false;
+					}
 				}
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))
