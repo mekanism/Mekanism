@@ -6,6 +6,9 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IConfigurable;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -65,6 +68,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		if(!worldObj.isRemote)
 		{
+			updatedThisTick = false;
+			
 			if(ticker == 5)
 			{
 				refresh();
@@ -119,8 +124,15 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		{
 			if(!updatedThisTick)
 			{
+				boolean prev = structured;
+				
 				clearStructure();
 				structured = buildStructure();
+				
+				if(structured != prev)
+				{
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+				}
 				
 				if(!structured)
 				{
@@ -172,6 +184,11 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	
 	public float getMaxTemperature()
 	{
+		if(!structured)
+		{
+			return 1;
+		}
+		
 		return 1 + (height-3)*0.5F;
 	}
 	
@@ -186,7 +203,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		for(TileEntityAdvancedSolarGenerator solar : solars)
 		{
-			if(solar.seesSun)
+			if(solar != null && solar.seesSun)
 			{
 				ret++;
 			}
@@ -495,10 +512,18 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			brineTank.setFluid(null);
 		}
 		
+		boolean prev = structured;
+		
 		structured = dataStream.readBoolean();
 		controllerConflict = dataStream.readBoolean();
 		clientSolarAmount = dataStream.readInt();
 		height = dataStream.readInt();
+		temperature = dataStream.readFloat();
+		
+		if(structured != prev)
+		{
+			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+		}
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
@@ -532,6 +557,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		data.add(controllerConflict);
 		data.add(getSolarAmount());
 		data.add(height);
+		data.add(temperature);
 		
 		return data;
 	}

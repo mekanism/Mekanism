@@ -35,6 +35,11 @@ public class GuiSalinationController extends GuiMekanism
 		
         fontRenderer.drawString(tileEntity.getInvName(), 5, 5, 0x404040);
         fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        
+        fontRenderer.drawString("Structure: " + tileEntity.structured, 50, 21, 0x00CD00);
+        fontRenderer.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
+        fontRenderer.drawString("Solars: " + tileEntity.clientSolarAmount, 50, 39, 0x00CD00);
+        fontRenderer.drawString("Max Temp: " + tileEntity.getMaxTemperature(), 50, 48, 0x00CD00);
 		
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
