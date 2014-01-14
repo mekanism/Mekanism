@@ -7,7 +7,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.IConfigurable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
@@ -106,20 +105,30 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		if(!scanBottomLayer())
 		{
+			height = 0;
 			return false; 
 		}
 		
-		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
-		startPoint = isLeftOnFace ? startPoint : startPoint.getFromSide(right);
+		Coord4D startPoint = Coord4D.get(this).getFromSide(right).getFromSide(ForgeDirection.DOWN);
+		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 
+		int middle = 0;
+		
 		while(scanMiddleLayer(startPoint))
 		{
-			startPoint = startPoint.getFromSide(ForgeDirection.UP);
-			height++;
+			startPoint = startPoint.getFromSide(ForgeDirection.DOWN);
+			middle++;
+		}
+		
+		if(middle != height-2)
+		{
+			height = 0;
+			return false;
 		}
 
-		structured = scanTopLayer(startPoint);
-		height = structured ? height + 1 : 0;
+		structured = scanTopLayer(startPoint.getFromSide(ForgeDirection.UP));
+		height = structured ? height : 0;
+		
 		return structured;
 	}
 	
@@ -131,47 +140,92 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean scanTopLayer(Coord4D current)
 	{
-		ForgeDirection[] matrix = getMatrix();
-		
-		for(int side = 0; side < matrix.length; side++)
-		{
-			for(int i = 1; i <= 2; i++)
-			{
-				current = current.getFromSide(matrix[side]);
-				TileEntity tile = current.getTileEntity(worldObj);
-				
-				if(!addTankPart(tile)) 
-				{ 
-					return false;
-				}
-			}
+		System.out.println(current);
+		ForgeDirection left = MekanismUtils.getLeft(facing);
+		ForgeDirection back = MekanismUtils.getBack(facing);
 
-			current = current.getFromSide(matrix[side]);
-			TileEntity solar = current.getTileEntity(worldObj);
-			
-			if(!addSolarPanel(solar, side))
-			{ 
-				return false;
+		for(int x = 0; x < 4; x++)
+		{
+			for(int z = 0; z < 4; z++)
+			{
+				Coord4D pointer = current.getFromSide(left, x).getFromSide(back, z);
+				
+				int corner = getCorner(x, z);
+				
+				if(corner != -1)
+				{
+					if(addSolarPanel(pointer.getTileEntity(worldObj), corner))
+					{
+						continue;
+					}
+					
+					return addTankPart(pointer.getTileEntity(worldObj));
+				}
+				
+				if((x == 1 || x == 2) && (z == 1 || z == 2))
+				{
+					if(!pointer.isAirBlock(worldObj))
+					{
+						return false;
+					}
+				}
+				else {
+					if(!addTankPart(pointer.getTileEntity(worldObj))) 
+					{
+						return false;
+					}
+				}
 			}
 		}
 
 		return true;
 	}
+	
+	public int getCorner(int x, int z)
+	{
+		if(x == 0 && z == 0)
+		{
+			return 0;
+		}
+		else if(x == 0 && z == 3)
+		{
+			return 1;
+		}
+		else if(x == 3 && z == 0)
+		{
+			return 2;
+		}
+		else if(x == 3 && z == 3)
+		{
+			return 3;
+		}
+		
+		return -1;
+	}
 
 	public boolean scanMiddleLayer(Coord4D current)
 	{
-		ForgeDirection[] matrix = getMatrix();
+		ForgeDirection left = MekanismUtils.getLeft(facing);
+		ForgeDirection back = MekanismUtils.getBack(facing);
 
-		for(ForgeDirection side : matrix)
+		for(int x = 0; x < 4; x++)
 		{
-			for(int i = 1; i <= 3; i++)
+			for(int z = 0; z < 4; z++)
 			{
-				current = current.getFromSide(side);
-				TileEntity tile = current.getTileEntity(worldObj);
+				Coord4D pointer = current.getFromSide(left, x).getFromSide(back, z);
 				
-				if(!addTankPart(tile)) 
-				{ 
-					return false;
+				if((x == 1 || x == 2) && (z == 1 || z == 2))
+				{
+					if(!pointer.isAirBlock(worldObj))
+					{
+						return false;
+					}
+				}
+				else {
+					if(!addTankPart(pointer.getTileEntity(worldObj))) 
+					{
+						return false;
+					}
 				}
 			}
 		}
@@ -181,40 +235,52 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean scanBottomLayer()
 	{
-		Coord4D baseBlock = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+		height = 1;
+		Coord4D baseBlock = Coord4D.get(this);
+		
+		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationTank)
+		{
+			baseBlock.step(ForgeDirection.DOWN);
+			height++;
+		}
 
 		ForgeDirection left = MekanismUtils.getLeft(facing);
 		ForgeDirection right = MekanismUtils.getRight(facing);
 
-		if(!findBottomRow(baseBlock)) 
+		if(!scanBottomRow(baseBlock)) 
 		{
 			return false;
 		};
 		
-		if(!findBottomRow(baseBlock.getFromSide(left))) 
+		if(!scanBottomRow(baseBlock.getFromSide(left))) 
 		{
 			return false;
 		};
 		
-		if(!findBottomRow(baseBlock.getFromSide(right))) 
+		if(!scanBottomRow(baseBlock.getFromSide(right))) 
 		{
 			return false;
 		};
 
-		boolean twoLeft = findBottomRow(baseBlock.getFromSide(left).getFromSide(left));
-		boolean twoRight = findBottomRow(baseBlock.getFromSide(right).getFromSide(right));
+		boolean twoLeft = scanBottomRow(baseBlock.getFromSide(left).getFromSide(left));
+		boolean twoRight = scanBottomRow(baseBlock.getFromSide(right).getFromSide(right));
 
 		if(twoLeft == twoRight) 
 		{
 			return false;
 		}
 
-		isLeftOnFace = twoLeft;
+		isLeftOnFace = twoRight;
 		
 		return true;
 	}
 
-	public boolean findBottomRow(Coord4D start)
+	/**
+	 * Scans the bottom row of this multiblock, going in a line across the base.
+	 * @param start
+	 * @return
+	 */
+	public boolean scanBottomRow(Coord4D start)
 	{
 		ForgeDirection back = MekanismUtils.getBack(facing);
 		Coord4D current = start;

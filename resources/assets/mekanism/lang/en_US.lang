@@ -28,7 +28,8 @@ item.GasMask.name=Gas Mask
 item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
 item.CompressedRedstone.name=Compressed Redstone
-item.Sawdust=Sawdust
+item.Sawdust.name=Sawdust
+item.Salt.name=Salt
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -51,6 +52,8 @@ tile.BasicBlock.DynamicGlass.name=Dynamic Glass
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
 tile.BasicBlock.CopperBlock.name=Copper Block
 tile.BasicBlock.TinBlock.name=Tin Block
+tile.BasicBlock.SalinationController.name=Salination Controller
+tile.BasicBlock.SalinationValve.name=Salination Valve
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
