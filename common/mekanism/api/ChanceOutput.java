@@ -29,7 +29,7 @@ public class ChanceOutput
 	
 	public boolean checkSecondary()
 	{
-		return rand.nextDouble() >= secondaryChance;
+		return rand.nextDouble() <= secondaryChance;
 	}
 	
 	public boolean hasPrimary()

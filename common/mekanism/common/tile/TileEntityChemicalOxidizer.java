@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
@@ -28,7 +29,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl
+public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 	
@@ -63,6 +64,8 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		if(worldObj.isRemote)
 		{
+			Mekanism.proxy.registerSound(this);
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -336,5 +339,17 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+	
+	@Override
+	public String getSoundPath()
+	{
+		return "ChemicalInfuser.ogg";
+	}
+
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
 	}
 }

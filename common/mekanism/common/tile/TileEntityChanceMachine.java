@@ -151,30 +151,36 @@ public class TileEntityChanceMachine extends TileEntityBasicMachine
 
         if(output.hasPrimary())
         {
-	        if(inventory[2] != null && !inventory[2].isItemEqual(output.primaryOutput))
-	        {
-	            return false;
-	        }
-	        else {
-	            if(inventory[2].stackSize + output.primaryOutput.stackSize > inventory[2].getMaxStackSize())
-	            {
-	            	return false;
-	            }
-	        }
+        	if(inventory[2] != null)
+        	{
+		        if(!inventory[2].isItemEqual(output.primaryOutput))
+		        {
+		            return false;
+		        }
+		        else {
+		            if(inventory[2].stackSize + output.primaryOutput.stackSize > inventory[2].getMaxStackSize())
+		            {
+		            	return false;
+		            }
+		        }
+        	}
         }
         
         if(output.hasSecondary())
         {
-	        if(inventory[4] != null && !inventory[4].isItemEqual(output.secondaryOutput))
-	        {
-	            return false;
-	        }
-	        else {
-	            if(inventory[4].stackSize + output.secondaryOutput.stackSize > inventory[4].getMaxStackSize())
-	            {
-	            	return false;
-	            }
-	        }
+        	if(inventory[4] != null)
+        	{
+		        if(!inventory[4].isItemEqual(output.secondaryOutput))
+		        {
+		            return false;
+		        }
+		        else {
+		            if(inventory[4].stackSize + output.secondaryOutput.stackSize > inventory[4].getMaxStackSize())
+		            {
+		            	return false;
+		            }
+		        }
+        	}
         }
         
         return true;
