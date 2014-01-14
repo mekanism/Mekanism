@@ -48,6 +48,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -1212,6 +1214,57 @@ public final class MekanismUtils
     	
     	return tank;
     }
+    
+    /**
+     * Finds the output of a defined InventoryCrafting grid. Taken from CofhCore.
+     * @param inv - InventoryCrafting to check
+     * @param world - world reference
+     * @return output ItemStack
+     */
+	public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world)
+	{
+		ItemStack[] dmgItems = new ItemStack[2];
+		
+		for(int i = 0; i < inv.getSizeInventory(); i++)
+		{
+			if(inv.getStackInSlot(i) != null)
+			{
+				if(dmgItems[0] == null)
+				{
+					dmgItems[0] = inv.getStackInSlot(i);
+				}
+				else {
+					dmgItems[1] = inv.getStackInSlot(i);
+					break;
+				}
+			}
+		}
+
+		if((dmgItems[0] == null) || (Item.itemsList[dmgItems[0].itemID] == null))
+		{
+			return null;
+		}
+		
+		if((dmgItems[1] != null) && (dmgItems[0].itemID == dmgItems[1].itemID) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && (Item.itemsList[dmgItems[0].itemID].isRepairable()))
+		{
+			Item theItem = Item.itemsList[dmgItems[0].itemID];
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamageForDisplay();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
+			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
+			int solve = Math.max(0, theItem.getMaxDamage() - value);
+			return new ItemStack(dmgItems[0].itemID, 1, solve);
+		}
+
+		for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList())
+		{
+			if(recipe.matches(inv, world))
+			{
+				return recipe.getCraftingResult(inv);
+			}
+		}
+		
+		return null;
+	}
     
     public static enum ResourceType
     {

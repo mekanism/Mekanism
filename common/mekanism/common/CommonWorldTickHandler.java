@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -39,9 +40,9 @@ public class CommonWorldTickHandler implements ITickHandler
 					{
 						if(obj.dimensionId == world.provider.dimensionId)
 						{
-							TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
+							TileEntity tileEntity = obj.getTileEntity(world);
 							
-							if(tileEntity == null || tileEntity.inventoryID != inventoryID)
+							if(!(tileEntity instanceof TileEntityDynamicTank) || ((TileEntityDynamicTank)tileEntity).inventoryID != inventoryID)
 							{
 								if(!tilesToKill.containsKey(inventoryID))
 								{

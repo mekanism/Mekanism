@@ -5,6 +5,7 @@ import java.util.Random;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -54,7 +55,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 	
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float hitX, float hitY, float hitZ)
     {
     	if(!world.isRemote && entityplayer.isSneaking())
     	{
@@ -64,12 +65,24 @@ public class BlockCardboardBox extends BlockContainer
     		if(tileEntity.storedData != null)
     		{
     			BlockData data = tileEntity.storedData;
+    			
+    			if(Block.blocksList[data.id] != null)
+    			{
+    				data.meta = Block.blocksList[data.id].onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
+    			}
+    			
     			world.setBlock(x, y, z, data.id, data.meta, 3);
     			
     			if(data.tileTag != null && world.getBlockTileEntity(x, y, z) != null)
     			{
     				data.updateLocation(x, y, z);
     				world.getBlockTileEntity(x, y, z).readFromNBT(data.tileTag);
+    			}
+    			
+    			if(Block.blocksList[data.id] != null)
+    			{
+    				Block.blocksList[data.id].onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.id, 1, data.meta));
+    				Block.blocksList[data.id].onPostBlockPlaced(world, x, y, z, data.meta);
     			}
         		
         	    float motion = 0.7F;

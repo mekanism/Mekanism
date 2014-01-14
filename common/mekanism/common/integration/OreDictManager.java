@@ -2,15 +2,25 @@ package mekanism.common.integration;
 
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
+
+import java.util.ArrayList;
+
+import mekanism.api.ChanceOutput;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -18,6 +28,24 @@ public final class OreDictManager
 {
 	public static void init()
 	{
+		addLogRecipes();
+		
+		for(ItemStack ore : OreDictionary.getOres("plankWood"))
+		{
+			if(ore.getHasSubtypes())
+			{
+				ItemStack wildStack = new ItemStack(ore.itemID, 1, OreDictionary.WILDCARD_VALUE);
+				
+				if(!Recipe.PRECISION_SAWMILL.containsRecipe(wildStack))
+				{
+					RecipeHandler.addPrecisionSawmillRecipe(wildStack, new ChanceOutput(new ItemStack(Item.stick, 6), new ItemStack(Mekanism.Sawdust), 0.25));
+				}
+			}
+			else {
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ChanceOutput(new ItemStack(Item.stick, 6), new ItemStack(Mekanism.Sawdust), 0.25));
+			}
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
 		{
 			RecipeHandler.addOsmiumCompressorRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Ingot, 1, 0));
@@ -366,5 +394,58 @@ public final class OreDictManager
 				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
+	}
+	
+	/**
+	 * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Taken from CofhCore.
+	 */
+	public static void addLogRecipes()
+	{
+		Container tempContainer = new Container() {
+			public boolean canInteractWith(EntityPlayer player)
+			{
+				return false;
+			}
+		};
+		
+		InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
+		ArrayList recipeList = (ArrayList)CraftingManager.getInstance().getRecipeList();
+
+		for(int i = 1; i < 9; i++)
+		{
+			tempCrafting.setInventorySlotContents(i, null);
+		}
+
+		ArrayList registeredOres = OreDictionary.getOres("logWood");
+		
+		for(int i = 0; i < registeredOres.size(); i++)
+		{
+			ItemStack logEntry = (ItemStack)registeredOres.get(i);
+
+			if(logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+			{
+				for(int j = 0; j < 16; j++)
+				{
+					ItemStack log = new ItemStack(logEntry.itemID, 1, j);
+					tempCrafting.setInventorySlotContents(0, log);
+					ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
+
+					if(resultEntry != null)
+					{
+						RecipeHandler.addPrecisionSawmillRecipe(log, new ChanceOutput(StackUtils.size(resultEntry, 6), new ItemStack(Mekanism.Sawdust), 1));
+					}
+				}
+			}
+			else {
+				ItemStack log = StackUtils.size(logEntry, 1);
+				tempCrafting.setInventorySlotContents(0, log);
+				ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
+
+				if(resultEntry != null)
+				{
+					RecipeHandler.addPrecisionSawmillRecipe(log, new ChanceOutput(StackUtils.size(resultEntry, 6), new ItemStack(Mekanism.Sawdust), 1));
+				}
+			}
+		}
 	}
 }

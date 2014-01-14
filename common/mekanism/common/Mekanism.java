@@ -518,6 +518,15 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ElectrolyticCore), new Object[] {
 			"EPE", "IEG", "EPE", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "dustOsmium", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold"
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(CardboardBox), new Object[] {
+			"SSS", "S S" , "SSS", Character.valueOf('S'), Sawdust
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Item.paper, 6), new Object[] {
+			"SSS", Character.valueOf('S'), Sawdust
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 5), new Object[] {
+			"ICI", "ASA", "ICI", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('S'), new ItemStack(BasicBlock, 1, 8)
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
@@ -650,6 +659,14 @@ public class Mekanism
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.trapdoor), new ChanceOutput(new ItemStack(Block.planks, 3)));
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Item.boat), new ChanceOutput(new ItemStack(Block.planks, 5)));
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Item.bed), new ChanceOutput(new ItemStack(Block.planks, 3), new ItemStack(Block.cloth, 3), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.jukebox), new ChanceOutput(new ItemStack(Block.planks, 8), new ItemStack(Item.diamond), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.bookShelf), new ChanceOutput(new ItemStack(Block.planks, 6), new ItemStack(Item.book, 3), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.pressurePlatePlanks), new ChanceOutput(new ItemStack(Block.planks, 2)));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.fence), new ChanceOutput(new ItemStack(Item.stick, 3)));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.fenceGate), new ChanceOutput(new ItemStack(Block.planks, 2), new ItemStack(Item.stick, 4), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.music), new ChanceOutput(new ItemStack(Block.planks, 8), new ItemStack(Item.redstone, 1), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.torchRedstoneIdle), new ChanceOutput(new ItemStack(Item.stick, 1), new ItemStack(Item.redstone), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.workbench), new ChanceOutput(new ItemStack(Block.planks, 4)));
 		
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Item.ingotIron)), new ItemStack(EnrichedIron));
