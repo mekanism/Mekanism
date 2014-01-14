@@ -96,7 +96,7 @@ public class BlockBasic extends Block
 			
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
 			}
 		}
 	}

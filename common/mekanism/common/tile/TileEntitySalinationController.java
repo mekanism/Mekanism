@@ -1,18 +1,24 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IConfigurable;
+import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
 {
@@ -26,14 +32,22 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public TileEntityAdvancedSolarGenerator[] solars = new TileEntityAdvancedSolarGenerator[4];
 
 	public boolean temperatureSet = false;
+	
 	public double partialWater = 0;
 	public double partialBrine = 0;
-	public float temperature = 0;
+	
+	public float baseTemperature = 0;
+	
 	public int height = 0;
+	
 	public boolean structured = false;
-
+	public boolean controllerConflict = false;
 	public boolean isLeftOnFace;
+	
+	public boolean updatedThisTick = false;
 
+	public int clientSolarAmount;
+	
 	public TileEntitySalinationController()
 	{
 		super("SalinationController");
@@ -42,25 +56,67 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	@Override
 	public void onUpdate()
 	{
-		setTemperature();
-
-		if(canOperate())
+		super.onUpdate();
+		
+		if(!worldObj.isRemote)
 		{
-			partialWater += temperature * (height + 7)/8;
-			
-			if(partialWater >= 1)
+			if(ticker == 5)
 			{
-				int waterInt = (int)Math.floor(partialWater);
-				waterTank.drain(waterInt, true);
-				partialWater %= 1;
-				partialBrine += ((double)waterInt)/100D;
+				refresh();
 			}
 			
-			if(partialBrine >= 1)
+			setTemperature();
+	
+			if(canOperate())
 			{
-				int brineInt = (int)Math.floor(partialBrine);
-				brineTank.fill(FluidRegistry.getFluidStack("brine", brineInt), true);
-				partialBrine %= 1;
+				partialWater += baseTemperature * (height + 7)/8;
+				
+				if(partialWater >= 1)
+				{
+					int waterInt = (int)Math.floor(partialWater);
+					waterTank.drain(waterInt, true);
+					partialWater %= 1;
+					partialBrine += ((double)waterInt)/100D;
+				}
+				
+				if(partialBrine >= 1)
+				{
+					int brineInt = (int)Math.floor(partialBrine);
+					brineTank.fill(FluidRegistry.getFluidStack("brine", brineInt), true);
+					partialBrine %= 1;
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		refresh();
+	}
+	
+	@Override
+	public void onNeighborChange(int id)
+	{
+		super.onNeighborChange(id);
+		
+		refresh();
+	}
+	
+	protected void refresh()
+	{
+		if(!worldObj.isRemote)
+		{
+			if(!updatedThisTick)
+			{
+				structured = buildStructure();
+				
+				if(!structured)
+				{
+					clearStructure();
+				}
 			}
 		}
 	}
@@ -92,13 +148,15 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		if(!temperatureSet)
 		{
-			temperature = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature();
+			baseTemperature = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature();
 			temperatureSet = true;
 		}
 	}
 
 	public boolean buildStructure()
 	{
+		controllerConflict = false;
+		updatedThisTick = true;
 		ForgeDirection right = MekanismUtils.getRight(facing);
 
 		height = 0;
@@ -130,6 +188,16 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 		structured = scanTopLayer(startPoint);
 		height = structured ? height : 0;
+		
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+		
+		for(TileEntitySalinationTank tank : tankParts)
+		{
+			if(tank != this && tank instanceof TileEntitySalinationValve)
+			{
+				worldObj.notifyBlocksOfNeighborChange(tank.xCoord, tank.yCoord, tank.zCoord, tank.getBlockType().blockID);
+			}
+		}
 		
 		return structured;
 	}
@@ -173,8 +241,11 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 					}
 				}
 				else {
-					if(!addTankPart(pointer.getTileEntity(worldObj))) 
+					TileEntity pointerTile = pointer.getTileEntity(worldObj);
+					
+					if(!addTankPart(pointerTile))
 					{
+						if(pointerTile != this && pointerTile instanceof TileEntitySalinationController)
 						return false;
 					}
 				}
@@ -305,7 +376,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean addTankPart(TileEntity tile)
 	{
-		if(tile instanceof TileEntitySalinationTank)
+		if(tile instanceof TileEntitySalinationTank && !(tile instanceof TileEntitySalinationController))
 		{
 			((TileEntitySalinationTank)tile).addToStructure(this);
 			tankParts.add((TileEntitySalinationTank)tile);
@@ -338,11 +409,101 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
-		structured = buildStructure();
-		player.sendChatToPlayer(ChatMessageComponent.createFromText("Height: " + height + ", Structured: " + structured));
-		System.out.println(solars[0] + " " + solars[1] + " " + solars[2] + " " + solars[3]);
-		return true;
+		return false;
 	}
+	
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		super.handlePacketData(dataStream);
+		
+		if(dataStream.readBoolean())
+		{
+			waterTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+		}
+		else {
+			waterTank.setFluid(null);
+		}
+		
+		if(dataStream.readBoolean())
+		{
+			brineTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+		}
+		else {
+			brineTank.setFluid(null);
+		}
+		
+		structured = dataStream.readBoolean();
+		controllerConflict = dataStream.readBoolean();
+		clientSolarAmount = dataStream.readInt();
+		
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		if(waterTank.getFluid() != null)
+		{
+			data.add(true);
+			data.add(waterTank.getFluid().fluidID);
+			data.add(waterTank.getFluid().amount);
+		}
+		else {
+			data.add(false);
+		}
+		
+		if(brineTank.getFluid() != null)
+		{
+			data.add(true);
+			data.add(brineTank.getFluid().fluidID);
+			data.add(brineTank.getFluid().amount);
+		}
+		else {
+			data.add(false);
+		}
+		
+		data.add(structured);
+		data.add(controllerConflict);
+		data.add(getSolarAmount());
+		
+		return data;
+	}
+	
+	private int getSolarAmount()
+	{
+		int ret = 0;
+		
+		for(TileEntityAdvancedSolarGenerator solar : solars)
+		{
+			if(solar != null)
+			{
+				ret++;
+			}
+		}
+		
+		return ret;
+	}
+	
+	@Override
+    public void readFromNBT(NBTTagCompound nbtTags)
+    {
+        super.readFromNBT(nbtTags);
+
+        waterTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
+        brineTank.readFromNBT(nbtTags.getCompoundTag("brineTank"));
+    }
+
+	@Override
+    public void writeToNBT(NBTTagCompound nbtTags)
+    {
+        super.writeToNBT(nbtTags);
+        
+        nbtTags.setCompoundTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
+        nbtTags.setCompoundTag("brineTank", brineTank.writeToNBT(new NBTTagCompound()));
+    }
 
 	public void clearStructure()
 	{

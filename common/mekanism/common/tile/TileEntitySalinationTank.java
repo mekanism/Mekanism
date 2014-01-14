@@ -12,7 +12,6 @@ public class TileEntitySalinationTank extends TileEntityContainerBlock
 		super("SalinationTank");
 		
 		inventory = new ItemStack[0];
-
 	}
 
 	public TileEntitySalinationTank(String fullName)
@@ -33,5 +32,27 @@ public class TileEntitySalinationTank extends TileEntityContainerBlock
 	public void controllerGone()
 	{
 		master = null;
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		if(master != null)
+		{
+			master.refresh();
+		}
+	}
+	
+	@Override
+	public void onNeighborChange(int id)
+	{
+		super.onNeighborChange(id);
+		
+		if(master != null)
+		{
+			master.refresh();
+		}
 	}
 }

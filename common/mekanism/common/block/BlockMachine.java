@@ -797,7 +797,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
 			}
 			
 			if(tileEntity instanceof TileEntityLogisticalSorter)

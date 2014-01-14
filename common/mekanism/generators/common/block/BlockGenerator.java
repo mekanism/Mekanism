@@ -64,7 +64,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(x, y, z, id);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
 			}
 		}
 	}
