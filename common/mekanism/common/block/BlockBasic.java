@@ -21,6 +21,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -35,7 +36,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -124,7 +124,7 @@ public class BlockBasic extends Block
 		icons[12][0] = register.registerIcon("mekanism:CopperBlock");
 		icons[13][0] = register.registerIcon("mekanism:TinBlock");
 		icons[14][0] = register.registerIcon("mekanism:SalinationController");
-		icons[14][1] = register.registerIcon("mekanism:CopperBlock");
+		icons[14][1] = register.registerIcon("mekanism:SalinationControllerOn");
 		icons[15][0] = register.registerIcon("mekanism:SalinationValve");
 		
 		glassRenderer.registerIcons(register);
@@ -564,7 +564,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 14 || metadata == 15;
+		return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 12 || metadata == 14 || metadata == 15;
 	}
 	
 	@Override
@@ -580,6 +580,8 @@ public class BlockBasic extends Block
 				return new TileEntityDynamicTank();
 			case 11:
 				return new TileEntityDynamicValve();
+			case 12:
+				return new TileEntitySalinationTank();
 			case 14:
 				return new TileEntitySalinationController();
 			case 15:

@@ -80,8 +80,10 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				clearStructure();
 				return false;
 			}
+			
 			solarsActive &= solarPanel.seesSun;
 		}
+		
 		return solarsActive;
 	}
 
@@ -99,7 +101,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		ForgeDirection right = MekanismUtils.getRight(facing);
 
 		height = 0;
-		if(!findBottomLayer()) { return false; }
+		
+		if(!findBottomLayer())
+		{ 
+			return false; 
+		}
+		
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint : startPoint.getFromSide(right);
 
@@ -113,94 +120,58 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		height = structured ? height + 1 : 0;
 		return structured;
 	}
+	
+	public ForgeDirection[] getMatrix()
+	{
+		return new ForgeDirection[] {MekanismUtils.getBack(facing), MekanismUtils.getLeft(facing), 
+				ForgeDirection.getOrientation(facing), MekanismUtils.getRight(facing)};
+	}
 
 	public boolean findTopLayer(Coord4D current)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection right = MekanismUtils.getRight(facing);
-		ForgeDirection back = MekanismUtils.getBack(facing);
-		ForgeDirection front = ForgeDirection.getOrientation(facing);
-
-		for(int i = 1; i <= 2; i++)
+		ForgeDirection[] matrix = getMatrix();
+		
+		for(int side = 0; side < matrix.length; side++)
 		{
-			current = current.getFromSide(back);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
+			for(int i = 1; i <= 2; i++)
+			{
+				current = current.getFromSide(matrix[side]);
+				TileEntity tile = current.getTileEntity(worldObj);
+				
+				if(!addTankPart(tile)) 
+				{ 
+					return false;
+				}
+			}
+
+			current = current.getFromSide(matrix[side]);
+			TileEntity solar = current.getTileEntity(worldObj);
+			
+			if(!addSolarPanel(solar, side))
+			{ 
+				return false;
+			}
 		}
-
-		current = current.getFromSide(back);
-		TileEntity solar = current.getTileEntity(worldObj);
-		if(!addSolarPanel(solar, 0)) { return false; }
-
-		for(int i = 1; i <= 2; i++)
-		{
-			current = current.getFromSide(left);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
-		}
-
-		current = current.getFromSide(left);
-		solar = current.getTileEntity(worldObj);
-		if(!addSolarPanel(solar, 1)) { return false; }
-
-		for(int i = 1; i <= 2; i++)
-		{
-			current = current.getFromSide(front);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
-		}
-
-		current = current.getFromSide(front);
-		solar = current.getTileEntity(worldObj);
-		if(!addSolarPanel(solar, 2)) { return false; }
-
-		for(int i = 1; i <= 2; i++)
-		{
-			current = current.getFromSide(right);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
-		}
-
-		current = current.getFromSide(right);
-		solar = current.getTileEntity(worldObj);
-		if(!addSolarPanel(solar, 3)) { return false; }
 
 		return true;
 	}
 
 	public boolean findMiddleLayer(Coord4D current)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection right = MekanismUtils.getRight(facing);
-		ForgeDirection back = MekanismUtils.getBack(facing);
-		ForgeDirection front = ForgeDirection.getOrientation(facing);
+		ForgeDirection[] matrix = getMatrix();
 
-		for(int i = 1; i <= 3; i++)
+		for(ForgeDirection side : matrix)
 		{
-			current = current.getFromSide(back);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
-		}
-
-		for(int i = 1; i <= 3; i++)
-		{
-			current = current.getFromSide(left);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
-		}
-
-		for(int i = 1; i <= 3; i++)
-		{
-			current = current.getFromSide(front);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
-		}
-
-		for(int i = 1; i <= 3; i++)
-		{
-			current = current.getFromSide(right);
-			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
+			for(int i = 1; i <= 3; i++)
+			{
+				current = current.getFromSide(side);
+				TileEntity tile = current.getTileEntity(worldObj);
+				
+				if(!addTankPart(tile)) 
+				{ 
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -213,16 +184,31 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		ForgeDirection left = MekanismUtils.getLeft(facing);
 		ForgeDirection right = MekanismUtils.getRight(facing);
 
-		if(!findBottomRow(baseBlock)) { return false; };
-		if(!findBottomRow(baseBlock.getFromSide(left))) { return false; };
-		if(!findBottomRow(baseBlock.getFromSide(right))) { return false; };
+		if(!findBottomRow(baseBlock)) 
+		{ 
+			return false;
+		};
+		
+		if(!findBottomRow(baseBlock.getFromSide(left))) 
+		{ 
+			return false;
+		};
+		
+		if(!findBottomRow(baseBlock.getFromSide(right))) 
+		{ 
+			return false;
+		};
 
 		boolean twoLeft = findBottomRow(baseBlock.getFromSide(left).getFromSide(left));
 		boolean twoRight = findBottomRow(baseBlock.getFromSide(right).getFromSide(right));
 
-		if(twoLeft == twoRight) { return false; }
+		if(twoLeft == twoRight) 
+		{ 
+			return false;
+		}
 
 		isLeftOnFace = twoLeft;
+		
 		return true;
 	}
 
@@ -234,7 +220,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		for(int i = 1; i <= 4; i++)
 		{
 			TileEntity tile = current.getTileEntity(worldObj);
-			if(!addTankPart(tile)) { return false; }
+			
+			if(!addTankPart(tile)) 
+			{ 
+				return false; 
+			}
+			
 			current = current.getFromSide(back);
 		}
 
@@ -247,6 +238,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		{
 			((TileEntitySalinationTank)tile).addToStructure(this);
 			tankParts.add((TileEntitySalinationTank)tile);
+			
 			return true;
 		}
 		else {
@@ -287,7 +279,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		{
 			tankPart.controllerGone();
 		}
+		
 		tankParts.clear();
-		solars = new TileEntityAdvancedSolarGenerator[]{null, null, null, null};
+		solars = new TileEntityAdvancedSolarGenerator[] {null, null, null, null};
 	}
 }

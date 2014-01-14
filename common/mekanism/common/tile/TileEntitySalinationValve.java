@@ -19,7 +19,9 @@ public class TileEntitySalinationValve extends TileEntitySalinationTank implemen
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
 		if(master != null && resource.getFluid() == FluidRegistry.getFluid("brine"))
+		{
 			return master.brineTank.drain(resource.amount, doDrain);
+		}
 
 		return null;
 	}
@@ -28,7 +30,9 @@ public class TileEntitySalinationValve extends TileEntitySalinationTank implemen
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		if(master != null)
+		{
 			return master.brineTank.drain(maxDrain, doDrain);
+		}
 
 		return null;
 	}
@@ -52,6 +56,7 @@ public class TileEntitySalinationValve extends TileEntitySalinationTank implemen
 		{
 			return new FluidTankInfo[0];
 		}
+		
 		return new FluidTankInfo[] {new FluidTankInfo(master.waterTank), new FluidTankInfo(master.brineTank)};
 	}
 }
