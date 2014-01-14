@@ -373,6 +373,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		super.load(nbtTags);
 		
+		redstoneReactive = nbtTags.getBoolean("redstoneReactive");
+		
 		for(int i = 0; i < 6; i++)
 		{
 			connectionTypes[i] = ConnectionType.values()[nbtTags.getInteger("connection" + i)];
@@ -383,6 +385,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void save(NBTTagCompound nbtTags)
 	{
 		super.save(nbtTags);
+		
+		nbtTags.setBoolean("redstoneReactive", redstoneReactive);
 		
 		for(int i = 0; i < 6; i++)
 		{
@@ -600,7 +604,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		refreshConnections();
 		tile().notifyPartChange(this);
 
-		player.sendChatToPlayer(ChatMessageComponent.createFromText("Redstone sensitivity turned " + (redstoneReactive ? "on." : "off.")));
+		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
 		return true;
 	}
 	

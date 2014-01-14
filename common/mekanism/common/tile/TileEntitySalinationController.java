@@ -48,6 +48,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		if(canOperate())
 		{
 			partialWater += temperature * (height + 7)/8;
+			
 			if(partialWater >= 1)
 			{
 				int waterInt = (int)Math.floor(partialWater);
@@ -55,6 +56,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				partialWater %= 1;
 				partialBrine += ((double)waterInt)/100D;
 			}
+			
 			if(partialBrine >= 1)
 			{
 				int brineInt = (int)Math.floor(partialBrine);
@@ -102,21 +104,21 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 		height = 0;
 		
-		if(!findBottomLayer())
-		{ 
+		if(!scanBottomLayer())
+		{
 			return false; 
 		}
 		
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint : startPoint.getFromSide(right);
 
-		while(findMiddleLayer(startPoint))
+		while(scanMiddleLayer(startPoint))
 		{
 			startPoint = startPoint.getFromSide(ForgeDirection.UP);
 			height++;
 		}
 
-		structured =  findTopLayer(startPoint);
+		structured = scanTopLayer(startPoint);
 		height = structured ? height + 1 : 0;
 		return structured;
 	}
@@ -127,7 +129,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				ForgeDirection.getOrientation(facing), MekanismUtils.getRight(facing)};
 	}
 
-	public boolean findTopLayer(Coord4D current)
+	public boolean scanTopLayer(Coord4D current)
 	{
 		ForgeDirection[] matrix = getMatrix();
 		
@@ -156,7 +158,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		return true;
 	}
 
-	public boolean findMiddleLayer(Coord4D current)
+	public boolean scanMiddleLayer(Coord4D current)
 	{
 		ForgeDirection[] matrix = getMatrix();
 
@@ -177,7 +179,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		return true;
 	}
 
-	public boolean findBottomLayer()
+	public boolean scanBottomLayer()
 	{
 		Coord4D baseBlock = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 
@@ -185,17 +187,17 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		ForgeDirection right = MekanismUtils.getRight(facing);
 
 		if(!findBottomRow(baseBlock)) 
-		{ 
+		{
 			return false;
 		};
 		
 		if(!findBottomRow(baseBlock.getFromSide(left))) 
-		{ 
+		{
 			return false;
 		};
 		
 		if(!findBottomRow(baseBlock.getFromSide(right))) 
-		{ 
+		{
 			return false;
 		};
 
@@ -203,7 +205,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		boolean twoRight = findBottomRow(baseBlock.getFromSide(right).getFromSide(right));
 
 		if(twoLeft == twoRight) 
-		{ 
+		{
 			return false;
 		}
 
@@ -222,7 +224,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			TileEntity tile = current.getTileEntity(worldObj);
 			
 			if(!addTankPart(tile)) 
-			{ 
+			{
 				return false; 
 			}
 			

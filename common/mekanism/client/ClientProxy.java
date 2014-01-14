@@ -105,6 +105,7 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
@@ -294,6 +295,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
 		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
+		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
 	}
 	

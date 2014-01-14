@@ -152,6 +152,10 @@ public class BlockBasic extends Block
 				return icons[6][0];
 			}
 		}
+    	else if(metadata == 10)
+    	{
+    		return glassRenderer.getIcon(world, x, y, z, side);
+    	}
 		else if(metadata == 14)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
@@ -161,13 +165,9 @@ public class BlockBasic extends Block
 				return icons[14][0];
 			}
 			else {
-				return icons[14][1];
+				return icons[12][0];
 			}
 		}
-    	else if(metadata == 10)
-    	{
-    		return glassRenderer.getIcon(world, x, y, z, side);
-    	}
     	else {
      		return getIcon(side, metadata);
     	}
@@ -177,11 +177,12 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
 	{
-		if(meta != 6)
+		if(meta != 6 && meta != 14)
 		{
 			return icons[meta][0];
 		}
-		else {
+		else if(meta == 6)
+		{
 			if(side == 0 || side == 1)
 			{
 				return icons[6][1];
@@ -194,6 +195,18 @@ public class BlockBasic extends Block
 				return icons[6][0];
 			}
 		}
+		else if(meta == 14)
+		{
+			if(side == 3)
+			{
+				return icons[14][0];
+			}
+			else {
+				return icons[12][0];
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override
