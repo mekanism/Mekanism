@@ -208,10 +208,10 @@ public class CommonProxy
 	  	
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.cardboardBoxIgnore.remove(new BlockInfo(Block.mobSpawner.blockID, 0));
 		}
 		else {
-			MekanismAPI.cardboardBoxIgnore.remove(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(Block.mobSpawner.blockID, 0));
 		}
 	  	
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
@@ -407,10 +407,10 @@ public class CommonProxy
 	{
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.cardboardBoxIgnore.remove(new BlockInfo(Block.mobSpawner.blockID, 0));
 		}
 		else {
-			MekanismAPI.cardboardBoxIgnore.remove(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(Block.mobSpawner.blockID, 0));
 		}
 		
 		System.out.println("[Mekanism] Received config from server.");
