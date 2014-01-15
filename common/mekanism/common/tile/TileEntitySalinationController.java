@@ -25,13 +25,12 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
 {
-	public static final int MAX_WATER = 100000;
 	public static final int MAX_BRINE = 1000;
 	
 	public static final int MAX_SOLARS = 4;
-	public static final int WARMUP = 6000;
+	public static final int WARMUP = 10000;
 
-	public FluidTank waterTank = new FluidTank(MAX_WATER);
+	public FluidTank waterTank = new FluidTank(0);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
 
 	public Set<TileEntitySalinationTank> tankParts = new HashSet<TileEntitySalinationTank>();
@@ -140,6 +139,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				
 				if(structured)
 				{
+					waterTank.setCapacity(getMaxWater());
+					
 					if(waterTank.getFluid() != null)
 					{
 						waterTank.getFluid().amount = Math.min(waterTank.getFluid().amount, getMaxWater());
@@ -228,11 +229,11 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean buildStructure()
 	{
-		controllerConflict = false;
-		updatedThisTick = true;
 		ForgeDirection right = MekanismUtils.getRight(facing);
 
 		height = 0;
+		controllerConflict = false;
+		updatedThisTick = true;
 		
 		if(!scanBottomLayer())
 		{
@@ -465,8 +466,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean addSolarPanel(TileEntity tile, int i)
 	{
-		if(tile instanceof TileEntityAdvancedSolarGenerator)
+		if(tile instanceof TileEntityAdvancedSolarGenerator && !tile.isInvalid())
 		{
+			System.out.println(tile.xCoord + " " + tile.yCoord + " " + zCoord);
 			solars[i] = (TileEntityAdvancedSolarGenerator)tile;
 			return true;
 		}

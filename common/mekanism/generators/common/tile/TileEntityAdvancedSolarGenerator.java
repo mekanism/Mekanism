@@ -28,9 +28,9 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	{
 		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Coord4D.get(this));
 		
-		for(int x=-1; x<=1; x++)
+		for(int x = -1; x <= 1; x++)
 		{
-			for(int z=-1; z<=1; z++)
+			for(int z = -1; z <= 1; z++)
 			{
 				MekanismUtils.makeBoundingBlock(worldObj, xCoord+x, yCoord+2, zCoord+z, Coord4D.get(this));
 			}
@@ -42,14 +42,15 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	{
 		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
 		
-		for(int x=-1; x<=1; x++)
+		for(int x = -1; x <= 1; x++)
 		{
-			for(int z=-1; z<=1; z++)
+			for(int z = -1; z <= 1; z++)
 			{
 				worldObj.setBlockToAir(xCoord+x, yCoord+2, zCoord+z);
 			}
 		}
 		
+		invalidate();
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
 }
