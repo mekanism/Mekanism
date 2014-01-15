@@ -54,6 +54,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public int clientSolarAmount;
 	
+	public boolean cacheStructure = false;
+	
 	public TileEntitySalinationController()
 	{
 		super("SalinationController");
@@ -70,9 +72,10 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		{
 			updatedThisTick = false;
 			
-			if(ticker == 5)
+			if(ticker == 5 && cacheStructure)
 			{
 				refresh();
+				cacheStructure = false;
 			}
 			
 			updateTemperature();
@@ -122,7 +125,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		if(!worldObj.isRemote)
 		{
-			if(!updatedThisTick)
+			if(structured && !updatedThisTick)
 			{
 				boolean prev = structured;
 				
@@ -194,7 +197,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	
 	public float getTempMultiplier()
 	{
-		return worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature()*(getActiveSolars()/MAX_SOLARS);
+		return worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature()*((float)getActiveSolars()/MAX_SOLARS);
 	}
 	
 	public int getActiveSolars()
@@ -259,12 +262,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		}
 		
 		return structured;
-	}
-	
-	public ForgeDirection[] getMatrix()
-	{
-		return new ForgeDirection[] {MekanismUtils.getBack(facing), MekanismUtils.getLeft(facing), 
-				ForgeDirection.getOrientation(facing), MekanismUtils.getRight(facing)};
 	}
 
 	public boolean scanTopLayer(Coord4D current)
@@ -587,6 +584,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
         
         partialWater = nbtTags.getDouble("partialWater");
         partialBrine = nbtTags.getDouble("partialBrine");
+        
+        cacheStructure = nbtTags.getBoolean("cacheStructure");
     }
 
 	@Override
@@ -599,6 +598,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
         
         nbtTags.setDouble("partialWater", partialWater);
         nbtTags.setDouble("partialBrine", partialBrine);
+        
+        nbtTags.setBoolean("cacheStructure", structured);
     }
 
 	public void clearStructure()

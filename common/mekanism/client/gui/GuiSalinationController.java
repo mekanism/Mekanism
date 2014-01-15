@@ -36,10 +36,10 @@ public class GuiSalinationController extends GuiMekanism
         fontRenderer.drawString(tileEntity.getInvName(), 5, 5, 0x404040);
         fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         
-        fontRenderer.drawString("Structure: " + tileEntity.structured, 50, 21, 0x00CD00);
+        fontRenderer.drawString("Structure: " + (tileEntity.structured ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 50, 21, 0x00CD00);
         fontRenderer.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
-        fontRenderer.drawString("Solars: " + tileEntity.clientSolarAmount, 50, 39, 0x00CD00);
-        fontRenderer.drawString("Max Temp: " + tileEntity.getMaxTemperature(), 50, 48, 0x00CD00);
+        fontRenderer.drawString("Mult: " + getTempMult(), 50, 39, 0x00CD00);
+        fontRenderer.drawString("Max: " + getMaxTemp(), 50, 48, 0x00CD00);
 		
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
@@ -59,11 +59,25 @@ public class GuiSalinationController extends GuiMekanism
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
     
-    public String getTemp()
+    private String getTemp()
     {
     	float temp = (float)Math.round((tileEntity.getTemperature()*200)*100)/100F;
     	
     	return temp + " F";
+    }
+    
+    private String getMaxTemp()
+    {
+    	float temp = (float)Math.round((tileEntity.getMaxTemperature()*200)*100)/100F;
+    	
+    	return temp + " F";
+    }
+    
+    private String getTempMult()
+    {
+    	float temp = (float)Math.round((tileEntity.getTempMultiplier())*100)/100F;
+    	
+    	return temp + "x";
     }
 
     @Override
