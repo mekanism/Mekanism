@@ -519,7 +519,7 @@ public class Mekanism
 			"EPE", "IEG", "EPE", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "dustOsmium", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(CardboardBox), new Object[] {
-			"SSS", "S S" , "SSS", Character.valueOf('S'), Sawdust
+			"SS", "SS", Character.valueOf('S'), Sawdust
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Item.paper, 6), new Object[] {
 			"SSS", Character.valueOf('S'), Sawdust
