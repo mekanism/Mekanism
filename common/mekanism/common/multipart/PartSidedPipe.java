@@ -18,8 +18,9 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
+import mekanism.common.Tier.CableTier;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.PartUniversalCable.CableTier;
 import mekanism.common.multipart.TransmitterType.Size;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,13 +98,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		switch(type)
 		{
 			case UNIVERSAL_CABLE_BASIC:
-				return new PartUniversalCable(CableTier.BASIC);
+				return new PartUniversalCable(Tier.CableTier.BASIC);
 			case UNIVERSAL_CABLE_ADVANCED:
-				return new PartUniversalCable(CableTier.ADVANCED);
+				return new PartUniversalCable(Tier.CableTier.ADVANCED);
 			case UNIVERSAL_CABLE_ELITE:
-				return new PartUniversalCable(CableTier.ELITE);
+				return new PartUniversalCable(Tier.CableTier.ELITE);
 			case UNIVERSAL_CABLE_ULTIMATE:
-				return new PartUniversalCable(CableTier.ULTIMATE);
+				return new PartUniversalCable(Tier.CableTier.ULTIMATE);
 			case MECHANICAL_PIPE:
 				return new PartMechanicalPipe();
 			case PRESSURIZED_TUBE:

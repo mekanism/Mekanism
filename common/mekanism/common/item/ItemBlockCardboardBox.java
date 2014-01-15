@@ -9,20 +9,24 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemBlockCardboardBox extends ItemBlock
 {
+	private static boolean isMonitoring;
+	
 	public Block metaBlock;
 	
 	public ItemBlockCardboardBox(int id, Block block)
@@ -30,6 +34,8 @@ public class ItemBlockCardboardBox extends ItemBlock
 		super(id);
 		setMaxStackSize(1);
 		metaBlock = block;
+		
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
@@ -76,6 +82,8 @@ public class ItemBlockCardboardBox extends ItemBlock
     			data.id = id;
     			data.meta = meta;
     			
+    			isMonitoring = true;
+    			
     			if(world.getBlockTileEntity(x, y, z) != null)
     			{
     				TileEntity tile = world.getBlockTileEntity(x, y, z);
@@ -83,21 +91,6 @@ public class ItemBlockCardboardBox extends ItemBlock
     				
     				tile.writeToNBT(tag);
     				data.tileTag = tag;
-    				
-    				if(tile instanceof IInventory)
-    				{
-    					IInventory inv = (IInventory)tile;
-    					
-    					for(int i = 0; i < inv.getSizeInventory(); i++)
-    					{
-    						inv.setInventorySlotContents(i, null);
-    					}
-    				}
-    				
-    				if(tile instanceof IDeepStorageUnit)
-    				{
-    					((IDeepStorageUnit)tile).setStoredItemCount(0);
-    				}
     			}
     			
     			if(!player.capabilities.isCreativeMode)
@@ -106,6 +99,8 @@ public class ItemBlockCardboardBox extends ItemBlock
     			}
     			
     			world.setBlock(x, y, z, Mekanism.cardboardBoxID, 1, 3);
+    			
+    			isMonitoring = false;
     			
     			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
     			
@@ -163,4 +158,13 @@ public class ItemBlockCardboardBox extends ItemBlock
 		
 		return BlockData.read(itemstack.stackTagCompound.getCompoundTag("blockData"));
     }
+	
+	@ForgeSubscribe
+	public void onEntitySpawn(EntityJoinWorldEvent event)
+	{
+		if(event.entity instanceof EntityItem && isMonitoring)
+		{
+			event.setCanceled(true);
+		}
+	}
 }

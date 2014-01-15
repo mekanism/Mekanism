@@ -9,7 +9,8 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.multipart.PartUniversalCable.CableTier;
+import mekanism.common.Tier;
+import mekanism.common.Tier.CableTier;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -85,9 +86,9 @@ public class ItemPartTransmitter extends JItemMultiPart
 	{
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			if(itemstack.getItemDamage() < CableTier.values().length)
+			if(itemstack.getItemDamage() < Tier.CableTier.values().length)
 			{
-				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + CableTier.values()[itemstack.getItemDamage()].cableCapacity + "J/t");
+				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity + "J/t");
 			}
 			
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");

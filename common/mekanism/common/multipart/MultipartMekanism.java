@@ -1,7 +1,7 @@
 package mekanism.common.multipart;
 
-import mekanism.common.multipart.PartUniversalCable.CableTier;
-
+import mekanism.common.Tier;
+import mekanism.common.Tier.CableTier;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
@@ -40,23 +40,23 @@ public class MultipartMekanism implements IPartFactory
 	{
 		if(name.equals("mekanism:universal_cable"))
 		{
-			return new PartUniversalCable(CableTier.BASIC);
+			return new PartUniversalCable(Tier.CableTier.BASIC);
 		}
 		else if(name.equals("mekanism:universal_cable_basic"))
 		{
-			return new PartUniversalCable(CableTier.BASIC);
+			return new PartUniversalCable(Tier.CableTier.BASIC);
 		}
 		else if(name.equals("mekanism:universal_cable_advanced"))
 		{
-			return new PartUniversalCable(CableTier.ADVANCED);
+			return new PartUniversalCable(Tier.CableTier.ADVANCED);
 		}
 		else if(name.equals("mekanism:universal_cable_elite"))
 		{
-			return new PartUniversalCable(CableTier.ELITE);
+			return new PartUniversalCable(Tier.CableTier.ELITE);
 		}
 		else if(name.equals("mekanism:universal_cable_ultimate"))
 		{
-			return new PartUniversalCable(CableTier.ULTIMATE);
+			return new PartUniversalCable(Tier.CableTier.ULTIMATE);
 		}
 		else if(name.equals("mekanism:mechanical_pipe"))
 		{
