@@ -60,21 +60,21 @@ public class GuiSalinationController extends GuiMekanism
     
     private String getTemp()
     {
-    	float temp = (float)Math.round((tileEntity.getTemperature()*200)*100)/100F;
+    	float temp = (float)Math.round((tileEntity.getTemperature()*200)*10)/10F;
     	
     	return temp + " F";
     }
     
     private String getMaxTemp()
     {
-    	float temp = (float)Math.round((tileEntity.getMaxTemperature()*200)*100)/100F;
+    	float temp = (float)Math.round((tileEntity.getMaxTemperature()*200)*10)/10F;
     	
     	return temp + " F";
     }
     
     private String getTempMult()
     {
-    	float temp = (float)Math.round((tileEntity.getTempMultiplier())*100)/100F;
+    	float temp = (float)Math.round((tileEntity.getTempMultiplier())*10)/10F;
     	
     	return temp + "x";
     }

@@ -29,7 +29,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public static final int MAX_BRINE = 1000;
 	
 	public static final int MAX_SOLARS = 4;
-	public static final int WARMUP = 300;
+	public static final int WARMUP = 6000;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
@@ -42,6 +42,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public double partialWater = 0;
 	public double partialBrine = 0;
 	
+	public float biomeTemp = 0;
 	public float temperature = 0;
 	
 	public int height = 0;
@@ -137,15 +138,14 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 				}
 				
-				if(!structured)
+				if(structured)
 				{
-					temperature = Math.min(getMaxTemperature(), getTemperature());
-				}
-				else {
 					if(waterTank.getFluid() != null)
 					{
 						waterTank.getFluid().amount = Math.min(waterTank.getFluid().amount, getMaxWater());
 					}
+					
+					temperature = Math.min(getMaxTemperature(), getTemperature());
 				}
 			}
 		}
@@ -189,7 +189,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		if(!structured)
 		{
-			return 1;
+			return 0;
 		}
 		
 		return 1 + (height-3)*0.5F;
@@ -197,11 +197,22 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	
 	public float getTempMultiplier()
 	{
-		return worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature()*((float)getActiveSolars()/MAX_SOLARS);
+		if(!temperatureSet)
+		{
+			biomeTemp = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature();
+			temperatureSet = true;
+		}
+		
+		return biomeTemp*((float)getActiveSolars()/MAX_SOLARS);
 	}
 	
 	public int getActiveSolars()
 	{
+		if(worldObj.isRemote)
+		{
+			return clientSolarAmount;
+		}
+		
 		int ret = 0;
 		
 		for(TileEntityAdvancedSolarGenerator solar : solars)
@@ -302,7 +313,10 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 					if(!addTankPart(pointerTile))
 					{
 						if(pointerTile != this && pointerTile instanceof TileEntitySalinationController)
-						return false;
+						{
+							controllerConflict = true;
+							return false;
+						}
 					}
 				}
 			}
@@ -528,6 +542,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		clientSolarAmount = dataStream.readInt();
 		height = dataStream.readInt();
 		temperature = dataStream.readFloat();
+		biomeTemp = dataStream.readFloat();
 		
 		if(structured != prev)
 		{
@@ -564,26 +579,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		data.add(structured);
 		data.add(controllerConflict);
-		data.add(getSolarAmount());
+		data.add(getActiveSolars());
 		data.add(height);
 		data.add(temperature);
+		data.add(biomeTemp);
 		
 		return data;
-	}
-	
-	private int getSolarAmount()
-	{
-		int ret = 0;
-		
-		for(TileEntityAdvancedSolarGenerator solar : solars)
-		{
-			if(solar != null)
-			{
-				ret++;
-			}
-		}
-		
-		return ret;
 	}
 	
 	@Override
