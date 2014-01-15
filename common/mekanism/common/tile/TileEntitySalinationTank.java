@@ -41,7 +41,7 @@ public class TileEntitySalinationTank extends TileEntityContainerBlock
 		
 		if(master != null)
 		{
-			master.refresh();
+			master.refresh(false);
 		}
 	}
 	
@@ -52,7 +52,7 @@ public class TileEntitySalinationTank extends TileEntityContainerBlock
 		
 		if(master != null)
 		{
-			master.refresh();
+			master.refresh(false);
 		}
 	}
 }

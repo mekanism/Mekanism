@@ -33,7 +33,6 @@ public class GuiSalinationController extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.getInvName(), 5, 5, 0x404040);
         fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
         
         fontRenderer.drawString("Structure: " + (tileEntity.structured ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 50, 21, 0x00CD00);
@@ -108,6 +107,14 @@ public class GuiSalinationController extends GuiMekanism
         
     	displayInt = tileEntity.getScaledTempLevel(78);
         drawTexturedModalRect(guiWidth + 49, guiHeight + 64, 176, 59, displayInt, 8);
+        
+    	if(xAxis >= 48 && xAxis <= 128 && yAxis >= 5 && yAxis <= 17)
+		{
+			drawTexturedModalRect(guiWidth + 48, guiHeight + 5, 176, 79, 80, 12);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 48, guiHeight + 5, 176, 67, 80, 12);
+		}
     }
     
     @Override
@@ -120,18 +127,10 @@ public class GuiSalinationController extends GuiMekanism
 			int xAxis = (x - (width - xSize) / 2);
 			int yAxis = (y - (height - ySize) / 2);
 			
-			if(xAxis > 44 && xAxis < 62 && yAxis > 13 && yAxis < 21)
+			if(xAxis >= 48 && xAxis <= 128 && yAxis >= 5 && yAxis <= 17)
 			{
 				ArrayList data = new ArrayList();
 				data.add(0);
-				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-			}
-			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
-			{
-				ArrayList data = new ArrayList();
-				data.add(1);
 				
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);

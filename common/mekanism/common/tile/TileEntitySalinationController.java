@@ -74,7 +74,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			
 			if(ticker == 5 && cacheStructure)
 			{
-				refresh();
+				refresh(true);
 				cacheStructure = false;
 			}
 			
@@ -110,7 +110,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		super.onChunkUnload();
 		
-		refresh();
+		refresh(false);
 	}
 	
 	@Override
@@ -118,14 +118,14 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		super.onNeighborChange(id);
 		
-		refresh();
+		refresh(false);
 	}
 	
-	protected void refresh()
+	protected void refresh(boolean canCreate)
 	{
 		if(!worldObj.isRemote)
 		{
-			if(structured && !updatedThisTick)
+			if((structured || canCreate) && !updatedThisTick)
 			{
 				boolean prev = structured;
 				
@@ -491,6 +491,18 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				refresh(true);
+			}
+			
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		if(dataStream.readBoolean())
@@ -582,6 +594,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
         waterTank.readFromNBT(nbtTags.getCompoundTag("waterTank"));
         brineTank.readFromNBT(nbtTags.getCompoundTag("brineTank"));
         
+        temperature = nbtTags.getFloat("temperature");
+        
         partialWater = nbtTags.getDouble("partialWater");
         partialBrine = nbtTags.getDouble("partialBrine");
         
@@ -595,6 +609,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
         
         nbtTags.setCompoundTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
         nbtTags.setCompoundTag("brineTank", brineTank.writeToNBT(new NBTTagCompound()));
+        
+        nbtTags.setFloat("temperature", temperature);
         
         nbtTags.setDouble("partialWater", partialWater);
         nbtTags.setDouble("partialBrine", partialBrine);
