@@ -6,6 +6,8 @@ import ic2.api.recipe.Recipes;
 import java.util.ArrayList;
 
 import mekanism.api.ChanceOutput;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionInput;
@@ -44,6 +46,11 @@ public final class OreDictManager
 			else {
 				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ChanceOutput(new ItemStack(Item.stick, 6), new ItemStack(Mekanism.Sawdust), 0.25));
 			}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustSulfur"))
+		{
+			RecipeHandler.addChemicalOxidizerRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
