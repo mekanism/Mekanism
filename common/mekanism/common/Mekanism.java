@@ -527,6 +527,12 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 5), new Object[] {
 			"ICI", "ASA", "ICI", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('S'), new ItemStack(BasicBlock, 1, 8)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 14), new Object[] {
+			"CGC", "IBI", "CGC", Character.valueOf('C'), "circuitBasic", Character.valueOf('G'), Block.thinGlass, Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8), Character.valueOf('B'), "blockCopper"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 15), new Object[] {
+			"ITI", "CBC", "ITI", Character.valueOf('I'), "ingotCopper", Character.valueOf('T'), new ItemStack(BasicBlock, 1, 11), Character.valueOf('C'), "circuitBasic", Character.valueOf('B'), new ItemStack(BasicBlock, 1, 8)
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{

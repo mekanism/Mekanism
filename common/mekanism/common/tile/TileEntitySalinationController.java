@@ -300,22 +300,19 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 						return false;
 					}
 				}
-				
-				if((x == 1 || x == 2) && (z == 1 || z == 2))
-				{
-					if(!pointer.isAirBlock(worldObj))
-					{
-						return false;
-					}
-				}
 				else {
-					TileEntity pointerTile = pointer.getTileEntity(worldObj);
-					
-					if(!addTankPart(pointerTile))
+					if((x == 1 || x == 2) && (z == 1 || z == 2))
 					{
-						if(pointerTile != this && pointerTile instanceof TileEntitySalinationController)
+						if(!pointer.isAirBlock(worldObj))
 						{
-							controllerConflict = true;
+							return false;
+						}
+					}
+					else {
+						TileEntity pointerTile = pointer.getTileEntity(worldObj);
+						
+						if(!addTankPart(pointerTile))
+						{
 							return false;
 						}
 					}
@@ -372,7 +369,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 					}
 				}
 				else {
-					if(!addTankPart(pointer.getTileEntity(worldObj))) 
+					TileEntity pointerTile = pointer.getTileEntity(worldObj);
+					
+					if(!addTankPart(pointerTile)) 
 					{
 						return false;
 					}
@@ -441,7 +440,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			
 			if(!addTankPart(tile)) 
 			{
-				return false; 
+				return false;
 			}
 			
 			current = current.getFromSide(back);
@@ -452,14 +451,22 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean addTankPart(TileEntity tile)
 	{
-		if(tile instanceof TileEntitySalinationTank && !(tile instanceof TileEntitySalinationController))
+		if(tile instanceof TileEntitySalinationTank && (tile == this || !(tile instanceof TileEntitySalinationController)))
 		{
-			((TileEntitySalinationTank)tile).addToStructure(this);
-			tankParts.add((TileEntitySalinationTank)tile);
+			if(tile != this)
+			{
+				((TileEntitySalinationTank)tile).addToStructure(this);
+				tankParts.add((TileEntitySalinationTank)tile);
+			}
 			
 			return true;
 		}
 		else {
+			if(tile != this && tile instanceof TileEntitySalinationController)
+			{
+				controllerConflict = true;
+			}
+			
 			return false;
 		}
 	}
@@ -468,7 +475,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		if(tile instanceof TileEntityAdvancedSolarGenerator && !tile.isInvalid())
 		{
-			System.out.println(tile.xCoord + " " + tile.yCoord + " " + zCoord);
 			solars[i] = (TileEntityAdvancedSolarGenerator)tile;
 			return true;
 		}
