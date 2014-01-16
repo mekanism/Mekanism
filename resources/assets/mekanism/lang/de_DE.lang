@@ -28,9 +28,14 @@ item.GasMask.name=Gasmaske
 item.Dictionary.name=Lexikon
 item.ElectrolyticCore.name=Elektrolysekern
 item.CompressedRedstone.name=Komprimiertes Redstone
+item.Sawdust.name=Sägemehl
+item.Salt.name=Salz
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
+
+//Cardboard Box
+tile.CardboardBox.name=Pappkarton
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmiumblock
@@ -47,6 +52,8 @@ tile.BasicBlock.DynamicGlass.name=Dynamisches Glas
 tile.BasicBlock.DynamicValve.name=Dynamisches Ventil
 tile.BasicBlock.CopperBlock.name=Kupferblock
 tile.BasicBlock.TinBlock.name=Zinnblock
+tile.BasicBlock.SalinationController.name=Versalzungs-Controller
+tile.BasicBlock.SalinationValve.name=Versalzungsventil
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Anreicherungskammer
@@ -73,6 +80,7 @@ tile.MachineBlock2.ChemicalInfuser.name=Chemischer Infundierer
 tile.MachineBlock2.ChemicalCombiner.name=Chemischer Kombinierer
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemische Injektionskammer
 tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytischer Separator
+tile.MachineBlock2.PrecisionSawmill.name=Präzisionssägewerk
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -315,6 +323,8 @@ tooltip.Chargepad=Ein universelles Ladepad, dass jegliches energetisiertes !nIte
 tooltip.LogisticalSorter=Eine Filter-basierte, fortgeschrittene Sortiermaschine, die !nautomatisch spezifische Items aus einem Inventar oder !nLogistischen Transporter heraus und in eines hinein treiben kann.
 tooltip.RotaryCondensentrator=Eine Maschine, die fähig ist, Gase in ihre !nflüssige Form zu konvertieren und umgekehrt.
 tooltip.ChemicalInjectionChamber=Eine Elite-Maschine, fähig, Erze in !nvier Splitter zu verarbeiten, was als erste Stufe !neiner 400%igen Erzverarbeitung dient.
+tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nutzt, um ein bestimmtes Gas in zwei unterschiedliche Gase zu aufzuteilen.
+tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere hölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
 tooltip.CopperOre=Ein häufiges, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.

@@ -88,7 +88,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 		{
 			if(itemstack.getItemDamage() < Tier.CableTier.values().length)
 			{
-				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "J/t");
+				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
 			}
 			
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
