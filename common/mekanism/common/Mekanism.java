@@ -744,7 +744,7 @@ public class Mekanism
 		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", 11229).getInt()).setUnlocalizedName("CompressedRedstone");
 		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", 11230).getInt()).setUnlocalizedName("Sawdust");
 		Salt = new ItemMekanism(configuration.getItem("Salt", 11231).getInt()).setUnlocalizedName("Salt");
-		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", 11232).getInt()).setUnlocalizedName("BrineBucket");
+		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", 11232).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
 
 		configuration.save();
 		
