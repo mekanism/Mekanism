@@ -26,7 +26,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
 {
-	public static final int MAX_BRINE = 1000;
+	public static final int MAX_BRINE = 10000;
 	
 	public static final int MAX_SOLARS = 4;
 	public static final int WARMUP = 10000;
@@ -583,12 +583,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	
 	public int getScaledWaterLevel(int i)
 	{
-		return waterTank.getFluid() != null ? waterTank.getFluid().amount*i / 10000 : 0;
+		return waterTank.getFluid() != null ? waterTank.getFluid().amount*i / getMaxWater() : 0;
 	}
 	
 	public int getScaledBrineLevel(int i)
 	{
-		return brineTank.getFluid() != null ? brineTank.getFluid().amount*i / 10000 : 0;
+		return brineTank.getFluid() != null ? brineTank.getFluid().amount*i / MAX_BRINE : 0;
 	}
 	
 	public int getScaledTempLevel(int i)
